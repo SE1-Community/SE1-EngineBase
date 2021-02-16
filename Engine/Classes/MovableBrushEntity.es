@@ -13,9 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-/*
- * Brush entity that can move.
- */
+// Brush entity that can move.
 
 3
 %{
@@ -29,9 +27,7 @@ thumbnail "";
 properties:
 components:
 functions:
-  /*
-   * Calculate physics for moving.
-   */
+  // Calculate physics for moving.
   export void DoMoving(void)  // override from CMovableEntity
   {
     CMovableEntity::DoMoving();
@@ -39,18 +35,18 @@ functions:
 //    en_pbrBrush->CalculateBoundingBoxes(); // !!! why here (its done in SetPlacement()?)
   }
 
-  /* Copy entity from another entity of same class. */
+  // Copy entity from another entity of same class.
   /*CMovableBrushEntity &operator=(CMovableBrushEntity &enOther)
   {
     CMovableEntity::operator=(enOther);
     return *this;
   }*/
-  /* Read from stream. */
+  // Read from stream.
   export void Read_t( CTStream *istr) // throw char *
   {
     CMovableEntity::Read_t(istr);
   }
-  /* Write to stream. */
+  // Write to stream.
   export void Write_t( CTStream *ostr) // throw char *
   {
     CMovableEntity::Write_t(ostr);

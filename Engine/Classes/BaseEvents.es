@@ -24,9 +24,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Entities/EntityProperties.h>
 %}
 
-/*
- * These events are used globally
- */
+// These events are used globally
+
 event EInternal {     // internal jumping event - do not use
 };                    
 event EVoid {         // general void type

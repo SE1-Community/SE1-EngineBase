@@ -13,9 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-/*
- * Model entity that can move.
- */
+// Model entity that can move.
 
 2
 %{
@@ -74,13 +72,13 @@ functions:
     CMovableEntity::DoMoving();
   }
 
-  /* Get current collision box index for this entity. */
+  // Get current collision box index for this entity.
   export INDEX GetCollisionBoxIndex(void)
   {
     return en_iCollisionBox;
   }
 
-  /* Check if collision box touches any brush near. */
+  // Check if collision box touches any brush near.
   export BOOL CheckForCollisionNow(INDEX iNewCollisionBox, CEntity **ppenObstacle)
   {
     // test if an entity can change to the new collision box without intersecting anything
@@ -88,7 +86,7 @@ functions:
     return !CanEntityChangeCollisionBox(this, en_iCollisionBox, ppenObstacle);
   }
 
-  /* Change current collision box. */
+  // Change current collision box.
   export BOOL ChangeCollisionBoxIndexNow(INDEX iNewCollisionBox, CEntity **ppenObstacle)
   {
     // if same as current
@@ -127,14 +125,14 @@ functions:
     return TRUE;
   }
 
-  /* Change current collision box. */
+  // Change current collision box.
   export BOOL ChangeCollisionBoxIndexNow(INDEX iNewCollisionBox)
   {
     CEntity *penDummy;
     return ChangeCollisionBoxIndexNow(iNewCollisionBox, &penDummy);
   }
 
-  /* Force immediate changing of collision box. */
+  // Force immediate changing of collision box.
   export void ForceCollisionBoxIndexChange(INDEX iNewCollisionBox)
   {
     // if this is ska model
@@ -152,24 +150,24 @@ functions:
     ModelChangeNotify();
   }
 
-  /* Change current collision box next time when possible. */
+  // Change current collision box next time when possible.
   export void ChangeCollisionBoxIndexWhenPossible(INDEX iNewCollisionBox)
   {
     en_iWantedCollisionBox = iNewCollisionBox;
   }
 
-  /* Copy entity from another entity of same class. */
+  // Copy entity from another entity of same class.
   /*CMovableModelEntity &operator=(CMovableModelEntity &enOther)
   {
     CMovableEntity::operator=(enOther);
     return *this;
   } */
-  /* Read from stream. */
+  // Read from stream.
   export void Read_t( CTStream *istr) // throw char *
   {
     CMovableEntity::Read_t(istr);
   }
-  /* Write to stream. */
+  // Write to stream.
   export void Write_t( CTStream *ostr) // throw char *
   {
     CMovableEntity::Write_t(ostr);

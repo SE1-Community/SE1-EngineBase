@@ -13,9 +13,8 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-/*
- * Entity that can move and obey physics.
- */
+// Entity that can move and obey physics.
+
 1
 %{
 #include "StdH.h"
@@ -332,7 +331,7 @@ functions:
     en_vPredError = en_vPredErrorLast = FLOAT3D(0.0f, 0.0f, 0.0f);
   }
 
-  /* Constructor. */
+  // Constructor.
   export void CMovableEntity(void) {
     en_pbpoStandOn = NULL;
     en_apbpoNearPolygons.SetAllocationStep(5);
@@ -340,7 +339,7 @@ functions:
   }
   export void ~CMovableEntity(void) {}
 
-  /* Initialization. */
+  // Initialization.
   export void OnInitialize(const CEntityEvent &eeInput)
   {
     CRationalEntity::OnInitialize(eeInput);
@@ -351,7 +350,7 @@ functions:
     en_boxMovingEstimate = FLOATaabbox3D();
     en_pbpoStandOn = NULL;
   }
-  /* Called before releasing entity. */
+  // Called before releasing entity.
   export void OnEnd(void)
   {
     // remove from movers if active
@@ -372,8 +371,8 @@ functions:
       en_plLastPlacement      = pmenOther->en_plLastPlacement      ;
       en_vNextPosition        = pmenOther->en_vNextPosition        ;
       en_mNextRotation        = pmenOther->en_mNextRotation        ;
-///*!*/      en_vIntendedTranslation = pmenOther->en_vIntendedTranslation ;
-///*!*/      en_mIntendedRotation    = pmenOther->en_mIntendedRotation    ;
+//      en_vIntendedTranslation = pmenOther->en_vIntendedTranslation ;
+//      en_mIntendedRotation    = pmenOther->en_mIntendedRotation    ;
       en_vAppliedTranslation  = pmenOther->en_vAppliedTranslation  ;
       en_mAppliedRotation     = pmenOther->en_mAppliedRotation     ;
       en_boxNearCached        = pmenOther->en_boxNearCached        ;
@@ -400,8 +399,8 @@ functions:
     // init moving parameters so that they are valid for collision if entity is not moving
     en_vNextPosition = en_plPlacement.pl_PositionVector;
     en_mNextRotation = en_mRotation;
-///*!*/    en_vIntendedTranslation = FLOAT3D(0.0f, 0.0f, 0.0f);
-///*!*/    en_mIntendedRotation.Diagonal(1.0f);
+//    en_vIntendedTranslation = FLOAT3D(0.0f, 0.0f, 0.0f);
+//    en_mIntendedRotation.Diagonal(1.0f);
     en_vAppliedTranslation = FLOAT3D(0.0f, 0.0f, 0.0f);
     en_mAppliedRotation.Diagonal(1.0f);
     ResetPredictionFilter();
@@ -497,7 +496,7 @@ functions:
     }
   }
 
-  /* Read from stream. */
+  // Read from stream.
   export void Read_t( CTStream *istr) // throw char *
   {
     CRationalEntity::Read_t(istr);
@@ -541,7 +540,7 @@ functions:
       AddToMovers();
     }
   }
-  /* Write to stream. */
+  // Write to stream.
   export void Write_t( CTStream *ostr) // throw char *
   {
     CRationalEntity::Write_t(ostr);
@@ -592,7 +591,7 @@ functions:
     }
     return plLerped;
   }
-  /* Add yourself to list of movers. */
+  // Add yourself to list of movers.
   export void AddToMovers(void)
   {
     if (!en_lnInMovers.IsLinked()) {
@@ -613,7 +612,7 @@ functions:
     en_ulPhysicsFlags|=EPF_FORCEADDED;
   }
 
-  /* Set desired rotation speed of movable entity. */
+  // Set desired rotation speed of movable entity.
   export void SetDesiredRotation(const ANGLE3D &aRotation) 
   {
     en_aDesiredRotationRelative = aRotation;
@@ -621,7 +620,7 @@ functions:
   }
   export const ANGLE3D &GetDesiredRotation(void) const { return en_aDesiredRotationRelative; };
 
-  /* Set desired translation speed of movable entity. */
+  // Set desired translation speed of movable entity.
   export void SetDesiredTranslation(const FLOAT3D &vTranslation) 
   {
     en_vDesiredTranslationRelative = vTranslation;
@@ -629,7 +628,7 @@ functions:
   }
   export const FLOAT3D &GetDesiredTranslation(void) const { return en_vDesiredTranslationRelative; };
 
-  /* Add an impulse to the current speed of the entity (used for instantaneous launching). */
+  // Add an impulse to the current speed of the entity (used for instantaneous launching).
   export void GiveImpulseTranslationRelative(const FLOAT3D &vImpulseSpeedRelative)
   {
     CPlacement3D plImpulseSpeedAbsolute( vImpulseSpeedRelative, ANGLE3D(0.0f, 0.0f, 0.0f)); 
@@ -661,27 +660,27 @@ functions:
     AddToMovers();
   }
 
-  /* Stop all translation */
+  // Stop all translation
   export void ForceStopTranslation(void) {
     en_vDesiredTranslationRelative = FLOAT3D(0.0f, 0.0f, 0.0f);
     en_vCurrentTranslationAbsolute = FLOAT3D(0.0f, 0.0f, 0.0f);
     en_vAppliedTranslation = FLOAT3D(0.0f, 0.0f, 0.0f);
   }
 
-  /* Stop all rotation */
+  // Stop all rotation
   export void ForceStopRotation(void) {
     en_aDesiredRotationRelative = ANGLE3D(0.0f, 0.0f, 0.0f);
     en_aCurrentRotationAbsolute = ANGLE3D(0.0f, 0.0f, 0.0f);
     en_mAppliedRotation.Diagonal(1.0f);
   }
 
-  /* Stop at once in place */
+  // Stop at once in place
   export void ForceFullStop(void) {
     ForceStopTranslation();
     ForceStopRotation();
   }
 
-  /* Fake that the entity jumped (for jumppads) */
+  // Fake that the entity jumped (for jumppads)
   export void FakeJump(const FLOAT3D &vOrgSpeed, const FLOAT3D &vDirection, FLOAT fStrength,
     FLOAT fParallelMultiplier, FLOAT fNormalMultiplier, FLOAT fMaxExitSpeed, TIME tmControl)
   {
@@ -722,7 +721,7 @@ functions:
     AddToMovers();
   }
 
-  /* Get relative angles from direction angles. */
+  // Get relative angles from direction angles.
   export ANGLE GetRelativeHeading(const FLOAT3D &vDirection) {
     ASSERT(Abs(vDirection.Length()-1)<0.001f); // must be normalized!
     // get front component of vector
@@ -754,7 +753,7 @@ functions:
     return ATan2(fUp, fFront);
   }
 
-  /* Get absolute direction for a heading relative to another direction. */
+  // Get absolute direction for a heading relative to another direction.
   export void GetReferenceHeadingDirection(const FLOAT3D &vReference, ANGLE aH, FLOAT3D &vDirection) {
     ASSERT(Abs(vReference.Length()-1)<0.001f); // must be normalized!
     FLOAT3D vY(en_mRotation(1,2), en_mRotation(2,2), en_mRotation(3,2));
@@ -763,14 +762,14 @@ functions:
     vDirection = -vX*Sin(aH)+vMZ*Cos(aH);
   }
 
-  /* Get absolute direction for a heading relative to current direction. */
+  // Get absolute direction for a heading relative to current direction.
   export void GetHeadingDirection(ANGLE aH, FLOAT3D &vDirection) {
     FLOAT3D vX(en_mRotation(1,1), en_mRotation(2,1), en_mRotation(3,1));
     FLOAT3D vZ(en_mRotation(1,3), en_mRotation(2,3), en_mRotation(3,3));
     vDirection = -vX*Sin(aH)-vZ*Cos(aH);
   }
 
-  /* Get absolute direction for a pitch relative to current direction. */
+  // Get absolute direction for a pitch relative to current direction.
   export void GetPitchDirection(ANGLE aH, FLOAT3D &vDirection) {
     FLOAT3D vY(en_mRotation(1,2), en_mRotation(2,2), en_mRotation(3,2));
     FLOAT3D vZ(en_mRotation(1,3), en_mRotation(2,3), en_mRotation(3,3));
@@ -1407,7 +1406,7 @@ out:;
     DecomposeRotationMatrixNoSnap(plNew.pl_OrientationAngle, en_mNextRotation);
     FLOATmatrix3D mRotation;
     MakeRotationMatrixFast(mRotation, plNew.pl_OrientationAngle);
-    SetPlacement_internal(plNew, mRotation, TRUE /* try to optimize for small movements */);
+    SetPlacement_internal(plNew, mRotation, TRUE); // try to optimize for small movements
 
     // use this for collision code debugging only not useful in real conditions
 /*
@@ -1577,7 +1576,7 @@ out:;
     return TRUE;
   }
 
-  /* Try to translate the entity. Slide, climb or push others if needed. */
+  // Try to translate the entity. Slide, climb or push others if needed.
   BOOL TryToMove(CMovableEntity *penPusher, BOOL bTranslate, BOOL bRotate)
   {
     //CPrintF("TryToMove(%d)\n", _ctTryToMoveCheckCounter);
@@ -2837,7 +2836,7 @@ out:;
 /* old */// STREAMDUMP     ExportEntityPlacementAndSpeed( *(CMovableEntity *)this, "Pre moving (end of function)");
 /* old */  }
 
-  /* Calculate physics for moving. */
+  // Calculate physics for moving.
   export void DoMoving(void)
   {
     if (en_pciCollisionInfo == NULL || (en_ulPhysicsFlags&EPF_FORCEADDED)) {

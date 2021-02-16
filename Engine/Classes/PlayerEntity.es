@@ -13,9 +13,8 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-/*
- * Player entity.
- */
+// Player entity.
+
 4
 %{
 #include "StdH.h"
@@ -37,7 +36,7 @@ properties:
 }
 components:
 functions:
-  /* Get name of this player. */
+  // Get name of this player.
   export CTString GetPlayerName(void)
   {
     return en_pcCharacter.GetNameForPrinting();
@@ -46,7 +45,7 @@ functions:
   {
     return en_pcCharacter.GetName();
   }
-  /* Get index of this player in the game. */
+  // Get index of this player in the game.
   export INDEX GetMyPlayerIndex(void)
   {
     CEntity *penMe = this;
@@ -63,13 +62,13 @@ functions:
     return 15;  // if not found, still return a relatively logical value
   }
 
-  /* Calculate physics for moving. */
+  // Calculate physics for moving.
   export void DoMoving(void)  // override from CMovableEntity
   {
     CMovableModelEntity::DoMoving();
   }
 
-  /* Copy entity from another entity of same class. */
+  // Copy entity from another entity of same class.
   export void Copy(CEntity &enOther, ULONG ulFlags)
   {
     CMovableModelEntity::Copy(enOther, ulFlags);
@@ -80,7 +79,7 @@ functions:
     en_plLastViewpoint = ppenOther->en_plLastViewpoint;
   }
 
-  /* Copy entity from another entity of same class. */
+  // Copy entity from another entity of same class.
   /*CPlayerEntity &operator=(CPlayerEntity &enOther)
   {
     CMovableModelEntity::operator=(enOther);
@@ -88,14 +87,14 @@ functions:
     en_plViewpoint = enOther.en_plViewpoint;
     return *this;
   }*/
-  /* Read from stream. */
+  // Read from stream.
   export void Read_t( CTStream *istr) // throw char *
   {
     CMovableModelEntity::Read_t(istr);
     (*istr) >> en_pcCharacter >> en_plViewpoint;
     en_plLastViewpoint = en_plViewpoint;
   }
-  /* Write to stream. */
+  // Write to stream.
   export void Write_t( CTStream *ostr) // throw char *
   {
     CMovableModelEntity::Write_t(ostr);
