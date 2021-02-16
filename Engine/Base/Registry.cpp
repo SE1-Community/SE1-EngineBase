@@ -63,7 +63,7 @@ ENGINE_API BOOL REG_GetString(const CTString &strKey, CTString &strString)
   ULONG ctType;
   ULONG ctLength = sizeof(achrKeyValue);
   LONG lResult = RegQueryValueExA(hkey, strKeyName, 0, &ctType, (unsigned char *)achrKeyValue, &ctLength);
-  if(lResult != ERROR_SUCCESS) {
+  if (lResult != ERROR_SUCCESS) {
     return FALSE;
   }
 
@@ -92,7 +92,7 @@ ENGINE_API BOOL REG_GetLong(const CTString &strKey, ULONG &ulLong)
   ULONG ctType;
   ULONG ctLength = sizeof(ulKeyValue);
   LONG lResult = RegQueryValueExA(hkey, strKeyName, 0, &ctType, (unsigned char *)&ulKeyValue, &ctLength);
-  if(lResult != ERROR_SUCCESS) {
+  if (lResult != ERROR_SUCCESS) {
     return FALSE;
   }
 

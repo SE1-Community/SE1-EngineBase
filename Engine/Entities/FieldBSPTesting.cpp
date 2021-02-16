@@ -51,7 +51,7 @@ static BOOL EntityIsInside(CEntity *pen)
 
       // for each collision sphere
       CStaticArray<CMovingSphere> &absSpheres = pen->en_pciCollisionInfo->ci_absSpheres;
-      for(INDEX iSphere=0; iSphere<absSpheres.Count(); iSphere++) {
+      for (INDEX iSphere=0; iSphere<absSpheres.Count(); iSphere++) {
         CMovingSphere &ms = absSpheres[iSphere];
         ms.ms_vRelativeCenter0 = ms.ms_vCenter*m+v;
         // if the sphere is in the sector

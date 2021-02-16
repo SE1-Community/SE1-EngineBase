@@ -122,7 +122,7 @@ CCastRay::~CCastRay(void)
 void CCastRay::ClearSectorList(void)
 {
   // for each active sector
-  for(INDEX ias=0; ias<_aas.Count(); ias++) {
+  for (INDEX ias=0; ias<_aas.Count(); ias++) {
     // mark it as inactive
     _aas[ias].as_pbsc->bsc_ulFlags&=~BSCF_RAYTESTED;
   }
@@ -287,7 +287,7 @@ void CCastRay::TestModel(CEntity *penModel)
   }
 
   // if hidden model
-  if( penModel->en_ulFlags&ENF_HIDDEN)
+  if (penModel->en_ulFlags&ENF_HIDDEN)
   {
     // don't test
     return;
@@ -336,7 +336,7 @@ void CCastRay::TestSkaModel(CEntity *penModel)
   }
 
   // if hidden model
-  if( penModel->en_ulFlags&ENF_HIDDEN)
+  if (penModel->en_ulFlags&ENF_HIDDEN)
   {
     // don't test
     return;
@@ -441,7 +441,7 @@ void CCastRay::TestSkaModelFull(CEntity *penModel, CModelInstance &mi)
 void CCastRay::TestTerrain(CEntity *penTerrain)
 {
   // if hidden model
-  if( penTerrain->en_ulFlags&ENF_HIDDEN) {
+  if (penTerrain->en_ulFlags&ENF_HIDDEN) {
     // don't test
     return;
   }
@@ -465,7 +465,7 @@ void CCastRay::TestTerrain(CEntity *penTerrain)
 void CCastRay::TestBrushSector(CBrushSector *pbscSector)
 {
   // if entity is hidden
-  if(pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->en_ulFlags&ENF_HIDDEN)
+  if (pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->en_ulFlags&ENF_HIDDEN)
   {
     // don't cast ray
     return;
@@ -551,7 +551,7 @@ void CCastRay::TestBrushSector(CBrushSector *pbscSector)
             AddSector(pbsc);
           ENDFOR}
 
-          if( cr_bHitPortals && ulFlags&(BPOF_TRANSLUCENT|BPOF_TRANSPARENT) && !cr_bPhysical)
+          if (cr_bHitPortals && ulFlags&(BPOF_TRANSLUCENT|BPOF_TRANSPARENT) && !cr_bPhysical)
           {
             // remember hit coordinates
             cr_fHitDistance=fHitDistance;
@@ -629,7 +629,7 @@ void CCastRay::TestWholeWorld(CWorld *pwoWorld)
     }
 
     // if it is a brush and testing against brushes is disabled
-    if( (itenInWorld->en_RenderType == CEntity::RT_BRUSH ||
+    if ((itenInWorld->en_RenderType == CEntity::RT_BRUSH ||
          itenInWorld->en_RenderType == CEntity::RT_FIELDBRUSH) && 
          !cr_bHitBrushes) {
       // skip it
@@ -637,7 +637,7 @@ void CCastRay::TestWholeWorld(CWorld *pwoWorld)
     }
 
     // if it is a model and testing against models is enabled
-    if(((itenInWorld->en_RenderType == CEntity::RT_MODEL
+    if (((itenInWorld->en_RenderType == CEntity::RT_MODEL
       ||(itenInWorld->en_RenderType == CEntity::RT_EDITORMODEL
          && _wrpWorldRenderPrefs.IsEditorModelsOn()))
       && cr_ttHitModels != TT_NONE)
@@ -648,7 +648,7 @@ void CCastRay::TestWholeWorld(CWorld *pwoWorld)
       // test it against the model entity
       TestModel(itenInWorld);
     // if it is a ska model
-    } else if(((itenInWorld->en_RenderType == CEntity::RT_SKAMODEL
+    } else if (((itenInWorld->en_RenderType == CEntity::RT_SKAMODEL
       ||(itenInWorld->en_RenderType == CEntity::RT_SKAEDITORMODEL
          && _wrpWorldRenderPrefs.IsEditorModelsOn()))
       && cr_ttHitModels != TT_NONE)
@@ -677,7 +677,7 @@ void CCastRay::TestWholeWorld(CWorld *pwoWorld)
       }
 
       // if it has zero sectors
-      if (pbmMip->bm_abscSectors.Count()==0){
+      if (pbmMip->bm_abscSectors.Count()==0) {
         // test it against the model entity
         TestModel(itenInWorld);
 
@@ -700,7 +700,7 @@ void CCastRay::TestWholeWorld(CWorld *pwoWorld)
 void CCastRay::TestThroughSectors(void)
 {
   // for each active sector (sectors are added during iteration!)
-  for(INDEX ias=0; ias<_aas.Count(); ias++) {
+  for (INDEX ias=0; ias<_aas.Count(); ias++) {
     CBrushSector *pbsc = _aas[ias].as_pbsc;
     // test the ray against the sector
     TestBrushSector(pbsc);
@@ -712,7 +712,7 @@ void CCastRay::TestThroughSectors(void)
         continue;
       }
       // if it is a model and testing against models is enabled
-      if(((pen->en_RenderType == CEntity::RT_MODEL
+      if (((pen->en_RenderType == CEntity::RT_MODEL
         ||(pen->en_RenderType == CEntity::RT_EDITORMODEL
            && _wrpWorldRenderPrefs.IsEditorModelsOn()))
         && cr_ttHitModels != TT_NONE)
@@ -723,7 +723,7 @@ void CCastRay::TestThroughSectors(void)
         // test it against the model entity
         TestModel(pen);
       // if is is a ska model
-      } else if(((pen->en_RenderType == CEntity::RT_SKAMODEL
+      } else if (((pen->en_RenderType == CEntity::RT_SKAMODEL
         ||(pen->en_RenderType == CEntity::RT_SKAEDITORMODEL
            && _wrpWorldRenderPrefs.IsEditorModelsOn()))
         && cr_ttHitModels != TT_NONE)
@@ -734,11 +734,11 @@ void CCastRay::TestThroughSectors(void)
         // test it against the ska model entity
         TestSkaModel(pen);
       // if it is a terrain
-      } else if( pen->en_RenderType == CEntity::RT_TERRAIN) {
+      } else if (pen->en_RenderType == CEntity::RT_TERRAIN) {
         CTerrain *ptrTerrain = pen->GetTerrain();
         ASSERT(ptrTerrain!=NULL);
         // if terrain hasn't allready been tested
-        if(!ptrTerrain->tr_lnInActiveTerrains.IsLinked()) {
+        if (!ptrTerrain->tr_lnInActiveTerrains.IsLinked()) {
           // test it now and add it to list of tested terrains
           TestTerrain(pen);
           _lhTestedTerrains.AddTail(ptrTerrain->tr_lnInActiveTerrains);
@@ -769,7 +769,7 @@ void CCastRay::Cast(CWorld *pwoWorld)
 {
   // setup stat timers
   const BOOL bMainLoopTimer = _sfStats.CheckTimer(CStatForm::STI_MAINLOOP);
-  if( bMainLoopTimer) _sfStats.StopTimer(CStatForm::STI_MAINLOOP);
+  if (bMainLoopTimer) _sfStats.StopTimer(CStatForm::STI_MAINLOOP);
   _sfStats.StartTimer(CStatForm::STI_RAYCAST);
 
   // initially no polygon is found
@@ -802,7 +802,7 @@ void CCastRay::Cast(CWorld *pwoWorld)
 
   // done with timing
   _sfStats.StopTimer(CStatForm::STI_RAYCAST);
-  if( bMainLoopTimer) _sfStats.StartTimer(CStatForm::STI_MAINLOOP);
+  if (bMainLoopTimer) _sfStats.StartTimer(CStatForm::STI_MAINLOOP);
 }
 
 

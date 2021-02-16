@@ -91,7 +91,7 @@ void CBrushSector::ToObjectSector(CObjectSector &osc)
   // create that much vertices in object
   osc.osc_aovxVertices.New(ctVertices);
   // copy all vertices
-  for(INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
+  for (INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
     osc.osc_aovxVertices[iVertex] = bsc_abvxVertices[iVertex].bvx_vdPreciseRelative;
   }
 
@@ -102,7 +102,7 @@ void CBrushSector::ToObjectSector(CObjectSector &osc)
   // create that much planes in object
   osc.osc_aoplPlanes.New(ctPlanes);
   // copy all planes
-  for(INDEX iPlane=0; iPlane<ctPlanes; iPlane++) {
+  for (INDEX iPlane=0; iPlane<ctPlanes; iPlane++) {
     osc.osc_aoplPlanes[iPlane] = bsc_abplPlanes[iPlane].bpl_pldPreciseRelative;
   }
 
@@ -113,7 +113,7 @@ void CBrushSector::ToObjectSector(CObjectSector &osc)
   // create that much edges in object
   osc.osc_aoedEdges.New(ctEdges);
   // for all edges in brush
-  for(INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
+  for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
     CObjectEdge &oed = osc.osc_aoedEdges[iEdge];  // object edge alias
     CBrushEdge &bed  =     bsc_abedEdges[iEdge];  // brush edge alias
     // set the object edge
@@ -130,7 +130,7 @@ void CBrushSector::ToObjectSector(CObjectSector &osc)
   osc.osc_aomtMaterials.New(ctPolygons);
 
   // for all polygons in brush
-  for(INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++) {
+  for (INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++) {
     CBrushPolygon  &bpo =    bsc_abpoPolygons[iPolygon];  // brush polygon alias
     CObjectPolygon &opo =osc.osc_aopoPolygons[iPolygon];  // object polygon alias
     CObjectMaterial &omt =osc.osc_aomtMaterials[iPolygon];  // object material alias

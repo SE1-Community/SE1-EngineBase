@@ -50,7 +50,7 @@ static INDEX       *_paIndices   = NULL;   // current array of triangle indices
 static GFXColor    _colAmbient = 0x000000FF;     // Ambient color
 static COLOR       _colModel   = 0x000000FF;     // Model color
 static GFXColor    _colLight   = 0x000000FF;     // Light color
-static FLOAT3D     _vLightDir  = FLOAT3D(0,0,0); // Light direction
+static FLOAT3D     _vLightDir  = FLOAT3D(0.0f, 0.0f, 0.0f); // Light direction
 
 static COLOR       _colConstant   = NULL; // current set color
 static COLOR       *_paColors    = NULL;  // array of colors to chose from
@@ -106,12 +106,12 @@ void shaRender(void)
   gfxLockArrays();
 
   // if there is valid UVMap
-  if(_pCurrentUVMap!=NULL) {
+  if (_pCurrentUVMap!=NULL) {
     gfxSetTexCoordArray(_pCurrentUVMap, FALSE);
   }
 
   // if there is valid vertex color array
-  if(_pcolVtxColors!=NULL) {
+  if (_pcolVtxColors!=NULL) {
     gfxSetColorArray(_pcolVtxColors);
   }
 
@@ -124,7 +124,7 @@ void shaRender(void)
 void shaDoFogPass(void)
 {
   // if full bright 
-  if(shaGetFlags()&BASE_FULL_BRIGHT) {
+  if (shaGetFlags()&BASE_FULL_BRIGHT) {
     // no fog pass 
     return;
   }
@@ -135,7 +135,7 @@ void shaDoFogPass(void)
   // Calculate fog and haze uvmap for this opaque surface
   RM_DoFogAndHaze(TRUE);
   // if fog uvmap has been given
-  if(_paFogUVMap!=NULL) {
+  if (_paFogUVMap!=NULL) {
     // setup texture/color arrays and rendering mode
     gfxSetTextureWrapping( GFX_CLAMP, GFX_CLAMP);
     gfxSetTexture( _fog_ulTexture, _fog_tpLocal);
@@ -147,14 +147,14 @@ void shaDoFogPass(void)
     gfxDrawElements( _ctIndices, _paIndices);
   }
   // if haze uvmap has been given
-  if(_paHazeUVMap!=NULL) {
+  if (_paHazeUVMap!=NULL) {
     gfxSetTextureWrapping( GFX_CLAMP, GFX_CLAMP);
     gfxSetTexture( _haze_ulTexture, _haze_tpLocal);
     gfxSetTexCoordArray(_paHazeUVMap, TRUE);
     gfxBlendFunc( GFX_SRC_ALPHA, GFX_INV_SRC_ALPHA);
     gfxEnableBlend();
     // set vertex color array for haze
-    if(_pacolVtxHaze !=NULL ) {
+    if (_pacolVtxHaze !=NULL ) {
       gfxSetColorArray( _pacolVtxHaze);
     }
 
@@ -167,7 +167,7 @@ void shaDoFogPass(void)
 void shaModifyColorForFog(void)
 {
   // if full bright
-  if(shaGetFlags()&BASE_FULL_BRIGHT) {
+  if (shaGetFlags()&BASE_FULL_BRIGHT) {
     // no fog colors
     return;
   }
@@ -180,12 +180,12 @@ void shaModifyColorForFog(void)
 void shaCalculateLight(void)
 {
   // if full bright
-  if(shaGetFlags()&BASE_FULL_BRIGHT) {
+  if (shaGetFlags()&BASE_FULL_BRIGHT) {
     GFXColor colLight = _colConstant;
     GFXColor colAmbient;
     GFXColor colConstant;
     // is over brightning enabled
-    if(shaOverBrightningEnabled()) {
+    if (shaOverBrightningEnabled()) {
       colAmbient = 0x7F7F7FFF;
     } else {
       colAmbient = 0xFFFFFFFF;
@@ -212,7 +212,7 @@ void shaCalculateLight(void)
   SLONG slag = colAmbient.g;
   SLONG slab = colAmbient.b;
 
-  if(shaOverBrightningEnabled()) {
+  if (shaOverBrightningEnabled()) {
     slar = ClampUp(slar,127L);
     slag = ClampUp(slag,127L);
     slab = ClampUp(slab,127L);
@@ -225,7 +225,7 @@ void shaCalculateLight(void)
   }
 
   // for each vertex color
-  for(INDEX ivx=0;ivx<_ctVertices;ivx++) {
+  for (INDEX ivx=0;ivx<_ctVertices;ivx++) {
     // calculate vertex light
     FLOAT3D &vNorm = FLOAT3D(_paNormals[ivx].nx,_paNormals[ivx].ny,_paNormals[ivx].nz);
     FLOAT fDot = vNorm % _vLightDir;
@@ -261,7 +261,7 @@ void shaCalculateLightForSpecular(void)
   SLONG slag = colAmbient.g;
   SLONG slab = colAmbient.b;
 
-  if(shaOverBrightningEnabled()) {
+  if (shaOverBrightningEnabled()) {
     slar = ClampUp(slar,127L);
     slag = ClampUp(slag,127L);
     slab = ClampUp(slab,127L);
@@ -274,7 +274,7 @@ void shaCalculateLightForSpecular(void)
   }
 
   // for each vertex color
-  for(INDEX ivx=0;ivx<_ctVertices;ivx++) {
+  for (INDEX ivx=0;ivx<_ctVertices;ivx++) {
     // calculate vertex light
     FLOAT3D &vNorm = FLOAT3D(_paNormals[ivx].nx,_paNormals[ivx].ny,_paNormals[ivx].nz);
     FLOAT fDot = vNorm % _vLightDir;
@@ -438,7 +438,7 @@ void shaSetObjToAbsMatrix(Matrix12 &mat)
 // Set current texture index
 void shaSetTexture(INDEX iTextureIndex)
 {
-  if(_paTextures==NULL || iTextureIndex<0 || iTextureIndex>=_ctTextures ||  _paTextures[iTextureIndex] == NULL) {
+  if (_paTextures==NULL || iTextureIndex<0 || iTextureIndex>=_ctTextures ||  _paTextures[iTextureIndex] == NULL) {
     gfxDisableTexture();
     return;
   }
@@ -456,7 +456,7 @@ void shaSetTexture(INDEX iTextureIndex)
 void shaSetUVMap(INDEX iUVMapIndex)
 {
   ASSERT(iUVMapIndex>=0);
-  if(iUVMapIndex<=_ctUVMaps) {
+  if (iUVMapIndex<=_ctUVMaps) {
     _pCurrentUVMap = _paUVMaps[iUVMapIndex];
   }
 }
@@ -466,7 +466,7 @@ void shaSetColor(INDEX icolIndex)
 {
   ASSERT(icolIndex>=0);
 
-  if(icolIndex>=_ctColors) {
+  if (icolIndex>=_ctColors) {
     _colConstant = C_WHITE|CT_OPAQUE;
   } else {
     _colConstant = _paColors[icolIndex];
@@ -522,7 +522,7 @@ FLOAT shaGetFloat(INDEX iFloatIndex)
 CTextureObject *shaGetTexture( INDEX iTextureIndex)
 {
   ASSERT( iTextureIndex>=0);
-  if( _paTextures==NULL || iTextureIndex>=_ctTextures || _paTextures[iTextureIndex]==NULL) return NULL;
+  if (_paTextures==NULL || iTextureIndex>=_ctTextures || _paTextures[iTextureIndex]==NULL) return NULL;
   else return _paTextures[iTextureIndex];
 }
 
@@ -591,7 +591,7 @@ GFXNormal *shaGetNormalArray(void)
 GFXTexCoord *shaGetUVMap(INDEX iUVMapIndex)
 {
   ASSERT( iUVMapIndex>=0);
-  if( iUVMapIndex>=_ctUVMaps) return NULL;
+  if (iUVMapIndex>=_ctUVMaps) return NULL;
   else return _paUVMaps[iUVMapIndex];
 }
 
@@ -658,7 +658,7 @@ Matrix12 *shaGetObjToAbsMatrix(void)
 // Set face culling
 void shaCullFace(GfxFace eFace)
 {
-  if(_paprProjection !=NULL && (*_paprProjection)->pr_bMirror) {
+  if (_paprProjection !=NULL && (*_paprProjection)->pr_bMirror) {
     gfxFrontFace( GFX_CW);
   } else {
     gfxFrontFace( GFX_CCW);
@@ -782,7 +782,7 @@ void CShader::Clear(void)
   ShaderFunc = NULL;
   GetShaderDesc = NULL;
   // release dll
-  if(hLibrary!=NULL) FreeLibrary(hLibrary);
+  if (hLibrary!=NULL) FreeLibrary(hLibrary);
 }
 
 // Count used memory
@@ -824,7 +824,7 @@ void CShader::Read_t(CTStream *istrFile)
   // return last error mode
   SetErrorMode(iOldErrorMode);
   // check if library has loaded
-  if(hLibrary==NULL)
+  if (hLibrary==NULL)
   {
     // report error
     istrFile->Throw_t("Error loading '%s' library",(const char*)fnmExpanded);
@@ -833,7 +833,7 @@ void CShader::Read_t(CTStream *istrFile)
   // get pointer to shader render function
   ShaderFunc = (void(*)(void))GetProcAddress(hLibrary,(const char*)strShaderFunc);
   // if error accured
-  if(ShaderFunc==NULL)
+  if (ShaderFunc==NULL)
   {
     // report error
     istrFile->Throw_t("GetProcAddress 'ShaderFunc' Error");
@@ -841,7 +841,7 @@ void CShader::Read_t(CTStream *istrFile)
   // get pointer to shader info function
   GetShaderDesc = (void(*)(ShaderDesc&))GetProcAddress(hLibrary,(const char*)strShaderInfo);
   // if error accured
-  if(GetShaderDesc==NULL) {
+  if (GetShaderDesc==NULL) {
     // report error
     istrFile->Throw_t("GetProcAddress 'ShaderDesc' Error");
   }

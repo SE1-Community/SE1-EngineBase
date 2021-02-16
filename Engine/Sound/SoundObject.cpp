@@ -285,7 +285,7 @@ void CSoundObject::Play_internal( CSoundData *pCsdLink, SLONG slFlags)
       so_swLastRightSample = 0;
     } else {
       // adjust for master volume
-      if(so_slFlags&SOF_MUSIC) {
+      if (so_slFlags&SOF_MUSIC) {
         so_fLastLeftVolume  *= snd_fMusicVolume;
         so_fLastRightVolume *= snd_fMusicVolume;
       } else {
@@ -320,7 +320,7 @@ void CSoundObject::SetOffset( FLOAT fOffset)
 
   // safety check
   ASSERT( fOffset>=0);
-  if( fOffset<0) {
+  if (fOffset<0) {
     CPrintF( "BUG: Trying to set negative offset (%.2g) in sound '%s' !\n", fOffset, (CTString&)psoTail->so_pCsdLink->GetName());
     fOffset = 0.0f;
   }
@@ -364,13 +364,13 @@ void CSoundObject::Stop_internal(void)
   so_slFlags &= ~(SOF_PLAY|SOF_PREPARE|SOF_PAUSED);
 
   // destroy decoder if exists
-  if( so_psdcDecoder!=NULL) {
+  if (so_psdcDecoder!=NULL) {
     delete so_psdcDecoder;
     so_psdcDecoder = NULL;
   }
 
   // if added in link list, remove it from list
-  if( IsHooked()) {
+  if (IsHooked()) {
     ASSERT(so_pCsdLink != NULL);
     so_pCsdLink->RemoveObjectLink(*this);
     // remove reference from SoundData
@@ -385,7 +385,7 @@ void CSoundObject::Stop_internal(void)
 void CSoundObject::Update3DEffects(void)
 {
   // if not 3d sound
-  if( !(so_slFlags & SOF_3D)) {
+  if (!(so_slFlags & SOF_3D)) {
     // do nothing;
     return;
   }
@@ -450,7 +450,7 @@ void CSoundObject::Update3DEffects(void)
 
     // calculate distance falloff factor
     FLOAT fDistanceFactor;
-    if( fAbsDelta <= so_sp3.sp3_fHotSpot) {
+    if (fAbsDelta <= so_sp3.sp3_fHotSpot) {
       fDistanceFactor = 1;
     } else {
       fDistanceFactor = (so_sp3.sp3_fFalloff - fAbsDelta) /
@@ -462,7 +462,7 @@ void CSoundObject::Update3DEffects(void)
     // NOTE: decoded sounds must be threated as volumetric
     FLOAT fNonVolumetric = 1.0f;
     FLOAT fNonVolumetricAdvanced = 1.0f;
-    if( (so_slFlags & SOF_VOLUMETRIC) || so_psdcDecoder!=NULL) {
+    if ((so_slFlags & SOF_VOLUMETRIC) || so_psdcDecoder!=NULL) {
       fNonVolumetric = 1.0f-fDistanceFactor;
       fNonVolumetricAdvanced = 0.0f;
     }
@@ -510,7 +510,7 @@ void CSoundObject::Update3DEffects(void)
 
     // calc volume for left and right channel
     FLOAT fVolume = so_sp3.sp3_fMaxVolume * fDistanceFactor;
-    if( fLRFactor > 0) {
+    if (fLRFactor > 0) {
       fLVolume = (1-fLRFactor*fPanningFactor) * fVolume;
       fRVolume = fVolume;
     } else {
@@ -524,16 +524,16 @@ void CSoundObject::Update3DEffects(void)
       fListenerFilter = 0.0f;
     }
     fLFilter = fRFilter = 1+fListenerFilter;
-    if( fLRFactor > 0) {
+    if (fLRFactor > 0) {
       fLFilter += fLRFactor*snd_fLRFilter*fNonVolumetricAdvanced;
     } else {
       fRFilter -= fLRFactor*snd_fLRFilter*fNonVolumetricAdvanced;
     }
-    if( fFBFactor<0) {
+    if (fFBFactor<0) {
       fLFilter -= snd_fBFilter*fFBFactor*fNonVolumetricAdvanced;
       fRFilter -= snd_fBFilter*fFBFactor*fNonVolumetricAdvanced;
     }
-    if( fUDFactor>0) {
+    if (fUDFactor>0) {
       fLFilter += snd_fUFilter*fUDFactor*fNonVolumetricAdvanced;
       fRFilter += snd_fUFilter*fUDFactor*fNonVolumetricAdvanced;
     } else {
@@ -574,7 +574,7 @@ void CSoundObject::Update3DEffects(void)
   fTRVolume = Clamp( fTRVolume, SL_VOLUME_MIN, SL_VOLUME_MAX);
   SetVolume( fTLVolume, fTRVolume);
 
-  if( fTLVolume>0 || fTRVolume>0) {
+  if (fTLVolume>0 || fTRVolume>0) {
     // do safety clamping
     fTLFilter   = ClampDn( fTLFilter, 1.0f);
     fTRFilter   = ClampDn( fTRFilter, 1.0f);
@@ -598,7 +598,7 @@ void CSoundObject::PrepareSound(void)
   so_fLastLeftVolume = so_spNew.sp_fLeftVolume;
   so_fLastRightVolume = so_spNew.sp_fRightVolume;
   // adjust for master volume
-  if(so_slFlags&SOF_MUSIC) {
+  if (so_slFlags&SOF_MUSIC) {
     so_fLastLeftVolume  *= snd_fMusicVolume;
     so_fLastRightVolume *= snd_fMusicVolume;
   } else {

@@ -65,7 +65,7 @@ void ChangeSurfaceShader_t(MeshSurface &msrf,CTString fnNewShader)
 {
   CShader *pShaderNew = _pShaderStock->Obtain_t(fnNewShader);
   ASSERT(pShaderNew!=NULL);
-  if(msrf.msrf_pShader!=NULL) _pShaderStock->Release(msrf.msrf_pShader);
+  if (msrf.msrf_pShader!=NULL) _pShaderStock->Release(msrf.msrf_pShader);
   msrf.msrf_pShader = pShaderNew;
   // get new shader description
   ShaderDesc shDesc;
@@ -80,38 +80,38 @@ void ChangeSurfaceShader_t(MeshSurface &msrf,CTString fnNewShader)
   INDEX ctNewColors     = shDesc.sd_astrColorNames.Count();
   INDEX ctOldFloats     = msrf.msrf_ShadingParams.sp_afFloats.Count();
   INDEX ctNewFloats     = shDesc.sd_astrFloatNames.Count();
-  if(ctOldTextureIDs<ctNewTextureIDs) {
+  if (ctOldTextureIDs<ctNewTextureIDs) {
     // expand texture IDs array
     msrf.msrf_ShadingParams.sp_aiTextureIDs.Expand(ctNewTextureIDs);
     // set new texture IDs to 0
-    for(INDEX itx=ctOldTextureIDs;itx<ctNewTextureIDs;itx++) {
+    for (INDEX itx=ctOldTextureIDs;itx<ctNewTextureIDs;itx++) {
       msrf.msrf_ShadingParams.sp_aiTextureIDs[itx] = -1;
     }
   }
   // expand array of uvmaps if needed
-  if(ctOldUVMaps<ctNewUVMaps) {
+  if (ctOldUVMaps<ctNewUVMaps) {
     // expand uvmaps IDs array
     msrf.msrf_ShadingParams.sp_aiTexCoordsIndex.Expand(ctNewUVMaps);
     // set new uvmaps indices to 0
-    for(INDEX itxc=ctOldUVMaps;itxc<ctNewUVMaps;itxc++) {
+    for (INDEX itxc=ctOldUVMaps;itxc<ctNewUVMaps;itxc++) {
       msrf.msrf_ShadingParams.sp_aiTexCoordsIndex[itxc] = 0;
     }
   }
   // expand array of colors if needed
-  if(ctOldColors<ctNewColors) {
+  if (ctOldColors<ctNewColors) {
     // expand color array
     msrf.msrf_ShadingParams.sp_acolColors.Expand(ctNewColors);
     // set new colors indices white
-    for(INDEX icol=ctOldUVMaps;icol<ctNewColors;icol++) {
+    for (INDEX icol=ctOldUVMaps;icol<ctNewColors;icol++) {
       msrf.msrf_ShadingParams.sp_acolColors[icol] = 0xFFFFFFFF;
     }
   }
   // expand array of floats if needed
-  if(ctOldFloats<ctNewFloats) {
+  if (ctOldFloats<ctNewFloats) {
     // expand float array
     msrf.msrf_ShadingParams.sp_afFloats.Expand(ctNewFloats);
     // set new floats to 0
-    for(INDEX ifl=ctOldFloats;ifl<ctNewFloats;ifl++) {
+    for (INDEX ifl=ctOldFloats;ifl<ctNewFloats;ifl++) {
       msrf.msrf_ShadingParams.sp_afFloats[ifl] = 1;
     }
   }
@@ -127,7 +127,7 @@ static int qsort_CompareArray(const void *pVx1, const void *pVx2)
 // clear array of sort vertices
 void ClearSortArray(INDEX ctOldVertices)
 {
-  for(int iv=0;iv<ctOldVertices;iv++)
+  for (int iv=0;iv<ctOldVertices;iv++)
   {
     _aSortArray[iv].sa_aWeightMapList.Clear();
     _aSortArray[iv].sa_aMorphMapList.Clear();
@@ -140,7 +140,7 @@ void ClearSortArray(INDEX ctOldVertices)
 void CMesh::Optimize(void)
 {
   INDEX ctmshlods = msh_aMeshLODs.Count();
-  for(int imshlod=0;imshlod<ctmshlods;imshlod++)
+  for (int imshlod=0;imshlod<ctmshlods;imshlod++)
   {
     // optimize each lod in mesh
     OptimizeLod(msh_aMeshLODs[imshlod]);
@@ -155,23 +155,23 @@ void CMesh::OptimizeLod(MeshLOD &mLod)
   INDEX ctWeightMaps = mLod.mlod_aWeightMaps.Count();
   INDEX ctMorphMaps = mLod.mlod_aMorphMaps.Count();
 
-  if(ctVertices<=0) return;
+  if (ctVertices<=0) return;
   
   // create array for sorting
   _aSortArray.New(ctVertices);
   _aiSortedIndex.New(ctVertices);
   _aiOptimizedIndex.New(ctVertices);
   // put original vertex indices in SortArray
-  for(int iv=0;iv<ctVertices;iv++)
+  for (int iv=0;iv<ctVertices;iv++)
   {
     _aiSortedIndex[iv] = iv;
   }
   // loop each surface and expand SurfaceList in SortArray
   int is=0;
-  for(;is<ctSurfaces;is++)
+  for (;is<ctSurfaces;is++)
   {
     INDEX ctts=mLod.mlod_aSurfaces[is].msrf_aTriangles.Count();
-    for(int its=0;its<ctts;its++)
+    for (int its=0;its<ctts;its++)
     {
       MeshTriangle &mtTriangle = mLod.mlod_aSurfaces[is].msrf_aTriangles[its];
 
@@ -181,11 +181,11 @@ void CMesh::OptimizeLod(MeshLOD &mLod)
     }
   }
   // loop each weightmap and expand sa_aWeightMapList in SortArray
-  for(INDEX iw=0;iw<ctWeightMaps;iw++)
+  for (INDEX iw=0;iw<ctWeightMaps;iw++)
   {
     // loop each wertex weight array in weight map array
     INDEX ctwm = mLod.mlod_aWeightMaps[iw].mwm_aVertexWeight.Count();
-    for(INDEX iwm=0;iwm<ctwm;iwm++)
+    for (INDEX iwm=0;iwm<ctwm;iwm++)
     {
       MeshVertexWeight &mwwWeight = mLod.mlod_aWeightMaps[iw].mwm_aVertexWeight[iwm];
       // get curent list num of weightmaps  
@@ -200,11 +200,11 @@ void CMesh::OptimizeLod(MeshLOD &mLod)
     }
   }
   // loop each morphmap and expand sa_aMorphMapList in SortArray
-  for(INDEX im=0;im<ctMorphMaps;im++)
+  for (INDEX im=0;im<ctMorphMaps;im++)
   {
     // loop each morph map in array
     INDEX ctmm = mLod.mlod_aMorphMaps[im].mmp_aMorphMap.Count();
-    for(INDEX imm=0;imm<ctmm;imm++)
+    for (INDEX imm=0;imm<ctmm;imm++)
     {
       MeshVertexMorph &mwmMorph = mLod.mlod_aMorphMaps[im].mmp_aMorphMap[imm];
       // get curent list num of morphmaps  
@@ -229,11 +229,11 @@ void CMesh::OptimizeLod(MeshLOD &mLod)
   _aSortArray[iLastIndex].sa_iNewIndex = 0;
   _aiOptimizedIndex[0] = iLastIndex;
   
-  for(INDEX isa=1;isa<ctVertices;isa++)
+  for (INDEX isa=1;isa<ctVertices;isa++)
   {
     INDEX iCurentIndex = _aiSortedIndex[isa];
     // check if vertices are diferent
-    if(AreVerticesDiferent(iLastIndex,iCurentIndex))
+    if (AreVerticesDiferent(iLastIndex,iCurentIndex))
     {
       // add Curent index to Optimized index array
       _aiOptimizedIndex[iDiferentVertices] = iCurentIndex;
@@ -248,17 +248,17 @@ void CMesh::OptimizeLod(MeshLOD &mLod)
   mshOptimized.mlod_aVertices.New(ctNewVertices);
   mshOptimized.mlod_aNormals.New(ctNewVertices);
   mshOptimized.mlod_aUVMaps.New(ctUVMaps);
-  for(INDEX iuvm=0;iuvm<ctUVMaps;iuvm++)
+  for (INDEX iuvm=0;iuvm<ctUVMaps;iuvm++)
   {
     mshOptimized.mlod_aUVMaps[iuvm].muv_aTexCoords.New(ctNewVertices);
   }
 
   // add new vertices and normals to mshOptimized
-  for(INDEX iNewVx=0;iNewVx<ctNewVertices;iNewVx++)
+  for (INDEX iNewVx=0;iNewVx<ctNewVertices;iNewVx++)
   {
     mshOptimized.mlod_aVertices[iNewVx] = mLod.mlod_aVertices[_aiOptimizedIndex[iNewVx]];
     mshOptimized.mlod_aNormals[iNewVx] = mLod.mlod_aNormals[_aiOptimizedIndex[iNewVx]];
-    for(INDEX iuvm=0;iuvm<ctUVMaps;iuvm++)
+    for (INDEX iuvm=0;iuvm<ctUVMaps;iuvm++)
     {
       //???
       mshOptimized.mlod_aUVMaps[iuvm].muv_iID = mLod.mlod_aUVMaps[iuvm].muv_iID;
@@ -266,7 +266,7 @@ void CMesh::OptimizeLod(MeshLOD &mLod)
     }
   }
   // remap surface triangles
-  for(is=0;is<ctSurfaces;is++)
+  for (is=0;is<ctSurfaces;is++)
   {
     MeshSurface &msrf = mLod.mlod_aSurfaces[is];
     INDEX iMinIndex = ctNewVertices+1;
@@ -274,17 +274,17 @@ void CMesh::OptimizeLod(MeshLOD &mLod)
     INDEX ctts=msrf.msrf_aTriangles.Count();
     // for each triangle in this surface
     INDEX its=0;
-    for(;its<ctts;its++)
+    for (;its<ctts;its++)
     {
       MeshTriangle &mtTriangle = msrf.msrf_aTriangles[its];
       // for each vertex in triangle
-      for(INDEX iv=0;iv<3;iv++)
+      for (INDEX iv=0;iv<3;iv++)
       {
         mtTriangle.iVertex[iv] = _aSortArray[mtTriangle.iVertex[iv]].sa_iNewIndex;
         // find first index in this surface
-        if(mtTriangle.iVertex[iv]<iMinIndex) iMinIndex = mtTriangle.iVertex[iv];
+        if (mtTriangle.iVertex[iv]<iMinIndex) iMinIndex = mtTriangle.iVertex[iv];
         // find last index in this surface
-        if(mtTriangle.iVertex[iv]>iMaxIndex) iMaxIndex = mtTriangle.iVertex[iv];
+        if (mtTriangle.iVertex[iv]>iMaxIndex) iMaxIndex = mtTriangle.iVertex[iv];
       }
     }
     // remember first index in vertices array
@@ -293,11 +293,11 @@ void CMesh::OptimizeLod(MeshLOD &mLod)
     msrf.msrf_ctVertices = iMaxIndex-iMinIndex+1;
 
     // for each triangle in surface
-    for(its=0;its<ctts;its++)
+    for (its=0;its<ctts;its++)
     {
       MeshTriangle &mtTriangle = msrf.msrf_aTriangles[its];
       // for each vertex in triangle
-      for(INDEX iv=0;iv<3;iv++)
+      for (INDEX iv=0;iv<3;iv++)
       {
         // substract vertex index in triangle with first vertex in surface
         mtTriangle.iVertex[iv] -= msrf.msrf_iFirstVertex;
@@ -310,10 +310,10 @@ void CMesh::OptimizeLod(MeshLOD &mLod)
   mshOptimized.mlod_aWeightMaps.New(ctWeightMaps);
   // expand wertex veights array for each vertex
   INDEX ivx=0;
-  for(;ivx<ctNewVertices;ivx++)
+  for (;ivx<ctNewVertices;ivx++)
   {
     INDEX ioptVx = _aiOptimizedIndex[ivx];
-    for(INDEX iwl=0;iwl<_aSortArray[ioptVx].sa_aWeightMapList.Count();iwl++)
+    for (INDEX iwl=0;iwl<_aSortArray[ioptVx].sa_aWeightMapList.Count();iwl++)
     {
       VertexLocator &wml = _aSortArray[ioptVx].sa_aWeightMapList[iwl];
       INDEX wmIndex = wml.vl_iIndex;
@@ -332,10 +332,10 @@ void CMesh::OptimizeLod(MeshLOD &mLod)
   // remap morphmaps
   mshOptimized.mlod_aMorphMaps.New(ctMorphMaps);
   // expand morph maps array for each vertex
-  for(ivx=0;ivx<ctNewVertices;ivx++)
+  for (ivx=0;ivx<ctNewVertices;ivx++)
   {
     INDEX ioptVx = _aiOptimizedIndex[ivx];
-    for(INDEX iml=0;iml<_aSortArray[ioptVx].sa_aMorphMapList.Count();iml++)
+    for (INDEX iml=0;iml<_aSortArray[ioptVx].sa_aMorphMapList.Count();iml++)
     {
       VertexLocator &mml = _aSortArray[ioptVx].sa_aMorphMapList[iml];
       INDEX mmIndex = mml.vl_iIndex;
@@ -375,8 +375,8 @@ void CMesh::OptimizeLod(MeshLOD &mLod)
 
 INDEX AreVerticesDiferent(INDEX iCurentIndex, INDEX iLastIndex)
 {
-#define CHECK(x,y) if(((x)-(y))!=0) return ((x)-(y))
-#define CHECKF(x,y) if(((x)-(y))!=0) return Sgn((x)-(y))
+#define CHECK(x,y) if (((x)-(y))!=0) return ((x)-(y))
+#define CHECKF(x,y) if (((x)-(y))!=0) return Sgn((x)-(y))
   
   // check surfaces
   CHECK(_aSortArray[iCurentIndex].sa_iSurfaceIndex,_aSortArray[iLastIndex].sa_iSurfaceIndex);
@@ -390,7 +390,7 @@ INDEX AreVerticesDiferent(INDEX iCurentIndex, INDEX iLastIndex)
   CHECKF(pMeshLOD->mlod_aNormals[iCurentIndex].nz,pMeshLOD->mlod_aNormals[iLastIndex].nz);
   // check uvmaps
   INDEX ctUVMaps = pMeshLOD->mlod_aUVMaps.Count();
-  for(INDEX iuvm=0;iuvm<ctUVMaps;iuvm++)
+  for (INDEX iuvm=0;iuvm<ctUVMaps;iuvm++)
   {
     CHECKF(pMeshLOD->mlod_aUVMaps[iuvm].muv_aTexCoords[iCurentIndex].u,pMeshLOD->mlod_aUVMaps[iuvm].muv_aTexCoords[iLastIndex].u);
     CHECKF(pMeshLOD->mlod_aUVMaps[iuvm].muv_aTexCoords[iCurentIndex].v,pMeshLOD->mlod_aUVMaps[iuvm].muv_aTexCoords[iLastIndex].v);
@@ -404,7 +404,7 @@ INDEX AreVerticesDiferent(INDEX iCurentIndex, INDEX iLastIndex)
   CHECK(ctwmCurent,ctwmLast);
   CHECK(ctmmCurent,ctmmLast);
   // check if vertices have same weight map factors
-  for(INDEX iwm=0;iwm<ctwmCurent;iwm++)
+  for (INDEX iwm=0;iwm<ctwmCurent;iwm++)
   {
     // get weight map indices
     INDEX iwmCurent = _aSortArray[iCurentIndex].sa_aWeightMapList[iwm].vl_iIndex;
@@ -417,7 +417,7 @@ INDEX AreVerticesDiferent(INDEX iCurentIndex, INDEX iLastIndex)
   }
 
   // check if vertices have same morph map factors
-  for(INDEX imm=0;imm<ctmmCurent;imm++)
+  for (INDEX imm=0;imm<ctmmCurent;imm++)
   {
     // get morph map indices
     INDEX immCurent = _aSortArray[iCurentIndex].sa_aMorphMapList[imm].vl_iIndex;
@@ -452,20 +452,20 @@ void CMesh::NormalizeWeightsInLod(MeshLOD &mlod)
   aWeightFactors.New(ctvtx);
   memset(&aWeightFactors[0],0,sizeof(aWeightFactors[0])*ctvtx);
   int iwm=0;
-  for(;iwm<ctwm;iwm++)
+  for (;iwm<ctwm;iwm++)
   {
     MeshWeightMap &mwm = mlod.mlod_aWeightMaps[iwm];
-    for(int iww=0;iww<mwm.mwm_aVertexWeight.Count();iww++)
+    for (int iww=0;iww<mwm.mwm_aVertexWeight.Count();iww++)
     {
       MeshVertexWeight &mwh = mwm.mwm_aVertexWeight[iww];
        aWeightFactors[mwh.mww_iVertex] += mwh.mww_fWeight;
     }
   }
 
-  for(iwm=0;iwm<ctwm;iwm++)
+  for (iwm=0;iwm<ctwm;iwm++)
   {
     MeshWeightMap &mwm = mlod.mlod_aWeightMaps[iwm];
-    for(int iww=0;iww<mwm.mwm_aVertexWeight.Count();iww++)
+    for (int iww=0;iww<mwm.mwm_aVertexWeight.Count();iww++)
     {
       MeshVertexWeight &mwh = mwm.mwm_aVertexWeight[iww];
       mwh.mww_fWeight /= aWeightFactors[mwh.mww_iVertex];
@@ -478,7 +478,7 @@ void CMesh::NormalizeWeightsInLod(MeshLOD &mlod)
 void CMesh::NormalizeWeights()
 {
   INDEX ctmlods = msh_aMeshLODs.Count();
-  for(INDEX imlod=0;imlod<ctmlods;imlod++)
+  for (INDEX imlod=0;imlod<ctmlods;imlod++)
   {
     // normalize each lod
     NormalizeWeightsInLod(msh_aMeshLODs[imlod]);
@@ -501,11 +501,11 @@ void CMesh::RemoveMeshLod(MeshLOD *pmlodRemove)
   INDEX iIndexSrc=0;
 
   // for each skeleton lod in skeleton
-  for(INDEX imlod=0;imlod<ctmlod;imlod++)
+  for (INDEX imlod=0;imlod<ctmlod;imlod++)
   {
     MeshLOD *pmlod = &msh_aMeshLODs[imlod];
     // copy all skeleton lods except the selected one
-    if(pmlod != pmlodRemove)
+    if (pmlod != pmlodRemove)
     {
       aTempMLODs[iIndexSrc] = *pmlod;
       iIndexSrc++;
@@ -528,7 +528,7 @@ void CMesh::Write_t(CTStream *ostrFile)
   // write mlod count
   (*ostrFile)<<ctmlods;
   // for each lod in mesh
-  for(INDEX imlod=0;imlod<ctmlods;imlod++) {
+  for (INDEX imlod=0;imlod<ctmlods;imlod++) {
     MeshLOD &mLod = msh_aMeshLODs[imlod];
 
     INDEX ctVx = mLod.mlod_aVertices.Count();   // vertex count
@@ -553,7 +553,7 @@ void CMesh::Write_t(CTStream *ostrFile)
     // write uvmaps count
     (*ostrFile)<<ctUV;
     // write uvmaps
-    for(int iuv=0;iuv<ctUV;iuv++) {
+    for (int iuv=0;iuv<ctUV;iuv++) {
       // write uvmap ID
       CTString strNameID = ska_GetStringFromTable(mLod.mlod_aUVMaps[iuv].muv_iID);
       (*ostrFile)<<strNameID;
@@ -564,7 +564,7 @@ void CMesh::Write_t(CTStream *ostrFile)
     // write surfaces count
     ostrFile->Write_t(&ctSf,sizeof(INDEX));
     // write surfaces
-    for(INDEX isf=0;isf<ctSf;isf++) {
+    for (INDEX isf=0;isf<ctSf;isf++) {
       MeshSurface &msrf = mLod.mlod_aSurfaces[isf];
       INDEX ctTris = msrf.msrf_aTriangles.Count();
       CTString strSurfaceID = ska_GetStringFromTable(msrf.msrf_iSurfaceID);
@@ -582,7 +582,7 @@ void CMesh::Write_t(CTStream *ostrFile)
       // write bool that this surface has a shader
       INDEX bShaderExists = (msrf.msrf_pShader!=NULL);
       (*ostrFile)<<bShaderExists;
-      if(bShaderExists) {
+      if (bShaderExists) {
         // get shader decription
         ShaderDesc shDesc;
         msrf.msrf_pShader->GetShaderDesc(shDesc);
@@ -611,25 +611,25 @@ void CMesh::Write_t(CTStream *ostrFile)
         strShaderName = msrf.msrf_pShader->GetName();
         (*ostrFile)<<strShaderName;
         // write shader texture IDs
-        for(INDEX itx=0;itx<cttx;itx++)
+        for (INDEX itx=0;itx<cttx;itx++)
         {
           INDEX iTexID = msrf.msrf_ShadingParams.sp_aiTextureIDs[itx];
           (*ostrFile)<<ska_GetStringFromTable(iTexID);
         }
         // write shader texture coords indices
-        for(INDEX itc=0;itc<cttc;itc++)
+        for (INDEX itc=0;itc<cttc;itc++)
         {
           INDEX iTexCoorsIndex = msrf.msrf_ShadingParams.sp_aiTexCoordsIndex[itc];
           (*ostrFile)<<iTexCoorsIndex;
         }
         // write shader colors
-        for(INDEX icol=0;icol<ctcol;icol++)
+        for (INDEX icol=0;icol<ctcol;icol++)
         {
           COLOR colColor = msrf.msrf_ShadingParams.sp_acolColors[icol];
           (*ostrFile)<<colColor;
         }
         // write shader floats
-        for(INDEX ifl=0;ifl<ctfl;ifl++)
+        for (INDEX ifl=0;ifl<ctfl;ifl++)
         {
           FLOAT fFloat = msrf.msrf_ShadingParams.sp_afFloats[ifl];
           (*ostrFile)<<fFloat;
@@ -643,7 +643,7 @@ void CMesh::Write_t(CTStream *ostrFile)
     // write weightmaps count
     (*ostrFile)<<ctWM;
     // for each weightmap in array
-    for(INDEX iwm=0;iwm<ctWM;iwm++)
+    for (INDEX iwm=0;iwm<ctWM;iwm++)
     {
       INDEX ctWw = mLod.mlod_aWeightMaps[iwm].mwm_aVertexWeight.Count();
       // write wertex weight map ID
@@ -657,7 +657,7 @@ void CMesh::Write_t(CTStream *ostrFile)
 
     // write morphmaps count
     (*ostrFile)<<ctMM;
-    for(INDEX imm=0;imm<ctMM;imm++)
+    for (INDEX imm=0;imm<ctMM;imm++)
     {
       INDEX ctms = mLod.mlod_aMorphMaps[imm].mmp_aMorphMap.Count();
       // write ID
@@ -685,7 +685,7 @@ void CMesh::Read_t(CTStream *istrFile)
   (*istrFile)>>iFileVersion;
   
   // if file version is not 11 nor 12
-  if(iFileVersion != 11 && iFileVersion!=12) {
+  if (iFileVersion != 11 && iFileVersion!=12) {
 		ThrowF_t(TRANS("File '%s'.\nInvalid Mesh file version.\nExpected Ver \"%d\" but found \"%d\"\n"),
       (const char*)istrFile->GetDescription(),MESH_VERSION,iFileVersion);
     return;
@@ -694,7 +694,7 @@ void CMesh::Read_t(CTStream *istrFile)
   // read mlod count
   (*istrFile)>>ctmlods;
   // for each lod in mesh
-  for(INDEX imlod=0;imlod<ctmlods;imlod++) {
+  for (INDEX imlod=0;imlod<ctmlods;imlod++) {
     // expand mlod count for one 
     INDEX ctMeshLODs = msh_aMeshLODs.Count();
     msh_aMeshLODs.Expand(ctMeshLODs+1);
@@ -714,10 +714,10 @@ void CMesh::Read_t(CTStream *istrFile)
     (*istrFile)>>mLod.mlod_ulFlags;
 
     // :)
-    if(iFileVersion<=11) {
+    if (iFileVersion<=11) {
       mLod.mlod_ulFlags = 0;
     }
-    if(mLod.mlod_ulFlags==0xCDCDCDCD) {
+    if (mLod.mlod_ulFlags==0xCDCDCDCD) {
       mLod.mlod_ulFlags = 0;
     }
 
@@ -737,7 +737,7 @@ void CMesh::Read_t(CTStream *istrFile)
     // create array for uvmaps
     mLod.mlod_aUVMaps.New(ctUV);
     // read uvmaps
-    for(int iuv=0;iuv<ctUV;iuv++) {
+    for (int iuv=0;iuv<ctUV;iuv++) {
       // read uvmap ID
       CTString strNameID;
       (*istrFile)>>strNameID;
@@ -752,7 +752,7 @@ void CMesh::Read_t(CTStream *istrFile)
     // create array for surfaces
     mLod.mlod_aSurfaces.New(ctSf);
     // read surfaces
-    for(INDEX isf=0;isf<ctSf;isf++) {
+    for (INDEX isf=0;isf<ctSf;isf++) {
       INDEX ctTris;
       MeshSurface &msrf = mLod.mlod_aSurfaces[isf];
       // read surface ID
@@ -774,7 +774,7 @@ void CMesh::Read_t(CTStream *istrFile)
       INDEX bShaderExists;
       (*istrFile)>>bShaderExists;
       // if shader exists read its params
-      if(bShaderExists) {
+      if (bShaderExists) {
         INDEX cttx,cttc,ctcol,ctfl;
         // read texture count
         (*istrFile)>>cttx;
@@ -805,15 +805,15 @@ void CMesh::Read_t(CTStream *istrFile)
         }
 
         // if mesh shader exisits
-        if(msrf.msrf_pShader!=NULL) {
+        if (msrf.msrf_pShader!=NULL) {
           // get shader description
           ShaderDesc shDesc;
           msrf.msrf_pShader->GetShaderDesc(shDesc);
           // check if saved params count match shader params count
-          if(shDesc.sd_astrTextureNames.Count() != cttx) ThrowF_t("File '%s'\nWrong texture count %d",(const char*)GetName(),cttx);
-          if(shDesc.sd_astrTexCoordNames.Count() != cttc) ThrowF_t("File '%s'\nWrong uvmaps count %d",(const char*)GetName(),cttc);
-          if(shDesc.sd_astrColorNames.Count() != ctcol) ThrowF_t("File '%s'\nWrong colors count %d",(const char*)GetName(),ctcol);
-          if(shDesc.sd_astrFloatNames.Count() != ctfl) ThrowF_t("File '%s'\nWrong floats count %d",(const char*)GetName(),ctfl);
+          if (shDesc.sd_astrTextureNames.Count() != cttx) ThrowF_t("File '%s'\nWrong texture count %d",(const char*)GetName(),cttx);
+          if (shDesc.sd_astrTexCoordNames.Count() != cttc) ThrowF_t("File '%s'\nWrong uvmaps count %d",(const char*)GetName(),cttc);
+          if (shDesc.sd_astrColorNames.Count() != ctcol) ThrowF_t("File '%s'\nWrong colors count %d",(const char*)GetName(),ctcol);
+          if (shDesc.sd_astrFloatNames.Count() != ctfl) ThrowF_t("File '%s'\nWrong floats count %d",(const char*)GetName(),ctfl);
         }
 
         // create arrays for shader params
@@ -823,32 +823,32 @@ void CMesh::Read_t(CTStream *istrFile)
         pshpShaderParams->sp_afFloats.New(ctfl);
 
         // read shader texture IDs
-        for(INDEX itx=0;itx<cttx;itx++) {
+        for (INDEX itx=0;itx<cttx;itx++) {
           CTString strTexID;
           (*istrFile)>>strTexID;
           INDEX iTexID = ska_GetIDFromStringTable(strTexID);
            pshpShaderParams->sp_aiTextureIDs[itx] = iTexID;
         }
         // read shader texture coords indices
-        for(INDEX itc=0;itc<cttc;itc++) {
+        for (INDEX itc=0;itc<cttc;itc++) {
           INDEX iTexCoorsIndex;
           (*istrFile)>>iTexCoorsIndex;
           pshpShaderParams->sp_aiTexCoordsIndex[itc] = iTexCoorsIndex;
         }
         // read shader colors
-        for(INDEX icol=0;icol<ctcol;icol++) {
+        for (INDEX icol=0;icol<ctcol;icol++) {
           COLOR colColor;
           (*istrFile)>>colColor;
           pshpShaderParams->sp_acolColors[icol] = colColor;
         }
         // read shader floats
-        for(INDEX ifl=0;ifl<ctfl;ifl++) {
+        for (INDEX ifl=0;ifl<ctfl;ifl++) {
           FLOAT fFloat;
           (*istrFile)>>fFloat;
           pshpShaderParams->sp_afFloats[ifl] = fFloat;
         }
         // there were no flags in shader before ver 12
-        if(iFileVersion>11) {
+        if (iFileVersion>11) {
           ULONG ulFlags;
           (*istrFile)>>ulFlags;
           pshpShaderParams->sp_ulFlags = ulFlags;
@@ -866,7 +866,7 @@ void CMesh::Read_t(CTStream *istrFile)
     // create weightmap array
      mLod.mlod_aWeightMaps.New(ctWM);
      // read each weightmap
-    for(INDEX iwm=0;iwm<ctWM;iwm++) {
+    for (INDEX iwm=0;iwm<ctWM;iwm++) {
       // read weightmap ID
       CTString pstrNameID;
       (*istrFile)>>pstrNameID;
@@ -885,7 +885,7 @@ void CMesh::Read_t(CTStream *istrFile)
     // create morphmaps array
     mLod.mlod_aMorphMaps.New(ctMM);
     // read morphmaps
-    for(INDEX imm=0;imm<ctMM;imm++) {
+    for (INDEX imm=0;imm<ctMM;imm++) {
       // read morphmap ID
       CTString pstrNameID;
       (*istrFile)>>pstrNameID;
@@ -917,7 +917,7 @@ void CMesh::Clear(void)
       MeshSurface &msrf = mlod.mlod_aSurfaces[isrf];
       msrf.msrf_aTriangles.Clear();
       // release shader form stock
-      if(msrf.msrf_pShader!=NULL) _pShaderStock->Release(msrf.msrf_pShader);
+      if (msrf.msrf_pShader!=NULL) _pShaderStock->Release(msrf.msrf_pShader);
       msrf.msrf_pShader = NULL;
     }
     // clear the surfaces array
@@ -944,7 +944,7 @@ SLONG CMesh::GetUsedMemory(void)
 {
   SLONG slMemoryUsed = sizeof(*this);
   INDEX ctmlods = msh_aMeshLODs.Count();
-  for(INDEX imlod=0;imlod<ctmlods;imlod++) {
+  for (INDEX imlod=0;imlod<ctmlods;imlod++) {
     MeshLOD &mlod = msh_aMeshLODs[imlod];
     slMemoryUsed+=sizeof(mlod);
     slMemoryUsed+=mlod.mlod_aVertices.Count() * sizeof(MeshVertex);
@@ -952,7 +952,7 @@ SLONG CMesh::GetUsedMemory(void)
 
     // for each uvmap
     INDEX ctuvmaps = mlod.mlod_aUVMaps.Count();
-    for(INDEX iuvm=0;iuvm<ctuvmaps;iuvm++) {
+    for (INDEX iuvm=0;iuvm<ctuvmaps;iuvm++) {
       MeshUVMap &uvmap = mlod.mlod_aUVMaps[iuvm];
       slMemoryUsed+=sizeof(uvmap);
       slMemoryUsed+=uvmap.muv_aTexCoords.Count() * sizeof(MeshTexCoord);
@@ -960,7 +960,7 @@ SLONG CMesh::GetUsedMemory(void)
 
     // for each surface
     INDEX ctmsrf = mlod.mlod_aSurfaces.Count();
-    for(INDEX imsrf=0;imsrf<ctmsrf;imsrf++) {
+    for (INDEX imsrf=0;imsrf<ctmsrf;imsrf++) {
       MeshSurface &msrf = mlod.mlod_aSurfaces[imsrf];
       slMemoryUsed+=sizeof(msrf);
       slMemoryUsed+=msrf.msrf_aTriangles.Count() * sizeof(MeshTriangle);
@@ -972,14 +972,14 @@ SLONG CMesh::GetUsedMemory(void)
     }
     // for each weight map
     INDEX ctwm = mlod.mlod_aWeightMaps.Count();
-    for(INDEX iwm=0;iwm<ctwm;iwm++) {
+    for (INDEX iwm=0;iwm<ctwm;iwm++) {
       MeshWeightMap &mwm = mlod.mlod_aWeightMaps[iwm];
       slMemoryUsed+=sizeof(mwm);
       slMemoryUsed+=mwm.mwm_aVertexWeight.Count() * sizeof(MeshVertexWeight);
     }
     // for each morphmap
     INDEX ctmm = mlod.mlod_aMorphMaps.Count();
-    for(INDEX imm=0;imm<ctmm;imm++) {
+    for (INDEX imm=0;imm<ctmm;imm++) {
       MeshMorphMap &mmm = mlod.mlod_aMorphMaps[imm];
       slMemoryUsed+=sizeof(mmm);
       slMemoryUsed+=mmm.mmp_aMorphMap.Count() * sizeof(MeshVertexMorph);

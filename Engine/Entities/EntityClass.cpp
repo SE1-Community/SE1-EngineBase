@@ -105,19 +105,19 @@ void CEntityClass::CheckClassProperties(void)
 // do nothing in release version
 #ifndef NDEBUG
   // for all classes in hierarchy of this entity
-  {for(CDLLEntityClass *pdecDLLClass1 = ec_pdecDLLClass;
+  {for (CDLLEntityClass *pdecDLLClass1 = ec_pdecDLLClass;
       pdecDLLClass1!=NULL;
       pdecDLLClass1 = pdecDLLClass1->dec_pdecBase) {
     // for all properties
-    for(INDEX iProperty1=0; iProperty1<pdecDLLClass1->dec_ctProperties; iProperty1++) {
+    for (INDEX iProperty1=0; iProperty1<pdecDLLClass1->dec_ctProperties; iProperty1++) {
       CEntityProperty &epProperty1 = pdecDLLClass1->dec_aepProperties[iProperty1];
 
       // for all classes in hierarchy of this entity
-      for(CDLLEntityClass *pdecDLLClass2 = ec_pdecDLLClass;
+      for (CDLLEntityClass *pdecDLLClass2 = ec_pdecDLLClass;
           pdecDLLClass2!=NULL;
           pdecDLLClass2 = pdecDLLClass2->dec_pdecBase) {
         // for all properties
-        for(INDEX iProperty2=0; iProperty2<pdecDLLClass2->dec_ctProperties; iProperty2++) {
+        for (INDEX iProperty2=0; iProperty2<pdecDLLClass2->dec_ctProperties; iProperty2++) {
           CEntityProperty &epProperty2 = pdecDLLClass2->dec_aepProperties[iProperty2];
           // the two properties must not have same id unless they are same property
           ASSERTMSG(&epProperty1==&epProperty2 || epProperty1.ep_ulID!=epProperty2.ep_ulID,
@@ -128,19 +128,19 @@ void CEntityClass::CheckClassProperties(void)
   }}
 
   // for all classes in hierarchy of this entity
-  {for(CDLLEntityClass *pdecDLLClass1 = ec_pdecDLLClass;
+  {for (CDLLEntityClass *pdecDLLClass1 = ec_pdecDLLClass;
       pdecDLLClass1!=NULL;
       pdecDLLClass1 = pdecDLLClass1->dec_pdecBase) {
     // for all components
-    for(INDEX iComponent1=0; iComponent1<pdecDLLClass1->dec_ctComponents; iComponent1++) {
+    for (INDEX iComponent1=0; iComponent1<pdecDLLClass1->dec_ctComponents; iComponent1++) {
       CEntityComponent &ecComponent1 = pdecDLLClass1->dec_aecComponents[iComponent1];
 
       // for all classes in hierarchy of this entity
-      for(CDLLEntityClass *pdecDLLClass2 = ec_pdecDLLClass;
+      for (CDLLEntityClass *pdecDLLClass2 = ec_pdecDLLClass;
           pdecDLLClass2!=NULL;
           pdecDLLClass2 = pdecDLLClass2->dec_pdecBase) {
         // for all components
-        for(INDEX iComponent2=0; iComponent2<pdecDLLClass2->dec_ctComponents; iComponent2++) {
+        for (INDEX iComponent2=0; iComponent2<pdecDLLClass2->dec_ctComponents; iComponent2++) {
           CEntityComponent &ecComponent2 = pdecDLLClass2->dec_aecComponents[iComponent2];
           // the two components must not have same id unless they are same component
           ASSERTMSG(&ecComponent1==&ecComponent2 || ecComponent1.ec_slID!=ecComponent2.ec_slID,
@@ -179,7 +179,7 @@ void CEntityClass::ObtainComponents_t(void)
   // for each component
   for (INDEX iComponent=0; iComponent<ec_pdecDLLClass->dec_ctComponents; iComponent++) {
     // if not precaching all
-    if( gam_iPrecachePolicy<PRECACHE_ALL) {
+    if (gam_iPrecachePolicy<PRECACHE_ALL) {
       // if component is not class
       CEntityComponent &ec = ec_pdecDLLClass->dec_aecComponents[iComponent];
       if (ec.ec_ectType!=ECT_CLASS) {
@@ -195,7 +195,7 @@ void CEntityClass::ObtainComponents_t(void)
     // if failed
     } catch (char *) {
       // if in paranoia mode
-      if( gam_iPrecachePolicy==PRECACHE_PARANOIA) {
+      if (gam_iPrecachePolicy==PRECACHE_PARANOIA) {
         // fail
         throw;
       // if not in paranoia mode
@@ -380,7 +380,7 @@ class CEntityComponent *CEntityClass::ComponentForPointer(void *pv) {
 // convert value of an enum to its name
 const char *CEntityPropertyEnumType::NameForValue(INDEX iValue)
 {
-  for(INDEX i=0; i<epet_ctValues; i++) {
+  for (INDEX i=0; i<epet_ctValues; i++) {
     if (epet_aepevValues[i].epev_iValue==iValue) {
       return epet_aepevValues[i].epev_strName;
     }

@@ -157,11 +157,11 @@ void MakeDiff_t(void)
   EmitXor_t(0, pubOldEnts-_pubOld, 0, pubNewEnts-_pubNew);
 
   // for each entity in new
-  for(INDEX ieibNew = 0; ieibNew<_aebiNew.Count(); ieibNew++) {
+  for (INDEX ieibNew = 0; ieibNew<_aebiNew.Count(); ieibNew++) {
     EntityBlockInfo &ebiNew = _aebiNew[ieibNew];
     // find same in old file
     INDEX ieibOld = -1;
-    for(INDEX i=0; i<_aebiOld.Count(); i++) {
+    for (INDEX i=0; i<_aebiOld.Count(); i++) {
       if (_aebiOld[i].ebi_ulID==ebiNew.ebi_ulID) {
         ieibOld = i;
         break;
@@ -237,7 +237,7 @@ void UnDiff_t(void)
   while (pubNew<_pubNew+_slSizeNew) {
     // read block type
     UBYTE ubType = *pubNew++;
-    switch(ubType) {
+    switch (ubType) {
     // if block type is 'copy from old file'
     case DIFF_OLD: {
       // get data offset and size

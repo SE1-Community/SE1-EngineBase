@@ -58,7 +58,7 @@ __forceinline INDEX CRenderer::IsSectorVisible(CBrush3D &br, CBrushSector &bsc)
 
   // if the sector bounding sphere is inside view frustum
   INDEX iFrustumTest = ppr->TestSphereToFrustum( vCenter, fR);
-  if( iFrustumTest==0) { // if test was indeterminate
+  if (iFrustumTest==0) { // if test was indeterminate
     // create oriented box and test it to frustum
     FLOATobbox3D boxEntity( bsc.bsc_boxBoundingBox, ppr->pr_TranslationVector, ppr->pr_ViewerRotationMatrix);
     iFrustumTest = ppr->TestBoxToFrustum(boxEntity);
@@ -79,7 +79,7 @@ void CRenderer::PreClipVertices(void)
   INDEX ctvx = re_pbscCurrent->bsc_awvxVertices.Count(); 
   CViewVertex *avvx = re_avvxViewVertices.Push(ctvx);
   // for each vertex in sector 
-  for( INDEX ivx=0; ivx<ctvx; ivx++)
+  for (INDEX ivx=0; ivx<ctvx; ivx++)
   {
     const CWorkingVertex &wvx = re_pbscCurrent->bsc_awvxVertices[ivx];
     // transform it to view space
@@ -112,7 +112,7 @@ void CRenderer::PreClipPlanes(void)
   if (re_pbrCurrent->br_prProjection.IsPerspective()) {
 
     // for each plane in sector 
-    for(INDEX ipl=0; ipl<ctpl; ipl++){
+    for (INDEX ipl=0; ipl<ctpl; ipl++) {
       // transform it to view space
       CWorkingPlane &wpl = re_pbscCurrent->bsc_awplPlanes[ipl];
       const FLOAT fx = wpl.wpl_plRelative(1);
@@ -134,7 +134,7 @@ void CRenderer::PreClipPlanes(void)
   } else {
     // !!!! speed this up for other projections too ?
     // for each plane in sector 
-    for(INDEX ipl=0; ipl<ctpl; ipl++){
+    for (INDEX ipl=0; ipl<ctpl; ipl++) {
       // transform it to view space
       CWorkingPlane &wpl = re_pbscCurrent->bsc_awplPlanes[ipl];
       ppr->Project(wpl.wpl_plRelative, wpl.wpl_plView);
@@ -144,7 +144,7 @@ void CRenderer::PreClipPlanes(void)
   }
 
   // for each plane
-  {for(INDEX ipl=0; ipl<ctpl; ipl++){
+  {for (INDEX ipl=0; ipl<ctpl; ipl++) {
     CWorkingPlane &wpl = re_pbscCurrent->bsc_awplPlanes[ipl];
     // make gradients without fog
     ppr->MakeOoKGradient(wpl.wpl_plView, wpl.wpl_pgOoK);
@@ -193,7 +193,7 @@ void CRenderer::PostClipVertices(void)
 
     // for each active view vertex
     INDEX iVxTop = re_avvxViewVertices.Count();
-    for(INDEX ivx = re_iViewVx0; ivx<iVxTop; ivx++) {
+    for (INDEX ivx = re_iViewVx0; ivx<iVxTop; ivx++) {
       CViewVertex &vvx = re_avvxViewVertices[ivx];
       // transform it to view space
       FLOAT fooz = 1.0f/vvx.vvx_vView(3);
@@ -206,7 +206,7 @@ void CRenderer::PostClipVertices(void)
     // !!!! speed this up for other projections too ?
     // for each active view vertex
     INDEX iVxTop = re_avvxViewVertices.Count();
-    for(INDEX ivx = re_iViewVx0; ivx<iVxTop; ivx++) {
+    for (INDEX ivx = re_iViewVx0; ivx<iVxTop; ivx++) {
       CViewVertex &vvx = re_avvxViewVertices[ivx];
       // transform it to view space
       FLOAT3D v;
@@ -224,7 +224,7 @@ void CRenderer::SetupFogAndHaze(void)
 {
   CBrush3D &br = *re_pbrCurrent;
   CBrushSector &bsc = *re_pbscCurrent;
-  if( _bMultiPlayer) gfx_bRenderFog = 1; // must render fog in multiplayer mode!
+  if (_bMultiPlayer) gfx_bRenderFog = 1; // must render fog in multiplayer mode!
 
   // if the sector is not part of a zoning brush
   if (!(br.br_penEntity->en_ulFlags&ENF_ZONING)) {
@@ -234,12 +234,12 @@ void CRenderer::SetupFogAndHaze(void)
 
   // if fog is enabled
   re_bCurrentSectorHasFog = FALSE;
-  if( _wrpWorldRenderPrefs.wrp_bFogOn && gfx_bRenderFog)
+  if (_wrpWorldRenderPrefs.wrp_bFogOn && gfx_bRenderFog)
   { // if the sector has fog
     CFogParameters fp;
-    if( bsc.bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->GetFog(bsc.GetFogType(), fp)) {
+    if (bsc.bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->GetFog(bsc.GetFogType(), fp)) {
       // activate fog if not already active
-      if( !_fog_bActive) {
+      if (!_fog_bActive) {
         StartFog( fp, br.br_prProjection->pr_vViewerPosition,
                       br.br_prProjection->pr_ViewerRotationMatrix);
       }
@@ -250,7 +250,7 @@ void CRenderer::SetupFogAndHaze(void)
 
   // if haze is enabled
   re_bCurrentSectorHasHaze = FALSE;
-  if( _wrpWorldRenderPrefs.wrp_bHazeOn && gfx_bRenderFog)
+  if (_wrpWorldRenderPrefs.wrp_bHazeOn && gfx_bRenderFog)
   { // if the sector has haze
     CHazeParameters hp;
     FLOAT3D vViewDir;
@@ -258,22 +258,22 @@ void CRenderer::SetupFogAndHaze(void)
     vViewDir(1) = -mAbsToView(3, 1);
     vViewDir(2) = -mAbsToView(3, 2);
     vViewDir(3) = -mAbsToView(3, 3);
-    if( bsc.bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->GetHaze(bsc.GetHazeType(), hp, vViewDir)) {
+    if (bsc.bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->GetHaze(bsc.GetHazeType(), hp, vViewDir)) {
       // if viewer is not in haze
-      if( !re_bViewerInHaze) {
+      if (!re_bViewerInHaze) {
         // if viewer is in this sector
-        if( bsc.bsc_bspBSPTree.TestSphere(re_vdViewSphere, 0.01)>=0) {
+        if (bsc.bsc_bspBSPTree.TestSphere(re_vdViewSphere, 0.01)>=0) {
           // mark that viewer is in haze
           re_bViewerInHaze = TRUE;
         }
         // if there is a viewer
-        else if( re_penViewer!=NULL) { 
+        else if (re_penViewer!=NULL) { 
           // check rest of sectors the viewer is in
           {FOREACHSRCOFDST( re_penViewer->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
             CHazeParameters hpDummy;
-            if( pbsc->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->GetHaze( pbsc->GetHazeType(), hpDummy, vViewDir)) {
+            if (pbsc->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->GetHaze( pbsc->GetHazeType(), hpDummy, vViewDir)) {
               // if viewer is in this sector
-              if( pbsc->bsc_bspBSPTree.TestSphere(re_vdViewSphere, 0.01)>=0) {
+              if (pbsc->bsc_bspBSPTree.TestSphere(re_vdViewSphere, 0.01)>=0) {
                 // mark that viewer is in haze
                 re_bViewerInHaze = TRUE;
                 break;
@@ -283,9 +283,9 @@ void CRenderer::SetupFogAndHaze(void)
         }
       } 
       // if viewer is in haze, or haze can be viewed from outside
-      if( re_bViewerInHaze || (hp.hp_ulFlags&HPF_VISIBLEFROMOUTSIDE)) {
+      if (re_bViewerInHaze || (hp.hp_ulFlags&HPF_VISIBLEFROMOUTSIDE)) {
         // activate haze if not already active
-        if( !_haze_bActive) {
+        if (!_haze_bActive) {
           StartHaze( hp, br.br_prProjection->pr_vViewerPosition,
                          br.br_prProjection->pr_ViewerRotationMatrix);
         }
@@ -321,7 +321,7 @@ void CRenderer::AddEdgeToAddAndRemoveLists(CScreenEdge &sed)
   ASSERT(sed.sed_xI < FIX16_16(re_fbbClipBox.Max()(1)+SENTINELEDGE_EPSILON));
 
   SLONG slIInList;
-  while(plnInList->ln_Succ!=NULL) {
+  while (plnInList->ln_Succ!=NULL) {
     slIInList = 
       ((CAddEdge*)((UBYTE*)plnInList-offsetof(CAddEdge, ade_lnInAdd))) -> ade_xI.slHolder;
     // if the edge in list is right of the one to add
@@ -464,7 +464,7 @@ void CRenderer::AddScreenEdges(void)
   // for each polygon
   INDEX ispo0 = re_pbscCurrent->bsc_ispo0;
   INDEX ispoTop = re_pbscCurrent->bsc_ispo0+re_pbscCurrent->bsc_ctspo;
-  for(INDEX ispo = ispo0; ispo<ispoTop; ispo++) {
+  for (INDEX ispo = ispo0; ispo<ispoTop; ispo++) {
     CScreenPolygon &spo = re_aspoScreenPolygons[ispo];
 
     // if polygon has no edges
@@ -482,7 +482,7 @@ void CRenderer::AddScreenEdges(void)
     // for each edge
     INDEX ivxTop = spo.spo_iEdgeVx0+spo.spo_ctEdgeVx;
     INDEX ised = spo.spo_ised0;
-    for(INDEX ivx=spo.spo_iEdgeVx0; ivx<ivxTop; ivx+=2) {
+    for (INDEX ivx=spo.spo_iEdgeVx0; ivx<ivxTop; ivx+=2) {
       INDEX ivx0 = re_aiEdgeVxMain[ivx+0];
       INDEX ivx1 = re_aiEdgeVxMain[ivx+1];
       if (spo.spo_ubDirectionFlags) {
@@ -533,17 +533,17 @@ void CRenderer::SetOneTextureParameters(CBrushPolygon &bpo, ScenePolygon &spo, I
   spo.spo_aubTextureFlags[iLayer] = 
      (bpo.bpo_abptTextures[iLayer].s.bpt_ubFlags & (BPTF_CLAMPU|BPTF_CLAMPV|BPTF_AFTERSHADOW))
    | (tb.tb_ubBlendingType);
-  if( bpo.bpo_abptTextures[iLayer].s.bpt_ubFlags & BPTF_REFLECTION) spo.spo_aubTextureFlags[iLayer] |= STXF_REFLECTION;
+  if (bpo.bpo_abptTextures[iLayer].s.bpt_ubFlags & BPTF_REFLECTION) spo.spo_aubTextureFlags[iLayer] |= STXF_REFLECTION;
 
   // set texture blending color
   spo.spo_acolColors[iLayer] = MulColors( bpo.bpo_abptTextures[iLayer].s.bpt_colColor, tb.tb_colMultiply);
 
   // if texture should be not transformed
   INDEX iTransformation = bpo.bpo_abptTextures[iLayer].s.bpt_ubScroll;
-  if( iTransformation==0)
+  if (iTransformation==0)
   {
     // if texture is wrapped on both axes
-    if( (bpo.bpo_abptTextures[iLayer].s.bpt_ubFlags&(BPTF_CLAMPU|BPTF_CLAMPV))==0)
+    if ((bpo.bpo_abptTextures[iLayer].s.bpt_ubFlags&(BPTF_CLAMPU|BPTF_CLAMPV))==0)
     { // make a mapping adjusted for texture wrapping
       const MEX mexMaskU = ptd->GetWidth()  -1;
       const MEX mexMaskV = ptd->GetHeight() -1;
@@ -621,7 +621,7 @@ CScreenPolygon *CRenderer::MakeScreenPolygon(CBrushPolygon &bpo)
 
   // set polygon shadow
   sppo.spo_psmShadowMap = NULL;
-  if(_wrpWorldRenderPrefs.wrp_shtShadows != CWorldRenderPrefs::SHT_NONE
+  if (_wrpWorldRenderPrefs.wrp_shtShadows != CWorldRenderPrefs::SHT_NONE
     &&!(bpo.bpo_ulFlags&BPOF_FULLBRIGHT)) {
     sppo.spo_psmShadowMap = &bpo.bpo_smShadowMap;
   }
@@ -673,7 +673,7 @@ CScreenPolygon *CRenderer::MakeScreenPolygon(CBrushPolygon &bpo)
   }
 
   // if the polygon is transparent
-  if( bpo.bpo_ulFlags & BPOF_TRANSPARENT) {
+  if (bpo.bpo_ulFlags & BPOF_TRANSPARENT) {
     // mark that this polygon will need alpha keying
     sppo.spo_ulFlags |= SPOF_TRANSPARENT;
   }
@@ -697,19 +697,19 @@ CScreenPolygon *CRenderer::MakeScreenPolygon(CBrushPolygon &bpo)
   // eventually adjust polygon opacity depending on brush entity variable
   BOOL bForceTraslucency = FALSE;
   const FLOAT fOpacity = br.br_penEntity->GetOpacity();
-  if( fOpacity<1)
+  if (fOpacity<1)
   { // better to hold opacity in integer
     const SLONG slOpacity = NormFloatToByte(fOpacity);
     // for all texture layers (not shadowmap!)
-    for( INDEX i=0; i<3; i++) {
+    for (INDEX i=0; i<3; i++) {
       // if texture is opaque 
-      if( (sppo.spo_aubTextureFlags[i] & STXF_BLEND_MASK) == 0) {
+      if ((sppo.spo_aubTextureFlags[i] & STXF_BLEND_MASK) == 0) {
         // set it to blend with opaque alpha
         sppo.spo_aubTextureFlags[i] |= STXF_BLEND_ALPHA;
         sppo.spo_acolColors[i] |= CT_AMASK;
       }
       // if texture is blended
-      if( sppo.spo_aubTextureFlags[i] & STXF_BLEND_ALPHA) {
+      if (sppo.spo_aubTextureFlags[i] & STXF_BLEND_ALPHA) {
         // adjust it's alpha factor
         SLONG slAlpha = (sppo.spo_acolColors[i] & CT_AMASK) >>CT_ASHIFT;
         slAlpha = (slAlpha*slOpacity)>>8;
@@ -725,7 +725,7 @@ CScreenPolygon *CRenderer::MakeScreenPolygon(CBrushPolygon &bpo)
   bpo.bpo_ulFlags &= ~BPOF_RENDERTRANSLUCENT;
 
   // if the polygon is a portal that is either translucent or selected
-  if( bForceTraslucency || ((bpo.bpo_ulFlags & BPOF_RENDERASPORTAL)
+  if (bForceTraslucency || ((bpo.bpo_ulFlags & BPOF_RENDERASPORTAL)
                         && ((bpo.bpo_ulFlags & BPOF_TRANSLUCENT) || bSelected))) {
     // if not rendering shadows
     if (!re_bRenderingShadows) {
@@ -740,7 +740,7 @@ CScreenPolygon *CRenderer::MakeScreenPolygon(CBrushPolygon &bpo)
         re_pspoFirstTranslucent = &spo.spo_spoScenePolygon;
       }
       // if it is not translucent (ie. it is just plain portal, but selected)
-      if( !(bpo.bpo_ulFlags & BPOF_TRANSLUCENT) && !bForceTraslucency) {
+      if (!(bpo.bpo_ulFlags & BPOF_TRANSLUCENT) && !bForceTraslucency) {
         // set its texture for selection
         CModelObject *pmoSelectedPortal = _wrpWorldRenderPrefs.wrp_pmoSelectedPortal;
         if (pmoSelectedPortal!=NULL) {
@@ -780,7 +780,7 @@ void CRenderer::AddPolygonToScene( CScreenPolygon *pspo)
 {
   // if the polygon is not falid or occluder and not selected 
   CBrushPolygon &bpo = *pspo->spo_pbpoBrushPolygon;
-  if( &bpo==NULL || ((bpo.bpo_ulFlags&BPOF_OCCLUDER) && (!(bpo.bpo_ulFlags&BPOF_SELECTED) ||
+  if (&bpo==NULL || ((bpo.bpo_ulFlags&BPOF_OCCLUDER) && (!(bpo.bpo_ulFlags&BPOF_SELECTED) ||
       _wrpWorldRenderPrefs.GetSelectionType()!=CWorldRenderPrefs::ST_POLYGONS))) {
     // do not add it to rendering
     return;
@@ -794,11 +794,11 @@ void CRenderer::AddPolygonToScene( CScreenPolygon *pspo)
 
   // find vertex with nearest Z distance while copying vertices
   FLOAT fNearestZ = 123456789.0f;
-  for( INDEX i=0; i<ctVtx; i++) {
+  for (INDEX i=0; i<ctVtx; i++) {
     CBrushVertex *pbvx = bpo.bpo_apbvxTriangleVertices[i];
     const INDEX iVtx = bsc.bsc_abvxVertices.Index(pbvx);
     const FLOAT3D &v = pvvx0[iVtx].vvx_vView;
-    if( -v(3)<fNearestZ) fNearestZ = -v(3);  // inverted because of negative sign
+    if (-v(3)<fNearestZ) fNearestZ = -v(3);  // inverted because of negative sign
     pvtx[i].x = v(1);
     pvtx[i].y = v(2);
     pvtx[i].z = v(3);
@@ -825,7 +825,7 @@ void CRenderer::MakeSpan(CScreenPolygon &spo, CScreenEdge *psed0, CScreenEdge *p
        && (re_ubLightIllumination==0 || re_ubLightIllumination!=spo.spo_ubIllumination)));
 
   // if rendering shadows
-  if( re_bRenderingShadows) {
+  if (re_bRenderingShadows) {
     // create a new span for it
     CSpan *pspSpan = &re_aspSpans.Push();
     // set up span values
@@ -836,7 +836,7 @@ void CRenderer::MakeSpan(CScreenPolygon &spo, CScreenEdge *psed0, CScreenEdge *p
   // if rendering view
   else {
     // if no span added to this polygon yet
-    if( !spo.spo_ubSpanAdded) {
+    if (!spo.spo_ubSpanAdded) {
       spo.spo_ubSpanAdded = 1;
       // add mirror if needed
       AddMirror(spo);
@@ -866,14 +866,14 @@ void CRenderer::MakeSpan(CScreenPolygon &spo, CScreenEdge *psed0, CScreenEdge *p
  */
 void CRenderer::AddSpansToScene(void)
 {
-  if( !re_bRenderingShadows) {
+  if (!re_bRenderingShadows) {
     return;
   }
 
   FLOAT fpixLastScanJOffseted = re_pixCurrentScanJ-1 +OFFSET_DN;
   // first, little safety check - quit if zero spans in line!
   INDEX ctSpans = re_aspSpans.Count();
-  if( ctSpans==0) {
+  if (ctSpans==0) {
     return;
   }
 
@@ -881,7 +881,7 @@ void CRenderer::AddSpansToScene(void)
   UBYTE *pubShadow = re_pubShadow+re_slShadowWidth*re_iCurrentScan;
   INDEX ctPixels = 0;
   // for all spans in the current line
-  for( INDEX iSpan=0; iSpan<ctSpans; iSpan++)
+  for (INDEX iSpan=0; iSpan<ctSpans; iSpan++)
   { // get span start and stop I from edges
     const CSpan &spSpan = re_aspSpans[iSpan];
     PIX pixI0 = PIXCoord( spSpan.sp_psedEdge0->sed_xI);
@@ -889,7 +889,7 @@ void CRenderer::AddSpansToScene(void)
     // get its length
     PIX pixLen = pixI1-pixI0;
     // skip this span if zero pixels long
-    if( pixLen<=0) continue;
+    if (pixLen<=0) continue;
 
     // if the span's polygon is background and of proper illumination
     if ((spSpan.sp_pspoPolygon->spo_spoScenePolygon.spo_ulFlags & SPOF_BACKLIGHT)

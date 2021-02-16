@@ -31,7 +31,7 @@ static void GetGUID(UBYTE aub[16])
   try {
     // load ole32
     hOle32Lib = ::LoadLibraryA( "ole32.dll");
-    if( hOle32Lib == NULL) {
+    if (hOle32Lib == NULL) {
       ThrowF_t(TRANS("Cannot load ole32.dll."));
     }
 
@@ -175,7 +175,7 @@ CPlayerCharacter &CPlayerCharacter::operator=(const CPlayerCharacter &pcOther)
 /* Comparison operator. */
 BOOL CPlayerCharacter::operator==(const CPlayerCharacter &pcOther) const
 {
-  for(INDEX i=0;i<PLAYERGUIDSIZE; i++) {
+  for (INDEX i=0;i<PLAYERGUIDSIZE; i++) {
     if (pc_aubGUID[i] != pcOther.pc_aubGUID[i]) {
       return FALSE;
     }

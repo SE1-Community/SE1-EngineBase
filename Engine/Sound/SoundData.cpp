@@ -98,7 +98,7 @@ CSoundData::~CSoundData()
 void CSoundData::ClearBuffer(void)
 {
   // if buffer exist
-  if( sd_pswBuffer!=NULL) {
+  if (sd_pswBuffer!=NULL) {
     // release it
     FreeMemory( sd_pswBuffer);
     sd_pswBuffer = NULL;
@@ -219,7 +219,7 @@ void CSoundData::Clear(void)
   ClearBuffer();
 
   // if added as sound aware, remove it from sound aware list
-  if(IsHooked()) {
+  if (IsHooked()) {
     _pSound->RemoveSoundAware(*this);
   }
 }
@@ -236,7 +236,7 @@ BOOL CSoundData::IsAutoFreed(void)
 SLONG CSoundData::GetUsedMemory(void)
 {
   SLONG slUsed = sizeof(*this);
-  if( sd_pswBuffer!=NULL) {
+  if (sd_pswBuffer!=NULL) {
     ASSERT( sd_wfeFormat.nChannels==1 || sd_wfeFormat.nChannels==2);
     slUsed += sd_slBufferSampleSize * sd_wfeFormat.nChannels *2; // all sounds are 16-bit
   }

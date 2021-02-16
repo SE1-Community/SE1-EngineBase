@@ -41,7 +41,7 @@ extern INDEX GFX_iActiveTexUnit;
 // unpacks texture filering from one INDEX to two GLenums (and eventually re-adjust input INDEX)
 static void UnpackFilter_OGL( INDEX iFilter, GLenum &eMagFilter, GLenum &eMinFilter)
 {
-  switch( iFilter) {
+  switch (iFilter) {
   case 110:  case 10:  eMagFilter=GL_NEAREST;  eMinFilter=GL_NEAREST;                 break;
   case 111:  case 11:  eMagFilter=GL_NEAREST;  eMinFilter=GL_NEAREST_MIPMAP_NEAREST;  break;
   case 112:  case 12:  eMagFilter=GL_NEAREST;  eMinFilter=GL_NEAREST_MIPMAP_LINEAR;   break;
@@ -66,14 +66,14 @@ extern void MimicTexParams_OGL( CTexParams &tpLocal)
   _pfGfxProfile.StartTimer( CGfxProfile::PTI_TEXTUREPARAMS);
 
   // set texture filtering mode if required
-  if( tpLocal.tp_iFilter != _tpGlobal[0].tp_iFilter)
+  if (tpLocal.tp_iFilter != _tpGlobal[0].tp_iFilter)
   { // update OpenGL texture filters
     GLenum eMagFilter, eMinFilter;
     UnpackFilter_OGL( _tpGlobal[0].tp_iFilter, eMagFilter, eMinFilter);
     // adjust minimize filter in case of a single mipmap
-    if( tpLocal.tp_bSingleMipmap) {
-           if( eMinFilter==GL_NEAREST_MIPMAP_NEAREST || eMinFilter==GL_NEAREST_MIPMAP_LINEAR) eMinFilter = GL_NEAREST;
-      else if( eMinFilter==GL_LINEAR_MIPMAP_NEAREST  || eMinFilter==GL_LINEAR_MIPMAP_LINEAR)  eMinFilter = GL_LINEAR;
+    if (tpLocal.tp_bSingleMipmap) {
+           if (eMinFilter==GL_NEAREST_MIPMAP_NEAREST || eMinFilter==GL_NEAREST_MIPMAP_LINEAR) eMinFilter = GL_NEAREST;
+      else if (eMinFilter==GL_LINEAR_MIPMAP_NEAREST  || eMinFilter==GL_LINEAR_MIPMAP_LINEAR)  eMinFilter = GL_LINEAR;
     }
     // update texture filter
     pglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eMagFilter);
@@ -83,23 +83,23 @@ extern void MimicTexParams_OGL( CTexParams &tpLocal)
   }
 
   // set texture anisotropy degree if required and supported
-  if( tpLocal.tp_iAnisotropy != _tpGlobal[0].tp_iAnisotropy) { 
+  if (tpLocal.tp_iAnisotropy != _tpGlobal[0].tp_iAnisotropy) { 
     tpLocal.tp_iAnisotropy = _tpGlobal[0].tp_iAnisotropy;
-    if( _pGfx->gl_iMaxTextureAnisotropy>=2) { // only if allowed
+    if (_pGfx->gl_iMaxTextureAnisotropy>=2) { // only if allowed
       pglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, tpLocal.tp_iAnisotropy);
     }
   }
 
   // set texture clamping modes if changed
-  if( tpLocal.tp_eWrapU!=_tpGlobal[GFX_iActiveTexUnit].tp_eWrapU
+  if (tpLocal.tp_eWrapU!=_tpGlobal[GFX_iActiveTexUnit].tp_eWrapU
    || tpLocal.tp_eWrapV!=_tpGlobal[GFX_iActiveTexUnit].tp_eWrapV)
   { // prepare temp vars
     GLuint eWrapU = _tpGlobal[GFX_iActiveTexUnit].tp_eWrapU==GFX_REPEAT ? GL_REPEAT : GL_CLAMP;
     GLuint eWrapV = _tpGlobal[GFX_iActiveTexUnit].tp_eWrapV==GFX_REPEAT ? GL_REPEAT : GL_CLAMP;
     // eventually re-adjust clamping params in case of clamp_to_edge extension
-    if( _pGfx->gl_ulFlags&GLF_EXT_EDGECLAMP) {
-      if( eWrapU == GL_CLAMP) eWrapU = GL_CLAMP_TO_EDGE;
-      if( eWrapV == GL_CLAMP) eWrapV = GL_CLAMP_TO_EDGE;
+    if (_pGfx->gl_ulFlags&GLF_EXT_EDGECLAMP) {
+      if (eWrapU == GL_CLAMP) eWrapU = GL_CLAMP_TO_EDGE;
+      if (eWrapV == GL_CLAMP) eWrapV = GL_CLAMP_TO_EDGE;
     } 
     // set clamping params and update local texture clamping modes
     pglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, eWrapU);
@@ -130,12 +130,12 @@ extern void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
   // upload each original mip-map
   INDEX iMip=0;
   PIX pixOffset=0;
-  while( pixSizeU>0 && pixSizeV>0)
+  while (pixSizeU>0 && pixSizeV>0)
   { 
     // check that memory is readable
     ASSERT( pulTexture[pixOffset +pixSizeU*pixSizeV -1] != 0xDEADBEEF);
     // upload mipmap as fast as possible
-    if( bUseSubImage) {
+    if (bUseSubImage) {
       pglTexSubImage2D( GL_TEXTURE_2D, iMip, 0, 0, pixSizeU, pixSizeV,
                         GL_RGBA, GL_UNSIGNED_BYTE, pulTexture+pixOffset);
     } else {
@@ -148,21 +148,21 @@ extern void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
     pixSizeV >>=1;
     iMip++;
     // end here if there is only one mip-map to upload
-    if( _tpCurrent->tp_bSingleMipmap) break;
+    if (_tpCurrent->tp_bSingleMipmap) break;
   }
 
   // see if we need to generate and upload additional mipmaps (those under 1*N or N*1)
-  if( !_tpCurrent->tp_bSingleMipmap && pixSizeU!=pixSizeV)
+  if (!_tpCurrent->tp_bSingleMipmap && pixSizeU!=pixSizeV)
   { // prepare variables
     PIX pixSize = Max(pixSizeU,pixSizeV);
     ASSERT( pixSize<=2048);
     ULONG *pulSrc = pulTexture+pixOffset-pixSize*2;
     ULONG *pulDst = _aulLastMipmaps;
     // loop thru mipmaps
-    while( pixSizeU>0 || pixSizeV>0)
+    while (pixSizeU>0 || pixSizeV>0)
     { // make next mipmap
-      if( pixSizeU==0) pixSizeU=1;
-      if( pixSizeV==0) pixSizeV=1;
+      if (pixSizeU==0) pixSizeU=1;
+      if (pixSizeV==0) pixSizeV=1;
       pixSize = pixSizeU*pixSizeV;
       __asm {   
         pxor    mm0,mm0
@@ -185,7 +185,7 @@ extern void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
         emms
       }
       // upload mipmap
-      if( bUseSubImage) {
+      if (bUseSubImage) {
         pglTexSubImage2D( GL_TEXTURE_2D, iMip, 0, 0, pixSizeU, pixSizeV,
                           GL_RGBA, GL_UNSIGNED_BYTE, pulDst);
       } else {
@@ -216,7 +216,7 @@ extern void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
 // returns bytes/pixels ratio for uploaded texture
 extern INDEX GetFormatPixRatio_OGL( GLenum eFormat)
 {
-  switch( eFormat) {
+  switch (eFormat) {
   case GL_RGBA:
   case GL_RGBA8:
     return 4;
@@ -251,7 +251,7 @@ extern INDEX GetTexturePixRatio_OGL( GLuint uiBindNo)
 // return allowed dithering method
 extern INDEX AdjustDitheringType_OGL( GLenum eFormat, INDEX iDitheringType)
 {
-  switch( eFormat) {
+  switch (eFormat) {
   // these formats don't need dithering
   case GL_RGB8:
   case GL_RGBA8:
@@ -261,7 +261,7 @@ extern INDEX AdjustDitheringType_OGL( GLenum eFormat, INDEX iDitheringType)
   // these formats need reduced dithering
   case GL_RGB5:
   case GL_RGB5_A1:
-    if( iDitheringType>7) return iDitheringType-3;
+    if (iDitheringType>7) return iDitheringType-3;
   // other formats need dithering as it is
   default:
     return iDitheringType;

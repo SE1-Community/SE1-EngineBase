@@ -35,7 +35,7 @@ SHADER_MAIN(Color)
   BOOL bDoubleSided = shaGetFlags()&BASE_DOUBLE_SIDED;
   BOOL bFullBright  = shaGetFlags()&BASE_FULL_BRIGHT;
 
-  if(bDoubleSided) {
+  if (bDoubleSided) {
     shaCullFace(GFX_NONE);
   } else {
     shaCullFace(GFX_BACK);

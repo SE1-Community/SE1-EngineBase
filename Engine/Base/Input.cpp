@@ -395,51 +395,51 @@ static void Poll2ndMouse(void)
   // reset (mouse reading is relative)
   _i2ndMouseX = 0;
   _i2ndMouseY = 0;
-  if( _h2ndMouse==NONE) return;
+  if (_h2ndMouse==NONE) return;
 
   // check
   COMSTAT csComStat;
   DWORD dwErrorFlags;
   ClearCommError( _h2ndMouse, &dwErrorFlags, &csComStat);
   DWORD dwLength = Min( MOUSECOMBUFFERSIZE, (INDEX)csComStat.cbInQue);
-  if( dwLength<=0) return;
+  if (dwLength<=0) return;
 
   // readout
   UBYTE aubMouseBuffer[MOUSECOMBUFFERSIZE];
   INDEX iRetries = 999;
-  while( iRetries>0 && !ReadFile( _h2ndMouse, aubMouseBuffer, dwLength, &dwLength, NULL)) iRetries--;
-  if( iRetries<=0) return; // what, didn't make it?
+  while (iRetries>0 && !ReadFile( _h2ndMouse, aubMouseBuffer, dwLength, &dwLength, NULL)) iRetries--;
+  if (iRetries<=0) return; // what, didn't make it?
 
   // parse the mouse packets
-  for( INDEX i=0; i<dwLength; i++)
+  for (INDEX i=0; i<dwLength; i++)
   {
     // prepare    
-    if( aubMouseBuffer[i] & 64) _iByteNum  = 0;
-    if( _iByteNum<4) _aubComBytes[_iByteNum] = aubMouseBuffer[i];
+    if (aubMouseBuffer[i] & 64) _iByteNum  = 0;
+    if (_iByteNum<4) _aubComBytes[_iByteNum] = aubMouseBuffer[i];
     _iByteNum++;
 
     // buttons ?
-    if( _iByteNum==1) {
+    if (_iByteNum==1) {
       _i2ndMouseButtons &= ~3;
       _i2ndMouseButtons |= (_aubComBytes[0] & (32+16)) >>4;
     }
     // axes ?
-    else if( _iByteNum==3) {
+    else if (_iByteNum==3) {
       char iDX = ((_aubComBytes[0] &  3) <<6) + _aubComBytes[1];
       char iDY = ((_aubComBytes[0] & 12) <<4) + _aubComBytes[2];
       _i2ndMouseX += iDX;
       _i2ndMouseY += iDY;
     }
     // 3rd button?
-    else if( _iByteNum==4) {
+    else if (_iByteNum==4) {
       _i2ndMouseButtons &= ~4;
-      if( aubMouseBuffer[i]&32) _i2ndMouseButtons |= 4;
+      if (aubMouseBuffer[i]&32) _i2ndMouseButtons |= 4;
     }
   }
 
   // ignore pooling?
-  if( _bIgnoreMouse2) {
-    if( _i2ndMouseX!=0 || _i2ndMouseY!=0) _bIgnoreMouse2 = FALSE;
+  if (_bIgnoreMouse2) {
+    if (_i2ndMouseX!=0 || _i2ndMouseY!=0) _bIgnoreMouse2 = FALSE;
     _i2ndMouseX = 0;
     _i2ndMouseY = 0;
     _i2ndMouseButtons = 0;
@@ -452,19 +452,19 @@ static void Startup2ndMouse(INDEX iPort)
 {
   // skip if disabled
   ASSERT( iPort>=0 && iPort<=4);
-  if( iPort==0) return; 
+  if (iPort==0) return; 
   // determine port string
   CTString str2ndMousePort( 0, "COM%d", iPort);
     
   // create COM handle if needed
-  if( _h2ndMouse==NONE) {
+  if (_h2ndMouse==NONE) {
     _h2ndMouse = CreateFileA( str2ndMousePort, GENERIC_READ|GENERIC_WRITE, 0, NULL,           
                              OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if( _h2ndMouse==INVALID_HANDLE_VALUE) {
+    if (_h2ndMouse==INVALID_HANDLE_VALUE) {
       // failed! :(
       INDEX iError = GetLastError();
 /*
-      if( iError==5) CPrintF( "Cannot open %s (access denied).\n"
+      if (iError==5) CPrintF( "Cannot open %s (access denied).\n"
                               "The port is probably already used by another device (mouse, modem...)\n",
                               str2ndMousePort);
       else CPrintF( "Cannot open %s (error %d).\n", str2ndMousePort, iError);
@@ -503,7 +503,7 @@ static void Startup2ndMouse(INDEX iPort)
 static void Shutdown2ndMouse(void)
 {
   // skip if already disabled
-  if( _h2ndMouse==NONE) return;
+  if (_h2ndMouse==NONE) return;
 
   // disable!
   SetCommMask( _h2ndMouse, 0);
@@ -511,7 +511,7 @@ static void Shutdown2ndMouse(void)
   EscapeCommFunction( _h2ndMouse, CLRRTS);
   PurgeComm( _h2ndMouse, PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR);
   // close port if changed
-  if( _iLastPort != inp_i2ndMousePort) {
+  if (_iLastPort != inp_i2ndMousePort) {
     CloseHandle( _h2ndMouse);
     _h2ndMouse = NONE;
   } // over and out
@@ -532,12 +532,12 @@ CInput::CInput(void)
   inp_bPollJoysticks = FALSE;
   inp_bLastPrescan = FALSE;
   // clear key buffer
-  for( INDEX iButton=0; iButton<MAX_OVERALL_BUTTONS; iButton++)
+  for (INDEX iButton=0; iButton<MAX_OVERALL_BUTTONS; iButton++)
   {
     inp_ubButtonsBuffer[ iButton] = 0;
   }
   // clear axis relative and absolute values
-  for( INDEX iAxis=0; iAxis<MAX_OVERALL_AXES; iAxis++)
+  for (INDEX iAxis=0; iAxis<MAX_OVERALL_AXES; iAxis++)
   {
     inp_caiAllAxisInfo[ iAxis].cai_fReading  = 0.0f;
     inp_caiAllAxisInfo[ iAxis].cai_bExisting = FALSE;
@@ -550,7 +550,7 @@ CInput::CInput(void)
 // destructor
 CInput::~CInput()
 {
-  if( _h2ndMouse!=NONE) CloseHandle( _h2ndMouse);
+  if (_h2ndMouse!=NONE) CloseHandle( _h2ndMouse);
   _h2ndMouse = NONE;
 }
 
@@ -566,7 +566,7 @@ void CInput::SetJoyPolling(BOOL bPoll)
 void CInput::SetKeyNames( void)
 {
   // set name "None" for all keys, known keys will override this default name
-  {for( INDEX iKey=0; iKey<ARRAYCOUNT(inp_strButtonNames); iKey++) {
+  {for (INDEX iKey=0; iKey<ARRAYCOUNT(inp_strButtonNames); iKey++) {
     inp_strButtonNames[iKey] = "None";
     inp_strButtonNamesTra[iKey] = TRANS("None");
   }}
@@ -628,13 +628,13 @@ BOOL CInput::CheckJoystick(INDEX iJoy)
   // seek for capabilities of requested joystick
   MMRESULT mmResult = joyGetDevCaps( JOYSTICKID1+iJoy,	&jc, sizeof(JOYCAPS));
   // report possible errors
-  if( mmResult == MMSYSERR_NODRIVER) {
+  if (mmResult == MMSYSERR_NODRIVER) {
     CPrintF(TRANS(" joystick driver is not present\n"));
     return FALSE;
-  } else if( mmResult == MMSYSERR_INVALPARAM) {
+  } else if (mmResult == MMSYSERR_INVALPARAM) {
     CPrintF(TRANS(" invalid parameter\n"));
     return FALSE;
-  } else if( mmResult != JOYERR_NOERROR) {
+  } else if (mmResult != JOYERR_NOERROR) {
     CPrintF(TRANS("  error 0x%08x\n"), mmResult);
     return FALSE;
   }
@@ -657,17 +657,17 @@ BOOL CInput::CheckJoystick(INDEX iJoy)
   mmResult = joyGetPosEx( JOYSTICKID1+iJoy, &ji);
 
   // if some error
-  if( mmResult != JOYERR_NOERROR) {
+  if (mmResult != JOYERR_NOERROR) {
     // fail
     CPrintF(TRANS("    Cannot read the joystick!\n"));
     return FALSE;
   }
 
   // for each axis
-  for(INDEX iAxis=0; iAxis<MAX_AXES_PER_JOYSTICK; iAxis++) {
+  for (INDEX iAxis=0; iAxis<MAX_AXES_PER_JOYSTICK; iAxis++) {
     ControlAxisInfo &cai= inp_caiAllAxisInfo[ FIRST_JOYAXIS+iJoy*MAX_AXES_PER_JOYSTICK+iAxis];
     // remember min/max info
-    switch( iAxis) {
+    switch (iAxis) {
     case 0: 
       cai.cai_slMin = jc.wXmin; cai.cai_slMax = jc.wXmax; 
       cai.cai_bExisting = TRUE;
@@ -707,12 +707,12 @@ void CInput::AddJoystickAbbilities(INDEX iJoy)
   strJoystickNameTra.PrintF(TRANS("Joy %d"), iJoy+1);
 
   // for each axis
-  for( UINT iAxis=0; iAxis<6; iAxis++) {
+  for (UINT iAxis=0; iAxis<6; iAxis++) {
     INDEX iAxisTotal = FIRST_JOYAXIS+iJoy*MAX_AXES_PER_JOYSTICK+iAxis;
     ControlAxisInfo &cai= inp_caiAllAxisInfo[iAxisTotal];
     CTString &strTran = inp_astrAxisTran[iAxisTotal];
     // set axis name
-    switch( iAxis) {
+    switch (iAxis) {
     case 0: cai.cai_strAxisName = strJoystickName + " Axis X"; strTran = strJoystickNameTra + TRANS(" Axis X"); break;
     case 1: cai.cai_strAxisName = strJoystickName + " Axis Y"; strTran = strJoystickNameTra + TRANS(" Axis Y"); break;
     case 2: cai.cai_strAxisName = strJoystickName + " Axis Z"; strTran = strJoystickNameTra + TRANS(" Axis Z"); break;
@@ -724,7 +724,7 @@ void CInput::AddJoystickAbbilities(INDEX iJoy)
 
   INDEX iButtonTotal = FIRST_JOYBUTTON+iJoy*MAX_BUTTONS_PER_JOYSTICK;
   // add buttons that the joystick supports
-  for( UINT iButton=0; iButton<32; iButton++) {
+  for (UINT iButton=0; iButton<32; iButton++) {
     CTString strButtonName;
     CTString strButtonNameTra;
     // create name for n-th button
@@ -772,7 +772,7 @@ void CInput::EnableInput(CViewPort *pvp)
 void CInput::EnableInput(HWND hwnd)
 {
   // skip if already enabled
-  if( inp_bInputEnabled) return;
+  if (inp_bInputEnabled) return;
 
   // get window rectangle
   RECT rectClient;
@@ -861,7 +861,7 @@ void CInput::EnableInput(HWND hwnd)
 void CInput::DisableInput( void)
 {
   // skip if allready disabled
-  if( !inp_bInputEnabled) return;
+  if (!inp_bInputEnabled) return;
   
   UnhookWindowsHookEx(_hGetMsgHook);
   UnhookWindowsHookEx(_hSendMsgHook);
@@ -947,20 +947,20 @@ void CInput::GetInput(BOOL bPreScan)
 
   // read mouse position
   POINT pntMouse;
-  if( GetCursorPos( &pntMouse))
+  if (GetCursorPos( &pntMouse))
   {
     FLOAT fDX = FLOAT( SLONG(pntMouse.x) - inp_slScreenCenterX);
     FLOAT fDY = FLOAT( SLONG(pntMouse.y) - inp_slScreenCenterY);
 
     FLOAT fSensitivity = inp_fMouseSensitivity;
-    if( inp_bAllowMouseAcceleration) fSensitivity *= 0.25f;
+    if (inp_bAllowMouseAcceleration) fSensitivity *= 0.25f;
 
     FLOAT fD = Sqrt(fDX*fDX+fDY*fDY);
     if (inp_bMousePrecision) {
       static FLOAT _tmTime = 0.0f;
-      if( fD<inp_fMousePrecisionThreshold) _tmTime += 0.05f;
+      if (fD<inp_fMousePrecisionThreshold) _tmTime += 0.05f;
       else _tmTime = 0.0f;
-      if( _tmTime>inp_fMousePrecisionTimeout) fSensitivity /= inp_fMousePrecisionFactor;
+      if (_tmTime>inp_fMousePrecisionTimeout) fSensitivity /= inp_fMousePrecisionFactor;
     }
 
     static FLOAT fDXOld;
@@ -1029,15 +1029,15 @@ void CInput::GetInput(BOOL bPreScan)
   }
 
   // readout 2nd mouse if enabled
-  if( _h2ndMouse!=NONE)
+  if (_h2ndMouse!=NONE)
   {
     Poll2ndMouse();
     //CPrintF( "m2X: %4d, m2Y: %4d, m2B: 0x%02X\n", _i2ndMouseX, _i2ndMouseY, _i2ndMouseButtons);
 
     // handle 2nd mouse buttons
-    if( _i2ndMouseButtons & 2) inp_ubButtonsBuffer[KID_2MOUSE1] = 0xFF;
-    if( _i2ndMouseButtons & 1) inp_ubButtonsBuffer[KID_2MOUSE2] = 0xFF;
-    if( _i2ndMouseButtons & 4) inp_ubButtonsBuffer[KID_2MOUSE3] = 0xFF;
+    if (_i2ndMouseButtons & 2) inp_ubButtonsBuffer[KID_2MOUSE1] = 0xFF;
+    if (_i2ndMouseButtons & 1) inp_ubButtonsBuffer[KID_2MOUSE2] = 0xFF;
+    if (_i2ndMouseButtons & 4) inp_ubButtonsBuffer[KID_2MOUSE3] = 0xFF;
 
     // handle 2nd mouse movement
     FLOAT fDX = _i2ndMouseX;
@@ -1045,11 +1045,11 @@ void CInput::GetInput(BOOL bPreScan)
     FLOAT fSensitivity = inp_f2ndMouseSensitivity;
 
     FLOAT fD = Sqrt(fDX*fDX+fDY*fDY);
-    if( inp_b2ndMousePrecision) {
+    if (inp_b2ndMousePrecision) {
       static FLOAT _tm2Time = 0.0f;
-      if( fD<inp_f2ndMousePrecisionThreshold) _tm2Time += 0.05f;
+      if (fD<inp_f2ndMousePrecisionThreshold) _tm2Time += 0.05f;
       else _tm2Time = 0.0f;
-      if( _tm2Time>inp_f2ndMousePrecisionTimeout) fSensitivity /= inp_f2ndMousePrecisionFactor;
+      if (_tm2Time>inp_f2ndMousePrecisionTimeout) fSensitivity /= inp_f2ndMousePrecisionFactor;
     }
 
     static FLOAT f2DXOld;
@@ -1058,7 +1058,7 @@ void CInput::GetInput(BOOL bPreScan)
     static CTimerValue tv2Before;
     CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
     TIME tmNowDelta = (tvNow-tv2Before).GetSeconds();
-    if( tmNowDelta<0.001f) tmNowDelta = 0.001f;
+    if (tmNowDelta<0.001f) tmNowDelta = 0.001f;
     tv2Before = tvNow;
 
     FLOAT fDXSmooth = (f2DXOld*tm2OldDelta+fDX*tmNowDelta) / (tm2OldDelta+tmNowDelta);
@@ -1066,7 +1066,7 @@ void CInput::GetInput(BOOL bPreScan)
     f2DXOld = fDX;
     f2DYOld = fDY;
     tm2OldDelta = tmNowDelta;
-    if( inp_bFilter2ndMouse) {
+    if (inp_bFilter2ndMouse) {
       fDX = fDXSmooth;
       fDY = fDYSmooth;
     }
@@ -1074,7 +1074,7 @@ void CInput::GetInput(BOOL bPreScan)
     // get final mouse values
     FLOAT fMouseRelX = +fDX*fSensitivity;
     FLOAT fMouseRelY = -fDY*fSensitivity;
-    if( inp_bInvert2ndMouse) fMouseRelY = -fMouseRelY;
+    if (inp_bInvert2ndMouse) fMouseRelY = -fMouseRelY;
 
     // just interpret values as normal
     inp_caiAllAxisInfo[4].cai_fReading = fMouseRelX;
@@ -1085,7 +1085,7 @@ void CInput::GetInput(BOOL bPreScan)
   // if joystick polling is enabled
   if (inp_bPollJoysticks || inp_bForceJoystickPolling) {
     // scan all available joysticks
-    for( INDEX iJoy=0; iJoy<MAX_JOYSTICKS; iJoy++) {
+    for (INDEX iJoy=0; iJoy<MAX_JOYSTICKS; iJoy++) {
       if (inp_abJoystickOn[iJoy] && iJoy<inp_ctJoysticksAllowed) {
         // scan joy state
         BOOL bSucceeded = ScanJoystick(iJoy, bPreScan);
@@ -1130,13 +1130,13 @@ BOOL CInput::ScanJoystick(INDEX iJoy, BOOL bPreScan)
   MMRESULT mmResult = joyGetPosEx( JOYSTICKID1+iJoy, &ji);
 
   // if some error
-  if( mmResult != JOYERR_NOERROR) {
+  if (mmResult != JOYERR_NOERROR) {
     // fail
     return FALSE;
   }
 
   // for each available axis
-  for( INDEX iAxis=0; iAxis<MAX_AXES_PER_JOYSTICK; iAxis++) {
+  for (INDEX iAxis=0; iAxis<MAX_AXES_PER_JOYSTICK; iAxis++) {
     ControlAxisInfo &cai = inp_caiAllAxisInfo[ FIRST_JOYAXIS+iJoy*MAX_AXES_PER_JOYSTICK+iAxis];
     // if the axis is not present
     if (!cai.cai_bExisting) {
@@ -1147,7 +1147,7 @@ BOOL CInput::ScanJoystick(INDEX iJoy, BOOL bPreScan)
     }
     // read its state
     SLONG slAxisReading;
-    switch( iAxis) {
+    switch (iAxis) {
     case 0: slAxisReading = ji.dwXpos; break;
     case 1: slAxisReading = ji.dwYpos; break;
     case 2: slAxisReading = ji.dwZpos; break;
@@ -1166,9 +1166,9 @@ BOOL CInput::ScanJoystick(INDEX iJoy, BOOL bPreScan)
   if (!bPreScan) {
     INDEX iButtonTotal = FIRST_JOYBUTTON+iJoy*MAX_BUTTONS_PER_JOYSTICK;
     // for each available button
-    for( INDEX iButton=0; iButton<32; iButton++) {
+    for (INDEX iButton=0; iButton<32; iButton++) {
       // test if the button is pressed
-      if(ji.dwButtons & (1L<<iButton)) {
+      if (ji.dwButtons & (1L<<iButton)) {
         inp_ubButtonsBuffer[ iButtonTotal++] = 128;
       } else {
         inp_ubButtonsBuffer[ iButtonTotal++] = 0;

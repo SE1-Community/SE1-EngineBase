@@ -72,7 +72,7 @@ void CPlayerBuffer::ReceiveActionPacket(CNetworkMessage *pnm, INDEX iMaxBuffer)
   INDEX iSendBehind = 0;
   pnm->ReadBits(&iSendBehind, 2);
   // foreach resent action
-  for(INDEX i=0; i<iSendBehind; i++) {
+  for (INDEX i=0; i<iSendBehind; i++) {
     CPlayerAction paOld;
     (*pnm)>>paOld;
 
@@ -91,7 +91,7 @@ void CPlayerBuffer::ReceiveActionPacket(CNetworkMessage *pnm, INDEX iMaxBuffer)
   CPrintF("Receive: buffered %d\n", ctBuffered);
   */
   // while there are more too many actions buffered
-  while(plb_abReceived.GetCount()>iMaxBuffer) {
+  while (plb_abReceived.GetCount()>iMaxBuffer) {
     // purge the oldest one
     plb_abReceived.RemoveOldest();
   }

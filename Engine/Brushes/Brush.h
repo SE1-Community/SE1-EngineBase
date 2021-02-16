@@ -294,7 +294,7 @@ public:
     s.bpt_ubFlags = bptOther.s.bpt_ubFlags;
     s.bpt_ubDummy = bptOther.s.bpt_ubDummy;
     s.bpt_colColor = bptOther.s.bpt_colColor;
-    if( bCopyMapping) bpt_mdMapping = bptOther.bpt_mdMapping;
+    if (bCopyMapping) bpt_mdMapping = bptOther.bpt_mdMapping;
     return *this;
   };
   void Clear(void) {

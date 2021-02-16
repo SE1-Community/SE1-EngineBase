@@ -80,7 +80,7 @@ void CPacket::Clear()
 	pa_ubRetryNumber = 0;
 
 	pa_tvSendWhen = CTimerValue(0.0f);
-	if(pa_lnListNode.IsLinked()) pa_lnListNode.Remove();
+	if (pa_lnListNode.IsLinked()) pa_lnListNode.Remove();
 
 };
 

@@ -87,8 +87,8 @@ __forceinline Matrix<Type, iRows, iColumns>::Matrix(void)
 #ifndef NDEBUG
   // set whole matrix to trash
   ULONG ulTrash = 0xCDCDCDCDul;
-  for(int iRow=1; iRow<=iRows; iRow++) {
-    for(int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iRow=1; iRow<=iRows; iRow++) {
+    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
       (*this)(iRow, iColumn) = *reinterpret_cast<Type *>(&ulTrash);
     }
   }
@@ -123,8 +123,8 @@ Matrix<Type, iRows, iColumns>::Matrix(const Type x /*= Type(0)*/)
 {
   ASSERT( iRows!=3 && iColumns!=3);  // 3 is optimized special case 
   // set whole matrix to constant
-  for(int iRow=1; iRow<=iRows; iRow++) {
-    for(int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iRow=1; iRow<=iRows; iRow++) {
+    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
       (*this)(iRow, iColumn) = x;
     }
   }
@@ -187,8 +187,8 @@ __forceinline Matrix<Type, iRows, iColumns> &Matrix<Type, iRows, iColumns>::oper
 {
   // transpose member by member
   ASSERT( iRows!=3 && iColumns!=3);  // 3 is optimized special case 
-  for(int iRow=1; iRow<=iRows; iRow++) {
-    for(int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iRow=1; iRow<=iRows; iRow++) {
+    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
       (*this)(iColumn, iRow) = matrix2(iRow, iColumn);
     }
   }
@@ -220,8 +220,8 @@ __forceinline Matrix<Type, iRows, iColumns> &Matrix<Type, iRows, iColumns>::oper
 {
   // add member by member
   ASSERT( iRows!=3 && iColumns!=3);  // 3 is optimized special case 
-  for(int iRow=1; iRow<=iRows; iRow++) {
-    for(int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iRow=1; iRow<=iRows; iRow++) {
+    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
       (*this)(iRow, iColumn) += matrix2(iRow, iColumn);
     }
   }
@@ -259,8 +259,8 @@ __forceinline Matrix<Type, iRows, iColumns> &Matrix<Type, iRows, iColumns>::oper
 {
   // sub member by member
   ASSERT( iRows!=3 && iColumns!=3);  // 3 is optimized special case 
-  for(int iRow=1; iRow<=iRows; iRow++) {
-    for(int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iRow=1; iRow<=iRows; iRow++) {
+    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
       (*this)(iRow, iColumn) -= matrix2(iRow, iColumn);
     }
   }
@@ -324,10 +324,10 @@ __forceinline Matrix<Type, iRows, iColumns> Matrix<Type, iRows, iColumns>::opera
   ASSERT(iRows==iColumns);
   ASSERT( iRows!=3 && iColumns!=3);  // 3 is optimized special case 
   // multiply
-  for(int iRow=1; iRow<=iRows; iRow++) {
-    for(int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iRow=1; iRow<=iRows; iRow++) {
+    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
       result(iRow, iColumn) = (Type)0;
-      for(int s=1; s<=iRows; s++) {
+      for (int s=1; s<=iRows; s++) {
         result(iRow, iColumn) += (*this)(iRow, s) * matrix2(s, iColumn);
       }
     }
@@ -370,8 +370,8 @@ __forceinline Matrix<Type, iRows, iColumns> &Matrix<Type, iRows, iColumns>::oper
 {
   // multiply member by member
   ASSERT( iRows!=3 && iColumns!=3);  // 3 is optimized special case 
-  for(int iRow=1; iRow<=iRows; iRow++) {
-    for(int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iRow=1; iRow<=iRows; iRow++) {
+    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
       (*this)(iRow, iColumn) *= tMul;
     }
   }
@@ -415,13 +415,13 @@ void Matrix<Type, iRows, iColumns>::Diagonal(Type x)
   ASSERT(iRows==iColumns);
 
   // clear whole matrix to zeroes
-  for(int iRow=1; iRow<=iRows; iRow++) {
-    for(int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iRow=1; iRow<=iRows; iRow++) {
+    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
       (*this)(iRow, iColumn) = Type(0);
     }
   }
   // set the main diagonal
-  {for(int iRow=0; iRow<iRows; iRow++) {
+  {for (int iRow=0; iRow<iRows; iRow++) {
     matrix[iRow][iRow] = x;
   }}
 }
@@ -433,13 +433,13 @@ void Matrix<Type, iRows, iColumns>::Diagonal(const Vector<Type, iRows> &v)
   ASSERT(iRows==iColumns);
 
   // clear whole matrix to zeroes
-  for(int iRow=1; iRow<=iRows; iRow++) {
-    for(int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iRow=1; iRow<=iRows; iRow++) {
+    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
       (*this)(iRow, iColumn) = Type(0);
     }
   }
   // set the main diagonal
-  {for(int iRow=1; iRow<=iRows; iRow++) {
+  {for (int iRow=1; iRow<=iRows; iRow++) {
     operator()(iRow, iRow) = v(iRow);
   }}
 }
@@ -450,7 +450,7 @@ template<class Type, int iRows, int iColumns>
 Vector<Type, iColumns> Matrix<Type, iRows, iColumns>::GetRow(Type iRow) const
 {
   Vector<Type, iColumns> v;
-  for(int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iColumn=1; iColumn<=iColumns; iColumn++) {
     v(iColumn) = (*this)(iRow, iColumn);
   }
   return v;
@@ -460,7 +460,7 @@ template<class Type, int iRows, int iColumns>
 Vector<Type, iRows> Matrix<Type, iRows, iColumns>::GetColumn(Type iColumn) const
 {
   Vector<Type, iRows> v;
-  for(int iRow=1; iRow<=iRows; iRow++) {
+  for (int iRow=1; iRow<=iRows; iRow++) {
     v(iRow) = (*this)(iRow, iColumn);
   }
   return v;

@@ -119,7 +119,7 @@ BOOL CDynamicContainer<Type>::IsMember(Type *ptOldObject)
   // slow !!!!
   // check all members
   for (INDEX iMember=0; iMember<Count(); iMember++) {
-    if(sa_Array[iMember]==ptOldObject) {
+    if (sa_Array[iMember]==ptOldObject) {
       return TRUE;
     }
   }
@@ -199,7 +199,7 @@ INDEX CDynamicContainer<Type>::GetIndex(Type *ptMember) {
   // slow !!!!
   // check all members
   for (INDEX iMember=0; iMember<Count(); iMember++) {
-    if(sa_Array[iMember]==ptMember) {
+    if (sa_Array[iMember]==ptMember) {
       return iMember;
     }
   }
@@ -312,7 +312,7 @@ inline BOOL CDynamicContainerIterator<Type>::IsPastEnd(void) {
  * elements in the container. To do so, embed the for loop in additional curly braces.
  */
 #define FOREACHINDYNAMICCONTAINER(container, type, iter) \
-  for(CDynamicContainerIterator<type> iter(container); !iter.IsPastEnd(); iter.MoveToNext() )
+  for (CDynamicContainerIterator<type> iter(container); !iter.IsPastEnd(); iter.MoveToNext() )
 
 
 #endif  /* include-once check. */

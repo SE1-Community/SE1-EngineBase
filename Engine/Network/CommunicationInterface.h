@@ -49,7 +49,7 @@ public:
 
 public:
   CCommunicationInterface(void);
-  ~CCommunicationInterface(void){};
+  ~CCommunicationInterface(void) {};
 
   // start/stop protocols
   void Init(void);

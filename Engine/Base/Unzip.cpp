@@ -140,7 +140,7 @@ public:
 // get error string for a zlib error
 CTString GetZlibError(int ierr)
 {
-  switch(ierr) {
+  switch (ierr) {
   case Z_OK           : return TRANS("Z_OK           "); break;
   case Z_STREAM_END   : return TRANS("Z_STREAM_END   "); break;   
   case Z_NEED_DICT    : return TRANS("Z_NEED_DICT    "); break;
@@ -236,7 +236,7 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
   EndOfDir eod;
   BOOL bEODFound = FALSE;
   // while not at beginning
-  for(; iPos>iMinPos; iPos--) {
+  for (; iPos>iMinPos; iPos--) {
     // read signature
     fseek(f, iPos, SEEK_SET);
     int slSig;
@@ -470,7 +470,7 @@ void UNZIPReadDirectoriesReverse_t(void)
 BOOL UNZIPFileExists(const CTFileName &fnm)
 {
   // for each file
-  for(INDEX iFile=0; iFile<_azeFiles.Count(); iFile++) {
+  for (INDEX iFile=0; iFile<_azeFiles.Count(); iFile++) {
     // if it is that one
     if (_azeFiles[iFile].ze_fnm == fnm) {
       return TRUE;
@@ -498,7 +498,7 @@ BOOL UNZIPIsFileAtIndexMod(INDEX i)
 INDEX UNZIPGetFileIndex(const CTFileName &fnm)
 {
   // for each file
-  for(INDEX iFile=0; iFile<_azeFiles.Count(); iFile++) {
+  for (INDEX iFile=0; iFile<_azeFiles.Count(); iFile++) {
     // if it is that one
     if (_azeFiles[iFile].ze_fnm == fnm) {
       return iFile;
@@ -513,7 +513,7 @@ void UNZIPGetFileInfo(INDEX iHandle, CTFileName &fnmZip,
   BOOL &bCompressed)
 {
   // check handle number
-  if(iHandle<0 || iHandle>=_azhHandles.Count()) {
+  if (iHandle<0 || iHandle>=_azhHandles.Count()) {
     ASSERT(FALSE);
     return;
   }
@@ -538,7 +538,7 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
 {
   CZipEntry *pze = NULL;
   // for each file
-  for(INDEX iFile=0; iFile<_azeFiles.Count(); iFile++) {
+  for (INDEX iFile=0; iFile<_azeFiles.Count(); iFile++) {
     // if it is that one
     if (_azeFiles[iFile].ze_fnm == fnm) {
       // stop searching
@@ -638,7 +638,7 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
 SLONG UNZIPGetSize(INDEX iHandle)
 {
   // check handle number
-  if(iHandle<0 || iHandle>=_azhHandles.Count()) {
+  if (iHandle<0 || iHandle>=_azhHandles.Count()) {
     ASSERT(FALSE);
     return 0;
   }
@@ -657,7 +657,7 @@ SLONG UNZIPGetSize(INDEX iHandle)
 ULONG UNZIPGetCRC(INDEX iHandle)
 {
   // check handle number
-  if(iHandle<0 || iHandle>=_azhHandles.Count()) {
+  if (iHandle<0 || iHandle>=_azhHandles.Count()) {
     ASSERT(FALSE);
     return 0;
   }
@@ -676,7 +676,7 @@ ULONG UNZIPGetCRC(INDEX iHandle)
 void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
 {
   // check handle number
-  if(iHandle<0 || iHandle>=_azhHandles.Count()) {
+  if (iHandle<0 || iHandle>=_azhHandles.Count()) {
     ASSERT(FALSE);
     return;
   }
@@ -720,7 +720,7 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
   // while ahead of the current pointer
   while (slStart>zh.zh_zstream.total_out) {
     // if zlib has no more input
-    while(zh.zh_zstream.avail_in==0) {
+    while (zh.zh_zstream.avail_in==0) {
       // read more to it
       SLONG slRead = fread(zh.zh_pubBufIn, 1, BUF_SIZE, zh.zh_fFile);
       if (slRead<=0) {
@@ -758,7 +758,7 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
   // while there is something to write to given block
   while (zh.zh_zstream.avail_out>0) {
     // if zlib has no more input
-    while(zh.zh_zstream.avail_in==0) {
+    while (zh.zh_zstream.avail_in==0) {
       // read more to it
       SLONG slRead = fread(zh.zh_pubBufIn, 1, BUF_SIZE, zh.zh_fFile);
       if (slRead<=0) {
@@ -780,7 +780,7 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
 void UNZIPClose(INDEX iHandle)
 {
   // check handle number
-  if(iHandle<0 || iHandle>=_azhHandles.Count()) {
+  if (iHandle<0 || iHandle>=_azhHandles.Count()) {
     ASSERT(FALSE);
     return;
   }

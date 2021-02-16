@@ -132,7 +132,7 @@ void CRCT_Clear(void)
 // reset all files to not active
 void CRCT_ResetActiveList(void)
 {
-  for(INDEX ice=0; ice<_aceEntries.Count(); ice++) {
+  for (INDEX ice=0; ice<_aceEntries.Count(); ice++) {
     _aceEntries[ice].ce_bActive = FALSE;
   }
 }
@@ -141,7 +141,7 @@ void CRCT_ResetActiveList(void)
 static INDEX GetNumberOfActiveEntries(void)
 {
   INDEX ctActive = 0;
-  for(INDEX ice=0; ice<_aceEntries.Count(); ice++) {
+  for (INDEX ice=0; ice<_aceEntries.Count(); ice++) {
     if (_aceEntries[ice].ce_bActive) {
       ctActive++;
     }
@@ -156,7 +156,7 @@ void CRCT_MakeFileList_t(CTStream &strmFiles)  // throw char *
   INDEX ctActive = GetNumberOfActiveEntries();
   strmFiles<<ctActive;
   // for each active entry
-  for(INDEX ice=0; ice<_aceEntries.Count(); ice++) {
+  for (INDEX ice=0; ice<_aceEntries.Count(); ice++) {
     CCRCEntry &ce = _aceEntries[ice];
     if (!ce.ce_bActive) {
       continue;
@@ -178,7 +178,7 @@ ULONG CRCT_MakeCRCForFiles_t(CTStream &strmFiles)  // throw char *
   INDEX ctFiles;
   strmFiles>>ctFiles;
   // for each one
-  for(INDEX i=0; i<ctFiles; i++) {
+  for (INDEX i=0; i<ctFiles; i++) {
     // read the name
     CTString strName;
     strmFiles>>strName;

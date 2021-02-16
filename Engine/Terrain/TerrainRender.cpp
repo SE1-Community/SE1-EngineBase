@@ -75,7 +75,7 @@ static void FillConstColorArray(INDEX ctVertices)
   _acolVtxConstColors.PopAll();
   _acolVtxConstColors.Push(ctVertices);
   // if requested array is larger then existing one
-  if(ctVertices>ctColors) {
+  if (ctVertices>ctColors) {
     memset(&_acolVtxConstColors[ctColors],255,(ctVertices-ctColors)*sizeof(GFXColor));
   }
 }
@@ -110,7 +110,7 @@ inline static void SetMatrixDiagonal(Matrix12 &mat,FLOAT fValue)
 static inline void gfxSetTextureMatrix2(Matrix12 *pMatrix)
 {
   pglMatrixMode( GL_TEXTURE);
-  if(pMatrix==NULL) {
+  if (pMatrix==NULL) {
     pglLoadIdentity();
   } else {
     Matrix16 mrot16;
@@ -143,7 +143,7 @@ void PrepareScene(CAnyProjection3D &apr, CDrawPort *pdp, CTerrain *ptrTerrain)
   _pdp = pdp;
 
   // Prepare and set the projection
-  apr->ObjectPlacementL() = CPlacement3D(FLOAT3D(0,0,0), ANGLE3D(0,0,0));
+  apr->ObjectPlacementL() = CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));
   apr->Prepare();
   _aprProjection = apr;
   _pdp->SetProjection( _aprProjection);
@@ -213,9 +213,9 @@ void PrepareSmothVertices(INDEX itt)
 
   INDEX iFacing=0;
   // for each vertex column
-  for(INDEX iy=0;iy<tt.tt_ctLodVtxY;iy++) {
+  for (INDEX iy=0;iy<tt.tt_ctLodVtxY;iy++) {
     // for each vertex in row in even column step by 2
-    for(INDEX ix=0;ix<tt.tt_ctLodVtxX-2;ix+=2) {
+    for (INDEX ix=0;ix<tt.tt_ctLodVtxX-2;ix+=2) {
       // Copy first vertex
       pavDst[0] = pavSrc[0];
       // Second vertex is lerped between left and right vertices
@@ -233,15 +233,15 @@ void PrepareSmothVertices(INDEX itt)
     iy++;
 
     // if this is not last row
-    if(iy<tt.tt_ctLodVtxY) {
+    if (iy<tt.tt_ctLodVtxY) {
       // for each vertex in row in odd column step by 2
-      for(INDEX ix=0;ix<tt.tt_ctLodVtxX-2;ix+=2) {
+      for (INDEX ix=0;ix<tt.tt_ctLodVtxX-2;ix+=2) {
         // First vertex is lerped between top and bottom vertices
         Lerp(pavDst[0],pavSrc[0],pavSrc[-tt.tt_ctLodVtxX],pavSrc[tt.tt_ctLodVtxX],fLerpFactor);
         // is this odd vertex in row
         #pragma message(">> Fix this")
-        if(((ix+iy)/2)%2) {
-        // if(iFacing&1)
+        if (((ix+iy)/2)%2) {
+        // if (iFacing&1)
           // Second vertex (diagonal one) is lerped between topright and bottom left vertices
           Lerp(pavDst[1],pavSrc[1],pavSrc[-tt.tt_ctLodVtxX+2],pavSrc[tt.tt_ctLodVtxX],fLerpFactor);
         } else {
@@ -268,7 +268,7 @@ void PrepareSmothVertices(INDEX itt)
   GFXVertex *pvBorderDst = pavDst;
   GFXVertex *pvBorderSrc = pavSrc;
 
-  for(INDEX ivx=tt.tt_ctNonBorderVertices;ivx<ctVertices;ivx++) {
+  for (INDEX ivx=tt.tt_ctNonBorderVertices;ivx<ctVertices;ivx++) {
     //*pavDst++ = *pavSrc++;
     pvBorderDst[0] = pvBorderSrc[0];
     pvBorderDst++;
@@ -278,7 +278,7 @@ void PrepareSmothVertices(INDEX itt)
   // Lerp top border vertices
   const INDEX &iTopNeigbour = tt.tt_aiNeighbours[NB_TOP];
   // if top neighbour exists
-  if(iTopNeigbour>=0) {
+  if (iTopNeigbour>=0) {
     CTerrainTile &ttTop = _ptrTerrain->tr_attTiles[iTopNeigbour];
     const FLOAT &fLerpFactor = ttTop.tt_fLodLerpFactor;
     // Get source vertex pointer in top neighbour (vertex in bottom left corner of top neighbour)
@@ -288,13 +288,13 @@ void PrepareSmothVertices(INDEX itt)
     const INDEX ctLerps = (ttTop.tt_ctLodVtxX-1)/2;
 
     // is top tile in same lod as this tile and has smaller or equal lerp factor
-    if(tt.tt_iLod==ttTop.tt_iLod && fLerpFactor<=tt.tt_fLodLerpFactor) {
+    if (tt.tt_iLod==ttTop.tt_iLod && fLerpFactor<=tt.tt_fLodLerpFactor) {
       // Get destination vertex pointer in this tile (first vertex in top left corner of this tile - first vertex in array)
       const INDEX iDstVtx = 0;
       GFXVertex *pavDst = &pavDstFirst[iDstVtx];
 
       // for each vertex in bottom row of top tile that needs to be lerped
-      for(INDEX ivx=0;ivx<ctLerps;ivx++) {
+      for (INDEX ivx=0;ivx<ctLerps;ivx++) {
         // First vertex is same as in top tile
         pavDst[0] = pavSrc[0];
         // Second vertex is lerped between left and right vertices
@@ -303,7 +303,7 @@ void PrepareSmothVertices(INDEX itt)
         pavSrc+=2;
       }
     // is top tile in higher lod
-    } else if(tt.tt_iLod>ttTop.tt_iLod) {
+    } else if (tt.tt_iLod>ttTop.tt_iLod) {
       const INDEX iVtxDiff = (ttTop.tt_ctLodVtxX-1) / (tt.tt_ctLodVtxX-1);
       // Get destination vertex pointer to copy vertices from top neighbour (first vertex in top left corner of this tile - first vertex in array)
       // Get destination vertex pointer to lerp vertices from top neighbour (first vertex added as additional top border vertex)
@@ -313,9 +313,9 @@ void PrepareSmothVertices(INDEX itt)
       GFXVertex *pavDstLerp = &pavDstFirst[iDstLerpVtx];
 
       // if diference is in one lod
-      if(iVtxDiff==2) {
+      if (iVtxDiff==2) {
         // for each vertex in bottom row of top tile that needs to be lerped
-        for(INDEX ivx=0;ivx<ctLerps;ivx++) {
+        for (INDEX ivx=0;ivx<ctLerps;ivx++) {
           // Copy src vertex in normal dst vertex array
           pavDstCopy[0] = pavSrc[0];
           // Lerp left and right src vertices in border dst vertex
@@ -329,11 +329,11 @@ void PrepareSmothVertices(INDEX itt)
         INDEX ctbv = tt.tt_ctBorderVertices[NB_TOP];
         INDEX ivxInQuad = 2; // This is 2 cos first and last non border vertex 
         // for each border vertex
-        for(INDEX ivx=0;ivx<ctbv;ivx+=2) {
+        for (INDEX ivx=0;ivx<ctbv;ivx+=2) {
           // Lerp left and right src vertices in border dst vertex
           Lerp(pavDstLerp[0],pavSrc[1],pavSrc[0],pavSrc[2],fLerpFactor);
           // if this border vertex is not last in quad
-          if(ivxInQuad!=iVtxDiff) {
+          if (ivxInQuad!=iVtxDiff) {
             // Copy second border vertex
             pavDstLerp[1] = pavSrc[2];
             pavDstLerp+=2;
@@ -357,7 +357,7 @@ void PrepareSmothVertices(INDEX itt)
   // Lerp bottom border vertices
   const INDEX &iBottomNeigbour = tt.tt_aiNeighbours[NB_BOTTOM];
   // if bottom neighbour exists
-  if(iBottomNeigbour>=0) {
+  if (iBottomNeigbour>=0) {
     CTerrainTile &ttBottom = _ptrTerrain->tr_attTiles[iBottomNeigbour];
     const FLOAT &fLerpFactor = ttBottom.tt_fLodLerpFactor;
     // Get source vertex pointer in bottom neighbour (vertex in top left corner of bottom neighbour - first vertex in array) 
@@ -367,13 +367,13 @@ void PrepareSmothVertices(INDEX itt)
     const INDEX ctLerps = (ttBottom.tt_ctLodVtxX-1)/2;
 
     // is bottom tile in same lod as this tile and has smaller lerp factor
-    if(tt.tt_iLod==ttBottom.tt_iLod && fLerpFactor<tt.tt_fLodLerpFactor) {
+    if (tt.tt_iLod==ttBottom.tt_iLod && fLerpFactor<tt.tt_fLodLerpFactor) {
       // Get destination vertex pointer in this tile (first vertex in bottom left corner of this tile)
       const INDEX iDstVtx = tt.tt_ctLodVtxX * (tt.tt_ctLodVtxY-1);
       GFXVertex *pavDst = &pavDstFirst[iDstVtx];
 
       // for each vertex in top row of bottom tile that needs to be lerped
-      for(INDEX ivx=0;ivx<ctLerps;ivx++) {
+      for (INDEX ivx=0;ivx<ctLerps;ivx++) {
         // First vertex is same as in bottom tile
         pavDst[0] = pavSrc[0];
         // Second vertex is lerped between left and right vertices
@@ -382,7 +382,7 @@ void PrepareSmothVertices(INDEX itt)
         pavSrc+=2;
       }
     // is bottom tile in higher lod
-    } else if(tt.tt_iLod>ttBottom.tt_iLod) {
+    } else if (tt.tt_iLod>ttBottom.tt_iLod) {
       const INDEX iVtxDiff = (ttBottom.tt_ctLodVtxX-1) / (tt.tt_ctLodVtxX-1);
       // Get destination vertex pointer to copy vertices from bottom neighbour (first vertex in bottom left corner of this tile)
       // Get destination vertex pointer to lerp vertices from bottom neighbour (first vertex added as additional bottom border vertex)
@@ -392,9 +392,9 @@ void PrepareSmothVertices(INDEX itt)
       GFXVertex *pavDstLerp = &pavDstFirst[iDstLerpVtx];
 
       // if diference is in one lod
-      if(iVtxDiff==2) {
+      if (iVtxDiff==2) {
         // for each vertex in top row of bottom tile that needs to be lerped
-        for(INDEX ivx=0;ivx<ctLerps;ivx++) {
+        for (INDEX ivx=0;ivx<ctLerps;ivx++) {
           // Copy src vertex in normal dst vertex array
           pavDstCopy[0] = pavSrc[0];
           // Lerp left and right src vertices in border dst vertex
@@ -408,11 +408,11 @@ void PrepareSmothVertices(INDEX itt)
         INDEX ctbv = tt.tt_ctBorderVertices[NB_BOTTOM];
         INDEX ivxInQuad = 2; // This is 2 cos first and last non border vertex 
         // for each border vertex
-        for(INDEX ivx=0;ivx<ctbv;ivx+=2) {
+        for (INDEX ivx=0;ivx<ctbv;ivx+=2) {
           // Lerp left and right src vertices in border dst vertex
           Lerp(pavDstLerp[0],pavSrc[1],pavSrc[0],pavSrc[2],fLerpFactor);
           // if this border vertex is not last in quad
-          if(ivxInQuad!=iVtxDiff) {
+          if (ivxInQuad!=iVtxDiff) {
             // Copy second border vertex
             pavDstLerp[1] = pavSrc[2];
             pavDstLerp+=2;
@@ -436,7 +436,7 @@ void PrepareSmothVertices(INDEX itt)
   // Lerp left border vertices
   const INDEX &iLeftNeigbour = tt.tt_aiNeighbours[NB_LEFT];
   // if left neighbour exists
-  if(iLeftNeigbour>=0) {
+  if (iLeftNeigbour>=0) {
     CTerrainTile &ttLeft = _ptrTerrain->tr_attTiles[iLeftNeigbour];
     const FLOAT &fLerpFactor = ttLeft.tt_fLodLerpFactor;
     // Get source vertex pointer in left neighbour (vertex in top right corner of left neighbour) 
@@ -447,14 +447,14 @@ void PrepareSmothVertices(INDEX itt)
     const INDEX ctLerps = (ttLeft.tt_ctLodVtxX-1)/2;
 
     // is left tile in same lod as this tile and has smaller or equal lerp factor
-    if(tt.tt_iLod==ttLeft.tt_iLod && fLerpFactor<=tt.tt_fLodLerpFactor) {
+    if (tt.tt_iLod==ttLeft.tt_iLod && fLerpFactor<=tt.tt_fLodLerpFactor) {
       // Get destination vertex pointer in this tile (first vertex in top left corner of this tile - first vertex in array)
       const INDEX iDstVtx = 0;
       const INDEX iDstStep = tt.tt_ctLodVtxX;
       GFXVertex *pavDst = &pavDstFirst[iDstVtx];
 
       // for each vertex in last column of left tile that needs to be lerped
-      for(INDEX ivx=0;ivx<ctLerps;ivx++) {
+      for (INDEX ivx=0;ivx<ctLerps;ivx++) {
         // First vertex is same as in left tile
         pavDst[0] = pavSrc[0];
         // Second vertex is lerped between top and bottom vertices
@@ -463,7 +463,7 @@ void PrepareSmothVertices(INDEX itt)
         pavSrc+=iSrcStep*2;
       }
     // is left tile in higher lod
-    } else if(tt.tt_iLod>ttLeft.tt_iLod) {
+    } else if (tt.tt_iLod>ttLeft.tt_iLod) {
       const INDEX iVtxDiff = (ttLeft.tt_ctLodVtxX-1) / (tt.tt_ctLodVtxX-1);
       // Get destination vertex pointer to copy vertices from left neighbour (first vertex in top left corner of this tile - first vertex in array)
       // Get destination vertex pointer to lerp vertices from left neighbour (first vertex added as additional left border vertex)
@@ -474,9 +474,9 @@ void PrepareSmothVertices(INDEX itt)
       GFXVertex *pavDstLerp = &pavDstFirst[iDstLerpVtx];
 
       // if diference is in one lod
-      if(iVtxDiff==2) {
+      if (iVtxDiff==2) {
         // for each vertex in last column of left tile that needs to be lerped
-        for(INDEX ivx=0;ivx<ctLerps;ivx++) {
+        for (INDEX ivx=0;ivx<ctLerps;ivx++) {
           // Copy src vertex in normal dst vertex array
           pavDstCopy[0] = pavSrc[0];
           // Lerp left and right src vertices in border dst vertex
@@ -490,11 +490,11 @@ void PrepareSmothVertices(INDEX itt)
         INDEX ctbv = tt.tt_ctBorderVertices[NB_LEFT];
         INDEX ivxInQuad = 2; // This is 2 cos first and last non border vertex 
         // for each border vertex
-        for(INDEX ivx=0;ivx<ctbv;ivx+=2) {
+        for (INDEX ivx=0;ivx<ctbv;ivx+=2) {
           // Lerp left and right src vertices in border dst vertex
           Lerp(pavDstLerp[0],pavSrc[iSrcStep],pavSrc[0],pavSrc[iSrcStep*2],fLerpFactor);
           // if this border vertex is not last in quad
-          if(ivxInQuad!=iVtxDiff) {
+          if (ivxInQuad!=iVtxDiff) {
             // Copy second border vertex
             pavDstLerp[1] = pavSrc[iSrcStep*2];
             pavDstLerp+=2;
@@ -518,7 +518,7 @@ void PrepareSmothVertices(INDEX itt)
   // Lerp right border vertices
   const INDEX &iRightNeigbour = tt.tt_aiNeighbours[NB_RIGHT];
   // if right neighbour exists
-  if(iRightNeigbour>=0) {
+  if (iRightNeigbour>=0) {
     CTerrainTile &ttRight = _ptrTerrain->tr_attTiles[iRightNeigbour];
     const FLOAT &fLerpFactor = ttRight.tt_fLodLerpFactor;
     // Get source vertex pointer in right neighbour (vertex in top left corner of left neighbour - first vertex in array) 
@@ -529,14 +529,14 @@ void PrepareSmothVertices(INDEX itt)
     const INDEX ctLerps = (ttRight.tt_ctLodVtxX-1)/2;
 
     // is right tile in same lod as this tile and has smaller lerp factor
-    if(tt.tt_iLod==ttRight.tt_iLod && fLerpFactor<tt.tt_fLodLerpFactor) {
+    if (tt.tt_iLod==ttRight.tt_iLod && fLerpFactor<tt.tt_fLodLerpFactor) {
       // Get destination vertex pointer in this tile (first vertex in top right corner of this tile)
       INDEX iDstVtx = tt.tt_ctLodVtxX-1;
       INDEX iDstStep = tt.tt_ctLodVtxX;
       GFXVertex *pavDst = &pavDstFirst[iDstVtx];
 
       // for each vertex in first column of right tile that needs to be lerped
-      for(INDEX ivx=0;ivx<ctLerps;ivx++) {
+      for (INDEX ivx=0;ivx<ctLerps;ivx++) {
         // First vertex is same as in right tile
         pavDst[0] = pavSrc[0];
         // Second vertex is lerped between top and bottom vertices
@@ -545,7 +545,7 @@ void PrepareSmothVertices(INDEX itt)
         pavSrc+=iSrcStep*2;
       }
     // is right tile in higher lod
-    } else if(tt.tt_iLod>ttRight.tt_iLod) {
+    } else if (tt.tt_iLod>ttRight.tt_iLod) {
       const INDEX iVtxDiff = (ttRight.tt_ctLodVtxX-1) / (tt.tt_ctLodVtxX-1);
       // Get destination vertex pointer to copy vertices from right neighbour (first vertex in top right corner of this tile)
       // Get destination vertex pointer to lerp vertices from right neighbour (first vertex added as additional right border vertex)
@@ -556,9 +556,9 @@ void PrepareSmothVertices(INDEX itt)
       GFXVertex *pavDstLerp = &pavDstFirst[iDstLerpVtx];
 
       // if diference is in one lod
-      if(iVtxDiff==2) {
+      if (iVtxDiff==2) {
         // for each vertex in first column of right tile that needs to be lerped
-        for(INDEX ivx=0;ivx<ctLerps;ivx++) {
+        for (INDEX ivx=0;ivx<ctLerps;ivx++) {
           // Copy src vertex in normal dst vertex array
           pavDstCopy[0] = pavSrc[0];
           // Lerp left and right src vertices in border dst vertex
@@ -572,11 +572,11 @@ void PrepareSmothVertices(INDEX itt)
         INDEX ctbv = tt.tt_ctBorderVertices[NB_RIGHT];
         INDEX ivxInQuad = 2; // This is 2 cos first and last non border vertex 
         // for each border vertex
-        for(INDEX ivx=0;ivx<ctbv;ivx+=2) {
+        for (INDEX ivx=0;ivx<ctbv;ivx+=2) {
           // Lerp left and right src vertices in border dst vertex
           Lerp(pavDstLerp[0],pavSrc[iSrcStep],pavSrc[0],pavSrc[iSrcStep*2],fLerpFactor);
           // if this border vertex is not last in quad
-          if(ivxInQuad!=iVtxDiff) {
+          if (ivxInQuad!=iVtxDiff) {
             // Copy second border vertex
             pavDstLerp[1] = pavSrc[iSrcStep*2];
             pavDstLerp+=2;
@@ -624,8 +624,8 @@ void PrepareSmothVerticesOnTileLayer(INDEX iTerrainTile, INDEX iTileLayer)
   INDEX iFacing = 1;
 
   // Minimize popping on vertices using 4 quads, 2 from current row and 2 from next row in same tile
-  for(INDEX iz=0;iz<ctQuadsPerRow;iz+=2) {
-    for(INDEX ix=0;ix<ctQuadsPerRow;ix+=2) {
+  for (INDEX iz=0;iz<ctQuadsPerRow;iz+=2) {
+    for (INDEX ix=0;ix<ctQuadsPerRow;ix+=2) {
       // Get pointer for quads in next row
       GFXVertex *pavNRSrc = &pavSrc[ctVerticesInRow*2];
       GFXVertex *pavNRDst = &pavDst[ctVerticesInRow*2];
@@ -634,7 +634,7 @@ void PrepareSmothVerticesOnTileLayer(INDEX iTerrainTile, INDEX iTileLayer)
       Lerp(pavDst[1],pavSrc[1],pavSrc[0],pavSrc[5],fLerpFactor);
       Lerp(pavDst[2],pavSrc[2],pavSrc[0],pavNRSrc[2],fLerpFactor);
 
-      if(iFacing&1) {
+      if (iFacing&1) {
         Lerp(pavDst[3],pavSrc[3],pavSrc[0],pavNRSrc[7],fLerpFactor);
       } else {
         Lerp(pavDst[3],pavSrc[3],pavSrc[5],pavNRSrc[2],fLerpFactor);
@@ -666,17 +666,17 @@ void PrepareSmothVerticesOnTileLayer(INDEX iTerrainTile, INDEX iTileLayer)
   // Lerp top border
   INDEX iTopNeighbour = tt.tt_aiNeighbours[NB_TOP];
   // if top border exists
-  if(iTopNeighbour>=0) {
+  if (iTopNeighbour>=0) {
     CTerrainTile &ttTop = _ptrTerrain->tr_attTiles[iTopNeighbour];
     const FLOAT fTopLerpFactor = ttTop.tt_fLodLerpFactor;
     // is top tile in highest lod and has smaller or equal lerp factor
-    if(ttTop.tt_iLod==0 && fTopLerpFactor<=fLerpFactor) {
+    if (ttTop.tt_iLod==0 && fTopLerpFactor<=fLerpFactor) {
       TileLayer &ttl = ttTop.GetTileLayers()[iTileLayer];
       INDEX iFirstVertex = ctVerticesInRow*(ctVerticesInRow-2);
       GFXVertex *pavSrc = &ttl.tl_avVertices[iFirstVertex];
       GFXVertex *pavDst = &_avLerpedTileLayerVertices[0];
       // for each quad
-      for(INDEX ix=0;ix<ctQuadsPerRow;ix+=2) {
+      for (INDEX ix=0;ix<ctQuadsPerRow;ix+=2) {
         Lerp(pavDst[1],pavSrc[6],pavSrc[2],pavSrc[7],fTopLerpFactor);
         pavDst[4] = pavDst[1];
         pavSrc+=8;
@@ -688,17 +688,17 @@ void PrepareSmothVerticesOnTileLayer(INDEX iTerrainTile, INDEX iTileLayer)
   // Lerp bottom border
   INDEX iBottomNeighbour = tt.tt_aiNeighbours[NB_BOTTOM];
   // if bottom border exists
-  if(iBottomNeighbour>=0) {
+  if (iBottomNeighbour>=0) {
     CTerrainTile &ttBottom = _ptrTerrain->tr_attTiles[iBottomNeighbour];
     const FLOAT fBottomLerpFactor = ttBottom.tt_fLodLerpFactor;
     // is bottom tile in highest lod and has smaller lerp factor
-    if(ttBottom.tt_iLod==0 && fBottomLerpFactor<fLerpFactor) {
+    if (ttBottom.tt_iLod==0 && fBottomLerpFactor<fLerpFactor) {
       TileLayer &ttl = ttBottom.GetTileLayers()[iTileLayer];
       INDEX iFirstVertex = ctVerticesInRow*(ctVerticesInRow-2);
       GFXVertex *pavSrc = &ttl.tl_avVertices[0];
       GFXVertex *pavDst = &_avLerpedTileLayerVertices[iFirstVertex];
       // for each quad
-      for(INDEX ix=0;ix<ctQuadsPerRow;ix+=2) {
+      for (INDEX ix=0;ix<ctQuadsPerRow;ix+=2) {
         Lerp(pavDst[3],pavSrc[1],pavSrc[0],pavSrc[5],fBottomLerpFactor);
         pavDst[6] = pavDst[3];
         pavSrc+=8;
@@ -710,17 +710,17 @@ void PrepareSmothVerticesOnTileLayer(INDEX iTerrainTile, INDEX iTileLayer)
   // Lerp left border
   INDEX iLeftNeighbour = tt.tt_aiNeighbours[NB_LEFT];
   // if left neightbour exits
-  if(iLeftNeighbour>=0) {
+  if (iLeftNeighbour>=0) {
     CTerrainTile &ttLeft = _ptrTerrain->tr_attTiles[iLeftNeighbour];
     const FLOAT fLeftLerpFactor = ttLeft.tt_fLodLerpFactor;
     // is left tile in highest lod and has smaller or equal left factor
-    if(ttLeft.tt_iLod==0 && fLeftLerpFactor<=fLerpFactor) {
+    if (ttLeft.tt_iLod==0 && fLeftLerpFactor<=fLerpFactor) {
       TileLayer &ttl = ttLeft.GetTileLayers()[iTileLayer];
       INDEX iFirstVertex = ctVerticesInRow*2-8;
       GFXVertex *pavSrc = &ttl.tl_avVertices[iFirstVertex];
       GFXVertex *pavDst = &_avLerpedTileLayerVertices[0];
       // for each quad
-      for(INDEX ix=0;ix<ctQuadsPerRow;ix+=2) {
+      for (INDEX ix=0;ix<ctQuadsPerRow;ix+=2) {
         GFXVertex *pavNRSrc = &pavSrc[ctVerticesInRow*2];
         GFXVertex *pavNRDst = &pavDst[ctVerticesInRow*2];
 
@@ -735,17 +735,17 @@ void PrepareSmothVerticesOnTileLayer(INDEX iTerrainTile, INDEX iTileLayer)
   // Lerp right border
   INDEX iRightNeighbour = tt.tt_aiNeighbours[NB_RIGHT];
   // if right neightbour exits
-  if(iRightNeighbour>=0) {
+  if (iRightNeighbour>=0) {
     CTerrainTile &ttRight = _ptrTerrain->tr_attTiles[iRightNeighbour];
     const FLOAT fRightLerpFactor = ttRight.tt_fLodLerpFactor;
     // is right tile in highest lod and has smaller left factor
-    if(ttRight.tt_iLod==0 && fRightLerpFactor<fLerpFactor) {
+    if (ttRight.tt_iLod==0 && fRightLerpFactor<fLerpFactor) {
       TileLayer &ttl = ttRight.GetTileLayers()[iTileLayer];
       INDEX iFirstVertex = ctVerticesInRow*2-8;
       GFXVertex *pavSrc = &ttl.tl_avVertices[0];
       GFXVertex *pavDst = &_avLerpedTileLayerVertices[iFirstVertex];
       // for each quad
-      for(INDEX ix=0;ix<ctQuadsPerRow;ix+=2) {
+      for (INDEX ix=0;ix<ctQuadsPerRow;ix+=2) {
         GFXVertex *pavNRSrc = &pavSrc[ctVerticesInRow*2];
         GFXVertex *pavNRDst = &pavDst[ctVerticesInRow*2];
 
@@ -789,7 +789,7 @@ static void RenderBatchedTiles(void)
   _ctTris +=ctIndices/2;
 
   // if shadows are visible
-  if(_wrpWorldRenderPrefs.wrp_shtShadows!=CWorldRenderPrefs::SHT_NONE) {
+  if (_wrpWorldRenderPrefs.wrp_shtShadows!=CWorldRenderPrefs::SHT_NONE) {
     gfxDepthFunc(GFX_EQUAL);
 
     gfxBlendFunc(GFX_DST_COLOR,GFX_SRC_COLOR);
@@ -800,10 +800,10 @@ static void RenderBatchedTiles(void)
     gfxDepthFunc(GFX_LESS_EQUAL);
   }
 
-  if(_ptrTerrain->GetFlags()&TR_HAS_FOG) {
+  if (_ptrTerrain->GetFlags()&TR_HAS_FOG) {
     RenderFogLayer(-1);
   }
-  if(_ptrTerrain->GetFlags()&TR_HAS_HAZE) {
+  if (_ptrTerrain->GetFlags()&TR_HAS_HAZE) {
     RenderHazeLayer(-1);
   }
   gfxUnlockArrays();
@@ -834,14 +834,14 @@ static void BatchTile(INDEX itt)
   INDEX       *paiDelIndices      = _aiDelayedIndices.Push(24);
 
   // for each vertex in tile
-  for(INDEX ivx=0;ivx<9;ivx++) {
+  for (INDEX ivx=0;ivx<9;ivx++) {
     // copy vertex, texcoord & shadow map texcoord to delayed array
     pavDelVertices[ivx]     = pavVertices[ivx];
     pauvDelTexCoords[ivx]   = pauvTexCoords[ivx];
     pauvDelShadowMapTC[ivx] = pauvShadowMapTC[ivx];
   }
   // for each index in tile
-  for(INDEX iind=0;iind<24;iind++) {
+  for (INDEX iind=0;iind<24;iind++) {
     // reindex indice for new arrays
     paiDelIndices[iind] = paiIndices[iind] + ctDelayedVertices;
   }
@@ -895,7 +895,7 @@ static void RenderFogLayer(INDEX itt)
   INDEX ctVertices;
   INDEX ctIndices;
   // if this is tile 
-  if(itt>=0) {
+  if (itt>=0) {
     CTerrainTile &tt = _ptrTerrain->tr_attTiles[itt];
     pvVtx      = &tt.GetVertices()[0];
     piIndices  = &tt.GetIndices()[0];
@@ -916,7 +916,7 @@ static void RenderFogLayer(INDEX itt)
   GFXColor colFog(colF);
 
   // for each vertex in tile
-  for(INDEX ivx=0;ivx<ctVertices;ivx++) {
+  for (INDEX ivx=0;ivx<ctVertices;ivx++) {
     GetFogMapInVertex(pvVtx[ivx],pfFogTC[ivx]);
     pcolFog[ivx] = colFog;
   }
@@ -951,7 +951,7 @@ static void RenderHazeLayer(INDEX itt)
   INDEX ctVertices;
   INDEX ctIndices;
   // if this is tile 
-  if(itt>=0) {
+  if (itt>=0) {
     CTerrainTile &tt = _ptrTerrain->tr_attTiles[itt];
     pvVtx      = &tt.GetVertices()[0];
     piIndices  = &tt.GetIndices()[0];
@@ -971,7 +971,7 @@ static void RenderHazeLayer(INDEX itt)
   const COLOR colH = AdjustColor( _haze_hp.hp_colColor, _slTexHueShift, _slTexSaturation);
   GFXColor colHaze(colH);
   // for each vertex in tile
-  for(INDEX ivx=0;ivx<ctVertices;ivx++) {
+  for (INDEX ivx=0;ivx<ctVertices;ivx++) {
     GetHazeMapInVertex(pvVtx[ivx],pfHazeTC[ivx]);
     pcolHaze[ivx] = colHaze;
   }
@@ -1000,7 +1000,7 @@ static void RenderTile(INDEX itt)
 
   extern INDEX ter_bOptimizeRendering;
   // if tile is in posible lowest lod and doesn't have any border vertices
-  if(ter_bOptimizeRendering && tt.GetFlags()&TT_IN_LOWEST_LOD) {
+  if (ter_bOptimizeRendering && tt.GetFlags()&TT_IN_LOWEST_LOD) {
     // delay tile rendering
     BatchTile(itt);
     return;
@@ -1008,7 +1008,7 @@ static void RenderTile(INDEX itt)
 
   GFXVertex4 *pavVertices;
   // if vertex lerping is requested
-  if(ter_bLerpVertices==1) {
+  if (ter_bLerpVertices==1) {
     // Prepare smoth vertices
     PrepareSmothVertices(itt);
     pavVertices = &_avLerpedVerices[0];
@@ -1018,17 +1018,17 @@ static void RenderTile(INDEX itt)
   }
 
   // if tile is in highest lod
-  if(tt.tt_iLod==0) {
+  if (tt.tt_iLod==0) {
     gfxBlendFunc(GFX_SRC_ALPHA, GFX_INV_SRC_ALPHA);
     gfxSetVertexArray(pavVertices,ctVertices);
 
     gfxLockArrays();
     // for each tile layer
     INDEX cttl= tt.GetTileLayers().Count();
-    for(INDEX itl=0;itl<cttl;itl++) {
+    for (INDEX itl=0;itl<cttl;itl++) {
       CTerrainLayer &tl = _ptrTerrain->tr_atlLayers[itl];
       // if layer isn't visible
-      if(!tl.tl_bVisible) {
+      if (!tl.tl_bVisible) {
         continue; // skip it
       }
 
@@ -1040,7 +1040,7 @@ static void RenderTile(INDEX itt)
       gfxSetTextureMatrix2(&m12);
 
       // Set tile blend mode
-      if(tl.tl_fSmoothness==0) {
+      if (tl.tl_fSmoothness==0) {
         gfxDisableBlend();
         gfxEnableAlphaTest();
       } else {
@@ -1050,15 +1050,15 @@ static void RenderTile(INDEX itt)
 
       // if this tile has any polygons in this layer
       INDEX ctIndices = ttl.tl_auiIndices.Count();
-      if(ctIndices>0) {
+      if (ctIndices>0) {
         gfxSetTextureWrapping(GFX_REPEAT,GFX_REPEAT);
         tl.tl_ptdTexture->SetAsCurrent();
 
         // if this is tile layer 
-        if(tl.tl_ltType==LT_TILE) {
+        if (tl.tl_ltType==LT_TILE) {
           gfxUnlockArrays();
           GFXVertex4 *pavLayerVertices;
-          if(ter_bLerpVertices==1) {
+          if (ter_bLerpVertices==1) {
             PrepareSmothVerticesOnTileLayer(itt,itl);
             pavLayerVertices = &_avLerpedTileLayerVertices[0];
           } else {
@@ -1102,11 +1102,11 @@ static void RenderTile(INDEX itt)
     }
     gfxSetTextureMatrix2(NULL);
     INDEX ctIndices = tt.GetIndices().Count();
-    if(ctIndices>0) {
+    if (ctIndices>0) {
       INDEX *paiIndices = &tt.GetIndices()[0];
 
       // if detail map exists
-      if(_ptrTerrain->tr_ptdDetailMap!=NULL) {
+      if (_ptrTerrain->tr_ptdDetailMap!=NULL) {
         gfxSetTextureWrapping(GFX_REPEAT,GFX_REPEAT);
         gfxDisableAlphaTest();
         shaBlendFunc( GFX_DST_COLOR, GFX_SRC_COLOR);
@@ -1117,7 +1117,7 @@ static void RenderTile(INDEX itt)
       }
 
       // if shadows are visible
-      if(_wrpWorldRenderPrefs.wrp_shtShadows!=CWorldRenderPrefs::SHT_NONE) {
+      if (_wrpWorldRenderPrefs.wrp_shtShadows!=CWorldRenderPrefs::SHT_NONE) {
         gfxDisableAlphaTest();
         shaBlendFunc( GFX_DST_COLOR, GFX_SRC_COLOR);
         gfxEnableBlend();
@@ -1131,7 +1131,7 @@ static void RenderTile(INDEX itt)
   } else {
     gfxSetTextureWrapping(GFX_CLAMP,GFX_CLAMP);
     // if tile is in lowest lod
-    if(tt.tt_iLod == _ptrTerrain->tr_iMaxTileLod) {
+    if (tt.tt_iLod == _ptrTerrain->tr_iMaxTileLod) {
       // use terrains global top map
       _ptrTerrain->tr_tdTopMap.SetAsCurrent();
     // else tile is in some midle lod
@@ -1154,7 +1154,7 @@ static void RenderTile(INDEX itt)
     gfxDisableAlphaTest();
 
     // if shadows are visible
-    if(_wrpWorldRenderPrefs.wrp_shtShadows!=CWorldRenderPrefs::SHT_NONE) {
+    if (_wrpWorldRenderPrefs.wrp_shtShadows!=CWorldRenderPrefs::SHT_NONE) {
       gfxDepthFunc(GFX_EQUAL);
       INDEX ctIndices = tt.GetIndices().Count();
       INDEX *paiIndices = &tt.GetIndices()[0];
@@ -1169,10 +1169,10 @@ static void RenderTile(INDEX itt)
     }
   }
 
-  if(_ptrTerrain->GetFlags()&TR_HAS_FOG) {
+  if (_ptrTerrain->GetFlags()&TR_HAS_FOG) {
     RenderFogLayer(itt);
   }
-  if(_ptrTerrain->GetFlags()&TR_HAS_HAZE) {
+  if (_ptrTerrain->GetFlags()&TR_HAS_HAZE) {
     RenderHazeLayer(itt);
   }
 
@@ -1191,18 +1191,18 @@ static void DrawQuadTreeNode(INDEX iqtn)
     (pen->en_plPlacement.pl_PositionVector-_aprProjection->pr_vViewerPosition)*mAbsToView, mAbsToView*pen->en_mRotation);
 
   INDEX iFrustumTest = _aprProjection->TestBoxToFrustum(obbox);
-  if(iFrustumTest!=(-1)) {
+  if (iFrustumTest!=(-1)) {
     // is this leaf node
-    if(qtn.qtn_iTileIndex != -1) {
+    if (qtn.qtn_iTileIndex != -1) {
       _ctNodesVis++;
       // draw terrain tile for this node 
       RenderTile(qtn.qtn_iTileIndex);
     // this node has some children
     } else {
-      for(INDEX iqc=0;iqc<4;iqc++) {
+      for (INDEX iqc=0;iqc<4;iqc++) {
         INDEX iChildNode = qtn.qtn_iChild[iqc];
         // if child node exists
-        if(iChildNode != -1) {
+        if (iChildNode != -1) {
           // draw child node
           DrawQuadTreeNode(qtn.qtn_iChild[iqc]);
         }
@@ -1226,7 +1226,7 @@ void RenderTerrain(void)
   DrawQuadTreeNode(qtl.qtl_iFirstNode);
 
   // if any delayed tiles
-  if(_ctDelayedNodes>0) {
+  if (_ctDelayedNodes>0) {
     // Draw delayed tiles
     RenderBatchedTiles();
   }
@@ -1277,7 +1277,7 @@ static void RenderWireTile(INDEX itt)
   INDEX ctVertices = tt.GetVertices().Count();
 
   GFXVertex4 *pavVertices;
-  if(ter_bLerpVertices) {
+  if (ter_bLerpVertices) {
     PrepareSmothVertices(itt);
     pavVertices = &_avLerpedVerices[0];
   } else {
@@ -1285,7 +1285,7 @@ static void RenderWireTile(INDEX itt)
   }
 
   INDEX ctIndices = tt.GetIndices().Count();
-  if(ctIndices>0) {
+  if (ctIndices>0) {
     gfxDisableBlend();
     gfxDisableTexture();
     gfxSetConstantColor(_colTerrainEdges);
@@ -1308,18 +1308,18 @@ static void DrawWireQuadTreeNode(INDEX iqtn)
     (pen->en_plPlacement.pl_PositionVector-_aprProjection->pr_vViewerPosition)*mAbsToView, mAbsToView*pen->en_mRotation);
 
   INDEX iFrustumTest = _aprProjection->TestBoxToFrustum(obbox);
-  if(iFrustumTest!=(-1)) {
+  if (iFrustumTest!=(-1)) {
     // is this leaf node
-    if(qtn.qtn_iTileIndex != -1) {
+    if (qtn.qtn_iTileIndex != -1) {
       _ctNodesVis++;
       // draw terrain tile for this node 
       RenderWireTile(qtn.qtn_iTileIndex);
     // this node has some children
     } else {
-      for(INDEX iqc=0;iqc<4;iqc++) {
+      for (INDEX iqc=0;iqc<4;iqc++) {
         INDEX iChildNode = qtn.qtn_iChild[iqc];
         // if child node exists
-        if(iChildNode != -1) {
+        if (iChildNode != -1) {
           // draw child node
           DrawWireQuadTreeNode(qtn.qtn_iChild[iqc]);
         }
@@ -1356,7 +1356,7 @@ void DrawQuadTree(void)
   QuadTreeLevel &qtl = _ptrTerrain->tr_aqtlQuadTreeLevels[0];
   gfxDisableTexture();
   // for each quad tree node 
-  for(INDEX iqtn=qtl.qtl_iFirstNode;iqtn<qtl.qtl_iFirstNode+qtl.qtl_ctNodes;iqtn++) {
+  for (INDEX iqtn=qtl.qtl_iFirstNode;iqtn<qtl.qtl_iFirstNode+qtl.qtl_ctNodes;iqtn++) {
     // draw node
     QuadTreeNode &qtn = _ptrTerrain->tr_aqtnQuadTreeNodes[iqtn];
     gfxDrawWireBox(qtn.qtn_aabbox,0x00FF00FF);
@@ -1367,7 +1367,7 @@ void DrawSelectedVertices(GFXVertex *pavVertices, GFXColor *pacolColors, INDEX c
 {
   gfxEnableDepthBias();
   // for each vertex
-  for(INDEX ivx=0;ivx<ctVertices;ivx++) {
+  for (INDEX ivx=0;ivx<ctVertices;ivx++) {
     GFXVertex &vtx = pavVertices[ivx];
     GFXColor  &col = pacolColors[ivx];
     // draw vertex
@@ -1383,14 +1383,14 @@ void gfxDrawWireBox(FLOATaabbox3D &bbox, COLOR col)
   FLOAT3D vMaxVtx = bbox.Max();
   // fill vertex array so it represents bounding box
   FLOAT3D vBoxVtxs[8];
-  vBoxVtxs[0] = FLOAT3D( vMinVtx(1), vMinVtx(2), vMinVtx(3));
-  vBoxVtxs[1] = FLOAT3D( vMaxVtx(1), vMinVtx(2), vMinVtx(3));
-  vBoxVtxs[2] = FLOAT3D( vMaxVtx(1), vMinVtx(2), vMaxVtx(3));
-  vBoxVtxs[3] = FLOAT3D( vMinVtx(1), vMinVtx(2), vMaxVtx(3));
-  vBoxVtxs[4] = FLOAT3D( vMinVtx(1), vMaxVtx(2), vMinVtx(3));
-  vBoxVtxs[5] = FLOAT3D( vMaxVtx(1), vMaxVtx(2), vMinVtx(3));
-  vBoxVtxs[6] = FLOAT3D( vMaxVtx(1), vMaxVtx(2), vMaxVtx(3));
-  vBoxVtxs[7] = FLOAT3D( vMinVtx(1), vMaxVtx(2), vMaxVtx(3));
+  vBoxVtxs[0] = FLOAT3D(vMinVtx(1), vMinVtx(2), vMinVtx(3));
+  vBoxVtxs[1] = FLOAT3D(vMaxVtx(1), vMinVtx(2), vMinVtx(3));
+  vBoxVtxs[2] = FLOAT3D(vMaxVtx(1), vMinVtx(2), vMaxVtx(3));
+  vBoxVtxs[3] = FLOAT3D(vMinVtx(1), vMinVtx(2), vMaxVtx(3));
+  vBoxVtxs[4] = FLOAT3D(vMinVtx(1), vMaxVtx(2), vMinVtx(3));
+  vBoxVtxs[5] = FLOAT3D(vMaxVtx(1), vMaxVtx(2), vMinVtx(3));
+  vBoxVtxs[6] = FLOAT3D(vMaxVtx(1), vMaxVtx(2), vMaxVtx(3));
+  vBoxVtxs[7] = FLOAT3D(vMinVtx(1), vMaxVtx(2), vMaxVtx(3));
 
   // connect vertices into lines of bounding box
   INDEX iBoxLines[12][2];
@@ -1401,7 +1401,7 @@ void gfxDrawWireBox(FLOATaabbox3D &bbox, COLOR col)
   iBoxLines[ 8][0] = 4;  iBoxLines[ 8][1] = 5;  iBoxLines[ 9][0] = 5;  iBoxLines[ 9][1] = 6;
   iBoxLines[10][0] = 6;  iBoxLines[10][1] = 7;  iBoxLines[11][0] = 7;  iBoxLines[11][1] = 4;
   // for all vertices in bounding box
-  for( INDEX i=0; i<12; i++) {
+  for (INDEX i=0; i<12; i++) {
     // get starting and ending vertices of one line
     FLOAT3D &v0 = vBoxVtxs[iBoxLines[i][0]];
     FLOAT3D &v1 = vBoxVtxs[iBoxLines[i][1]];

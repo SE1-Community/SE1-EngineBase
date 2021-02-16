@@ -40,4 +40,4 @@ CProjection3D::CProjection3D(void) {
   pr_fViewStretch = 1.0f;
 }
 
-CPlacement3D _plOrigin(FLOAT3D(0,0,0), ANGLE3D(0,0,0));
+CPlacement3D _plOrigin(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));

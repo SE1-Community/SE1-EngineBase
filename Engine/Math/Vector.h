@@ -159,7 +159,7 @@ template<class Type, int iDimensions>
 __forceinline Type Vector<Type, iDimensions>::Length(void) const
 {
   Type result=(Type)0;
-  for(int i=1; i<=iDimensions; i++) {
+  for (int i=1; i<=iDimensions; i++) {
     result += (*this)(i) * (*this)(i);
   }
   return (Type)sqrt((DOUBLE)result);
@@ -173,7 +173,7 @@ template<class Type, int iDimensions>
 __forceinline Type Vector<Type, iDimensions>::ManhattanNorm(void) const
 {
   Type result=(Type)0;
-  for(int i=1; i<=iDimensions; i++) {
+  for (int i=1; i<=iDimensions; i++) {
     result += Abs((*this)(i));
   }
   return result;
@@ -186,7 +186,7 @@ template<class Type, int iDimensions>
 __forceinline Type Vector<Type, iDimensions>::MaxNorm(void) const
 {
   Type result=(Type)0;
-  for(int i=1; i<=iDimensions; i++) {
+  for (int i=1; i<=iDimensions; i++) {
     result = Max(result, Abs((*this)(i)));
   }
   return result;
@@ -266,7 +266,7 @@ __forceinline Vector<Type, iDimensions> &Vector<Type, iDimensions>::Flip(void)
 {
   // flip member by member
   ASSERT( iDimensions!=3);  // 3 is optimized special case 
-  for(int iDimension=1; iDimension<=iDimensions; iDimension++) {
+  for (int iDimension=1; iDimension<=iDimensions; iDimension++) {
     (*this)(iDimension) = -(*this)(iDimension);
   }
   return *this;
@@ -305,7 +305,7 @@ __forceinline Vector<Type, iDimensions> &Vector<Type, iDimensions>::operator+=(c
 {
   // add member by member
   ASSERT( iDimensions!=3);  // 3 is optimized special case 
-  for(int iDimension=1; iDimension<=iDimensions; iDimension++) {
+  for (int iDimension=1; iDimension<=iDimensions; iDimension++) {
     (*this)(iDimension) += vector2(iDimension);
   }
   return *this;
@@ -344,7 +344,7 @@ __forceinline Vector<Type, iDimensions> &Vector<Type, iDimensions>::operator-=(c
 {
   // sub member by member
   ASSERT( iDimensions!=3);  // 3 is optimized special case 
-  for(int iDimension=1; iDimension<=iDimensions; iDimension++) {
+  for (int iDimension=1; iDimension<=iDimensions; iDimension++) {
     (*this)(iDimension) -= vector2(iDimension);
   }
   return *this;
@@ -381,7 +381,7 @@ template<class Type, int iDimensions>
 __forceinline Vector<Type, iDimensions> &Vector<Type, iDimensions>::operator*=(const Type scalar)
 {
   ASSERT( iDimensions!=3);  // 3 is optimized special case 
-  for( int i=1; i<=iDimensions; i++) (*this)(i) *= scalar;
+  for (int i=1; i<=iDimensions; i++) (*this)(i) *= scalar;
   return *this;
 }
 
@@ -418,7 +418,7 @@ template<class Type, int iDimensions>
 __forceinline Vector<Type, iDimensions> &Vector<Type, iDimensions>::operator/=(const Type scalar)
 {
   ASSERT( iDimensions!=3);  // 3 is optimized special case 
-  for( int i=1; i<=iDimensions; i++) (*this)(i) /= scalar;
+  for (int i=1; i<=iDimensions; i++) (*this)(i) /= scalar;
   return *this;
 }
 
@@ -464,9 +464,9 @@ __forceinline Vector<Type, iDimensions> Vector<Type, iDimensions>::operator*(con
 {
   ASSERT( iDimensions!=3);  // 3 is optimized special case 
   Vector<Type, iDimensions> result;
-  for(int iRow=1; iRow<=iDimensions; iRow++) {
+  for (int iRow=1; iRow<=iDimensions; iRow++) {
     result(iRow) = (Type)0;
-    for(int s=1; s<=iDimensions; s++) {
+    for (int s=1; s<=iDimensions; s++) {
       result(iRow) += matrix2(iRow, s) * (*this)(s);
     }
   }
@@ -492,7 +492,7 @@ __forceinline Type Vector<Type, iDimensions>::operator%(const Vector<Type, iDime
 {
   ASSERT( iDimensions!=3);  // 3 is optimized special case 
   Type result=(Type)0;
-  for(int i=1; i<=iDimensions; i++) {
+  for (int i=1; i<=iDimensions; i++) {
     result += (*this)(i) * vector2(i);
   }
   return result;
@@ -542,8 +542,8 @@ template<class Type, int iDimensions>
 __forceinline BOOL Vector<Type, iDimensions>::operator==(const Vector<Type, iDimensions> &vector2) const
 {
   ASSERT( iDimensions!=3);  // 3 is optimized special case 
-  for(int i=1; i<=iDimensions; i++) {
-    if( (*this)(i) != vector2(i))
+  for (int i=1; i<=iDimensions; i++) {
+    if ((*this)(i) != vector2(i))
       return FALSE;
   }
   return TRUE;

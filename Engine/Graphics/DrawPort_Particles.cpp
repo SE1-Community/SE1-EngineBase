@@ -65,7 +65,7 @@ void Particle_PrepareSystem( CDrawPort *pdpDrawPort, CAnyProjection3D &prProject
   
   // prepare projection and scale factor
   pdpDrawPort->SetProjection(prProjection);
-  if( prProjection.IsPerspective()) _fPerspectiveFactor = ((CPerspectiveProjection3D*)&*prProjection)->ppr_PerspectiveRatios(1);
+  if (prProjection.IsPerspective()) _fPerspectiveFactor = ((CPerspectiveProjection3D*)&*prProjection)->ppr_PerspectiveRatios(1);
   
   // setup rendering mode
   gfxEnableDepthTest();
@@ -80,7 +80,7 @@ void Particle_PrepareSystem( CDrawPort *pdpDrawPort, CAnyProjection3D &prProject
 void Particle_EndSystem( BOOL bRestoreOrtho/*=TRUE*/)
 {
   // reset projection and re-enable clipping
-  if( bRestoreOrtho) _pDP->SetOrtho();
+  if (bRestoreOrtho) _pDP->SetOrtho();
   gfxEnableClipping();
 }
 
@@ -109,7 +109,7 @@ INDEX Particle_GetDrawPortID(void)
 void Particle_PrepareTexture( CTextureObject *pto, enum ParticleBlendType pbt)
 {
   // determine blend type
-  switch( pbt) {
+  switch (pbt) {
   case PBT_BLEND:
     gfxDisableDepthWrite();
     gfxDisableAlphaTest();
@@ -192,49 +192,49 @@ void Particle_SetTexturePart( MEX mexWidth, MEX mexHeight, INDEX iCol, INDEX iRo
 void Particle_RenderSquare( const FLOAT3D &vPos, FLOAT fSize, ANGLE aRotation, COLOR col, FLOAT fYRatio/*=1.0f*/)
 {
   // trivial rejection
-  if( fSize<0.0001f || ((col&CT_AMASK)>>CT_ASHIFT)<2) return;
+  if (fSize<0.0001f || ((col&CT_AMASK)>>CT_ASHIFT)<2) return;
 
   // project point to screen
   FLOAT3D vProjected;
   _pprProjection->PreClip( vPos, vProjected);
   // skip if not in screen
   const INDEX iTest = _pprProjection->TestSphereToFrustum( vProjected, fSize);
-  if( iTest<0) return;
+  if (iTest<0) return;
   const FLOAT fPixSize = fSize * _fPerspectiveFactor / vProjected(3);
-  if( fPixSize<0.5f) return;
+  if (fPixSize<0.5f) return;
 
   // adjust the need for clipping
-  if( iTest==0) _bNeedsClipping = TRUE;
+  if (iTest==0) _bNeedsClipping = TRUE;
 
   // eventual tex coords for fog or haze
   const INDEX ctTexFG = _atexFogHaze.Count();
   GFXTexCoord *ptexFogHaze = &_atexFogHaze[ctTexFG-4];
 
   // if haze is active
-  if( _Particle_bHasHaze)
+  if (_Particle_bHasHaze)
   { // get haze strength at particle position
     ptexFogHaze[0].s = (-vProjected(3)+_haze_fAdd)*_haze_fMul;
     const ULONG ulH = 255-GetHazeAlpha(ptexFogHaze[0].s);
-    if( ulH<4) return;
-    if( _colAttMask) { // apply haze color (if not transparent)
+    if (ulH<4) return;
+    if (_colAttMask) { // apply haze color (if not transparent)
       const COLOR colH = _colAttMask | RGBAToColor( ulH,ulH,ulH,ulH);
       col = MulColors( col, colH);
     } else ptexFogHaze[0].t = 0;
   }
   // if fog is active
-  if( _Particle_bHasFog)
+  if (_Particle_bHasFog)
   { // get fog strength at particle position
     ptexFogHaze[0].s = -vProjected(3)*_fog_fMulZ;
     ptexFogHaze[0].t = (vProjected%_fog_vHDirView+_fog_fAddH)*_fog_fMulH;
     const ULONG ulF = 255-GetFogAlpha(ptexFogHaze[0]);
-    if( ulF<4) return;
-    if( _colAttMask) { // apply fog color (if not transparent)
+    if (ulF<4) return;
+    if (_colAttMask) { // apply fog color (if not transparent)
       const COLOR colF = _colAttMask | RGBAToColor( ulF,ulF,ulF,ulF);
       col = MulColors( col, colF);
     }
   }
   // keep fog/haze tex coords (if needed)
-  if( _bTransFogHaze) {
+  if (_bTransFogHaze) {
     ptexFogHaze[1] = ptexFogHaze[2] = ptexFogHaze[3] = ptexFogHaze[0];
     _atexFogHaze.Push(4);
   }
@@ -252,7 +252,7 @@ void Particle_RenderSquare( const FLOAT3D &vPos, FLOAT fSize, ANGLE aRotation, C
   // prepare vertices
   const FLOAT fRX = fSize;
   const FLOAT fRY = fSize*fYRatio;
-  if( aRotation==0) {
+  if (aRotation==0) {
     const FLOAT fIBeg = fI0-fRX;  const FLOAT fIEnd = fI0+fRX;
     const FLOAT fJBeg = fJ0-fRY;  const FLOAT fJEnd = fJ0+fRY;
     pvtx[0].x = fIBeg;  pvtx[0].y = fJBeg;  pvtx[0].z = fOoK;
@@ -289,7 +289,7 @@ void Particle_RenderSquare( const FLOAT3D &vPos, FLOAT fSize, ANGLE aRotation, C
 void Particle_RenderLine( const FLOAT3D &vPos0, const FLOAT3D &vPos1, FLOAT fWidth, COLOR col)
 {
   // trivial rejection
-  if( fWidth<0 || ((col&CT_AMASK)>>CT_ASHIFT)<2) return;
+  if (fWidth<0 || ((col&CT_AMASK)>>CT_ASHIFT)<2) return;
 
   // project point to screen
   FLOAT3D vProjected0, vProjected1;
@@ -302,7 +302,7 @@ void Particle_RenderLine( const FLOAT3D &vPos0, const FLOAT3D &vPos1, FLOAT fWid
   const FLOAT fK1 = 1.0f / vProjected1(3);
   const FLOAT fR0 = fWidth * _fPerspectiveFactor *fK0;
   const FLOAT fR1 = fWidth * _fPerspectiveFactor *fK1;
-  if( fR0<0.5f && fR1<0.5f) return;
+  if (fR0<0.5f && fR1<0.5f) return;
 
   // line might need clipping
   _bNeedsClipping = TRUE;
@@ -314,21 +314,21 @@ void Particle_RenderLine( const FLOAT3D &vPos0, const FLOAT3D &vPos1, FLOAT fWid
   GFXTexCoord *ptexFogHaze = &_atexFogHaze[ctTexFG-4];
 
   // if haze is active
-  if( _Particle_bHasHaze)
+  if (_Particle_bHasHaze)
   { // get haze strength at particle positions
     ptexFogHaze[0].s = (-vProjected0(3)+_haze_fAdd)*_haze_fMul;
     ptexFogHaze[1].s = (-vProjected1(3)+_haze_fAdd)*_haze_fMul;
     const ULONG ulH0 = 255-GetHazeAlpha(ptexFogHaze[0].s);
     const ULONG ulH1 = 255-GetHazeAlpha(ptexFogHaze[1].s);
-    if( (ulH0|ulH1)<4) return;
-    if( _colAttMask) { // apply haze color (if not transparent)
+    if ((ulH0|ulH1)<4) return;
+    if (_colAttMask) { // apply haze color (if not transparent)
       COLOR colH;
       colH = _colAttMask | RGBAToColor( ulH0,ulH0,ulH0,ulH0);  col0 = MulColors( col0, colH);
       colH = _colAttMask | RGBAToColor( ulH1,ulH1,ulH1,ulH1);  col1 = MulColors( col1, colH);
     } else ptexFogHaze[0].t = ptexFogHaze[1].t = 0;
   }
   // if fog is active
-  if( _Particle_bHasFog)
+  if (_Particle_bHasFog)
   { // get fog strength at particle position
     ptexFogHaze[0].s = -vProjected0(3)*_fog_fMulZ;
     ptexFogHaze[0].t = (vProjected0%_fog_vHDirView+_fog_fAddH)*_fog_fMulH;
@@ -336,15 +336,15 @@ void Particle_RenderLine( const FLOAT3D &vPos0, const FLOAT3D &vPos1, FLOAT fWid
     ptexFogHaze[1].t = (vProjected1%_fog_vHDirView+_fog_fAddH)*_fog_fMulH;
     const ULONG ulF0 = 255-GetFogAlpha(ptexFogHaze[0]);
     const ULONG ulF1 = 255-GetFogAlpha(ptexFogHaze[1]);
-    if( (ulF0|ulF1)<4) return;
-    if( _colAttMask) { // apply fog color (if not transparent)
+    if ((ulF0|ulF1)<4) return;
+    if (_colAttMask) { // apply fog color (if not transparent)
       COLOR colF; // apply fog color
       colF = _colAttMask | RGBAToColor( ulF0,ulF0,ulF0,ulF0);  col0 = MulColors( col0, colF);
       colF = _colAttMask | RGBAToColor( ulF1,ulF1,ulF1,ulF1);  col1 = MulColors( col1, colF);
     }
   }
   // keep fog/haze tex coords (if needed)
-  if( _bTransFogHaze) {
+  if (_bTransFogHaze) {
     ptexFogHaze[2] = ptexFogHaze[1];
     ptexFogHaze[3] = ptexFogHaze[0];
     _atexFogHaze.Push(4);
@@ -391,7 +391,7 @@ void Particle_RenderQuad3D( const FLOAT3D &vPos0, const FLOAT3D &vPos1, const FL
                             const FLOAT3D &vPos3, COLOR col)
 {
   // trivial rejection
-  if( ((col&CT_AMASK)>>CT_ASHIFT)<2) return;
+  if (((col&CT_AMASK)>>CT_ASHIFT)<2) return;
 
   // project point to screen
   FLOAT3D vProjected0, vProjected1, vProjected2, vProjected3;
@@ -402,9 +402,9 @@ void Particle_RenderQuad3D( const FLOAT3D &vPos0, const FLOAT3D &vPos1, const FL
 
   // test for trivial rejection (sphere method)
   FLOAT3D vNearest = vProjected0; // find nearest-Z vertex
-  if( vNearest(3)>vProjected1(3)) vNearest = vProjected1;
-  if( vNearest(3)>vProjected2(3)) vNearest = vProjected2;
-  if( vNearest(3)>vProjected3(3)) vNearest = vProjected3;
+  if (vNearest(3)>vProjected1(3)) vNearest = vProjected1;
+  if (vNearest(3)>vProjected2(3)) vNearest = vProjected2;
+  if (vNearest(3)>vProjected3(3)) vNearest = vProjected3;
   // find center
   const FLOAT fX = (vProjected0(1)+vProjected1(1)+vProjected2(1)+vProjected3(1)) * 0.25f;
   const FLOAT fY = (vProjected0(2)+vProjected1(2)+vProjected2(2)+vProjected3(2)) * 0.25f;
@@ -417,10 +417,10 @@ void Particle_RenderQuad3D( const FLOAT3D &vPos0, const FLOAT3D &vPos1, const FL
   vNearest(1) = fX;
   vNearest(2) = fY;
   const INDEX iTest = _pprProjection->TestSphereToFrustum( vNearest, fR);
-  if( iTest<0) return;
+  if (iTest<0) return;
 
   // adjust the need for clipping
-  if( iTest==0) _bNeedsClipping = TRUE;
+  if (iTest==0) _bNeedsClipping = TRUE;
 
   // separate colors (for the sake of fog/haze)
   COLOR col0,col1,col2,col3;
@@ -430,7 +430,7 @@ void Particle_RenderQuad3D( const FLOAT3D &vPos0, const FLOAT3D &vPos1, const FL
   GFXTexCoord *ptexFogHaze = &_atexFogHaze[ctTexFG-4];
 
   // if haze is active
-  if( _Particle_bHasHaze)
+  if (_Particle_bHasHaze)
   { // get haze strength at particle position
     ptexFogHaze[0].s = (-vProjected0(3)+_haze_fAdd)*_haze_fMul;
     ptexFogHaze[1].s = (-vProjected1(3)+_haze_fAdd)*_haze_fMul;
@@ -440,8 +440,8 @@ void Particle_RenderQuad3D( const FLOAT3D &vPos0, const FLOAT3D &vPos1, const FL
     const ULONG ulH1 = 255-GetHazeAlpha(ptexFogHaze[1].s);
     const ULONG ulH2 = 255-GetHazeAlpha(ptexFogHaze[2].s);
     const ULONG ulH3 = 255-GetHazeAlpha(ptexFogHaze[3].s);
-    if( (ulH0|ulH1|ulH2|ulH3)<4) return;
-    if( _colAttMask) { // apply haze color (if not transparent)
+    if ((ulH0|ulH1|ulH2|ulH3)<4) return;
+    if (_colAttMask) { // apply haze color (if not transparent)
       COLOR colH;
       colH = _colAttMask | RGBAToColor( ulH0,ulH0,ulH0,ulH0);  col0 = MulColors( col0, colH);
       colH = _colAttMask | RGBAToColor( ulH1,ulH1,ulH1,ulH1);  col1 = MulColors( col1, colH);
@@ -450,7 +450,7 @@ void Particle_RenderQuad3D( const FLOAT3D &vPos0, const FLOAT3D &vPos1, const FL
     } else ptexFogHaze[0].t = ptexFogHaze[1].t = ptexFogHaze[2].t = ptexFogHaze[3].t = 0;
   }
   // if fog is active
-  if( _Particle_bHasFog)
+  if (_Particle_bHasFog)
   { // get fog strength at particle position
     ptexFogHaze[0].s = -vProjected0(3)*_fog_fMulZ;
     ptexFogHaze[0].t = (vProjected0%_fog_vHDirView+_fog_fAddH)*_fog_fMulH;
@@ -464,8 +464,8 @@ void Particle_RenderQuad3D( const FLOAT3D &vPos0, const FLOAT3D &vPos1, const FL
     const ULONG ulF1 = 255-GetFogAlpha(ptexFogHaze[1]);
     const ULONG ulF2 = 255-GetFogAlpha(ptexFogHaze[2]);
     const ULONG ulF3 = 255-GetFogAlpha(ptexFogHaze[3]);
-    if( (ulF0|ulF1|ulF2|ulF3)<4) return;
-    if( _colAttMask) { // apply fog color (if not transparent)
+    if ((ulF0|ulF1|ulF2|ulF3)<4) return;
+    if (_colAttMask) { // apply fog color (if not transparent)
       COLOR colF; 
       colF = _colAttMask | RGBAToColor( ulF0,ulF0,ulF0,ulF0);  col0 = MulColors( col0, colF);
       colF = _colAttMask | RGBAToColor( ulF1,ulF1,ulF1,ulF1);  col1 = MulColors( col1, colF);
@@ -474,7 +474,7 @@ void Particle_RenderQuad3D( const FLOAT3D &vPos0, const FLOAT3D &vPos1, const FL
     }
   }
   // keep fog/haze tex coords (if needed)
-  if( _bTransFogHaze) _atexFogHaze.Push(4);
+  if (_bTransFogHaze) _atexFogHaze.Push(4);
 
   // add to vertex arrays
   GFXVertex   *pvtx = _avtxCommon.Push(4);
@@ -512,17 +512,17 @@ void Particle_Flush(void)
   _pGfx->gl_ctParticleTriangles += ctParticles*2;
 
   // determine need for clipping
-  if( _bNeedsClipping) gfxEnableClipping();
+  if (_bNeedsClipping) gfxEnableClipping();
   else gfxDisableClipping();
 
   // flush 1st layer
   gfxFlushQuads();
   // maybe we need to render fog/haze layer
-  if( _bTransFogHaze)
+  if (_bTransFogHaze)
   { // setup haze/fog color and texture
     GFXColor glcolFH;        
     gfxSetTextureWrapping( GFX_CLAMP, GFX_CLAMP);
-    if( _Particle_bHasHaze) {
+    if (_Particle_bHasHaze) {
       gfxSetTexture( _haze_ulTexture, _haze_tpLocal);
       glcolFH.abgr = ByteSwap( AdjustColor( _haze_hp.hp_colColor, _slTexHueShift, _slTexSaturation));
     } else {
@@ -539,7 +539,7 @@ void Particle_Flush(void)
     const INDEX ctVertices = _atexCommon.Count();
     ASSERT( _atexFogHaze.Count()==ctVertices+4);
     memcpy( &_atexCommon[0], &_atexFogHaze[0], ctVertices*sizeof(GFXTexCoord)); 
-    for( INDEX i=0; i<ctVertices; i++) _acolCommon[i] = glcolFH;
+    for (INDEX i=0; i<ctVertices; i++) _acolCommon[i] = glcolFH;
     // render it
     gfxFlushQuads();
     // revert to old settings
@@ -565,8 +565,8 @@ static int qsort_CompareZ( const void *pI0, const void *pI1) {
   const INDEX i1 = (*(INDEX*)pI1) *4;
   const FLOAT fZ0 = _avtxCommon[i0].z;
   const FLOAT fZ1 = _avtxCommon[i1].z;
-       if( fZ0<fZ1) return +1;
-  else if( fZ0>fZ1) return -1;
+       if (fZ0<fZ1) return +1;
+  else if (fZ0>fZ1) return -1;
   else              return  0;
 }
 
@@ -575,8 +575,8 @@ static int qsort_CompareZ3D( const void *pI0, const void *pI1) {
   const INDEX i1 = (*(INDEX*)pI1) *4;
   const FLOAT fZ0 = (_avtxCommon[i0].z + _avtxCommon[i0+1].z + _avtxCommon[i0+2].z + _avtxCommon[i0+3].z) / 4.0f;
   const FLOAT fZ1 = (_avtxCommon[i1].z + _avtxCommon[i1+1].z + _avtxCommon[i1+2].z + _avtxCommon[i1+3].z) / 4.0f;
-       if( fZ0<fZ1) return +1;
-  else if( fZ0>fZ1) return -1;
+       if (fZ0<fZ1) return +1;
+  else if (fZ0>fZ1) return -1;
   else              return  0;
 }
 
@@ -586,32 +586,32 @@ void Particle_Sort( BOOL b3D/*=FALSE*/)
 {
   INDEX i;
   const INDEX ctParticles = _avtxCommon.Count()/4; 
-  if( ctParticles<=0) return; // nothing to do!
+  if (ctParticles<=0) return; // nothing to do!
 
   // generate sort array
   CStaticArray<INDEX> aiIndices;
   aiIndices.New(ctParticles);
-  for( i=0; i<ctParticles; i++) aiIndices[i] = i;
+  for (i=0; i<ctParticles; i++) aiIndices[i] = i;
 
   // bubble sort indices by vertex Z coord
-  if(b3D) qsort( &aiIndices[0], ctParticles, sizeof(INDEX), qsort_CompareZ3D);
+  if (b3D) qsort( &aiIndices[0], ctParticles, sizeof(INDEX), qsort_CompareZ3D);
   else    qsort( &aiIndices[0], ctParticles, sizeof(INDEX), qsort_CompareZ);
 
   // generate inverse table
   CStaticArray<INDEX> aiInverse;
   aiInverse.New(ctParticles);
-  for( i=0; i<ctParticles; i++) {
+  for (i=0; i<ctParticles; i++) {
     const INDEX iOrig = aiIndices[i];
     aiInverse[iOrig] = i;
   }
 
   // sort vertices by indices
-  for( i=0; i<ctParticles;) // i is incremented in loop
+  for (i=0; i<ctParticles;) // i is incremented in loop
   { // fetch destination
     INDEX &iWhere = aiInverse[i];
     ASSERT( iWhere<ctParticles);
     // if current is already in place, advance to next index
-    if( iWhere==i) { i++; continue; }
+    if (iWhere==i) { i++; continue; }
     // swap vertices
     Swap( _avtxCommon[iWhere*4+0], _avtxCommon[i*4+0]);
     Swap( _avtxCommon[iWhere*4+1], _avtxCommon[i*4+1]);
@@ -635,7 +635,7 @@ void Particle_Sort( BOOL b3D/*=FALSE*/)
   // test to see whether the array is sorted
   INDEX      *pidx = &aiInverse[0];
   GFXVertex4 *pvtx = &_avtxCommon[0];
-  for( i=0; i<ctParticles-1; i++) {
+  for (i=0; i<ctParticles-1; i++) {
     ASSERT( pidx[i] < pidx[i+1]);
     ASSERT( pvtx[i*4].z >= pvtx[(i+1)*4].z);
   }

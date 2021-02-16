@@ -42,17 +42,17 @@ SHADER_MAIN(Translucent)
   shaDisableDepthWrite();
 
   shaModifyColorForFog();
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
 
   BOOL bDoubleSided = shaGetFlags()&BASE_DOUBLE_SIDED;
-  if(bDoubleSided) {
+  if (bDoubleSided) {
     shaCullFace(GFX_FRONT);
     shaRender();
   }
 
   shaCullFace(GFX_BACK);
   shaRender();
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
 }
 
 SHADER_DESC(Translucent,ShaderDesc &shDesc)

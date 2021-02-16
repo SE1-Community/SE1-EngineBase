@@ -96,7 +96,7 @@ void InitSelectOnRender(PIX pixSizeI, PIX pixSizeJ)
     FIX16_16 xI = FIX16_16(pixI0);
     
     // for each row
-    for(PIX pixJ = pixJ0; pixJ<pixJ1; pixJ++) {
+    for (PIX pixJ = pixJ0; pixJ<pixJ1; pixJ++) {
       // get offset
       SLONG slOffset = pixJ*_pixSizeI+PIX(xI);
       // if offset is valid
@@ -110,10 +110,10 @@ void InitSelectOnRender(PIX pixSizeI, PIX pixSizeJ)
   }
 
   // for each row in lasso buffer
-  for(PIX pixJ = 0; pixJ<_pixSizeJ; pixJ++) {
+  for (PIX pixJ = 0; pixJ<_pixSizeJ; pixJ++) {
     // for each pixel in the row, except the last one
     UBYTE *pub = _pubLassoBuffer+pixJ*_pixSizeI;
-    for(PIX pixI = 0; pixI<_pixSizeI-1; pixI++) {
+    for (PIX pixI = 0; pixI<_pixSizeI-1; pixI++) {
       // xor it to the next one
       pub[1]^=pub[0];
       pub++;
@@ -222,15 +222,15 @@ BOOL IsBoundingBoxInLasso( CProjection3D &prProjection, const FLOATaabbox3D &box
   FLOAT3D vMax = box.Max();
 
   // test lasso influence for all of bounding box's vertices
-  if(
-    IsVertexInLasso( prProjection, FLOAT3D( vMin(1), vMin(2), vMin(3)), pmR, vOffset) &&
-    IsVertexInLasso( prProjection, FLOAT3D( vMax(1), vMin(2), vMin(3)), pmR, vOffset) &&
-    IsVertexInLasso( prProjection, FLOAT3D( vMin(1), vMax(2), vMin(3)), pmR, vOffset) &&
-    IsVertexInLasso( prProjection, FLOAT3D( vMax(1), vMax(2), vMin(3)), pmR, vOffset) &&
-    IsVertexInLasso( prProjection, FLOAT3D( vMin(1), vMin(2), vMax(3)), pmR, vOffset) &&
-    IsVertexInLasso( prProjection, FLOAT3D( vMax(1), vMin(2), vMax(3)), pmR, vOffset) &&
-    IsVertexInLasso( prProjection, FLOAT3D( vMin(1), vMax(2), vMax(3)), pmR, vOffset) &&
-    IsVertexInLasso( prProjection, FLOAT3D( vMax(1), vMax(2), vMax(3)), pmR, vOffset) )
+  if (
+    IsVertexInLasso( prProjection, FLOAT3D(vMin(1), vMin(2), vMin(3)), pmR, vOffset) &&
+    IsVertexInLasso( prProjection, FLOAT3D(vMax(1), vMin(2), vMin(3)), pmR, vOffset) &&
+    IsVertexInLasso( prProjection, FLOAT3D(vMin(1), vMax(2), vMin(3)), pmR, vOffset) &&
+    IsVertexInLasso( prProjection, FLOAT3D(vMax(1), vMax(2), vMin(3)), pmR, vOffset) &&
+    IsVertexInLasso( prProjection, FLOAT3D(vMin(1), vMin(2), vMax(3)), pmR, vOffset) &&
+    IsVertexInLasso( prProjection, FLOAT3D(vMax(1), vMin(2), vMax(3)), pmR, vOffset) &&
+    IsVertexInLasso( prProjection, FLOAT3D(vMin(1), vMax(2), vMax(3)), pmR, vOffset) &&
+    IsVertexInLasso( prProjection, FLOAT3D(vMax(1), vMax(2), vMax(3)), pmR, vOffset) )
   {
     return TRUE;
   }
@@ -257,7 +257,7 @@ void SelectEntityOnRender(CProjection3D &prProjection, CEntity &en)
     vOffset = en.GetPlacement().pl_PositionVector;
   }
   // if it is ska model
-  else if(en.en_RenderType==CEntity::RT_SKAMODEL || en.en_RenderType==CEntity::RT_SKAEDITORMODEL)
+  else if (en.en_RenderType==CEntity::RT_SKAMODEL || en.en_RenderType==CEntity::RT_SKAEDITORMODEL)
   {
     en.GetModelInstance()->GetCurrentColisionBox( bbox);
     pmR = &en.en_mRotation;
@@ -271,12 +271,12 @@ void SelectEntityOnRender(CProjection3D &prProjection, CEntity &en)
     CBrushMip *pbrmip = pbr->GetFirstMip();
     bbox = pbrmip->bm_boxBoundingBox;
     pmR = &mOne;
-    vOffset = FLOAT3D( 0.0f, 0.0f, 0.0f);
+    vOffset = FLOAT3D(0.0f, 0.0f, 0.0f);
   }
 
-  if( IsBoundingBoxInLasso( prProjection, bbox, pmR, vOffset))
+  if (IsBoundingBoxInLasso( prProjection, bbox, pmR, vOffset))
   {
-    if( _bSelectAlternative)
+    if (_bSelectAlternative)
     {
       // deselect
       if (en.IsSelected(ENF_SELECTED))

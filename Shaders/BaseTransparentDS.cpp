@@ -43,13 +43,13 @@ SHADER_MAIN(Base_TransparentDS)
 
   shaModifyColorForFog();
 
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
   shaRender();
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
 
   COLOR colModelColor = MulColors(shaGetModelColor(),shaGetCurrentColor());
   BOOL bOpaque = (colModelColor&0xFF)==0xFF;
-  if(bOpaque) {
+  if (bOpaque) {
     shaDoFogPass();
   }
 #endif

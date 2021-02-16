@@ -22,7 +22,7 @@ static void UpdateClipPlane_D3D(void)
   FLOAT afObjectClipPlane[4];
 
   // if view matrix is active
-  if( GFX_bViewMatrix) {
+  if (GFX_bViewMatrix) {
     // need to back-transform user clip plane from view to object space
     FLOAT *pcp = &D3D_afClipPlane[0]; // (pl-v) * !m;
     FLOAT *pvm = &D3D_afViewMatrix[0];
@@ -40,10 +40,10 @@ static void UpdateClipPlane_D3D(void)
   // skip if the same as last time
   ULONG *pulThis = (ULONG*) afObjectClipPlane;
   ULONG *pulLast = (ULONG*)_afActiveClipPlane;
-  if( pulLast[0]==pulThis[0] && pulLast[1]==pulThis[1]
+  if (pulLast[0]==pulThis[0] && pulLast[1]==pulThis[1]
    && pulLast[2]==pulThis[2] && pulLast[3]==pulThis[3]) return;
   // update (if supported!)
-  if( _pGfx->gl_ulFlags&GLF_D3D_CLIPPLANE) {
+  if (_pGfx->gl_ulFlags&GLF_D3D_CLIPPLANE) {
     HRESULT hr = _pGfx->gl_pd3dDevice->SetClipPlane( 0, &afObjectClipPlane[0]);
     D3D_CHECKERROR(hr);
   }
@@ -67,13 +67,13 @@ static void d3d_EnableTexture(void)
 #ifndef NDEBUG
   BOOL bRes; 
   hr = _pGfx->gl_pd3dDevice->GetTextureStageState( GFX_iActiveTexUnit, D3DTSS_COLOROP, (DWORD*)&bRes);
-  if( bRes==D3DTOP_DISABLE) bRes = FALSE;
+  if (bRes==D3DTOP_DISABLE) bRes = FALSE;
   D3D_CHECKERROR(hr);
   ASSERT( !bRes == !GFX_abTexture[GFX_iActiveTexUnit]);
 #endif
 
   // cached?
-  if( GFX_abTexture[GFX_iActiveTexUnit] && gap_bOptimizeStateChanges) return;
+  if (GFX_abTexture[GFX_iActiveTexUnit] && gap_bOptimizeStateChanges) return;
   GFX_abTexture[GFX_iActiveTexUnit] = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -95,13 +95,13 @@ static void d3d_DisableTexture(void)
 #ifndef NDEBUG
   BOOL bRes; 
   hr = _pGfx->gl_pd3dDevice->GetTextureStageState( GFX_iActiveTexUnit, D3DTSS_COLOROP, (DWORD*)&bRes);
-  if( bRes==D3DTOP_DISABLE) bRes = FALSE;
+  if (bRes==D3DTOP_DISABLE) bRes = FALSE;
   D3D_CHECKERROR(hr);
   ASSERT( !bRes == !GFX_abTexture[GFX_iActiveTexUnit]);
 #endif
 
   // cached?
-  if( !GFX_abTexture[GFX_iActiveTexUnit] && gap_bOptimizeStateChanges) return;
+  if (!GFX_abTexture[GFX_iActiveTexUnit] && gap_bOptimizeStateChanges) return;
   GFX_abTexture[GFX_iActiveTexUnit] = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -126,7 +126,7 @@ static void d3d_EnableDepthTest(void)
   ASSERT( !bRes == !GFX_bDepthTest);
 #endif
   // cached?
-  if( GFX_bDepthTest && gap_bOptimizeStateChanges) return;
+  if (GFX_bDepthTest && gap_bOptimizeStateChanges) return;
   GFX_bDepthTest = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -152,7 +152,7 @@ static void d3d_DisableDepthTest(void)
 #endif
 
   // cached?
-  if( !GFX_bDepthTest && gap_bOptimizeStateChanges) return;
+  if (!GFX_bDepthTest && gap_bOptimizeStateChanges) return;
   GFX_bDepthTest = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -169,7 +169,7 @@ static void d3d_EnableDepthBias(void)
 {
   // only if supported
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
-  if( !(_pGfx->gl_ulFlags&GLF_D3D_ZBIAS)) return;
+  if (!(_pGfx->gl_ulFlags&GLF_D3D_ZBIAS)) return;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -185,7 +185,7 @@ static void d3d_DisableDepthBias(void)
 {
   // only if supported
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
-  if( !(_pGfx->gl_ulFlags&GLF_D3D_ZBIAS)) return;
+  if (!(_pGfx->gl_ulFlags&GLF_D3D_ZBIAS)) return;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -210,7 +210,7 @@ static void d3d_EnableDepthWrite(void)
 #endif
 
   // cached?
-  if( GFX_bDepthWrite && gap_bOptimizeStateChanges) return;
+  if (GFX_bDepthWrite && gap_bOptimizeStateChanges) return;
   GFX_bDepthWrite = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -236,7 +236,7 @@ static void d3d_DisableDepthWrite(void)
 #endif
 
   // cached?
-  if( !GFX_bDepthWrite && gap_bOptimizeStateChanges) return;
+  if (!GFX_bDepthWrite && gap_bOptimizeStateChanges) return;
   GFX_bDepthWrite = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -262,7 +262,7 @@ static void d3d_EnableDither(void)
 #endif
 
   // cached?
-  if( GFX_bDithering && gap_bOptimizeStateChanges) return;
+  if (GFX_bDithering && gap_bOptimizeStateChanges) return;
   GFX_bDithering = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -288,7 +288,7 @@ static void d3d_DisableDither(void)
 #endif
 
   // cached?
-  if( !GFX_bDithering && gap_bOptimizeStateChanges) return;
+  if (!GFX_bDithering && gap_bOptimizeStateChanges) return;
   GFX_bDithering = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -314,7 +314,7 @@ static void d3d_EnableAlphaTest(void)
 #endif
 
   // cached?
-  if( GFX_bAlphaTest && gap_bOptimizeStateChanges) return;
+  if (GFX_bAlphaTest && gap_bOptimizeStateChanges) return;
   GFX_bAlphaTest = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -340,7 +340,7 @@ static void d3d_DisableAlphaTest(void)
 #endif
 
   // cached?
-  if( !GFX_bAlphaTest && gap_bOptimizeStateChanges) return;
+  if (!GFX_bAlphaTest && gap_bOptimizeStateChanges) return;
   GFX_bAlphaTest = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -365,7 +365,7 @@ static void d3d_EnableBlend(void)
   ASSERT( !bRes == !GFX_bBlending);
 #endif
   // cached?
-  if( GFX_bBlending && gap_bOptimizeStateChanges) return;
+  if (GFX_bBlending && gap_bOptimizeStateChanges) return;
   GFX_bBlending = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -376,7 +376,7 @@ static void d3d_EnableBlend(void)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 
   // adjust dithering
-  if( gap_iDithering==2) d3d_EnableDither();
+  if (gap_iDithering==2) d3d_EnableDither();
   else d3d_DisableDither();
 }
 
@@ -395,7 +395,7 @@ static void d3d_DisableBlend(void)
 #endif
 
   // cached?
-  if( !GFX_bBlending && gap_bOptimizeStateChanges) return;
+  if (!GFX_bBlending && gap_bOptimizeStateChanges) return;
   GFX_bBlending = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -406,7 +406,7 @@ static void d3d_DisableBlend(void)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 
   // adjust dithering
-  if( gap_iDithering==0) d3d_DisableDither();
+  if (gap_iDithering==0) d3d_DisableDither();
   else d3d_EnableDither();
 }
 
@@ -425,7 +425,7 @@ static void d3d_EnableClipping(void)
 #endif
 
   // cached?
-  if( GFX_bClipping && gap_bOptimizeStateChanges) return;
+  if (GFX_bClipping && gap_bOptimizeStateChanges) return;
   GFX_bClipping = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -442,7 +442,7 @@ static void d3d_EnableClipping(void)
 static void d3d_DisableClipping(void)
 {
   // only if allowed
-  if( gap_iOptimizeClipping<2) return;
+  if (gap_iOptimizeClipping<2) return;
 
   // check consistency
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
@@ -455,13 +455,13 @@ static void d3d_DisableClipping(void)
 #endif
 
   // cached?
-  if( !GFX_bClipping && gap_bOptimizeStateChanges) return;
+  if (!GFX_bClipping && gap_bOptimizeStateChanges) return;
   GFX_bClipping = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
   // cannot disable clipping if clip-plane is enabled!
-  if( GFX_bClipPlane) {
+  if (GFX_bClipPlane) {
     GFX_bClipping  = TRUE;
    _bWantsClipping = FALSE;
   } else {
@@ -476,7 +476,7 @@ static void d3d_DisableClipping(void)
 static void d3d_EnableClipPlane(void)
 {
   // only if supported
-  if( !(_pGfx->gl_ulFlags&GLF_D3D_CLIPPLANE)) return;
+  if (!(_pGfx->gl_ulFlags&GLF_D3D_CLIPPLANE)) return;
 
   // check consistency
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
@@ -489,7 +489,7 @@ static void d3d_EnableClipPlane(void)
 #endif
 
   // cached?
-  if( GFX_bClipPlane && gap_bOptimizeStateChanges) return;
+  if (GFX_bClipPlane && gap_bOptimizeStateChanges) return;
   GFX_bClipPlane = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -499,7 +499,7 @@ static void d3d_EnableClipPlane(void)
   // (eventually) update clip plane, too
   UpdateClipPlane_D3D();
   // D3D needs to have clipping enabled for that matter
-  if( !GFX_bClipping) {
+  if (!GFX_bClipping) {
     hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_CLIPPING, TRUE);
     D3D_CHECKERROR(hr);
     GFX_bClipping  = TRUE;
@@ -513,7 +513,7 @@ static void d3d_EnableClipPlane(void)
 static void d3d_DisableClipPlane(void)
 {
   // only if supported
-  if( !(_pGfx->gl_ulFlags&GLF_D3D_CLIPPLANE)) return;
+  if (!(_pGfx->gl_ulFlags&GLF_D3D_CLIPPLANE)) return;
 
   // check consistency
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
@@ -525,7 +525,7 @@ static void d3d_DisableClipPlane(void)
   ASSERT( !bRes == !GFX_bClipPlane);
 #endif
   // cached?
-  if( !GFX_bClipPlane && gap_bOptimizeStateChanges) return;
+  if (!GFX_bClipPlane && gap_bOptimizeStateChanges) return;
   GFX_bClipPlane = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -533,7 +533,7 @@ static void d3d_DisableClipPlane(void)
   hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_CLIPPLANEENABLE, FALSE);
   D3D_CHECKERROR(hr);
   // maybe we can disable clipping in general (if was kept enabled just beacuse of clip plane)
-  if( !_bWantsClipping && GFX_bClipping) {
+  if (!_bWantsClipping && GFX_bClipping) {
     GFX_bClipping = FALSE;
     hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_CLIPPING, FALSE);
     D3D_CHECKERROR(hr);
@@ -557,7 +557,7 @@ static void d3d_EnableColorArray(void)
 #endif
 
   // cached?
-  if( GFX_bColorArray && gap_bOptimizeStateChanges) return;
+  if (GFX_bColorArray && gap_bOptimizeStateChanges) return;
   GFX_bColorArray = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -585,7 +585,7 @@ static void d3d_DisableColorArray(void)
 #endif
 
   // cached?
-  if( !GFX_bColorArray && gap_bOptimizeStateChanges) return;
+  if (!GFX_bColorArray && gap_bOptimizeStateChanges) return;
   GFX_bColorArray = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -601,7 +601,7 @@ static void d3d_DisableColorArray(void)
 static void d3d_EnableTruform(void)
 {
   // skip if Truform isn't set
-  if( truform_iLevel<1) return;
+  if (truform_iLevel<1) return;
 
   // check consistency
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
@@ -615,7 +615,7 @@ static void d3d_EnableTruform(void)
   ASSERT( !bRes == !GFX_bTruform);
 #endif
 
-  if( GFX_bTruform && gap_bOptimizeStateChanges) return;
+  if (GFX_bTruform && gap_bOptimizeStateChanges) return;
   GFX_bTruform = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -632,7 +632,7 @@ static void d3d_EnableTruform(void)
 static void d3d_DisableTruform(void)
 {
   // skip if Truform isn't set
-  if( truform_iLevel<1) return;
+  if (truform_iLevel<1) return;
 
   // check consistency
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
@@ -646,7 +646,7 @@ static void d3d_DisableTruform(void)
   ASSERT( !bRes == !GFX_bTruform);
 #endif
 
-  if( !GFX_bTruform && gap_bOptimizeStateChanges) return;
+  if (!GFX_bTruform && gap_bOptimizeStateChanges) return;
   GFX_bTruform = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -662,7 +662,7 @@ static void d3d_DisableTruform(void)
 
 
 __forceinline _D3DBLEND BlendToD3D( GfxBlend eFunc) {
-  switch( eFunc) {
+  switch (eFunc) {
   case GFX_ZERO:          return D3DBLEND_ZERO;
   case GFX_ONE:           return D3DBLEND_ONE;
   case GFX_SRC_COLOR:     return D3DBLEND_SRCCOLOR;
@@ -676,7 +676,7 @@ __forceinline _D3DBLEND BlendToD3D( GfxBlend eFunc) {
 }
 
 __forceinline GfxBlend BlendFromD3D( _D3DBLEND d3dbFunc) {
-  switch( d3dbFunc) {
+  switch (d3dbFunc) {
   case D3DBLEND_ZERO:         return GFX_ZERO;
   case D3DBLEND_ONE:          return GFX_ONE;          
   case D3DBLEND_SRCCOLOR:     return GFX_SRC_COLOR;    
@@ -707,17 +707,17 @@ static void d3d_BlendFunc( GfxBlend eSrc, GfxBlend eDst)
   ASSERT( gfxSrc==GFX_eBlendSrc && gfxDst==GFX_eBlendDst);
 #endif
   // cached?
-  if( eSrc==GFX_eBlendSrc && eDst==GFX_eBlendDst && gap_bOptimizeStateChanges) return;
+  if (eSrc==GFX_eBlendSrc && eDst==GFX_eBlendDst && gap_bOptimizeStateChanges) return;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
-  if( eSrc!=GFX_eBlendSrc) {
+  if (eSrc!=GFX_eBlendSrc) {
    _D3DBLEND d3dSrc = BlendToD3D(eSrc);
     hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_SRCBLEND, d3dSrc);
     D3D_CHECKERROR(hr);
     GFX_eBlendSrc = eSrc;
   }
-  if( eDst!=GFX_eBlendDst) {
+  if (eDst!=GFX_eBlendDst) {
    _D3DBLEND d3dDst = BlendToD3D(eDst);
     hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_DESTBLEND, d3dDst);
     D3D_CHECKERROR(hr);
@@ -733,9 +733,9 @@ static void d3d_SetColorMask( ULONG ulColorMask)
   // only if supported
   _ulCurrentColorMask = ulColorMask; // keep for Get...()
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
-  if( !(_pGfx->gl_ulFlags&GLF_D3D_COLORWRITES))
+  if (!(_pGfx->gl_ulFlags&GLF_D3D_COLORWRITES))
   { // emulate disabling of all channels
-    if( ulColorMask==0) {
+    if (ulColorMask==0) {
       d3d_EnableBlend();
       d3d_BlendFunc( GFX_ZERO, GFX_ONE);
     } // done
@@ -746,10 +746,10 @@ static void d3d_SetColorMask( ULONG ulColorMask)
 
   // no emulation
   ULONG ulBitMask = NONE;
-  if( (ulColorMask&CT_RMASK) == CT_RMASK) ulBitMask |= D3DCOLORWRITEENABLE_RED;
-  if( (ulColorMask&CT_GMASK) == CT_GMASK) ulBitMask |= D3DCOLORWRITEENABLE_GREEN;
-  if( (ulColorMask&CT_BMASK) == CT_BMASK) ulBitMask |= D3DCOLORWRITEENABLE_BLUE;
-  if( (ulColorMask&CT_AMASK) == CT_AMASK) ulBitMask |= D3DCOLORWRITEENABLE_ALPHA;
+  if ((ulColorMask&CT_RMASK) == CT_RMASK) ulBitMask |= D3DCOLORWRITEENABLE_RED;
+  if ((ulColorMask&CT_GMASK) == CT_GMASK) ulBitMask |= D3DCOLORWRITEENABLE_GREEN;
+  if ((ulColorMask&CT_BMASK) == CT_BMASK) ulBitMask |= D3DCOLORWRITEENABLE_BLUE;
+  if ((ulColorMask&CT_AMASK) == CT_AMASK) ulBitMask |= D3DCOLORWRITEENABLE_ALPHA;
   HRESULT hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_COLORWRITEENABLE, ulBitMask);
   D3D_CHECKERROR(hr);
 
@@ -759,7 +759,7 @@ static void d3d_SetColorMask( ULONG ulColorMask)
 
 
 __forceinline _D3DCMPFUNC CompToD3D( GfxComp eFunc) {
-  switch( eFunc) {
+  switch (eFunc) {
   case GFX_NEVER:         return D3DCMP_NEVER;
   case GFX_LESS:          return D3DCMP_LESS;
   case GFX_LESS_EQUAL:    return D3DCMP_LESSEQUAL;
@@ -773,7 +773,7 @@ __forceinline _D3DCMPFUNC CompToD3D( GfxComp eFunc) {
 }
 
 __forceinline GfxComp CompFromD3D( _D3DCMPFUNC d3dcFunc) {
-  switch( d3dcFunc) {
+  switch (d3dcFunc) {
   case D3DCMP_NEVER:        return GFX_NEVER;
   case D3DCMP_LESS:         return GFX_LESS;
   case D3DCMP_LESSEQUAL:    return GFX_LESS_EQUAL;
@@ -804,7 +804,7 @@ static void d3d_DepthFunc( GfxComp eFunc)
   ASSERT( gfxFunc==GFX_eDepthFunc);
 #endif
   // cached?
-  if( eFunc==GFX_eDepthFunc && gap_bOptimizeStateChanges) return;
+  if (eFunc==GFX_eDepthFunc && gap_bOptimizeStateChanges) return;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -823,7 +823,7 @@ static void d3d_DepthFunc( GfxComp eFunc)
 static void d3d_DepthRange( FLOAT fMin, FLOAT fMax)
 {
   // D3D doesn't allow 0 for max value (no comment!)
-  if( fMax<0.001f) fMax = 0.001f; 
+  if (fMax<0.001f) fMax = 0.001f; 
 
   // check consistency
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
@@ -835,7 +835,7 @@ static void d3d_DepthRange( FLOAT fMin, FLOAT fMax)
 #endif
 
   // cached?
-  if( GFX_fMinDepthRange==fMin && GFX_fMaxDepthRange==fMax && gap_bOptimizeStateChanges) return;
+  if (GFX_fMinDepthRange==fMin && GFX_fMaxDepthRange==fMax && gap_bOptimizeStateChanges) return;
   GFX_fMinDepthRange = fMin;
   GFX_fMaxDepthRange = fMax;
 
@@ -865,19 +865,19 @@ static void d3d_CullFace( GfxFace eFace)
 
   // must (re)assign faces for front-face emulation purposes
   GfxFace eFrontFace, eBackFace;
-  if( GFX_bFrontFace) { eFrontFace = GFX_FRONT; eBackFace  = GFX_BACK;  }
+  if (GFX_bFrontFace) { eFrontFace = GFX_FRONT; eBackFace  = GFX_BACK;  }
   else                { eFrontFace = GFX_BACK;  eBackFace  = GFX_FRONT; }
   // cached?
-  if( gap_bOptimizeStateChanges) {
-    if( GFX_eCullFace==D3DCULL_NONE && eFace==GFX_NONE)   return;
-    if( GFX_eCullFace==D3DCULL_CCW  && eFace==eFrontFace) return;
-    if( GFX_eCullFace==D3DCULL_CW   && eFace==eBackFace)  return;
+  if (gap_bOptimizeStateChanges) {
+    if (GFX_eCullFace==D3DCULL_NONE && eFace==GFX_NONE)   return;
+    if (GFX_eCullFace==D3DCULL_CCW  && eFace==eFrontFace) return;
+    if (GFX_eCullFace==D3DCULL_CW   && eFace==eBackFace)  return;
   }
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
-       if( eFace==eFrontFace) hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW);   
-  else if( eFace==eBackFace)  hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CW);
+       if (eFace==eFrontFace) hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW);   
+  else if (eFace==eBackFace)  hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CW);
   else                        hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE); 
   D3D_CHECKERROR(hr);
   GFX_eCullFace = eFace;
@@ -894,11 +894,11 @@ static void d3d_FrontFace( GfxFace eFace)
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
   // cached?
   BOOL bFrontFace = (eFace==GFX_CCW);
-  if( !bFrontFace==!GFX_bFrontFace && gap_bOptimizeStateChanges) return;
+  if (!bFrontFace==!GFX_bFrontFace && gap_bOptimizeStateChanges) return;
 
   // must emulate this by toggling cull face
   GFX_bFrontFace = bFrontFace; 
-  if( GFX_eCullFace!=GFX_NONE) d3d_CullFace(GFX_eCullFace);
+  if (GFX_eCullFace!=GFX_NONE) d3d_CullFace(GFX_eCullFace);
 }
 
 
@@ -933,7 +933,7 @@ static void d3d_SetTextureMatrix( const FLOAT *pfMatrix/*=NULL*/)
   HRESULT hr;
   D3DTRANSFORMSTATETYPE tsMatrixNo = (D3DTRANSFORMSTATETYPE)(D3DTS_TEXTURE0 + GFX_iActiveTexUnit);
 
-  if( pfMatrix!=NULL) {
+  if (pfMatrix!=NULL) {
     hr = _pGfx->gl_pd3dDevice->SetTransform( tsMatrixNo, (_D3DMATRIX*)pfMatrix);
   } else {
     // load identity matrix
@@ -955,12 +955,12 @@ static void d3d_SetViewMatrix( const FLOAT *pfMatrix/*=NULL*/)
   HRESULT hr;
 
   // cached? (only identity matrix)
-  if( pfMatrix==NULL && GFX_bViewMatrix==NONE && gap_bOptimizeStateChanges) return;
+  if (pfMatrix==NULL && GFX_bViewMatrix==NONE && gap_bOptimizeStateChanges) return;
   GFX_bViewMatrix = (pfMatrix!=NULL);
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
-  if( pfMatrix!=NULL) {
+  if (pfMatrix!=NULL) {
     // need to keep it for clip plane
     CopyLongs( (ULONG*)pfMatrix, (ULONG*)D3D_afViewMatrix, 16);
     hr = _pGfx->gl_pd3dDevice->SetTransform( D3DTS_VIEW, (_D3DMATRIX*)D3D_afViewMatrix);
@@ -971,7 +971,7 @@ static void d3d_SetViewMatrix( const FLOAT *pfMatrix/*=NULL*/)
   } // check
   D3D_CHECKERROR(hr);
   // update clip plane if enabled
-  if( GFX_bClipPlane) UpdateClipPlane_D3D();
+  if (GFX_bClipPlane) UpdateClipPlane_D3D();
 
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
@@ -986,7 +986,7 @@ static void d3d_SetOrtho( const FLOAT fLeft,   const FLOAT fRight, const FLOAT f
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
 
   // cached?
-  if( GFX_fLastL==fLeft  && GFX_fLastT==fTop    && GFX_fLastN==fNear
+  if (GFX_fLastL==fLeft  && GFX_fLastT==fTop    && GFX_fLastN==fNear
    && GFX_fLastR==fRight && GFX_fLastB==fBottom && GFX_fLastF==fFar && gap_bOptimizeStateChanges) return;
   GFX_fLastL = fLeft;   GFX_fLastT = fTop;     GFX_fLastN = fNear;
   GFX_fLastR = fRight;  GFX_fLastB = fBottom;  GFX_fLastF = fFar;
@@ -1018,7 +1018,7 @@ static void d3d_SetFrustum( const FLOAT fLeft, const FLOAT fRight,
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
 
   // cached?
-  if( GFX_fLastL==-fLeft  && GFX_fLastT==-fTop    && GFX_fLastN==-fNear
+  if (GFX_fLastL==-fLeft  && GFX_fLastT==-fTop    && GFX_fLastN==-fNear
    && GFX_fLastR==-fRight && GFX_fLastB==-fBottom && GFX_fLastF==-fFar && gap_bOptimizeStateChanges) return;
   GFX_fLastL = -fLeft;   GFX_fLastT = -fTop;     GFX_fLastN = -fNear;
   GFX_fLastR = -fRight;  GFX_fLastB = -fBottom;  GFX_fLastF = -fFar;
@@ -1049,7 +1049,7 @@ static void d3d_PolygonMode( GfxPolyMode ePolyMode)
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
   HRESULT hr;
-  switch(ePolyMode) {
+  switch (ePolyMode) {
   case GFX_POINT:  hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_POINT);      break;
   case GFX_LINE:   hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME);  break;
   case GFX_FILL:   hr = _pGfx->gl_pd3dDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID);      break;
@@ -1086,13 +1086,13 @@ static void d3d_SetTextureWrapping( enum GfxWrap eWrapU, enum GfxWrap eWrapV)
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
   // adjust only those that differ
-  if( _tpGlobal[GFX_iActiveTexUnit].tp_eWrapU!=eWrapU) {
+  if (_tpGlobal[GFX_iActiveTexUnit].tp_eWrapU!=eWrapU) {
     D3DTEXTUREADDRESS d3dta = (eWrapU==GFX_REPEAT) ? D3DTADDRESS_WRAP : D3DTADDRESS_CLAMP;
     hr = _pGfx->gl_pd3dDevice->SetTextureStageState( GFX_iActiveTexUnit, D3DTSS_ADDRESSU, d3dta);
     D3D_CHECKERROR(hr);
    _tpGlobal[GFX_iActiveTexUnit].tp_eWrapU = eWrapU;
   }
-  if( _tpGlobal[GFX_iActiveTexUnit].tp_eWrapV!=eWrapV) {
+  if (_tpGlobal[GFX_iActiveTexUnit].tp_eWrapV!=eWrapV) {
     D3DTEXTUREADDRESS d3dta = (eWrapV==GFX_REPEAT) ? D3DTADDRESS_WRAP : D3DTADDRESS_CLAMP;
     hr = _pGfx->gl_pd3dDevice->SetTextureStageState( GFX_iActiveTexUnit, D3DTSS_ADDRESSV, d3dta);
     D3D_CHECKERROR(hr);
@@ -1113,20 +1113,20 @@ static void d3d_SetTextureModulation( INDEX iScale)
   INDEX iRet;
   hr = _pGfx->gl_pd3dDevice->GetTextureStageState( GFX_iActiveTexUnit, D3DTSS_COLOROP, (DWORD*)&iRet);
   D3D_CHECKERROR(hr);
-       if( iRet==D3DTOP_MODULATE2X) ASSERT( GFX_iTexModulation[GFX_iActiveTexUnit]==2);
-  else if( iRet==D3DTOP_MODULATE)   ASSERT( GFX_iTexModulation[GFX_iActiveTexUnit]==1);
+       if (iRet==D3DTOP_MODULATE2X) ASSERT( GFX_iTexModulation[GFX_iActiveTexUnit]==2);
+  else if (iRet==D3DTOP_MODULATE)   ASSERT( GFX_iTexModulation[GFX_iActiveTexUnit]==1);
   else                              ASSERT( iRet==D3DTOP_DISABLE);
 #endif
   
   // cached?
   ASSERT( iScale==1 || iScale==2);
-  if( GFX_iTexModulation[GFX_iActiveTexUnit]==iScale) return;
+  if (GFX_iTexModulation[GFX_iActiveTexUnit]==iScale) return;
   GFX_iTexModulation[GFX_iActiveTexUnit] = iScale;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
   // set only if texturing is enabled - will be auto-set at gfxEnableTexture
-  if( GFX_abTexture[GFX_iActiveTexUnit]) {
+  if (GFX_abTexture[GFX_iActiveTexUnit]) {
     D3DTEXTUREOP d3dTexOp = (iScale==2) ? D3DTOP_MODULATE2X : D3DTOP_MODULATE;
     hr = _pGfx->gl_pd3dDevice->SetTextureStageState( GFX_iActiveTexUnit, D3DTSS_COLOROP, d3dTexOp);
     D3D_CHECKERROR(hr);
@@ -1156,7 +1156,7 @@ static void d3d_DeleteTexture( ULONG &ulTexObject)
 {
   // skip if already unbound
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
-  if( ulTexObject==NONE) return;
+  if (ulTexObject==NONE) return;
 
   _sfStats.StartTimer(CStatForm::STI_BINDTEXTURE);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -1249,7 +1249,7 @@ static void d3d_DrawElements( INDEX ctElem, INDEX *pidx)
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
 #ifndef NDEBUG
   // check if all indices are inside lock count (or smaller than 65536)
-  if( pidx!=NULL) for( INDEX i=0; i<ctElem; i++) ASSERT( pidx[i] < GFX_ctVertices);
+  if (pidx!=NULL) for (INDEX i=0; i<ctElem; i++) ASSERT( pidx[i] < GFX_ctVertices);
 #endif
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -1278,11 +1278,11 @@ static void d3d_Finish(void)
   // fetch back buffer (different for full screen and windowed mode)
   const BOOL bFullScreen = _pGfx->gl_ulFlags & GLF_FULLSCREEN;
   const RECT rectToLock  = { 0,0, 1,1 };
-  if( bFullScreen)   hr = _pGfx->gl_pd3dDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
+  if (bFullScreen)   hr = _pGfx->gl_pd3dDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
   else hr = _pGfx->gl_pvpActive->vp_pSwapChain->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
-  if( hr==D3D_OK) {
+  if (hr==D3D_OK) {
     hr = pBackBuffer->LockRect( &rectLocked, &rectToLock, D3DLOCK_READONLY);
-    if( hr==D3D_OK) pBackBuffer->UnlockRect();
+    if (hr==D3D_OK) pBackBuffer->UnlockRect();
     D3DRELEASE( pBackBuffer, TRUE);
   }
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
@@ -1307,7 +1307,7 @@ static void d3d_LockArrays(void)
 extern void d3dSetVertexShader( DWORD dwHandle)
 {
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_D3D);
-  if( _pGfx->gl_dwVertexShader==dwHandle) return;
+  if (_pGfx->gl_dwVertexShader==dwHandle) return;
   HRESULT hr = _pGfx->gl_pd3dDevice->SetVertexShader(dwHandle);
   D3D_CHECKERROR(hr);
   _pGfx->gl_dwVertexShader = dwHandle;

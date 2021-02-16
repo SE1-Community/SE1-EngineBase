@@ -151,7 +151,7 @@ static BOOL HasTextureFormat_D3D( D3DFORMAT d3dTextureFormat)
 {
   // quickie?
   const D3DFORMAT d3dScreenFormat = _pGfx->gl_d3dColorFormat;
-  if( d3dTextureFormat==D3DFMT_UNKNOWN || d3dScreenFormat==NONE) return TRUE;
+  if (d3dTextureFormat==D3DFMT_UNKNOWN || d3dScreenFormat==NONE) return TRUE;
   // check
   extern const D3DDEVTYPE d3dDevType;
   HRESULT hr = _pGfx->gl_pD3D->CheckDeviceFormat( _pGfx->gl_iCurrentAdapter, d3dDevType, d3dScreenFormat,
@@ -188,8 +188,8 @@ extern DWORD SetupShader_D3D( ULONG ulStreamsMask)
   INDEX iVS;
 
   // delete all shaders?
-  if( ulStreamsMask==NONE) {
-    for( iVS=0; iVS<ctShaders; iVS++) {
+  if (ulStreamsMask==NONE) {
+    for (iVS=0; iVS<ctShaders; iVS++) {
       hr = pd3dDev->DeleteVertexShader(_avsShaders[iVS].vs_dwHandle);
       D3D_CHECKERROR(hr);
     } // free array
@@ -199,8 +199,8 @@ extern DWORD SetupShader_D3D( ULONG ulStreamsMask)
   }
 
   // see if required shader has already been created
-  for( iVS=0; iVS<ctShaders; iVS++) {
-    if( _avsShaders[iVS].vs_ulMask==ulStreamsMask) return _avsShaders[iVS].vs_dwHandle;
+  for (iVS=0; iVS<ctShaders; iVS++) {
+    if (_avsShaders[iVS].vs_ulMask==ulStreamsMask) return _avsShaders[iVS].vs_dwHandle;
   }
 
   // darn, need to create shader :(
@@ -213,9 +213,9 @@ extern DWORD SetupShader_D3D( ULONG ulStreamsMask)
 
   // process mask, bit by bit
   INDEX iSrcDecl=0, iDstDecl=0;
-  while( iSrcDecl<MAXSTREAMS)
+  while (iSrcDecl<MAXSTREAMS)
   { // add declarator if used
-    if( ulStreamsMask&1) {
+    if (ulStreamsMask&1) {
       _adwCurrentDecl[iDstDecl*2+0] = _adwDeclTemplate[iSrcDecl*2+0];
       _adwCurrentDecl[iDstDecl*2+1] = _adwDeclTemplate[iSrcDecl*2+1];
       iDstDecl++;
@@ -250,61 +250,61 @@ extern void SetupVertexArrays_D3D( INDEX ctVertices)
 
   // do nothing if buffer is sufficient
   ctVertices = ClampUp( ctVertices, 65535L); // need to clamp max vertices first
-  if( ctVertices!=0 && ctVertices<=_pGfx->gl_ctVertices) return;
+  if (ctVertices!=0 && ctVertices<=_pGfx->gl_ctVertices) return;
 
   // determine SW or HW VP and NPatches usage (Truform) 
   DWORD dwFlags = D3DUSAGE_DYNAMIC|D3DUSAGE_WRITEONLY;
   const BOOL bNPatches = (_pGfx->gl_iMaxTessellationLevel>0 && gap_iTruformLevel>0);
-  if( !(_pGfx->gl_ulFlags&GLF_D3D_USINGHWTNL)) dwFlags |= D3DUSAGE_SOFTWAREPROCESSING;
-  if( bNPatches) dwFlags |= D3DUSAGE_NPATCHES;
+  if (!(_pGfx->gl_ulFlags&GLF_D3D_USINGHWTNL)) dwFlags |= D3DUSAGE_SOFTWAREPROCESSING;
+  if (bNPatches) dwFlags |= D3DUSAGE_NPATCHES;
   const LPDIRECT3DDEVICE8 pd3dDev = _pGfx->gl_pd3dDevice;
 
   // deallocate if needed
-  if( _pGfx->gl_pd3dVtx!=NULL)
+  if (_pGfx->gl_pd3dVtx!=NULL)
   {
     // vertex and eventual normal array
     D3DRELEASE( _pGfx->gl_pd3dVtx, TRUE);
-    if( _pGfx->gl_pd3dNor!=NULL) D3DRELEASE( _pGfx->gl_pd3dNor, TRUE);
+    if (_pGfx->gl_pd3dNor!=NULL) D3DRELEASE( _pGfx->gl_pd3dNor, TRUE);
     // color arrays
-    for( i=0; i<_pGfx->gl_ctColBuffers; i++) {
+    for (i=0; i<_pGfx->gl_ctColBuffers; i++) {
       ASSERT( _pGfx->gl_pd3dCol[i]!=NULL);
       D3DRELEASE( _pGfx->gl_pd3dCol[i], TRUE);
     }
     // texcoord arrays
-    for( i=0; i<_pGfx->gl_ctTexBuffers; i++) {
+    for (i=0; i<_pGfx->gl_ctTexBuffers; i++) {
       ASSERT( _pGfx->gl_pd3dTex[i]!=NULL);
       D3DRELEASE( _pGfx->gl_pd3dTex[i], TRUE);
     }
     // reset all streams, too
-    for( i=0; i<_pGfx->gl_ctMaxStreams; i++) {
+    for (i=0; i<_pGfx->gl_ctMaxStreams; i++) {
       hr = pd3dDev->SetStreamSource( i, NULL,0);
       D3D_CHECKERROR(hr);
     }
   }
 
   // allocate if needed
-  if( ctVertices>0)
+  if (ctVertices>0)
   {
     // update max vertex count
-    if( _pGfx->gl_ctVertices < ctVertices) _pGfx->gl_ctVertices = ctVertices;
+    if (_pGfx->gl_ctVertices < ctVertices) _pGfx->gl_ctVertices = ctVertices;
     else ctVertices = _pGfx->gl_ctVertices;
     // create buffers
     hr = pd3dDev->CreateVertexBuffer( ctVertices*POSSIZE, dwFlags, 0, D3DPOOL_DEFAULT, &_pGfx->gl_pd3dVtx);
     D3D_CHECKERROR(hr);
     // normals buffer only if required
-    if( bNPatches) { 
+    if (bNPatches) { 
       hr = pd3dDev->CreateVertexBuffer( ctVertices*NORSIZE, dwFlags, 0, D3DPOOL_DEFAULT, &_pGfx->gl_pd3dNor);
       D3D_CHECKERROR(hr);
     }
     // all color buffers
-    for( i=0; i<_pGfx->gl_ctColBuffers; i++) {
+    for (i=0; i<_pGfx->gl_ctColBuffers; i++) {
       hr = pd3dDev->CreateVertexBuffer( ctVertices*COLSIZE, dwFlags, 0, D3DPOOL_DEFAULT, &_pGfx->gl_pd3dCol[i]);
       D3D_CHECKERROR(hr);
     }
     // 1st texture buffer might have projective mapping
     hr = pd3dDev->CreateVertexBuffer( ctVertices*TX4SIZE, dwFlags, 0, D3DPOOL_DEFAULT, &_pGfx->gl_pd3dTex[0]);
     D3D_CHECKERROR(hr);
-    for( i=1; i<_pGfx->gl_ctTexBuffers; i++) {
+    for (i=1; i<_pGfx->gl_ctTexBuffers; i++) {
       hr = pd3dDev->CreateVertexBuffer( ctVertices*TEXSIZE, dwFlags, 0, D3DPOOL_DEFAULT, &_pGfx->gl_pd3dTex[i]);
       D3D_CHECKERROR(hr);
     }
@@ -321,7 +321,7 @@ extern void SetupVertexArrays_D3D( INDEX ctVertices)
   _bLastProjectiveMapping = FALSE;
   // reset locking flags
   _dwVtxLockFlags = D3DLOCK_DISCARD;
-  for( i=0; i<GFX_MAXLAYERS; i++) _dwColLockFlags[i] = _dwTexLockFlags[i] = D3DLOCK_DISCARD;
+  for (i=0; i<GFX_MAXLAYERS; i++) _dwColLockFlags[i] = _dwTexLockFlags[i] = D3DLOCK_DISCARD;
   ASSERT(_pGfx->gl_ctVertices<65536);
 }
 
@@ -336,22 +336,22 @@ extern void SetupIndexArray_D3D( INDEX ctIndices)
   ctIndices = ClampUp( ctIndices, 65535L);
 
   // do nothing if buffer is sufficient
-  if( ctIndices!=0 && ctIndices<=_pGfx->gl_ctIndices) return;
+  if (ctIndices!=0 && ctIndices<=_pGfx->gl_ctIndices) return;
 
   // determine SW or HW VP
   DWORD dwFlags = D3DUSAGE_DYNAMIC|D3DUSAGE_WRITEONLY;
-  if( !(_pGfx->gl_ulFlags&GLF_D3D_USINGHWTNL)) dwFlags |= D3DUSAGE_SOFTWAREPROCESSING;
-  if( _pGfx->gl_iMaxTessellationLevel>0 && gap_iTruformLevel>0) dwFlags |= D3DUSAGE_NPATCHES;
+  if (!(_pGfx->gl_ulFlags&GLF_D3D_USINGHWTNL)) dwFlags |= D3DUSAGE_SOFTWAREPROCESSING;
+  if (_pGfx->gl_iMaxTessellationLevel>0 && gap_iTruformLevel>0) dwFlags |= D3DUSAGE_NPATCHES;
   const LPDIRECT3DDEVICE8 pd3dDev = _pGfx->gl_pd3dDevice;
   
   // dealocate if needed
-  if( _pGfx->gl_ctIndices>0) D3DRELEASE( _pGfx->gl_pd3dIdx, TRUE);
+  if (_pGfx->gl_ctIndices>0) D3DRELEASE( _pGfx->gl_pd3dIdx, TRUE);
 
   // allocate if needed
-  if( ctIndices>0)
+  if (ctIndices>0)
   {
     // eventually update max index count
-    if( _pGfx->gl_ctIndices < ctIndices) _pGfx->gl_ctIndices = ctIndices;
+    if (_pGfx->gl_ctIndices < ctIndices) _pGfx->gl_ctIndices = ctIndices;
     else ctIndices = _pGfx->gl_ctIndices;
     // create buffer
     hr = pd3dDev->CreateIndexBuffer( ctIndices*IDXSIZE, dwFlags, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &_pGfx->gl_pd3dIdx);
@@ -375,7 +375,7 @@ BOOL CGfxLibrary::InitDriver_D3D(void)
 {
   // check for presence of DirectX 8
   gl_hiDriver = LoadLibraryA( "D3D8.DLL");
-  if( gl_hiDriver==NONE) {
+  if (gl_hiDriver==NONE) {
     // not present - BUAHHAHAHAHAR :)
     CPrintF( "DX8 error: API not installed.\n");
     gl_gaAPI[GAT_D3D].ga_ctAdapters = 0;
@@ -385,7 +385,7 @@ BOOL CGfxLibrary::InitDriver_D3D(void)
   // query DX8 interface
   IDirect3D8* (WINAPI *pDirect3DCreate8)(UINT SDKVersion);
   pDirect3DCreate8 = (IDirect3D8* (WINAPI *)(UINT SDKVersion))GetProcAddress( gl_hiDriver, "Direct3DCreate8");
-  if( pDirect3DCreate8==NULL) {
+  if (pDirect3DCreate8==NULL) {
     // cannot init
     CPrintF( "DX8 error: Cannot get entry procedure address.\n");
     FreeLibrary(gl_hiDriver);
@@ -395,7 +395,7 @@ BOOL CGfxLibrary::InitDriver_D3D(void)
 
   // init DX8
   gl_pD3D = pDirect3DCreate8(D3D_SDK_VERSION);
-  if( gl_pD3D==NULL) {
+  if (gl_pD3D==NULL) {
     // cannot start
     CPrintF( "DX8 error: Cannot be initialized.\n");
     FreeLibrary(gl_hiDriver);
@@ -411,7 +411,7 @@ BOOL CGfxLibrary::InitDriver_D3D(void)
 void CGfxLibrary::EndDriver_D3D(void)
 {
   // unbind textures
-  if( _pTextureStock!=NULL) {
+  if (_pTextureStock!=NULL) {
     {FOREACHINDYNAMICCONTAINER( _pTextureStock->st_ctObjects, CTextureData, ittd) {
       CTextureData &td = *ittd;
       td.td_tpLocal.Clear();
@@ -452,15 +452,15 @@ BOOL CGfxLibrary::SetCurrentViewport_D3D(CViewPort *pvp)
 	const PIX pixWinSizeJ = rectWindow.bottom - rectWindow.top;
 
   // full screen allows only one window (main one, which has already been initialized)
-  if( dm.dm_pixSizeI==pixWinSizeI && dm.dm_pixSizeJ==pixWinSizeJ) {
+  if (dm.dm_pixSizeI==pixWinSizeI && dm.dm_pixSizeJ==pixWinSizeJ) {
     gl_pvpActive = pvp;  // remember as current viewport (must do that BEFORE InitContext)
-    if( gl_ulFlags & GLF_INITONNEXTWINDOW) InitContext_D3D();
+    if (gl_ulFlags & GLF_INITONNEXTWINDOW) InitContext_D3D();
     gl_ulFlags &= ~GLF_INITONNEXTWINDOW;
     return TRUE; 
   }
 
   // if must init entire D3D
-  if( gl_ulFlags & GLF_INITONNEXTWINDOW) {
+  if (gl_ulFlags & GLF_INITONNEXTWINDOW) {
     gl_ulFlags &= ~GLF_INITONNEXTWINDOW;
     // reopen window
     pvp->CloseCanvas();
@@ -472,7 +472,7 @@ BOOL CGfxLibrary::SetCurrentViewport_D3D(CViewPort *pvp)
   }
 
   // if window was not set for this driver
-  if( pvp->vp_ctDisplayChanges<gl_ctDriverChanges) {
+  if (pvp->vp_ctDisplayChanges<gl_ctDriverChanges) {
     // reopen window
     pvp->CloseCanvas();
     pvp->OpenCanvas();
@@ -482,16 +482,16 @@ BOOL CGfxLibrary::SetCurrentViewport_D3D(CViewPort *pvp)
   }
 
   // no need to set context if it is the same window as last time
-  if( gl_pvpActive!=NULL && gl_pvpActive->vp_hWnd==pvp->vp_hWnd) return TRUE;
+  if (gl_pvpActive!=NULL && gl_pvpActive->vp_hWnd==pvp->vp_hWnd) return TRUE;
 
   // set rendering target
   HRESULT hr;
   LPDIRECT3DSURFACE8 pColorSurface;
   hr = pvp->vp_pSwapChain->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &pColorSurface);
-  if( hr!=D3D_OK) return FALSE;
+  if (hr!=D3D_OK) return FALSE;
   hr = gl_pd3dDevice->SetRenderTarget( pColorSurface, pvp->vp_pSurfDepth);
   D3DRELEASE( pColorSurface, TRUE);
-  if( hr!=D3D_OK) return FALSE;
+  if (hr!=D3D_OK) return FALSE;
 
   // remember as current window
   gl_pvpActive = pvp;
@@ -547,7 +547,7 @@ void CGfxLibrary::InitContext_D3D()
 
   // disable texturing
   extern BOOL GFX_abTexture[GFX_MAXTEXUNITS];
-  for( INDEX iUnit=0; iUnit<GFX_MAXTEXUNITS; iUnit++) {
+  for (INDEX iUnit=0; iUnit<GFX_MAXTEXUNITS; iUnit++) {
     GFX_abTexture[iUnit] = FALSE;
     GFX_iTexModulation[iUnit] = 1;
     hr = gl_pd3dDevice->SetTexture( iUnit, NULL);                                      D3D_CHECKERROR(hr);
@@ -577,17 +577,17 @@ void CGfxLibrary::InitContext_D3D()
 
   // determine rasterizer acceleration
   gl_ulFlags &= ~GLF_HASACCELERATION;
-  if( (d3dCaps.DevCaps & D3DDEVCAPS_HWRASTERIZATION)
+  if ((d3dCaps.DevCaps & D3DDEVCAPS_HWRASTERIZATION)
     || d3dDevType==D3DDEVTYPE_REF) gl_ulFlags |= GLF_HASACCELERATION;
 
   // determine support for 32-bit textures
   gl_ulFlags &= ~GLF_32BITTEXTURES;
-  if( HasTextureFormat_D3D(D3DFMT_X8R8G8B8)
+  if (HasTextureFormat_D3D(D3DFMT_X8R8G8B8)
    || HasTextureFormat_D3D(D3DFMT_A8R8G8B8)) gl_ulFlags |= GLF_32BITTEXTURES;
 
   // determine support for compressed textures
   gl_ulFlags &= ~GLF_TEXTURECOMPRESSION;
-  if( HasTextureFormat_D3D(D3DFMT_DXT1)) gl_ulFlags |= GLF_TEXTURECOMPRESSION;
+  if (HasTextureFormat_D3D(D3DFMT_DXT1)) gl_ulFlags |= GLF_TEXTURECOMPRESSION;
 
   // determine max supported dimension of texture
   gl_pixMaxTextureDimension = d3dCaps.MaxTextureWidth;
@@ -595,34 +595,34 @@ void CGfxLibrary::InitContext_D3D()
 
   // determine support for disabling of color buffer writes
   gl_ulFlags &= ~GLF_D3D_COLORWRITES;
-  if( d3dCaps.PrimitiveMiscCaps & D3DPMISCCAPS_COLORWRITEENABLE) gl_ulFlags |= GLF_D3D_COLORWRITES;
+  if (d3dCaps.PrimitiveMiscCaps & D3DPMISCCAPS_COLORWRITEENABLE) gl_ulFlags |= GLF_D3D_COLORWRITES;
 
   // determine support for custom clip planes
   gl_ulFlags &= ~GLF_D3D_CLIPPLANE;
-  if( d3dCaps.MaxUserClipPlanes>0) gl_ulFlags |= GLF_D3D_CLIPPLANE;
+  if (d3dCaps.MaxUserClipPlanes>0) gl_ulFlags |= GLF_D3D_CLIPPLANE;
   else CPrintF( TRANS("User clip plane not supported - mirrors will not work well.\n"));
 
   // determine support for texture LOD biasing
   gl_fMaxTextureLODBias = 0.0f;
-  if( d3dCaps.RasterCaps & D3DPRASTERCAPS_MIPMAPLODBIAS) {
+  if (d3dCaps.RasterCaps & D3DPRASTERCAPS_MIPMAPLODBIAS) {
     gl_fMaxTextureLODBias = 4.0f;
   }
 
   // determine support for anisotropic filtering
   gl_iMaxTextureAnisotropy = 1;
-  if( d3dCaps.RasterCaps & D3DPRASTERCAPS_ANISOTROPY) {
+  if (d3dCaps.RasterCaps & D3DPRASTERCAPS_ANISOTROPY) {
     gl_iMaxTextureAnisotropy = d3dCaps.MaxAnisotropy;
     ASSERT( gl_iMaxTextureAnisotropy>1); 
   }
 
   // determine support for z-biasing
   gl_ulFlags &= ~GLF_D3D_ZBIAS;
-  if( d3dCaps.RasterCaps & D3DPRASTERCAPS_ZBIAS) gl_ulFlags |= GLF_D3D_ZBIAS;
+  if (d3dCaps.RasterCaps & D3DPRASTERCAPS_ZBIAS) gl_ulFlags |= GLF_D3D_ZBIAS;
 
   // check support for vsync swapping
   gl_ulFlags &= ~GLF_VSYNC;
-  if( d3dCaps.PresentationIntervals & D3DPRESENT_INTERVAL_IMMEDIATE) {
-    if( d3dCaps.PresentationIntervals & D3DPRESENT_INTERVAL_ONE) gl_ulFlags |= GLF_VSYNC;  
+  if (d3dCaps.PresentationIntervals & D3DPRESENT_INTERVAL_IMMEDIATE) {
+    if (d3dCaps.PresentationIntervals & D3DPRESENT_INTERVAL_ONE) gl_ulFlags |= GLF_VSYNC;  
   } else CPrintF( TRANS("  Vertical syncronization cannot be disabled.\n"));
 
   // determine support for N-Patches
@@ -633,8 +633,8 @@ void CGfxLibrary::InitContext_D3D()
   gl_iTessellationLevel    = 0;
   gl_iMaxTessellationLevel = 0;
   INDEX ctMinStreams = GFX_MINSTREAMS; // set minimum number of required streams
-  if( d3dCaps.DevCaps & D3DDEVCAPS_NPATCHES) {
-    if( gl_ctMaxStreams>GFX_MINSTREAMS) {
+  if (d3dCaps.DevCaps & D3DDEVCAPS_NPATCHES) {
+    if (gl_ctMaxStreams>GFX_MINSTREAMS) {
       gl_iMaxTessellationLevel = 7;
       hr = gl_pd3dDevice->SetRenderState( D3DRS_PATCHEDGESTYLE, D3DPATCHEDGE_DISCRETE);
       D3D_CHECKERROR(hr);
@@ -645,10 +645,10 @@ void CGfxLibrary::InitContext_D3D()
   // determine support for multi-texturing (only if Modulate2X mode is supported!)
   gl_ctTextureUnits = 1;
   gl_ctRealTextureUnits = d3dCaps.MaxSimultaneousTextures;
-  if( gl_ctRealTextureUnits>1) {
+  if (gl_ctRealTextureUnits>1) {
     // check everything that is required for multi-texturing
-    if( !(d3dCaps.TextureOpCaps&D3DTOP_MODULATE2X)) CPrintF( TRANS("Texture operation MODULATE2X missing - multi-texturing cannot be used.\n"));
-    else if( gl_ctMaxStreams<=ctMinStreams)         CPrintF( TRANS("Not enough streams - multi-texturing cannot be used.\n"));
+    if (!(d3dCaps.TextureOpCaps&D3DTOP_MODULATE2X)) CPrintF( TRANS("Texture operation MODULATE2X missing - multi-texturing cannot be used.\n"));
+    else if (gl_ctMaxStreams<=ctMinStreams)         CPrintF( TRANS("Not enough streams - multi-texturing cannot be used.\n"));
     else gl_ctTextureUnits = Min( GFX_MAXTEXUNITS, Min( gl_ctRealTextureUnits, 1+gl_ctMaxStreams-ctMinStreams));
   }
 
@@ -676,9 +676,9 @@ void CGfxLibrary::InitContext_D3D()
   INDEX ctStreamsRemain = gl_ctMaxStreams - (ctMinStreams-1+gl_ctTextureUnits); // -1 because of 1 texture unit inside MinStreams
   FOREVER {
     // done if no more or enough streams
-    if( ctStreamsRemain==0 || (gl_ctTexBuffers==GFX_MAXLAYERS && gl_ctColBuffers==GFX_MAXLAYERS)) break;
+    if (ctStreamsRemain==0 || (gl_ctTexBuffers==GFX_MAXLAYERS && gl_ctColBuffers==GFX_MAXLAYERS)) break;
     // increase number of tex or color buffers
-    if( gl_ctColBuffers<gl_ctTexBuffers) gl_ctColBuffers++;
+    if (gl_ctColBuffers<gl_ctTexBuffers) gl_ctColBuffers++;
     else gl_ctTexBuffers++;
     // next stream (if available)
     ctStreamsRemain--;
@@ -689,7 +689,7 @@ void CGfxLibrary::InitContext_D3D()
   gl_pd3dVtx = NULL;
   gl_pd3dNor = NULL;
   INDEX i=0;
-  for( ; i<GFX_MAXLAYERS; i++) gl_pd3dCol[i] = gl_pd3dTex[i] = NULL;
+  for (; i<GFX_MAXLAYERS; i++) gl_pd3dCol[i] = gl_pd3dTex[i] = NULL;
   ASSERT( gl_ctTexBuffers>0 && gl_ctTexBuffers<=GFX_MAXLAYERS);
   ASSERT( gl_ctColBuffers>0 && gl_ctColBuffers<=GFX_MAXLAYERS);
   gl_ctVertices = 0;
@@ -718,7 +718,7 @@ void CGfxLibrary::InitContext_D3D()
   GFX_ctVertices = 0;
   // reset locking flags
   _dwVtxLockFlags = D3DLOCK_DISCARD;
-  for( i=0; i<GFX_MAXLAYERS; i++) _dwColLockFlags[i] = _dwTexLockFlags[i] = D3DLOCK_DISCARD;
+  for (i=0; i<GFX_MAXLAYERS; i++) _dwColLockFlags[i] = _dwTexLockFlags[i] = D3DLOCK_DISCARD;
 
   // set default texture filtering/biasing
   extern INDEX gap_iTextureFiltering;
@@ -741,7 +741,7 @@ void CGfxLibrary::InitContext_D3D()
   extern void ReloadTextures(void);
   extern void CacheShadows(void);
   ReloadTextures();
-  if( shd_bCacheAll) CacheShadows();
+  if (shd_bCacheAll) CacheShadows();
 }
 
 
@@ -754,8 +754,8 @@ static D3DFORMAT FindDepthFormat_D3D( INDEX iAdapter, D3DFORMAT d3dfColor, INDEX
   ASSERT( d3dfColor==D3DFMT_R5G6B5 || d3dfColor==D3DFMT_X8R8G8B8);
 
   // adjust required Z-depth from color depth if needed
-       if( iDepthBits==0 && d3dfColor==D3DFMT_R5G6B5)   iDepthBits = 16;
-  else if( iDepthBits==0 && d3dfColor==D3DFMT_X8R8G8B8) iDepthBits = 32;
+       if (iDepthBits==0 && d3dfColor==D3DFMT_R5G6B5)   iDepthBits = 16;
+  else if (iDepthBits==0 && d3dfColor==D3DFMT_X8R8G8B8) iDepthBits = 32;
 
   // determine closest z-depth
   D3DFORMAT ad3dFormats[] = { D3DFMT_D32,   // 32-bits
@@ -765,26 +765,26 @@ static D3DFORMAT FindDepthFormat_D3D( INDEX iAdapter, D3DFORMAT d3dfColor, INDEX
   
   // find starting point from which format to search for support
   INDEX iStart;
-       if( iDepthBits==32) iStart = 0;
-  else if( iDepthBits==24) iStart = 1;
+       if (iDepthBits==32) iStart = 0;
+  else if (iDepthBits==24) iStart = 1;
   else                     iStart = 4;
   // search
   INDEX i;
   HRESULT hr;
-  for( i=iStart; i<ctFormats; i++) {
+  for (i=iStart; i<ctFormats; i++) {
     hr = _pGfx->gl_pD3D->CheckDepthStencilMatch( iAdapter, d3dDevType, d3dfColor, d3dfColor, ad3dFormats[i]);
-    if( hr==D3D_OK) break;
+    if (hr==D3D_OK) break;
   } 
 
   // not found?
-  if( i==ctFormats) {
+  if (i==ctFormats) {
     // do additional check for whole format list
-    for( i=0; i<iStart; i++) {
+    for (i=0; i<iStart; i++) {
       hr = _pGfx->gl_pD3D->CheckDepthStencilMatch( iAdapter, d3dDevType, d3dfColor, d3dfColor, ad3dFormats[i]); 
-      if( hr==D3D_OK) break;
+      if (hr==D3D_OK) break;
     }
     // what, z-buffer still not supported?
-    if( i==iStart) {
+    if (i==iStart) {
       ASSERT( "FindDepthFormat_D3D: Z-buffer format not found?!" );
       iDepthBits = 0;
       return D3DFMT_UNKNOWN; 
@@ -792,8 +792,8 @@ static D3DFORMAT FindDepthFormat_D3D( INDEX iAdapter, D3DFORMAT d3dfColor, INDEX
   } 
   // aaaah, found! :)
   ASSERT( i>=0 && i<ctFormats);
-       if( i>3) iDepthBits = 16;
-  else if( i>0) iDepthBits = 24;
+       if (i>3) iDepthBits = 16;
+  else if (i>0) iDepthBits = 24;
   else          iDepthBits = 32;
   return ad3dFormats[i];
 }
@@ -818,12 +818,12 @@ BOOL CGfxLibrary::InitDisplay_D3D( INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ,
   // clamp depth/stencil values
   extern INDEX gap_iDepthBits;
   extern INDEX gap_iStencilBits;
-       if( gap_iDepthBits <12) gap_iDepthBits   = 0;
-  else if( gap_iDepthBits <22) gap_iDepthBits   = 16;
-  else if( gap_iDepthBits <28) gap_iDepthBits   = 24;
+       if (gap_iDepthBits <12) gap_iDepthBits   = 0;
+  else if (gap_iDepthBits <22) gap_iDepthBits   = 16;
+  else if (gap_iDepthBits <28) gap_iDepthBits   = 24;
   else                         gap_iDepthBits   = 32;
-       if( gap_iStencilBits<3) gap_iStencilBits = 0;
-  else if( gap_iStencilBits<7) gap_iStencilBits = 4;
+       if (gap_iStencilBits<3) gap_iStencilBits = 0;
+  else if (gap_iStencilBits<7) gap_iStencilBits = 4;
   else                         gap_iStencilBits = 8;
 
   // prepare  
@@ -837,10 +837,10 @@ BOOL CGfxLibrary::InitDisplay_D3D( INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ,
   const BOOL bFullScreen = (pixSizeI>0 && pixSizeJ>0); 
 
   // setup for full screen
-  if( bFullScreen) {
+  if (bFullScreen) {
     // determine color and depth format
-    if( eColorDepth==DD_16BIT) d3dColorFormat = D3DFMT_R5G6B5;
-    if( eColorDepth==DD_32BIT) d3dColorFormat = D3DFMT_X8R8G8B8;
+    if (eColorDepth==DD_16BIT) d3dColorFormat = D3DFMT_R5G6B5;
+    if (eColorDepth==DD_32BIT) d3dColorFormat = D3DFMT_X8R8G8B8;
     d3dDepthFormat = FindDepthFormat_D3D( iAdapter, d3dColorFormat, iZDepth);
     // determine refresh rate and presentation interval
     extern INDEX gap_iRefreshRate;
@@ -848,14 +848,14 @@ BOOL CGfxLibrary::InitDisplay_D3D( INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ,
     const SLONG slIntervals = d3dCaps.PresentationIntervals;
     UINT uiInterval = (slIntervals&D3DPRESENT_INTERVAL_IMMEDIATE) ? D3DPRESENT_INTERVAL_IMMEDIATE : D3DPRESENT_INTERVAL_ONE;
     extern INDEX gap_iSwapInterval;
-    switch(gap_iSwapInterval) {
-    case 1:  if( slIntervals&D3DPRESENT_INTERVAL_ONE)   uiInterval=D3DPRESENT_INTERVAL_ONE;    break; 
-    case 2:  if( slIntervals&D3DPRESENT_INTERVAL_TWO)   uiInterval=D3DPRESENT_INTERVAL_TWO;    break; 
-    case 3:  if( slIntervals&D3DPRESENT_INTERVAL_THREE) uiInterval=D3DPRESENT_INTERVAL_THREE;  break; 
-    case 4:  if( slIntervals&D3DPRESENT_INTERVAL_FOUR)  uiInterval=D3DPRESENT_INTERVAL_FOUR;   break; 
+    switch (gap_iSwapInterval) {
+    case 1:  if (slIntervals&D3DPRESENT_INTERVAL_ONE)   uiInterval=D3DPRESENT_INTERVAL_ONE;    break; 
+    case 2:  if (slIntervals&D3DPRESENT_INTERVAL_TWO)   uiInterval=D3DPRESENT_INTERVAL_TWO;    break; 
+    case 3:  if (slIntervals&D3DPRESENT_INTERVAL_THREE) uiInterval=D3DPRESENT_INTERVAL_THREE;  break; 
+    case 4:  if (slIntervals&D3DPRESENT_INTERVAL_FOUR)  uiInterval=D3DPRESENT_INTERVAL_FOUR;   break; 
     default: break;
     } // construct back cvar
-    switch(uiInterval) {
+    switch (uiInterval) {
     case 1:  gap_iSwapInterval=1;  break; 
     case 2:  gap_iSwapInterval=2;  break; 
     case 3:  gap_iSwapInterval=3;  break; 
@@ -890,11 +890,11 @@ BOOL CGfxLibrary::InitDisplay_D3D( INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ,
   extern INDEX d3d_bUseHardwareTnL;
 
   // cannot have HW VP if not supported by HW, right?
-  if( d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) {
+  if (d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) {
     gl_ulFlags |= GLF_D3D_HASHWTNL;
     gl_ctMaxStreams = d3dCaps.MaxStreams;
-    if( gl_ctMaxStreams<GFX_MINSTREAMS) d3d_bUseHardwareTnL = 0; // cannot use HW T&L if not enough streams
-    if( d3d_bUseHardwareTnL) {
+    if (gl_ctMaxStreams<GFX_MINSTREAMS) d3d_bUseHardwareTnL = 0; // cannot use HW T&L if not enough streams
+    if (d3d_bUseHardwareTnL) {
       d3d_bUseHardwareTnL = 1; // clamp just in case
       dwVP = D3DCREATE_HARDWARE_VERTEXPROCESSING;
       gl_ulFlags |= GLF_D3D_USINGHWTNL;
@@ -905,7 +905,7 @@ BOOL CGfxLibrary::InitDisplay_D3D( INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ,
   extern HWND _hwndMain;
   extern const D3DDEVTYPE d3dDevType;
   hr = gl_pD3D->CreateDevice( iAdapter, d3dDevType, _hwndMain, dwVP, &d3dPresentParams, &gl_pd3dDevice);
-  if( hr!=D3D_OK) return FALSE;
+  if (hr!=D3D_OK) return FALSE;
   gl_d3dColorFormat = d3dColorFormat;
   gl_d3dDepthFormat = d3dDepthFormat;
   gl_iCurrentDepth  = iZDepth;
@@ -919,7 +919,7 @@ BOOL CGfxLibrary::InitDisplay_D3D( INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ,
 // (reverts to next format that closely matches requied one)
 static D3DFORMAT FallbackFormat_D3D( D3DFORMAT eFormat, BOOL b2ndTry)
 {
-  switch( eFormat) {
+  switch (eFormat) {
   case D3DFMT_X8R8G8B8: return !b2ndTry ? D3DFMT_A8R8G8B8 : D3DFMT_R5G6B5;
   case D3DFMT_X1R5G5B5: return !b2ndTry ? D3DFMT_R5G6B5   : D3DFMT_A1R5G5B5;
   case D3DFMT_X4R4G4B4: return !b2ndTry ? D3DFMT_R5G6B5   : D3DFMT_A1R5G5B5;
@@ -942,9 +942,9 @@ static D3DFORMAT FallbackFormat_D3D( D3DFORMAT eFormat, BOOL b2ndTry)
 extern D3DFORMAT FindClosestFormat_D3D( D3DFORMAT d3df)
 {
   FOREVER {
-    if( HasTextureFormat_D3D(d3df)) return d3df;
+    if (HasTextureFormat_D3D(d3df)) return d3df;
     D3DFORMAT d3df2 = FallbackFormat_D3D( d3df, FALSE);
-    if( HasTextureFormat_D3D(d3df2)) return d3df2;
+    if (HasTextureFormat_D3D(d3df2)) return d3df2;
     d3df = FallbackFormat_D3D( d3df, TRUE);
   }
 }
@@ -982,8 +982,8 @@ static void CheckStreams(void)
   ui  = NORSIZE;
   hr  = pd3dDev->GetStreamSource( NORIDX, &pVBRet, &uiRet);
   D3D_CHECKERROR(hr);
-  if( pVBRet!=NULL) iRef = pVBRet->Release();
-  if( _ulStreamsMask & (1<<NORIDX)) pVB = _pGfx->gl_pd3dNor;
+  if (pVBRet!=NULL) iRef = pVBRet->Release();
+  if (_ulStreamsMask & (1<<NORIDX)) pVB = _pGfx->gl_pd3dNor;
   ASSERT( iRef==1 && pVBRet==pVB && (uiRet==ui || uiRet==0));
 
   // check colors
@@ -991,8 +991,8 @@ static void CheckStreams(void)
   ui  = COLSIZE;
   hr  = pd3dDev->GetStreamSource( COLIDX, &pVBRet, &uiRet);
   D3D_CHECKERROR(hr);
-  if( pVBRet!=NULL) iRef = pVBRet->Release();
-  if( _ulStreamsMask & (1<<COLIDX)) {
+  if (pVBRet!=NULL) iRef = pVBRet->Release();
+  if (_ulStreamsMask & (1<<COLIDX)) {
     iPass = (_iColPass-1) % _pGfx->gl_ctColBuffers;
     pVB = _pGfx->gl_pd3dCol[iPass];
   }
@@ -1003,8 +1003,8 @@ static void CheckStreams(void)
   ui  = _bProjectiveMapping ? TX4SIZE : TEXSIZE;
   hr  = pd3dDev->GetStreamSource( TEXIDX, &pVBRet, &uiRet);
   D3D_CHECKERROR(hr);
-  if( pVBRet!=NULL) iRef = pVBRet->Release();
-  if( _ulStreamsMask & (1<<(TEXIDX))) {
+  if (pVBRet!=NULL) iRef = pVBRet->Release();
+  if (_ulStreamsMask & (1<<(TEXIDX))) {
     iPass = (_iTexPass-1) % _pGfx->gl_ctTexBuffers;
     pVB = _pGfx->gl_pd3dTex[iPass];
   }
@@ -1049,7 +1049,7 @@ extern void SetVertexArray_D3D( INDEX iType, ULONG *pulVtx)
   const BOOL bHWTnL = _pGfx->gl_ulFlags & GLF_D3D_USINGHWTNL;
 
   // determine which buffer we work on
-  switch(iType)
+  switch (iType)
   {
 
   // VERTICES
@@ -1059,11 +1059,11 @@ extern void SetVertexArray_D3D( INDEX iType, ULONG *pulVtx)
     SetupVertexArrays_D3D( GFX_ctVertices * (bHWTnL?2:1));
     // determine lock type
     pd3dVB = _pGfx->gl_pd3dVtx;
-    if( !bHWTnL || (_iVtxOffset+GFX_ctVertices)>=_pGfx->gl_ctVertices) {
+    if (!bHWTnL || (_iVtxOffset+GFX_ctVertices)>=_pGfx->gl_ctVertices) {
        // reset pos and flags
       _iVtxOffset = 0;
       _dwVtxLockFlags = D3DLOCK_DISCARD;
-      for( INDEX i=0; i<GFX_MAXLAYERS; i++) _dwColLockFlags[i] = _dwTexLockFlags[i] = _dwVtxLockFlags;
+      for (INDEX i=0; i<GFX_MAXLAYERS; i++) _dwColLockFlags[i] = _dwTexLockFlags[i] = _dwVtxLockFlags;
     } else _dwVtxLockFlags = D3DLOCK_NOOVERWRITE;
     // keep and advance current lock position
     _iVtxPos = _iVtxOffset;
@@ -1099,7 +1099,7 @@ extern void SetVertexArray_D3D( INDEX iType, ULONG *pulVtx)
   case 2: 
     iThisPass = _iColPass;
     // restart in case of too many passes
-    if( iThisPass>=_pGfx->gl_ctColBuffers) {
+    if (iThisPass>=_pGfx->gl_ctColBuffers) {
       dwLockFlag = D3DLOCK_DISCARD;
       iThisPass %= _pGfx->gl_ctColBuffers;
     } else { // continue in case of enough buffers
@@ -1126,7 +1126,7 @@ extern void SetVertexArray_D3D( INDEX iType, ULONG *pulVtx)
   case 3:
     iThisPass = _iTexPass;
     // restart in case of too many passes
-    if( iThisPass>=_pGfx->gl_ctTexBuffers) {
+    if (iThisPass>=_pGfx->gl_ctTexBuffers) {
       dwLockFlag = D3DLOCK_DISCARD;
       iThisPass %= _pGfx->gl_ctTexBuffers;
     } else { // continue in case of enough buffers
@@ -1138,7 +1138,7 @@ extern void SetVertexArray_D3D( INDEX iType, ULONG *pulVtx)
     // set stream number (must take into account tex-unit, because of multi-texturing!)
     iStream = TEXIDX +GFX_iActiveTexUnit;
     // determine stride, lock pos and size
-    if( _bProjectiveMapping) {
+    if (_bProjectiveMapping) {
       ctLockSize  = GFX_ctVertices*4; 
       iLockOffset = _iVtxPos*4; 
       slStride = TX4SIZE;
@@ -1164,7 +1164,7 @@ extern void SetVertexArray_D3D( INDEX iType, ULONG *pulVtx)
 
   // copy (or convert) vertices there and unlock
   ASSERT(pulVtx!=NULL); 
-  if( iType!=2) CopyLongs( pulVtx, pulLockedBuffer, ctLockSize); // vertex array
+  if (iType!=2) CopyLongs( pulVtx, pulLockedBuffer, ctLockSize); // vertex array
   else          abgr2argb( pulVtx, pulLockedBuffer, ctLockSize); // color array (needs conversion)
 
   // done
@@ -1189,7 +1189,7 @@ extern void DrawElements_D3D( INDEX ctIndices, INDEX *pidx)
 
   // at least one triangle must be sent
   ASSERT( ctIndices>=3 && ((ctIndices/3)*3)==ctIndices);
-  if( ctIndices<3) return;
+  if (ctIndices<3) return;
   extern INDEX d3d_iVertexRangeTreshold;
   d3d_iVertexRangeTreshold = Clamp( d3d_iVertexRangeTreshold, 0L, 9999L);
 
@@ -1198,7 +1198,7 @@ extern void DrawElements_D3D( INDEX ctIndices, INDEX *pidx)
   SetupIndexArray_D3D( ctIndices * (bHWTnL?2:1));
 
   // determine lock position and type
-  if( (_iIdxOffset+ctIndices) >= _pGfx->gl_ctIndices) _iIdxOffset = 0;
+  if ((_iIdxOffset+ctIndices) >= _pGfx->gl_ctIndices) _iIdxOffset = 0;
   const DWORD dwLockFlag   = (_iIdxOffset>0) ? D3DLOCK_NOOVERWRITE : D3DLOCK_DISCARD;
   const SLONG slLockSize   =  ctIndices *IDXSIZE; 
   const SLONG slLockOffset = _iIdxOffset*IDXSIZE; 
@@ -1284,10 +1284,10 @@ elemTLoop:
 elemEnd:
   }
 #else
-  for( INDEX idx=0; idx<ctIndices; idx++) {
+  for (INDEX idx=0; idx<ctIndices; idx++) {
     const INDEX iAdj = pidx[idx] + _iVtxPos;
-         if( iMinIndex>iAdj) iMinIndex = iAdj;
-    else if( iMaxIndex<iAdj) iMaxIndex = iAdj;
+         if (iMinIndex>iAdj) iMinIndex = iAdj;
+    else if (iMaxIndex<iAdj) iMaxIndex = iAdj;
     puwLockedBuffer[idx] = iAdj;
   }
 #endif
@@ -1297,14 +1297,14 @@ elemEnd:
   D3D_CHECKERROR(hr);
 
   // check whether to use color array or not
-  if( GFX_bColorArray) _ulStreamsMask |= (1<<COLIDX);
+  if (GFX_bColorArray) _ulStreamsMask |= (1<<COLIDX);
   else _ulStreamsMask &= ~(1<<COLIDX);
 
   // must adjust some stuff when projective mapping usage has been toggled
-  if( !_bLastProjectiveMapping != !_bProjectiveMapping) {
+  if (!_bLastProjectiveMapping != !_bProjectiveMapping) {
     _bLastProjectiveMapping = _bProjectiveMapping;
     D3DTEXTURETRANSFORMFLAGS ttf;
-    if( _bProjectiveMapping) {
+    if (_bProjectiveMapping) {
       _ulStreamsMask |= 0x1000;
       ttf = D3DTTFF_PROJECTED;
     } else ttf = D3DTTFF_DISABLE;
@@ -1313,12 +1313,12 @@ elemEnd:
   }
 
   // eventually (re)construct vertex shader out of streams' bit-mask
-  if( _ulLastStreamsMask != _ulStreamsMask)
+  if (_ulLastStreamsMask != _ulStreamsMask)
   { // reset streams that were used before
     ULONG ulThisMask = _ulStreamsMask;
     ULONG ulLastMask = _ulLastStreamsMask;
-    for( INDEX iStream=0; iStream<MAXSTREAMS; iStream++) {
-      if( (ulThisMask&1)==0 && (ulLastMask&1)!=0) {
+    for (INDEX iStream=0; iStream<MAXSTREAMS; iStream++) {
+      if ((ulThisMask&1)==0 && (ulLastMask&1)!=0) {
         hr = pd3dDev->SetStreamSource( iStream,NULL,0);
         D3D_CHECKERROR(hr);
       } // next stream
@@ -1332,7 +1332,7 @@ elemEnd:
 
   // (re)set vertex shader
   ASSERT(_dwCurrentVS!=NONE);
-  if( _pGfx->gl_dwVertexShader!=_dwCurrentVS) {
+  if (_pGfx->gl_dwVertexShader!=_dwCurrentVS) {
     hr = _pGfx->gl_pd3dDevice->SetVertexShader(_dwCurrentVS);
     D3D_CHECKERROR(hr);
    _pGfx->gl_dwVertexShader = _dwCurrentVS;
@@ -1346,7 +1346,7 @@ elemEnd:
   // determine vertex range  
   INDEX iVtxStart, ctVtxUsed;
   // if not too much vertices in buffer
-  if( !bSetRange) {
+  if (!bSetRange) {
     // set whole vertex buffer
     iVtxStart = _iVtxPos;
     ctVtxUsed = GFX_ctVertices;

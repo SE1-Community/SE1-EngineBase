@@ -39,12 +39,12 @@ INDEX AddIndexToTable(CTString strName)
 // find string in table and return his index, if not found add new and return his index
 INDEX ska_GetIDFromStringTable(CTString strName)
 {
-  if(strName == "") return -1;
+  if (strName == "") return -1;
 
   INDEX ctStrings = _arStringTable.Count();
-  for(INDEX i=0;i<ctStrings;i++)
+  for (INDEX i=0;i<ctStrings;i++)
   {
-    if(_arStringTable[i].strName == strName)
+    if (_arStringTable[i].strName == strName)
     {
       return i;
     }
@@ -54,12 +54,12 @@ INDEX ska_GetIDFromStringTable(CTString strName)
 // find string in table and return his index, if not found return -1
 INDEX ska_FindStringInTable(CTString strName)
 {
-  if(strName == "") return -1;
+  if (strName == "") return -1;
 
   INDEX ctStrings = _arStringTable.Count();
-  for(INDEX i=0;i<ctStrings;i++)
+  for (INDEX i=0;i<ctStrings;i++)
   {
-    if(_arStringTable[i].strName == strName)
+    if (_arStringTable[i].strName == strName)
     {
       return i;
     }
@@ -70,7 +70,7 @@ INDEX ska_FindStringInTable(CTString strName)
 CTString ska_GetStringFromTable(INDEX iIndex)
 {
   INDEX ctStrings = _arStringTable.Count();
-  if((iIndex >= 0) && (iIndex <= ctStrings-1))
+  if ((iIndex >= 0) && (iIndex <= ctStrings-1))
   {
     return _arStringTable[iIndex].strName;
   }

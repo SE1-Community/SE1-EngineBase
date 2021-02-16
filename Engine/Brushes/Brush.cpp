@@ -207,14 +207,14 @@ void CBrush3D::PrepareRelativeToAbsoluteProjection(
   CSimpleProjection3D_DOUBLE &prRelativeToAbsolute)
 {
   // brush that does not have an entity is initialized at origin
-  if(br_penEntity==NULL) {
+  if (br_penEntity==NULL) {
     prRelativeToAbsolute.ObjectPlacementL().pl_PositionVector = FLOAT3D(0.0f, 0.0f, 0.0f);
-    prRelativeToAbsolute.ObjectPlacementL().pl_OrientationAngle = ANGLE3D(0, 0, 0);
+    prRelativeToAbsolute.ObjectPlacementL().pl_OrientationAngle = ANGLE3D(0.0f, 0.0f, 0.0f);
   } else {
     prRelativeToAbsolute.ObjectPlacementL() = br_penEntity->en_plPlacement;
   }
   prRelativeToAbsolute.ViewerPlacementL().pl_PositionVector = FLOAT3D(0.0f, 0.0f, 0.0f);
-  prRelativeToAbsolute.ViewerPlacementL().pl_OrientationAngle = ANGLE3D(0, 0, 0);
+  prRelativeToAbsolute.ViewerPlacementL().pl_OrientationAngle = ANGLE3D(0.0f, 0.0f, 0.0f);
   prRelativeToAbsolute.Prepare();
 }
 

@@ -29,7 +29,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  * elements in the array. To do so, embed the for loop in additional curly braces.
  */
 #define FOREACHINDYNAMICARRAY(array, type, iter) \
-  for(CDynamicArrayIterator<type> iter(array); !iter.IsPastEnd(); iter.MoveToNext() )
+  for (CDynamicArrayIterator<type> iter(array); !iter.IsPastEnd(); iter.MoveToNext() )
 
 class CDABlockInfo {
 public:
@@ -208,7 +208,7 @@ Type *CDynamicArray<Type>::New(INDEX iCount /*= 1*/) {
   // allocate the memory block
   ptBlock = AllocBlock(iCount);
   // set pointers
-  for(INDEX iNewMember=0; iNewMember<iCount; iNewMember++) {
+  for (INDEX iNewMember=0; iNewMember<iCount; iNewMember++) {
     da_Pointers[iOldCount+iNewMember] = ptBlock+iNewMember;
   }
   return ptBlock;
@@ -310,7 +310,7 @@ INDEX CDynamicArray<Type>::GetIndex(Type *ptMember) {
   // slow !!!!
   // check all members
   for (INDEX iMember=0; iMember<da_Count; iMember++) {
-    if(da_Pointers[iMember]==ptMember) {
+    if (da_Pointers[iMember]==ptMember) {
       return iMember;
     }
   }

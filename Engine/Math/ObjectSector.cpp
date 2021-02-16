@@ -364,35 +364,35 @@ void CObjectSector::CreateIndices(void)
   // get the number of vertices in object
   INDEX ctVertices = osc_aovxVertices.Count();
   // set vertex indices
-  for(INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
+  for (INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
     osc_aovxVertices[iVertex].ovx_Index = iVertex;
   }
 
   // get the number of planes in object
   INDEX ctPlanes = osc_aoplPlanes.Count();
   // set plane indices
-  for(INDEX iPlane=0; iPlane<ctPlanes; iPlane++) {
+  for (INDEX iPlane=0; iPlane<ctPlanes; iPlane++) {
     osc_aoplPlanes[iPlane].opl_Index = iPlane;
   }
 
   // get the number of materials in object
   INDEX ctMaterials = osc_aomtMaterials.Count();
   // set plane indices
-  for(INDEX iMaterial=0; iMaterial<ctMaterials; iMaterial++) {
+  for (INDEX iMaterial=0; iMaterial<ctMaterials; iMaterial++) {
     osc_aomtMaterials[iMaterial].omt_Index = iMaterial;
   }
 
   // get the number of edges in object
   INDEX ctEdges = osc_aoedEdges.Count();
   // set edge indices
-  for(INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
+  for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
     osc_aoedEdges[iEdge].oed_Index = iEdge;
   }
 
   // get the number of polygons in object
   INDEX ctPolygons = osc_aopoPolygons.Count();
   // set polygon indices
-  for(INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++) {
+  for (INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++) {
     osc_aopoPolygons[iPolygon].opo_Index = iPolygon;
   }
 
@@ -409,7 +409,7 @@ CObjectPolygon *CObjectSector::CreatePolygon(INDEX ctVertices, DOUBLE3D avVertic
   // reset areas on axial planes
   DOUBLE fXY=0.0, fXZ=0.0, fYZ=0.0;
   // for each two vertices
-  {for (INDEX ivx=0; ivx<ctVertices; ivx++){
+  {for (INDEX ivx=0; ivx<ctVertices; ivx++) {
     const DOUBLE3D &v0 = avVertices[ivx];
     const DOUBLE3D &v1 = avVertices[(ivx+1)%ctVertices];
     // add the edge to all three areas
@@ -421,7 +421,7 @@ CObjectPolygon *CObjectSector::CreatePolygon(INDEX ctVertices, DOUBLE3D avVertic
   fXY = Abs(fXY); fXZ = Abs(fXZ); fYZ = Abs(fYZ);
   DOUBLE fMaxArea = Max(Max(fXY, fXZ), fYZ);
   // if maximum area is too small
-  if(fMaxArea<1E-8) {
+  if (fMaxArea<1E-8) {
     // do not create polygon
     return NULL;
   }
@@ -446,7 +446,7 @@ CObjectPolygon *CObjectSector::CreatePolygon(INDEX ctVertices, DOUBLE3D avVertic
   // clear plane normal
   DOUBLE3D vNormal = DOUBLE3D(0.0f,0.0f,0.0f);
   // for all vertices in polygon
-  {for(INDEX iEdge=0; iEdge<ctVertices; iEdge++) {
+  {for (INDEX iEdge=0; iEdge<ctVertices; iEdge++) {
 		// get two neighbouring edges
     CObjectEdge &oed0 = *popePolygonEdges[iEdge].ope_Edge;
     CObjectEdge &oed1 = *popePolygonEdges[(iEdge+1)%ctVertices].ope_Edge;
@@ -507,7 +507,7 @@ CObjectPolygon *CObjectSector::CreatePolygon(INDEX ctVertices, INDEX aivVertices
   // clear plane normal
   DOUBLE3D vNormal = DOUBLE3D(0.0f,0.0f,0.0f);
   // for all vertices in polygon
-  {for(INDEX iEdge=0; iEdge<ctVertices; iEdge++) {
+  {for (INDEX iEdge=0; iEdge<ctVertices; iEdge++) {
 		// get two neighbouring edges
     CObjectEdge &oed0 = *popePolygonEdges[iEdge].ope_Edge;
     CObjectEdge &oed1 = *popePolygonEdges[(iEdge+1)%ctVertices].ope_Edge;
@@ -657,21 +657,21 @@ void CObjectSector::RemapClonedPlanes(void)
   CStaticArray<CObjectPlane *> applSortedPlanes;
   applSortedPlanes.New(ctPlanes);
   // for all vertices
-  for(INDEX iPlane=0; iPlane<ctPlanes; iPlane++) {
+  for (INDEX iPlane=0; iPlane<ctPlanes; iPlane++) {
     // set the pointer in sorting array
     applSortedPlanes[iPlane] = &osc_aoplPlanes[iPlane];
     // set remap pointer to itself
     osc_aoplPlanes[iPlane].opl_Remap = &osc_aoplPlanes[iPlane];
   }
 
-  if( wld_bFastObjectOptimization) {
+  if (wld_bFastObjectOptimization) {
     // sort the array of pointers, so that same planes get next to each other
     qsort(&applSortedPlanes[0], ctPlanes, sizeof(CObjectPlane *), qsort_ComparePlanes);
 
     /* Create remapping pointers. */
 
     // for all planes in sorted array, except the last one
-    for(INDEX iSortedPlane=0; iSortedPlane<ctPlanes-1; iSortedPlane++) {
+    for (INDEX iSortedPlane=0; iSortedPlane<ctPlanes-1; iSortedPlane++) {
       // if the next plane is same as this one
       if ( ComparePlanes(*applSortedPlanes[iSortedPlane],
                          *applSortedPlanes[iSortedPlane+1]) == 0 ) {
@@ -682,12 +682,12 @@ void CObjectSector::RemapClonedPlanes(void)
 
   } else {
     // for all pairs of planes
-    {for(INDEX iPlane1=0; iPlane1<ctPlanes; iPlane1++) {
+    {for (INDEX iPlane1=0; iPlane1<ctPlanes; iPlane1++) {
       CObjectPlane &pl1 = osc_aoplPlanes[iPlane1];
       if (pl1.opl_Remap != &pl1) {
         continue;
       }
-      for(INDEX iPlane2=iPlane1+1; iPlane2<ctPlanes; iPlane2++) {
+      for (INDEX iPlane2=iPlane1+1; iPlane2<ctPlanes; iPlane2++) {
         CObjectPlane &pl2 = osc_aoplPlanes[iPlane2];
         if (ComparePlanes(pl1, pl2)==0) {
           pl2.opl_Remap = pl1.opl_Remap;
@@ -727,21 +727,21 @@ void CObjectSector::RemapClonedVertices(void)
   CStaticArray<CObjectVertex *> apvxSortedVertices;
   apvxSortedVertices.New(ctVertices);
   // for all vertices
-  for(INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
+  for (INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
     // set the pointer in sorting array
     apvxSortedVertices[iVertex] = &osc_aovxVertices[iVertex];
     // set remap pointer to itself
     osc_aovxVertices[iVertex].ovx_Remap = &osc_aovxVertices[iVertex];
   }
 
-  if( wld_bFastObjectOptimization) {
+  if (wld_bFastObjectOptimization) {
     // sort the array of pointers, so that same vertices get next to each other
     qsort(&apvxSortedVertices[0], ctVertices, sizeof(CObjectVertex *), qsort_CompareVertices);
 
     /* Create remapping pointers. */
 
     // for all vertices in sorted array, except the last one
-    for(INDEX iSortedVertex=0; iSortedVertex<ctVertices-1; iSortedVertex++) {
+    for (INDEX iSortedVertex=0; iSortedVertex<ctVertices-1; iSortedVertex++) {
       // if the next vertex is same as this one
       if ( CompareVertices(*apvxSortedVertices[iSortedVertex],
                            *apvxSortedVertices[iSortedVertex+1]) == 0 ) {
@@ -760,12 +760,12 @@ void CObjectSector::RemapClonedVertices(void)
     }
   } else {
     // for all pairs of vertices
-    {for(INDEX iVertex1=0; iVertex1<ctVertices; iVertex1++) {
+    {for (INDEX iVertex1=0; iVertex1<ctVertices; iVertex1++) {
       CObjectVertex &vx1 = osc_aovxVertices[iVertex1];
       if (vx1.ovx_Remap != &vx1) {
         continue;
       }
-      for(INDEX iVertex2=iVertex1+1; iVertex2<ctVertices; iVertex2++) {
+      for (INDEX iVertex2=iVertex1+1; iVertex2<ctVertices; iVertex2++) {
         CObjectVertex &vx2 = osc_aovxVertices[iVertex2];
         if (CompareVertices(vx1, vx2)==0) {
           vx2.ovx_Remap = vx1.ovx_Remap;
@@ -803,7 +803,7 @@ bug:
   bBug = TRUE;
 
   // for all vertices in sorted array, except the last one
-  {for(INDEX iSortedVertex=0; iSortedVertex<ctVertices-1; iSortedVertex++) {
+  {for (INDEX iSortedVertex=0; iSortedVertex<ctVertices-1; iSortedVertex++) {
     CPrintF("(%f,%f,%f)-(%f,%f,%f) ",
       (*apvxSortedVertices[iSortedVertex])(1),
       (*apvxSortedVertices[iSortedVertex])(2),
@@ -1200,7 +1200,7 @@ void CObjectSector::SplitCollinearEdgesRun(CStaticArray<CEdgeEx *> &apedxSortedE
     }
   }}
   // for all edges in run
-  {for(INDEX iEdgeInRun=iFirstInRun; iEdgeInRun<=iLastInRun; iEdgeInRun++) {
+  {for (INDEX iEdgeInRun=iFirstInRun; iEdgeInRun<=iLastInRun; iEdgeInRun++) {
     CObjectEdge &oed = *apedxSortedEdgeLines[iEdgeInRun]->edx_poedEdge;
     // if first vertex is not marked
     if (!oed.oed_Vertex0->ovx_Tag) {
@@ -1248,7 +1248,7 @@ void CObjectSector::SplitCollinearEdgesRun(CStaticArray<CEdgeEx *> &apedxSortedE
   CStaticArray<CObjectVertex *> apvxSortedVertices;
   apvxSortedVertices.New(ctVerticesOnLine);
   // for all edges in run
-  {for(INDEX iEdgeInRun=iFirstInRun; iEdgeInRun<=iLastInRun; iEdgeInRun++) {
+  {for (INDEX iEdgeInRun=iFirstInRun; iEdgeInRun<=iLastInRun; iEdgeInRun++) {
     CObjectEdge &oed = *apedxSortedEdgeLines[iEdgeInRun]->edx_poedEdge;
     // set vertex pointers
     apvxSortedVertices[(iEdgeInRun-iFirstInRun)*2]   = oed.oed_Vertex0;
@@ -1295,7 +1295,7 @@ void CObjectSector::SplitCollinearEdgesRun(CStaticArray<CEdgeEx *> &apedxSortedE
   /* split each edge in turn */
 
   // for all edges in run
-  {for(INDEX iEdgeInRun=iFirstInRun; iEdgeInRun<=iLastInRun; iEdgeInRun++) {
+  {for (INDEX iEdgeInRun=iFirstInRun; iEdgeInRun<=iLastInRun; iEdgeInRun++) {
     CObjectEdge &oed = *apedxSortedEdgeLines[iEdgeInRun]->edx_poedEdge;
     // split the edge with the vertices
     SplitEdgeWithVertices(oed, apvxSortedVertices);
@@ -1314,7 +1314,7 @@ void CObjectSector::CreateEdgeLines(CStaticArray<CEdgeEx> &aedxEdgeLines,
   // create array of pointers to extended edge infos for sorting edges
   apedxSortedEdgeLines.New(ctEdges);
   // for all edges
-  for(INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
+  for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
     // create extended info
     aedxEdgeLines[iEdge].Initialize(&osc_aoedEdges[iEdge]);
     // set the pointer in sorting array
@@ -1346,7 +1346,7 @@ void CObjectSector::SplitCollinearEdges(void)
 
   // for all edges in normal sorted array, starting at second one
   INDEX iFirstInLine = 0;
-  for(INDEX iSortedEdge=1; iSortedEdge<ctEdges; iSortedEdge++) {
+  for (INDEX iSortedEdge=1; iSortedEdge<ctEdges; iSortedEdge++) {
     // if the previous edge is not collinear with this one
     if ( CompareEdgeLines(*apedxSortedEdgeLines[iSortedEdge],
                          *apedxSortedEdgeLines[iSortedEdge-1]) != 0 ) {
@@ -1541,7 +1541,7 @@ void CObjectSector::RemapClonedEdges(void)
   CStaticArray<CObjectEdge *> apedSortedEdges;
   apedSortedEdges.New(ctEdges);
   // for all edges
-  for(INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
+  for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
     // set the pointers in sorting array
     apedSortedEdges[iEdge] = &osc_aoedEdges[iEdge];
     // set remap pointer to itself
@@ -1557,7 +1557,7 @@ void CObjectSector::RemapClonedEdges(void)
   /* Create remapping pointers. */
 
   // for all edges in normal sorted array, except the last one
-  for(INDEX iSortedEdge=0; iSortedEdge<ctEdges-1; iSortedEdge++) {
+  for (INDEX iSortedEdge=0; iSortedEdge<ctEdges-1; iSortedEdge++) {
     // if the next plane is same as this one
     if ( CompareEdges(*apedSortedEdges[iSortedEdge],
                          *apedSortedEdges[iSortedEdge+1]) == 0 ) {
@@ -1569,7 +1569,7 @@ void CObjectSector::RemapClonedEdges(void)
   /* Create inverse pointers. */
 
   // for all edges in sorted array
-  for(INDEX iNormalEdge=0; iNormalEdge<ctEdges; iNormalEdge++) {
+  for (INDEX iNormalEdge=0; iNormalEdge<ctEdges; iNormalEdge++) {
     CObjectEdge &edNormal = *apedSortedEdges[iNormalEdge];
     CObjectEdge *pedInverse;
 
@@ -1633,7 +1633,7 @@ void CObjectSector::RemoveDummyPolygons(void)
   INDEX ctUsedPolygons = 0;
   {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
     // if it has more than 2 edges
-    if(itopo->opo_PolygonEdges.Count()>2) {
+    if (itopo->opo_PolygonEdges.Count()>2) {
       // mark it as used
       itopo->opo_Tag = TRUE;
       // count it
@@ -1832,7 +1832,7 @@ void CObjectSector::CreateBSP(void)
   osc_aopoPolygons.Lock();
 
   // for each polygon in this sector
-  for(INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++) {
+  for (INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++) {
     CObjectPolygon    &opo = osc_aopoPolygons[iPolygon];
     DOUBLEbsppolygon3D &bpo = arbpo[iPolygon];
 
@@ -1847,11 +1847,11 @@ void CObjectSector::CreateBSP(void)
 
     opo.opo_PolygonEdges.Lock();
     // for each edge in this polygon
-    for(INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
+    for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
       CObjectPolygonEdge &ope = opo.opo_PolygonEdges[iEdge];
       CObjectEdge &oed = *ope.ope_Edge;
       // if the edge is reversed
-      if(ope.ope_Backward) {
+      if (ope.ope_Backward) {
         // add bsp edge with reversed vertices
         pbed[iEdge] = DOUBLEbspedge3D(*oed.oed_Vertex1, *oed.oed_Vertex0, (ULONG)&oed);
       // otherwise
@@ -1905,7 +1905,7 @@ void CObjectSector::RecalculatePlanes(void)
     // for all edges in polygon
     INDEX ctVertices = opo.opo_PolygonEdges.Count();
     opo.opo_PolygonEdges.Lock();
-    {for(INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
+    {for (INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
 		  // get its vertices in counterclockwise order
       CObjectPolygonEdge &ope = opo.opo_PolygonEdges[iVertex];
       CObjectVertex *povx0, *povx1;
@@ -1919,9 +1919,9 @@ void CObjectSector::RecalculatePlanes(void)
       DOUBLE3D vSum = *povx0+*povx1;
       DOUBLE3D vDif = *povx0-*povx1;
 		  // add the edge contribution to the normal vector
-      vNormal(1) += vDif(2)*vSum(3);
-      vNormal(2) += vDif(3)*vSum(1);
-      vNormal(3) += vDif(1)*vSum(2);
+      vNormal(1) += vDif (2)*vSum(3);
+      vNormal(2) += vDif (3)*vSum(1);
+      vNormal(3) += vDif (1)*vSum(2);
     }}
 
     // if the polygon area is too small

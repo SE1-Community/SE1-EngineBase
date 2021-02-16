@@ -78,7 +78,7 @@ void CConsole::Initialize(const CTFileName &fnmLog, INDEX ctCharsPerLine, INDEX 
   con_strLineBuffer = (char *)AllocMemory(ctCharsPerLine+2); // includes '\n' and '\0'
   con_allLines = (TICK*)AllocMemory((ctLines+1)*sizeof(TICK));
   // make it empty
-  for(INDEX iLine=0; iLine<ctLines; iLine++) {
+  for (INDEX iLine=0; iLine<ctLines; iLine++) {
     ClearLine(iLine);
   }
   // add string terminator at the end
@@ -121,7 +121,7 @@ void CConsole::DiscardLastLineTimes(void)
   if (this==NULL) {
     return;
   }
-  for(INDEX i=0; i<con_ctLines; i++) {
+  for (INDEX i=0; i<con_ctLines; i++) {
     con_allLines[i] = -10000;
   }
 }
@@ -135,7 +135,7 @@ INDEX CConsole::NumberOfLinesAfter(TICK llLast)
   // clamp console variable
   con_iLastLines = Clamp( con_iLastLines, 0L, (INDEX)CONSOLE_MAXLASTLINES);
   // find number of last console lines to be displayed on screen
-  for(INDEX i=0; i<con_iLastLines; i++) {
+  for (INDEX i=0; i<con_iLastLines; i++) {
     if (con_allLines[con_ctLines-1-i]<llLast) {
       return i;
     }
@@ -199,7 +199,7 @@ void CConsole::ScrollBufferUp(INDEX ctLines)
     (con_ctLines-ctLines)*sizeof(TICK));
   con_ctLinesPrinted = ClampUp(con_ctLinesPrinted+1L, con_ctLines);
   // clear lines at the end
-  for(INDEX iLine=con_ctLines-ctLines; iLine<con_ctLines; iLine++) {
+  for (INDEX iLine=con_ctLines-ctLines; iLine<con_ctLines; iLine++) {
     ClearLine(iLine);
   }
 }
@@ -235,7 +235,7 @@ void CConsole::PutString(const char *strString)
   // start at the beginning of the string
   const char *pch=strString;
   // while not end of string
-  while(*pch!=0) {
+  while (*pch!=0) {
     // if line buffer full
     if (con_strCurrent==con_strLastLine+con_ctCharsPerLine) {
       // move buffer up

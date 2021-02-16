@@ -327,7 +327,7 @@ void MSJExceptionHandler::IntelStackWalk( PCONTEXT pContext )
     pFrame = (PDWORD)pContext->Ebp;
 
 
-    for(INDEX iDepth=0; iDepth<100; iDepth++)
+    for (INDEX iDepth=0; iDepth<100; iDepth++)
     {
         char szModule[MAX_PATH] = "";
         DWORD section = 0, offset = 0;

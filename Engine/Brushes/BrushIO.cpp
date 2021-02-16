@@ -76,7 +76,7 @@ void CBrush3D::Read_t( CTStream *pistrm) // throw char *
   (*pistrm)>>iSavedVersion;
 
   // if the version number is the newest
-  if(iSavedVersion==_iSupportedVersion) {
+  if (iSavedVersion==_iSupportedVersion) {
     // read current version
     Read_new_t(pistrm);
 
@@ -111,7 +111,7 @@ void CBrush3D::Read_old_t( CTStream *pistrm) // throw char *
   INDEX ctMips;
   (*pistrm)>>ctMips;
   // for each mip
-  for(INDEX iMip=0; iMip<ctMips; iMip++) {
+  for (INDEX iMip=0; iMip<ctMips; iMip++) {
     // create a new brush mip
     CBrushMip *pbmMip = new CBrushMip;
     // add it to list
@@ -135,7 +135,7 @@ void CBrush3D::Read_new_t( CTStream *pistrm) // throw char *
   INDEX ctMips;
   (*pistrm)>>ctMips;
   // for each mip
-  for(INDEX iMip=0; iMip<ctMips; iMip++) {
+  for (INDEX iMip=0; iMip<ctMips; iMip++) {
     // create a new brush mip
     CBrushMip *pbmMip = new CBrushMip;
     // add it to list
@@ -178,7 +178,7 @@ void CBrushMip::Read_old_t( CTStream *pistrm) // throw char *
   bm_abscSectors.New(ctSectors);
   bm_abscSectors.Lock();
   // for each sector
-  for(INDEX iSector=0; iSector<ctSectors; iSector++) {
+  for (INDEX iSector=0; iSector<ctSectors; iSector++) {
     // read it from stream
     bm_abscSectors[iSector].Read_t(pistrm);
     // set back-pointer to the brush
@@ -217,7 +217,7 @@ void CBrushMip::Read_new_t( CTStream *pistrm) // throw char *
   bm_abscSectors.New(ctSectors);
   bm_abscSectors.Lock();
   // for each sector
-  for(INDEX iSector=0; iSector<ctSectors; iSector++) {
+  for (INDEX iSector=0; iSector<ctSectors; iSector++) {
     // set back-pointer to the brush
     bm_abscSectors[iSector].bsc_pbmBrushMip = this;
     // read it from stream
@@ -441,7 +441,7 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
   bsc_abedEdges.New(ctEdges);
   bsc_awedEdges.New(ctEdges);
   // for all edges in object
-  {for(INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
+  {for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
     CBrushEdge &bed = bsc_abedEdges[iEdge];
     CWorkingEdge &wed = bsc_awedEdges[iEdge];
     // read indices of edge vertices
@@ -532,7 +532,7 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
       }
     }
     // if version before fake protal flag
-    if(iBPOVersion<BPOV_FAKEPORTALFLAG) {
+    if (iBPOVersion<BPOV_FAKEPORTALFLAG) {
       // convert portal flag to fake
       if (bpo.bpo_ulFlags&OPOF_PORTAL) {
         bpo.bpo_ulFlags|=BPOF_PORTAL;

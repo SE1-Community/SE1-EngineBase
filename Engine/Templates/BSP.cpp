@@ -86,8 +86,8 @@ void BSPVertexContainer<Type, iDimensions>::Initialize(const Vector<Type, iDimen
   // find largest axis of direction vector
   INDEX iMaxAxis = 0;
   Type tMaxAxis = (Type)0;//vDirection(1);
-  for( INDEX iAxis=1; iAxis<=iDimensions; iAxis++) {
-    if( Abs(vDirection(iAxis)) > Abs(tMaxAxis) ) {
+  for (INDEX iAxis=1; iAxis<=iDimensions; iAxis++) {
+    if (Abs(vDirection(iAxis)) > Abs(tMaxAxis) ) {
       tMaxAxis = vDirection(iAxis);
       iMaxAxis = iAxis;
     }
@@ -369,7 +369,7 @@ void BSPEdge<Type, iDimensions>::OptimizeBSPEdges(CDynamicArray<BSPEdge<Type, iD
       }}
     }}
     // while some edges can be joined
-  } while(bSomeJoined);
+  } while (bSomeJoined);
 
   // remove all marked edges
   RemoveMarkedBSPEdges(abed);
@@ -1215,7 +1215,7 @@ void BSPTree<Type, iDimensions>::Read_t(CTStream &strm) // throw char *
   ASSERT(slSize==(SLONG)(sizeof(INDEX)+ctNodes*sizeof(BSPNode<Type, iDimensions>)));
   bt_abnNodes.New(ctNodes);
   // for each node
-  for(INDEX iNode=0; iNode<ctNodes; iNode++) {
+  for (INDEX iNode=0; iNode<ctNodes; iNode++) {
     BSPNode<Type, iDimensions> &bn = bt_abnNodes[iNode];
     // read it from disk
     strm.Read_t(&(Plane<Type, iDimensions>&)bn, sizeof(Plane<Type, iDimensions>));
@@ -1264,7 +1264,7 @@ void BSPTree<Type, iDimensions>::Write_t(CTStream &strm) // throw char *
   // write count of nodes
   strm<<ctNodes;
   // for each node
-  for(INDEX iNode=0; iNode<ctNodes; iNode++) {
+  for (INDEX iNode=0; iNode<ctNodes; iNode++) {
     BSPNode<Type, iDimensions> &bn = bt_abnNodes[iNode];
     // write it to disk
     strm.Write_t(&(Plane<Type, iDimensions>&)bn, sizeof(Plane<Type, iDimensions>));

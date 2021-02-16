@@ -25,7 +25,7 @@ __forceinline ULONG CRenderer::GetPolygonVisibility(const CBrushPolygon &bpo)
   BOOL bInvertPolygon = FALSE;
 
   // if the polygon should be inverted or double sided
-  if((re_bRenderingShadows
+  if ((re_bRenderingShadows
    &&!re_bDirectionalShadows
    &&re_ubLightIllumination!=0 
    &&bpo.bpo_bppProperties.bpp_ubIlluminationType==re_ubLightIllumination)
@@ -43,7 +43,7 @@ __forceinline ULONG CRenderer::GetPolygonVisibility(const CBrushPolygon &bpo)
   }
 
   // if the poly is double-sided and detail
-  if( !re_bRenderingShadows && (bpo.bpo_ulFlags&BPOF_DOUBLESIDED) && (bpo.bpo_ulFlags&BPOF_DETAILPOLYGON)) {
+  if (!re_bRenderingShadows && (bpo.bpo_ulFlags&BPOF_DOUBLESIDED) && (bpo.bpo_ulFlags&BPOF_DETAILPOLYGON)) {
     // it's definately visible
     return PDF_POLYGONVISIBLE;
   }
@@ -65,7 +65,7 @@ __forceinline ULONG CRenderer::GetPolygonVisibility(const CBrushPolygon &bpo)
   BOOL bProjectionInverted = re_prProjection->pr_bInverted;
   if (bProjectionInverted && !bInvertPolygon) {
     ulDirection |= PDF_FLIPEDGESPRE;
-  } else if (!bProjectionInverted && bInvertPolygon){
+  } else if (!bProjectionInverted && bInvertPolygon) {
     ulDirection |= PDF_FLIPEDGESPOST;
   }
 
@@ -83,7 +83,7 @@ __forceinline BOOL CRenderer::IsPolygonCulled(const CBrushPolygon &bpo)
 
   // for each vertex
   INDEX ctVtx = bpo.bpo_apbvxTriangleVertices.Count();
-  {for(INDEX i=0; i<ctVtx; i++) {
+  {for (INDEX i=0; i<ctVtx; i++) {
     CBrushVertex *pbvx = bpo.bpo_apbvxTriangleVertices[i];
     INDEX ivx = bsc.bsc_abvxVertices.Index(pbvx);
     // get the outcodes for that vertex
@@ -119,7 +119,7 @@ void CRenderer::FindPretenders(void)
         // for each vertex in the polygon
         INDEX ctVtx = bpo.bpo_apbvxTriangleVertices.Count();
         CBrushSector &bsc = *bpo.bpo_pbscSector;
-        {for(INDEX i=0; i<ctVtx; i++) {
+        {for (INDEX i=0; i<ctVtx; i++) {
           CBrushVertex *pbvx = bpo.bpo_apbvxTriangleVertices[i];
           INDEX ivx = bsc.bsc_abvxVertices.Index(pbvx);
           // get distance of the vertex from the view plane
@@ -167,7 +167,7 @@ void CRenderer::MakeNonDetailScreenPolygons(void)
     // skip if the polygon is not visible
     ASSERT( !IsPolygonCulled(bpo));  // cannot be culled yet!
     const ULONG ulVisible = GetPolygonVisibility(bpo);
-    if( ulVisible==0) continue;
+    if (ulVisible==0) continue;
 
     _sfStats.IncrementCounter(CStatForm::SCI_POLYGONS);
     _pfRenderProfile.IncrementCounter(CRenderProfile::PCI_NONDETAILPOLYGONS);
@@ -212,9 +212,9 @@ void CRenderer::MakeDetailScreenPolygons(void)
     bpo.bpo_pspoScreenPolygon = NULL;
 
     // skip if the polygon is not visible
-    if( GetPolygonVisibility(bpo)==0) continue;
+    if (GetPolygonVisibility(bpo)==0) continue;
     // skip if outside the frustum
-    if( (re_pbscCurrent->bsc_ulFlags&BSCF_NEEDSCLIPPING) && IsPolygonCulled(bpo)) continue;
+    if ((re_pbscCurrent->bsc_ulFlags&BSCF_NEEDSCLIPPING) && IsPolygonCulled(bpo)) continue;
 
     _sfStats.IncrementCounter(CStatForm::SCI_DETAILPOLYGONS);
     _pfRenderProfile.IncrementCounter(CRenderProfile::PCI_DETAILPOLYGONS);
@@ -271,7 +271,7 @@ void CRenderer::MakeFinalPolygonEdges(void)
   // for each polygon
   INDEX ispo0 = re_pbscCurrent->bsc_ispo0;
   INDEX ispoTop = re_pbscCurrent->bsc_ispo0+re_pbscCurrent->bsc_ctspo;
-  for(INDEX ispo = ispo0; ispo<ispoTop; ispo++) {
+  for (INDEX ispo = ispo0; ispo<ispoTop; ispo++) {
     CScreenPolygon &spo = re_aspoScreenPolygons[ispo];
 
     // if polygon has no edges
@@ -285,7 +285,7 @@ void CRenderer::MakeFinalPolygonEdges(void)
 
     // for each vertex
     INDEX ivxTop = spo.spo_iEdgeVx0+spo.spo_ctEdgeVx;
-    for(INDEX ivx=spo.spo_iEdgeVx0; ivx<ivxTop; ivx++) {
+    for (INDEX ivx=spo.spo_iEdgeVx0; ivx<ivxTop; ivx++) {
       // copy to final array
       *piVertices++ = re_aiEdgeVxClipSrc[ivx];
     }
@@ -307,12 +307,12 @@ void CRenderer::ClipToOnePlane(const FLOATplane3D &plView)
   re_plClip = plView;
   // no need for clipping if no vertices are outside
   ASSERT( re_pbscCurrent->bsc_ulFlags&BSCF_NEEDSCLIPPING);
-  if( !MakeOutcodes()) return;
+  if (!MakeOutcodes()) return;
 
   // for each polygon
   INDEX ispo0 = re_pbscCurrent->bsc_ispo0;
   INDEX ispoTop = re_pbscCurrent->bsc_ispo0+re_pbscCurrent->bsc_ctspo;
-  for(INDEX ispo = ispo0; ispo<ispoTop; ispo++) {
+  for (INDEX ispo = ispo0; ispo<ispoTop; ispo++) {
     // clip to the plane
     ClipOnePolygon(re_aspoScreenPolygons[ispo]);
   }
@@ -338,7 +338,7 @@ void CRenderer::ClipToAllPlanes(CAnyProjection3D &pr)
   ClipToOnePlane(FLOATplane3D(FLOAT3D(0,0,-1), pr->pr_NearClipDistance));
   // clip to far clip plane if existing
   if (pr->pr_FarClipDistance>0) {
-    ClipToOnePlane(FLOATplane3D(FLOAT3D(0,0,1), -pr->pr_FarClipDistance));
+    ClipToOnePlane(FLOATplane3D(FLOAT3D(0.0f, 0.0f, 1.0f), -pr->pr_FarClipDistance));
   }
 
   // if projection is mirrored or warped
@@ -355,7 +355,7 @@ __forceinline BOOL CRenderer::MakeOutcodes(void)
   SLONG slMask = 0;
   // for each active view vertex
   INDEX iVxTop = re_avvxViewVertices.Count();
-  for(INDEX ivx = re_iViewVx0; ivx<iVxTop; ivx++) {
+  for (INDEX ivx = re_iViewVx0; ivx<iVxTop; ivx++) {
     CViewVertex &vvx = re_avvxViewVertices[ivx];
     // calculate the distance
     vvx.vvx_fD = re_plClip.PointDistance(vvx.vvx_vView);
@@ -384,7 +384,7 @@ void CRenderer::ClipOnePolygon(CScreenPolygon &spo)
 
   // for each edge
   INDEX ivxTop = spo.spo_iEdgeVx0+spo.spo_ctEdgeVx;
-  for(INDEX ivx=spo.spo_iEdgeVx0; ivx<ivxTop; ivx+=2) {
+  for (INDEX ivx=spo.spo_iEdgeVx0; ivx<ivxTop; ivx+=2) {
     INDEX ivx0 = re_aiEdgeVxClipSrc[ivx+0];
     INDEX ivx1 = re_aiEdgeVxClipSrc[ivx+1];
 
@@ -520,7 +520,7 @@ void CRenderer::GenerateClipEdges(CScreenPolygon &spo)
   }
 
   // for each two vertices
-  for(INDEX iClippedVertex=0; iClippedVertex<ctIndices; iClippedVertex+=2) {
+  for (INDEX iClippedVertex=0; iClippedVertex<ctIndices; iClippedVertex+=2) {
     // add the edge
     re_aiEdgeVxClipDst.Push() = aIndices[iClippedVertex+0];
     re_aiEdgeVxClipDst.Push() = aIndices[iClippedVertex+1];

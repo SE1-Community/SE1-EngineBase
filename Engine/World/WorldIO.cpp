@@ -146,7 +146,7 @@ void CWorld::Read_t(CTStream *pistrm) // throw char *
   // unlock all arrays and containers
   UnlockAll();
 
-  if( _bFileReplacingApplied)
+  if (_bFileReplacingApplied)
     WarningMessage("Some of files needed to load world have been replaced while loading");
 }
 
@@ -196,7 +196,7 @@ void CWorld::ReadBrushes_t( CTStream *istrm)// throw char *
   CallProgressHook_t(1.0f);
 
   // if there are some terrais in world
-  if(istrm->PeekID_t()==CChunkID("TRAR")) { // 'terrain archive'
+  if (istrm->PeekID_t()==CChunkID("TRAR")) { // 'terrain archive'
     SetProgressDescription(TRANS("loading terrains"));
     CallProgressHook_t(0.0f);
     wo_taTerrains.Read_t(istrm);
@@ -245,7 +245,7 @@ void CWorld::ReadState_t( CTStream *istr) // throw char *
   INDEX iSavedVersion;
   (*istr)>>iSavedVersion;
   // if the version number is the newest
-  if(iSavedVersion==WORLDSTATEVERSION_CURRENT) {
+  if (iSavedVersion==WORLDSTATEVERSION_CURRENT) {
     // read current version
     ReadState_new_t(istr);
 
@@ -253,7 +253,7 @@ void CWorld::ReadState_t( CTStream *istr) // throw char *
   } else {
 
     // if the version can be converted
-    if(iSavedVersion==WORLDSTATEVERSION_CURRENT-1) {
+    if (iSavedVersion==WORLDSTATEVERSION_CURRENT-1) {
       // show warning
 //      WarningMessage(
 //        "World state version was %d (old).\n"
@@ -262,7 +262,7 @@ void CWorld::ReadState_t( CTStream *istr) // throw char *
       // read previous version
       ReadState_old_t(istr);
     // if the version can be converted
-    } else if(iSavedVersion==WORLDSTATEVERSION_CURRENT-2) {
+    } else if (iSavedVersion==WORLDSTATEVERSION_CURRENT-2) {
       // show warning
       WarningMessage(
         TRANS("World state version was %d (very old).\n"
@@ -283,7 +283,7 @@ void CWorld::ReadState_t( CTStream *istr) // throw char *
   SetProgressDescription(TRANS("precaching"));
   CallProgressHook_t(0.0f);
   // precache data needed by entities
-  if( gam_iPrecachePolicy==PRECACHE_SMART) {
+  if (gam_iPrecachePolicy==PRECACHE_SMART) {
     PrecacheEntities_t();
   }
   CallProgressHook_t(1.0f);
@@ -348,7 +348,7 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
 
   istr->ExpectID_t("SHAN"); // shadow animations
   // for all anim objects
-  {for(INDEX iao=0; iao<256; iao++) {
+  {for (INDEX iao=0; iao<256; iao++) {
     // skip animation object
     CAnimObject ao;
     ao.Read_t(istr);
@@ -362,7 +362,7 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
   CStaticArray<CTFileName> cecClasses;
   cecClasses.New(ctEntityClasses);
   // for each entity class
-  {for(INDEX iEntityClass=0; iEntityClass<ctEntityClasses; iEntityClass++) {
+  {for (INDEX iEntityClass=0; iEntityClass<ctEntityClasses; iEntityClass++) {
     // load filename
     (*istr)>>cecClasses[iEntityClass];
   }}
@@ -376,7 +376,7 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
   (*istr)>>ctEntities;
 
   // for each entity
-  {for(INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
+  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
     INDEX iEntityClass;
     CPlacement3D plPlacement;
     // read entity class index and entity placement
@@ -386,7 +386,7 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
   }}
 
   // for each entity
-  {for(INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
+  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
     // deserialize entity from stream
     wo_cenAllEntities[iEntity].Read_t(istr);
   }}
@@ -399,7 +399,7 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
   }
 
   // for each entity
-  {for(INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
+  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
     CEntity &en = wo_cenAllEntities[iEntity];
     // if the entity is destroyed
     if (en.en_ulFlags&ENF_DELETED) {
@@ -462,7 +462,7 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
 
   istr->ExpectID_t("SHAN"); // shadow animations
   // for all anim objects
-  {for(INDEX iao=0; iao<256; iao++) {
+  {for (INDEX iao=0; iao<256; iao++) {
     // skip animation object
     CAnimObject ao;
     ao.Read_t(istr);
@@ -476,7 +476,7 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
   CStaticArray<CTFileName> cecClasses;
   cecClasses.New(ctEntityClasses);
   // for each entity class
-  {for(INDEX iEntityClass=0; iEntityClass<ctEntityClasses; iEntityClass++) {
+  {for (INDEX iEntityClass=0; iEntityClass<ctEntityClasses; iEntityClass++) {
     // load filename
     (*istr)>>cecClasses[iEntityClass];
   }}
@@ -490,7 +490,7 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
   (*istr)>>ctEntities;
 
   // for each entity
-  {for(INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
+  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
     INDEX iEntityClass;
     CPlacement3D plPlacement;
     // read entity class index and entity placement
@@ -500,7 +500,7 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
   }}
 
   // for each entity
-  {for(INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
+  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
     // deserialize entity from stream
     wo_cenAllEntities[iEntity].Read_t(istr);
   }}
@@ -513,7 +513,7 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
   }
 
   // for each entity
-  {for(INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
+  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
     CEntity &en = wo_cenAllEntities[iEntity];
     // if the entity is destroyed
     if (en.en_ulFlags&ENF_DELETED) {
@@ -602,7 +602,7 @@ void CWorld::ReadState_new_t( CTStream *istr) // throw char *
   SetProgressDescription(TRANS("creating entities"));
   CallProgressHook_t(0.0f);
   // for each entity
-  {for(INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
+  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
     // read entity id if needed
     ULONG ulID = 0;
     if (_bReadEntitiesByID) {
@@ -626,7 +626,7 @@ void CWorld::ReadState_new_t( CTStream *istr) // throw char *
   SetProgressDescription(TRANS("loading entities"));
   CallProgressHook_t(0.0f);
   // for each entity
-  {for(INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
+  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
     // deserialize entity from stream
     wo_cenAllEntities[iEntity].Read_t(istr);
     CallProgressHook_t(FLOAT(iEntity)/ctEntities);
@@ -648,7 +648,7 @@ void CWorld::ReadState_new_t( CTStream *istr) // throw char *
 
   wo_cenEntities.Unlock();
   // for each entity
-  {for(INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
+  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
     CEntity &en = wo_cenAllEntities[iEntity];
     // if the entity is destroyed
     if (en.en_ulFlags&ENF_DELETED) {
@@ -667,7 +667,7 @@ void CWorld::ReadState_new_t( CTStream *istr) // throw char *
     *istr>>ctEntities;
     wo_cenEntities.Clear();
     // for each non-deleted entity
-    for(INDEX i=0; i<ctEntities; i++) {
+    for (INDEX i=0; i<ctEntities; i++) {
       ULONG ulID;
       *istr>>ulID;
       wo_cenEntities.Add(EntityFromID(ulID));

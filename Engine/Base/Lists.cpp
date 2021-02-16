@@ -182,7 +182,7 @@ void CListHead::Sort(int (*pCompare)(const void *p0, const void *p1), int iNodeO
   // make temporary list
   CListHead lhTmp;
   // for each pointer
-  {for(INDEX i=0; i<ctCount; i++) {
+  {for (INDEX i=0; i<ctCount; i++) {
     ULONG ul = aulPointers[i];
     // get the node
     CListNode *pln = (CListNode*)(ul+iNodeOffset);
@@ -281,7 +281,7 @@ CListHead &CListNode::GetHead(void)
   // start at this node
   CListNode *pln = this;
   // while current node is not pointer to list.lh_Head
-  while(pln->ln_Pred != NULL) {
+  while (pln->ln_Pred != NULL) {
     // go backwards
     pln = pln->ln_Pred;
   }

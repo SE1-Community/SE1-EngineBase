@@ -71,7 +71,7 @@ static void MirrorAndStretchPlacement(CPlacement3D &pl)
     FLOAT3D vZ(-m(3,1),m(3,2),m(3,3));
 
     // flip needed axis
-    switch(_wmtMirror) {
+    switch (_wmtMirror) {
     case WMT_X: 
       pl.pl_PositionVector(1) = -pl.pl_PositionVector(1);
       vX = -vX; 
@@ -158,7 +158,7 @@ void CEntity::Copy(CEntity &enOther, ULONG ulFlags)
       en_pbrBrush->Copy(*enOther.en_pbrBrush, 1.0f, FALSE);
     }
   // if this is a terrain
-  } else if( enOther.en_RenderType == RT_TERRAIN) {
+  } else if (enOther.en_RenderType == RT_TERRAIN) {
     #pragma message(">> CEntity::Copy")
     ASSERT(FALSE);
   // if this is a model
@@ -362,12 +362,12 @@ void CEntity::CopyEntityProperties(CEntity &enOther, ULONG ulFlags)
   ASSERT(enOther.en_pecClass == en_pecClass);
 
   // for all classes in hierarchy of this entity
-  for(CDLLEntityClass *pdecDLLClass = en_pecClass->ec_pdecDLLClass;
+  for (CDLLEntityClass *pdecDLLClass = en_pecClass->ec_pdecDLLClass;
       pdecDLLClass!=NULL;
       pdecDLLClass = pdecDLLClass->dec_pdecBase) {
 
     // for all properties
-    for(INDEX iProperty=0; iProperty<pdecDLLClass->dec_ctProperties; iProperty++) {
+    for (INDEX iProperty=0; iProperty<pdecDLLClass->dec_ctProperties; iProperty++) {
       CEntityProperty &epProperty = pdecDLLClass->dec_aepProperties[iProperty];
       CopyOneProperty( epProperty, epProperty, enOther, ulFlags);
     }
@@ -386,7 +386,7 @@ void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy
   CSetFPUPrecision FPUPrecision(FPT_24BIT);
 
   ULONG ulCopyFlags = COPY_REMAP;
-  if(_bReinitEntitiesWhileCopying) {
+  if (_bReinitEntitiesWhileCopying) {
     ulCopyFlags|=COPY_REINIT;
   };
 
@@ -616,7 +616,7 @@ void CWorld::MirrorAndStretch(CWorld &woOriginal, FLOAT fStretch, enum WorldMirr
   CEntitySelection senCopied;
   // make mirroring placement
   CPlacement3D plOtherSystem;
-  plOtherSystem = CPlacement3D(FLOAT3D(0,0,0), ANGLE3D(0,0,0));
+  plOtherSystem = CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));
   // copy entities with mirror and stretch
   CopyEntities(woOriginal, cenToCopy, senCopied, plOtherSystem);
 

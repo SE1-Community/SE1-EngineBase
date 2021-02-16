@@ -270,10 +270,10 @@ extern void SetInternalFormat_D3D( D3DFORMAT d3dFormat)
   // by default, go thru D3DX :(
   pConvertMipmap = NULL; 
   extern INDEX d3d_bFastUpload;
-  if( !d3d_bFastUpload) return; // done here if fast upload is not allowed
+  if (!d3d_bFastUpload) return; // done here if fast upload is not allowed
 
   // try to set corresponding fast-upload routine
-  switch( d3dFormat) {
+  switch (d3dFormat) {
   case D3DFMT_A8R8G8B8: _ulAlphaMask=0x00000000;  pConvertMipmap=ConvARGB8;  break;
   case D3DFMT_X8R8G8B8: _ulAlphaMask=0xFF000000;  pConvertMipmap=ConvARGB8;  break;
   case D3DFMT_A1R5G5B5: _ulAlphaMask=0x00000000;  pConvertMipmap=ConvARGB5;  break;
@@ -292,7 +292,7 @@ extern void SetInternalFormat_D3D( D3DFORMAT d3dFormat)
 extern void UploadMipmap_D3D( ULONG *pulSrc, LPDIRECT3DTEXTURE8 ptexDst, PIX pixWidth, PIX pixHeight, INDEX iMip)
 {
   // general case thru D3DX approach
-  if( pConvertMipmap==NULL) {
+  if (pConvertMipmap==NULL) {
     ConvertAny( pulSrc, ptexDst, pixWidth, pixHeight, iMip);
     return;
   }
@@ -312,7 +312,7 @@ extern COLOR UnpackColor_D3D( UBYTE *pd3dColor, D3DFORMAT d3dFormat, SLONG &slCo
 {
   UWORD uw;
   UBYTE ubR,ubG,ubB;
-  switch(d3dFormat) {
+  switch (d3dFormat) {
   case D3DFMT_R8G8B8:
   case D3DFMT_X8R8G8B8:
   case D3DFMT_A8R8G8B8:
@@ -320,7 +320,7 @@ extern COLOR UnpackColor_D3D( UBYTE *pd3dColor, D3DFORMAT d3dFormat, SLONG &slCo
     ubG = pd3dColor[1];
     ubR = pd3dColor[2];
     slColorSize = 4;
-    if( d3dFormat==D3DFMT_R8G8B8) slColorSize = 3;
+    if (d3dFormat==D3DFMT_R8G8B8) slColorSize = 3;
     break; 
   case D3DFMT_R5G6B5:
     uw  = (UWORD&)*pd3dColor;

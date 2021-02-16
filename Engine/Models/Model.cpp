@@ -51,7 +51,7 @@ extern INDEX mdl_bFineQuality;  // 0=force to 8-bit, 1=optimal
 
 
 CModelData::CModelData(const CModelData &c) { ASSERT(FALSE); };
-CModelData &CModelData::operator=(const CModelData &c){ ASSERT(FALSE); return *this; }; 
+CModelData &CModelData::operator=(const CModelData &c) { ASSERT(FALSE); return *this; }; 
 
 // if any surface in model that we are currently reading has any transparency
 BOOL _bHasAlpha;
@@ -127,9 +127,9 @@ void DecompressNormal_HQ(FLOAT3D &vNormal, UBYTE ubH, UBYTE ubP)
  */
 INDEX GetBit( ULONG ulSource)
 {
-  for( INDEX i=0; i<32; i++)
+  for (INDEX i=0; i<32; i++)
   {
-    if( (ulSource & (1<<i)) != 0) return i;
+    if ((ulSource & (1<<i)) != 0) return i;
   }
   return 0;
 }
@@ -164,7 +164,7 @@ void CModelRenderPrefs::SetShadingType(ULONG rtNew)
 }
 void CModelRenderPrefs::SetWire(BOOL bWireOn)
 {
-  if( bWireOn)
+  if (bWireOn)
   {
     rp_RenderType = rp_RenderType | RT_WIRE_ON;
   }
@@ -175,7 +175,7 @@ void CModelRenderPrefs::SetWire(BOOL bWireOn)
 }
 void CModelRenderPrefs::SetHiddenLines(BOOL bHiddenLinesOn)
 {
-  if( bHiddenLinesOn)
+  if (bHiddenLinesOn)
   {
     rp_RenderType = rp_RenderType | RT_HIDDEN_LINES;
   }
@@ -199,7 +199,7 @@ void CModelRenderPrefs::DesreaseShadowQuality(void)
 }
 void CModelRenderPrefs::IncreaseShadowQuality(void)
 {
-  if( rp_ShadowQuality > 0)
+  if (rp_ShadowQuality > 0)
     rp_ShadowQuality -= 1;
 }
 INDEX CModelRenderPrefs::GetShadowQuality()
@@ -303,13 +303,13 @@ CModelData::CModelData()
   md_bIsEdited = FALSE; // not edited by default
 
 	// invalidate mip-model info data
-  for( i=0; i<MAX_MODELMIPS; i++) {
+  for (i=0; i<MAX_MODELMIPS; i++) {
 		md_MipInfos[i].mmpi_PolygonsCt = 0;
 	}
 
   md_Flags = 0;		                                // model flags (flat, reflection mapping)
   md_ShadowQuality = 0;
-  md_Stretch = FLOAT3D(1,1,1);                 		// stretch vector (static one, dynamic one is in model object)
+  md_Stretch = FLOAT3D(1.0f, 1.0f, 1.0f);                 		// stretch vector (static one, dynamic one is in model object)
   md_bCollideAsCube = FALSE;                      // collide as sphere
   md_colDiffuse = C_WHITE|CT_OPAQUE;
   md_colReflections = C_WHITE|CT_OPAQUE;
@@ -337,9 +337,9 @@ void CModelData::Clear(void)
   md_aampAttachedPosition.Clear();
   md_acbCollisionBox.Clear();
 
-  for( i=0; i<md_MipCt;           i++) md_MipInfos[i].Clear();
-  for( i=0; i<MAX_COLOR_NAMES;    i++) md_ColorNames[i].Clear();
-  for( i=0; i<MAX_TEXTUREPATCHES; i++) md_mpPatches[i].mp_toTexture.SetData_t( CTString(""));
+  for (i=0; i<md_MipCt;           i++) md_MipInfos[i].Clear();
+  for (i=0; i<MAX_COLOR_NAMES;    i++) md_ColorNames[i].Clear();
+  for (i=0; i<MAX_TEXTUREPATCHES; i++) md_mpPatches[i].mp_toTexture.SetData_t( CTString(""));
 
   md_VerticesCt = 0;
   md_FramesCt = 0;
@@ -361,7 +361,7 @@ SLONG CModelData::GetUsedMemory(void)
   slUsed += md_acbCollisionBox.Count()*sizeof(CModelCollisionBox);
   slUsed += md_aampAttachedPosition.Count()*sizeof(CAttachedModelPosition);
 
-  for(INDEX i=0; i<md_MipCt; i++) {
+  for (INDEX i=0; i<md_MipCt; i++) {
     slUsed += md_MipInfos[i].mmpi_aPolygonsPerPatch.Count()*sizeof(struct PolygonsPerPatch);
 	  slUsed += md_MipInfos[i].mmpi_Polygons.Count()*sizeof(struct ModelPolygon);
     slUsed += md_MipInfos[i].mmpi_TextureVertices.Count()*sizeof(struct ModelTextureVertex);
@@ -398,7 +398,7 @@ void CModelData::GetTextureDimensions( MEX &mexWidth, MEX &mexHeight)
 // calculates bounding box of all frames
 void CModelData::GetAllFramesBBox( FLOATaabbox3D &MaxBB)
 {
-  for( INDEX i=0; i<md_FramesCt; i++)
+  for (INDEX i=0; i<md_FramesCt; i++)
   {
     MaxBB |= md_FrameInfos[ i].mfi_Box;
   }
@@ -445,7 +445,7 @@ void CModelData::SpreadMipSwitchFactors( INDEX iFirst, float fStartingFactor)
   // set switch steep to cover all mips until max default range reached
   FLOAT fSteep;
   // if we allready skipped max range or we don't have any more mips
-  if( (fStartingFactor > MAX_SWITCH_FACTOR) || ((md_MipCt-iFirst) <= 0) )
+  if ((fStartingFactor > MAX_SWITCH_FACTOR) || ((md_MipCt-iFirst) <= 0) )
   {
     // define next switch factor offset
     fSteep = 1.2f;
@@ -459,7 +459,7 @@ void CModelData::SpreadMipSwitchFactors( INDEX iFirst, float fStartingFactor)
   }
 
   // spread mip switch factors for rougher mip models
-  for( INDEX i=iFirst; i<md_MipCt; i++)
+  for (INDEX i=iFirst; i<md_MipCt; i++)
   {
     md_MipSwitchFactors[ i] = fStartingFactor + (i-iFirst+1)*fSteep;
   }
@@ -512,7 +512,7 @@ void ModelPolygon::Read_t( CTStream *pFile)  // throw char *
 {
   INDEX ctVertices;
   ULONG ulDummy;
-  if( pFile->PeekID_t() == CChunkID("MDPL"))
+  if (pFile->PeekID_t() == CChunkID("MDPL"))
   {
     pFile->ExpectID_t( CChunkID("MDPL"));
     pFile->ReadFullChunk_t( CChunkID("IMPV"), &ctVertices, sizeof(INDEX));
@@ -630,14 +630,14 @@ void MappingSurface::Write_t( CTStream *pFile)  // throw char *
 
   INDEX ctPolygons = ms_aiPolygons.Count();
   (*pFile) << ctPolygons;
-  if( ctPolygons != 0)
+  if (ctPolygons != 0)
   {
     pFile->Write_t( &ms_aiPolygons[0], sizeof( INDEX)*ctPolygons);
   }
 
   INDEX ctTextureVertices = ms_aiTextureVertices.Count();
   (*pFile) << ctTextureVertices;
-  if( ctTextureVertices != 0)
+  if (ctTextureVertices != 0)
   {
     pFile->Write_t( &ms_aiTextureVertices[0], sizeof( INDEX)*ctTextureVertices);
   }
@@ -690,18 +690,18 @@ void MappingSurface::Read_t( CTStream *pFile, BOOL bReadPolygonsPerSurface,
   pFile->Read_t( &ms_HPB, sizeof(FLOAT3D));
   pFile->Read_t( &ms_Zoom, sizeof(float));
 
-  if( bReadPolygonsPerSurface)
+  if (bReadPolygonsPerSurface)
   {
     pFile->Read_t( &ms_sstShadingType, sizeof(SurfaceShadingType));
     // WARNING !!! All shading types bigger than matte will be remaped into flat shading
     // this was done when SHINY and METAL were removed
-    if( ms_sstShadingType > SST_MATTE)
+    if (ms_sstShadingType > SST_MATTE)
     {
       ms_sstShadingType = SST_FLAT;
     }
     pFile->Read_t( &ms_sttTranslucencyType, sizeof(SurfaceTranslucencyType));
     (*pFile) >> ms_ulRenderingFlags;
-    if( (ms_ulRenderingFlags&SRF_NEW_TEXTURE_FORMAT) == 0)
+    if ((ms_ulRenderingFlags&SRF_NEW_TEXTURE_FORMAT) == 0)
       ms_ulRenderingFlags |= SRF_DIFFUSE|SRF_NEW_TEXTURE_FORMAT;
     if (ms_sttTranslucencyType==STT_TRANSLUCENT || ms_sttTranslucencyType==STT_ALPHAGOURAUD
       ||ms_sttTranslucencyType==STT_ADD||ms_sttTranslucencyType==STT_MULTIPLY) {
@@ -712,7 +712,7 @@ void MappingSurface::Read_t( CTStream *pFile, BOOL bReadPolygonsPerSurface,
     INDEX ctPolygons;
     (*pFile) >> ctPolygons;
     ms_aiPolygons.New( ctPolygons);
-    if( ctPolygons != 0)
+    if (ctPolygons != 0)
     {
       pFile->Read_t( &ms_aiPolygons[0], sizeof( INDEX)*ctPolygons);
     }
@@ -721,14 +721,14 @@ void MappingSurface::Read_t( CTStream *pFile, BOOL bReadPolygonsPerSurface,
     INDEX ctTextureVertices;
     (*pFile) >> ctTextureVertices;
     ms_aiTextureVertices.New( ctTextureVertices);
-    if( ctTextureVertices != 0)
+    if (ctTextureVertices != 0)
     {
       pFile->Read_t( &ms_aiTextureVertices[0], sizeof( INDEX)*ctTextureVertices);
     }
 
     (*pFile) >> ms_colColor;
   }
-  if( bReadSurfaceColors)
+  if (bReadSurfaceColors)
   {
     (*pFile) >> ms_colDiffuse;
     (*pFile) >> ms_colReflections;
@@ -743,19 +743,19 @@ void MappingSurface::Read_t( CTStream *pFile, BOOL bReadPolygonsPerSurface,
 void CModelData::LinkDataForSurfaces(BOOL bFirstMip)
 {
   INDEX iMipStart=1;
-  if( bFirstMip)
+  if (bFirstMip)
   {
     iMipStart=0;
   }
   // for each mip model
-  for( INDEX iMip=iMipStart; iMip<md_MipCt; iMip ++)
+  for (INDEX iMip=iMipStart; iMip<md_MipCt; iMip ++)
   {
     ModelMipInfo *pMMI = &md_MipInfos[ iMip];
 
     // --------------------- Set index of transformed vertex to texture vertex
-    {for( INDEX iPolygon = 0; iPolygon<pMMI->mmpi_Polygons.Count(); iPolygon++)
+    {for (INDEX iPolygon = 0; iPolygon<pMMI->mmpi_Polygons.Count(); iPolygon++)
     {
-      for( INDEX iVertex = 0; iVertex<pMMI->mmpi_Polygons[iPolygon].mp_PolygonVertices.Count(); iVertex++)
+      for (INDEX iVertex = 0; iVertex<pMMI->mmpi_Polygons[iPolygon].mp_PolygonVertices.Count(); iVertex++)
       {
         ModelPolygonVertex *pmpvPolygonVertex = &pMMI->mmpi_Polygons[iPolygon].mp_PolygonVertices[iVertex];
         INDEX iTransformed = md_TransformedVertices.Index( pmpvPolygonVertex->mpv_ptvTransformedVertex);
@@ -769,36 +769,36 @@ void CModelData::LinkDataForSurfaces(BOOL bFirstMip)
     INDEX ctSurfaces = pMMI->mmpi_MappingSurfaces.Count();
     actPolygonsInSurface.New( ctSurfaces);
     // for each surface
-    {for( INDEX iSurface=0; iSurface<ctSurfaces; iSurface++)
+    {for (INDEX iSurface=0; iSurface<ctSurfaces; iSurface++)
     {
       // reset count of polygons
       actPolygonsInSurface[iSurface] = 0;
     }}
     // for each polygon
-    {for( INDEX iPolygon=0; iPolygon<pMMI->mmpi_Polygons.Count(); iPolygon++)
+    {for (INDEX iPolygon=0; iPolygon<pMMI->mmpi_Polygons.Count(); iPolygon++)
     {
       // increment count of polygons in its surface
       actPolygonsInSurface[ pMMI->mmpi_Polygons[iPolygon].mp_Surface]++;
     }}
     // for each surface
-    {for( INDEX iSurface=0; iSurface<ctSurfaces; iSurface++)
+    {for (INDEX iSurface=0; iSurface<ctSurfaces; iSurface++)
     {
       // allocate array for polygon indices
       pMMI->mmpi_MappingSurfaces[iSurface].ms_aiPolygons.Clear();
       pMMI->mmpi_MappingSurfaces[iSurface].ms_aiPolygons.New( actPolygonsInSurface[iSurface]);
-      if( actPolygonsInSurface[iSurface] != 0)
+      if (actPolygonsInSurface[iSurface] != 0)
       {
         // last place in array will contain counter of added polygons
         pMMI->mmpi_MappingSurfaces[iSurface].ms_aiPolygons[actPolygonsInSurface[iSurface]-1] = 0;
       }
     }}
     // for each polygon
-    for( INDEX iPolygon=0; iPolygon<pMMI->mmpi_Polygons.Count(); iPolygon++)
+    for (INDEX iPolygon=0; iPolygon<pMMI->mmpi_Polygons.Count(); iPolygon++)
     {
       // get surface, polygons in surface and last remembered index of polygon in surface
       INDEX iSurface = pMMI->mmpi_Polygons[iPolygon].mp_Surface;
       INDEX ctPolygonsInSurface = actPolygonsInSurface[iSurface];
-      if( ctPolygonsInSurface != 0)
+      if (ctPolygonsInSurface != 0)
       {
         INDEX iLastSet = pMMI->mmpi_MappingSurfaces[iSurface].ms_aiPolygons[ ctPolygonsInSurface-1];
         // remember last set polygon index
@@ -810,7 +810,7 @@ void CModelData::LinkDataForSurfaces(BOOL bFirstMip)
 
     // --------------------- Linking texture vertices for surface
     // for each surface
-    {for( INDEX iSurface=0; iSurface<ctSurfaces; iSurface++)
+    {for (INDEX iSurface=0; iSurface<ctSurfaces; iSurface++)
     {
       CDynamicContainer<ModelTextureVertex> cmtvInSurface;
       // for each polygon in surface
@@ -818,13 +818,13 @@ void CModelData::LinkDataForSurfaces(BOOL bFirstMip)
       {
         ModelPolygon &mpPolygon = pMMI->mmpi_Polygons[itimpo.Current()];
         // for each vertex in polygon
-        for( INDEX iVertex=0; iVertex<mpPolygon.mp_PolygonVertices.Count(); iVertex++)
+        for (INDEX iVertex=0; iVertex<mpPolygon.mp_PolygonVertices.Count(); iVertex++)
         {
           // get texture vertex
           ModelTextureVertex *ptv =
             mpPolygon.mp_PolygonVertices[ iVertex].mpv_ptvTextureVertex;
           // if it is not added yet
-          if( !cmtvInSurface.IsMember( ptv))
+          if (!cmtvInSurface.IsMember( ptv))
           {
             // add it
             cmtvInSurface.Add( ptv);
@@ -885,12 +885,12 @@ void ModelMipInfo::Write_t( CTStream *pFile)  // throw char *
   INDEX ctPatches = mmpi_aPolygonsPerPatch.Count();
   (*pFile) << ctPatches;
   // for each patch
-  for( INDEX iPatch=0; iPatch<ctPatches; iPatch++)
+  for (INDEX iPatch=0; iPatch<ctPatches; iPatch++)
   {
     // write no of occupied polygons
     INDEX ctOccupied = mmpi_aPolygonsPerPatch[iPatch].ppp_iPolygons.Count();
     (*pFile) << ctOccupied;
-    if( ctOccupied != 0)
+    if (ctOccupied != 0)
     {
       pFile->WriteFullChunk_t( CChunkID("OCPL"),
         &mmpi_aPolygonsPerPatch[iPatch].ppp_iPolygons[ 0], ctOccupied * sizeof(INDEX));
@@ -919,7 +919,7 @@ void ModelMipInfo::Read_t(CTStream *pFile,
   // Load count, allocate and load array of texture vertices
   (*pFile) >> iMembersCt;
   mmpi_TextureVertices.New( iMembersCt);
-  if( bReadPolygonsPerSurface)
+  if (bReadPolygonsPerSurface)
   {
     // chunk ID will tell us if we should read new format that contains bump normals
     CChunkID idChunk = pFile->GetID_t();
@@ -927,20 +927,20 @@ void ModelMipInfo::Read_t(CTStream *pFile,
     ULONG ulDummySize;
     (*pFile) >> ulDummySize;
     // if bump normals are saved (new format)
-    if( idChunk == CChunkID("TXV2"))
+    if (idChunk == CChunkID("TXV2"))
     {
       pFile->ReadRawChunk_t( &mmpi_TextureVertices[ 0], iMembersCt *
                              sizeof(struct ModelTextureVertex));
     } else {
       // bump normals are not saved
-      for( INDEX iVertex = 0; iVertex<iMembersCt; iVertex++)
+      for (INDEX iVertex = 0; iVertex<iMembersCt; iVertex++)
       {
         pFile->Read_t( &mmpi_TextureVertices[ iVertex].mtv_UVW, sizeof( FLOAT3D));
         pFile->Read_t( &mmpi_TextureVertices[ iVertex].mtv_UV, sizeof( MEX2D));
         pFile->Read_t( &mmpi_TextureVertices[ iVertex].mtv_Done, sizeof( BOOL));
         pFile->Read_t( &mmpi_TextureVertices[ iVertex].mtv_iTransformedVertex, sizeof( INDEX));
-        mmpi_TextureVertices[ iVertex].mtv_vU = FLOAT3D(0,0,0);
-        mmpi_TextureVertices[ iVertex].mtv_vV = FLOAT3D(0,0,0);
+        mmpi_TextureVertices[ iVertex].mtv_vU = FLOAT3D(0.0f, 0.0f, 0.0f);
+        mmpi_TextureVertices[ iVertex].mtv_vV = FLOAT3D(0.0f, 0.0f, 0.0f);
       }
     }
   }
@@ -951,14 +951,14 @@ void ModelMipInfo::Read_t(CTStream *pFile,
     ULONG ulDummySize;
     (*pFile) >> ulDummySize;
     // read models in old format
-    for( INDEX iVertex = 0; iVertex<iMembersCt; iVertex++)
+    for (INDEX iVertex = 0; iVertex<iMembersCt; iVertex++)
     {
       pFile->Read_t( &mmpi_TextureVertices[ iVertex].mtv_UVW, sizeof( FLOAT3D));
       pFile->Read_t( &mmpi_TextureVertices[ iVertex].mtv_UV, sizeof( MEX2D));
       pFile->Read_t( &mmpi_TextureVertices[ iVertex].mtv_Done, sizeof( BOOL));
       mmpi_TextureVertices[ iVertex].mtv_iTransformedVertex = 0;
-      mmpi_TextureVertices[ iVertex].mtv_vU = FLOAT3D(0,0,0);
-      mmpi_TextureVertices[ iVertex].mtv_vV = FLOAT3D(0,0,0);
+      mmpi_TextureVertices[ iVertex].mtv_vU = FLOAT3D(0.0f, 0.0f, 0.0f);
+      mmpi_TextureVertices[ iVertex].mtv_vV = FLOAT3D(0.0f, 0.0f, 0.0f);
     }
   }
 
@@ -970,14 +970,14 @@ void ModelMipInfo::Read_t(CTStream *pFile,
   {
     it.Current().Read_t( pFile, bReadPolygonsPerSurface, bReadSurfaceColors);
     // obtain color per surface from polygons (old model format)
-    if( !bReadPolygonsPerSurface)
+    if (!bReadPolygonsPerSurface)
     {
       // we will copy color from first polygon found with this surface into color of surface
       it->ms_colColor = C_WHITE;
       // for all polygons in this mip level
-      for( INDEX iPolygon=0;iPolygon<mmpi_PolygonsCt;iPolygon++)
+      for (INDEX iPolygon=0;iPolygon<mmpi_PolygonsCt;iPolygon++)
       {
-        if( mmpi_Polygons[ iPolygon].mp_Surface == iIndexOfSurface)
+        if (mmpi_Polygons[ iPolygon].mp_Surface == iIndexOfSurface)
         {
           it->ms_colColor = mmpi_Polygons[ iPolygon].mp_ColorAndAlpha;
           break;
@@ -987,23 +987,23 @@ void ModelMipInfo::Read_t(CTStream *pFile,
     }
   }}
 
-  if( bReadPolygonalPatches)
+  if (bReadPolygonalPatches)
   {
     // read mip model flags
     (*pFile) >> mmpi_ulFlags;
     // read no of patches
     INDEX ctPatches;
     (*pFile) >> ctPatches;
-    if( ctPatches != 0)
+    if (ctPatches != 0)
     {
       mmpi_aPolygonsPerPatch.New( ctPatches);
       // read info for polygonal patches
-      for( INDEX iPatch=0; iPatch<ctPatches; iPatch++)
+      for (INDEX iPatch=0; iPatch<ctPatches; iPatch++)
       {
         // read no of occupied polygons
         INDEX ctOccupied;
         (*pFile) >> ctOccupied;
-        if( ctOccupied != 0)
+        if (ctOccupied != 0)
         {
           mmpi_aPolygonsPerPatch[iPatch].ppp_iPolygons.New( ctOccupied);
           pFile->ReadFullChunk_t( CChunkID("OCPL"),
@@ -1022,22 +1022,22 @@ void CModelData::PtrsToIndices()
 {
   INDEX i, j;
 
-  for( i=0; i<md_MipCt; i++)
+  for (i=0; i<md_MipCt; i++)
   {
     FOREACHINSTATICARRAY(md_MipInfos[ i].mmpi_Polygons, ModelPolygon, it1)
     {
       FOREACHINSTATICARRAY(it1.Current().mp_PolygonVertices, ModelPolygonVertex, it2)
       {
-        for( j=0; j<md_TransformedVertices.Count(); j++)
+        for (j=0; j<md_TransformedVertices.Count(); j++)
         {
-          if( it2.Current().mpv_ptvTransformedVertex == &md_TransformedVertices[ j])
+          if (it2.Current().mpv_ptvTransformedVertex == &md_TransformedVertices[ j])
             break;
         }
         it2.Current().mpv_ptvTransformedVertex = (struct TransformedVertexData *) j;
 
-        for( j=0; j<md_MipInfos[ i].mmpi_TextureVertices.Count(); j++)
+        for (j=0; j<md_MipInfos[ i].mmpi_TextureVertices.Count(); j++)
         {
-          if( it2.Current().mpv_ptvTextureVertex == &md_MipInfos[ i].mmpi_TextureVertices[ j])
+          if (it2.Current().mpv_ptvTextureVertex == &md_MipInfos[ i].mmpi_TextureVertices[ j])
             break;
         }
         it2.Current().mpv_ptvTextureVertex = (ModelTextureVertex *) j;
@@ -1054,7 +1054,7 @@ void CModelData::IndicesToPtrs()
 {
   INDEX i, j;
 
-  for( i=0; i<md_MipCt; i++)
+  for (i=0; i<md_MipCt; i++)
   {
     FOREACHINSTATICARRAY(md_MipInfos[ i].mmpi_Polygons, ModelPolygon, it1)
     {
@@ -1072,8 +1072,8 @@ void CModelData::IndicesToPtrs()
 
 CModelCollisionBox::CModelCollisionBox(void)
 {
-  mcb_vCollisionBoxMin = FLOAT3D( -0.5f, 0.0f,-0.5f);
-  mcb_vCollisionBoxMax = FLOAT3D(  0.5f, 2.0f, 0.5f);
+  mcb_vCollisionBoxMin = FLOAT3D(-0.5f, 0.0f,-0.5f);
+  mcb_vCollisionBoxMax = FLOAT3D(0.5f, 2.0f, 0.5f);
   mcb_iCollisionBoxDimensionEquality = LENGTH_EQ_WIDTH;
   mcb_strName = "PART_NAME";
 }
@@ -1085,17 +1085,17 @@ void CModelCollisionBox::Read_t(CTStream *istrFile)
   // Read collision box size
   istrFile->Read_t( &mcb_vCollisionBoxMax, sizeof(FLOAT3D));
   // Get "colision box dimensions equality" value
-  if( (mcb_vCollisionBoxMax(2)-mcb_vCollisionBoxMin(2)) ==
+  if ((mcb_vCollisionBoxMax(2)-mcb_vCollisionBoxMin(2)) ==
       (mcb_vCollisionBoxMax(1)-mcb_vCollisionBoxMin(1)) )
   {
     mcb_iCollisionBoxDimensionEquality = HEIGHT_EQ_WIDTH;
   }
-  else if( (mcb_vCollisionBoxMax(3)-mcb_vCollisionBoxMin(3)) ==
+  else if ((mcb_vCollisionBoxMax(3)-mcb_vCollisionBoxMin(3)) ==
            (mcb_vCollisionBoxMax(1)-mcb_vCollisionBoxMin(1)) )
   {
     mcb_iCollisionBoxDimensionEquality = LENGTH_EQ_WIDTH;
   }
-  else if( (mcb_vCollisionBoxMax(3)-mcb_vCollisionBoxMin(3)) ==
+  else if ((mcb_vCollisionBoxMax(3)-mcb_vCollisionBoxMin(3)) ==
            (mcb_vCollisionBoxMax(2)-mcb_vCollisionBoxMin(2)) )
   {
     mcb_iCollisionBoxDimensionEquality = LENGTH_EQ_HEIGHT;
@@ -1132,7 +1132,7 @@ CAttachedModelPosition::CAttachedModelPosition( void)
   amp_iCenterVertex = 0;
   amp_iFrontVertex = 1;
   amp_iUpVertex = 2;
-  amp_plRelativePlacement = CPlacement3D( FLOAT3D(0,0,0), ANGLE3D(0,0,0));
+  amp_plRelativePlacement = CPlacement3D( FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));
 }
 
 void CAttachedModelPosition::Read_t( CTStream *strFile)
@@ -1172,7 +1172,7 @@ void CModelData::Write_t( CTStream *pFile)  // throw char *
   pFile->WriteFullChunk_t( CChunkID("IFRM"), &md_FramesCt, sizeof(INDEX));
 
   // write array of 8-bit or 16-bit compressed vertices
-  if( md_Flags & MF_COMPRESSED_16BIT)
+  if (md_Flags & MF_COMPRESSED_16BIT)
   {
     pFile->WriteFullChunk_t( CChunkID("AV17"), &md_FrameVertices16[ 0], md_VerticesCt * md_FramesCt *
                            sizeof(struct ModelFrameVertex16));
@@ -1198,11 +1198,11 @@ void CModelData::Write_t( CTStream *pFile)  // throw char *
   pFile->WriteFullChunk_t( CChunkID("FMIP"), &md_MipSwitchFactors[ 0], MAX_MODELMIPS * sizeof(float));
 
   // Save all model mip infos
-  for( i=0; i<md_MipCt; i++) md_MipInfos[ i].Write_t( pFile);
+  for (i=0; i<md_MipCt; i++) md_MipInfos[ i].Write_t( pFile);
 
   // Save patches
   pFile->WriteID_t( CChunkID("PTC2"));
-  for( INDEX iPatch=0; iPatch<MAX_TEXTUREPATCHES; iPatch++) md_mpPatches[ iPatch].Write_t(pFile);
+  for (INDEX iPatch=0; iPatch<MAX_TEXTUREPATCHES; iPatch++) md_mpPatches[ iPatch].Write_t(pFile);
 
   // Save texture width and height in MEX-es
   pFile->WriteFullChunk_t( CChunkID("STXW"), &md_Width, sizeof(MEX));
@@ -1222,7 +1222,7 @@ void CModelData::Write_t( CTStream *pFile)  // throw char *
   pFile->Write_t( &ctCollisionBoxes, sizeof(INDEX));
   md_acbCollisionBox.Lock();
   // save all collision boxes
-  for( INDEX iCollisionBox=0; iCollisionBox<ctCollisionBoxes; iCollisionBox++)
+  for (INDEX iCollisionBox=0; iCollisionBox<ctCollisionBoxes; iCollisionBox++)
   {
     // save current collision box
     md_acbCollisionBox[ iCollisionBox].Write_t( pFile);
@@ -1243,13 +1243,13 @@ void CModelData::Write_t( CTStream *pFile)  // throw char *
 
   // Save color names (get count of valid names, write count and then write existing names)
   INDEX iValidColorsCt = 0;
-  for( i=0; i<MAX_COLOR_NAMES; i++)
-    if( md_ColorNames[ i] != "")
+  for (i=0; i<MAX_COLOR_NAMES; i++)
+    if (md_ColorNames[ i] != "")
       iValidColorsCt++;
   pFile->WriteFullChunk_t( CChunkID("ICLN"), &iValidColorsCt, sizeof(INDEX));
-  for( i=0; i<MAX_COLOR_NAMES; i++)
+  for (i=0; i<MAX_COLOR_NAMES; i++)
   {
-    if( md_ColorNames[ i] != "")
+    if (md_ColorNames[ i] != "")
     {
       *pFile << i;
       *pFile << md_ColorNames[ i];
@@ -1289,33 +1289,33 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
   CChunkID idVersion = pFile->GetID_t();
   // if this is version without stretch center then it doesn't contain multiple
   // collision boxes also
-  if( CChunkID( MODEL_VERSION_WITHOUT_STRETCH_CENTER) == idVersion)
+  if (CChunkID( MODEL_VERSION_WITHOUT_STRETCH_CENTER) == idVersion)
   {
   }
   // if model has stretch center but does not have multiple collision boxes
-  else if( CChunkID( MODEL_VERSION_WITHOUT_MULTIPLE_COLLISION_BOXES) == idVersion)
+  else if (CChunkID( MODEL_VERSION_WITHOUT_MULTIPLE_COLLISION_BOXES) == idVersion)
   {
     bHasSavedCenter = TRUE;
   }
-  else if( CChunkID( MODEL_VERSION_WITHOUT_ATTACHED_POSITIONS) == idVersion)
+  else if (CChunkID( MODEL_VERSION_WITHOUT_ATTACHED_POSITIONS) == idVersion)
   {
     bHasSavedCenter = TRUE;
     bHasMultipleCollisionBoxes = TRUE;
   }
-  else if( CChunkID( MODEL_VERSION_WITHOUT_POLYGONAL_PATCHES) == idVersion)
+  else if (CChunkID( MODEL_VERSION_WITHOUT_POLYGONAL_PATCHES) == idVersion)
   {
     bHasSavedCenter = TRUE;
     bHasMultipleCollisionBoxes = TRUE;
     bHasAttachedPositions = TRUE;
   }
-  else if( CChunkID( MODEL_VERSION_WITHOUT_POLYGONS_PER_SURFACE) == idVersion)
+  else if (CChunkID( MODEL_VERSION_WITHOUT_POLYGONS_PER_SURFACE) == idVersion)
   {
     bHasSavedCenter = TRUE;
     bHasMultipleCollisionBoxes = TRUE;
     bHasAttachedPositions = TRUE;
     bHasPolygonalPatches = TRUE;
   }
-  else if( CChunkID( MODEL_VERSION_WITHOUT_16_BIT_COMPRESSION) == idVersion)
+  else if (CChunkID( MODEL_VERSION_WITHOUT_16_BIT_COMPRESSION) == idVersion)
   {
     bHasSavedCenter = TRUE;
     bHasMultipleCollisionBoxes = TRUE;
@@ -1324,7 +1324,7 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
     bHasPolygonsPerSurface = TRUE;
   }
   // if has saved flags on start - because 16-bit compression
-  else if( CChunkID( MODEL_VERSION_WITHOUT_REFLECTION_AND_SPECULARITY) == idVersion)
+  else if (CChunkID( MODEL_VERSION_WITHOUT_REFLECTION_AND_SPECULARITY) == idVersion)
   {
     bHasSavedCenter = TRUE;
     bHasMultipleCollisionBoxes = TRUE;
@@ -1334,7 +1334,7 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
     bHasSavedFlagsOnStart = TRUE;
   }
   // has saved color for reflection and specularity
-  else if( CChunkID( MODEL_VERSION_WITHOUT_DIFFUSE_COLOR) == idVersion)
+  else if (CChunkID( MODEL_VERSION_WITHOUT_DIFFUSE_COLOR) == idVersion)
   {
     bHasSavedCenter = TRUE;
     bHasMultipleCollisionBoxes = TRUE;
@@ -1345,7 +1345,7 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
     bHasColorForReflectionAndSpecularity = TRUE;
   }
   // has saved diffuse color
-  else if( CChunkID( MODEL_VERSION) == idVersion)
+  else if (CChunkID( MODEL_VERSION) == idVersion)
   {
     bHasSavedCenter = TRUE;
     bHasMultipleCollisionBoxes = TRUE;
@@ -1361,7 +1361,7 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
     throw(TRANS("Invalid model version."));
   }
 
-  if( bHasSavedFlagsOnStart)
+  if (bHasSavedFlagsOnStart)
   {
     pFile->Read_t( &md_Flags, sizeof(ULONG));
   }
@@ -1372,18 +1372,18 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
   pFile->ReadFullChunk_t( CChunkID("IFRM"), &md_FramesCt, sizeof(INDEX));
 
   // read array of 8-bit or 16-bit compressed vertices
-  if( md_Flags & MF_COMPRESSED_16BIT)
+  if (md_Flags & MF_COMPRESSED_16BIT)
   {
     md_FrameVertices16.New( md_VerticesCt * md_FramesCt);
     CChunkID cidVerticesChunk = pFile->PeekID_t();
     // if we are loading model in old 16-bit compressed format (normals use 1 byte)
-    if( cidVerticesChunk == CChunkID("AV16"))
+    if (cidVerticesChunk == CChunkID("AV16"))
     {
       CChunkID cidDummy = pFile->GetID_t();
       ULONG ulDummy;
       // skip chunk size
       *pFile >> ulDummy;
-      for( INDEX iVtx=0; iVtx<md_VerticesCt * md_FramesCt; iVtx++)
+      for (INDEX iVtx=0; iVtx<md_VerticesCt * md_FramesCt; iVtx++)
       {
         pFile->ReadRawChunk_t( &md_FrameVertices16[iVtx], sizeof(struct ModelFrameVertex16_old));
         // convert 8-bit normal from index into normal defined using heading and pitch
@@ -1393,7 +1393,7 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
       }
     }
     // load new 16-bit compressed format (normals use 2 byte) model
-    else if( cidVerticesChunk == CChunkID("AV17"))
+    else if (cidVerticesChunk == CChunkID("AV17"))
     {
       pFile->ReadFullChunk_t( CChunkID("AV17"), &md_FrameVertices16[ 0], md_VerticesCt * md_FramesCt *
                              sizeof(struct ModelFrameVertex16));
@@ -1427,10 +1427,10 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
 
   // Read all model mip infos
   INDEX ctMipsRejected=0;
-  for( i=0; i<md_MipCt; i++) { 
+  for (i=0; i<md_MipCt; i++) { 
     ModelMipInfo mmiDummy; // need one dummy mipmodel info in case of mip level rejection
     // reject mip model in case its even, and not last
-    if( !mdl_bFineQuality && (i%2)==1 && i!=(md_MipCt-1)) {
+    if (!mdl_bFineQuality && (i%2)==1 && i!=(md_MipCt-1)) {
       mmiDummy.Read_t( pFile, bHasPolygonalPatches, bHasPolygonsPerSurface, bHasDiffuseColor);
       mmiDummy.Clear();
       ctMipsRejected++;
@@ -1438,7 +1438,7 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
       // Notice that model's difuse color has been saved in same model format change when surface color has been added
       md_MipInfos[i-ctMipsRejected].Read_t( pFile, bHasPolygonalPatches, bHasPolygonsPerSurface, bHasDiffuseColor);
       // readjust mip scaling factors (if)
-      if( i>0) md_MipSwitchFactors[i-ctMipsRejected-1] = md_MipSwitchFactors[i-1];
+      if (i>0) md_MipSwitchFactors[i-ctMipsRejected-1] = md_MipSwitchFactors[i-1];
     }
   } 
   // readjust last mip scaling factor
@@ -1448,14 +1448,14 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
 
   // if patches are saved in old format
   CChunkID cidPatchChunkID = pFile->PeekID_t();
-  if( cidPatchChunkID == CChunkID("STMK"))
+  if (cidPatchChunkID == CChunkID("STMK"))
   {
     ULONG ulOldExistingPatches;
     pFile->ReadFullChunk_t( CChunkID("STMK"), &ulOldExistingPatches, sizeof(ULONG));
 
-    for( INDEX iPatch=0; iPatch<MAX_TEXTUREPATCHES; iPatch++)
+    for (INDEX iPatch=0; iPatch<MAX_TEXTUREPATCHES; iPatch++)
     {
-      if( ((1UL << iPatch) & ulOldExistingPatches) != 0)
+      if (((1UL << iPatch) & ulOldExistingPatches) != 0)
       {
         CTFileName fnPatchName;
         *pFile >> fnPatchName;
@@ -1471,10 +1471,10 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
     }
   }
   // if patches are saved in new format
-  else if( cidPatchChunkID == CChunkID("PTC2"))
+  else if (cidPatchChunkID == CChunkID("PTC2"))
   {
     pFile->ExpectID_t( CChunkID("PTC2"));
-    for( INDEX iPatch=0; iPatch<MAX_TEXTUREPATCHES; iPatch++)
+    for (INDEX iPatch=0; iPatch<MAX_TEXTUREPATCHES; iPatch++)
     {
       try
       {
@@ -1496,12 +1496,12 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
   pFile->ReadFullChunk_t( CChunkID("STXH"), &md_Height, sizeof(MEX));
 
   // in old patch format, now patch postiions are loaded
-  if( cidPatchChunkID == CChunkID("STMK"))
+  if (cidPatchChunkID == CChunkID("STMK"))
   {
     pFile->ExpectID_t( CChunkID("POSS"));
     ULONG ulChunkSize;
     *pFile >> ulChunkSize;
-    for( INDEX iPatch=0; iPatch<MAX_TEXTUREPATCHES; iPatch++)
+    for (INDEX iPatch=0; iPatch<MAX_TEXTUREPATCHES; iPatch++)
     {
       // Read patch position
       *pFile >> md_mpPatches[ iPatch].mp_mexPosition;
@@ -1509,7 +1509,7 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
   }
 
 
-  if( !bHasSavedFlagsOnStart)
+  if (!bHasSavedFlagsOnStart)
   {
     // Read flags
     pFile->Read_t( &md_Flags, sizeof(ULONG));
@@ -1522,23 +1522,23 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
   pFile->Read_t( &md_Stretch, sizeof(FLOAT3D));
 
   // if this is model with saved center
-  if( bHasSavedCenter) { // read it
+  if (bHasSavedCenter) { // read it
     pFile->Read_t( &md_vCenter, sizeof(FLOAT3D));
   }
   // this model has been saved without center point
   else { // so just reset it
-    md_vCenter = FLOAT3D(0,0,0);
+    md_vCenter = FLOAT3D(0.0f, 0.0f, 0.0f);
   }
 
   // convert model to 8-bit if requested and needed
-  if( !mdl_bFineQuality && (md_Flags&MF_COMPRESSED_16BIT))
+  if (!mdl_bFineQuality && (md_Flags&MF_COMPRESSED_16BIT))
   {
     // prepare 8-bit frame vertices array
     const INDEX ctVtx = md_VerticesCt * md_FramesCt;
     md_FrameVertices8.New(ctVtx);
 
     // loop thru vertices
-    for( INDEX iVtx=0; iVtx<ctVtx; iVtx++) { 
+    for (INDEX iVtx=0; iVtx<ctVtx; iVtx++) { 
       ModelFrameVertex16 &mfv16 = md_FrameVertices16[iVtx];
       ModelFrameVertex8  &mfv8  = md_FrameVertices8[iVtx];
       // convert vertex coordinate
@@ -1563,7 +1563,7 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
   md_vCompressedCenter(3) = -md_vCenter(3)/md_Stretch(3);
 
   // if model has been saved with multiple collision boxes
-  if( bHasMultipleCollisionBoxes)
+  if (bHasMultipleCollisionBoxes)
   {
     INDEX ctCollisionBoxes;
     // get count of collision boxes
@@ -1572,7 +1572,7 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
     md_acbCollisionBox.New( ctCollisionBoxes);
     md_acbCollisionBox.Lock();
     // for all saved collision boxes
-    for( INDEX iCollisionBox=0; iCollisionBox<ctCollisionBoxes; iCollisionBox++)
+    for (INDEX iCollisionBox=0; iCollisionBox<ctCollisionBoxes; iCollisionBox++)
     {
       // load current collision box from stream (without name)
       md_acbCollisionBox[iCollisionBox].Read_t( pFile);
@@ -1604,7 +1604,7 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
   }
 
   // if we should read attached positions
-  if( bHasAttachedPositions)
+  if (bHasAttachedPositions)
   {
     // read count of attached positions
     INDEX ctAttachedPositions;
@@ -1623,7 +1623,7 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
   // Read color names (Read count, read existing names)
   INDEX iValidColorsCt;
   pFile->ReadFullChunk_t( CChunkID("ICLN"), &iValidColorsCt, sizeof(INDEX));
-  for( i=0; i<iValidColorsCt; i++)
+  for (i=0; i<iValidColorsCt; i++)
   {
     INDEX iExistingColorName;
     *pFile >> iExistingColorName;
@@ -1635,17 +1635,17 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
   IndicesToPtrs();
 
   // old models don't have saved polygons per surface
-  if( !bHasPolygonsPerSurface)
+  if (!bHasPolygonsPerSurface)
   {
     // so link them manually
     LinkDataForSurfaces(TRUE);
 
     // for each mip model
-    for( INDEX iMip = 0; iMip<md_MipCt; iMip ++)
+    for (INDEX iMip = 0; iMip<md_MipCt; iMip ++)
     {
       ModelMipInfo *pMMI = &md_MipInfos[ iMip];
       // for each surface
-      for( INDEX iSurface=0; iSurface<pMMI->mmpi_MappingSurfaces.Count(); iSurface++)
+      for (INDEX iSurface=0; iSurface<pMMI->mmpi_MappingSurfaces.Count(); iSurface++)
       {
         // convert rendering flags into new flags format (per surface)
         if (pMMI->mmpi_MappingSurfaces[iSurface].ms_aiPolygons.Count()>0)
@@ -1658,25 +1658,25 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
   }
 
   // turn on diffuse map for all models of old format
-  if( !bHasColorForReflectionAndSpecularity)
+  if (!bHasColorForReflectionAndSpecularity)
   {
-    for( INDEX iMip = 0; iMip<md_MipCt; iMip ++)
+    for (INDEX iMip = 0; iMip<md_MipCt; iMip ++)
     {
       ModelMipInfo *pMMI = &md_MipInfos[ iMip];
-      for( INDEX iSurface=0; iSurface<pMMI->mmpi_MappingSurfaces.Count(); iSurface++)
+      for (INDEX iSurface=0; iSurface<pMMI->mmpi_MappingSurfaces.Count(); iSurface++)
       {
         pMMI->mmpi_MappingSurfaces[iSurface].ms_ulRenderingFlags |= SRF_DIFFUSE|SRF_NEW_TEXTURE_FORMAT;
       }
     }
   }
 
-  if( bHasDiffuseColor)
+  if (bHasDiffuseColor)
   {
     *pFile >> md_colDiffuse;
   }
 
   // old models don't have saved colors for reflection and specularity
-  if( bHasColorForReflectionAndSpecularity)
+  if (bHasColorForReflectionAndSpecularity)
   {
     // load colors for reflections, specularity and bump
     *pFile >> md_colReflections;
@@ -1770,14 +1770,14 @@ CModelObject::CModelObject()
   mo_PatchMask = 0;
   mo_iManualMipLevel = 0;
   mo_AutoMipModeling = TRUE;
-  mo_Stretch = FLOAT3D(1,1,1);
+  mo_Stretch = FLOAT3D(1.0f, 1.0f, 1.0f);
 }
 /*
  * Destructor
  */
 CModelObject::~CModelObject()
 {
-  for(INDEX iPatch=0; iPatch<MAX_TEXTUREPATCHES; iPatch++)
+  for (INDEX iPatch=0; iPatch<MAX_TEXTUREPATCHES; iPatch++)
   {
     HidePatch( iPatch);
   }
@@ -1878,7 +1878,7 @@ void CModelObject::Read_t( CTStream *pFile) // throw char *
 {
   CAnimObject::Read_t( pFile);
 
-  if( pFile->PeekID_t()==CChunkID("MODT"))
+  if (pFile->PeekID_t()==CChunkID("MODT"))
   {
     pFile->ExpectID_t( CChunkID( "MODT"));
     *pFile >> mo_colBlendColor;
@@ -1892,9 +1892,9 @@ void CModelObject::Read_t( CTStream *pFile) // throw char *
   pFile->Read_t( &mo_PatchMask, sizeof(ULONG));
   pFile->Read_t( &mo_Stretch, sizeof(FLOAT3D));
   pFile->Read_t( &mo_ColorMask, sizeof(ULONG));
-  for( INDEX i=0; i<MAX_TEXTUREPATCHES; i++)
+  for (INDEX i=0; i<MAX_TEXTUREPATCHES; i++)
   {
-    if( (mo_PatchMask & ((1UL) << i)) != 0)
+    if ((mo_PatchMask & ((1UL) << i)) != 0)
     {
       ShowPatch( i);
     }
@@ -1924,13 +1924,13 @@ void CModelObject::GetModelInfo(CModelInfo &miInfo)
   miInfo.mi_VerticesCt = pMD->md_VerticesCt;
   miInfo.mi_FramesCt = pMD->md_FramesCt;
   miInfo.mi_MipCt = pMD->md_MipCt;
-  for( INDEX i=0; i<pMD->md_MipCt; i++)
+  for (INDEX i=0; i<pMD->md_MipCt; i++)
   {
     miInfo.mi_MipInfos[ i].mi_PolygonsCt = pMD->md_MipInfos[ i].mmpi_PolygonsCt;
 
     // calculate triangeles
     miInfo.mi_MipInfos[ i].mi_TrianglesCt = 0;
-    for( INDEX iPolygon = 0; iPolygon<pMD->md_MipInfos[ i].mmpi_PolygonsCt; iPolygon++)
+    for (INDEX iPolygon = 0; iPolygon<pMD->md_MipInfos[ i].mmpi_PolygonsCt; iPolygon++)
     {
       miInfo.mi_MipInfos[ i].mi_TrianglesCt +=
         pMD->md_MipInfos[ i].mmpi_Polygons[ iPolygon].mp_PolygonVertices.Count()-2;
@@ -1939,8 +1939,8 @@ void CModelObject::GetModelInfo(CModelInfo &miInfo)
     ULONG ulMipMask = (1L) << i;      // working mip model's mask
     INDEX iVertexCt = 0;
     // count vertices that exists in this mip model
-    for( INDEX j=0; j<pMD->md_VerticesCt; j++)
-      if( pMD->md_VertexMipMask[ j] & ulMipMask)
+    for (INDEX j=0; j<pMD->md_VerticesCt; j++)
+      if (pMD->md_VertexMipMask[ j] & ulMipMask)
         iVertexCt ++;
     miInfo.mi_MipInfos[ i].mi_VerticesCt = iVertexCt;
   }
@@ -1961,13 +1961,13 @@ BOOL CModelObject::IsModelVisible( FLOAT fMipFactor)
   ASSERT( pMD != NULL);
   ASSERT( pMD->md_MipCt>0);
   // visible if no mip models or disappearence not allowed
-  if( pMD->md_MipCt==0 || mdl_iLODDisappear==0) return TRUE;
+  if (pMD->md_MipCt==0 || mdl_iLODDisappear==0) return TRUE;
   // adjust mip factor in case of dynamic stretch factor
-  if( mo_Stretch != FLOAT3D(1,1,1)) {
+  if (mo_Stretch != FLOAT3D(1.0f, 1.0f, 1.0f)) {
     fMipFactor -= Log2( Max(mo_Stretch(1),Max(mo_Stretch(2),mo_Stretch(3))));
   }
   // eventually adjusted mip factor with LOD control variables
-  if( mdl_iLODDisappear==2) fMipFactor = fMipFactor*mdl_fLODMul +mdl_fLODAdd;
+  if (mdl_iLODDisappear==2) fMipFactor = fMipFactor*mdl_fLODMul +mdl_fLODAdd;
   // return true if mip factor is smaller than last in model's mip switch factors array
   return( fMipFactor < pMD->md_MipSwitchFactors[pMD->md_MipCt-1]);
 }
@@ -1980,11 +1980,11 @@ INDEX CModelObject::GetMipModel( FLOAT fMipFactor)
 {
   CModelData *pMD = (CModelData*)GetData();
   ASSERT( pMD != NULL);
-  if( !mo_AutoMipModeling) return mo_iManualMipLevel;
+  if (!mo_AutoMipModeling) return mo_iManualMipLevel;
   // calculate current mip model
   INDEX i=0;
-  for( ; i<pMD->md_MipCt; i++) {
-    if( fMipFactor < pMD->md_MipSwitchFactors[i]) return i;
+  for (; i<pMD->md_MipCt; i++) {
+    if (fMipFactor < pMD->md_MipSwitchFactors[i]) return i;
   }
   return i-1;
 }
@@ -2064,7 +2064,7 @@ void CModelObject::SetMipSwitchFactor(INDEX iMipLevel, float fMipFactor)
 void CModelObject::NextManualMipLevel()
 {
   CModelData *pMD = (CModelData *) GetData();
-  if( mo_iManualMipLevel < pMD->md_MipCt-1)
+  if (mo_iManualMipLevel < pMD->md_MipCt-1)
   {
     mo_iManualMipLevel += 1;
     MarkChanged();
@@ -2077,7 +2077,7 @@ void CModelObject::NextManualMipLevel()
  */
 void CModelObject::PrevManualMipLevel()
 {
-  if( mo_iManualMipLevel > 0)
+  if (mo_iManualMipLevel > 0)
   {
     mo_iManualMipLevel -= 1;
     MarkChanged();
@@ -2124,15 +2124,15 @@ COLOR CModelObject::GetSurfaceColor( INDEX iCurrentMip, INDEX iCurrentSurface)
 {
   struct ModelPolygon *pPoly;
   CModelData *pMD = (CModelData *) GetData();
-  if( (iCurrentMip>=pMD->md_MipCt) ||
+  if ((iCurrentMip>=pMD->md_MipCt) ||
       (iCurrentSurface>=pMD->md_MipInfos[ iCurrentMip].mmpi_MappingSurfaces.Count()) )
   {
     return -1;
   }
-  for( INDEX i=0; i<pMD->md_MipInfos[ iCurrentMip].mmpi_PolygonsCt; i++)
+  for (INDEX i=0; i<pMD->md_MipInfos[ iCurrentMip].mmpi_PolygonsCt; i++)
   {
     pPoly = &pMD->md_MipInfos[ iCurrentMip].mmpi_Polygons[ i];
-    if( pPoly->mp_Surface == iCurrentSurface)
+    if (pPoly->mp_Surface == iCurrentSurface)
     {
       return pPoly->mp_ColorAndAlpha;
     }
@@ -2148,16 +2148,16 @@ void CModelObject::SetSurfaceColor( INDEX iCurrentMip, INDEX iCurrentSurface,
 {
   struct ModelPolygon *pPoly;
   CModelData *pMD = (CModelData *) GetData();
-  if( (iCurrentMip>=pMD->md_MipCt) ||
+  if ((iCurrentMip>=pMD->md_MipCt) ||
       (iCurrentSurface>=pMD->md_MipInfos[ iCurrentMip].mmpi_MappingSurfaces.Count()) )
   {
     return;
   }
   pMD->md_MipInfos[ iCurrentMip].mmpi_MappingSurfaces[iCurrentSurface].ms_colColor = colNewColorAndAlpha;
-  for( INDEX i=0; i<pMD->md_MipInfos[ iCurrentMip].mmpi_PolygonsCt; i++)
+  for (INDEX i=0; i<pMD->md_MipInfos[ iCurrentMip].mmpi_PolygonsCt; i++)
   {
     pPoly = &pMD->md_MipInfos[ iCurrentMip].mmpi_Polygons[ i];
-    if( pPoly->mp_Surface == iCurrentSurface)
+    if (pPoly->mp_Surface == iCurrentSurface)
     {
       pPoly->mp_ColorAndAlpha = colNewColorAndAlpha;
     }
@@ -2172,7 +2172,7 @@ void CModelObject::GetSurfaceRenderFlags( INDEX iCurrentMip, INDEX iCurrentSurfa
       ULONG &ulRenderingFlags)
 {
   CModelData *pMD = (CModelData *) GetData();
-  if( (iCurrentMip>=pMD->md_MipCt) ||
+  if ((iCurrentMip>=pMD->md_MipCt) ||
       (iCurrentSurface>=pMD->md_MipInfos[ iCurrentMip].mmpi_MappingSurfaces.Count()) )
   {
     return;
@@ -2191,7 +2191,7 @@ void CModelObject::SetSurfaceRenderFlags( INDEX iCurrentMip, INDEX iCurrentSurfa
       ULONG ulRenderingFlags)
 {
   CModelData *pMD = (CModelData *) GetData();
-  if( (iCurrentMip>=pMD->md_MipCt) ||
+  if ((iCurrentMip>=pMD->md_MipCt) ||
       (iCurrentSurface>=pMD->md_MipInfos[ iCurrentMip].mmpi_MappingSurfaces.Count()) )
   {
     return;
@@ -2222,12 +2222,12 @@ void CModelObject::ProjectFrameVertices( CProjection3D *pProjection, INDEX iMipM
   INDEX iCurrentFrame = GetFrame();
   ULONG ulVtxMask = (1L) << iMipModel;
 
-  if( pMD->md_Flags & MF_COMPRESSED_16BIT)
+  if (pMD->md_Flags & MF_COMPRESSED_16BIT)
   {
     ModelFrameVertex16 *pFrame = &pMD->md_FrameVertices16[ iCurrentFrame * pMD->md_VerticesCt];
-    for( INDEX i=0; i<pMD->md_VerticesCt; i++)
+    for (INDEX i=0; i<pMD->md_VerticesCt; i++)
     {
-      if( pMD->md_VertexMipMask[ i] & ulVtxMask)
+      if (pMD->md_VertexMipMask[ i] & ulVtxMask)
       {
         f3dVertex(1) = (float) pFrame[ i].mfv_SWPoint(1);
         f3dVertex(2) = (float) pFrame[ i].mfv_SWPoint(2);
@@ -2239,9 +2239,9 @@ void CModelObject::ProjectFrameVertices( CProjection3D *pProjection, INDEX iMipM
   else
   {
     ModelFrameVertex8 *pFrame = &pMD->md_FrameVertices8[ iCurrentFrame * pMD->md_VerticesCt];
-    for( INDEX i=0; i<pMD->md_VerticesCt; i++)
+    for (INDEX i=0; i<pMD->md_VerticesCt; i++)
     {
-      if( pMD->md_VertexMipMask[ i] & ulVtxMask)
+      if (pMD->md_VertexMipMask[ i] & ulVtxMask)
       {
         f3dVertex(1) = (float) pFrame[ i].mfv_SBPoint(1);
         f3dVertex(2) = (float) pFrame[ i].mfv_SBPoint(2);
@@ -2264,18 +2264,18 @@ void CModelObject::ColorizeRegion( CDrawPort *pDP, CProjection3D *pProjection, P
   PIX pixDPHeight = pDP->GetHeight();
   // project vertices for given mip model
   ProjectFrameVertices( pProjection, mo_iLastRenderMipLevel);
-  for( INDEX j=0; j<pMD->md_MipInfos[ mo_iLastRenderMipLevel].mmpi_PolygonsCt; j++)
+  for (INDEX j=0; j<pMD->md_MipInfos[ mo_iLastRenderMipLevel].mmpi_PolygonsCt; j++)
   {
     pPoly = &pMD->md_MipInfos[ mo_iLastRenderMipLevel].mmpi_Polygons[ j];
-    for( INDEX i=0; i<pPoly->mp_PolygonVertices.Count(); i++)
+    for (INDEX i=0; i<pPoly->mp_PolygonVertices.Count(); i++)
     {
       pTransformedVertice = pPoly->mp_PolygonVertices[ i].mpv_ptvTransformedVertex;
       PIXaabbox2D ptBox = PIXaabbox2D( PIX2D( (SWORD) pTransformedVertice->tvd_TransformedPoint(1),
                                        pixDPHeight - (SWORD) pTransformedVertice->tvd_TransformedPoint(2)));
-      if( !((box & ptBox).IsEmpty()) )
+      if (!((box & ptBox).IsEmpty()) )
       {
         MappingSurface &ms = pMD->md_MipInfos[ mo_iLastRenderMipLevel].mmpi_MappingSurfaces[ pPoly->mp_Surface];
-        if( bOnColorMode)
+        if (bOnColorMode)
         {
           //pPoly->mp_OnColor = 1UL << iChoosedColor;
           ms.ms_ulOnColor = 1UL << iChoosedColor;
@@ -2305,15 +2305,15 @@ void CModelObject::ApplySurfaceToPolygonsInRegion( CDrawPort *pDP, CProjection3D
   CModelData *pMD = (CModelData *) GetData();
   PIX pixDPHeight = pDP->GetHeight();
 
-  for( INDEX j=0; j<pMD->md_MipInfos[ mo_iLastRenderMipLevel].mmpi_PolygonsCt; j++)
+  for (INDEX j=0; j<pMD->md_MipInfos[ mo_iLastRenderMipLevel].mmpi_PolygonsCt; j++)
   {
     pPoly = &pMD->md_MipInfos[ mo_iLastRenderMipLevel].mmpi_Polygons[ j];
-    for( INDEX i=0; i<pPoly->mp_PolygonVertices.Count(); i++)
+    for (INDEX i=0; i<pPoly->mp_PolygonVertices.Count(); i++)
     {
       pTransformedVertice = pPoly->mp_PolygonVertices[ i].mpv_ptvTransformedVertex;
       PIXaabbox2D ptBox = PIXaabbox2D( PIX2D( (SWORD) pTransformedVertice->tvd_TransformedPoint(1),
                                        pixDPHeight - (SWORD) pTransformedVertice->tvd_TransformedPoint(2)));
-      if( !((box & ptBox).IsEmpty()) )
+      if (!((box & ptBox).IsEmpty()) )
       {
         pPoly->mp_Surface = iSurface;
         pPoly->mp_ColorAndAlpha = colSurfaceColor;
@@ -2336,7 +2336,7 @@ void CModelObject::UnpackVertex(INDEX iFrame, INDEX iVertex, FLOAT3D &vVertex)
   vStretch(3) = vDataStretch(3)*vObjectStretch(3);
   FLOAT3D vOffset = pmd->md_vCompressedCenter;
 
-  if( pmd->md_Flags & MF_COMPRESSED_16BIT)
+  if (pmd->md_Flags & MF_COMPRESSED_16BIT)
   {
     struct ModelFrameVertex16 *pFrame16 = &pmd->md_FrameVertices16[iFrame * pmd->md_VerticesCt];
     vVertex(1) = (pFrame16[iVertex].mfv_SWPoint(1)-vOffset(1))*vStretch(1);
@@ -2435,11 +2435,11 @@ struct ModelPolygon *CModelObject::PolygonHitModelData(CModelData *pMD,
   // project vertices for given mip model
   ProjectFrameVertices( &spProjection, iCurrentMip);
 
-  for( INDEX j=0; j<pMD->md_MipInfos[ iCurrentMip].mmpi_PolygonsCt; j++)
+  for (INDEX j=0; j<pMD->md_MipInfos[ iCurrentMip].mmpi_PolygonsCt; j++)
   {
     Intersector.Clear();
     pPoly = &pMD->md_MipInfos[ iCurrentMip].mmpi_Polygons[ j];
-    for( INDEX i=0; i<pPoly->mp_PolygonVertices.Count(); i++)
+    for (INDEX i=0; i<pPoly->mp_PolygonVertices.Count(); i++)
     {
       // get next vertex index (first is i)
       INDEX next = (i+1) % pPoly->mp_PolygonVertices.Count();
@@ -2449,16 +2449,16 @@ struct ModelPolygon *CModelObject::PolygonHitModelData(CModelData *pMD,
                          pPoly->mp_PolygonVertices[ next].mpv_ptvTransformedVertex->tvd_TransformedPoint(1),
                          pPoly->mp_PolygonVertices[ next].mpv_ptvTransformedVertex->tvd_TransformedPoint(2));
     }
-    if( Intersector.IsIntersecting())
+    if (Intersector.IsIntersecting())
     {
       FLOAT3D f3dTr0 = pPoly->mp_PolygonVertices[ 0].mpv_ptvTransformedVertex->tvd_TransformedPoint;
       FLOAT3D f3dTr1 = pPoly->mp_PolygonVertices[ 1].mpv_ptvTransformedVertex->tvd_TransformedPoint;
       FLOAT3D f3dTr2 = pPoly->mp_PolygonVertices[ 2].mpv_ptvTransformedVertex->tvd_TransformedPoint;
       FLOATplane3D fplPlane = FLOATplane3D( f3dTr0, f3dTr1, f3dTr2);
 
-      FLOAT3D f3dHitted3DPoint = FLOAT3D(0,0,0);
+      FLOAT3D f3dHitted3DPoint = FLOAT3D(0.0f, 0.0f, 0.0f);
       fplPlane.GetCoordinate( 3, f3dHitted3DPoint);
-      if( f3dHitted3DPoint(3)<=0.0f &&  f3dHitted3DPoint(3)> fClosest)
+      if (f3dHitted3DPoint(3)<=0.0f &&  f3dHitted3DPoint(3)> fClosest)
       {
         fClosest = f3dHitted3DPoint(3);
         pResultPoly = pPoly;
@@ -2482,17 +2482,17 @@ void CModelObject::ColorizePolygon( CDrawPort *pDP, CProjection3D *projection, P
   CPlacement3D plObjectPlacement;
 
   projection->Prepare();
-  projection->RayThroughPoint( FLOAT3D( (FLOAT)x1, (FLOAT)(pDP->GetHeight()-y1), 0.0f),
+  projection->RayThroughPoint( FLOAT3D((FLOAT)x1, (FLOAT)(pDP->GetHeight()-y1), 0.0f),
                                plRay);
   plObjectPlacement = projection->ObjectPlacementR();
 
   FLOAT fHitDistance;
   struct ModelPolygon *pPoly = PolygonHit( plRay, plObjectPlacement, mo_iLastRenderMipLevel, fHitDistance);
-  if( pPoly != NULL)
+  if (pPoly != NULL)
   {
     CModelData *pMD = (CModelData *) GetData();
     MappingSurface &ms = pMD->md_MipInfos[ mo_iLastRenderMipLevel].mmpi_MappingSurfaces[ pPoly->mp_Surface];
-    if( bOnColorMode)
+    if (bOnColorMode)
     {
       //pPoly->mp_OnColor = 1UL << iChoosedColor;
       ms.ms_ulOnColor = 1UL << iChoosedColor;
@@ -2512,13 +2512,13 @@ void CModelObject::ApplySurfaceToPolygon( CDrawPort *pDP, CProjection3D *project
   CPlacement3D plObjectPlacement;
 
   projection->Prepare();
-  projection->RayThroughPoint( FLOAT3D( (FLOAT)x1, (FLOAT)(pDP->GetHeight()-y1), 0.0f),
+  projection->RayThroughPoint( FLOAT3D((FLOAT)x1, (FLOAT)(pDP->GetHeight()-y1), 0.0f),
                                plRay);
   plObjectPlacement = projection->ObjectPlacementR();
 
   FLOAT fHitDistance;
   struct ModelPolygon *pPoly = PolygonHit( plRay, plObjectPlacement, mo_iLastRenderMipLevel, fHitDistance);
-  if( pPoly != NULL)
+  if (pPoly != NULL)
   {
     pPoly->mp_ColorAndAlpha = colSurfaceColor;
     pPoly->mp_Surface = iSurface;
@@ -2535,18 +2535,18 @@ void CModelObject::PickPolyColor(  CDrawPort *pDP, CProjection3D *projection, PI
   CPlacement3D plObjectPlacement;
 
   projection->Prepare();
-  projection->RayThroughPoint( FLOAT3D( (FLOAT)x1, (FLOAT)(pDP->GetHeight()-y1), 0.0f),
+  projection->RayThroughPoint( FLOAT3D((FLOAT)x1, (FLOAT)(pDP->GetHeight()-y1), 0.0f),
                                plRay);
   plObjectPlacement = projection->ObjectPlacementR();
 
   FLOAT fHitDistance;
   struct ModelPolygon *pPoly = PolygonHit( plRay, plObjectPlacement, mo_iLastRenderMipLevel, fHitDistance);
-  if( pPoly != NULL)
+  if (pPoly != NULL)
   {
     CModelData *pMD = (CModelData *) GetData();
     MappingSurface &ms = pMD->md_MipInfos[ mo_iLastRenderMipLevel].mmpi_MappingSurfaces[ pPoly->mp_Surface];
     
-    if( bOnColorMode)
+    if (bOnColorMode)
     {
       iPickedColorNo = GetBit( ms.ms_ulOnColor);
     }
@@ -2563,13 +2563,13 @@ INDEX CModelObject::PickPolySurface( CDrawPort *pDP, CProjection3D *projection, 
   CPlacement3D plObjectPlacement;
 
   projection->Prepare();
-  projection->RayThroughPoint( FLOAT3D( (FLOAT)x1, (FLOAT)(pDP->GetHeight()-y1), 0.0f),
+  projection->RayThroughPoint( FLOAT3D((FLOAT)x1, (FLOAT)(pDP->GetHeight()-y1), 0.0f),
                                plRay);
   plObjectPlacement = projection->ObjectPlacementR();
 
   FLOAT fHitDistance;
   struct ModelPolygon *pPoly = PolygonHit( plRay, plObjectPlacement, mo_iLastRenderMipLevel, fHitDistance);
-  if( pPoly != NULL)
+  if (pPoly != NULL)
   {
     return pPoly->mp_Surface;
   }
@@ -2590,17 +2590,17 @@ INDEX CModelObject::PickVertexIndex( CDrawPort *pDP, CProjection3D *pProjection,
   FLOAT fClosest = 64.0f;
   FLOAT iClosest = -1;
   INDEX iCurrentFrame = GetFrame();
-  FLOAT3D vTargetPoint = FLOAT3D( x1, pDP->GetHeight()-y1, 0.0f);
+  FLOAT3D vTargetPoint = FLOAT3D(x1, pDP->GetHeight()-y1, 0.0f);
   ULONG ulVtxMask = (1L) << mo_iLastRenderMipLevel;
   // Find closest vertice
-  for( INDEX iVertex=0; iVertex<pMD->md_VerticesCt; iVertex++)
+  for (INDEX iVertex=0; iVertex<pMD->md_VerticesCt; iVertex++)
   {
-    if( pMD->md_VertexMipMask[ iVertex] & ulVtxMask)
+    if (pMD->md_VertexMipMask[ iVertex] & ulVtxMask)
     {
       FLOAT3D vProjected = pMD->md_TransformedVertices[ iVertex].tvd_TransformedPoint;
       vProjected(3) = 0.0f;
       FLOAT3D vUncompressedVertex;
-      if( pMD->md_Flags & MF_COMPRESSED_16BIT)
+      if (pMD->md_Flags & MF_COMPRESSED_16BIT)
       {
         ModelFrameVertex16 *pFrame = &pMD->md_FrameVertices16[ iCurrentFrame * pMD->md_VerticesCt];
         vUncompressedVertex(1) = (float) pFrame[ iVertex].mfv_SWPoint(1);
@@ -2616,7 +2616,7 @@ INDEX CModelObject::PickVertexIndex( CDrawPort *pDP, CProjection3D *pProjection,
       }
 
       FLOAT fDistance = Abs( ( vProjected-vTargetPoint).Length());
-      if( fDistance < fClosest)
+      if (fDistance < fClosest)
       {
         fClosest = fDistance;
         iClosest = iVertex;
@@ -2678,7 +2678,7 @@ BOOL CModelObject::HasAlpha(void)
 }
 
 // retrieves number of surfaces used in given mip model
-INDEX CModelObject::SurfacesCt(INDEX iMipModel){
+INDEX CModelObject::SurfacesCt(INDEX iMipModel) {
   ASSERT( GetData() != NULL);
   return GetData()->md_MipInfos[ iMipModel].mmpi_MappingSurfaces.Count();
 };
@@ -2697,8 +2697,8 @@ void CModelObject::ShowPatch( INDEX iMaskBit)
 {
   CModelData *pMD = (CModelData *)GetData();
   ASSERT( pMD != NULL);
-  if( pMD == NULL) return;
-  if( (mo_PatchMask & ((1UL) << iMaskBit)) != 0) return;
+  if (pMD == NULL) return;
+  if ((mo_PatchMask & ((1UL) << iMaskBit)) != 0) return;
   mo_PatchMask |= (1UL) << iMaskBit;
 }
 //--------------------------------------------------------------------------------------------
@@ -2708,8 +2708,8 @@ void CModelObject::ShowPatch( INDEX iMaskBit)
 void CModelObject::HidePatch( INDEX iMaskBit)
 {
   CModelData *pMD = (CModelData *)GetData();
-  if( pMD == NULL) return;
-  if( (mo_PatchMask & ((1UL) << iMaskBit)) == 0) return;
+  if (pMD == NULL) return;
+  if ((mo_PatchMask & ((1UL) << iMaskBit)) == 0) return;
   mo_PatchMask &= ~((1UL) << iMaskBit);
 }
 //--------------------------------------------------------------------------------------------
@@ -2722,7 +2722,7 @@ BOOL CModelObject::HasShadow(INDEX iModelMip)
   SLONG slShadowQuality = _mrpModelRenderPrefs.GetShadowQuality();
   ASSERT( slShadowQuality >= 0);
   SLONG res = iModelMip + slShadowQuality + pMD->md_ShadowQuality;
-  if( res >= pMD->md_MipCt)
+  if (res >= pMD->md_MipCt)
     return FALSE;
   return TRUE;
 }
@@ -2738,7 +2738,7 @@ void CModelObject::SetTextureData(CTextureData *ptdNewMainTexture)
 CTFileName CModelObject::GetName(void)
 {
   CModelData *pmd = (CModelData *) GetData();
-  if( pmd == NULL) return CTString( "");
+  if (pmd == NULL) return CTString( "");
   return pmd->GetName();
 }
 
@@ -2789,26 +2789,26 @@ void CModelObject::AutoSetTextures(void)
     strmIni.Open_t( fnIni);
     SLONG slFileSize = strmIni.GetStreamSize();
     // NEVER!NEVER! read after EOF
-    while(strmIni.GetPos_t()<(slFileSize-4))
+    while (strmIni.GetPos_t()<(slFileSize-4))
     {
       CChunkID id = strmIni.PeekID_t();
-      if( id == CChunkID("WTEX"))
+      if (id == CChunkID("WTEX"))
       {
         CChunkID idDummy = strmIni.GetID_t();
         strmIni >> ctDiffuseTextures;
         strmIni >> fnDiffuse;
       }
-      else if( id == CChunkID("FXTR"))
+      else if (id == CChunkID("FXTR"))
       {
         CChunkID idDummy = strmIni.GetID_t();
         strmIni >> fnReflection;
       }
-      else if( id == CChunkID("FXTS"))
+      else if (id == CChunkID("FXTS"))
       {
         CChunkID idDummy = strmIni.GetID_t();
         strmIni >> fnSpecular;
       }
-      else if( id == CChunkID("FXTB"))
+      else if (id == CChunkID("FXTB"))
       {
         CChunkID idDummy = strmIni.GetID_t();
         strmIni >> fnBump;
@@ -2819,16 +2819,16 @@ void CModelObject::AutoSetTextures(void)
       }
     }
   }
-  catch( char *strError){ (void) strError;}
+  catch( char *strError) { (void) strError;}
 
   try
   {
-    if( fnDiffuse != "") mo_toTexture.SetData_t( fnDiffuse);
-    if( fnReflection != "") mo_toReflection.SetData_t( fnReflection);
-    if( fnSpecular != "") mo_toSpecular.SetData_t( fnSpecular);
-    if( fnBump != "") mo_toBump.SetData_t( fnBump);
+    if (fnDiffuse != "") mo_toTexture.SetData_t( fnDiffuse);
+    if (fnReflection != "") mo_toReflection.SetData_t( fnReflection);
+    if (fnSpecular != "") mo_toSpecular.SetData_t( fnSpecular);
+    if (fnBump != "") mo_toBump.SetData_t( fnBump);
   }
-  catch( char *strError){ (void) strError;}
+  catch( char *strError) { (void) strError;}
 }
 
 void CModelObject::AutoSetAttachments(void)
@@ -2844,17 +2844,17 @@ void CModelObject::AutoSetAttachments(void)
     strmIni.Open_t( fnIni);
     SLONG slFileSize = strmIni.GetStreamSize();
     // NEVER!NEVER! read after EOF
-    while(strmIni.GetPos_t()<(slFileSize-4))
+    while (strmIni.GetPos_t()<(slFileSize-4))
     {
       CChunkID id = strmIni.PeekID_t();
-      if( id == CChunkID("ATTM"))
+      if (id == CChunkID("ATTM"))
       {
         CChunkID idDummy = strmIni.GetID_t();
         // try to load attached models
         INDEX ctAttachedModels;
         strmIni >> ctAttachedModels;
         // read all attached models
-        for( INDEX iAtt=0; iAtt<ctAttachedModels; iAtt++)
+        for (INDEX iAtt=0; iAtt<ctAttachedModels; iAtt++)
         {
           BOOL bVisible;
           CTString strName;
@@ -2866,7 +2866,7 @@ void CModelObject::AutoSetAttachments(void)
 
           INDEX iAnimation = 0;
           // new attached model format has saved index of animation
-          if( strmIni.PeekID_t() == CChunkID("AMAN"))
+          if (strmIni.PeekID_t() == CChunkID("AMAN"))
           {
             strmIni.ExpectID_t( CChunkID( "AMAN"));
             strmIni >> iAnimation;
@@ -2876,7 +2876,7 @@ void CModelObject::AutoSetAttachments(void)
             strmIni >> fnDummy; // ex model's texture
           }
 
-          if( bVisible)
+          if (bVisible)
           {
             CAttachmentModelObject *pamo = AddAttachmentModel( iAtt);
             pamo->amo_moModelObject.SetData_t( fnModel);
@@ -2942,7 +2942,7 @@ CAttachmentModelObject *CModelObject::GetAttachmentModelList( INDEX ipos, ...)
   CModelObject *pmo = this;
 
   // while not end of list
-  while(ipos>=0) {
+  while (ipos>=0) {
     // get attachment
     pamo = pmo->GetAttachmentModel(ipos);
     // if not found

@@ -94,7 +94,7 @@ inline INDEX CAllocationArray<Type>::Allocate(void)
     // create new free indices
     INDEX *piNewFree = aa_aiFreeElements.Push(aa_ctAllocationStep);
     // fill them up
-    for(INDEX iNew=0; iNew<aa_ctAllocationStep; iNew++) {
+    for (INDEX iNew=0; iNew<aa_ctAllocationStep; iNew++) {
       piNewFree[iNew] = ctOldSize+iNew;
     }
   }
@@ -127,7 +127,7 @@ inline void CAllocationArray<Type>::FreeAll(void)
   INDEX ctSize = CStaticArray<Type>::Count();
   INDEX *piNewFree = aa_aiFreeElements.Push(ctSize);
   // fill them up
-  for(INDEX iNew=0; iNew<ctSize; iNew++) {
+  for (INDEX iNew=0; iNew<ctSize; iNew++) {
     piNewFree[iNew] = iNew;
   }
 }
@@ -140,7 +140,7 @@ inline BOOL CAllocationArray<Type>::IsAllocated(INDEX i)
   ASSERT(i>=0 && i<CStaticArray<Type>::Count());
   // for each free index
   INDEX ctFree = aa_aiFreeElements.Count();
-  for(INDEX iFree=0; iFree<ctFree; iFree++) {
+  for (INDEX iFree=0; iFree<ctFree; iFree++) {
     // if it is that one
     if (aa_aiFreeElements[iFree]==i) {
       // it is not allocated

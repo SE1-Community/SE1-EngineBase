@@ -42,7 +42,7 @@ SHADER_MAIN(Base_Transparent)
   BOOL bFullBright  = shaGetFlags()&BASE_FULL_BRIGHT;
   BOOL bOpaque = (colModelColor&0xFF)==0xFF;
 
-  if(bDoubleSided) {
+  if (bDoubleSided) {
     shaCullFace(GFX_NONE);
   } else {
     shaCullFace(GFX_BACK);
@@ -51,11 +51,11 @@ SHADER_MAIN(Base_Transparent)
   shaCalculateLight();
   shaModifyColorForFog();
 
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
   shaRender();
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
 
-  if(bOpaque && !bFullBright) {
+  if (bOpaque && !bFullBright) {
     shaDoFogPass();
   }
 }

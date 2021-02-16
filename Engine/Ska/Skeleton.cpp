@@ -41,14 +41,14 @@ INDEX CSkeleton::FindBoneInLOD(INDEX iBoneID,INDEX iSkeletonLod)
 {
   ASSERT(iSkeletonLod>=0);
   INDEX ctslods = skl_aSkeletonLODs.Count();
-  if(ctslods < 1) return -1;
+  if (ctslods < 1) return -1;
 
   SkeletonLOD &slod = skl_aSkeletonLODs[iSkeletonLod];
   INDEX ctb = slod.slod_aBones.Count();
   // for each bone in skeleton
-  for(INDEX isb=0;isb<ctb;isb++) {
+  for (INDEX isb=0;isb<ctb;isb++) {
     // if bone id match
-    if(slod.slod_aBones[isb].sb_iID == iBoneID) {
+    if (slod.slod_aBones[isb].sb_iID == iBoneID) {
       // return index in array of bones
       return isb;
     }
@@ -62,7 +62,7 @@ void CSkeleton::SortSkeleton()
   // sort each lod in skeleton
   INDEX ctslods = skl_aSkeletonLODs.Count();
   // for each lod in skeleton
-  for(INDEX islod=0;islod<ctslods;islod++)
+  for (INDEX islod=0;islod<ctslods;islod++)
   {
     // create SkeletonBones array for sorting array
     _aSortArray.New(skl_aSkeletonLODs[islod].slod_aBones.Count());
@@ -81,14 +81,14 @@ void CSkeleton::SortSkeleton()
 void CSkeleton::SortSkeletonRecursive(INDEX iParentID, INDEX iSkeletonLod)
 {
   // reset global counter for sorted bones if this bone is parent bone
-  if(iParentID == (-1)) ctSortBones = 0;
+  if (iParentID == (-1)) ctSortBones = 0;
   SkeletonLOD &slod = skl_aSkeletonLODs[iSkeletonLod];
   INDEX ctsb = slod.slod_aBones.Count();
   // for each bone in lod
-  for(INDEX isb=0;isb<ctsb;isb++)
+  for (INDEX isb=0;isb<ctsb;isb++)
   {
     SkeletonBone &sb = slod.slod_aBones[isb];
-    if(sb.sb_iParentID == iParentID)
+    if (sb.sb_iParentID == iParentID)
     {
       // just copy data to _aSortArray
       _aSortArray[ctSortBones].sb_iID = sb.sb_iID;
@@ -102,9 +102,9 @@ void CSkeleton::SortSkeletonRecursive(INDEX iParentID, INDEX iSkeletonLod)
     }
   }
   // sort children bones
-  for(INDEX icsb=0;icsb<ctsb;icsb++) {
+  for (INDEX icsb=0;icsb<ctsb;icsb++) {
     SkeletonBone &sb = slod.slod_aBones[icsb];
-    if(sb.sb_iParentID == iParentID) {
+    if (sb.sb_iParentID == iParentID) {
       SortSkeletonRecursive(sb.sb_iID,iSkeletonLod);
     }
   }
@@ -116,11 +116,11 @@ void CSkeleton::CalculateAbsoluteTransformations(INDEX iSkeletonLod)
   INDEX ctbones = skl_aSkeletonLODs[iSkeletonLod].slod_aBones.Count();
   SkeletonLOD &slod = skl_aSkeletonLODs[iSkeletonLod];
   // for each bone
-  for(INDEX isb=0; isb<ctbones; isb++) {
+  for (INDEX isb=0; isb<ctbones; isb++) {
     SkeletonBone &sb = slod.slod_aBones[isb];
     INDEX iParentID = sb.sb_iParentID;
     INDEX iParentIndex = FindBoneInLOD(iParentID,iSkeletonLod);
-    if(iParentID > (-1)) {
+    if (iParentID > (-1)) {
       SkeletonBone &sbParent = slod.slod_aBones[iParentIndex];
       MatrixMultiplyCP(sb.sb_mAbsPlacement,sbParent.sb_mAbsPlacement,sb.sb_mAbsPlacement);
     }
@@ -145,10 +145,10 @@ void CSkeleton::RemoveSkeletonLod(SkeletonLOD *pslodRemove)
   INDEX iIndexSrc=0;
 
   // for each skeleton lod in skeleton
-  for(INDEX islod=0;islod<ctslod;islod++) {
+  for (INDEX islod=0;islod<ctslod;islod++) {
     SkeletonLOD *pslod = &skl_aSkeletonLODs[islod];
     // copy all skeleton lods except the selected one
-    if(pslod != pslodRemove) {
+    if (pslod != pslodRemove) {
       aTempSLODs[iIndexSrc] = *pslod;
       iIndexSrc++;
     }
@@ -170,7 +170,7 @@ void CSkeleton::Write_t(CTStream *ostrFile)
   // write lods count
   (*ostrFile)<<ctslods;
   // for each lod in skeleton
-  for(INDEX islod=0;islod<ctslods;islod++)
+  for (INDEX islod=0;islod<ctslods;islod++)
   {
     SkeletonLOD &slod = skl_aSkeletonLODs[islod];
     // write source file name
@@ -182,7 +182,7 @@ void CSkeleton::Write_t(CTStream *ostrFile)
     INDEX ctb = slod.slod_aBones.Count();
     (*ostrFile)<<ctb;
     // write skeleton bones
-    for(INDEX ib=0;ib<ctb;ib++) {
+    for (INDEX ib=0;ib<ctb;ib++) {
       CTString strNameID = ska_GetStringFromTable(slod.slod_aBones[ib].sb_iID);
       CTString strParentID = ska_GetStringFromTable(slod.slod_aBones[ib].sb_iParentID);
       SkeletonBone &sb = slod.slod_aBones[ib];
@@ -212,18 +212,18 @@ void CSkeleton::Read_t(CTStream *istrFile)
   istrFile->ExpectID_t(CChunkID(SKELETON_ID));
   // check file version
   (*istrFile)>>iFileVersion;
-  if(iFileVersion != SKELETON_VERSION) {
+  if (iFileVersion != SKELETON_VERSION) {
 		ThrowF_t(TRANS("File '%s'.\nInvalid skeleton file version.\nExpected Ver \"%d\" but found \"%d\"\n"),
       (const char*)istrFile->GetDescription(),SKELETON_VERSION,iFileVersion);
   }
   // read skeleton lod count
   (*istrFile)>>ctslods;
 
-  if(ctslods>0) {
+  if (ctslods>0) {
     skl_aSkeletonLODs.Expand(ctslods);
   }
   // for each skeleton lod
-  for(INDEX islod=0;islod<ctslods;islod++) {
+  for (INDEX islod=0;islod<ctslods;islod++) {
     SkeletonLOD &slod = skl_aSkeletonLODs[islod];
     // read source file name
     (*istrFile)>>slod.slod_fnSourceFile;
@@ -235,7 +235,7 @@ void CSkeleton::Read_t(CTStream *istrFile)
     // create bone array
     slod.slod_aBones.New(ctb);
     // read skeleton bones
-    for(INDEX ib=0;ib<ctb;ib++) {
+    for (INDEX ib=0;ib<ctb;ib++) {
       CTString strNameID;
       CTString strParentID;
       SkeletonBone &sb = slod.slod_aBones[ib];
@@ -276,7 +276,7 @@ SLONG CSkeleton::GetUsedMemory(void)
   SLONG slMemoryUsed = sizeof(*this);
   INDEX ctslods = skl_aSkeletonLODs.Count();
   // for each skeleton lods
-  for(INDEX islod=0;islod<ctslods;islod++) {
+  for (INDEX islod=0;islod<ctslods;islod++) {
     SkeletonLOD &slod = skl_aSkeletonLODs[islod];
     slMemoryUsed += sizeof(slod);
     slMemoryUsed += slod.slod_aBones.Count() * sizeof(SkeletonBone);

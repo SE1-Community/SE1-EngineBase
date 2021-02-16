@@ -562,7 +562,7 @@ void CClipMove::FindAbsoluteMovementBoxForA(void)
 
   // make absolute positions of B0 and B1
   mB0Abs.Diagonal(1.0f);
-  vB0Abs = FLOAT3D(0,0,0);
+  vB0Abs = FLOAT3D(0.0f, 0.0f, 0.0f);
 
   vAToB0
   mAToB0
@@ -824,10 +824,10 @@ void CClipMove::CacheNearPolygons(void)
           pen->en_RenderType!=CEntity::RT_FIELDBRUSH) {
         break;  // brushes are sorted first in list
       }
-      if(pen->en_ulPhysicsFlags&EPF_MOVABLE) {
+      if (pen->en_ulPhysicsFlags&EPF_MOVABLE) {
         continue;
       }
-      if(!MustTest(pen)) {
+      if (!MustTest(pen)) {
         continue;
       }
 
@@ -840,7 +840,7 @@ void CClipMove::CacheNearPolygons(void)
         {FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbscNonZoning) {
           CBrushSector &bscNonZoning = *itbscNonZoning;
           // add it to list of active sectors
-          if(!bscNonZoning.bsc_lnInActiveSectors.IsLinked()) {
+          if (!bscNonZoning.bsc_lnInActiveSectors.IsLinked()) {
             cm_lhActiveSectors.AddTail(bscNonZoning.bsc_lnInActiveSectors);
           }
         }}
@@ -919,7 +919,7 @@ void CClipMove::ClipToTerrain(CEntity *pen)
   ExtractPolygonsInBox(&tr,boxMovementPath,&pavVertices,&paiIndices,ctVertices,ctIndices);
   
   // for each triangle
-  for(INDEX iTri=0;iTri<ctIndices;iTri+=3) {
+  for (INDEX iTri=0;iTri<ctIndices;iTri+=3) {
     INDEX &iind1 = paiIndices[iTri+0];
     INDEX &iind2 = paiIndices[iTri+1];
     INDEX &iind3 = paiIndices[iTri+2];
@@ -942,7 +942,7 @@ void CClipMove::ClipToZoningSector(CBrushSector *pbsc)
     CPhysicsProfile::PTI_CLIPTOZONINGSECTOR, apbpo.Count());
 
   // for each cached polygon
-  for(INDEX iPolygon=0; iPolygon<apbpo.Count(); iPolygon++) {
+  for (INDEX iPolygon=0; iPolygon<apbpo.Count(); iPolygon++) {
     CBrushPolygon *pbpo = apbpo[iPolygon];
     // if it doesn't belong to the sector or its bbox has no contact with bbox of movement path
     if (pbpo->bpo_pbscSector != pbsc ||
@@ -1014,7 +1014,7 @@ void CClipMove::ClipMoveToBrushes(void)
           pen->en_RenderType!=CEntity::RT_TERRAIN) {
         break;  // brushes are sorted first in list
       }
-      if(!MustTest(pen)) {
+      if (!MustTest(pen)) {
         continue;
       }
 
@@ -1044,7 +1044,7 @@ void CClipMove::ClipMoveToBrushes(void)
         {FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbscNonZoning) {
           CBrushSector &bscNonZoning = *itbscNonZoning;
           // add it to list of active sectors
-          if(!bscNonZoning.bsc_lnInActiveSectors.IsLinked()) {
+          if (!bscNonZoning.bsc_lnInActiveSectors.IsLinked()) {
             cm_lhActiveSectors.AddTail(bscNonZoning.bsc_lnInActiveSectors);
           }
         }}
@@ -1110,7 +1110,7 @@ void CClipMove::ClipMoveToModels(void)
   cm_pwoWorld->FindEntitiesNearBox(cm_boxMovementPath, apenNearEntities);
 
   // for each of the found entities
-  {for(INDEX ienFound=0; ienFound<apenNearEntities.Count(); ienFound++) {
+  {for (INDEX ienFound=0; ienFound<apenNearEntities.Count(); ienFound++) {
     CEntity &enToCollide = *apenNearEntities[ienFound];
     _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_XXTESTS);
     // if it is the one that is moving, or if it is skiped by the mask

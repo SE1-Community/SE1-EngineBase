@@ -72,19 +72,19 @@ __forceinline void CTerrainTile::LerpVertexPos(GFXVertex4 &vtx, INDEX iVxTarget,
 INDEX CTerrainTile::ChangeTileArrays(INDEX iRequestedArrayLod)
 {
   // if requested lod is same as current lod
-  if(iRequestedArrayLod==tt_iLod) {
+  if (iRequestedArrayLod==tt_iLod) {
     // Just pop all arrays
     GetVertices().PopAll();
     GetTexCoords().PopAll();
     GetShadowMapTC().PopAll();
     GetIndices().PopAll();
     // if tile is in highest lod
-    if(tt_iLod==0) {
+    if (tt_iLod==0) {
       // pop detail uvmap
       GetDetailTC().PopAll();
       // for each tile layer
       INDEX cttl=GetTileLayers().Count();
-      for(INDEX itl=0;itl<cttl;itl++) {
+      for (INDEX itl=0;itl<cttl;itl++) {
         // pop all arrays for this layer
         TileLayer &tl = GetTileLayers()[itl];
         tl.tl_acColors.PopAll();
@@ -105,10 +105,10 @@ INDEX CTerrainTile::ChangeTileArrays(INDEX iRequestedArrayLod)
   tt_iArrayIndex = ah.GetNewArrays();
 
   // if this is first lod
-  if(iRequestedArrayLod==0) {
+  if (iRequestedArrayLod==0) {
     // Add tile layers
     INDEX ctLayers = _ptrTerrain->tr_atlLayers.Count();
-    if(ctLayers>0) {
+    if (ctLayers>0) {
       GetTileLayers().Push(ctLayers);
     }
   }
@@ -118,7 +118,7 @@ INDEX CTerrainTile::ChangeTileArrays(INDEX iRequestedArrayLod)
 void CTerrainTile::ReleaseTileArrays()
 {
   // if tile had some arrays
-  if(tt_iArrayIndex != -1) {
+  if (tt_iArrayIndex != -1) {
     // Free them
     CArrayHolder &ahOld = _ptrTerrain->tr_aArrayHolders[tt_iLod];
     ahOld.FreeArrays(tt_iArrayIndex);
@@ -141,7 +141,7 @@ void CTerrainTile::EmptyTileArrays()
 inline void CTerrainTile::AddTriangle(INDEX iind1,INDEX iind2,INDEX iind3)
 {
   // is this tile in highest lod
-  if(tt_iLod==0) {
+  if (tt_iLod==0) {
 
     // Is this triangle visible
     GFXVertex *pvx[3];
@@ -151,7 +151,7 @@ inline void CTerrainTile::AddTriangle(INDEX iind1,INDEX iind2,INDEX iind3)
 
     // check if all vertices all visible
     SLONG slTriangleMask = pvx[0]->shade + pvx[1]->shade + pvx[2]->shade;
-    if(slTriangleMask!=255*3) {
+    if (slTriangleMask!=255*3) {
       return;
     }
 
@@ -163,16 +163,16 @@ inline void CTerrainTile::AddTriangle(INDEX iind1,INDEX iind2,INDEX iind3)
 
     // for each layer
     INDEX cttl = GetTileLayers().Count();
-    for(INDEX itl=0;itl<cttl;itl++) {
+    for (INDEX itl=0;itl<cttl;itl++) {
       TileLayer &ttl = GetTileLayers()[itl];
       CTerrainLayer &tl = _ptrTerrain->tr_atlLayers[itl];
       // if this is tile layer
-      if(tl.tl_ltType==LT_TILE) {
+      if (tl.tl_ltType==LT_TILE) {
         continue; // skip it
       }
 
       COLOR ul = ttl.tl_acColors[iind1].a + ttl.tl_acColors[iind2].a + ttl.tl_acColors[iind3].a;
-      if(ul>0) {
+      if (ul>0) {
         INDEX *pIndices = ttl.tl_auiIndices.Push(3);
         pIndices[0] = iind1;
         pIndices[1] = iind2;
@@ -240,10 +240,10 @@ void CTerrainTile::AddVertex(INDEX ic, INDEX ir)
   vxFinal.shade = vx.shade;
 
   // if this tile is in highest lod
-  if(tt_iLod==0) {
+  if (tt_iLod==0) {
     // for each layer
     INDEX cttl = GetTileLayers().Count();
-    for(INDEX itl=0;itl<cttl;itl++) {
+    for (INDEX itl=0;itl<cttl;itl++) {
       TileLayer &ttl = GetTileLayers()[itl];
       CTerrainLayer &tl = _ptrTerrain->tr_atlLayers[itl];
       // Set vertex color
@@ -252,7 +252,7 @@ void CTerrainTile::AddVertex(INDEX ic, INDEX ir)
       col.abgr = 0x00FFFFFF;
       col.a = bAlpha;
       // if this is normal layer
-      if(tl.tl_ltType == LT_NORMAL) {
+      if (tl.tl_ltType == LT_NORMAL) {
         // Set its texcoords
         GFXTexCoord &tc = ttl.tl_atcTexCoords.Push();
         tc.u = (FLOAT)ic;
@@ -264,7 +264,7 @@ void CTerrainTile::AddVertex(INDEX ic, INDEX ir)
     tcDetail.u = ic * 2;
     tcDetail.v = ir * 2;
   // if tile is in lowest lod
-  } else if(tt_iLod==_ptrTerrain->tr_iMaxTileLod) {
+  } else if (tt_iLod==_ptrTerrain->tr_iMaxTileLod) {
     GFXTexCoord &tc = GetTexCoords().Push();
     FLOAT fWidth = (_ptrTerrain->tr_pixHeightMapWidth-1);
     FLOAT fHeight = (_ptrTerrain->tr_pixHeightMapHeight-1);
@@ -309,8 +309,8 @@ void CTerrainTile::ReGenerateTileLayer(INDEX iTileLayer)
   BOOL  bFacing = FALSE;
   INDEX iTilesInRowLog2 = FastLog2(tl.tl_ctTilesInRow);
   // for each quad in tile
-  for(INDEX iz=0;iz<ctQuadsPerRow;iz++) {
-    for(INDEX ix=0;ix<ctQuadsPerRow;ix++) {
+  for (INDEX iz=0;iz<ctQuadsPerRow;iz++) {
+    for (INDEX ix=0;ix<ctQuadsPerRow;ix++) {
       PIX pix = ix+iOffsetX + (iz+iOffsetZ)*pixHMWidth;
 
       // Add four vertices for this quad
@@ -349,15 +349,15 @@ void CTerrainTile::ReGenerateTileLayer(INDEX iTileLayer)
       ptc[ivx+3].u = tl.tl_fTileU * (iTileX + 1-bFlipX);
       ptc[ivx+3].v = tl.tl_fTileV * (iTileY + 1-bFlipY);
 
-      if(bSwapXY) {
+      if (bSwapXY) {
         Swap(ptc[ivx+1].u,ptc[ivx+2].u);
         Swap(ptc[ivx+1].v,ptc[ivx+2].v);
       }
 
       // if tile is visible
-      if(bVisible) {
+      if (bVisible) {
         // Add six indices 
-        if(bFacing) {
+        if (bFacing) {
           pind[iind  ] = ivx;
           pind[iind+1] = ivx+2;
           pind[iind+2] = ivx+1;
@@ -384,11 +384,11 @@ void CTerrainTile::ReGenerateTileLayer(INDEX iTileLayer)
   }
 
   // discard triangles that arn't visible
-  if(ctIndices<ctQuadsPerRow*ctQuadsPerRow*6) {
+  if (ctIndices<ctQuadsPerRow*ctQuadsPerRow*6) {
     ttl.tl_auiIndices.PopUntil(ctIndices);
   }
   // discart vertices that arn't visible
-  if(ctVertices<ctQuadsPerRow*ctQuadsPerRow*4) {
+  if (ctVertices<ctQuadsPerRow*ctQuadsPerRow*4) {
     ttl.tl_avVertices.PopUntil(ctVertices);
     ttl.tl_atcTexCoords.PopUntil(ctVertices);
   }
@@ -408,9 +408,9 @@ void CTerrainTile::ReGenerate()
   // for each vertex in row
   INDEX iStep = 1<<tt_iLod;
   INDEX ir=0;
-  for(;ir<tt_ctVtxY;ir+=iStep) {
+  for (;ir<tt_ctVtxY;ir+=iStep) {
     // for each vertex in col
-    for(INDEX ic=0;ic<tt_ctVtxX;ic+=iStep) {
+    for (INDEX ic=0;ic<tt_ctVtxX;ic+=iStep) {
       // add vertex in this row and col
       AddVertex(ic,ir);
     }
@@ -420,10 +420,10 @@ void CTerrainTile::ReGenerate()
   INDEX ctQuads = _ptrTerrain->GetQuadsPerTileRow()>>tt_iLod;
 
   // Fill middle of tile with triangles
-  for(ir=1;ir<ctQuads-1;ir++) {
-    for(INDEX ic=1;ic<ctQuads-1;ic++) {
+  for (ir=1;ir<ctQuads-1;ir++) {
+    for (INDEX ic=1;ic<ctQuads-1;ic++) {
       INDEX ivx = ic+ir*(ctQuads+1);
-      if(ivx%2) {
+      if (ivx%2) {
         AddTriangle(ivx,ivx+ctQuads+1,ivx+1);
         AddTriangle(ivx+1,ivx+ctQuads+1,ivx+ctQuads+2);
       } else {
@@ -444,13 +444,13 @@ void CTerrainTile::ReGenerate()
   ReGenerateRightBorder();
 
   // if this tile is in first lod
-  if(tt_iLod==0) {
+  if (tt_iLod==0) {
     // for each layer
     INDEX cttl = _ptrTerrain->tr_atlLayers.Count();
-    for(INDEX itl=0;itl<cttl;itl++) {
+    for (INDEX itl=0;itl<cttl;itl++) {
       CTerrainLayer &tl = _ptrTerrain->tr_atlLayers[itl];
       // if this is tile layer 
-      if(tl.tl_ltType == LT_TILE) {
+      if (tl.tl_ltType == LT_TILE) {
         // Regenerate it
         ReGenerateTileLayer(itl);
       }
@@ -459,12 +459,12 @@ void CTerrainTile::ReGenerate()
 
   BOOL bAllowTopMapRegen = !(GetFlags()&TT_NO_TOPMAP_REGEN);
   // if top map is allowed to be regenerated
-  if(bAllowTopMapRegen) {
+  if (bAllowTopMapRegen) {
     // if tile is not in highest nor in lowest lod
-    if(tt_iLod>0 && tt_iLod<_ptrTerrain->tr_iMaxTileLod) {
+    if (tt_iLod>0 && tt_iLod<_ptrTerrain->tr_iMaxTileLod) {
       // if top map regen is forced or tile has changed lod
       BOOL bForceTopMapRegen = (GetFlags()&TT_FORCE_TOPMAP_REGEN);
-      if(bForceTopMapRegen || iOldLod!=tt_iLod) {
+      if (bForceTopMapRegen || iOldLod!=tt_iLod) {
         // Update tile top map
         _ptrTerrain->UpdateTopMap(tt_iIndex);
         // remove flag that forced top map regen
@@ -480,7 +480,7 @@ void CTerrainTile::ReGenerate()
   }
 
   // if flag to resize quad tree node has been set
-  if(GetFlags()&TT_QUADTREENODE_REGEN) {
+  if (GetFlags()&TT_QUADTREENODE_REGEN) {
     // update quad tree node
     UpdateQuadTreeNode();
     // node has been updated
@@ -490,7 +490,7 @@ void CTerrainTile::ReGenerate()
   INDEX ctBorderVertices = tt_ctBorderVertices[0] + tt_ctBorderVertices[1] + 
                            tt_ctBorderVertices[2] + tt_ctBorderVertices[3];
   // if tile is in lowest lod, has not lerp factor and no border vertices
-  if(tt_iLod==_ptrTerrain->tr_iMaxTileLod && tt_fLodLerpFactor==0.0f && ctBorderVertices == 0) {
+  if (tt_iLod==_ptrTerrain->tr_iMaxTileLod && tt_fLodLerpFactor==0.0f && ctBorderVertices == 0) {
     // mark it as available for batch rendering
     AddFlag(TT_IN_LOWEST_LOD);
   } else {
@@ -505,7 +505,7 @@ INDEX CTerrainTile::CalculateLOD(void)
   FLOAT fDistance = (qtn.qtn_aabbox.Center() - _vViewerAbs).Length() - qtn.qtn_aabbox.Size().Length() / 2;
 
   // if flag has been set for tile to regenerate without lod
-  if(GetFlags()&TT_NO_LODING) {
+  if (GetFlags()&TT_NO_LODING) {
     // set new lod at 0
     fDistance = 0;
     // if tile is in highest lod, no need to regenerate texture
@@ -519,17 +519,17 @@ INDEX CTerrainTile::CalculateLOD(void)
   INDEX iNewLod = Clamp((INDEX)(fDistance/_ptrTerrain->tr_fDistFactor),(INDEX)0,_ptrTerrain->tr_iMaxTileLod);
 
   // if lod has changed
-  if(iNewLod!=tt_iLod) {
+  if (iNewLod!=tt_iLod) {
     // add to regeneration queue
     _ptrTerrain->AddTileToRegenQueue(tt_iIndex);
     // for each neighbour
-    for(INDEX in=0;in<4;in++) {
+    for (INDEX in=0;in<4;in++) {
       INDEX ini = tt_aiNeighbours[in];
       // if neighbour is valid
-      if(ini>=0) {
+      if (ini>=0) {
         CTerrainTile &ttNeigbour = _ptrTerrain->tr_attTiles[ini];
         // if neighbour is in higher lod
-        if(TRUE) { /*ttNeigbour.tt_iLod > tt.tt_iNewLod*/
+        if (TRUE) { /*ttNeigbour.tt_iLod > tt.tt_iNewLod*/
           // add neighbour to regen queue
           _ptrTerrain->AddTileToRegenQueue(ini);
         }
@@ -543,7 +543,7 @@ INDEX CTerrainTile::CalculateLOD(void)
   // Calculate lerp factor
   tt_fLodLerpFactor = Clamp(fDistance/_ptrTerrain->tr_fDistFactor - iNewLod,0.0f,1.0f);
   // if tile is in lowest lod
-  if(iNewLod == _ptrTerrain->tr_iMaxTileLod) {
+  if (iNewLod == _ptrTerrain->tr_iMaxTileLod) {
     // no lerping for this tile
     tt_fLodLerpFactor = 0.0f;
   }
@@ -571,7 +571,7 @@ void CTerrainTile::UpdateQuadTreeNode()
   ExtractPolygonsInBox(_ptrTerrain,bboxNewBox,&pavVertices,&paiIndices,ctVertices,ctIndices);
 
   // if some vertices exists
-  if(ctVertices>0) {
+  if (ctVertices>0) {
     qtn.qtn_aabbox = FLOAT3D(pavVertices->x,pavVertices->y,pavVertices->z);
     pavVertices++;
   } else {
@@ -579,7 +579,7 @@ void CTerrainTile::UpdateQuadTreeNode()
   }
 
   // for each vertex in box after first
-  for(INDEX ivx=1;ivx<ctVertices;ivx++) {
+  for (INDEX ivx=1;ivx<ctVertices;ivx++) {
     // add vertex to box
     qtn.qtn_aabbox |= FLOAT3D(pavVertices->x,pavVertices->y,pavVertices->z);
     pavVertices++;
@@ -595,7 +595,7 @@ void CTerrainTile::ReGenerateTopBorder()
   INDEX iTopTileIndex = tt_aiNeighbours[NB_TOP];
   INDEX iTopBorderLod = tt_iLod;
   // If top neighbour exists
-  if(iTopTileIndex!=(-1)) {
+  if (iTopTileIndex!=(-1)) {
     CTerrainTile &ttTop = _ptrTerrain->tr_attTiles[iTopTileIndex];
     iTopBorderLod = ttTop.tt_iRequestedLod; // !!!! iLod 2 iRequested
   }
@@ -617,7 +617,7 @@ void CTerrainTile::ReGenerateTopBorder()
 
   // Add half of topleft corner
   INDEX icb=0;
-  for(;icb<ctVtxInsert;icb+=iBorderStep) {
+  for (;icb<ctVtxInsert;icb+=iBorderStep) {
     AddVertex(icb+iBorderStep,0);
     INDEX ivxAdded = GetVertices().Count()-1;
     AddTriangle(iBaseFanVtx-1,ivxAdded,iLastVx);
@@ -627,11 +627,11 @@ void CTerrainTile::ReGenerateTopBorder()
   AddTriangle(iBaseFanVtx-1,icVtx,iLastVx);
 
   // Insert aditional vertices into each quad in top row after first
-  for(INDEX ic=iStep;ic<ctQuads-iStep;ic+=iStep) {
+  for (INDEX ic=iStep;ic<ctQuads-iStep;ic+=iStep) {
     iLastVx = icVtx;
-    if(icVtx%2) {
+    if (icVtx%2) {
       // for each vertex nedeed to be inserted in this quad
-      for(INDEX icb=0;icb<ctVtxInsert;icb+=iBorderStep) {
+      for (INDEX icb=0;icb<ctVtxInsert;icb+=iBorderStep) {
         // Insert vertex into quad and add one triangle
         AddVertex(ic+icb+iBorderStep,iVtxRow);
         INDEX ivxAdded = GetVertices().Count()-1;
@@ -646,7 +646,7 @@ void CTerrainTile::ReGenerateTopBorder()
       // Add first fan triangle
       AddTriangle(iBaseFanVtx,icVtx,iBaseFanVtx-1);
       // for each vertex nedeed to be inserted in this quad
-      for(INDEX icb=0;icb<ctVtxInsert;icb+=iBorderStep) {
+      for (INDEX icb=0;icb<ctVtxInsert;icb+=iBorderStep) {
         // Insert vertex into quad and add one triangle
         AddVertex(ic+icb+iBorderStep,iVtxRow);
         INDEX ivxAdded = GetVertices().Count()-1;
@@ -662,7 +662,7 @@ void CTerrainTile::ReGenerateTopBorder()
 
   iLastVx = icVtx;
   // Add half of topright corner
-  for(icb=0;icb<ctVtxInsert;icb+=iBorderStep) {
+  for (icb=0;icb<ctVtxInsert;icb+=iBorderStep) {
     // Insert vertex into quad and add one triangle
     AddVertex(icb+iBorderStep+ctQuads-1,0);
     INDEX ivxAdded = GetVertices().Count()-1;
@@ -680,7 +680,7 @@ void CTerrainTile::ReGenerateLeftBorder()
   INDEX iLeftTileIndex = tt_aiNeighbours[NB_LEFT];
   INDEX iLeftBorderLod = tt_iLod;
   // If top neighbour exists
-  if(iLeftTileIndex!=(-1)) {
+  if (iLeftTileIndex!=(-1)) {
     CTerrainTile &ttLeft = _ptrTerrain->tr_attTiles[iLeftTileIndex];
     iLeftBorderLod = ttLeft.tt_iRequestedLod;
   }
@@ -703,7 +703,7 @@ void CTerrainTile::ReGenerateLeftBorder()
 
   // Add half of topleft corner
   INDEX irb=0;
-  for(;irb<ctVtxInsert;irb+=iBorderStep) {
+  for (;irb<ctVtxInsert;irb+=iBorderStep) {
     AddVertex(iVtxCol,irb+iBorderStep);
     INDEX ivxAdded = GetVertices().Count()-1;
     AddTriangle(iBaseFanVtx,iLastVx,ivxAdded);
@@ -713,11 +713,11 @@ void CTerrainTile::ReGenerateLeftBorder()
   AddTriangle(iBaseFanVtx,iLastVx,irVtx);
 
   // Insert aditional vertices into each quad in top row after first
-  for(INDEX ir=iStep;ir<ctQuads-iStep;ir+=iStep) {
+  for (INDEX ir=iStep;ir<ctQuads-iStep;ir+=iStep) {
     iLastVx = irVtx;
-    if(irVtx%2) {
+    if (irVtx%2) {
       // for each vertex nedeed to be inserted in this quad
-      for(INDEX irb=0;irb<ctVtxInsert;irb+=iBorderStep) {
+      for (INDEX irb=0;irb<ctVtxInsert;irb+=iBorderStep) {
         // Insert vertex into quad and add one triangle
         AddVertex(iVtxCol,ir+irb+iBorderStep);
         INDEX ivxAdded = GetVertices().Count()-1;
@@ -732,7 +732,7 @@ void CTerrainTile::ReGenerateLeftBorder()
       // Add first fan triangle
       AddTriangle(iBaseFanVtx,iLastVx,iBaseFanVtx+iBaseStep);
       // for each vertex nedeed to be inserted in this quad
-      for(INDEX irb=0;irb<ctVtxInsert;irb+=iBorderStep) {
+      for (INDEX irb=0;irb<ctVtxInsert;irb+=iBorderStep) {
         // Insert vertex into quad and add one triangle
         AddVertex(iVtxCol,ir+irb+iBorderStep);
         INDEX ivxAdded = GetVertices().Count()-1;
@@ -748,7 +748,7 @@ void CTerrainTile::ReGenerateLeftBorder()
 
   iLastVx = irVtx;
   // Add half of bottomleft corner
-  for(irb=0;irb<ctVtxInsert;irb+=iBorderStep) {
+  for (irb=0;irb<ctVtxInsert;irb+=iBorderStep) {
     // Insert vertex into quad and add one triangle
     AddVertex(iVtxCol,irb+iBorderStep+ctQuads-1);
     INDEX ivxAdded = GetVertices().Count()-1;
@@ -766,7 +766,7 @@ void CTerrainTile::ReGenerateRightBorder()
   INDEX iRightTileIndex = tt_aiNeighbours[NB_RIGHT];
   INDEX iRightBorderLod = tt_iLod;
   // If top neighbour exists
-  if(iRightTileIndex!=(-1)) {
+  if (iRightTileIndex!=(-1)) {
     CTerrainTile &ttRight = _ptrTerrain->tr_attTiles[iRightTileIndex];
     iRightBorderLod = ttRight.tt_iRequestedLod;
   }
@@ -790,7 +790,7 @@ void CTerrainTile::ReGenerateRightBorder()
   iLastVx = irVtx;
   // Add half of topleft corner
   INDEX irb=0;
-  for(;irb<ctVtxInsert;irb+=iBorderStep) {
+  for (;irb<ctVtxInsert;irb+=iBorderStep) {
     AddVertex(iVtxCol,irb+iBorderStep);
     INDEX ivxAdded = GetVertices().Count()-1;
     AddTriangle(iBaseFanVtx,ivxAdded,iLastVx);
@@ -801,13 +801,13 @@ void CTerrainTile::ReGenerateRightBorder()
   AddTriangle(iBaseFanVtx,irVtx+iBaseStep,iLastVx);
   irVtx+=iBaseStep;
   // Insert aditional vertices into each quad in top row after first
-  for(INDEX ir=iStep;ir<ctQuads-iStep;ir+=iStep) {
+  for (INDEX ir=iStep;ir<ctQuads-iStep;ir+=iStep) {
     iLastVx = irVtx;
-    if(irVtx%2) {
+    if (irVtx%2) {
       // Add first fan triangle
       AddTriangle(iBaseFanVtx,iBaseFanVtx+iBaseStep,iLastVx+iBaseStep);
       // for each vertex nedeed to be inserted in this quad
-      for(INDEX irb=0;irb<ctVtxInsert;irb+=iBorderStep) {
+      for (INDEX irb=0;irb<ctVtxInsert;irb+=iBorderStep) {
         // Insert vertex into quad and add one triangle
         AddVertex(iVtxCol,ir+irb+iBorderStep);
         INDEX ivxAdded = GetVertices().Count()-1;
@@ -820,7 +820,7 @@ void CTerrainTile::ReGenerateRightBorder()
       // Add first fan triangle
       AddTriangle(iBaseFanVtx,iBaseFanVtx+iBaseStep,iLastVx);
       // for each vertex nedeed to be inserted in this quad
-      for(INDEX irb=0;irb<ctVtxInsert;irb+=iBorderStep) {
+      for (INDEX irb=0;irb<ctVtxInsert;irb+=iBorderStep) {
         // Insert vertex into quad and add one triangle
         AddVertex(iVtxCol,ir+irb+iBorderStep);
         INDEX ivxAdded = GetVertices().Count()-1;
@@ -837,7 +837,7 @@ void CTerrainTile::ReGenerateRightBorder()
   
   iLastVx = irVtx;
   // Add half of bottomleft corner
-  for(irb=0;irb<ctVtxInsert;irb+=iBorderStep) {
+  for (irb=0;irb<ctVtxInsert;irb+=iBorderStep) {
     // Insert vertex into quad and add one triangle
     AddVertex(iVtxCol,irb+iBorderStep+ctQuads-1);
     INDEX ivxAdded = GetVertices().Count()-1;
@@ -855,7 +855,7 @@ void CTerrainTile::ReGenerateBottomBorder()
   INDEX iBottomTileIndex = tt_aiNeighbours[NB_BOTTOM];
   INDEX iBottomBorderLod = tt_iRequestedLod;
   // If bottom neighbour exists
-  if(iBottomTileIndex!=(-1)) {
+  if (iBottomTileIndex!=(-1)) {
     CTerrainTile &ttBottom = _ptrTerrain->tr_attTiles[iBottomTileIndex];
     iBottomBorderLod = ttBottom.tt_iRequestedLod;
   }
@@ -878,7 +878,7 @@ void CTerrainTile::ReGenerateBottomBorder()
   iLastVx = icVtx-1;
   // Add half of bottom left corner
   INDEX icb=0;
-  for(;icb<ctVtxInsert;icb+=iBorderStep) {
+  for (;icb<ctVtxInsert;icb+=iBorderStep) {
     AddVertex(icb+iBorderStep,iVtxRow);
     INDEX ivxAdded = GetVertices().Count()-1;
     AddTriangle(iBaseFanVtx-1,iLastVx,ivxAdded);
@@ -888,13 +888,13 @@ void CTerrainTile::ReGenerateBottomBorder()
   AddTriangle(iBaseFanVtx-1,iLastVx,icVtx);
 
   // Insert aditional vertices into each quad in top row after first
-  for(INDEX ic=iStep;ic<ctQuads-iStep;ic+=iStep) {
+  for (INDEX ic=iStep;ic<ctQuads-iStep;ic+=iStep) {
     iLastVx = icVtx;
-    if(icVtx%2) {
+    if (icVtx%2) {
       // Add first fan triangle
       AddTriangle(iBaseFanVtx-1,icVtx+1,iBaseFanVtx);
       // for each vertex nedeed to be inserted in this quad
-      for(INDEX icb=0;icb<ctVtxInsert;icb+=iBorderStep) {
+      for (INDEX icb=0;icb<ctVtxInsert;icb+=iBorderStep) {
         // Insert vertex into quad and add one triangle
         AddVertex(ic+icb+iBorderStep,iVtxRow);
         INDEX ivxAdded = GetVertices().Count()-1;
@@ -907,7 +907,7 @@ void CTerrainTile::ReGenerateBottomBorder()
       // Add first fan triangle
       AddTriangle(iBaseFanVtx-1,icVtx,iBaseFanVtx);
       // for each vertex nedeed to be inserted in this quad
-      for(INDEX icb=0;icb<ctVtxInsert;icb+=iBorderStep) {
+      for (INDEX icb=0;icb<ctVtxInsert;icb+=iBorderStep) {
         // Insert vertex into quad and add one triangle
         AddVertex(ic+icb+iBorderStep,iVtxRow);
         INDEX ivxAdded = GetVertices().Count()-1;
@@ -923,7 +923,7 @@ void CTerrainTile::ReGenerateBottomBorder()
 
   iLastVx = icVtx;
   // Add half of bottomright corner
-  for(icb=0;icb<ctVtxInsert;icb+=iBorderStep) {
+  for (icb=0;icb<ctVtxInsert;icb+=iBorderStep) {
     // Insert vertex into quad and add one triangle
     AddVertex(icb+iBorderStep+ctQuads-1,iVtxRow);
     INDEX ivxAdded = GetVertices().Count()-1;

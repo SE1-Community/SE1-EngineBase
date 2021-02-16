@@ -56,7 +56,7 @@ CNameTableSlot_TYPE *CNameTable_TYPE::FindSlot(ULONG ulKey, const CTString &strN
   
   // for each slot in the compartment
   INDEX iSlot = iComp*nt_ctSlotsPerComp;
-  for(INDEX iSlotInComp=0; iSlotInComp<nt_ctSlotsPerComp; iSlotInComp++, iSlot++) {
+  for (INDEX iSlotInComp=0; iSlotInComp<nt_ctSlotsPerComp; iSlotInComp++, iSlot++) {
     CNameTableSlot_TYPE *pnts = &nt_antsSlots[iSlot];
     // if empty
     if (pnts->nts_ptElement==NULL) {
@@ -119,9 +119,9 @@ void CNameTable_TYPE::Expand(void)
   nt_antsSlots.New(nt_ctSlotsPerComp*nt_ctCompartments);
 
   // for each compartment
-  for(INDEX iComp =0; iComp<nt_ctCompartments; iComp++) {
+  for (INDEX iComp =0; iComp<nt_ctCompartments; iComp++) {
     // for each old slot in compartment
-    for(INDEX iSlotInComp=0; iSlotInComp<ctOldSlotsPerComp; iSlotInComp++) {
+    for (INDEX iSlotInComp=0; iSlotInComp<ctOldSlotsPerComp; iSlotInComp++) {
       CNameTableSlot_TYPE &ntsOld = antsSlotsOld[iSlotInComp+iComp*ctOldSlotsPerComp];
       CNameTableSlot_TYPE &ntsNew = nt_antsSlots[iSlotInComp+iComp*nt_ctSlotsPerComp];
       // if it is used
@@ -148,7 +148,7 @@ void CNameTable_TYPE::Add(TYPE *ptNew)
   
   // for each slot in the compartment
   INDEX iSlot = iComp*nt_ctSlotsPerComp;
-  for(INDEX iSlotInComp=0; iSlotInComp<nt_ctSlotsPerComp; iSlotInComp++, iSlot++) {
+  for (INDEX iSlotInComp=0; iSlotInComp<nt_ctSlotsPerComp; iSlotInComp++, iSlot++) {
     CNameTableSlot_TYPE *pnts = &nt_antsSlots[iSlot];
     // if it is empty
     if (pnts->nts_ptElement==NULL) {
@@ -180,7 +180,7 @@ void CNameTable_TYPE::Remove(TYPE *ptOld)
   // find its slot
   const CTString &strName = ptOld->GetName();
   CNameTableSlot_TYPE *pnts = FindSlot(strName.GetHash(), strName);
-  if( pnts!=NULL) {
+  if (pnts!=NULL) {
     // mark slot as unused
     ASSERT( pnts->nts_ptElement==ptOld);
     pnts->nts_ptElement = NULL;
@@ -191,7 +191,7 @@ void CNameTable_TYPE::Remove(TYPE *ptOld)
 // remove all objects but keep slots
 void CNameTable_TYPE::Reset(void)
 {
-  for(INDEX iSlot=0; iSlot<nt_antsSlots.Count(); iSlot++) {
+  for (INDEX iSlot=0; iSlot<nt_antsSlots.Count(); iSlot++) {
     nt_antsSlots[iSlot].Clear();
   }
 }

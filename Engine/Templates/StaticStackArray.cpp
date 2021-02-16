@@ -88,7 +88,7 @@ inline Type &CStaticStackArray<Type>::Push(void) {
 template<class Type>
 inline Type *CStaticStackArray<Type>::Push(INDEX ct) {
   sa_UsedCount+=ct;
-  while(sa_UsedCount>CStaticArray<Type>::Count()) {
+  while (sa_UsedCount>CStaticArray<Type>::Count()) {
     Expand(CStaticArray<Type>::Count()+sa_ctAllocationStep);
   }
   ASSERT(sa_UsedCount <= CStaticArray<Type>::Count());

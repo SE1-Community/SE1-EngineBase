@@ -101,7 +101,7 @@ CViewPort::~CViewPort(void)
 {
   CloseCanvas(TRUE);
   // reset current viewport if needed
-  if( _pGfx->gl_pvpActive==this) _pGfx->gl_pvpActive = NULL;
+  if (_pGfx->gl_pvpActive==this) _pGfx->gl_pvpActive = NULL;
 }
 
 
@@ -135,10 +135,10 @@ LRESULT CALLBACK CViewPortCLASS_WindowProc(
 void CViewPort::OpenCanvas(void)
 {
   // do nothing if not feasable
-  if( vp_hWnd!=NULL || vp_hWndParent==NULL) return;
+  if (vp_hWnd!=NULL || vp_hWndParent==NULL) return;
 
   // register class
-  if( !_bClassRegistered) {
+  if (!_bClassRegistered) {
     WNDCLASSA wc;
     wc.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
     wc.lpfnWndProc = CViewPortCLASS_WindowProc;
@@ -167,7 +167,7 @@ void CViewPort::OpenCanvas(void)
   // set fullscreen attribs if window size is equal to screen size
   DWORD dwExStyle = NONE;
   DWORD dwStyle   = WS_CHILD|WS_CLIPCHILDREN|WS_CLIPSIBLINGS;
-  if( bFullScreen && ogl_bExclusive) {
+  if (bFullScreen && ogl_bExclusive) {
     dwExStyle = WS_EX_TOPMOST;
     dwStyle   = WS_POPUP;     
   } 
@@ -187,7 +187,7 @@ void CViewPort::OpenCanvas(void)
   ASSERT( vp_hWnd!=NULL);
 #ifdef SE1_D3D
   // prepare new swap chain for D3D
-  if( _pGfx->gl_eCurrentAPI==GAT_D3D && !bFullScreen) CreateSwapChain_D3D( this, pixWinSizeI, pixWinSizeJ);
+  if (_pGfx->gl_eCurrentAPI==GAT_D3D && !bFullScreen) CreateSwapChain_D3D( this, pixWinSizeI, pixWinSizeJ);
 #endif // SE1_D3D
 
   // resize raster
@@ -195,7 +195,7 @@ void CViewPort::OpenCanvas(void)
   ShowWindow( vp_hWnd, SW_SHOW);
 #ifdef SE1_D3D
   // set as rendering target
-  if( _pGfx->gl_eCurrentAPI==GAT_D3D && vp_pSwapChain!=NULL) SetAsRenderTarget_D3D(this);
+  if (_pGfx->gl_eCurrentAPI==GAT_D3D && vp_pSwapChain!=NULL) SetAsRenderTarget_D3D(this);
 #endif // SE1_D3D
 }
 
@@ -205,13 +205,13 @@ void CViewPort::CloseCanvas( BOOL bRelease/*=FALSE*/)
 {
   // release D3D swap chain if allocated
 #ifdef SE1_D3D
-  if( _pGfx->gl_eCurrentAPI==GAT_D3D && bRelease) {
-    if( vp_pSwapChain!=NULL) D3DRELEASE( vp_pSwapChain, TRUE);
-    if( vp_pSurfDepth!=NULL) D3DRELEASE( vp_pSurfDepth, TRUE);
+  if (_pGfx->gl_eCurrentAPI==GAT_D3D && bRelease) {
+    if (vp_pSwapChain!=NULL) D3DRELEASE( vp_pSwapChain, TRUE);
+    if (vp_pSurfDepth!=NULL) D3DRELEASE( vp_pSurfDepth, TRUE);
   }
 #endif // SE1_D3D
   // destroy window
-  if( vp_hWnd!=NULL && IsWindow(vp_hWnd)) { 
+  if (vp_hWnd!=NULL && IsWindow(vp_hWnd)) { 
     BOOL bRes = DestroyWindow(vp_hWnd);
     ASSERT(bRes);
   }
@@ -244,7 +244,7 @@ void CViewPort::Resize(void)
 
   // "resize" D3D surface (if any)
 #ifdef SE1_D3D
-  if( _pGfx->gl_eCurrentAPI==GAT_D3D && vp_pSwapChain!=NULL) {
+  if (_pGfx->gl_eCurrentAPI==GAT_D3D && vp_pSwapChain!=NULL) {
     // release old surface
     ASSERT( vp_pSurfDepth!=NULL);
     D3DRELEASE( vp_pSwapChain, TRUE);
@@ -260,7 +260,7 @@ void CViewPort::Resize(void)
 void CViewPort::SwapBuffers(void)
 {
   // skip if child window not present
-  if( vp_hWnd==NULL) return;
+  if (vp_hWnd==NULL) return;
 
   // ask the current driver to swap buffers
   _sfStats.StartTimer(CStatForm::STI_SWAPBUFFERS);

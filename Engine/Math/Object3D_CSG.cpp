@@ -318,7 +318,7 @@ void CObjectCSG::PolygonEdgesToBSPEdges(
   abed.New(ctEdges);
 
   // for each edge in polygon
-  for(INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
+  for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
     const CObjectPolygonEdge &ope = aope[iEdge];
     // if it is reversed
     if (ope.ope_Backward) {
@@ -327,7 +327,7 @@ void CObjectCSG::PolygonEdgesToBSPEdges(
         *ope.ope_Edge->oed_Vertex0, (ULONG)ope.ope_Edge);
 
     // if it is not reversed
-    } else{
+    } else {
       // add bsp edge with normal vertices
       abed[iEdge] = DOUBLEbspedge3D(*ope.ope_Edge->oed_Vertex0,
         *ope.ope_Edge->oed_Vertex1, (ULONG)ope.ope_Edge);
@@ -424,7 +424,7 @@ inline void CObjectCSG::AddEdgeArrayAccordingToAction(
 
   abed.Lock();
   // add all edges to normal polygon
-  {for(INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
+  {for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
     DOUBLEbspedge3D &bed = abed[iEdge];
     aovxNormal[iEdge*2+0] = bed.bed_vVertex0;
     aovxNormal[iEdge*2+1] = bed.bed_vVertex1;
@@ -437,7 +437,7 @@ inline void CObjectCSG::AddEdgeArrayAccordingToAction(
   // if there is reverse polygon
   if (poscReverse!=NULL) {
   // add all edges to reverse polygon
-    {for(INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
+    {for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
       DOUBLEbspedge3D &bed = abed[iEdge];
       aovxReverse[iEdge*2+0] = bed.bed_vVertex1;
       aovxReverse[iEdge*2+1] = bed.bed_vVertex0;

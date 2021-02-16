@@ -47,7 +47,7 @@ SHADER_MAIN(ReflectionAndSpecular)
   BOOL bFullBright = shaGetFlags()&BASE_FULL_BRIGHT;
   BOOL bOpaque = (colModelColor&0xFF)==0xFF;
   // if fully opaque
-  if(bOpaque) {
+  if (bOpaque) {
     shaDisableAlphaTest();
     shaDisableBlend();
     shaEnableDepthWrite();
@@ -59,13 +59,13 @@ SHADER_MAIN(ReflectionAndSpecular)
     shaModifyColorForFog();
   }
 
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
   shaRender();
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
 
   DoReflectionLayer(REFLECTION_TEXTURE,REFLECTION_COLOR,bFullBright);
   DoSpecularLayer(SPECULAR_TEXTURE,SPECULAR_COLOR);
-  if(bOpaque) {
+  if (bOpaque) {
     shaDoFogPass();
   }
 

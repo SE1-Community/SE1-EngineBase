@@ -265,7 +265,7 @@ void CBuffer::WriteBytes(const void *pv, SLONG slSize)
 void CBuffer::MoveBuffer(CBuffer &buFrom)
 {
   // repeat
-  for(;;){
+  for (;;) {
     // read a block from the other buffer
     UBYTE aub[256];
     SLONG slSize = buFrom.ReadBytes(aub, sizeof(aub));
@@ -483,7 +483,7 @@ void CBlockBuffer::UnreadBlock(SLONG slSize)
 SLONG CBlockBuffer::ReadRawBlock(void *pv, SLONG slSize)
 {
   // if inside block reading
-  if(bb_slBlockSizeRead>0) {
+  if (bb_slBlockSizeRead>0) {
     // clamp size to prevent reading across real blocks
     slSize = Min(slSize, bb_slBlockSizeRead);
 
@@ -557,7 +557,7 @@ void CBlockBuffer::WriteRawBlock(const void *pv, SLONG slSize)
   while (slSize>0) {
 
     // if inside block writing
-    if(bb_slBlockSizeWrite>0) {
+    if (bb_slBlockSizeWrite>0) {
       SLONG slToWrite = Min(bb_slBlockSizeWrite, slSize);
       // write the raw block
       WriteBytes(pv, slToWrite);
@@ -600,7 +600,7 @@ void CBlockBuffer::WriteRawBlock(const void *pv, SLONG slSize)
 void CBlockBuffer::PeekBlockSize(SLONG &slExpectedSize, SLONG &slReceivedSoFar)
 {
   // if inside block reading
-  if(bb_slBlockSizeRead>0) {
+  if (bb_slBlockSizeRead>0) {
     // no information available
     slExpectedSize = 0;
     slReceivedSoFar = 0;
@@ -640,7 +640,7 @@ void CBlockBuffer::UnreadRawBlock(SLONG slSize)
 void CBlockBuffer::MoveBlockBuffer(CBlockBuffer &buFrom)
 {
   // repeat
-  for(;;){
+  for (;;) {
     // read a block from the other buffer
     UBYTE aub[256];
     SLONG slSize = buFrom.ReadRawBlock(aub, sizeof(aub));

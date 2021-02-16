@@ -51,7 +51,7 @@ SHADER_MAIN(LavaDisplace)
   BOOL bDoubleSided = shaGetFlags()&BASE_DOUBLE_SIDED;
   BOOL bOpaque = (colModelColor&0xFF)==0xFF;
 
-  if(bDoubleSided) {
+  if (bDoubleSided) {
     shaCullFace(GFX_NONE);
   } else {
     shaCullFace(GFX_BACK);
@@ -60,7 +60,7 @@ SHADER_MAIN(LavaDisplace)
   shaCalculateLight();
 
   // if fully opaque
-  if(bOpaque) {
+  if (bOpaque) {
     // shaEnableAlphaTest(TRUE);
     shaDisableBlend();
     shaEnableDepthWrite();
@@ -73,7 +73,7 @@ SHADER_MAIN(LavaDisplace)
     shaModifyColorForFog();
   }
 
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
   
   // displace geometry
   GFXVertex4 *paVertices = shaGetVertexArray();
@@ -88,7 +88,7 @@ SHADER_MAIN(LavaDisplace)
   MatrixTranspose(mAbsToView, mInvAbsToViewer);
    
   // for each vertex
-  for(INDEX ivx=0; ivx<ctVertices; ivx++) {
+  for (INDEX ivx=0; ivx<ctVertices; ivx++) {
     paNewVertices[ivx] = paVertices[ivx];
     
     TransformVertex(paNewVertices[ivx],mInvAbsToViewer);
@@ -103,7 +103,7 @@ SHADER_MAIN(LavaDisplace)
   
   shaRender();
 
-  if(bOpaque) {
+  if (bOpaque) {
     shaDoFogPass();
   }
 
@@ -120,8 +120,8 @@ SHADER_MAIN(LavaDisplace)
   GFXTexCoord *ptxcOld = shaGetUVMap(0);
   GFXTexCoord *ptxcNew = shaGetNewTexCoordArray();
   INDEX ctTexCoords = shaGetVertexCount();
-  if(ctTexCoords>0) {
-    for(INDEX itxc=0;itxc<ctTexCoords;itxc++)
+  if (ctTexCoords>0) {
+    for (INDEX itxc=0;itxc<ctTexCoords;itxc++)
     {
       ptxcNew[itxc].u = ptxcOld[itxc].u * fMul;
       ptxcNew[itxc].v = ptxcOld[itxc].v * fMul;
@@ -131,7 +131,7 @@ SHADER_MAIN(LavaDisplace)
   shaRender();
   shaDisableBlend();
 
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
 }
 
 SHADER_DESC(LavaDisplace, ShaderDesc &shDesc)

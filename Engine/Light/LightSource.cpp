@@ -56,7 +56,7 @@ CLightSource::~CLightSource(void)
   // discard all linked shadow layers
   DiscardShadowLayers();
   // if this isn't dynamic light
-  if(!(ls_ulFlags&LSF_DYNAMIC) && ls_penEntity!=NULL) {
+  if (!(ls_ulFlags&LSF_DYNAMIC) && ls_penEntity!=NULL) {
     UpdateTerrains();
   }
 
@@ -79,7 +79,7 @@ void CLightSource::Read_t( CTStream *pstrm)        // throw char *
     INDEX ctLayers;
     *pstrm>>ctLayers;
     // for each shadow layer
-    for(INDEX iLayer=0; iLayer<ctLayers; iLayer++) {
+    for (INDEX iLayer=0; iLayer<ctLayers; iLayer++) {
       // read indices of brush, brush mip, sector, and polygon
       INDEX iBrush, iMip, iSector, iPolygon;
       *pstrm>>iBrush;
@@ -374,19 +374,19 @@ static inline BOOL IsPolygonInfluencedByPointLight(CBrushPolygon *pbpo)
   // if has no shadows
   BOOL bIsTransparent = (ulFlags&BPOF_PORTAL) && !(ulFlags&(BPOF_TRANSLUCENT|BPOF_TRANSPARENT));
   BOOL bTakesShadow  = !(ulFlags&BPOF_FULLBRIGHT);
-  if( bIsTransparent || !bTakesShadow) {
+  if (bIsTransparent || !bTakesShadow) {
     // not influenced
     return FALSE;
   }
 
   // if in range of light
-  if( _boxLight.HasContactWith(pbpo->bpo_boxBoundingBox)) {
+  if (_boxLight.HasContactWith(pbpo->bpo_boxBoundingBox)) {
     // find distance of light from the plane
     const FLOAT fDistance = pbpo->bpo_pbplPlane->bpl_plAbsolute.PointDistance(*_pvOrigin);
     // if the polygon is in range, (and not behind for diffuse lights)
-    if( fDistance<=_rRange && (!_bCastShadows || fDistance>_fEpsilon)) {
+    if (fDistance<=_rRange && (!_bCastShadows || fDistance>_fEpsilon)) {
       // if this light is allowed on this polygon
-      if( _iDynamic==2 || (!(ulFlags&BPOF_NODYNAMICLIGHTS) && _iDynamic==1)) {
+      if (_iDynamic==2 || (!(ulFlags&BPOF_NODYNAMICLIGHTS) && _iDynamic==1)) {
         // influenced
         return TRUE;
       }
@@ -410,9 +410,9 @@ void CLightSource::FindShadowLayersPoint(BOOL bSelectedOnly)
 
   // determine whether this light influences polygon
   _iDynamic = 2;
-  if( ls_ulFlags&LSF_NONPERSISTENT) {
+  if (ls_ulFlags&LSF_NONPERSISTENT) {
     extern INDEX shd_iAllowDynamic;
-    if( ((ULONG)shd_iAllowDynamic) > 2) shd_iAllowDynamic = 1L; // clamp fast
+    if (((ULONG)shd_iAllowDynamic) > 2) shd_iAllowDynamic = 1L; // clamp fast
     _iDynamic = shd_iAllowDynamic;
   }
 
@@ -544,7 +544,7 @@ void CLightSource::FindShadowLayers(BOOL bSelectedOnly)
 // Update shadow map on all terrains in world without moving
 void CLightSource::UpdateTerrains(void)
 {
-  if(ls_penEntity==NULL) {
+  if (ls_penEntity==NULL) {
     return;
   }
   CPlacement3D &pl = ls_penEntity->en_plPlacement;
@@ -555,7 +555,7 @@ void CLightSource::UpdateTerrains(void)
 void CLightSource::UpdateTerrains(CPlacement3D plOld, CPlacement3D plNew)
 {
   // if this is dynamic light
-  if(ls_ulFlags&LSF_DYNAMIC) {
+  if (ls_ulFlags&LSF_DYNAMIC) {
     // do not terrain update shadow map
     return;
   }
@@ -563,7 +563,7 @@ void CLightSource::UpdateTerrains(CPlacement3D plOld, CPlacement3D plNew)
   // for each entity in the world
   {FOREACHINDYNAMICCONTAINER(ls_penEntity->en_pwoWorld->wo_cenEntities, CEntity, iten) {
     // if it is terrain entity
-    if(iten->en_RenderType == CEntity::RT_TERRAIN) {
+    if (iten->en_RenderType == CEntity::RT_TERRAIN) {
       CTerrain *ptrTerrain = iten->GetTerrain();
       ASSERT(ptrTerrain!=NULL);
       // Calculate bboxes of light at old position and new position
@@ -571,10 +571,10 @@ void CLightSource::UpdateTerrains(CPlacement3D plOld, CPlacement3D plNew)
       FLOATaabbox3D bboxLightNew = FLOATaabbox3D(plNew.pl_PositionVector,ls_rFallOff);
       FLOATaabbox3D bboxLightPos = FLOATaabbox3D(plNew.pl_PositionVector);
 
-      if(ls_ulFlags&LSF_DIRECTIONAL) {
+      if (ls_ulFlags&LSF_DIRECTIONAL) {
         ptrTerrain->UpdateShadowMap();
       } else {
-        if(bboxLightPos.HasContactWith(bboxLightOld)) {
+        if (bboxLightPos.HasContactWith(bboxLightOld)) {
           FLOATaabbox3D bboxLightAll = bboxLightOld;
           bboxLightAll |= bboxLightNew;
           ptrTerrain->UpdateShadowMap(&bboxLightAll,TRUE);
@@ -624,15 +624,15 @@ void CLightSource::SetLightSource(const CLightSource &lsOriginal)
     ls_colAmbient             !=  lsOriginal.ls_colAmbient             ||
     ls_ubLightAnimationObject !=  lsOriginal.ls_ubLightAnimationObject ;
   // discard shadows if needed
-  if( bDiscardLayers) {
+  if (bDiscardLayers) {
     DiscardShadowLayers();
-  } else if( bUncacheShadows) {
+  } else if (bUncacheShadows) {
     UncacheShadowMaps();
   }
   // set the light properties
   SetLightSourceWithNoDiscarding(lsOriginal);
   // find all shadow maps that should have layers from this light source if needed
-  if( bDiscardLayers) {
+  if (bDiscardLayers) {
     FindShadowLayers(FALSE);
   }
 
@@ -644,7 +644,7 @@ void CLightSource::SetLightSource(const CLightSource &lsOriginal)
 COLOR CLightSource::GetLightColor(void) const 
 {
   // no animation?
-  if( ls_paoLightAnimation==NULL) return ls_colColor;
+  if (ls_paoLightAnimation==NULL) return ls_colColor;
   // animation!
   UBYTE ubR, ubG, ubB;
   GetLightColor( ubR, ubG, ubB);
@@ -655,7 +655,7 @@ void CLightSource::GetLightColor( UBYTE &ubR, UBYTE &ubG, UBYTE &ubB) const
 {
   // no animation?
   ColorToRGB( ls_colColor, ubR, ubG, ubB);
-  if( ls_paoLightAnimation==NULL) return;
+  if (ls_paoLightAnimation==NULL) return;
   // animation!
   FLOAT fRatio;
   COLOR col0, col1;
@@ -671,7 +671,7 @@ void CLightSource::GetLightColor( UBYTE &ubR, UBYTE &ubG, UBYTE &ubB) const
 // get ambient color of light accounting for possible animation
 COLOR CLightSource::GetLightAmbient(void) const 
 {
-  if( ls_paoAmbientLightAnimation==NULL) return ls_colAmbient;
+  if (ls_paoAmbientLightAnimation==NULL) return ls_colAmbient;
   UBYTE ubAR, ubAG, ubAB;
   GetLightAmbient( ubAR, ubAG, ubAB);
   return RGBToColor( ubAR, ubAG, ubAB);
@@ -680,7 +680,7 @@ COLOR CLightSource::GetLightAmbient(void) const
 void CLightSource::GetLightAmbient( UBYTE &ubAR, UBYTE &ubAG, UBYTE &ubAB) const 
 {
   ColorToRGB( ls_colAmbient, ubAR, ubAG, ubAB);
-  if( ls_paoAmbientLightAnimation==NULL) return;
+  if (ls_paoAmbientLightAnimation==NULL) return;
   FLOAT fRatio;
   COLOR col0, col1;
   UBYTE ubMR, ubMG, ubMB;

@@ -40,14 +40,14 @@ inline void CreateModelOBBox( CEntity *penModel, FLOAT3D &vHandle, FLOATmatrix3D
 void CRenderer::AddModelEntity(CEntity *penModel)
 {
   // if the entity is currently active or hidden, don't add it again
-  if( penModel->en_ulFlags&(ENF_INRENDERING|ENF_HIDDEN)) return;
+  if (penModel->en_ulFlags&(ENF_INRENDERING|ENF_HIDDEN)) return;
   // skip the entity if predicted, and predicted entities should not be rendered
-  if( penModel->IsPredicted() && !gfx_bRenderPredicted) return;
+  if (penModel->IsPredicted() && !gfx_bRenderPredicted) return;
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_ADDMODELENTITY);
 
   // get its model object
   CModelObject *pmoModelObject;
-  if( penModel->en_RenderType!=CEntity::RT_BRUSH &&
+  if (penModel->en_RenderType!=CEntity::RT_BRUSH &&
     penModel->en_RenderType != CEntity::RT_FIELDBRUSH) {
     pmoModelObject = penModel->GetModelForRendering();
   } else {
@@ -87,7 +87,7 @@ void CRenderer::AddModelEntity(CEntity *penModel)
   dm.dm_fMipFactor = fMipFactor;
 
   FLOAT fR = penModel->en_fSpatialClassificationRadius;
-  if( penModel->en_RenderType==CEntity::RT_BRUSH
+  if (penModel->en_RenderType==CEntity::RT_BRUSH
    || penModel->en_RenderType==CEntity::RT_FIELDBRUSH) {
     fR = 1.0f;
   }
@@ -98,14 +98,14 @@ void CRenderer::AddModelEntity(CEntity *penModel)
   BOOL  bModelHasBox = FALSE;
   INDEX iFrustumTest = pprProjection->TestSphereToFrustum( vHandle, fR);
   // if test is indeterminate
-  if( iFrustumTest==0) {
+  if (iFrustumTest==0) {
     // create oriented box and test it to frustum
     CreateModelOBBox( penModel, vHandle, pprProjection->pr_ViewerRotationMatrix, boxEntity);
     bModelHasBox = TRUE; // mark that box has been created
     iFrustumTest = pprProjection->TestBoxToFrustum(boxEntity);
   }
   // if not inside 
-  if( iFrustumTest<0) {
+  if (iFrustumTest<0) {
     // don't add it
     _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDMODELENTITY);
     return;
@@ -114,21 +114,21 @@ void CRenderer::AddModelEntity(CEntity *penModel)
   // do additional check for eventual mirror plane (if allowed)
   INDEX iMirrorPlaneTest = -1;
   extern INDEX gap_iOptimizeClipping;
-  if( gap_iOptimizeClipping>0 && (pprProjection->pr_bMirror || pprProjection->pr_bWarp)) {
+  if (gap_iOptimizeClipping>0 && (pprProjection->pr_bMirror || pprProjection->pr_bWarp)) {
     // test sphere against plane
     const FLOAT fPlaneDistance = pprProjection->pr_plMirrorView.PointDistance(vHandle);
-         if( fPlaneDistance < -fR) iMirrorPlaneTest = -1;
-    else if( fPlaneDistance > +fR) iMirrorPlaneTest = +1;
+         if (fPlaneDistance < -fR) iMirrorPlaneTest = -1;
+    else if (fPlaneDistance > +fR) iMirrorPlaneTest = +1;
     else { // if test is indeterminate
       // create box entity if needed
-      if( !bModelHasBox) {
+      if (!bModelHasBox) {
         CreateModelOBBox( penModel, vHandle, pprProjection->pr_ViewerRotationMatrix, boxEntity);
         bModelHasBox = TRUE;
       } // test it to mirror/warp plane
       iMirrorPlaneTest = boxEntity.TestAgainstPlane(pprProjection->pr_plMirrorView);
     }
     // if not in mirror
-    if( iMirrorPlaneTest<0) {
+    if (iMirrorPlaneTest<0) {
       // don't add it
       _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDMODELENTITY);
       return;
@@ -137,20 +137,20 @@ void CRenderer::AddModelEntity(CEntity *penModel)
 
   // if it has a light source with a lens flare and we're not rendering shadows
   CLightSource *pls = penModel->GetLightSource();
-  if( !re_bRenderingShadows && pls!=NULL && pls->ls_plftLensFlare!=NULL) {
+  if (!re_bRenderingShadows && pls!=NULL && pls->ls_plftLensFlare!=NULL) {
     // add the lens flare to rendering
     AddLensFlare( penModel, pls, pprProjection, re_iIndex);
   }
 
   // adjust model flags
-  if( pmoModelObject->HasAlpha()) dm.dm_ulFlags |= DMF_HASALPHA;
-  if( re_bCurrentSectorHasFog)    dm.dm_ulFlags |= DMF_FOG;
-  if( re_bCurrentSectorHasHaze)   dm.dm_ulFlags |= DMF_HAZE;
-  if( iFrustumTest>0)             dm.dm_ulFlags |= DMF_INSIDE;    // mark the need for clipping
-  if( iMirrorPlaneTest>0)         dm.dm_ulFlags |= DMF_INMIRROR;  // mark the need for clipping to mirror/warp plane
+  if (pmoModelObject->HasAlpha()) dm.dm_ulFlags |= DMF_HASALPHA;
+  if (re_bCurrentSectorHasFog)    dm.dm_ulFlags |= DMF_FOG;
+  if (re_bCurrentSectorHasHaze)   dm.dm_ulFlags |= DMF_HAZE;
+  if (iFrustumTest>0)             dm.dm_ulFlags |= DMF_INSIDE;    // mark the need for clipping
+  if (iMirrorPlaneTest>0)         dm.dm_ulFlags |= DMF_INMIRROR;  // mark the need for clipping to mirror/warp plane
 
   // if this is an editor model and editor models are disabled
-  if( penModel->en_RenderType==CEntity::RT_EDITORMODEL
+  if (penModel->en_RenderType==CEntity::RT_EDITORMODEL
    && !_wrpWorldRenderPrefs.IsEditorModelsOn()) {
     // don't render it
     _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDMODELENTITY);
@@ -158,26 +158,26 @@ void CRenderer::AddModelEntity(CEntity *penModel)
   }
 
   // safety check
-  if( pmoModelObject==NULL) {
+  if (pmoModelObject==NULL) {
     _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDMODELENTITY);
     return;
   }
 
   // if the object is not visible at its distance
-  if( (!re_bRenderingShadows && !pmoModelObject->IsModelVisible(fMipFactor))) {
+  if ((!re_bRenderingShadows && !pmoModelObject->IsModelVisible(fMipFactor))) {
     // don't add it
     _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDMODELENTITY);
     return;
   }
 
   // if entity selecting by laso requested, test for selecting
-  if( _pselenSelectOnRender != NULL) SelectEntityOnRender( *pprProjection, *penModel);
+  if (_pselenSelectOnRender != NULL) SelectEntityOnRender( *pprProjection, *penModel);
   
   // allow its rendering
   dm.dm_ulFlags |= DMF_VISIBLE;
   ASSERT(pmoModelObject!=NULL);
   // if rendering shadows use only first mip level
-  if( re_bRenderingShadows) dm.dm_fMipFactor = 0;
+  if (re_bRenderingShadows) dm.dm_fMipFactor = 0;
 
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDMODELENTITY);
 }
@@ -187,9 +187,9 @@ void CRenderer::AddModelEntity(CEntity *penModel)
 void CRenderer::AddSkaModelEntity(CEntity *penModel)
 {
   // if the entity is currently active or hidden, don't add it again
-  if( penModel->en_ulFlags&(ENF_INRENDERING|ENF_HIDDEN)) return;
+  if (penModel->en_ulFlags&(ENF_INRENDERING|ENF_HIDDEN)) return;
   // skip the entity if predicted, and predicted entities should not be rendered
-  if( penModel->IsPredicted() && !gfx_bRenderPredicted) return;
+  if (penModel->IsPredicted() && !gfx_bRenderPredicted) return;
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_ADDMODELENTITY);
 
   // get its model object
@@ -235,14 +235,14 @@ void CRenderer::AddSkaModelEntity(CEntity *penModel)
   BOOL  bModelHasBox = FALSE;
   INDEX iFrustumTest = pprProjection->TestSphereToFrustum( vHandle, fR);
   // if test is indeterminate
-  if( iFrustumTest==0) {
+  if (iFrustumTest==0) {
     // create oriented box and test it to frustum
     CreateModelOBBox( penModel, vHandle, pprProjection->pr_ViewerRotationMatrix, boxEntity);
     bModelHasBox = TRUE; // mark that box has been created
     iFrustumTest = pprProjection->TestBoxToFrustum(boxEntity);
   }
   // if not inside 
-  if( iFrustumTest<0) {
+  if (iFrustumTest<0) {
     // don't add it
     // _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDMODELENTITY);
     return;
@@ -251,21 +251,21 @@ void CRenderer::AddSkaModelEntity(CEntity *penModel)
   // do additional check for eventual mirror plane (if allowed)
   INDEX iMirrorPlaneTest = -1;
   extern INDEX gap_iOptimizeClipping;
-  if( gap_iOptimizeClipping>0 && (pprProjection->pr_bMirror || pprProjection->pr_bWarp)) {
+  if (gap_iOptimizeClipping>0 && (pprProjection->pr_bMirror || pprProjection->pr_bWarp)) {
     // test sphere against plane
     const FLOAT fPlaneDistance = pprProjection->pr_plMirrorView.PointDistance(vHandle);
-         if( fPlaneDistance < -fR) iMirrorPlaneTest = -1;
-    else if( fPlaneDistance > +fR) iMirrorPlaneTest = +1;
+         if (fPlaneDistance < -fR) iMirrorPlaneTest = -1;
+    else if (fPlaneDistance > +fR) iMirrorPlaneTest = +1;
     else { // if test is indeterminate
       // create box entity if needed
-      if( !bModelHasBox) {
+      if (!bModelHasBox) {
         CreateModelOBBox( penModel, vHandle, pprProjection->pr_ViewerRotationMatrix, boxEntity);
         bModelHasBox = TRUE;
       } // test it to mirror/warp plane
       iMirrorPlaneTest = boxEntity.TestAgainstPlane(pprProjection->pr_plMirrorView);
     }
     // if not in mirror
-    if( iMirrorPlaneTest<0) {
+    if (iMirrorPlaneTest<0) {
       // don't add it
       // _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDMODELENTITY);
       return;
@@ -274,20 +274,20 @@ void CRenderer::AddSkaModelEntity(CEntity *penModel)
 
   // if it has a light source with a lens flare and we're not rendering shadows
   CLightSource *pls = penModel->GetLightSource();
-  if( !re_bRenderingShadows && pls!=NULL && pls->ls_plftLensFlare!=NULL) {
+  if (!re_bRenderingShadows && pls!=NULL && pls->ls_plftLensFlare!=NULL) {
     // add the lens flare to rendering
     AddLensFlare( penModel, pls, pprProjection, re_iIndex);
   }
 
   // adjust model flags
-  if( pmiModelInstance->HasAlpha()) dm.dm_ulFlags |= DMF_HASALPHA;
-  if( re_bCurrentSectorHasFog)      dm.dm_ulFlags |= DMF_FOG;
-  if( re_bCurrentSectorHasHaze)     dm.dm_ulFlags |= DMF_HAZE;
-  if( iFrustumTest>0)               dm.dm_ulFlags |= DMF_INSIDE;    // mark the need for clipping
-  if( iMirrorPlaneTest>0)           dm.dm_ulFlags |= DMF_INMIRROR;  // mark the need for clipping to mirror/warp plane
+  if (pmiModelInstance->HasAlpha()) dm.dm_ulFlags |= DMF_HASALPHA;
+  if (re_bCurrentSectorHasFog)      dm.dm_ulFlags |= DMF_FOG;
+  if (re_bCurrentSectorHasHaze)     dm.dm_ulFlags |= DMF_HAZE;
+  if (iFrustumTest>0)               dm.dm_ulFlags |= DMF_INSIDE;    // mark the need for clipping
+  if (iMirrorPlaneTest>0)           dm.dm_ulFlags |= DMF_INMIRROR;  // mark the need for clipping to mirror/warp plane
 
   // if this is an editor model and editor models are disabled
-  if( penModel->en_RenderType==CEntity::RT_SKAEDITORMODEL
+  if (penModel->en_RenderType==CEntity::RT_SKAEDITORMODEL
    && !_wrpWorldRenderPrefs.IsEditorModelsOn()) {
     // don't render it
     // _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDMODELENTITY);
@@ -295,25 +295,25 @@ void CRenderer::AddSkaModelEntity(CEntity *penModel)
   }
 
   // safety check
-  if( pmiModelInstance==NULL) {
+  if (pmiModelInstance==NULL) {
     // _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDMODELENTITY);
     return;
   }
 
   // if the object is not visible at its distance
-  if( (!re_bRenderingShadows && !pmiModelInstance->IsModelVisible(fMipFactor))) {
+  if ((!re_bRenderingShadows && !pmiModelInstance->IsModelVisible(fMipFactor))) {
     // don't add it
     // _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDMODELENTITY);
     return;
   }
 
   // if entity selecting by laso requested, test for selecting
-  if( _pselenSelectOnRender != NULL) SelectEntityOnRender( *pprProjection, *penModel);
+  if (_pselenSelectOnRender != NULL) SelectEntityOnRender( *pprProjection, *penModel);
   
   // allow its rendering
   dm.dm_ulFlags |= DMF_VISIBLE;
   // if rendering shadows use only first mip level
-  if( re_bRenderingShadows) dm.dm_fMipFactor = 0;
+  if (re_bRenderingShadows) dm.dm_fMipFactor = 0;
 
   // _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDMODELENTITY);
 }
@@ -346,10 +346,10 @@ void CRenderer::AddLensFlare( CEntity *penLight, CLightSource *pls, CProjection3
   // for each existing lens flare
   CLensFlareInfo *plfi = NULL;
   const INDEX ctFlares = re_alfiLensFlares.Count();
-  {for(INDEX iFlare=0; iFlare<ctFlares; iFlare++) {
+  {for (INDEX iFlare=0; iFlare<ctFlares; iFlare++) {
     CLensFlareInfo &lfiOld = re_alfiLensFlares[iFlare];
     // if it is this one
-    if( lfiOld.lfi_plsLightSource==pls
+    if (lfiOld.lfi_plsLightSource==pls
     && (lfiOld.lfi_ulDrawPortID==ulDrawPortID || lfiOld.lfi_iMirrorLevel>0)) {
       // use it
       plfi = &lfiOld;
@@ -379,8 +379,8 @@ void CRenderer::AddLensFlare( CEntity *penLight, CLightSource *pls, CProjection3
   lfi.lfi_ulFlags |=  LFF_ACTIVE;
   lfi.lfi_ulFlags &= ~LFF_FOG;
   lfi.lfi_ulFlags &= ~LFF_HAZE;
-  if( re_bCurrentSectorHasFog)  lfi.lfi_ulFlags |= LFF_FOG;
-  if( re_bCurrentSectorHasHaze) lfi.lfi_ulFlags |= LFF_HAZE;
+  if (re_bCurrentSectorHasFog)  lfi.lfi_ulFlags |= LFF_FOG;
+  if (re_bCurrentSectorHasHaze) lfi.lfi_ulFlags |= LFF_HAZE;
 }
 
 
@@ -394,14 +394,14 @@ void CRenderer::AddNonZoningBrush( CEntity *penBrush, CBrushSector *pbscThatAdds
   CBrush3D &brBrush = *penBrush->en_pbrBrush;
 
   // if hidden
-  if( penBrush->en_ulFlags&ENF_HIDDEN) {
+  if (penBrush->en_ulFlags&ENF_HIDDEN) {
     // skip it
     _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDNONZONINGBRUSH);
     return;
   }
 
   // if the brush is already added
-  if( brBrush.br_lnInActiveBrushes.IsLinked()) {
+  if (brBrush.br_lnInActiveBrushes.IsLinked()) {
     // skip it
     _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDNONZONINGBRUSH);
     return;
@@ -409,7 +409,7 @@ void CRenderer::AddNonZoningBrush( CEntity *penBrush, CBrushSector *pbscThatAdds
 
   const BOOL bDisableVisTweaks = _wrpWorldRenderPrefs.wrp_bDisableVisTweaks;
   // if visibility tweaking is enabled
-  if( !bDisableVisTweaks)
+  if (!bDisableVisTweaks)
   {
     // if vistweaks exclude this brush from rendering in this position
     ULONG ulVisTweaks = penBrush->GetVisTweaks();
@@ -426,7 +426,7 @@ void CRenderer::AddNonZoningBrush( CEntity *penBrush, CBrushSector *pbscThatAdds
   // skip whole non-zoning brush if invisible for rendering and not in wireframe mode
   const BOOL bWireFrame = _wrpWorldRenderPrefs.wrp_ftEdges != CWorldRenderPrefs::FT_NONE
                        || _wrpWorldRenderPrefs.wrp_ftVertices != CWorldRenderPrefs::FT_NONE;
-  if( !(penBrush->en_ulFlags&ENF_ZONING) && !bWireFrame)
+  if (!(penBrush->en_ulFlags&ENF_ZONING) && !bWireFrame)
   { // test every brush polygon for it's visibility flag
     // for every sector in brush
     FOREACHINDYNAMICARRAY( brBrush.GetFirstMip()->bm_abscSectors, CBrushSector, itbsc) {
@@ -434,7 +434,7 @@ void CRenderer::AddNonZoningBrush( CEntity *penBrush, CBrushSector *pbscThatAdds
       FOREACHINSTATICARRAY( itbsc->bsc_abpoPolygons, CBrushPolygon, itpo) {
         // advance to next polygon if invisible
         CBrushPolygon &bpo = *itpo;
-        if( !(bpo.bpo_ulFlags&BPOF_INVISIBLE)) goto addBrush;
+        if (!(bpo.bpo_ulFlags&BPOF_INVISIBLE)) goto addBrush;
       }
     }
     // skip this brush
@@ -452,7 +452,7 @@ addBrush:
   // if brush mip exists for that mip factor
   if (pbm!=NULL) {
     // if entity selecting by laso requested
-    if( _pselenSelectOnRender != NULL)
+    if (_pselenSelectOnRender != NULL)
     {
       // test for selecting
       SelectEntityOnRender( *re_prProjection, *penBrush);
@@ -460,7 +460,7 @@ addBrush:
     // for each sector
     FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbsc) {
       // if the sector is not hidden
-      if(!((itbsc->bsc_ulFlags&BSCF_HIDDEN) && !re_bRenderingShadows)) {
+      if (!((itbsc->bsc_ulFlags&BSCF_HIDDEN) && !re_bRenderingShadows)) {
         // add that sector to active sectors
         AddActiveSector(itbsc.Current());
       }
@@ -478,20 +478,20 @@ void CRenderer::AddTerrainEntity(CEntity *penTerrain)
   CTerrain &trTerrain = *penTerrain->GetTerrain();
 
   // if hidden
-  if(penTerrain->en_ulFlags&ENF_HIDDEN) {
+  if (penTerrain->en_ulFlags&ENF_HIDDEN) {
     // skip it
     // _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDNONZONINGBRUSH);
     return;
   }
 
-  if(re_bCurrentSectorHasFog) {
+  if (re_bCurrentSectorHasFog) {
     trTerrain.AddFlag(TR_HAS_FOG);
   }
-  if(re_bCurrentSectorHasHaze) {
+  if (re_bCurrentSectorHasHaze) {
     trTerrain.AddFlag(TR_HAS_HAZE);
   }
   // if the brush is already added
-  if( trTerrain.tr_lnInActiveTerrains.IsLinked()) {
+  if (trTerrain.tr_lnInActiveTerrains.IsLinked()) {
     // skip it
     // _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDNONZONINGBRUSH);
     return;
@@ -526,7 +526,7 @@ void CRenderer::AddAllEntities(void)
                && _wrpWorldRenderPrefs.IsEditorModelsOn())) {
       AddSkaModelEntity(&iten.Current());
     // if this is terrain
-    } else if(iten->en_RenderType==CEntity::RT_TERRAIN) {
+    } else if (iten->en_RenderType==CEntity::RT_TERRAIN) {
       // add it as a terrain
       AddTerrainEntity(&iten.Current());
     }
@@ -558,10 +558,10 @@ void CRenderer::AddEntitiesInSector(CBrushSector *pbscSectorInside)
       // add it as a model
       AddModelEntity(pen);
     // if it is a ska model, or editor model that should be drawn
-    } else if(pen->en_RenderType==CEntity::RT_SKAMODEL||pen->en_RenderType==CEntity::RT_SKAEDITORMODEL) {
+    } else if (pen->en_RenderType==CEntity::RT_SKAMODEL||pen->en_RenderType==CEntity::RT_SKAEDITORMODEL) {
       AddSkaModelEntity(pen);
     // if it is a terrain
-    } else if(pen->en_RenderType==CEntity::RT_TERRAIN) {
+    } else if (pen->en_RenderType==CEntity::RT_TERRAIN) {
       AddTerrainEntity(pen);
     }
   ENDFOR}
@@ -609,7 +609,7 @@ void CRenderer::AddEntitiesInBox(const FLOATaabbox3D &boxNear)
         // add it as a model
         AddModelEntity(&iten.Current());
       }
-    } else if( iten->en_RenderType==CEntity::RT_SKAMODEL
+    } else if (iten->en_RenderType==CEntity::RT_SKAMODEL
       || iten->en_RenderType==CEntity::RT_SKAEDITORMODEL) {
       // get model's bounding box for current frame
       FLOATaabbox3D boxModel;
@@ -622,7 +622,7 @@ void CRenderer::AddEntitiesInBox(const FLOATaabbox3D &boxNear)
       // if the model box is near the given box
       AddSkaModelEntity(&iten.Current());
     // if this is terrain entity
-    } else if( iten->en_RenderType==CEntity::RT_TERRAIN) {
+    } else if (iten->en_RenderType==CEntity::RT_TERRAIN) {
       // get model's bounding box for current frame
       #pragma message(">> Is terrain visible")
       FLOATaabbox3D boxTerrain;
@@ -788,7 +788,7 @@ void CRenderer::AddZoningSectorsAroundBox(const FLOATaabbox3D &boxNear)
       FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbsc) {
         // if the sector's bounding box has contact with given bounding box, 
         // and the sector is not hidden
-        if(itbsc->bsc_boxBoundingBox.HasContactWith(boxNear) 
+        if (itbsc->bsc_boxBoundingBox.HasContactWith(boxNear) 
          &&!((itbsc->bsc_ulFlags&BSCF_HIDDEN) && !re_bRenderingShadows)) {
           // if the sphere is inside the sector
           if (itbsc->bsc_bspBSPTree.TestSphere(
@@ -890,7 +890,7 @@ void CRenderer::AddMirror(CScreenPolygon &spo)
   }
 
   // for each mirror
-  for(INDEX i=0; i<re_amiMirrors.Count(); i++) {
+  for (INDEX i=0; i<re_amiMirrors.Count(); i++) {
     CMirror &mi = re_amiMirrors[i];
     // if it has same index
     if (mi.mi_iMirrorType==iMirrorType) {

@@ -411,7 +411,7 @@ void CServer::SendGameStreamBlocks(INDEX iClient)
   // repeat for max 100 sequences
   INDEX iBlocksOk = 0;
   INDEX iMaxSent = -1;
-  for(INDEX i=0; i<100; i++) {
+  for (INDEX i=0; i<100; i++) {
     if (iStep<0 && iBlocksOk>=3) {
 //      break;
     }
@@ -506,7 +506,7 @@ void CServer::SendGameStreamBlocks(INDEX iClient)
   if ((tvNow-sso.sso_tvLastPingSent).GetSeconds()>ser_tmPingUpdate) {
     // send ping info
     CNetworkMessage nmPings(MSG_INF_PINGS);
-    for(INDEX i=0; i<NET_MAXGAMEPLAYERS; i++) {
+    for (INDEX i=0; i<NET_MAXGAMEPLAYERS; i++) {
       CPlayerBuffer &plb = srv_aplbPlayers[i];
       if (plb.IsActive()) {
         BOOL b = 1;
@@ -540,7 +540,7 @@ void CServer::ResendGameStreamBlocks(INDEX iClient, INDEX iSequence0, INDEX ctSe
 
   // for each sequence
   INDEX iSequence = iSequence0;
-  for(; iSequence<iSequence0+ctSequences; iSequence++) {
+  for (; iSequence<iSequence0+ctSequences; iSequence++) {
     // get the stream block with that sequence
     CNetworkStreamBlock *pnsbBlock;
     CNetworkStream::Result res = sso.sso_nsBuffer.GetBlockBySequence(iSequence, pnsbBlock);
@@ -601,7 +601,7 @@ INDEX CServer::GetClientsCount(void)
 {
   INDEX ctClients = 0;
   // for each active session
-  for(INDEX iSession=0; iSession<srv_assoSessions.Count(); iSession++) {
+  for (INDEX iSession=0; iSession<srv_assoSessions.Count(); iSession++) {
     CSessionSocket &sso = srv_assoSessions[iSession];
     if (iSession>0 && !sso.IsActive()) {
       continue;
@@ -617,7 +617,7 @@ INDEX CServer::GetVIPClientsCount(void)
 {
   INDEX ctClients = 0;
   // for each active session
-  for(INDEX iSession=0; iSession<srv_assoSessions.Count(); iSession++) {
+  for (INDEX iSession=0; iSession<srv_assoSessions.Count(); iSession++) {
     CSessionSocket &sso = srv_assoSessions[iSession];
     if (iSession>0 && !sso.IsActive()) {
       continue;
@@ -634,7 +634,7 @@ INDEX CServer::GetObserversCount(void)
 {
   INDEX ctClients = 0;
   // for each active session
-  for(INDEX iSession=0; iSession<srv_assoSessions.Count(); iSession++) {
+  for (INDEX iSession=0; iSession<srv_assoSessions.Count(); iSession++) {
     CSessionSocket &sso = srv_assoSessions[iSession];
     if (iSession>0 && !sso.IsActive()) {
       continue;
@@ -697,7 +697,7 @@ BOOL CServer::CharacterNameIsUsed(CPlayerCharacter &pcCharacter)
 ULONG CServer::MaskOfPlayersOnClient(INDEX iClient)
 {
   ULONG ulClientPlayers = 0;
-  for(INDEX ipl=0; ipl<srv_aplbPlayers.Count(); ipl++) {
+  for (INDEX ipl=0; ipl<srv_aplbPlayers.Count(); ipl++) {
     CPlayerBuffer &plb = srv_aplbPlayers[ipl];
     if (plb.IsActive() && plb.plb_iClient==iClient) {
       ulClientPlayers |= 1UL<<ipl;
@@ -755,7 +755,7 @@ void CServer::ServerLoop(void)
   }
 
   // for each active session
-  for(INDEX iSession=0; iSession<srv_assoSessions.Count(); iSession++) {
+  for (INDEX iSession=0; iSession<srv_assoSessions.Count(); iSession++) {
     CSessionSocket &sso = srv_assoSessions[iSession];
     if (iSession>0 && (!sso.IsActive() || !sso.sso_bSendStream)) {
       continue;
@@ -775,7 +775,7 @@ void CServer::MakeAllActions(void)
   srv_iLastProcessedSequence++;
 
   // for each active session
-  for(INDEX iSession=0; iSession<srv_assoSessions.Count(); iSession++) {
+  for (INDEX iSession=0; iSession<srv_assoSessions.Count(); iSession++) {
     CSessionSocket &sso = srv_assoSessions[iSession];
     if (iSession>0 && !sso.IsActive()) {
       continue;
@@ -818,7 +818,7 @@ void CServer::MakeAllActions(void)
 void CServer::AddBlockToAllSessions(CNetworkStreamBlock &nsb)
 {
   // for each active session
-  for(INDEX iSession=0; iSession<srv_assoSessions.Count(); iSession++) {
+  for (INDEX iSession=0; iSession<srv_assoSessions.Count(); iSession++) {
     CSessionSocket &sso = srv_assoSessions[iSession];
     if (iSession>0 && !sso.IsActive()) {
       continue;
@@ -1101,7 +1101,7 @@ void CServer::HandleAll()
 	*/
 
   // for each active client
-  {for( INDEX iClient=0; iClient<NET_MAXGAMECOMPUTERS; iClient++) {
+  {for (INDEX iClient=0; iClient<NET_MAXGAMECOMPUTERS; iClient++) {
     // handle all of its messages
     HandleAllForAClient(iClient);
   }}
@@ -1349,7 +1349,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
   case MSG_ACTION: {
     CSessionSocket &sso = srv_assoSessions[iClient];
     // for each possible player on that client
-    for(INDEX ipls=0; ipls<NET_MAXLOCALPLAYERS; ipls++) {
+    for (INDEX ipls=0; ipls<NET_MAXLOCALPLAYERS; ipls++) {
       // see if saved in the message
       BOOL bSaved = 0;
       nmMessage.ReadBits(&bSaved, 1);
@@ -1408,7 +1408,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
         // if it is wrong crc
         } else if (scLocal.sc_ulCRC!=scRemote.sc_ulCRC) {
           sso.sso_ctBadSyncs++;
-          if( ser_bReportSyncBad) {
+          if (ser_bReportSyncBad) {
             CPrintF( TRANS("SYNCBAD: Client '%s', Sequence %d Tick %.2f - bad %d\n"), 
               _cmiComm.Server_GetClientName(iClient), scRemote.sc_iSequence , CTimer::InSeconds(scRemote.sc_llTick), sso.sso_ctBadSyncs);
           }
@@ -1416,7 +1416,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
             if (sso.sso_ctBadSyncs>=ser_iKickOnSyncBad) {
               SendDisconnectMessage(iClient, TRANS("Too many bad syncs"));
             }
-          } else if( ser_bPauseOnSyncBad) {
+          } else if (ser_bPauseOnSyncBad) {
             _pNetwork->ga_sesSessionState.ses_bWantPause = TRUE;
           }
         } else {
@@ -1441,7 +1441,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
         }
       // if too new
       } else {
-        if( ser_bReportSyncEarly) {
+        if (ser_bReportSyncEarly) {
           CPrintF( TRANS("SYNCEARLY: Client '%s', Tick %.2f\n"), 
             _cmiComm.Server_GetClientName(iClient), CTimer::InSeconds(scRemote.sc_llTick));
         }
@@ -1519,7 +1519,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage)
     nmOut<<strMessage;
 
     // for each active client
-    for(INDEX iSession=0; iSession<srv_assoSessions.Count(); iSession++) {
+    for (INDEX iSession=0; iSession<srv_assoSessions.Count(); iSession++) {
       CSessionSocket &sso = srv_assoSessions[iSession];
       if (iSession>0 && !sso.IsActive()) {
         continue;

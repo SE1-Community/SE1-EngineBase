@@ -148,7 +148,7 @@ BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLO
     *pbCount-- = 1;
 
     // for all bytes from one before last to the first one
-    for(const SBYTE *pbSource = pbSourceLimit-2;
+    for (const SBYTE *pbSource = pbSourceLimit-2;
         pbSource>=pbSourceFirst;
         pbSource--, pbCount--) {
       // if the byte is same as its successor, and the count will fit in code
@@ -172,7 +172,7 @@ BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLO
   SBYTE       *pbDestination = pbDestinationFirst;
 
   // while there is some data to pack
-  while(pbSource<pbSourceLimit) {
+  while (pbSource<pbSourceLimit) {
     ASSERT(pbCount<pbCountLimit);
 
     // if current byte is replicated
@@ -189,7 +189,7 @@ BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLO
     } else {
       // count bytes to copy before encountering byte replicated more than 3 times
       INDEX ctDiffBytes=1;
-      while( (ctDiffBytes < (SLONG)MAX_SBYTE + 1)
+      while ((ctDiffBytes < (SLONG)MAX_SBYTE + 1)
           && (&pbSource[ctDiffBytes]<pbSourceLimit) ) {
         if ((SLONG)pbCount[ctDiffBytes-1]<=3) {
           ctDiffBytes++;

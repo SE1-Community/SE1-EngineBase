@@ -41,7 +41,7 @@ void CRenderer::AddAddListToActiveList(INDEX iScanLine)
     LISTITER(CAddEdge, ade_lnInAdd) itadeAdd(lhAdd);
     FIX16_16 xLastI;
     xLastI.slHolder = MIN_SLONG;
-    while(!itadeAdd.IsPastEnd()) {
+    while (!itadeAdd.IsPastEnd()) {
       CAddEdge &adeAdd = *itadeAdd;
       ASSERT(adeAdd.ade_xI==adeAdd.ade_psedEdge->sed_xI);
       ASSERT(xLastI.slHolder <= adeAdd.ade_xI.slHolder);
@@ -73,7 +73,7 @@ void CRenderer::AddAddListToActiveList(INDEX iScanLine)
   IFDEBUG(INDEX ctOldActive2=0);
 
   // for each edge in add list
-  while(!itadeAdd.IsPastEnd()) {
+  while (!itadeAdd.IsPastEnd()) {
     CAddEdge &ade = *itadeAdd;
 
     // while the edge in active list is left of the edge in add list
@@ -209,7 +209,7 @@ void CRenderer::StepAndResortActiveList(void)
       CActiveEdge *pacePred = pace;
       do {
         pacePred--;
-      } while(pacePred->ace_xI.slHolder > pace->ace_xI.slHolder);
+      } while (pacePred->ace_xI.slHolder > pace->ace_xI.slHolder);
 
       // remember the current one
       CActiveEdge aceCurrent = *pace;
@@ -348,12 +348,12 @@ void CRenderer::AddActiveSector(CBrushSector &bscSector)
 
   // test sector visibility
   const INDEX iFrustrumTest = IsSectorVisible( br, bscSector);
-  if( iFrustrumTest==-1) {
+  if (iFrustrumTest==-1) {
     // outside of frustrum - skip it
     bscSector.bsc_ulFlags |= BSCF_INVISIBLE;
     _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDSECTOR);
     return;
-  } else if( iFrustrumTest==0) {
+  } else if (iFrustrumTest==0) {
     // partially in frustrum - needs clipping
     bscSector.bsc_ulFlags |= BSCF_NEEDSCLIPPING;
   } else {
@@ -369,7 +369,7 @@ void CRenderer::AddActiveSector(CBrushSector &bscSector)
   _sfStats.IncrementCounter(CStatForm::SCI_SECTORS);
 
   // if projection is perspective
-  if( br.br_prProjection.IsPerspective()) {
+  if (br.br_prProjection.IsPerspective()) {
     // prepare fog/haze
     SetupFogAndHaze();
   }
@@ -386,7 +386,7 @@ void CRenderer::AddActiveSector(CBrushSector &bscSector)
     // make screen polygons for nondetail polygons in current sector
     MakeNonDetailScreenPolygons();
     // clip all polygons to all clip planes
-    if( bscSector.bsc_ulFlags&BSCF_NEEDSCLIPPING) ClipToAllPlanes( br.br_prProjection);
+    if (bscSector.bsc_ulFlags&BSCF_NEEDSCLIPPING) ClipToAllPlanes( br.br_prProjection);
     // project vertices to 2d
     PostClipVertices();
     // make final edges for all polygons in current sector
@@ -509,7 +509,7 @@ BOOL CRenderer::AddPolygonToSurfaceStack(CScreenPolygon &spo)
   // if the projection is not perspective
   if (!re_prProjection.IsPerspective()) {
     // while new polygon is further than polygon in stack
-    while(
+    while (
      ((fOoK - 
       itspo->spo_pgOoK.pg_f00 -
       itspo->spo_pgOoK.pg_fDOverDI*fScanI -

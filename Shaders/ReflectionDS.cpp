@@ -44,7 +44,7 @@ SHADER_MAIN(ReflectionDS)
   COLOR colModelColor = MulColors(shaGetModelColor(),shaGetCurrentColor());
   BOOL bOpaque = (colModelColor&0xFF)==0xFF;
   // if fully opaque
-  if(bOpaque) {
+  if (bOpaque) {
     shaEnableAlphaTest(FALSE);
     shaEnableBlend(FALSE);
     shaEnableDepthWrite(TRUE);
@@ -56,12 +56,12 @@ SHADER_MAIN(ReflectionDS)
     shaModifyColorForFog();
   }
 
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
   shaRender();
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
   DoReflectionLayer(REFLECTION_TEXTURE,REFLECTION_COLOR,FALSE);
 
-  if(bOpaque) {
+  if (bOpaque) {
     shaDoFogPass();
   }
 #endif

@@ -94,7 +94,7 @@ void CSelection<cType, ulFlag>::Clear(void)
 template<class cType, unsigned long ulFlag>
 cType *CSelection<cType, ulFlag>::GetFirstInSelection(void)
 {
-  if( Count() == 0)
+  if (Count() == 0)
   {
     return NULL;
   }

@@ -38,7 +38,7 @@ void FindInMapFile(const CTFileName &fnSymbols, const CTString &strImage, ULONG 
     CTFileStream strmMap;
     strmMap.Open_t(fnmMap, CTStream::OM_READ);
     // find beginning of functions in map file
-    for(;;) {
+    for (;;) {
       if (strmMap.AtEOF()) {
         return;
       }
@@ -83,7 +83,7 @@ void SubMain( int argc, char *argv[])
   printf("\nDecodeReport - '.RPT' file decoder V1.0\n");
   printf(  "           (C)1999 CROTEAM Ltd\n\n");
 
-  if( argc!=3+1)
+  if (argc!=3+1)
   {
     printf( "USAGE:\nDecodeReport <infilename> <outfilename> <symbolsdir>\n");
     exit( EXIT_FAILURE);
@@ -110,7 +110,7 @@ void SubMain( int argc, char *argv[])
     strmDst.Create_t(fnDst);
     
     // while there is some line in src
-    while(!strmSrc.AtEOF()) {
+    while (!strmSrc.AtEOF()) {
       // read the line
       CTString strLine;
       strmSrc.GetLine_t(strLine);

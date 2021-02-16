@@ -36,12 +36,12 @@ SHADER_MAIN(BaseDS)
   shaDepthFunc(GFX_LESS_EQUAL);
   shaCullFace(GFX_NONE);
   shaCalculateLight();
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
   
   COLOR colModelColor = MulColors(shaGetModelColor(),shaGetCurrentColor());
   BOOL bOpaque = (colModelColor&0xFF)==0xFF;
   // if fully opaque
-  if(bOpaque) {
+  if (bOpaque) {
     shaDisableAlphaTest();
     shaDisableBlend();
     shaEnableDepthWrite();
@@ -57,9 +57,9 @@ SHADER_MAIN(BaseDS)
   }
 
   shaRender();
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
 
-  if(bOpaque) {
+  if (bOpaque) {
     shaDoFogPass();
   }
 #endif

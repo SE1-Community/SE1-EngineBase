@@ -95,7 +95,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   /* CT assertion macros */
   #ifndef ASSERT
     #define ASSERT(expr) 				            \
-      if(!(expr)) {				                  \
+      if (!(expr)) {				                  \
         /*SAFEBREAKPOINT;*/                     \
         _assert(#expr,__FILE__,__LINE__);		\
       } else NOTHING
@@ -108,7 +108,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     } else NOTHING
 
   #define ASSERTMSG(expr, msg) 			            \
-    if(!(expr)) {				                        \
+    if (!(expr)) {				                        \
       /*SAFEBREAKPOINT;*/                           \
       _assert(msg,__FILE__,__LINE__); 	        \
     } else NOTHING

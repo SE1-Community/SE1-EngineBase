@@ -72,7 +72,7 @@ static __forceinline DOUBLE StopTimer(void)
 // fill rate benchmark
 static DOUBLE FillRatePass(INDEX ct)
 {
-  if( !_pdp->Lock()) {
+  if (!_pdp->Lock()) {
     ASSERT(FALSE);
     return 0;
   }
@@ -94,9 +94,9 @@ static DOUBLE FillRatePass(INDEX ct)
   gfxSetTexCoordArray( &atex[0], FALSE);
   gfxSetColorArray( &acol[0]);
 
-  if(_bTexture) {
+  if (_bTexture) {
     gfxEnableTexture();
-    if(_bMultiTexture) {
+    if (_bMultiTexture) {
       gfxSetTextureUnit(1);
       gfxEnableTexture();
       gfxSetTexture( _ulTexObject, _tpLocal);
@@ -107,9 +107,9 @@ static DOUBLE FillRatePass(INDEX ct)
     gfxDisableTexture();
   }
 
-  if(_bBlend) {
+  if (_bBlend) {
     gfxEnableBlend();
-    if(_bTexture) {
+    if (_bTexture) {
       gfxBlendFunc( GFX_SRC_ALPHA, GFX_INV_SRC_ALPHA); 
     } else {
       gfxBlendFunc( GFX_ONE, GFX_ONE);
@@ -118,7 +118,7 @@ static DOUBLE FillRatePass(INDEX ct)
     gfxDisableBlend();
   }
 
-  if(_bDepth) {
+  if (_bDepth) {
     gfxEnableDepthTest();
     gfxEnableDepthWrite();
   } else {
@@ -127,9 +127,9 @@ static DOUBLE FillRatePass(INDEX ct)
   }
   gfxDisableAlphaTest();
 
-  for( INDEX i=0; i<ct; i++) gfxDrawElements( 6, &aidx[0]);
+  for (INDEX i=0; i<ct; i++) gfxDrawElements( 6, &aidx[0]);
 
-  if(_bMultiTexture) {
+  if (_bMultiTexture) {
     gfxSetTextureUnit(1);
     gfxDisableTexture();
     gfxSetTextureUnit(0);
@@ -157,7 +157,7 @@ CTString FillRateString(void)
 static DOUBLE FillRate(void)
 {
   DOUBLE dDelta = 0;
-  for( INDEX i=0; i<10; i++) {
+  for (INDEX i=0; i<10; i++) {
     dDelta += FillRatePass(3) - FillRatePass(2);
   }
   dDelta /= 10.0;
@@ -169,8 +169,8 @@ static void InitTexture(void)
 {
   const SLONG slSize = 256*256 *4 *4/3 +16;
   _pubTexture = (UBYTE*)AllocMemory(slSize);
-  for( INDEX i=0; i<256; i++) {
-    for( INDEX j=0; j<256; j++) {
+  for (INDEX i=0; i<256; i++) {
+    for (INDEX j=0; j<256; j++) {
       _pubTexture[(j*256+i)*4+0] = i;  
       _pubTexture[(j*256+i)*4+1] = j;  
       _pubTexture[(j*256+i)*4+2] = i+j;
@@ -199,8 +199,8 @@ static void InitTris(void)
   _avtx.Push(ctVx);
   _atex.Push(ctVx);
   _acol.Push(ctVx);
-  for( iR=0; iR<_ctR; iR++) {
-    for( iC=0; iC<_ctC; iC++) {
+  for (iR=0; iR<_ctR; iR++) {
+    for (iC=0; iC<_ctC; iC++) {
       INDEX ivx = iR*_ctC+iC;
       _avtx[ivx].x =  FLOAT(iC) / _ctC*4 -2.0f;
       _avtx[ivx].y = -FLOAT(iR) / _ctR*4 +2.0f;
@@ -212,8 +212,8 @@ static void InitTris(void)
   }
   INDEX ctTri = (_ctR-1)*(_ctC-1)*2;
   _aiElements.Push(ctTri*3);
-  for( iR=0; iR<_ctR-1; iR++) {
-    for( iC=0; iC<_ctC-1; iC++) {
+  for (iR=0; iR<_ctR-1; iR++) {
+    for (iC=0; iC<_ctC-1; iC++) {
       INDEX iq = iR*(_ctC-1)+iC;
       _aiElements[iq*6+0] = (iR+1) * _ctC + (iC+0);
       _aiElements[iq*6+1] = (iR+1) * _ctC + (iC+1);
@@ -237,7 +237,7 @@ static void EndTris(void)
 
 static DOUBLE TrisTroughputPass(INDEX ct)
 {
-  if( !_pdp->Lock()) {
+  if (!_pdp->Lock()) {
     ASSERT(FALSE);
     return 0;
   }
@@ -251,20 +251,20 @@ static DOUBLE TrisTroughputPass(INDEX ct)
   _pdp->Fill(C_GRAY|255);
   _pdp->FillZBuffer(1.0f);
 
-  if(_bTexture) {
+  if (_bTexture) {
     gfxEnableTexture();
   } else {
     gfxDisableTexture();
   }
 
-  if(_bBlend) {
+  if (_bBlend) {
     gfxEnableBlend();
     gfxBlendFunc( GFX_ONE, GFX_ONE);
   } else {
     gfxDisableBlend();
   }
 
-  if(_bDepth) {
+  if (_bDepth) {
     gfxEnableDepthTest();
     gfxEnableDepthWrite();
   } else {
@@ -278,17 +278,17 @@ static DOUBLE TrisTroughputPass(INDEX ct)
   gfxSetTexCoordArray( &_atex[0], FALSE);
   gfxSetColorArray( &_acol[0]);
 
-  if(_bMultiTexture) {
+  if (_bMultiTexture) {
     gfxSetTextureUnit(1);
     gfxEnableTexture();
     gfxSetTexture( _ulTexObject, _tpLocal);
     gfxSetTexCoordArray( &_atex[0], FALSE);
     gfxSetTextureUnit(0);
   }
-  for( INDEX i=0; i<ct; i++) gfxDrawElements( _aiElements.Count(), &_aiElements[0]);
+  for (INDEX i=0; i<ct; i++) gfxDrawElements( _aiElements.Count(), &_aiElements[0]);
   gfxUnlockArrays();
 
-  if(_bMultiTexture) {
+  if (_bMultiTexture) {
     gfxSetTextureUnit(1);
     gfxDisableTexture();
     gfxSetTextureUnit(0);
@@ -305,7 +305,7 @@ static DOUBLE TrisTroughputPass(INDEX ct)
 static DOUBLE TrisTroughput(void)
 {
   DOUBLE dDelta = 0;
-  for( INDEX i=0; i<10; i++) {
+  for (INDEX i=0; i<10; i++) {
     dDelta += TrisTroughputPass(3) - TrisTroughputPass(2);
   }
   dDelta /= 10.0;
@@ -332,11 +332,11 @@ static void RunTest(DOUBLE (*pTest)(void), INDEX ct)
 
   DOUBLE dSum  = 0;
   DOUBLE dSum2 = 0;
-  for(INDEX i=0; i<(ct+5); i++) {
+  for (INDEX i=0; i<(ct+5); i++) {
     DOUBLE d = pTest();
     // must ignore 1st couple of passes due to API queue
-    if( i>4) dSum  += d;
-    if( i>4) dSum2 += d*d;
+    if (i>4) dSum  += d;
+    if (i>4) dSum2 += d*d;
   }
   _dX = dSum/ct;
   _dD = Sqrt((dSum2-2*dSum*_dX+ct*_dX*_dX)/(ct-1));
@@ -353,9 +353,9 @@ void CGfxLibrary::Benchmark(CViewPort *pvp, CDrawPort *pdp)
   _pixSizeJ = pdp->GetHeight();
 
   CTString strAPI = "";
-       if( _pGfx->gl_eCurrentAPI==GAT_OGL) strAPI = "OpenGL";
+       if (_pGfx->gl_eCurrentAPI==GAT_OGL) strAPI = "OpenGL";
 #ifdef SE1_D3D
-  else if( _pGfx->gl_eCurrentAPI==GAT_D3D) strAPI = "Direct3D";
+  else if (_pGfx->gl_eCurrentAPI==GAT_D3D) strAPI = "Direct3D";
 #endif // SE1_D3D
   CPrintF("=====================================\n");
   CPrintF("%s performance testing ...\n", strAPI);
@@ -412,7 +412,7 @@ void CGfxLibrary::Benchmark(CViewPort *pvp, CDrawPort *pdp)
   RunTest(FillRate, 10);
   CPrintF("%-38s %6.02f +- %5.02f Mpix/s\n", FillRateString(), _dX/1000/1000, _dD/1000/1000);
 
-  if( _pGfx->gl_ctTextureUnits>1) {
+  if (_pGfx->gl_ctTextureUnits>1) {
     _bMultiTexture = 1;
     RunTest(FillRate, 10);
     CPrintF("%-38s %6.02f +- %5.02f Mpix/s\n", FillRateString(), _dX/1000/1000, _dD/1000/1000);
@@ -427,7 +427,7 @@ void CGfxLibrary::Benchmark(CViewPort *pvp, CDrawPort *pdp)
   RunTest(TrisTroughput, 10);
   CPrintF("%-34s %6.02f +- %5.02f Mtri/s\n", FillRateString(), _dX/1000/1000, _dD/1000/1000);
 
-  if( _pGfx->gl_ctTextureUnits>1) {
+  if (_pGfx->gl_ctTextureUnits>1) {
     _bMultiTexture = 1;
     RunTest(TrisTroughput, 10);
     CPrintF("%-34s %6.02f +- %5.02f Mtri/s\n", FillRateString(), _dX/1000/1000, _dD/1000/1000);

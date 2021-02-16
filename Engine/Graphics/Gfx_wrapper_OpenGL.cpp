@@ -30,7 +30,7 @@ static void ogl_EnableTexture(void)
 #endif
 
   // cached?
-  if( GFX_abTexture[GFX_iActiveTexUnit] && gap_bOptimizeStateChanges) return;
+  if (GFX_abTexture[GFX_iActiveTexUnit] && gap_bOptimizeStateChanges) return;
   GFX_abTexture[GFX_iActiveTexUnit] = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -55,7 +55,7 @@ static void ogl_DisableTexture(void)
 #endif
 
   // cached?
-  if( !GFX_abTexture[GFX_iActiveTexUnit] && gap_bOptimizeStateChanges) return;
+  if (!GFX_abTexture[GFX_iActiveTexUnit] && gap_bOptimizeStateChanges) return;
   GFX_abTexture[GFX_iActiveTexUnit] = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -80,7 +80,7 @@ static void ogl_EnableDepthTest(void)
   ASSERT( !bRes == !GFX_bDepthTest);
 #endif
   // cached?
-  if( GFX_bDepthTest && gap_bOptimizeStateChanges) return;
+  if (GFX_bDepthTest && gap_bOptimizeStateChanges) return;
   GFX_bDepthTest = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -104,7 +104,7 @@ static void ogl_DisableDepthTest(void)
 #endif
 
   // cached?
-  if( !GFX_bDepthTest && gap_bOptimizeStateChanges) return;
+  if (!GFX_bDepthTest && gap_bOptimizeStateChanges) return;
   GFX_bDepthTest = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -159,7 +159,7 @@ static void ogl_EnableDepthWrite(void)
 #endif
 
   // cached?
-  if( GFX_bDepthWrite && gap_bOptimizeStateChanges) return;
+  if (GFX_bDepthWrite && gap_bOptimizeStateChanges) return;
   GFX_bDepthWrite = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -184,7 +184,7 @@ static void ogl_DisableDepthWrite(void)
 #endif
 
   // cached?
-  if( !GFX_bDepthWrite && gap_bOptimizeStateChanges) return;
+  if (!GFX_bDepthWrite && gap_bOptimizeStateChanges) return;
   GFX_bDepthWrite = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -209,7 +209,7 @@ static void ogl_EnableDither(void)
 #endif
 
   // cached?
-  if( GFX_bDithering && gap_bOptimizeStateChanges) return;
+  if (GFX_bDithering && gap_bOptimizeStateChanges) return;
   GFX_bDithering = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -234,7 +234,7 @@ static void ogl_DisableDither(void)
 #endif
 
   // cached?
-  if( !GFX_bDithering && gap_bOptimizeStateChanges) return;
+  if (!GFX_bDithering && gap_bOptimizeStateChanges) return;
   GFX_bDithering = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -259,7 +259,7 @@ static void ogl_EnableAlphaTest(void)
 #endif
 
   // cached?
-  if( GFX_bAlphaTest && gap_bOptimizeStateChanges) return;
+  if (GFX_bAlphaTest && gap_bOptimizeStateChanges) return;
   GFX_bAlphaTest = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -284,7 +284,7 @@ static void ogl_DisableAlphaTest(void)
 #endif
 
   // cached?
-  if( !GFX_bAlphaTest && gap_bOptimizeStateChanges) return;
+  if (!GFX_bAlphaTest && gap_bOptimizeStateChanges) return;
   GFX_bAlphaTest = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -308,7 +308,7 @@ static void ogl_EnableBlend(void)
   ASSERT( !bRes == !GFX_bBlending);
 #endif
   // cached?
-  if( GFX_bBlending && gap_bOptimizeStateChanges) return;
+  if (GFX_bBlending && gap_bOptimizeStateChanges) return;
   GFX_bBlending = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -319,7 +319,7 @@ static void ogl_EnableBlend(void)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 
   // adjust dithering
-  if( gap_iDithering==2) ogl_EnableDither();
+  if (gap_iDithering==2) ogl_EnableDither();
   else ogl_DisableDither();
 }
 
@@ -337,7 +337,7 @@ static void ogl_DisableBlend(void)
 #endif
 
   // cached?
-  if( !GFX_bBlending && gap_bOptimizeStateChanges) return;
+  if (!GFX_bBlending && gap_bOptimizeStateChanges) return;
   GFX_bBlending = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -348,7 +348,7 @@ static void ogl_DisableBlend(void)
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 
   // adjust dithering
-  if( gap_iDithering==0) ogl_DisableDither();
+  if (gap_iDithering==0) ogl_DisableDither();
   else ogl_EnableDither();
 }
 
@@ -357,7 +357,7 @@ static void ogl_DisableBlend(void)
 static void ogl_EnableClipping(void)
 {
   // only if supported
-  if( !(_pGfx->gl_ulFlags&GLF_EXT_CLIPHINT)) return;
+  if (!(_pGfx->gl_ulFlags&GLF_EXT_CLIPHINT)) return;
 
   // check consistency
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
@@ -370,7 +370,7 @@ static void ogl_EnableClipping(void)
 #endif
 
   // cached?
-  if( GFX_bClipping && gap_bOptimizeStateChanges) return;
+  if (GFX_bClipping && gap_bOptimizeStateChanges) return;
   GFX_bClipping = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -386,7 +386,7 @@ static void ogl_EnableClipping(void)
 static void ogl_DisableClipping(void)
 {
   // only if allowed and supported
-  if( gap_iOptimizeClipping<2 || !(_pGfx->gl_ulFlags&GLF_EXT_CLIPHINT)) return;
+  if (gap_iOptimizeClipping<2 || !(_pGfx->gl_ulFlags&GLF_EXT_CLIPHINT)) return;
 
   // check consistency
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
@@ -399,7 +399,7 @@ static void ogl_DisableClipping(void)
 #endif
 
   // cached?
-  if( !GFX_bClipping && gap_bOptimizeStateChanges) return;
+  if (!GFX_bClipping && gap_bOptimizeStateChanges) return;
   GFX_bClipping = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -424,7 +424,7 @@ static void ogl_EnableClipPlane(void)
   ASSERT( !bRes == !GFX_bClipPlane);
 #endif
   // cached?
-  if( GFX_bClipPlane && gap_bOptimizeStateChanges) return;
+  if (GFX_bClipPlane && gap_bOptimizeStateChanges) return;
   GFX_bClipPlane = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -448,7 +448,7 @@ static void ogl_DisableClipPlane(void)
   ASSERT( !bRes == !GFX_bClipPlane);
 #endif
   // cached?
-  if( !GFX_bClipPlane && gap_bOptimizeStateChanges) return;
+  if (!GFX_bClipPlane && gap_bOptimizeStateChanges) return;
   GFX_bClipPlane = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -474,7 +474,7 @@ static void ogl_EnableColorArray(void)
 #endif
 
   // cached?
-  if( GFX_bColorArray && gap_bOptimizeStateChanges) return;
+  if (GFX_bColorArray && gap_bOptimizeStateChanges) return;
   GFX_bColorArray = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -500,7 +500,7 @@ static void ogl_DisableColorArray(void)
 #endif
 
   // cached?
-  if( !GFX_bColorArray && gap_bOptimizeStateChanges) return;
+  if (!GFX_bColorArray && gap_bOptimizeStateChanges) return;
   GFX_bColorArray = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -517,7 +517,7 @@ static void ogl_DisableColorArray(void)
 static void ogl_EnableTruform(void)
 {
   // skip if Truform isn't set
-  if( truform_iLevel<1) return;
+  if (truform_iLevel<1) return;
 
   // check consistency
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
@@ -528,7 +528,7 @@ static void ogl_EnableTruform(void)
   ASSERT( !bRes == !GFX_bTruform);
 #endif
 
-  if( GFX_bTruform && gap_bOptimizeStateChanges) return;
+  if (GFX_bTruform && gap_bOptimizeStateChanges) return;
   GFX_bTruform = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -545,7 +545,7 @@ static void ogl_EnableTruform(void)
 static void ogl_DisableTruform(void)
 {
   // skip if Truform isn't set
-  if( truform_iLevel<1) return;
+  if (truform_iLevel<1) return;
 
   // check consistency
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
@@ -556,7 +556,7 @@ static void ogl_DisableTruform(void)
   ASSERT( !bRes == !GFX_bTruform);
 #endif
 
-  if( !GFX_bTruform && gap_bOptimizeStateChanges) return;
+  if (!GFX_bTruform && gap_bOptimizeStateChanges) return;
   GFX_bTruform = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -571,7 +571,7 @@ static void ogl_DisableTruform(void)
 
 // helper for blending operation function
 __forceinline GLenum BlendToOGL( GfxBlend eFunc) {
-  switch( eFunc) {
+  switch (eFunc) {
   case GFX_ZERO:          return GL_ZERO;
   case GFX_ONE:           return GL_ONE;
   case GFX_SRC_COLOR:     return GL_SRC_COLOR;
@@ -585,7 +585,7 @@ __forceinline GLenum BlendToOGL( GfxBlend eFunc) {
 }
 
 __forceinline GfxBlend BlendFromOGL( GLenum gFunc) {
-  switch( gFunc) {
+  switch (gFunc) {
   case GL_ZERO:                return GFX_ZERO;
   case GL_ONE:                 return GFX_ONE;
   case GL_SRC_COLOR:           return GFX_SRC_COLOR;
@@ -615,7 +615,7 @@ static void ogl_BlendFunc( GfxBlend eSrc, GfxBlend eDst)
   ASSERT( gfxSrc==GFX_eBlendSrc && gfxDst==GFX_eBlendDst);
 #endif
   // cached?
-  if( eSrc==GFX_eBlendSrc && eDst==GFX_eBlendDst && gap_bOptimizeStateChanges) return;
+  if (eSrc==GFX_eBlendSrc && eDst==GFX_eBlendDst && gap_bOptimizeStateChanges) return;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -653,7 +653,7 @@ static void ogl_SetColorMask( ULONG ulColorMask)
 
 // helper for depth compare function
 __forceinline GLenum CompToOGL( GfxComp eFunc) {
-  switch( eFunc) {
+  switch (eFunc) {
   case GFX_NEVER:         return GL_NEVER;
   case GFX_LESS:          return GL_LESS;
   case GFX_LESS_EQUAL:    return GL_LEQUAL;
@@ -667,7 +667,7 @@ __forceinline GLenum CompToOGL( GfxComp eFunc) {
 }
   
 __forceinline GfxComp CompFromOGL( GLenum gFunc) {
-  switch( gFunc) {
+  switch (gFunc) {
   case GL_NEVER:    return GFX_NEVER;
   case GL_LESS:     return GFX_LESS;
   case GL_LEQUAL:   return GFX_LESS_EQUAL;
@@ -696,7 +696,7 @@ static void ogl_DepthFunc( GfxComp eFunc)
   ASSERT( gfxFunc==GFX_eDepthFunc);
 #endif
   // cached?
-  if( eFunc==GFX_eDepthFunc && gap_bOptimizeStateChanges) return;
+  if (eFunc==GFX_eDepthFunc && gap_bOptimizeStateChanges) return;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -723,7 +723,7 @@ static void ogl_DepthRange( FLOAT fMin, FLOAT fMax)
 #endif
 
   // cached?
-  if( GFX_fMinDepthRange==fMin && GFX_fMaxDepthRange==fMax && gap_bOptimizeStateChanges) return;
+  if (GFX_fMinDepthRange==fMin && GFX_fMaxDepthRange==fMax && gap_bOptimizeStateChanges) return;
   GFX_fMinDepthRange = fMin;
   GFX_fMaxDepthRange = fMax;
 
@@ -753,15 +753,15 @@ static void ogl_CullFace( GfxFace eFace)
        || (bRes==GL_TRUE  && gleCull==GL_BACK  && GFX_eCullFace==GFX_BACK));
 #endif
   // cached?
-  if( GFX_eCullFace==eFace && gap_bOptimizeStateChanges) return;
+  if (GFX_eCullFace==eFace && gap_bOptimizeStateChanges) return;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
-  if( eFace==GFX_FRONT) {
-    if( GFX_eCullFace==GFX_NONE) pglEnable(GL_CULL_FACE);
+  if (eFace==GFX_FRONT) {
+    if (GFX_eCullFace==GFX_NONE) pglEnable(GL_CULL_FACE);
     pglCullFace(GL_FRONT);
-  } else if( eFace==GFX_BACK) {
-    if( GFX_eCullFace==GFX_NONE) pglEnable(GL_CULL_FACE);
+  } else if (eFace==GFX_BACK) {
+    if (GFX_eCullFace==GFX_NONE) pglEnable(GL_CULL_FACE);
     pglCullFace(GL_BACK);
   } else {
     pglDisable(GL_CULL_FACE);
@@ -789,11 +789,11 @@ static void ogl_FrontFace( GfxFace eFace)
 #endif
   // cached?
   BOOL bFrontFace = (eFace==GFX_CCW);
-  if( !bFrontFace==!GFX_bFrontFace && gap_bOptimizeStateChanges) return;
+  if (!bFrontFace==!GFX_bFrontFace && gap_bOptimizeStateChanges) return;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
-  if( eFace==GFX_CCW) {
+  if (eFace==GFX_CCW) {
     pglFrontFace( GL_CCW);
   } else {
     pglFrontFace( GL_CW);
@@ -832,7 +832,7 @@ static void ogl_SetTextureMatrix( const FLOAT *pfMatrix/*=NULL*/)
 
   // set matrix
   pglMatrixMode(GL_TEXTURE);
-  if( pfMatrix!=NULL) pglLoadMatrixf(pfMatrix);
+  if (pfMatrix!=NULL) pglLoadMatrixf(pfMatrix);
   else pglLoadIdentity();
   OGL_CHECKERROR;
 
@@ -849,14 +849,14 @@ static void ogl_SetViewMatrix( const FLOAT *pfMatrix/*=NULL*/)
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
 
   // cached? (only identity matrix)
-  if( pfMatrix==NULL && GFX_bViewMatrix==NONE && gap_bOptimizeStateChanges) return;
+  if (pfMatrix==NULL && GFX_bViewMatrix==NONE && gap_bOptimizeStateChanges) return;
   GFX_bViewMatrix = (pfMatrix!=NULL);
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
   // set matrix
   pglMatrixMode( GL_MODELVIEW);
-  if( pfMatrix!=NULL) pglLoadMatrixf(pfMatrix);
+  if (pfMatrix!=NULL) pglLoadMatrixf(pfMatrix);
   else pglLoadIdentity();
   OGL_CHECKERROR;
 
@@ -874,7 +874,7 @@ static void ogl_SetOrtho( const FLOAT fLeft,   const FLOAT fRight, const FLOAT f
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
 
   // cached?
-  if( GFX_fLastL==fLeft  && GFX_fLastT==fTop    && GFX_fLastN==fNear
+  if (GFX_fLastL==fLeft  && GFX_fLastT==fTop    && GFX_fLastN==fNear
    && GFX_fLastR==fRight && GFX_fLastB==fBottom && GFX_fLastF==fFar && gap_bOptimizeStateChanges) return;
   GFX_fLastL = fLeft;   GFX_fLastT = fTop;     GFX_fLastN = fNear;
   GFX_fLastR = fRight;  GFX_fLastB = fBottom;  GFX_fLastF = fFar;
@@ -901,7 +901,7 @@ static void ogl_SetFrustum( const FLOAT fLeft, const FLOAT fRight,
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
 
   // cached?
-  if( GFX_fLastL==-fLeft  && GFX_fLastT==-fTop    && GFX_fLastN==-fNear
+  if (GFX_fLastL==-fLeft  && GFX_fLastT==-fTop    && GFX_fLastN==-fNear
    && GFX_fLastR==-fRight && GFX_fLastB==-fBottom && GFX_fLastF==-fFar && gap_bOptimizeStateChanges) return;
   GFX_fLastL = -fLeft;   GFX_fLastT = -fTop;     GFX_fLastN = -fNear;
   GFX_fLastR = -fRight;  GFX_fLastB = -fBottom;  GFX_fLastF = -fFar;
@@ -925,7 +925,7 @@ static void ogl_PolygonMode( GfxPolyMode ePolyMode)
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
-  switch(ePolyMode) {
+  switch (ePolyMode) {
   case GFX_POINT:  pglPolygonMode( GL_FRONT_AND_BACK, GL_POINT);  break;
   case GFX_LINE:   pglPolygonMode( GL_FRONT_AND_BACK, GL_LINE);   break;
   case GFX_FILL:   pglPolygonMode( GL_FRONT_AND_BACK, GL_FILL);   break;
@@ -977,12 +977,12 @@ static void ogl_SetTextureModulation( INDEX iScale)
   
   // cached?
   ASSERT( iScale==1 || iScale==2);
-  if( GFX_iTexModulation[GFX_iActiveTexUnit]==iScale) return;
+  if (GFX_iTexModulation[GFX_iActiveTexUnit]==iScale) return;
   GFX_iTexModulation[GFX_iActiveTexUnit] = iScale;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
-  if( iScale==2) {
+  if (iScale==2) {
     pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT);
     pglTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT,  GL_MODULATE);
     pglTexEnvf( GL_TEXTURE_ENV, GL_RGB_SCALE_EXT,    2.0f);
@@ -1016,7 +1016,7 @@ static void ogl_DeleteTexture( ULONG &ulTexObject)
 {
   // skip if already unbound
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
-  if( ulTexObject==NONE) return;
+  if (ulTexObject==NONE) return;
 
   _sfStats.StartTimer(CStatForm::STI_BINDTEXTURE);
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -1128,14 +1128,14 @@ static void ogl_DrawElements( INDEX ctElem, INDEX *pidx)
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
 #ifndef NDEBUG
   // check if all indices are inside lock count (or smaller than 65536)
-  if( pidx!=NULL) for( INDEX i=0; i<ctElem; i++) ASSERT( pidx[i] < GFX_ctVertices);
+  if (pidx!=NULL) for (INDEX i=0; i<ctElem; i++) ASSERT( pidx[i] < GFX_ctVertices);
 #endif
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
   _pGfx->gl_ctTotalTriangles += ctElem/3;  // for profiling
 
   // arrays or elements
-  if( pidx==NULL) pglDrawArrays( GL_QUADS, 0, ctElem);
+  if (pidx==NULL) pglDrawArrays( GL_QUADS, 0, ctElem);
   else pglDrawElements( GL_TRIANGLES, ctElem, GL_UNSIGNED_INT, pidx);
   OGL_CHECKERROR;
 
@@ -1165,7 +1165,7 @@ static void ogl_LockArrays(void)
   // only if supported
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
   ASSERT( GFX_ctVertices>0 && !_bCVAReallyLocked);
-  if( !(_pGfx->gl_ulFlags&GLF_EXT_COMPILEDVERTEXARRAY)) return;
+  if (!(_pGfx->gl_ulFlags&GLF_EXT_COMPILEDVERTEXARRAY)) return;
   pglLockArraysEXT( 0, GFX_ctVertices);
   OGL_CHECKERROR;
  _bCVAReallyLocked = TRUE;

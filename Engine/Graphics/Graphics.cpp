@@ -38,7 +38,7 @@ INDEX ClampTextureSize( PIX pixClampSize, PIX pixClampDimension, PIX pixSizeU, P
   __int64 pixMaxSize  = (__int64)pixSizeU * (__int64)pixSizeV;
   PIX pixMaxDimension = Max( pixSizeU, pixSizeV);
   INDEX ctSkipMips    = 0;
-  while( (pixMaxSize>pixClampSize || pixMaxDimension>pixClampDimension) && pixMaxDimension>1) {
+  while ((pixMaxSize>pixClampSize || pixMaxDimension>pixClampDimension) && pixMaxDimension>1) {
     ctSkipMips++;
     pixMaxDimension >>=1;
     pixMaxSize >>=2;
@@ -55,7 +55,7 @@ PIX GetMipmapOffset( INDEX iMipLevel, PIX pixWidth, PIX pixHeight)
   PIX pixMipSize = pixWidth*pixHeight;
   INDEX iMips = GetNoOfMipmaps( pixWidth, pixHeight);
   iMips = Min( iMips, iMipLevel);
-  while( iMips>0) {
+  while (iMips>0) {
     pixTexSize +=pixMipSize;
     pixMipSize>>=2;
     iMips--;
@@ -68,9 +68,9 @@ PIX GetMipmapOffset( INDEX iMipLevel, PIX pixWidth, PIX pixHeight)
 INDEX GetMipmapOfSize( PIX pixWantedSize, ULONG *&pulFrame, PIX &pixWidth, PIX &pixHeight)
 {
   INDEX iMipOffset = 0;
-  while( pixWidth>1 && pixHeight>1) {
+  while (pixWidth>1 && pixHeight>1) {
     const PIX pixCurrentSize = pixWidth*pixHeight;
-    if( pixCurrentSize <= pixWantedSize) break; // found
+    if (pixCurrentSize <= pixWantedSize) break; // found
     pulFrame += pixCurrentSize;
     pixWidth >>=1;
     pixHeight>>=1;
@@ -85,11 +85,11 @@ void AddAlphaChannel( UBYTE *pubSrcBitmap, ULONG *pulDstBitmap, PIX pixSize, UBY
 {
   UBYTE ubR,ubG,ubB, ubA=255;
   // loop backwards thru all bitmap pixels
-  for( INDEX iPix=(pixSize-1); iPix>=0; iPix--) {
+  for (INDEX iPix=(pixSize-1); iPix>=0; iPix--) {
     ubR = pubSrcBitmap[iPix*3 +0];
     ubG = pubSrcBitmap[iPix*3 +1];
     ubB = pubSrcBitmap[iPix*3 +2];
-    if( pubAlphaBitmap!=NULL) ubA = pubAlphaBitmap[iPix];
+    if (pubAlphaBitmap!=NULL) ubA = pubAlphaBitmap[iPix];
     else ubA = 255; // for the sake of forced RGBA internal formats!
     pulDstBitmap[iPix] = ByteSwap( RGBAToColor( ubR,ubG,ubB, ubA));
   }
@@ -100,7 +100,7 @@ void RemoveAlphaChannel( ULONG *pulSrcBitmap, UBYTE *pubDstBitmap, PIX pixSize)
 {
   UBYTE ubR,ubG,ubB;
   // loop thru all bitmap pixels
-  for( INDEX iPix=0; iPix<pixSize; iPix++) {
+  for (INDEX iPix=0; iPix<pixSize; iPix++) {
     ColorToRGB( ByteSwap( pulSrcBitmap[iPix]), ubR,ubG,ubB);
     pubDstBitmap[iPix*3 +0] = ubR;
     pubDstBitmap[iPix*3 +1] = ubG;
@@ -117,10 +117,10 @@ void FlipBitmap( UBYTE *pubSrc, UBYTE *pubDst, PIX pixWidth, PIX pixHeight, INDE
   ASSERT( iFlipType>=0 && iFlipType<4);
   // no flipping ?
   PIX pixSize = pixWidth*pixHeight;
-  if( iFlipType==0) {
+  if (iFlipType==0) {
     // copy bitmap only if needed
     INDEX ctBPP = (bAlphaChannel ? 4 : 3);
-    if( pubSrc!=pubDst) memcpy( pubDst, pubSrc, pixSize*ctBPP);
+    if (pubSrc!=pubDst) memcpy( pubDst, pubSrc, pixSize*ctBPP);
     return;
   }
 
@@ -128,7 +128,7 @@ void FlipBitmap( UBYTE *pubSrc, UBYTE *pubDst, PIX pixWidth, PIX pixHeight, INDE
   ULONG *pulNew = NULL;
   ULONG *pulNewSrc = (ULONG*)pubSrc;
   ULONG *pulNewDst = (ULONG*)pubDst;
-  if( !bAlphaChannel) {
+  if (!bAlphaChannel) {
     pulNew = (ULONG*)AllocMemory( pixSize *BYTES_PER_TEXEL);
     AddAlphaChannel( pubSrc, pulNew, pixSize);
     pulNewSrc = pulNew;
@@ -140,13 +140,13 @@ void FlipBitmap( UBYTE *pubSrc, UBYTE *pubDst, PIX pixWidth, PIX pixHeight, INDE
   const PIX pixHalfHeight = (pixHeight+1)/2;
 
   // flip horizontal
-  if( iFlipType==2 || iFlipType==3)
+  if (iFlipType==2 || iFlipType==3)
   { // for each row
-    for( INDEX iRow=0; iRow<pixHeight; iRow++)
+    for (INDEX iRow=0; iRow<pixHeight; iRow++)
     { // find row pointer
       PIX pixRowOffset = iRow*pixWidth;
       // for each pixel in row
-      for( INDEX iPix=0; iPix<pixHalfWidth; iPix++)
+      for (INDEX iPix=0; iPix<pixHalfWidth; iPix++)
       { // transfer pixels
         PIX pixBeg = pulNewSrc[pixRowOffset+iPix];
         PIX pixEnd = pulNewSrc[pixRowOffset+(pixWidth-1-iPix)];
@@ -157,17 +157,17 @@ void FlipBitmap( UBYTE *pubSrc, UBYTE *pubDst, PIX pixWidth, PIX pixHeight, INDE
   }
 
   // prepare new pointers
-  if( iFlipType==3) pulNewSrc = pulNewDst;
+  if (iFlipType==3) pulNewSrc = pulNewDst;
 
   // flip vertical/diagonal
-  if( iFlipType==1 || iFlipType==3)
+  if (iFlipType==1 || iFlipType==3)
   { // for each row
-    for( INDEX iRow=0; iRow<pixHalfHeight; iRow++)
+    for (INDEX iRow=0; iRow<pixHalfHeight; iRow++)
     { // find row pointers
       PIX pixBegOffset = iRow*pixWidth;
       PIX pixEndOffset = (pixHeight-1-iRow)*pixWidth;
       // for each pixel in row
-      for( INDEX iPix=0; iPix<pixWidth; iPix++)
+      for (INDEX iPix=0; iPix<pixWidth; iPix++)
       { // transfer pixels
         PIX pixBeg = pulNewSrc[pixBegOffset+iPix];
         PIX pixEnd = pulNewSrc[pixEndOffset+iPix];
@@ -178,9 +178,9 @@ void FlipBitmap( UBYTE *pubSrc, UBYTE *pubDst, PIX pixWidth, PIX pixHeight, INDE
   }
 
   // postpare images without alpha channels
-  if( !bAlphaChannel) {
+  if (!bAlphaChannel) {
     RemoveAlphaChannel( pulNewDst, pubDst, pixSize);
-    if( pulNew!=NULL) FreeMemory(pulNew);
+    if (pulNew!=NULL) FreeMemory(pulNew);
   }
 }
 
@@ -197,7 +197,7 @@ static void MakeOneMipmap( ULONG *pulSrcMipmap, ULONG *pulDstMipmap, PIX pixWidt
   pixWidth >>=1;
   pixHeight>>=1;
 
-  if( bBilinear) // type of filtering?
+  if (bBilinear) // type of filtering?
   { // BILINEAR
     __asm {
       pxor    mm0,mm0
@@ -304,23 +304,23 @@ void MakeMipmaps( INDEX ctFineMips, ULONG *pulMipmaps, PIX pixWidth, PIX pixHeig
 
   // determine filtering mode (-1=prefiltering, 0=none, 1=postfiltering)
   INDEX iFilterMode = 0;
-  if( iFilter!=0) {
+  if (iFilter!=0) {
     iFilterMode = -1;
-    if( !tex_bProgressiveFilter) iFilterMode = +1;
+    if (!tex_bProgressiveFilter) iFilterMode = +1;
   }
 
   // loop thru mip-map levels
-  while( pixCurrWidth>1 && pixCurrHeight>1)
+  while (pixCurrWidth>1 && pixCurrHeight>1)
   { // determine mip size
     PIX pixMipSize = pixCurrWidth*pixCurrHeight;
     pulSrcMipmap   = pulMipmaps   + pixTexSize;
     pulDstMipmap   = pulSrcMipmap + pixMipSize;
     // do pre filter is required
-    if( iFilterMode<0) FilterBitmap( iFilter, pulSrcMipmap, pulSrcMipmap, pixCurrWidth, pixCurrHeight);
+    if (iFilterMode<0) FilterBitmap( iFilter, pulSrcMipmap, pulSrcMipmap, pixCurrWidth, pixCurrHeight);
     // create one mipmap
     MakeOneMipmap( pulSrcMipmap, pulDstMipmap, pixCurrWidth, pixCurrHeight, ctMipmaps<ctFineMips);
     // do post filter if required
-    if( iFilterMode>0) FilterBitmap( iFilter, pulSrcMipmap, pulSrcMipmap, pixCurrWidth, pixCurrHeight);
+    if (iFilterMode>0) FilterBitmap( iFilter, pulSrcMipmap, pulSrcMipmap, pixCurrWidth, pixCurrHeight);
     // advance to next mipmap
     pixTexSize += pixMipSize;
     pixCurrWidth  >>=1;
@@ -346,17 +346,17 @@ void ColorizeMipmaps( INDEX i1stMipmapToColorize, ULONG *pulMipmaps, PIX pixWidt
   PIX pixMipSize;
   // skip too large textures
   const PIX pixMaxDim = Max( pixCurrWidth, pixCurrHeight);
-  if( pixMaxDim>1024) return;
+  if (pixMaxDim>1024) return;
   INDEX iTableOfs = 10-FastLog2(pixMaxDim);
 
   // loop thru mip-map levels
-  while( pixCurrWidth>1 && pixCurrHeight>1)
+  while (pixCurrWidth>1 && pixCurrHeight>1)
   { // prepare current mip-level
     pixMipSize   = pixCurrWidth*pixCurrHeight;
     pulDstMipmap = pulSrcMipmap + pixMipSize;
     // mask mipmap
     const ULONG ulColorMask = ByteSwap( _acolMips[iTableOfs] | 0x3F3F3FFF);
-    for( INDEX iPix=0; iPix<pixMipSize; iPix++) pulSrcMipmap[iPix] &= ulColorMask;
+    for (INDEX iPix=0; iPix<pixMipSize; iPix++) pulSrcMipmap[iPix] &= ulColorMask;
     // advance to next mipmap
     pulSrcMipmap += pixMipSize;
     pixCurrWidth  >>=1;
@@ -375,7 +375,7 @@ DOUBLE CalcBitmapDeviation( ULONG *pulBitmap, PIX pixSize)
 __int64 mmSumR2=0, mmSumG2=0, mmSumB2=0;
 
   // calculate sum and sum^2
-  for( INDEX iPix=0; iPix<pixSize; iPix++) {
+  for (INDEX iPix=0; iPix<pixSize; iPix++) {
     ColorToRGB( ByteSwap(pulBitmap[iPix]), ubR,ubG,ubB);
     ulSumR  += ubR;      ulSumG  += ubG;      ulSumB  += ubB;
     mmSumR2 += ubR*ubR;  mmSumG2 += ubG*ubG;  mmSumB2 += ubB*ubB;
@@ -437,21 +437,21 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
   _pfGfxProfile.StartTimer( CGfxProfile::PTI_DITHERBITMAP);
 
   // determine row modulo
-  if( pixCanvasWidth ==0) pixCanvasWidth  = pixWidth;
-  if( pixCanvasHeight==0) pixCanvasHeight = pixHeight;
+  if (pixCanvasWidth ==0) pixCanvasWidth  = pixWidth;
+  if (pixCanvasHeight==0) pixCanvasHeight = pixHeight;
   ASSERT( pixCanvasWidth>=pixWidth && pixCanvasHeight>=pixHeight);
   SLONG slModulo      = (pixCanvasWidth-pixWidth) *BYTES_PER_TEXEL;
   SLONG slWidthModulo = pixWidth*BYTES_PER_TEXEL +slModulo;
 
   // if bitmap is smaller than 4x2 pixels
-  if( pixWidth<4 || pixHeight<2)
+  if (pixWidth<4 || pixHeight<2)
   { // don't dither it at all, rather copy only (if needed)
-    if( pulDst!=pulSrc) memcpy( pulDst, pulSrc, pixCanvasWidth*pixCanvasHeight *BYTES_PER_TEXEL);
+    if (pulDst!=pulSrc) memcpy( pulDst, pulSrc, pixCanvasWidth*pixCanvasHeight *BYTES_PER_TEXEL);
     goto theEnd;
   }
 
   // determine proper dither type
-  switch( iDitherType)
+  switch (iDitherType)
   { // low dithers
   case 1:
     pulDitherTable = &ulDither2[0][0];
@@ -503,7 +503,7 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
     // improper dither type
     ASSERTALWAYS( "Improper dithering type.");
     // if bitmap copying is needed
-    if( pulDst!=pulSrc) memcpy( pulDst, pulSrc, pixCanvasWidth*pixCanvasHeight *BYTES_PER_TEXEL);
+    if (pulDst!=pulSrc) memcpy( pulDst, pulSrc, pixCanvasWidth*pixCanvasHeight *BYTES_PER_TEXEL);
     goto theEnd;
   }
 
@@ -560,7 +560,7 @@ nextRowO:
 
 ditherError:
   // since error diffusion algorithm requires in-place dithering, original bitmap must be copied if needed
-  if( pulDst!=pulSrc) memcpy( pulDst, pulSrc, pixCanvasWidth*pixCanvasHeight *BYTES_PER_TEXEL);
+  if (pulDst!=pulSrc) memcpy( pulDst, pulSrc, pixCanvasWidth*pixCanvasHeight *BYTES_PER_TEXEL);
   // slModulo+=4;
   // now, dither destination
   __asm {
@@ -672,7 +672,7 @@ void DitherMipmaps( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidt
   ASSERT( pixWidth>0 && pixHeight>0);
   // loop thru mipmaps
   PIX pixMipSize;
-  while( pixWidth>0 && pixHeight>0)
+  while (pixWidth>0 && pixHeight>0)
   { // dither one mipmap
     DitherBitmap( iDitherType, pulSrc, pulDst, pixWidth, pixHeight);
     // advance to next mipmap
@@ -715,7 +715,7 @@ static INDEX iLastFilter;
 static void GenerateConvolutionMatrix( INDEX iFilter)
 {
   // same as last?
-  if( iLastFilter==iFilter) return;
+  if (iLastFilter==iFilter) return;
   // update filter
   iLastFilter = iFilter;
   INDEX iFilterAbs = Abs(iFilter) -1;
@@ -724,7 +724,7 @@ static void GenerateConvolutionMatrix( INDEX iFilter)
   INDEX iMe = aiFilters[iFilterAbs][1];  // edge
   INDEX iMm = aiFilters[iFilterAbs][2];  // middle
   // negate values for sharpen filter case
-  if( iFilter<0) {
+  if (iFilter<0) {
     iMm += (iMe+iMc) *8;  // (4*Edge + 4*Corner) *2
     iMe  = -iMe;
     iMc  = -iMc;
@@ -754,14 +754,14 @@ void FilterBitmap( INDEX iFilter, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PI
   ASSERT( iFilter>=-6 && iFilter<=+6);
 
   // adjust canvas size
-  if( pixCanvasWidth ==0) pixCanvasWidth  = pixWidth;
-  if( pixCanvasHeight==0) pixCanvasHeight = pixHeight;
+  if (pixCanvasWidth ==0) pixCanvasWidth  = pixWidth;
+  if (pixCanvasHeight==0) pixCanvasHeight = pixHeight;
   ASSERT( pixCanvasWidth>=pixWidth && pixCanvasHeight>=pixHeight);
 
   // if bitmap is smaller than 4x4
-  if( pixWidth<4 || pixHeight<4)
+  if (pixWidth<4 || pixHeight<4)
   { // don't blur it at all, but eventually only copy
-    if( pulDst!=pulSrc) memcpy( pulDst, pulSrc, pixCanvasWidth*pixCanvasHeight *BYTES_PER_TEXEL);
+    if (pulDst!=pulSrc) memcpy( pulDst, pulSrc, pixCanvasWidth*pixCanvasHeight *BYTES_PER_TEXEL);
     _pfGfxProfile.StopTimer( CGfxProfile::PTI_FILTERBITMAP);
     return;
   }
@@ -1095,7 +1095,7 @@ lowerLoop:
 void AdjustBitmapColor( ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PIX pixHeight, 
                         SLONG const slHueShift, SLONG const slSaturation)
 {
-  for( INDEX i=0; i<(pixWidth*pixHeight); i++) {
+  for (INDEX i=0; i<(pixWidth*pixHeight); i++) {
     pulDst[i] = ByteSwap( AdjustColor( ByteSwap(pulSrc[i]), slHueShift, slSaturation));
   }
 }
@@ -1154,13 +1154,13 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
   struct PolyVertex2D *pTmp;
 
   // sort vertices by J position
-  if( pUpper->pv2_fJ > pMiddle->pv2_fJ) {
+  if (pUpper->pv2_fJ > pMiddle->pv2_fJ) {
     pTmp = pUpper; pUpper = pMiddle; pMiddle = pTmp;
   }
-  if( pUpper->pv2_fJ > pLower->pv2_fJ) {
+  if (pUpper->pv2_fJ > pLower->pv2_fJ) {
     pTmp = pUpper; pUpper = pLower; pLower = pTmp;
   }
-  if( pMiddle->pv2_fJ > pLower->pv2_fJ) {
+  if (pMiddle->pv2_fJ > pLower->pv2_fJ) {
     pTmp = pMiddle; pMiddle = pLower; pLower = pTmp;
   }
 
@@ -1168,7 +1168,7 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
   FLOAT fDJShort1 = pMiddle->pv2_fJ - pUpper->pv2_fJ;
   FLOAT fDJShort2 = pLower->pv2_fJ  - pMiddle->pv2_fJ;
   FLOAT fDJLong   = pLower->pv2_fJ  - pUpper->pv2_fJ;
-  if( fDJLong == 0) return;
+  if (fDJLong == 0) return;
 
   // determine horizontal deltas
   FLOAT fDIShort1 = pMiddle->pv2_fI - pUpper->pv2_fI;
@@ -1188,9 +1188,9 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
 
   // determine stepping factors;
   FLOAT f1oDJShort1, f1oDJShort2, f1oDJLong;
-  if( fDJShort1 != 0) f1oDJShort1 = 1 / fDJShort1;  else f1oDJShort1 = 0;
-  if( fDJShort2 != 0) f1oDJShort2 = 1 / fDJShort2;  else f1oDJShort2 = 0;
-  if( fDJLong   != 0) f1oDJLong   = 1 / fDJLong;    else f1oDJLong   = 0;
+  if (fDJShort1 != 0) f1oDJShort1 = 1 / fDJShort1;  else f1oDJShort1 = 0;
+  if (fDJShort2 != 0) f1oDJShort2 = 1 / fDJShort2;  else f1oDJShort2 = 0;
+  if (fDJLong   != 0) f1oDJLong   = 1 / fDJLong;    else f1oDJLong   = 0;
 
   FLOAT fDIoDJShort1 = fDIShort1 * f1oDJShort1;
   FLOAT fDIoDJShort2 = fDIShort2 * f1oDJShort2;
@@ -1199,7 +1199,7 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
 
   // determine drawing direction and factors by direction
   SLONG direction = +1;
-  if( fMaxWidth > 0) direction = -1;
+  if (fMaxWidth > 0) direction = -1;
 
   // find start and end values for J
   PIX pixUpJ = FloatToInt(pUpper->pv2_fJ  +0.5f);
@@ -1207,11 +1207,11 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
   PIX pixDnJ = FloatToInt(pLower->pv2_fJ  +0.5f);
 
   // clip vertically
-  if( pixDnJ<0 || pixUpJ>=slMaskHeight) return;
-  if( pixUpJ<0) pixUpJ=0;
-  if( pixDnJ>slMaskHeight) pixDnJ=slMaskHeight;
-  if( pixMdJ<0) pixMdJ=0;
-  if( pixMdJ>slMaskHeight) pixMdJ=slMaskHeight;
+  if (pixDnJ<0 || pixUpJ>=slMaskHeight) return;
+  if (pixUpJ<0) pixUpJ=0;
+  if (pixDnJ>slMaskHeight) pixDnJ=slMaskHeight;
+  if (pixMdJ<0) pixMdJ=0;
+  if (pixMdJ>slMaskHeight) pixMdJ=slMaskHeight;
   SLONG fixWidth = slMaskWidth<<11;
 
   // find prestepped I
@@ -1235,7 +1235,7 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
   PIX   pixJ = pixUpJ;
 
   // if model has texture and texture has alpha channel, do complex mapping thru texture's alpha channel
-  if( _pulTexture!=NULL && bTransparency) 
+  if (_pulTexture!=NULL && bTransparency) 
   { 
     // calculate some texture variables
     FLOAT fD1oKoDJShort1 = fD1oKShort1 * f1oDJShort1;
@@ -1252,7 +1252,7 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
     FLOAT fD1oKoDI = (fD1oKoDJLong * fDJShort1 + pUpper->pv2_f1oK - pMiddle->pv2_f1oK) * f1oMaxWidth;
     FLOAT fDUoKoDI = (fDUoKoDJLong * fDJShort1 + pUpper->pv2_fUoK - pMiddle->pv2_fUoK) * f1oMaxWidth;
     FLOAT fDVoKoDI = (fDVoKoDJLong * fDJShort1 + pUpper->pv2_fVoK - pMiddle->pv2_fVoK) * f1oMaxWidth;
-    if( direction == -1) {
+    if (direction == -1) {
       fD1oKoDI = -fD1oKoDI;
       fDUoKoDI = -fDUoKoDI;
       fDVoKoDI = -fDVoKoDI;
@@ -1270,20 +1270,20 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
     
     // render upper triangle part
     PIX pixTexU, pixTexV;
-    while( ctJShort1>0) {
+    while (ctJShort1>0) {
       SLONG currI = fixILong>>11;
       SLONG countI = abs( currI - (fixIShort1>>11));
-      if( countI==0) goto nextLine1;
+      if (countI==0) goto nextLine1;
       curr1oK = f1oKLong;
       currUoK = fUoKLong;
       currVoK = fVoKLong;
-      if( direction == -1) currI--;
-      if( countI>0) _bSomeDarkExists = TRUE;
-      while( countI>0) {
+      if (direction == -1) currI--;
+      if (countI>0) _bSomeDarkExists = TRUE;
+      while (countI>0) {
         currK = 1.0f/curr1oK;
         pixTexU = (FloatToInt(currUoK*currK)) & (_pixTexWidth -1);
         pixTexV = (FloatToInt(currVoK*currK)) & (_pixTexHeight-1);
-        if( _pulTexture[pixTexV*_pixTexWidth+pixTexU] & ((CT_rAMASK<<7)&CT_rAMASK)) pubMaskPlane[currI] = 0;
+        if (_pulTexture[pixTexV*_pixTexWidth+pixTexU] & ((CT_rAMASK<<7)&CT_rAMASK)) pubMaskPlane[currI] = 0;
         curr1oK += fD1oKoDI;
         currUoK += fDUoKoDI;
         currVoK += fDVoKoDI;
@@ -1304,20 +1304,20 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
     }
 
     // render lower triangle part
-    while( ctJShort2>0) {
+    while (ctJShort2>0) {
       SLONG currI = fixILong>>11;
       SLONG countI = abs( currI - (fixIShort2>>11));
-      if( countI==0) goto nextLine2;
+      if (countI==0) goto nextLine2;
       curr1oK = f1oKLong;
       currUoK = fUoKLong;
       currVoK = fVoKLong;
-      if( direction == -1) currI--;
-      if( countI>0) _bSomeDarkExists = TRUE;
-      while( countI>0) {
+      if (direction == -1) currI--;
+      if (countI>0) _bSomeDarkExists = TRUE;
+      while (countI>0) {
         currK = 1.0f/curr1oK;
         pixTexU = (FloatToInt(currUoK*currK)) & (_pixTexWidth -1);
         pixTexV = (FloatToInt(currVoK*currK)) & (_pixTexHeight-1);
-        if( _pulTexture[pixTexV*_pixTexWidth+pixTexU] & CT_rAMASK) pubMaskPlane[currI] = 0;
+        if (_pulTexture[pixTexV*_pixTexWidth+pixTexU] & CT_rAMASK) pubMaskPlane[currI] = 0;
         curr1oK += fD1oKoDI;
         currUoK += fDUoKoDI;
         currVoK += fDVoKoDI;
@@ -1341,12 +1341,12 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
   else 
   { 
     // render upper triangle part
-    while( ctJShort1>0) {
+    while (ctJShort1>0) {
       SLONG currI = fixILong>>11;
       SLONG countI = abs( currI - (fixIShort1>>11));
-      if( direction == -1) currI--;
-      if( countI>0) _bSomeDarkExists = TRUE;
-      while( countI>0) {
+      if (direction == -1) currI--;
+      if (countI>0) _bSomeDarkExists = TRUE;
+      while (countI>0) {
         pubMaskPlane[currI] = 0;
         currI += direction;
         countI--;
@@ -1357,12 +1357,12 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
       ctJShort1--;
     }
     // render lower triangle part
-    while( ctJShort2>0) {
+    while (ctJShort2>0) {
       SLONG currI = fixILong>>11;
       SLONG countI = abs( currI - (fixIShort2>>11));
-      if( countI>0) _bSomeDarkExists = TRUE;
-      if( direction == -1) currI--;
-      while( countI>0) {
+      if (countI>0) _bSomeDarkExists = TRUE;
+      if (direction == -1) currI--;
+      while (countI>0) {
         pubMaskPlane[currI] = 0;
         currI += direction;
         countI--;
@@ -1391,9 +1391,9 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
   
   // row loop
   UBYTE r,g,b,a;
-  for( PIX v=0; v<pixHeight; v++)
+  for (PIX v=0; v<pixHeight; v++)
   { // column loop
-    for( PIX u=0; u<pixWidth; u++)
+    for (PIX u=0; u<pixWidth; u++)
     { // read four neighbour pixels
       COLOR colUL = pulSrcMipmap[((v*2+0)*pixCurrWidth*2+u*2) +0];
       COLOR colUR = pulSrcMipmap[((v*2+0)*pixCurrWidth*2+u*2) +1];
@@ -1418,19 +1418,19 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
 
   // row loop
   PIX u,v;
-  for( v=0; v<pixCurrHeight/2; v++) { 
-    for( u=0; u<pixCurrWidth/2; u++) { // mipmap upper left pixel
+  for (v=0; v<pixCurrHeight/2; v++) { 
+    for (u=0; u<pixCurrWidth/2; u++) { // mipmap upper left pixel
       pulDstMipmap[v*pixCurrWidth+u] = pulSrcMipmap[((v*2+0)*pixCurrWidth*2+u*2) +0];
     }
-    for( u=pixCurrWidth/2; u<pixCurrWidth; u++) { // mipmap upper right pixel
+    for (u=pixCurrWidth/2; u<pixCurrWidth; u++) { // mipmap upper right pixel
       pulDstMipmap[v*pixCurrWidth+u] = pulSrcMipmap[((v*2+0)*pixCurrWidth*2+u*2) +1];
     }
   }
-  for( v=pixCurrHeight/2; v<pixCurrHeight; v++) { 
-    for( u=0; u<pixCurrWidth/2; u++) { // mipmap upper left pixel
+  for (v=pixCurrHeight/2; v<pixCurrHeight; v++) { 
+    for (u=0; u<pixCurrWidth/2; u++) { // mipmap upper left pixel
       pulDstMipmap[v*pixCurrWidth+u] = pulSrcMipmap[((v*2+1)*pixCurrWidth*2+u*2) +0];
     }
-    for( u=pixCurrWidth/2; u<pixCurrWidth; u++) { // mipmap upper right pixel
+    for (u=pixCurrWidth/2; u<pixCurrWidth; u++) { // mipmap upper right pixel
       pulDstMipmap[v*pixCurrWidth+u] = pulSrcMipmap[((v*2+1)*pixCurrWidth*2+u*2) +1];
     }
   }
@@ -1607,16 +1607,16 @@ allDoneE:
     const SLONG slMaskV=pixHeight*2 -1;
 
     // bicubic?
-    if( pixWidth>4 && pixHeight>4 /*&& tex_bBicubicMipmaps*/)
+    if (pixWidth>4 && pixHeight>4 /*&& tex_bBicubicMipmaps*/)
     {
-      for( INDEX j=0; j<pixHeight; j++) {
-        for( INDEX i=0; i<pixWidth; i++) {
+      for (INDEX j=0; j<pixHeight; j++) {
+        for (INDEX i=0; i<pixWidth; i++) {
           COLOR col;
           UBYTE ubR, ubG, ubB, ubA;
           SLONG slR=0, slG=0, slB=0, slA=0;
-          for( INDEX v=0; v<4; v++) {
+          for (INDEX v=0; v<4; v++) {
             const INDEX iRowSrc = ((v-1)+j*2) & slMaskV;
-            for( INDEX u=0; u<4; u++) {
+            for (INDEX u=0; u<4; u++) {
               const INDEX iColSrc = ((u-1)+i*2) & slMaskU;
               const INDEX iWeight = aiWeights[u][v];
               col = ByteSwap( pulSrcMipmap[iRowSrc*(slMaskU+1)+iColSrc]);

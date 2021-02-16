@@ -129,7 +129,7 @@ ENGINE_API void MakeDirList(
   // for each file in zip archives
   CTString strDirPattern = fnmDir;
   INDEX ctFilesInZips = UNZIPGetFileCount();
-  for(INDEX iFileInZip=0; iFileInZip<ctFilesInZips; iFileInZip++) {
+  for (INDEX iFileInZip=0; iFileInZip<ctFilesInZips; iFileInZip++) {
     const CTFileName &fnm = UNZIPGetFileAtIndex(iFileInZip);
 
     // if not in this dir, skip it

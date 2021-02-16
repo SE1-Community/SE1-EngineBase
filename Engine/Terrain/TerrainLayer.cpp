@@ -44,11 +44,11 @@ CTextureData *CTerrainLayer::GetThumbnail(INDEX iWidth, INDEX iHeight)
   INDEX iMaskWidth = tl_iMaskWidth-1;
   INDEX iMaskHeight = tl_iMaskHeight-1;
 
-  if(iWidth>iMaskWidth) {
+  if (iWidth>iMaskWidth) {
     // ASSERT(FALSE);
     iWidth = iMaskWidth;
   }
-  if(iHeight>iMaskHeight) {
+  if (iHeight>iMaskHeight) {
     // ASSERT(FALSE);
     iHeight = iMaskHeight;
   }
@@ -61,8 +61,8 @@ CTextureData *CTerrainLayer::GetThumbnail(INDEX iWidth, INDEX iHeight)
   UBYTE *paubMask = tl_aubColors;
   GFXColor *pcolTexture = (GFXColor*)tl_tdThumbNail.td_pulFrames;
 
-  for(INDEX iy=0;iy<iHeight;iy++) {
-    for(INDEX ix=0;ix<iWidth;ix++) {
+  for (INDEX iy=0;iy<iHeight;iy++) {
+    for (INDEX ix=0;ix<iWidth;ix++) {
       pcolTexture->r = *paubMask;
       pcolTexture->g = *paubMask;
       pcolTexture->b = *paubMask;
@@ -85,14 +85,14 @@ CTextureData *CTerrainLayer::GetThumbnail(INDEX iWidth, INDEX iHeight)
 void CTerrainLayer::SetLayerSize(INDEX iTerrainWidth, INDEX iTerrainHeight)
 {
   // if array of vertex colors was initialized
-  if(tl_aubColors!=NULL) {
+  if (tl_aubColors!=NULL) {
     // free array
     FreeMemory(tl_aubColors);
     tl_aubColors = NULL;
   }
   // if size of mask is greater than 0
   INDEX iSize = iTerrainWidth*iTerrainHeight;
-  if(iSize>0) {
+  if (iSize>0) {
     // Allocate new memory for vertex colors
     tl_aubColors = (UBYTE*)AllocMemory(iSize);
     // Reset color values
@@ -107,7 +107,7 @@ void CTerrainLayer::SetLayerSize(INDEX iTerrainWidth, INDEX iTerrainHeight)
 void CTerrainLayer::SetLayerTexture_t(CTFileName fnTexture)
 {
   // if layer has valid texture 
-  if(tl_ptdTexture!=NULL) {
+  if (tl_ptdTexture!=NULL) {
     // release texture from stock
     _pTextureStock->Release(tl_ptdTexture);
     tl_ptdTexture = NULL;
@@ -117,7 +117,7 @@ void CTerrainLayer::SetLayerTexture_t(CTFileName fnTexture)
   tl_ptdTexture->Force(TEX_STATIC);
   
   // if this is tile layer
-  if(tl_ltType == LT_TILE) {
+  if (tl_ltType == LT_TILE) {
     // Update tile widht and height
     SetTilesPerRow(GetTilesPerRow());
   }
@@ -149,10 +149,10 @@ void CTerrainLayer::ImportLayerMask_t(CTFileName fnLayerMask)
   // Load targa file 
   CImageInfo iiLayerMask;
   iiLayerMask.LoadAnyGfxFormat_t(fnLayerMask);
-  if(iiLayerMask.ii_Width != tl_iMaskWidth) {
+  if (iiLayerMask.ii_Width != tl_iMaskWidth) {
     ThrowF_t(TRANS("Layer mask width is %d, but it must be same size as terrain width %d"),iiLayerMask.ii_Width,tl_iMaskWidth);
   }
-  if(iiLayerMask.ii_Height != tl_iMaskHeight) {
+  if (iiLayerMask.ii_Height != tl_iMaskHeight) {
     ThrowF_t(TRANS("Layer mask height is %d, but it must be same size as terrain height %d"),iiLayerMask.ii_Height,tl_iMaskHeight);
   }
 
@@ -162,7 +162,7 @@ void CTerrainLayer::ImportLayerMask_t(CTFileName fnLayerMask)
 
   // for each byte in loaded image
   INDEX iMaskSize = tl_iMaskWidth * tl_iMaskHeight;
-  for(INDEX ib=0;ib<iMaskSize;ib++) {
+  for (INDEX ib=0;ib<iMaskSize;ib++) {
     // copy red value from image
     *pubDst = *(UBYTE*)pubSrc;
     pubDst++;
@@ -184,7 +184,7 @@ void CTerrainLayer::ExportLayerMask_t(CTFileName fnLayerMask)
 
   GFXColor *pacolImage = (GFXColor*)&iiHeightMap.ii_Picture[0];
   UBYTE    *pubMask    = &tl_aubColors[0];
-  for(INDEX ipix=0;ipix<iSize;ipix++) {
+  for (INDEX ipix=0;ipix<iSize;ipix++) {
     pacolImage->abgr = 0x00000000;
     pacolImage->r = *pubMask;
     pacolImage++;
@@ -270,7 +270,7 @@ void CTerrainLayer::Copy(const CTerrainLayer &tlOther)
   Clear();
 
   // if texture exists
-  if(tlOther.tl_ptdTexture!=NULL) {
+  if (tlOther.tl_ptdTexture!=NULL) {
     // Copy texture
     SetLayerTexture_t(tlOther.tl_ptdTexture->GetName());
   }
@@ -353,7 +353,7 @@ void CTerrainLayer::Read_t(CTStream *istrFile,INDEX iSavedVersion)
   SetLayerSize(iMaskWidth,iMaskHeight);
   (*istrFile).Read_t(&tl_aubColors[0],sizeof(UBYTE) * tl_iMaskWidth * tl_iMaskHeight);
   
-  if(istrFile->PeekID_t()==CChunkID("TLPA")) { // 'Terrain edge map'
+  if (istrFile->PeekID_t()==CChunkID("TLPA")) { // 'Terrain edge map'
     // Read terrain layer params
     (*istrFile).ExpectID_t("TLPA"); // 'Terrain layer params'
 
@@ -420,7 +420,7 @@ void CTerrainLayer::Read_t(CTStream *istrFile,INDEX iSavedVersion)
     (*istrFile)>>tl_fMaxSlopeNoise;
     (*istrFile)>>tl_fMaxSlopeRandom;
     
-    if(iSavedVersion>=9) {
+    if (iSavedVersion>=9) {
       INDEX iType;
       (*istrFile)>>tl_colMultiply;
       (*istrFile)>>tl_fSmoothness;
@@ -510,13 +510,13 @@ void CTerrainLayer::Write_t( CTStream *ostrFile)
 void CTerrainLayer::Clear()
 {
   // if array of vertex colors was initialized
-  if(tl_aubColors!=NULL) {
+  if (tl_aubColors!=NULL) {
     // free array
     FreeMemory(tl_aubColors);
     tl_aubColors = NULL;
   }
   // if layer has valid texture 
-  if(tl_ptdTexture!=NULL) {
+  if (tl_ptdTexture!=NULL) {
     // release texture from stock
     _pTextureStock->Release(tl_ptdTexture);
     tl_ptdTexture = NULL;

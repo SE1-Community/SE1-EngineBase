@@ -52,7 +52,7 @@ int main( int argc, char *argv[])
 void SubMain( int argc, char *argv[])
 {
   // there must be 4 or 6 parameters (first is depend.exe file name)
-  if( (argc < 4) || (argc > 6) )
+  if ((argc < 4) || (argc > 6) )
   {
     PrintUsage();
   }
@@ -77,7 +77,7 @@ void SubMain( int argc, char *argv[])
   }
 
   // lenght of options string must be 1
-  if( strlen( ACHR_OPTION) != 1) {
+  if (strlen( ACHR_OPTION) != 1) {
     printf( "First argument must be letter representing wanted option.\n\n");
     PrintUsage();
   }
@@ -90,9 +90,9 @@ void SubMain( int argc, char *argv[])
     }
 
     // see what option was requested
-    switch( tolower(ACHR_OPTION[0]) ) {
+    switch (tolower(ACHR_OPTION[0]) ) {
     case 'i': {
-      if( ctFiles != 2) PrintUsage();
+      if (ctFiles != 2) PrintUsage();
       CDependencyList dl;
       CTFileStream strmDep;
 
@@ -105,7 +105,7 @@ void SubMain( int argc, char *argv[])
       dl.Write_t( &strmDep);
               } break;
     case 'e': {
-      if( ctFiles != 2) PrintUsage();
+      if (ctFiles != 2) PrintUsage();
       CDependencyList dl;
       CTFileStream strmDepIn;
 
@@ -117,7 +117,7 @@ void SubMain( int argc, char *argv[])
       dl.ExportASCII_t( afnFiles[1]);
               } break;
     case 'u': {
-      if( ctFiles != 2) PrintUsage();
+      if (ctFiles != 2) PrintUsage();
       CDependencyList dl;
       CTFileStream strmDepIn, strmDepOut;
 
@@ -132,7 +132,7 @@ void SubMain( int argc, char *argv[])
       dl.Write_t( &strmDepOut);
               } break;
     case 'd': {   // UNTESTED!!!!
-      if( ctFiles != 3) PrintUsage();
+      if (ctFiles != 3) PrintUsage();
       // load dependency lists
       CDependencyList dl1, dl2;
       CTFileStream strmDep1, strmDep2, strmDepDiff;
@@ -149,7 +149,7 @@ void SubMain( int argc, char *argv[])
       dl1.Write_t( &strmDepDiff);
               } break;
     case 't': {
-      if( ctFiles != 2) PrintUsage();
+      if (ctFiles != 2) PrintUsage();
       CDependencyList dl;
       // read file list
       dl.ImportASCII( afnFiles[0]);

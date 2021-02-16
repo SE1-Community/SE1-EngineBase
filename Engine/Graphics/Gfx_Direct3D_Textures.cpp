@@ -54,7 +54,7 @@ extern void UploadMipmap_D3D( ULONG *pulSrc, LPDIRECT3DTEXTURE8 ptexDst, PIX pix
 extern void UnpackFilter_D3D( INDEX iFilter, _D3DTEXTUREFILTERTYPE &eMagFilter,
                              _D3DTEXTUREFILTERTYPE &eMinFilter, _D3DTEXTUREFILTERTYPE &eMipFilter)
 {
-  switch( iFilter) {
+  switch (iFilter) {
   case 110:  case 10:  eMagFilter=D3DTEXF_POINT;  eMinFilter=D3DTEXF_POINT;  eMipFilter=D3DTEXF_NONE;   break;
   case 111:  case 11:  eMagFilter=D3DTEXF_POINT;  eMinFilter=D3DTEXF_POINT;  eMipFilter=D3DTEXF_POINT;  break;
   case 112:  case 12:  eMagFilter=D3DTEXF_POINT;  eMinFilter=D3DTEXF_POINT;  eMipFilter=D3DTEXF_LINEAR; break;
@@ -79,18 +79,18 @@ extern void MimicTexParams_D3D( CTexParams &tpLocal)
   _pfGfxProfile.StartTimer( CGfxProfile::PTI_TEXTUREPARAMS);
 
   // update texture filtering mode if required
-  if( tpLocal.tp_iFilter != _tpGlobal[0].tp_iFilter) tpLocal.tp_iFilter = _tpGlobal[0].tp_iFilter;
+  if (tpLocal.tp_iFilter != _tpGlobal[0].tp_iFilter) tpLocal.tp_iFilter = _tpGlobal[0].tp_iFilter;
 
   // eventually adjust filtering for textures w/o mipmaps
   const INDEX iMipFilter = _tpGlobal[0].tp_iFilter % 10;
-  if( (!tpLocal.tp_bSingleMipmap != !_tpGlobal[GFX_iActiveTexUnit].tp_bSingleMipmap) && iMipFilter!=0)
+  if ((!tpLocal.tp_bSingleMipmap != !_tpGlobal[GFX_iActiveTexUnit].tp_bSingleMipmap) && iMipFilter!=0)
   { 
     HRESULT hr;
     _D3DTEXTUREFILTERTYPE eMipFilter;
     extern INDEX GFX_iActiveTexUnit;
 
     // no mipmaps?
-    if( tpLocal.tp_bSingleMipmap) {
+    if (tpLocal.tp_bSingleMipmap) {
 #ifndef NDEBUG
       // paranoid!
       hr = _pGfx->gl_pd3dDevice->GetTextureStageState( GFX_iActiveTexUnit, D3DTSS_MIPFILTER, (ULONG*)&eMipFilter);
@@ -101,7 +101,7 @@ extern void MimicTexParams_D3D( CTexParams &tpLocal)
     }
     // yes mipmaps?
     else {
-      switch( iMipFilter) {
+      switch (iMipFilter) {
       case 0: eMipFilter = D3DTEXF_NONE;   break; 
       case 1: eMipFilter = D3DTEXF_POINT;  break; 
       case 2: eMipFilter = D3DTEXF_LINEAR; break; 
@@ -115,10 +115,10 @@ extern void MimicTexParams_D3D( CTexParams &tpLocal)
   }
 
   // update texture anisotropy degree
-  if( tpLocal.tp_iAnisotropy != _tpGlobal[0].tp_iAnisotropy) tpLocal.tp_iAnisotropy = _tpGlobal[0].tp_iAnisotropy;
+  if (tpLocal.tp_iAnisotropy != _tpGlobal[0].tp_iAnisotropy) tpLocal.tp_iAnisotropy = _tpGlobal[0].tp_iAnisotropy;
 
   // update texture clamping modes if changed
-  if( tpLocal.tp_eWrapU!=_tpGlobal[GFX_iActiveTexUnit].tp_eWrapU || tpLocal.tp_eWrapV!=_tpGlobal[GFX_iActiveTexUnit].tp_eWrapV) { 
+  if (tpLocal.tp_eWrapU!=_tpGlobal[GFX_iActiveTexUnit].tp_eWrapU || tpLocal.tp_eWrapV!=_tpGlobal[GFX_iActiveTexUnit].tp_eWrapV) { 
     tpLocal.tp_eWrapU = _tpGlobal[GFX_iActiveTexUnit].tp_eWrapU;
     tpLocal.tp_eWrapV = _tpGlobal[GFX_iActiveTexUnit].tp_eWrapV;
   }
@@ -144,8 +144,8 @@ extern void UploadTexture_D3D( LPDIRECT3DTEXTURE8 *ppd3dTexture, ULONG *pulTextu
 
   // recreate texture if needed
   HRESULT hr;
-  if( bDiscard) {
-    if( (*ppd3dTexture)!=NULL) D3DRELEASE( (*ppd3dTexture), TRUE);
+  if (bDiscard) {
+    if ((*ppd3dTexture)!=NULL) D3DRELEASE( (*ppd3dTexture), TRUE);
     hr = _pGfx->gl_pd3dDevice->CreateTexture( pixSizeU, pixSizeV, 0, 0, eInternalFormat, D3DPOOL_MANAGED, ppd3dTexture);
     D3D_CHECKERROR(hr);
   }
@@ -159,7 +159,7 @@ extern void UploadTexture_D3D( LPDIRECT3DTEXTURE8 *ppd3dTexture, ULONG *pulTextu
   // upload each mipmap
   INDEX iMip=0;
   PIX pixOffset=0;
-  while( pixSizeU>0 && pixSizeV>0)
+  while (pixSizeU>0 && pixSizeV>0)
   { 
     // check that memory is readable and upload one mipmap
     ASSERT( pulTexture[pixOffset +pixSizeU*pixSizeV -1] != 0xDEADBEEF);
@@ -170,21 +170,21 @@ extern void UploadTexture_D3D( LPDIRECT3DTEXTURE8 *ppd3dTexture, ULONG *pulTextu
     pixSizeV >>=1;
     iMip++;
     // end here if there is only one mip-map to upload
-    if( _tpCurrent->tp_bSingleMipmap) break;
+    if (_tpCurrent->tp_bSingleMipmap) break;
   }
 
   // see if we need to generate and upload additional mipmaps (those under 1*N or N*1)
-  if( !_tpCurrent->tp_bSingleMipmap && pixSizeU!=pixSizeV)
+  if (!_tpCurrent->tp_bSingleMipmap && pixSizeU!=pixSizeV)
   { // prepare variables
     PIX pixSize = Max(pixSizeU,pixSizeV);
     ASSERT( pixSize<=2048);
     ULONG *pulSrc = pulTexture+pixOffset-pixSize*2;
     ULONG *pulDst = _aulLastMipmaps;
     // loop thru mipmaps
-    while( pixSizeU>0 || pixSizeV>0)
+    while (pixSizeU>0 || pixSizeV>0)
     { // make next mipmap
-      if( pixSizeU==0) pixSizeU=1;
-      if( pixSizeV==0) pixSizeV=1;
+      if (pixSizeU==0) pixSizeU=1;
+      if (pixSizeV==0) pixSizeV=1;
       pixSize = pixSizeU*pixSizeV;
       __asm {   
         pxor    mm0,mm0
@@ -231,7 +231,7 @@ extern void UploadTexture_D3D( LPDIRECT3DTEXTURE8 *ppd3dTexture, ULONG *pulTextu
 // returns bytes/pixels ratio for texture format
 extern INDEX GetFormatPixRatio_D3D( D3DFORMAT d3dFormat)
 {
-  switch( d3dFormat) {
+  switch (d3dFormat) {
   case D3DFMT_A8R8G8B8:
   case D3DFMT_X8R8G8B8:
     return 4;
@@ -264,7 +264,7 @@ extern INDEX GetTexturePixRatio_D3D( LPDIRECT3DTEXTURE8 pd3dTexture)
 // return allowed dithering method
 extern INDEX AdjustDitheringType_D3D( D3DFORMAT eFormat, INDEX iDitheringType)
 {
-  switch( eFormat) {
+  switch (eFormat) {
   // these formats don't need dithering
   case D3DFMT_A8R8G8B8:
   case D3DFMT_X8R8G8B8:
@@ -275,7 +275,7 @@ extern INDEX AdjustDitheringType_D3D( D3DFORMAT eFormat, INDEX iDitheringType)
   case D3DFMT_R5G6B5:
   case D3DFMT_X1R5G5B5:
   case D3DFMT_A1R5G5B5:
-    if( iDitheringType>7) return iDitheringType-3;
+    if (iDitheringType>7) return iDitheringType-3;
   // other formats need dithering as it is
   default:
     return iDitheringType;

@@ -212,9 +212,9 @@ public:
   void GetPreviousValidPatchIndex( INDEX &iMaskBit);// Sets previous valid patch index
   void GetNextValidPatchIndex( INDEX &iMaskBit);    // Sets next valid patch index
   void CalculatePatchesPerPolygon(void);
-  INDEX GetMipCt(){ return edm_md.md_MipCt;};       // Returns number of mip models
-  MEX GetWidth(){ return edm_md.md_Width;};         // Returns allowed width for model's texture
-  MEX GetHeight(){ return edm_md.md_Height;};       // Returns allowed height for model's texture
+  INDEX GetMipCt() { return edm_md.md_MipCt;};       // Returns number of mip models
+  MEX GetWidth() { return edm_md.md_Width;};         // Returns allowed width for model's texture
+  MEX GetHeight() { return edm_md.md_Height;};       // Returns allowed height for model's texture
   // collision box handling functions
   FLOAT3D &GetCollisionBoxMin(void);
   FLOAT3D &GetCollisionBoxMax(void);

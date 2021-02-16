@@ -63,7 +63,7 @@ void CMipPolygon::Clear()
       delete pmpvCurrentInPolygon;
       pmpvCurrentInPolygon = pvNextInPolygon;
     }
-    while( pmpvCurrentInPolygon != mp_pmpvFirstPolygonVertex);
+    while (pmpvCurrentInPolygon != mp_pmpvFirstPolygonVertex);
   }
   mp_pmpvFirstPolygonVertex = NULL;
 }
@@ -105,7 +105,7 @@ void CMipModel::ToObject3D( CObject3D &objDestination)
     do
     {
       ASSERT( ctPolygonVertices<32);
-      if( ctPolygonVertices >= 32) break;
+      if (ctPolygonVertices >= 32) break;
       // add global index of vertex to list of vertex indices of polygon
       mm_amvVertices.Lock();
       aivVertices[ ctPolygonVertices] =
@@ -114,7 +114,7 @@ void CMipModel::ToObject3D( CObject3D &objDestination)
       pmpvPolygonVertex = pmpvPolygonVertex->mpv_pmpvNextInPolygon;
       ctPolygonVertices ++;
     }
-    while( pmpvPolygonVertex != itPolygon->mp_pmpvFirstPolygonVertex);
+    while (pmpvPolygonVertex != itPolygon->mp_pmpvFirstPolygonVertex);
     // add current polygon
     pOS->CreatePolygon( ctPolygonVertices, aivVertices,
                         pOS->osc_aomtMaterials[ itPolygon->mp_iSurface], 0, FALSE);
@@ -172,7 +172,7 @@ void CMipModel::FromObject3D_t( CObject3D &objRestFrame, CObject3D &objMipSource
     // allocate polygon vertices
     CMipPolygonVertex *ppvPolygonVertices[ 32];
     INDEX iPolygonVertice=0;
-    for( ; iPolygonVertice<ctPolygonVertices; iPolygonVertice++)
+    for (; iPolygonVertice<ctPolygonVertices; iPolygonVertice++)
     {
       // allocate one polygon vertex
       ppvPolygonVertices[ iPolygonVertice] = new( CMipPolygonVertex);
@@ -180,7 +180,7 @@ void CMipModel::FromObject3D_t( CObject3D &objRestFrame, CObject3D &objMipSource
 
     opoPolygon.opo_PolygonEdges.Lock();
     // for each polygon vertex in the polygon
-    for( iPolygonVertice=0; iPolygonVertice<ctPolygonVertices; iPolygonVertice++)
+    for (iPolygonVertice=0; iPolygonVertice<ctPolygonVertices; iPolygonVertice++)
     {
       CMipPolygonVertex *ppvPolygonVertex = ppvPolygonVertices[ iPolygonVertice];
       // get the object vertex as first vertex of the edge
@@ -211,7 +211,7 @@ void CMipModel::FromObject3D_t( CObject3D &objRestFrame, CObject3D &objMipSource
   objRestFrame.ob_aoscSectors.Unlock();
   objMipSourceFrame.ob_aoscSectors.Unlock();
 
-  if( ctInvalidVertices != 0)
+  if (ctInvalidVertices != 0)
   {
     sprintf( achrErrorVertice,
       "%d invalid vertices found\n-------------------------\n\n", ctInvalidVertices);
@@ -236,13 +236,13 @@ void CMipModel::CheckObjectValidity(void)
       ASSERT( pvCurrent->mpv_pmpPolygon == &mpMipPolygon);
       pvCurrent = pvCurrent->mpv_pmpvNextInPolygon;
     }
-    while( pvCurrent != pvFirstInPolygon);
+    while (pvCurrent != pvFirstInPolygon);
   }
 }
 
 FLOAT CMipModel::GetGoodness(CMipVertex *pmvSource, CMipVertex *pmvTarget)
 {
-  if( (_bPreserveSurfaces) && (pmvSource->mv_iSurface == -2) ) return -10000.0f;
+  if ((_bPreserveSurfaces) && (pmvSource->mv_iSurface == -2) ) return -10000.0f;
   FLOAT fDistST = ( *pmvSource - *pmvTarget).Length();
   FLOAT fDistBBoxCenterT = ( mm_boxBoundingBox.Center() - *pmvTarget).Length();
   return fDistBBoxCenterT/100.0f + 1.0f/fDistST;
@@ -263,13 +263,13 @@ INDEX CMipModel::FindSurfacesForVertices(void)
     do
     {
       CMipVertex *pmvVertex = pmpvCurrentInPolygon->mpv_pmvVertex;
-      if( pmvVertex->mv_iSurface == -1) pmvVertex->mv_iSurface = itPolygon->mp_iSurface;
-      else if( pmvVertex->mv_iSurface == -2); // do nothing
-      else if( pmvVertex->mv_iSurface == itPolygon->mp_iSurface);  // do nothing
+      if (pmvVertex->mv_iSurface == -1) pmvVertex->mv_iSurface = itPolygon->mp_iSurface;
+      else if (pmvVertex->mv_iSurface == -2); // do nothing
+      else if (pmvVertex->mv_iSurface == itPolygon->mp_iSurface);  // do nothing
       else pmvVertex->mv_iSurface = -2;
       pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
     }
-    while( pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
+    while (pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
   }}
 
   // count vertices that are sourounded with only one surface
@@ -277,7 +277,7 @@ INDEX CMipModel::FindSurfacesForVertices(void)
   // for all vertices
   {FOREACHINDYNAMICARRAY( mm_amvVertices, CMipVertex, itVertice)
   {
-    if( itVertice->mv_iSurface >= 0) ctVerticesWithOneSurface++;
+    if (itVertice->mv_iSurface >= 0) ctVerticesWithOneSurface++;
   }}
   return ctVerticesWithOneSurface;
 }
@@ -291,13 +291,13 @@ void CMipModel::JoinVertexPair( CMipVertex *pmvBestSource, CMipVertex *pmvBestTa
     CMipPolygonVertex *pmpvCurrentInPolygon = itPolygon->mp_pmpvFirstPolygonVertex;
     do
     {
-      if( pmpvCurrentInPolygon->mpv_pmvVertex == pmvBestSource)
+      if (pmpvCurrentInPolygon->mpv_pmvVertex == pmvBestSource)
       {
         pmpvCurrentInPolygon->mpv_pmvVertex = pmvBestTarget;
       }
       pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
     }
-    while( pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
+    while (pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
   }}
   // delete best source vertex
   mm_amvVertices.Delete( pmvBestSource);
@@ -311,10 +311,10 @@ void CMipModel::JoinVertexPair( CMipVertex *pmvBestSource, CMipVertex *pmvBestTa
     {
       CMipPolygonVertex *pmpvSuccesor = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
       // if current vertex and its sucessor are same mip vertex
-      if( pmpvCurrentInPolygon->mpv_pmvVertex == pmpvSuccesor->mpv_pmvVertex)
+      if (pmpvCurrentInPolygon->mpv_pmvVertex == pmpvSuccesor->mpv_pmvVertex)
       {
         // enable looping even if vertex that is first in polygon is deleted
-        if( pmpvSuccesor == itPolygon->mp_pmpvFirstPolygonVertex)
+        if (pmpvSuccesor == itPolygon->mp_pmpvFirstPolygonVertex)
         {
           itPolygon->mp_pmpvFirstPolygonVertex = pmpvSuccesor->mpv_pmpvNextInPolygon;
         }
@@ -325,7 +325,7 @@ void CMipModel::JoinVertexPair( CMipVertex *pmvBestSource, CMipVertex *pmvBestTa
       }
       pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
     }
-    while( pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
+    while (pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
   }}
 
   CDynamicContainer<CMipPolygon> cPolygonsToDelete;
@@ -334,7 +334,7 @@ void CMipModel::JoinVertexPair( CMipVertex *pmvBestSource, CMipVertex *pmvBestTa
   {
     CMipPolygonVertex *pmpvFirst = itPolygon->mp_pmpvFirstPolygonVertex;
     // if this is polygon with one or two vertices
-    if( (pmpvFirst->mpv_pmpvNextInPolygon == pmpvFirst) ||
+    if ((pmpvFirst->mpv_pmpvNextInPolygon == pmpvFirst) ||
         (pmpvFirst->mpv_pmpvNextInPolygon->mpv_pmpvNextInPolygon == pmpvFirst) )
     {
       // add it to container for deleting
@@ -363,7 +363,7 @@ void CMipModel::FindBestVertexPair( CMipVertex *&pmvBestSource, CMipVertex *&pmv
       CMipVertex *pmvSource = pmpvCurrentInPolygon->mpv_pmvVertex;
       CMipVertex *pmvDestination = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon->mpv_pmvVertex;
       FLOAT fCurrentGoodnes = GetGoodness( pmvSource, pmvDestination);
-      if( fCurrentGoodnes > fBestGoodnes)
+      if (fCurrentGoodnes > fBestGoodnes)
       {
         fBestGoodnes = fCurrentGoodnes;
         pmvBestSource = pmvSource;
@@ -373,7 +373,7 @@ void CMipModel::FindBestVertexPair( CMipVertex *&pmvBestSource, CMipVertex *&pmv
       pmvSource = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon->mpv_pmvVertex;
       pmvDestination = pmpvCurrentInPolygon->mpv_pmvVertex;
       fCurrentGoodnes = GetGoodness( pmvSource, pmvDestination);
-      if( fCurrentGoodnes > fBestGoodnes)
+      if (fCurrentGoodnes > fBestGoodnes)
       {
         fBestGoodnes = fCurrentGoodnes;
         pmvBestSource = pmvSource;
@@ -381,7 +381,7 @@ void CMipModel::FindBestVertexPair( CMipVertex *&pmvBestSource, CMipVertex *&pmv
       }
       pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
     }
-    while( pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
+    while (pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
   }}
   ASSERT( (pmvBestSource != NULL) && (pmvBestTarget != NULL) );
   ASSERT( pmvBestSource != pmvBestTarget);
@@ -408,7 +408,7 @@ void CMipModel::RemoveUnusedVertices(void)
       pmpvCurrentInPolygon->mpv_pmvVertex->mv_bUsed = TRUE;
       pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
     }
-    while( pmpvCurrentInPolygon != itpo->mp_pmpvFirstPolygonVertex);
+    while (pmpvCurrentInPolygon != itpo->mp_pmpvFirstPolygonVertex);
   }}
 
   // find number of used vertices
@@ -451,7 +451,7 @@ void CMipModel::RemoveUnusedVertices(void)
       pmpvCurrentInPolygon->mpv_pmvVertex = pmpvCurrentInPolygon->mpv_pmvVertex->mv_pmvxRemap;
       pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
     }
-    while( pmpvCurrentInPolygon != itpo->mp_pmpvFirstPolygonVertex);
+    while (pmpvCurrentInPolygon != itpo->mp_pmpvFirstPolygonVertex);
   }}
 
   // use new array of vertices instead of the old one
@@ -461,15 +461,15 @@ void CMipModel::RemoveUnusedVertices(void)
 
 BOOL CMipModel::CreateMipModel_t(INDEX ctVerticesToRemove, INDEX iSurfacePreservingFactor)
 {
-  if( ctVerticesToRemove>mm_amvVertices.Count()) return FALSE;
+  if (ctVerticesToRemove>mm_amvVertices.Count()) return FALSE;
 
-  for( INDEX ctRemoved = 0; ctRemoved<ctVerticesToRemove; ctRemoved++)
+  for (INDEX ctRemoved = 0; ctRemoved<ctVerticesToRemove; ctRemoved++)
   {
     INDEX ctVerticesWithOneSurface = FindSurfacesForVertices();
 
     // setup flag for preserving surfaces
     _bPreserveSurfaces = TRUE;
-    if( (ctVerticesWithOneSurface == 0) ||
+    if ((ctVerticesWithOneSurface == 0) ||
         (( ((FLOAT)ctVerticesWithOneSurface) / mm_amvVertices.Count())*100 <=
         (100-iSurfacePreservingFactor)) )
     {
@@ -480,7 +480,7 @@ BOOL CMipModel::CreateMipModel_t(INDEX ctVerticesToRemove, INDEX iSurfacePreserv
     FindBestVertexPair( pmvBestSource, pmvBestTarget);
     JoinVertexPair( pmvBestSource, pmvBestTarget);
     RemoveUnusedVertices();
-    if( mm_amvVertices.Count() == 0) return FALSE;
+    if (mm_amvVertices.Count() == 0) return FALSE;
   }
   return TRUE;
 }

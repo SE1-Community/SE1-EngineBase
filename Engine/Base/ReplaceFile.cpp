@@ -97,14 +97,14 @@ BOOL GetReplacingFile(CTFileName fnSourceFile, CTFileName &fnReplacingFile,
     CTFileStream fsBase;
     CTFileName fnBaseName = CTString("Data\\BaseForReplacingFiles.txt");
     fsBase.Open_t( fnBaseName);
-    while( !fsBase.AtEOF())
+    while (!fsBase.AtEOF())
     {
       fsBase.GetLine_t( achrLine, 256);
       sscanf( achrLine, "\"%[^\"]\" \"%[^\"]\"", achrSource, achrRemap);
       if (CTString( achrSource) ==  achrRemap) {
         continue; // skip remaps to self
       }
-      if( CTString( achrSource) == fnSourceFile)
+      if (CTString( achrSource) == fnSourceFile)
       {
         fnReplacingFile = CTString( achrRemap);
         return TRUE;
@@ -123,14 +123,14 @@ BOOL GetReplacingFile(CTFileName fnSourceFile, CTFileName &fnReplacingFile,
   CTString strDefaultFile;
   strDefaultFile = fnSourceFile.FileName() + fnSourceFile.FileExt();
   fnReplacingFile = CallFileRequester((char*)(const char*)strTitle, (char*)(const char*)strDefaultFile, pFilter);
-  if( fnReplacingFile == "") return FALSE;
+  if (fnReplacingFile == "") return FALSE;
 
   try
   {
     // add new remap to end of remapping base file
     CTFileName fnBaseName = CTString("Data\\BaseForReplacingFiles.txt");
     CTString strBase;
-    if( FileExists( fnBaseName))
+    if (FileExists( fnBaseName))
     {
       strBase.Load_t( fnBaseName);
     }
@@ -151,7 +151,7 @@ BOOL GetReplacingFile(CTFileName fnSourceFile, CTFileName &fnReplacingFile,
 void SetTextureWithPossibleReplacing_t(CTextureObject &to, CTFileName &fnmTexture)
 {
   // try to load texture
-  for(;;)
+  for (;;)
   {
     try
     {
@@ -163,14 +163,14 @@ void SetTextureWithPossibleReplacing_t(CTextureObject &to, CTFileName &fnmTextur
       (void) strError;
       // if texture was not found, ask for replacing texture
       CTFileName fnReplacingTexture;
-      if( GetReplacingFile( fnmTexture, fnReplacingTexture, FILTER_TEX FILTER_END))
+      if (GetReplacingFile( fnmTexture, fnReplacingTexture, FILTER_TEX FILTER_END))
       {
         // if replacing texture was provided, repeat reading of polygon's textures
         fnmTexture = fnReplacingTexture;
       }
       else
       {
-        if(_pShell->GetINDEX("wed_bUseGenericTextureReplacement")) {
+        if (_pShell->GetINDEX("wed_bUseGenericTextureReplacement")) {
           fnmTexture = CTString("Textures\\Editor\\Default.tex");
           to.SetData_t(fnmTexture);
         } else {
@@ -189,7 +189,7 @@ void ReadTextureObject_t(CTStream &strm, CTextureObject &to)
   CTFileName fnTexture;
   strm>>fnTexture;
   // try to load texture
-  for(;;) {
+  for (;;) {
     try {
       // set the texture data
       to.SetData_t(fnTexture);
@@ -198,7 +198,7 @@ void ReadTextureObject_t(CTStream &strm, CTextureObject &to)
       (void) strError;
       // if texture was not found, ask for replacing texture
       CTFileName fnReplacingTexture;
-      if( GetReplacingFile( fnTexture, fnReplacingTexture, FILTER_TEX FILTER_END)) {
+      if (GetReplacingFile( fnTexture, fnReplacingTexture, FILTER_TEX FILTER_END)) {
         // replacing texture was provided
         fnTexture = fnReplacingTexture;
       } else {
@@ -238,7 +238,7 @@ void ReadModelObject_t(CTStream &strm, CModelObject &mo)
   CTFileName fnModel;
   strm>>fnModel;
   // try to load model
-  for(;;) {
+  for (;;) {
     try {
       // set the model data
       mo.SetData_t(fnModel);
@@ -247,7 +247,7 @@ void ReadModelObject_t(CTStream &strm, CModelObject &mo)
       (void) strError;
       // if model was not found, ask for replacing model
       CTFileName fnReplacingModel;
-      if( GetReplacingFile( fnModel, fnReplacingModel, FILTER_MDL FILTER_END)) {
+      if (GetReplacingFile( fnModel, fnReplacingModel, FILTER_MDL FILTER_END)) {
         // replacing model was provided
         fnModel = fnReplacingModel;
       } else {
@@ -280,7 +280,7 @@ void ReadModelObject_t(CTStream &strm, CModelObject &mo)
     INDEX ctAttachments;
     strm>>ctAttachments;
     // for each attachment
-    for(INDEX iAttachment=0; iAttachment<ctAttachments; iAttachment++) {
+    for (INDEX iAttachment=0; iAttachment<ctAttachments; iAttachment++) {
       // read its position and create the attachment
       INDEX iPosition;
       strm>>iPosition;
@@ -330,7 +330,7 @@ void SkipModelObject_t(CTStream &strm)
     INDEX ctAttachments;
     strm>>ctAttachments;
     // for each attachment
-    for(INDEX iAttachment=0; iAttachment<ctAttachments; iAttachment++) {
+    for (INDEX iAttachment=0; iAttachment<ctAttachments; iAttachment++) {
       // skip its position, placement and model
       INDEX iPosition;
       strm>>iPosition;
@@ -384,7 +384,7 @@ void WriteMeshInstances_t(CTStream &strm, CModelInstance &mi)
   INDEX ctmshi=mi.mi_aMeshInst.Count();
   strm<<ctmshi;
   // for each mesh
-  for(INDEX imshi=0;imshi<ctmshi;imshi++) {
+  for (INDEX imshi=0;imshi<ctmshi;imshi++) {
     MeshInstance &mshi = mi.mi_aMeshInst[imshi];
     CTFileName fnMesh = mshi.mi_pMesh->GetName();
     strm.WriteID_t("MESH");
@@ -396,7 +396,7 @@ void WriteMeshInstances_t(CTStream &strm, CModelInstance &mi)
     INDEX ctti = mshi.mi_tiTextures.Count();
     strm<<ctti;
     // for each texture instance
-    for(INDEX iti=0;iti<ctti;iti++) {
+    for (INDEX iti=0;iti<ctti;iti++) {
       // write texture file name and texture ID
       TextureInstance &ti = mshi.mi_tiTextures[iti];
       CTextureData *ptd = (CTextureData*)ti.ti_toTexture.GetData();
@@ -416,7 +416,7 @@ void WriteSkeleton_t(CTStream &strm, CModelInstance &mi)
   BOOL bHasSkeleton = (pSkeleton!=NULL);
   strm.WriteID_t("SKEL");
   strm<<bHasSkeleton;
-  if(bHasSkeleton) {
+  if (bHasSkeleton) {
     CTFileName fnSkeleton = pSkeleton->GetName();
     strm<<fnSkeleton;
   }
@@ -429,7 +429,7 @@ void WriteAnimSets(CTStream &strm, CModelInstance &mi)
   INDEX ctas = mi.mi_aAnimSet.Count();
   strm<<ctas;
   // for each animset in model instance
-  for(INDEX ias=0;ias<ctas;ias++) {
+  for (INDEX ias=0;ias<ctas;ias++) {
     CAnimSet &as = mi.mi_aAnimSet[ias];
     CTFileName fnAnimSet = as.GetName();
     // write animset binary file name
@@ -443,7 +443,7 @@ void WriteColisionBoxes(CTStream &strm, CModelInstance &mi)
   INDEX ctcb = mi.mi_cbAABox.Count();
   strm<<ctcb;
   // for each colision box
-  for(INDEX icb=0;icb<ctcb;icb++) {
+  for (INDEX icb=0;icb<ctcb;icb++) {
     ColisionBox &cb = mi.mi_cbAABox[icb];
     // write colision box
     strm<<cb.Min();
@@ -464,7 +464,7 @@ void WriteAnimQueue_t(CTStream &strm, CModelInstance &mi)
   INDEX ctal = aq.aq_Lists.Count();
   strm<<ctal;
   // for each anim list
-  for(INDEX ial=0;ial<ctal;ial++) {
+  for (INDEX ial=0;ial<ctal;ial++) {
     AnimList &al = aq.aq_Lists[ial];
 
     // [Cecil] New timer: 'Anim Queue anim List 2'
@@ -474,7 +474,7 @@ void WriteAnimQueue_t(CTStream &strm, CModelInstance &mi)
     INDEX ctpa = al.al_PlayedAnims.Count();
     strm<<ctpa;
     // for each played anim
-    for(INDEX ipa=0;ipa<ctpa;ipa++) {
+    for (INDEX ipa=0;ipa<ctpa;ipa++) {
       // save played anim
       PlayedAnim &pa = al.al_PlayedAnims[ipa];
       // [Cecil] New timer: 'Anim List Played anim 2'
@@ -505,7 +505,7 @@ void WriteOffsetAndChildren(CTStream &strm, CModelInstance &mi)
   INDEX ctcmi = mi.mi_cmiChildren.Count();
   strm<<ctcmi;
   // for each child model instance
-  for(INDEX icmi=0;icmi<ctcmi;icmi++) {
+  for (INDEX icmi=0;icmi<ctcmi;icmi++) {
     CModelInstance &cmi = mi.mi_cmiChildren[icmi];
     // save child model instance
     WriteModelInstance_t(strm, cmi);
@@ -555,7 +555,7 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
   mi.mi_aMeshInst.New(ctmshi);
   
   // for each mesh
-  for(INDEX imshi=0;imshi<ctmshi;imshi++) {
+  for (INDEX imshi=0;imshi<ctmshi;imshi++) {
     MeshInstance &mshi = mi.mi_aMeshInst[imshi];
     CTFileName fnMesh;
     // read binary mesh file name
@@ -566,7 +566,7 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
     strm>>ctti;
     mshi.mi_tiTextures.New(ctti);
     // for each texture instance
-    for(INDEX iti=0;iti<ctti;iti++) {
+    for (INDEX iti=0;iti<ctti;iti++) {
       // read texture file name and texture ID
       TextureInstance &ti = mshi.mi_tiTextures[iti];
 
@@ -585,7 +585,7 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
   mi.mi_psklSkeleton = NULL;
 
   strm>>bHasSkeleton;
-  if(bHasSkeleton) {
+  if (bHasSkeleton) {
     CTFileName fnSkeleton;
     strm>>fnSkeleton;
     mi.mi_psklSkeleton = _pSkeletonStock->Obtain_t(fnSkeleton);
@@ -594,7 +594,7 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
   // read animsets file names
   strm>>ctas;
   // for each animset in model instance
-  for(INDEX ias=0;ias<ctas;ias++) {
+  for (INDEX ias=0;ias<ctas;ias++) {
     // read animset binary file name
     CTFileName fnAnimSet;
     strm>>fnAnimSet;
@@ -606,7 +606,7 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
   strm>>ctcb;
   mi.mi_cbAABox.New(ctcb);
   // for each colision box
-  for(INDEX icb=0;icb<ctcb;icb++) {
+  for (INDEX icb=0;icb<ctcb;icb++) {
     ColisionBox &cb = mi.mi_cbAABox[icb];
     // read colision box
     strm>>cb.Min();
@@ -624,9 +624,9 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
   // read animation queue
   AnimQueue &aq = mi.mi_aqAnims;
   strm>>ctal;
-  if(ctal>0) aq.aq_Lists.Push(ctal);
+  if (ctal>0) aq.aq_Lists.Push(ctal);
   // for each anim list
-  for(INDEX ial=0;ial<ctal;ial++) {
+  for (INDEX ial=0;ial<ctal;ial++) {
     AnimList &al = aq.aq_Lists[ial];
 
     // read anim list and get all played anims
@@ -636,10 +636,10 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
 
     strm>>al.al_fFadeTime;
     strm>>ctpa;
-    if(ctpa>0) al.al_PlayedAnims.Push(ctpa);
+    if (ctpa>0) al.al_PlayedAnims.Push(ctpa);
 
     // for each played anim
-    for(INDEX ipa=0;ipa<ctpa;ipa++) {
+    for (INDEX ipa=0;ipa<ctpa;ipa++) {
       // save played anim
       PlayedAnim &pa = al.al_PlayedAnims[ipa];
       FLOAT fStartTime;
@@ -664,7 +664,7 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
   // read model instance children
   strm>>ctcmi;
   // for each child model instance
-  for(INDEX icmi=0;icmi<ctcmi;icmi++) {
+  for (INDEX icmi=0;icmi<ctcmi;icmi++) {
     // create empty model instance
     CModelInstance *pcmi = CreateModelInstance("Temp");
     // add as child to parent model isntance
@@ -684,7 +684,7 @@ void ReadMeshInstances_t(CTStream &strm, CModelInstance &mi)
   strm>>ctmshi;
   mi.mi_aMeshInst.New(ctmshi);
   // for each mesh
-  for(INDEX imshi=0;imshi<ctmshi;imshi++) {
+  for (INDEX imshi=0;imshi<ctmshi;imshi++) {
     MeshInstance &mshi = mi.mi_aMeshInst[imshi];
     CTFileName fnMesh;
 
@@ -698,7 +698,7 @@ void ReadMeshInstances_t(CTStream &strm, CModelInstance &mi)
     strm>>ctti;
     mshi.mi_tiTextures.New(ctti);
     // for each texture instance
-    for(INDEX iti=0;iti<ctti;iti++) {
+    for (INDEX iti=0;iti<ctti;iti++) {
       // read texture file name and texture ID
       TextureInstance &ti = mshi.mi_tiTextures[iti];
       strm.ExpectID_t("TITX");  // texture instance texture
@@ -721,7 +721,7 @@ void ReadSkeleton_t(CTStream &strm, CModelInstance &mi)
 
   strm.ExpectID_t("SKEL");
   strm>>bHasSkeleton;
-  if(bHasSkeleton) {
+  if (bHasSkeleton) {
     CTFileName fnSkeleton;
     strm>>fnSkeleton;
     mi.mi_psklSkeleton = _pSkeletonStock->Obtain_t(fnSkeleton);
@@ -735,7 +735,7 @@ void ReadAnimSets_t(CTStream &strm, CModelInstance &mi)
   // read animsets file names
   strm>>ctas;
   // for each animset in model instance
-  for(INDEX ias=0;ias<ctas;ias++) {
+  for (INDEX ias=0;ias<ctas;ias++) {
     // read animset binary file name
     CTFileName fnAnimSet;
     strm>>fnAnimSet;
@@ -752,9 +752,9 @@ void ReadAnimQueue_t(CTStream &strm, CModelInstance &mi)
   // read animation queue
   AnimQueue &aq = mi.mi_aqAnims;
   strm>>ctal;
-  if(ctal>0) aq.aq_Lists.Push(ctal);
+  if (ctal>0) aq.aq_Lists.Push(ctal);
   // for each anim list
-  for(INDEX ial=0;ial<ctal;ial++) {
+  for (INDEX ial=0;ial<ctal;ial++) {
     AnimList &al = aq.aq_Lists[ial];
     // [Cecil] New timer: 'Anim List Played anim 2'
     if (strm.PeekID_t() == CChunkID("AQL2")) {
@@ -768,9 +768,9 @@ void ReadAnimQueue_t(CTStream &strm, CModelInstance &mi)
     }
     strm>>al.al_fFadeTime;
     strm>>ctpa;
-    if(ctpa>0) al.al_PlayedAnims.Push(ctpa);
+    if (ctpa>0) al.al_PlayedAnims.Push(ctpa);
     // for each played anim
-    for(INDEX ipa=0;ipa<ctpa;ipa++) {
+    for (INDEX ipa=0;ipa<ctpa;ipa++) {
       // read played anim
       PlayedAnim &pa = al.al_PlayedAnims[ipa];
 
@@ -792,7 +792,7 @@ void ReadAnimQueue_t(CTStream &strm, CModelInstance &mi)
       CTString strPlayedAnimID;
       strm>>strPlayedAnimID;
       pa.pa_iAnimID = ska_GetIDFromStringTable(strPlayedAnimID);
-      if(strm.PeekID_t()==CChunkID("PASP")) {
+      if (strm.PeekID_t()==CChunkID("PASP")) {
         strm.ExpectID_t("PASP");  // played animation speed
         strm>>pa.pa_fSpeedMul;
       }
@@ -808,7 +808,7 @@ void ReadColisionBoxes_t(CTStream &strm, CModelInstance &mi)
   strm>>ctcb;
   mi.mi_cbAABox.New(ctcb);
   // for each colision box
-  for(INDEX icb=0;icb<ctcb;icb++) {
+  for (INDEX icb=0;icb<ctcb;icb++) {
     ColisionBox &cb = mi.mi_cbAABox[icb];
     CTString strName;
     // read colision box
@@ -837,7 +837,7 @@ void ReadOffsetAndChildren_t(CTStream &strm, CModelInstance &mi)
   // read model instance children
   strm>>ctcmi;
   // for each child model instance
-  for(INDEX icmi=0;icmi<ctcmi;icmi++) {
+  for (INDEX icmi=0;icmi<ctcmi;icmi++) {
     // create empty model instance
     CModelInstance *pcmi = CreateModelInstance("Temp");
     // add as child to parent model isntance
@@ -874,10 +874,10 @@ void ReadModelInstanceNew_t(CTStream &strm, CModelInstance &mi)
 void ReadModelInstance_t(CTStream &strm, CModelInstance &mi)
 {
   // is model instance writen in old format
-  if(strm.PeekID_t() == CChunkID("SKMI")) {
+  if (strm.PeekID_t() == CChunkID("SKMI")) {
     ReadModelInstanceOld_t(strm, mi);
   // is model instance writen in new format
-  } else if(strm.PeekID_t() == CChunkID("MI03")) {
+  } else if (strm.PeekID_t() == CChunkID("MI03")) {
     ReadModelInstanceNew_t(strm, mi);
   // unknown format
   } else {
@@ -899,7 +899,7 @@ void ReadAnimObject_t(CTStream &strm, CAnimObject &ao)
   CTFileName fnAnim;
   strm>>fnAnim;
   // try to load anim
-  for(;;) {
+  for (;;) {
     try {
       // set the anim data
       ao.SetData_t(fnAnim);
@@ -908,7 +908,7 @@ void ReadAnimObject_t(CTStream &strm, CAnimObject &ao)
       (void) strError;
       // if anim was not found, ask for replacing anim
       CTFileName fnReplacingAnim;
-      if( GetReplacingFile( fnAnim, fnReplacingAnim, FILTER_ANI FILTER_END)) {
+      if (GetReplacingFile( fnAnim, fnReplacingAnim, FILTER_ANI FILTER_END)) {
         // replacing anim was provided
         fnAnim = fnReplacingAnim;
       } else {

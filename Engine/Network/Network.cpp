@@ -254,10 +254,10 @@ extern void CacheShadows(void)
   // mute all sounds
   _pSound->Mute();
   CWorld *pwo = (CWorld*)_pShell->GetINDEX("pwoCurrentWorld");
-  if( pwo!=NULL) {
+  if (pwo!=NULL) {
     pwo->wo_baBrushes.CacheAllShadowmaps();
     CPrintF( TRANS("All shadows recached"));
-    if( shd_bCacheAll) CPrintF(".\n");
+    if (shd_bCacheAll) CPrintF(".\n");
     else CPrintF( TRANS(", but not for long.\n(precache all shadows function is disabled)\n"));
   }
   // mark that we need pretouching
@@ -270,7 +270,7 @@ extern BOOL MatchesBanMask(const CTString &strString, const CTString &strMask)
   CTString strRest = strMask;
   CTString strLine;
 
-  while(strRest!="") {
+  while (strRest!="") {
     strLine = strRest;
     strLine.OnlyFirstLine();
     strRest.RemovePrefix(strLine);
@@ -328,7 +328,7 @@ static void NetworkInfo(void)
     CPrintF("  last processed tick: %g\n", CTimer::InSeconds(_pNetwork->ga_srvServer.srv_llLastProcessedTick));
     CPrintF("  last processed sequence: %d\n", _pNetwork->ga_srvServer.srv_iLastProcessedSequence);
     CPrintF("  players:\n");
-    for(INDEX iplb=0; iplb<_pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
+    for (INDEX iplb=0; iplb<_pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
       CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iplb];
       if (plb.plb_Active) {
         CPrintF("    %2d(%2d):'%s'@client%2d: (%dact)\n",
@@ -337,7 +337,7 @@ static void NetworkInfo(void)
       }
     }
     CPrintF("  clients:\n");
-    for(INDEX iSession=0; iSession<_pNetwork->ga_srvServer.srv_assoSessions.Count(); iSession++) {
+    for (INDEX iSession=0; iSession<_pNetwork->ga_srvServer.srv_assoSessions.Count(); iSession++) {
       CSessionSocket &sso = _pNetwork->ga_srvServer.srv_assoSessions[iSession];
       if (sso.sso_bActive) {
         CPrintF("  %2d:'%s'\n", iSession, _cmiComm.Server_GetClientName(iSession)),
@@ -365,7 +365,7 @@ static void NetworkInfo(void)
   CPrintF("  last processed tick: %g\n", CTimer::InSeconds(_pNetwork->ga_sesSessionState.ses_llLastProcessedTick));
   CPrintF("  last processed sequence: %d\n", _pNetwork->ga_sesSessionState.ses_iLastProcessedSequence);
   CPrintF("  level change: %d\n", _pNetwork->ga_sesSessionState.ses_iLevel);
-  for(INDEX iplt=0; iplt<_pNetwork->ga_sesSessionState.ses_apltPlayers.Count(); iplt++) {
+  for (INDEX iplt=0; iplt<_pNetwork->ga_sesSessionState.ses_apltPlayers.Count(); iplt++) {
     CPlayerTarget &plt = _pNetwork->ga_sesSessionState.ses_apltPlayers[iplt];
     if (plt.plt_bActive) {
       ULONG ulID = -1;
@@ -394,7 +394,7 @@ static void ListPlayers(void)
 
   CPrintF("  client# name\n");
   CPrintF("  ----------------------\n");
-  for(INDEX iplb=0; iplb<_pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
+  for (INDEX iplb=0; iplb<_pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
     CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iplb];
     if (plb.plb_Active) {
       CPrintF("     %-2d   %s\n", plb.plb_iClient, plb.plb_pcCharacter.GetNameForPrinting());
@@ -433,7 +433,7 @@ static void KickByName(const CTString &strName, const CTString &strReason)
     CPrintF( TRANS("Only server can kick people!\n"));
     return;
   }
-  for(INDEX iplb=0; iplb<_pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
+  for (INDEX iplb=0; iplb<_pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
     CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iplb];
     if (plb.plb_Active && plb.plb_pcCharacter.GetNameForPrinting().Undecorated().Matches(strName)) {
       KickClient(plb.plb_iClient, strReason);
@@ -465,7 +465,7 @@ static void StockInfo(void)
   INDEX ct256=0, ct128=0, ct64=0, ct32=0, ct16=0;
   SLONG sl256Memory=0, sl128Memory=0, sl64Memory=0, sl32Memory=0, sl16Memory=0;
 
-  if( _pGfx!=NULL)
+  if (_pGfx!=NULL)
   {
     FLOAT fSlackRatio;
     FOREACHINLIST( CShadowMap, sm_lnInGfx, _pGfx->gl_lhCachedShadows, itsm)
@@ -473,7 +473,7 @@ static void StockInfo(void)
       SLONG slStaticSize, slDynamicSize, slUploadSize;
       BOOL bIsFlat = itsm->GetUsedMemory( slStaticSize, slDynamicSize, slUploadSize, fSlackRatio);
       SLONG slTotalSize = slDynamicSize+slUploadSize;
-      if( bIsFlat) {
+      if (bIsFlat) {
         slStaticMemory += 4;
         slTotalSize    += 4;
         slFlatMemory   += slStaticSize;
@@ -481,9 +481,9 @@ static void StockInfo(void)
       } else {
         slStaticMemory += slStaticSize;
         slTotalSize    += slStaticSize;
-        if( slTotalSize>0) ctCachedShadows++;
+        if (slTotalSize>0) ctCachedShadows++;
       }
-      if( slDynamicSize>0) {
+      if (slDynamicSize>0) {
         slDynamicMemory += slDynamicSize;
         ctDynamicShadows++;
       }
@@ -491,22 +491,22 @@ static void StockInfo(void)
       slShdBytes  += slTotalSize + sizeof(CShadowMap);
       slSlackMemory   += slTotalSize*fSlackRatio;
 
-      if( !bIsFlat) { // by size ...
-        if(      slStaticSize>128*1024) { ct256++; sl256Memory+=slTotalSize; }
-        else if( slStaticSize> 64*1024) { ct128++; sl128Memory+=slTotalSize; }
-        else if( slStaticSize> 32*1024) { ct64++;  sl64Memory +=slTotalSize; }
-        else if( slStaticSize> 16*1024) { ct32++;  sl32Memory +=slTotalSize; }
-        else if( slStaticSize> 0)       { ct16++;  sl16Memory +=slTotalSize; }
+      if (!bIsFlat) { // by size ...
+        if (     slStaticSize>128*1024) { ct256++; sl256Memory+=slTotalSize; }
+        else if (slStaticSize> 64*1024) { ct128++; sl128Memory+=slTotalSize; }
+        else if (slStaticSize> 32*1024) { ct64++;  sl64Memory +=slTotalSize; }
+        else if (slStaticSize> 16*1024) { ct32++;  sl32Memory +=slTotalSize; }
+        else if (slStaticSize> 0)       { ct16++;  sl16Memory +=slTotalSize; }
       }
     }
     // report shadowmap memory usage (if any)
-    if( slShdBytes>0) {
+    if (slShdBytes>0) {
       CPrintF( "\nCached shadowmaps:\n");
       CPrintF( "    Total: %d in %d KB with %d%% (%d KB) of slack space\n", ctCachedShadows, slShdBytes/1024, slSlackMemory*100/slShdBytes, slSlackMemory/1024);
       CPrintF( "   Static: %d KB\n", slStaticMemory/1024);
       CPrintF( "   Upload: %d KB\n", slUploadMemory/1024);
       CPrintF( "  Dynamic: %d in %d KB\n", ctDynamicShadows, slDynamicMemory/1024);
-      if( ctCachedShadows<1) ctCachedShadows=1; // for percentage calc
+      if (ctCachedShadows<1) ctCachedShadows=1; // for percentage calc
       CPrintF( "    Flats: %d (%d%%) with %d KB saved\n", ctFlatShadows, ctFlatShadows*100/ctCachedShadows, slFlatMemory/1024);
       CPrintF("of size:\n");
       CPrintF( "    >128K: %4d in %d KB\n", ct256, sl256Memory/1024);
@@ -523,7 +523,7 @@ static void StockInfo(void)
   SLONG slCgrBytes=0;
   CWorld *pwo = (CWorld*)_pShell->GetINDEX("pwoCurrentWorld");
 
-  if( pwo!=NULL)
+  if (pwo!=NULL)
   {
     // report count of and memory used by entities
     FOREACHINDYNAMICCONTAINER( pwo->wo_cenEntities, CEntity, iten) {
@@ -535,7 +535,7 @@ static void StockInfo(void)
     FOREACHINDYNAMICARRAY( pwo->wo_baBrushes.ba_abrBrushes, CBrush3D, itbr) // for all brush entities in the world
     {
       // skip brush without entity
-      if( itbr->br_penEntity==NULL) continue;
+      if (itbr->br_penEntity==NULL) continue;
 
       // for each mip
       FOREACHINLIST( CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm)
@@ -568,7 +568,7 @@ static void StockInfo(void)
             CBrushPolygon &bpo = *itbpo;
             slPlyBytes += bpo.GetUsedMemory();
             // count in the shadow layers (if any)
-            if( bpo.bpo_smShadowMap.bsm_lhLayers.IsEmpty()) continue; // skip polygon without shadowmap
+            if (bpo.bpo_smShadowMap.bsm_lhLayers.IsEmpty()) continue; // skip polygon without shadowmap
             ctShadowLayers += bpo.bpo_smShadowMap.GetShadowLayersCount();
             slLyrBytes += bpo.bpo_smShadowMap.GetUsedMemory();
           }
@@ -1021,7 +1021,7 @@ void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName,
   ga_sesSessionState.ses_fRealTimeFactor = 1.0f;
 
   // eventually cache all shadowmaps in world (memory eater!)
-  if( shd_bCacheAll) ga_World.wo_baBrushes.CacheAllShadowmaps();
+  if (shd_bCacheAll) ga_World.wo_baBrushes.CacheAllShadowmaps();
   // flush stale caches
   FreeUnusedStock();
   // mark that pretouching is required
@@ -1129,7 +1129,7 @@ void CNetworkLibrary::Load_t(const CTFileName &fnmGame) // throw char *
   ga_srvServer.srv_assoSessions[0].sso_iLastSentSequence = ga_srvServer.srv_iLastProcessedSequence;
 
   // eventually cache all shadowmaps in world (memory eater!)
-  if( shd_bCacheAll) ga_World.wo_baBrushes.CacheAllShadowmaps();
+  if (shd_bCacheAll) ga_World.wo_baBrushes.CacheAllShadowmaps();
   // flush stale caches
   FreeUnusedStock();
   // mark that pretouching is required
@@ -1149,7 +1149,7 @@ void CNetworkLibrary::DebugSave(void)
   try {
     Save_t(CTString("Save\\Debug.sav"));
   // if not successful
-  } catch (char *strError){
+  } catch (char *strError) {
     FatalError("Cannot save debug game:\n%s", strError);
   }
 }
@@ -1219,7 +1219,7 @@ void CNetworkLibrary::JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctL
   _pShell->SetINDEX("pwoCurrentWorld", (INDEX)&ga_World);
 
   // eventually cache all shadowmaps in world (memory eater!)
-  if( shd_bCacheAll) ga_World.wo_baBrushes.CacheAllShadowmaps();
+  if (shd_bCacheAll) ga_World.wo_baBrushes.CacheAllShadowmaps();
   // flush stale caches
   FreeUnusedStock();
   // mark that pretouching is required
@@ -1281,7 +1281,7 @@ void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo)  // throw char *
   }
 
   // eventually cache all shadowmaps in world (memory eater!)
-  if( shd_bCacheAll) ga_World.wo_baBrushes.CacheAllShadowmaps();
+  if (shd_bCacheAll) ga_World.wo_baBrushes.CacheAllShadowmaps();
   // flush stale caches
   FreeUnusedStock();
   // mark that pretouching is required
@@ -1548,13 +1548,13 @@ void CNetworkLibrary::ChangeLevel_internal(void)
   CWorld wldTemp;
   CEntitySelection senInTemp;
   wldTemp.CopyEntities(ga_World, senToCross,
-    senInTemp, CPlacement3D(FLOAT3D(0,0,0), ANGLE3D(0,0,0)));
+    senInTemp, CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f)));
 
   // remember characters for all player targets and disable them
   CPlayerCharacter apc[NET_MAXGAMEPLAYERS];
   BOOL abWasActive[NET_MAXGAMEPLAYERS];
   CPlayerAction apaActions[NET_MAXGAMEPLAYERS][2];
-  {for(INDEX i=0; i<NET_MAXGAMEPLAYERS; i++) {
+  {for (INDEX i=0; i<NET_MAXGAMEPLAYERS; i++) {
     CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[i];
     abWasActive[i] = plt.IsActive();
     if (plt.IsActive()) {
@@ -1634,10 +1634,10 @@ void CNetworkLibrary::ChangeLevel_internal(void)
   // copy entities from temporary world into new one
   CEntitySelection senCrossed;
   ga_World.CopyEntities(wldTemp, senInTemp,
-    senCrossed, CPlacement3D(FLOAT3D(0,0,0), ANGLE3D(0,0,0)));
+    senCrossed, CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f)));
 
   // restore pointers to entities for all active player targets
-  {for(INDEX i=0; i<NET_MAXGAMEPLAYERS; i++) {
+  {for (INDEX i=0; i<NET_MAXGAMEPLAYERS; i++) {
     CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[i];
     if (abWasActive[i]) {
       plt.Activate();
@@ -1665,7 +1665,7 @@ void CNetworkLibrary::ChangeLevel_internal(void)
     ga_srvServer.srv_ascChecks.Clear();
 
     // for each client
-    {for( INDEX iClient=0; iClient<NET_MAXGAMECOMPUTERS; iClient++) {
+    {for (INDEX iClient=0; iClient<NET_MAXGAMECOMPUTERS; iClient++) {
       CSessionSocket &sso = ga_srvServer.srv_assoSessions[iClient];
       // reset message timer
       sso.sso_tvMessageReceived = -1I64;
@@ -1673,7 +1673,7 @@ void CNetworkLibrary::ChangeLevel_internal(void)
       sso.sso_llLastSyncReceived = -1;
     }}
     // for each player
-    {for( INDEX iPlayer=0; iPlayer<NET_MAXGAMEPLAYERS; iPlayer++) {
+    {for (INDEX iPlayer=0; iPlayer<NET_MAXGAMEPLAYERS; iPlayer++) {
       CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iPlayer];
       if (plb.plb_Active) {
         // add one dummy action
@@ -1962,7 +1962,7 @@ void CNetworkLibrary::SendActionsToServer(void)
   CNetworkMessage nmAction(MSG_ACTION);
 
   // for all local players on this machine
-  for(INDEX ipls=0; ipls<ga_aplsPlayers.Count(); ipls++) {
+  for (INDEX ipls=0; ipls<ga_aplsPlayers.Count(); ipls++) {
     CPlayerSource &pls = ga_aplsPlayers[ipls];
     // create action packet if the player exists
     pls.WriteActionPacket(nmAction);
@@ -2012,7 +2012,7 @@ void CNetworkLibrary::TimerLoop(void)
     }
   }
   // for each pending interrupt
-  while(ct) {
+  while (ct) {
     ct--;
     ga_ctTimersPending--;
     // if not disconnected
@@ -2064,7 +2064,7 @@ CEntity *CNetworkLibrary::GetPlayerEntityByName(const CTString &strName)
 
   // for each player in game
   CStaticArray<CPlayerTarget> &aplt = ga_sesSessionState.ses_apltPlayers;
-  for(INDEX iplt = 0; iplt<aplt.Count(); iplt++) {
+  for (INDEX iplt = 0; iplt<aplt.Count(); iplt++) {
     // if it is active and has that name
     if (aplt[iplt].IsActive()
       &&aplt[iplt].plt_penPlayerEntity->en_pcCharacter.GetName()==strName) {

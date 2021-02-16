@@ -40,7 +40,7 @@ void DoSpecularLayer(INDEX iSpeculaTexture,INDEX iSpecularColor)
   SLONG slAR = (colAmbient & CT_RMASK)>>(CT_RSHIFT-iBright);
   SLONG slAG = (colAmbient & CT_GMASK)>>(CT_GSHIFT-iBright);
   SLONG slAB = (colAmbient & CT_BMASK)>>(CT_BSHIFT-iBright);
-  if( bOverbright) {
+  if (bOverbright) {
     slAR = ClampUp( slAR, 127L);
     slAG = ClampUp( slAG, 127L);
     slAB = ClampUp( slAB, 127L);
@@ -49,7 +49,7 @@ void DoSpecularLayer(INDEX iSpeculaTexture,INDEX iSpecularColor)
 
   // for each vertex
   INDEX ivx=0;
-  for(;ivx<ctVertices;ivx++) {
+  for (;ivx<ctVertices;ivx++) {
     // reflect light vector around vertex normal in object space
     GFXNormal &nor = paNormals[ivx];
     FLOAT3D vNot = FLOAT3D(nor.nx,nor.ny,nor.nz);
@@ -78,7 +78,7 @@ void DoSpecularLayer(INDEX iSpeculaTexture,INDEX iSpecularColor)
   GFXColor *pcolBase = shaGetColorArray();;
   
   // for each vertex in the surface
-  for(ivx=0;ivx<ctVertices;ivx++) {
+  for (ivx=0;ivx<ctVertices;ivx++) {
     // set specular color
     const SLONG slShade = pcolBase[ivx].a;
     pcolSpec[ivx].abgr =    (((colSrfSpec.r)*slShade)>>8)
@@ -116,12 +116,12 @@ void DoReflectionLayer(INDEX iReflectionTexture,INDEX iReflectionColor,BOOL bFul
 
 
   Matrix12 mTemp,mInvert;
-  MatrixVectorToMatrix12(mTemp,mViewer,FLOAT3D(0,0,0));
+  MatrixVectorToMatrix12(mTemp,mViewer,FLOAT3D(0.0f, 0.0f, 0.0f));
   MatrixTranspose(mInvert,mTemp);
   // mObjToAbs = !mViewer;
 
   // for each vertex
-  for(INDEX ivx=0;ivx<ctVertices;ivx++) {
+  for (INDEX ivx=0;ivx<ctVertices;ivx++) {
     // reflect light vector around vertex normal in object space
     FLOAT3D vNor = FLOAT3D(paNormals[ivx].nx,paNormals[ivx].ny,paNormals[ivx].nz);
     RotateVector(vNor.vector,mObjToAbs);
@@ -146,15 +146,15 @@ void DoReflectionLayer(INDEX iReflectionTexture,INDEX iReflectionColor,BOOL bFul
   colSrfRefl.abgr = ByteSwap(shaGetColor(iReflectionColor));
   colSrfRefl.AttenuateA((shaGetModelColor()&CT_AMASK)>>CT_ASHIFT);
 
-  if(bFullBright) {
+  if (bFullBright) {
     // just copy reflection color
-    for( INDEX ivx=0;ivx<ctVertices;ivx++) {
+    for (INDEX ivx=0;ivx<ctVertices;ivx++) {
       pcolReflection[ivx] = colSrfRefl;
     }
   } else {
   GFXColor *pcolSrfBase = shaGetColorArray();
     // set reflection color smooth
-    for( INDEX ivx=0;ivx<ctVertices;ivx++) {
+    for (INDEX ivx=0;ivx<ctVertices;ivx++) {
       pcolReflection[ivx].MultiplyRGBCopyA1( colSrfRefl, pcolSrfBase[ivx]);
     }
   }
@@ -166,7 +166,7 @@ void DoReflectionLayer(INDEX iReflectionTexture,INDEX iReflectionColor,BOOL bFul
   shaEnableBlend();
 
   BOOL bDoubleSided = shaGetFlags()&BASE_DOUBLE_SIDED;
-  if(bDoubleSided) {
+  if (bDoubleSided) {
     shaCullFace(GFX_FRONT);
     shaRender();
   }

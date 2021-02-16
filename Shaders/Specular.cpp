@@ -45,11 +45,11 @@ SHADER_MAIN(Specular)
   BOOL bDoubleSides = shaGetFlags() & BASE_DOUBLE_SIDED;
   BOOL bOpaque = (colModelColor&0xFF)==0xFF;
 
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
 
   // if fully opaque
-  if(bOpaque) {
-    if(bDoubleSides) {
+  if (bOpaque) {
+    if (bDoubleSides) {
       shaCullFace(GFX_NONE);
     } else {
       shaCullFace(GFX_BACK);
@@ -63,7 +63,7 @@ SHADER_MAIN(Specular)
     shaBlendFunc(GFX_SRC_ALPHA, GFX_INV_SRC_ALPHA);
     shaDisableDepthWrite();
     shaModifyColorForFog();
-    if(bDoubleSides) {
+    if (bDoubleSides) {
       shaCullFace(GFX_FRONT);
       shaRender();
     }
@@ -71,10 +71,10 @@ SHADER_MAIN(Specular)
   }
 
   shaRender();
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
   DoSpecularLayer(SPECULAR_TEXTURE,SPECULAR_COLOR);
 
-  if(bOpaque) {
+  if (bOpaque) {
     shaDoFogPass();
   }
 

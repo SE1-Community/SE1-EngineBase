@@ -202,7 +202,7 @@ CNetworkMessage &CNetworkMessage::operator>>(CTString &str)
   str = "";
   nm_iBit = 0;
   // repeat
-  for(;;) {
+  for (;;) {
     // if reached end of message (this happens when we read string-only messages)
     if (nm_pubPointer-nm_pubMessage>=nm_slSize) {
       // stop
@@ -229,7 +229,7 @@ CNetworkMessage &CNetworkMessage::operator<<(const CTString &str)
   nm_iBit = 0;
   const char *pstr = (const char *)str;
   // repeat
-  for(;;) {
+  for (;;) {
     // if reached one byte before end of message
     if (nm_pubPointer-nm_pubMessage>=nm_slMaxSize-1) {
       // put the end marker
@@ -405,7 +405,7 @@ void CNetworkMessage::Dump(void)
 {
   CPrintF("Message size: %d\n", nm_slSize);
   CPrintF("Message contents:");
-  for(INDEX iByte=0; iByte<nm_slSize; iByte++) {
+  for (INDEX iByte=0; iByte<nm_slSize; iByte++) {
     if (iByte%16==0) {
       CPrintF("\n");
     }
@@ -814,7 +814,7 @@ void CNetworkStream::RemoveOlderBlocks(INDEX ctBlocksToKeep)
 void CNetworkStream::RemoveOlderBlocksBySequence(INDEX iLastSequenceToKeep)
 {
   // while there are any blocks in the list
-  while(!ns_lhBlocks.IsEmpty()) {
+  while (!ns_lhBlocks.IsEmpty()) {
     // get the tail of the list
     CNetworkStreamBlock *pnsb = LIST_TAIL(ns_lhBlocks, CNetworkStreamBlock, nsb_lnInStream);
     // if it is not too old
@@ -840,9 +840,9 @@ CPlayerAction::CPlayerAction(void)
  */
 void CPlayerAction::Clear(void)
 {
-  pa_vTranslation = FLOAT3D(0.0f,0.0f,0.0f);
-  pa_aRotation = ANGLE3D(0,0,0);
-  pa_aViewRotation = ANGLE3D(0,0,0);
+  pa_vTranslation = FLOAT3D(0.0f, 0.0f, 0.0f);
+  pa_aRotation = ANGLE3D(0.0f, 0.0f, 0.0f);
+  pa_aViewRotation = ANGLE3D(0.0f, 0.0f, 0.0f);
   pa_ulButtons = 0;
   pa_llCreated = 0;
 }
@@ -975,7 +975,7 @@ CNetworkMessage &operator>>(CNetworkMessage &nm, CPlayerAction &pa)
 
   // find number of zero bits for flags
   INDEX iZeros=0;
-  for(; iZeros<6; iZeros++) {
+  for (; iZeros<6; iZeros++) {
     UBYTE ub=0;
     nm.ReadBits(&ub, 1);
     if (ub!=0) {

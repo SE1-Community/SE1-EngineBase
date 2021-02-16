@@ -81,11 +81,11 @@ LICENSE
 
 /* function gsvalfunc */
 unsigned char gsvalfunc(u_char reg) {
-    if(reg < 0x1a) return u_char (reg + 'A');
-    if(reg < 0x34) return u_char (reg + 'G');
-    if(reg < 0x3e) return u_char (reg - 4);
-    if(reg == 0x3e) return u_char('+');
-    if(reg == 0x3f) return u_char ('/');
+    if (reg < 0x1a) return u_char (reg + 'A');
+    if (reg < 0x34) return u_char (reg + 'G');
+    if (reg < 0x3e) return u_char (reg - 4);
+    if (reg == 0x3e) return u_char('+');
+    if (reg == 0x3f) return u_char ('/');
     return u_char(0);
 }
 
@@ -108,13 +108,13 @@ unsigned char *gsseckey(u_char *secure, u_char *key, int enctype) {
 
     i = 0;
     ptr = buff;
-    do { *ptr++ = i++; } while(i);  /* 256 times */
+    do { *ptr++ = i++; } while (i);  /* 256 times */
 
     ptr = buff;
     k = (unsigned char*) memcpy(secbuf, key, 6); /* good if key is not NULLed */
     k[6] = edx = i = 0;
     do {    /* 256 times */
-        if(!*k) k = secbuf;
+        if (!*k) k = secbuf;
         edx = *ptr + edx + *k;
             /* don't use the XOR exchange optimization!!! */
             /* ptrval is used only for faster code */
@@ -123,7 +123,7 @@ unsigned char *gsseckey(u_char *secure, u_char *key, int enctype) {
         *ptr    = *ptrval;
         *ptrval = tmp1;
         ptr++; k++; i++;
-    } while(i);
+    } while (i);
 
     sec = (unsigned char *) memcpy(secbuf, secure, 6);
     sec[6] = edi = ebx = 0;
@@ -140,19 +140,19 @@ unsigned char *gsseckey(u_char *secure, u_char *key, int enctype) {
         *ptrval = tmp1;
         ecx = tmp1 + *ptr;
         *sec++ ^= buff[ecx];
-    } while(*sec);
+    } while (*sec);
 
-    if(enctype == 2) {
+    if (enctype == 2) {
         ptr = key;
         sec = secbuf;
         do {    /* 6 times */
             *sec++ ^= *ptr++;
-        } while(*sec);
+        } while (*sec);
     }
 
     sec = secbuf;
     ptrval = validate;
-    for(i = 0; i < 2; i++) {
+    for (i = 0; i < 2; i++) {
         tmp1 = *sec++;
         tmp2 = *sec++;
         *ptrval++ = gsvalfunc(tmp1 >> 2);
@@ -172,9 +172,9 @@ u_int resolv(char *host) {
     u_int   host_ip;
 
     host_ip = inet_addr(host);
-    if(host_ip == INADDR_NONE) {
+    if (host_ip == INADDR_NONE) {
         hp = gethostbyname(host);
-        if(!hp) {
+        if (!hp) {
             return (NULL);
         } else host_ip = *(u_int *)(hp->h_addr);
     }

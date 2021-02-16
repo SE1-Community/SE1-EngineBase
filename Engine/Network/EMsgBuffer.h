@@ -53,8 +53,8 @@ public:
 	UBYTE em_ubSize;
 	ULONG em_ulEntityID;
 
-	CEntityMessage(){};
-	~CEntityMessage(){};
+	CEntityMessage() {};
+	~CEntityMessage() {};
 
 	void WritePlacement(ULONG &ulEntityID,CPlacement3D &plPlacement);
 	void ReadPlacement(ULONG &ulEntityID,CPlacement3D &plPlacement);

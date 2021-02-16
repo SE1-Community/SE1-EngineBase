@@ -41,11 +41,11 @@ SHADER_MAIN(Base)
 
   shaCalculateLight();
 
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
 
   // if fully opaque
-  if(bOpaque) {
-    if(bDoubleSided) {
+  if (bOpaque) {
+    if (bDoubleSided) {
       shaCullFace(GFX_NONE);
     } else {
       shaCullFace(GFX_BACK);
@@ -62,7 +62,7 @@ SHADER_MAIN(Base)
 
     shaModifyColorForFog();
 
-    if(bDoubleSided) {
+    if (bDoubleSided) {
       shaCullFace(GFX_FRONT);
       shaRender();
     }
@@ -70,10 +70,10 @@ SHADER_MAIN(Base)
   }
 
   shaRender();
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
 
   // if opaque and not full bright
-  if(bOpaque) {
+  if (bOpaque) {
     shaDoFogPass();
   }
 }

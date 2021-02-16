@@ -98,7 +98,7 @@ BOOL CTString::RemovePrefix( const CTString &strPrefix)
   INDEX lenPrefix = strlen( strPrefix);
   INDEX lenDest = strlen( str_String) - lenPrefix;
 
-  if( strnicmp( str_String, strPrefix, lenPrefix) != 0)
+  if (strnicmp( str_String, strPrefix, lenPrefix) != 0)
     return FALSE;
   CTString strTemp = CTString( &str_String[ lenPrefix]);
   ShrinkMemory( (void **)&str_String, lenDest+1);
@@ -109,7 +109,7 @@ BOOL CTString::RemovePrefix( const CTString &strPrefix)
 BOOL CTString::HasPrefix( const CTString &strPrefix) const
 {
   INDEX lenPrefix = strlen( strPrefix);
-  if( strnicmp( str_String, strPrefix, lenPrefix) != 0)
+  if (strnicmp( str_String, strPrefix, lenPrefix) != 0)
     return FALSE;
   return TRUE;
 }
@@ -152,12 +152,12 @@ BOOL CTString::ReplaceSubstr(const CTString &strSub, const CTString &strNewSub)
 INDEX CTString::TrimLeft( INDEX ctCharacters)
 {
   // clamp negative values
-  if( ctCharacters<0) ctCharacters = 0;
+  if (ctCharacters<0) ctCharacters = 0;
   // find how much characters to remove
   INDEX lenOriginal = strlen(str_String);
   INDEX lenPrefix = lenOriginal-ctCharacters;
   // if nothing needs to be removed
-  if( lenPrefix<=0) return 0;
+  if (lenPrefix<=0) return 0;
   // crop
   memmove( str_String, &str_String[ lenPrefix], ctCharacters+1);
   ShrinkMemory( (void **)&str_String, ctCharacters+1);
@@ -168,12 +168,12 @@ INDEX CTString::TrimLeft( INDEX ctCharacters)
 INDEX CTString::TrimRight( INDEX ctCharacters)
 {
   // clamp negative values
-  if( ctCharacters<0) ctCharacters = 0;
+  if (ctCharacters<0) ctCharacters = 0;
   // find how much characters to remove
   INDEX lenOriginal = strlen(str_String);
   INDEX lenPrefix = lenOriginal-ctCharacters;
   // if nothing needs to be removed
-  if( lenPrefix<=0) return 0;
+  if (lenPrefix<=0) return 0;
   // crop
   str_String[ctCharacters] = '\0';
   ShrinkMemory( (void**)&str_String, ctCharacters+1);
@@ -198,7 +198,7 @@ CTString CTString::Undecorated(void) const
   char *pchDst = strResult.str_String;
 
   // while the source is not finished
-  while(pchSrc[0]!=0) {
+  while (pchSrc[0]!=0) {
     // if the source char is not escape char
     if (pchSrc[0]!='^') {
       // copy it over
@@ -207,7 +207,7 @@ CTString CTString::Undecorated(void) const
       continue;
     }
     // check the next char
-    switch(pchSrc[1]) {
+    switch (pchSrc[1]) {
       // if one of the control codes, skip corresponding number of characters
       case 'c':  pchSrc += 2+FindZero((UBYTE*)pchSrc+2,6);  break;
       case 'a':  pchSrc += 2+FindZero((UBYTE*)pchSrc+2,2);  break;
@@ -238,7 +238,7 @@ INDEX CTString::TrimSpacesLeft(void)
 {
   // for each character in string
   const char *chr;
-  for(chr = str_String; *chr!=0; chr++) {
+  for (chr = str_String; *chr!=0; chr++) {
     // if the character is not space 
     if (!IsSpace(*chr)) {
       // stop searching
@@ -254,7 +254,7 @@ INDEX CTString::TrimSpacesRight(void)
 {
   // for each character in string reversed
   const char *chr;
-  for(chr = str_String+strlen(str_String)-1; chr>str_String; chr--) {
+  for (chr = str_String+strlen(str_String)-1; chr>str_String; chr--) {
     // if the character is not space 
     if (!IsSpace(*chr)) {
       // stop searching
@@ -287,7 +287,7 @@ ULONG CTString::GetHash(void) const
   ULONG ulKey = 0;
   INDEX len = strlen(str_String);
 
-  for(INDEX i=0; i<len; i++) {
+  for (INDEX i=0; i<len; i++) {
     ulKey = _rotl(ulKey,4)+toupper(str_String[i]);
   }
   return ulKey;
@@ -396,7 +396,7 @@ void CTString::ReadUntilEOF_t(CTStream &strmFile)  // throw char *
   // rewrite entire string
   char *pchRead=str_String;
   char *pchWrite=str_String;
-  while(*pchRead!=0) {
+  while (*pchRead!=0) {
     // skip the '\r' characters
     if (*pchRead!='\r') {
       *pchWrite++ = *pchRead++;
@@ -536,8 +536,8 @@ void CTString::InsertChar( INDEX iPos, char cChr)
 {
   // clamp position
   INDEX ctChars = strlen(str_String);
-  if( iPos>ctChars) iPos=ctChars;
-  else if( iPos<0)  iPos=0;
+  if (iPos>ctChars) iPos=ctChars;
+  else if (iPos<0)  iPos=0;
   // grow memory used by string
   GrowMemory( (void**)&str_String, ctChars+2);
   // copy part of string to make room for char to insert
@@ -554,8 +554,8 @@ void CTString::DeleteChar( INDEX iPos)
   if (ctChars==0) {
     return;
   }
-  if( iPos>ctChars) iPos=ctChars;
-  else if( iPos<0)  iPos=0;
+  if (iPos>ctChars) iPos=ctChars;
+  else if (iPos<0)  iPos=0;
   // copy part of string
   memmove( &str_String[iPos], &str_String[iPos+1], ctChars-iPos+1);
   // shrink memory used by string over deleted char
@@ -580,7 +580,7 @@ BOOL CTString::Matches(const char *strOther) const
   const char *mask=strOther, *name=str_String;
   const char *m=mask, *n=name, *ma=mask, *na=name;
   
-  for(;;) {
+  for (;;) {
     if (++calls > MAX_CALLS) {
       return FALSE;
     }
@@ -607,7 +607,7 @@ BOOL CTString::Matches(const char *strOther) const
       }
       m = ma;
     } else if (!*n) {
-      while(*m == '*') ++m;
+      while (*m == '*') ++m;
       if (*m != 0) {
         return FALSE;
       } else {
@@ -699,9 +699,9 @@ CTString RemoveSpecialCodes( const CTString &str)
   char *pcSrc = (char*)(const char*)strRet;
   char *pcDst = (char*)(const char*)strRet;
   // copy char inside string skipping special codes
-  while( *pcSrc != 0)
+  while (*pcSrc != 0)
   {
-    if( *pcSrc != '^')
+    if (*pcSrc != '^')
     { // advance to next char
       *pcDst = *pcSrc;
       pcSrc++;
@@ -710,7 +710,7 @@ CTString RemoveSpecialCodes( const CTString &str)
     else
     { // skip some characters 
       pcSrc++;
-      switch( *pcSrc) {
+      switch (*pcSrc) {
       case 'c':  pcSrc+=FindZero((UBYTE*)pcSrc,7);  continue;
       case 'a':  pcSrc+=FindZero((UBYTE*)pcSrc,3);  continue;
       case 'f':  pcSrc+=FindZero((UBYTE*)pcSrc,2);  continue;

@@ -106,7 +106,7 @@ inline SLONG ConvertLong( SBYTE *pfm)
   UBYTE i;
   UBYTE ret_long[ 4];
 
-  for( i=0; i<4; i++)
+  for (i=0; i<4; i++)
     ret_long[ i] = *((UBYTE *) pfm + 3 - i);
   return( *((SLONG *) ret_long) );
 };
@@ -130,7 +130,7 @@ inline float ConvertFloat( SBYTE *pfm)
   UBYTE i;
   char float_no[ 4];
 
-  for( i=0; i<4; i++)
+  for (i=0; i<4; i++)
     float_no[ i] = *( pfm + 3 - i);
   return( *((float *) float_no) );
 };
@@ -159,7 +159,7 @@ void CObject3D::BatchLoading_t(BOOL bOn)
   // if turning on
   if (bOn) {
     // if exploration library not yet loaded
-    if( _h3dExploration == NULL) {
+    if (_h3dExploration == NULL) {
       // prepare registry
       REG_SetString("HKEY_LOCAL_MACHINE\\SOFTWARE\\X Dimension\\SeriousEngine\\Plugins\\LWO\\BreakObject", "0");
       REG_SetString("HKEY_LOCAL_MACHINE\\SOFTWARE\\X Dimension\\SeriousEngine\\Plugins\\LWO\\textures", "1");
@@ -168,7 +168,7 @@ void CObject3D::BatchLoading_t(BOOL bOn)
       // load the dll
       _h3dExploration = LoadLibrary(EXPLORATION_LIBRRAY);
       // if library not opened
-      if(_h3dExploration == NULL) {
+      if (_h3dExploration == NULL) {
         throw("3D Exploration dll not found !");
       }
       _Init3d=(TInitExploration3D)GetProcAddress(_h3dExploration,"InitExploration3D");
@@ -178,7 +178,7 @@ void CObject3D::BatchLoading_t(BOOL bOn)
       init.e_size     = sizeof(init);
       init.e_registry = "Software\\X Dimension\\SeriousEngine";
       init.e_plugins  = (char*)(const char*)strPlugins;
-      if(_Init3d) {
+      if (_Init3d) {
         _api=_Init3d(&init);
       } else  {
 		    throw("Unable to initialize 3D object library");
@@ -225,11 +225,11 @@ void CObject3D::LoadAny3DFormat_t(
     e3_LoadFile(_hwnd, acFile);
     _pe3Scene=e3_GetScene(_hwnd);    
     // if scene is successefuly loaded
-    if(_pe3Scene != NULL)
+    if (_pe3Scene != NULL)
     {
       _pe3Object = _pe3Scene->GetObject3d( 0);
       // use different methods to convert into Object3D
-      switch( ltLoadType)
+      switch (ltLoadType)
       {
       case LT_NORMAL:
         FillConversionArrays_t(mTransform);
@@ -244,7 +244,7 @@ void CObject3D::LoadAny3DFormat_t(
         FLOATmatrix3D mOne;
         mOne.Diagonal(1.0f);
         FillConversionArrays_t(mOne);
-        if( avTextureVertices.Count() == 0)
+        if (avTextureVertices.Count() == 0)
         {
     		  ThrowF_t("Unable to import mapping from 3D object because it doesn't contain mapping coordinates.");
         }
@@ -280,7 +280,7 @@ void FillConversionArrays_t(const FLOATmatrix3D &mTransform)
 {
 #if USE_E3D
   // all polygons must be triangles
-  if(_pe3Object->_facecount != 0)
+  if (_pe3Object->_facecount != 0)
   {
     throw("Error: Not all polygons are triangles!");
   }
@@ -297,7 +297,7 @@ void FillConversionArrays_t(const FLOATmatrix3D &mTransform)
   INDEX ctVertices = _pe3Object->pointcount;
   avVertices.New(ctVertices);
   // copy vertices
-  for( INDEX iVtx=0; iVtx<ctVertices; iVtx++)
+  for (INDEX iVtx=0; iVtx<ctVertices; iVtx++)
   {
     avVertices[iVtx] = ((FLOAT3D &)_pe3Object->points[iVtx])*mTransform;
     avVertices[iVtx](1) = -avVertices[iVtx](1);
@@ -308,7 +308,7 @@ void FillConversionArrays_t(const FLOATmatrix3D &mTransform)
   INDEX ctTextureVertices = _pe3Object->txtcount;
   avTextureVertices.New(ctTextureVertices);
   // copy texture vertices
-  for( INDEX iTVtx=0; iTVtx<ctTextureVertices; iTVtx++)
+  for (INDEX iTVtx=0; iTVtx<ctTextureVertices; iTVtx++)
   {
     avTextureVertices[iTVtx] = (FLOAT2D &)_pe3Object->txtpoints[iTVtx];
   }
@@ -321,7 +321,7 @@ void FillConversionArrays_t(const FLOATmatrix3D &mTransform)
   acmMaterials.Lock();
   
   // sort triangles per surfaces
-  for( INDEX iTriangle=0; iTriangle<ctTriangles; iTriangle++)
+  for (INDEX iTriangle=0; iTriangle<ctTriangles; iTriangle++)
   {
     ConversionTriangle &ctTriangle = actTriangles[iTriangle];
     e3_TFACE *pe3Triangle = _pe3Object->GetFace( iTriangle);
@@ -350,10 +350,10 @@ void FillConversionArrays_t(const FLOATmatrix3D &mTransform)
     e3_MATERIAL *pe3Mat = pe3Triangle->material;
     BOOL bNewMaterial = TRUE;
     // attach triangle into one material
-    for( INDEX iMat=0; iMat<acmMaterials.Count(); iMat++)
+    for (INDEX iMat=0; iMat<acmMaterials.Count(); iMat++)
     {
       // if this material already exist in array of materu
-      if( acmMaterials[ iMat].cm_ulTag == (ULONG) pe3Mat)
+      if (acmMaterials[ iMat].cm_ulTag == (ULONG) pe3Mat)
       {
         // set index of surface
         ctTriangle.ct_iMaterial = iMat;
@@ -366,7 +366,7 @@ void FillConversionArrays_t(const FLOATmatrix3D &mTransform)
       }
     }
     // if material hasn't been added yet
-    if( bNewMaterial)
+    if (bNewMaterial)
     {
       // add new material
       ConversionMaterial *pcmNew = new ConversionMaterial;
@@ -386,7 +386,7 @@ void FillConversionArrays_t(const FLOATmatrix3D &mTransform)
 
       // ---------- Set material's name
       // if not default material
-      if( pe3Mat != NULL && pe3Mat->name != NULL)
+      if (pe3Mat != NULL && pe3Mat->name != NULL)
       {
         acmMaterials[iNewMaterial].cm_strName = CTString(pe3Mat->name);
         // get color
@@ -430,7 +430,7 @@ void RemapVertices(BOOL bAsOpened)
   }}
   
   _RPT0(_CRT_WARN, "Polygons and their vertex indices:\n");
-  for( INDEX ipol=0; ipol<actTriangles.Count(); ipol++)
+  for (INDEX ipol=0; ipol<actTriangles.Count(); ipol++)
   {
     INDEX idxVtx0 = actTriangles[ipol].ct_iVtx[0];
     INDEX idxVtx1 = actTriangles[ipol].ct_iVtx[1];
@@ -445,7 +445,7 @@ void RemapVertices(BOOL bAsOpened)
   FOREACHINDYNAMICCONTAINER(acmMaterials, ConversionMaterial, itcm)
   {
     // fill remap array with -1
-    for( INDEX iRemap=0; iRemap<ctVertices; iRemap++)
+    for (INDEX iRemap=0; iRemap<ctVertices; iRemap++)
     {
       aiRemap[iRemap] = -1;
     }
@@ -457,11 +457,11 @@ void RemapVertices(BOOL bAsOpened)
     {
       INDEX idxPol = *itipol;
       // for each vertex in polygon
-      for(INDEX iVtx=0; iVtx<3; iVtx++)
+      for (INDEX iVtx=0; iVtx<3; iVtx++)
       {
         // get vertex's index
         INDEX idxVtx = actTriangles[idxPol].ct_iVtx[iVtx];
-        if( aiRemap[idxVtx] == -1)
+        if (aiRemap[idxVtx] == -1)
         {
           aiRemap[idxVtx] = ctvx;
           ctvx++;
@@ -478,14 +478,14 @@ void RemapVertices(BOOL bAsOpened)
     {
       INDEX iPol=*itipol;
       // for each vertex in polygon
-      for(INDEX iVtx=0; iVtx<3; iVtx++)
+      for (INDEX iVtx=0; iVtx<3; iVtx++)
       {
         // get vertex's index
         INDEX idxVtx = actTriangles[iPol].ct_iVtx[iVtx];
         // get remapped index
         INDEX iRemap = aiRemap[idxVtx];
         // if cutting object
-        if( bAsOpened)
+        if (bAsOpened)
         {
           // copy vertex coordinate
           pavDst[ iRemap] = avVertices[idxVtx];
@@ -510,7 +510,7 @@ void RemapVertices(BOOL bAsOpened)
   // replace remapped array of vertices over original one
   avVertices.Clear();
   avVertices.New(avDst.Count());
-  for( INDEX iVtxNew=0; iVtxNew<avDst.Count(); iVtxNew++)
+  for (INDEX iVtxNew=0; iVtxNew<avDst.Count(); iVtxNew++)
   {
     avVertices[iVtxNew] = avDst[iVtxNew];
   }
@@ -531,7 +531,7 @@ void RemapVertices(BOOL bAsOpened)
   }}
   
   _RPT0(_CRT_WARN, "Polygons and their vertex indices:\n");
-  for( INDEX ipol=0; ipol<actTriangles.Count(); ipol++)
+  for (INDEX ipol=0; ipol<actTriangles.Count(); ipol++)
   {
     INDEX idxVtx0 = actTriangles[ipol].ct_iVtx[0];
     INDEX idxVtx1 = actTriangles[ipol].ct_iVtx[1];
@@ -554,7 +554,7 @@ void CObject3D::ConvertArraysToO3D( void)
   // ------------ Vertices
   INDEX ctVertices = avVertices.Count();
   CObjectVertex *pVtx = osc.osc_aovxVertices.New(ctVertices);
-  for(INDEX iVtx=0; iVtx<ctVertices; iVtx++)
+  for (INDEX iVtx=0; iVtx<ctVertices; iVtx++)
   {
     pVtx[ iVtx] = FLOATtoDOUBLE( avVertices[iVtx]);
   }
@@ -562,7 +562,7 @@ void CObject3D::ConvertArraysToO3D( void)
   // ------------ Materials
   INDEX ctMaterials = acmMaterials.Count();
   osc.osc_aomtMaterials.New( ctMaterials);
-  for( INDEX iMat=0; iMat<ctMaterials; iMat++)
+  for (INDEX iMat=0; iMat<ctMaterials; iMat++)
   {
     osc.osc_aomtMaterials[iMat] = CObjectMaterial( acmMaterials[iMat].cm_strName);
     osc.osc_aomtMaterials[iMat].omt_Color = acmMaterials[iMat].cm_colColor;
@@ -574,7 +574,7 @@ void CObject3D::ConvertArraysToO3D( void)
 	CObjectPlane *popl = osc.osc_aoplPlanes.New(ctTriangles);
   // we need 3 edges for each polygon
   CObjectEdge *poedg = osc.osc_aoedEdges.New(ctTriangles*3);
-  for(INDEX iTri=0; iTri<ctTriangles; iTri++)
+  for (INDEX iTri=0; iTri<ctTriangles; iTri++)
   {
     // obtain triangle's vertices
     CObjectVertex *pVtx0 = &osc.osc_aovxVertices[ actTriangles[iTri].ct_iVtx[0]];

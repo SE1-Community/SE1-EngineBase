@@ -90,7 +90,7 @@ void CWorld::CopySourceBrushSectorsToObject(
   obAbsolute = obObject;
   CSimpleProjection3D_DOUBLE prToAbsolute;
   prToAbsolute.ObjectPlacementL() = plBrush;
-  prToAbsolute.ViewerPlacementL() = CPlacement3D(FLOAT3D(0,0,0), ANGLE3D(0,0,0));
+  prToAbsolute.ViewerPlacementL() = CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));
   prToAbsolute.Prepare();
   obAbsolute.Project(prToAbsolute);
   obAbsolute.GetBoundingBox(boxSourceAbsolute);
@@ -490,7 +490,7 @@ CBrushSector *CWorld::JoinTwoSectors(CBrushSector &bscA, CBrushSector &bscB)
     FatalError("Unexpected error during join sectors operation: %s", strError);
   }
 
-  if( obResult.ob_aoscSectors.Count() == 0) return NULL;
+  if (obResult.ob_aoscSectors.Count() == 0) return NULL;
 
   // set sector properties of the resulting sector to be same as in former sector A
   pbscResult->bsc_colColor   = colColor;
@@ -515,7 +515,7 @@ BOOL CWorld::CanJoinSectors(CBrushSectorSelection &selbscSectorsToJoin)
   // for all sectors in the selection
   FOREACHINDYNAMICCONTAINER(selbscSectorsToJoin, CBrushSector, itbsc) {
     // if sectors are in the same mip
-    if( itbsc->bsc_pbmBrushMip != pbmMip) return FALSE;
+    if (itbsc->bsc_pbmBrushMip != pbmMip) return FALSE;
   }
   return TRUE;
 }
@@ -545,7 +545,7 @@ void CWorld::JoinSectors(CBrushSectorSelection &selbscSectorsToJoin)
   FOREACHINDYNAMICCONTAINER(selbscSectorsToJoin, CBrushSector, itbsc) {
     // join the sector with the result sector
     pbscResult = JoinTwoSectors(*pbscResult, *itbsc);
-    if( pbscResult == NULL) break;
+    if (pbscResult == NULL) break;
   }
 
   // update the bounding boxes of the brush
@@ -584,7 +584,7 @@ void CWorld::SplitPolygons(CEntity &enThis, CBrushPolygonSelection &selbpoPolygo
 
   // get the brush sectors from all polygons in selection
   CDynamicContainer<CBrushSector> cbscSectors;
-  {for(INDEX iselbpo=0; iselbpo<ctSelectedPolygons; iselbpo++) {
+  {for (INDEX iselbpo=0; iselbpo<ctSelectedPolygons; iselbpo++) {
     CBrushSector &bsc = *selbpoPolygonsToSplit[iselbpo].bpo_pbscSector;
     if (!cbscSectors.IsMember(&bsc)) {
       cbscSectors.Add(&bsc);
@@ -604,7 +604,7 @@ void CWorld::SplitPolygons(CEntity &enThis, CBrushPolygonSelection &selbpoPolygo
   // for each sector
   cbscSectors.Lock();
   INDEX ctSectors = cbscSectors.Count();
-  {for(INDEX ibsc=0; ibsc<ctSectors; ibsc++) {
+  {for (INDEX ibsc=0; ibsc<ctSectors; ibsc++) {
     CBrushSector *pbscSector = &cbscSectors[ibsc];
     CBrushMip *pbmMip = pbscSector->bsc_pbmBrushMip;
     // move the sector to 3D object
@@ -684,7 +684,7 @@ void CWorld::JoinPolygons(CBrushPolygonSelection &selbpoPolygonsToJoin)
 
   // get the brush sectors from all polygons in selection
   CDynamicContainer<CBrushSector> cbscSectors;
-  {for(INDEX iselbpo=0; iselbpo<ctSelectedPolygons; iselbpo++) {
+  {for (INDEX iselbpo=0; iselbpo<ctSelectedPolygons; iselbpo++) {
     CBrushSector &bsc = *selbpoPolygonsToJoin[iselbpo].bpo_pbscSector;
     if (!cbscSectors.IsMember(&bsc)) {
       cbscSectors.Add(&bsc);
@@ -697,10 +697,10 @@ void CWorld::JoinPolygons(CBrushPolygonSelection &selbpoPolygonsToJoin)
     bSomeJoined = FALSE;
 
     // for each polygon in selection
-    {for(INDEX iselbpo0=0; iselbpo0<ctSelectedPolygons; iselbpo0++) {
+    {for (INDEX iselbpo0=0; iselbpo0<ctSelectedPolygons; iselbpo0++) {
       CBrushPolygon &bpo0 = selbpoPolygonsToJoin[iselbpo0];
       // for each polygon in selection after that one
-      {for(INDEX iselbpo1=iselbpo0+1; iselbpo1<ctSelectedPolygons; iselbpo1++) {
+      {for (INDEX iselbpo1=iselbpo0+1; iselbpo1<ctSelectedPolygons; iselbpo1++) {
         CBrushPolygon &bpo1 = selbpoPolygonsToJoin[iselbpo1];
         // if it has no edges
         if (bpo1.bpo_abpePolygonEdges.Count()==0) {
@@ -725,7 +725,7 @@ void CWorld::JoinPolygons(CBrushPolygonSelection &selbpoPolygonsToJoin)
   // for each sector
   cbscSectors.Lock();
   INDEX ctSectors = cbscSectors.Count();
-  {for(INDEX ibsc=0; ibsc<ctSectors; ibsc++) {
+  {for (INDEX ibsc=0; ibsc<ctSectors; ibsc++) {
     CBrushSector *pbscSector = &cbscSectors[ibsc];
     CBrushMip *pbmMip = pbscSector->bsc_pbmBrushMip;
     // move the sector to 3D object
@@ -787,7 +787,7 @@ void CWorld::JoinAllPossiblePolygons(
 
   // get the brush sectors from all polygons in selection
   CDynamicContainer<CBrushSector> cbscSectors;
-  {for(INDEX iselbpo=0; iselbpo<ctSelectedPolygons; iselbpo++) {
+  {for (INDEX iselbpo=0; iselbpo<ctSelectedPolygons; iselbpo++) {
     CBrushSector &bsc = *selbpoPolygonsToJoin[iselbpo].bpo_pbscSector;
     if (!cbscSectors.IsMember(&bsc)) {
       cbscSectors.Add(&bsc);
@@ -800,10 +800,10 @@ void CWorld::JoinAllPossiblePolygons(
     bSomeJoined = FALSE;
 
     // for each polygon in selection
-    {for(INDEX iselbpo0=0; iselbpo0<ctSelectedPolygons; iselbpo0++) {
+    {for (INDEX iselbpo0=0; iselbpo0<ctSelectedPolygons; iselbpo0++) {
       CBrushPolygon &bpo0 = selbpoPolygonsToJoin[iselbpo0];
       // for each polygon in selection after that one
-      {for(INDEX iselbpo1=iselbpo0+1; iselbpo1<ctSelectedPolygons; iselbpo1++) {
+      {for (INDEX iselbpo1=iselbpo0+1; iselbpo1<ctSelectedPolygons; iselbpo1++) {
         CBrushPolygon &bpo1 = selbpoPolygonsToJoin[iselbpo1];
         // if it has no edges
         if (bpo1.bpo_abpePolygonEdges.Count()==0) {
@@ -833,7 +833,7 @@ void CWorld::JoinAllPossiblePolygons(
   // for each sector
   cbscSectors.Lock();
   INDEX ctSectors = cbscSectors.Count();
-  {for(INDEX ibsc=0; ibsc<ctSectors; ibsc++) {
+  {for (INDEX ibsc=0; ibsc<ctSectors; ibsc++) {
     CBrushSector *pbscSector = &cbscSectors[ibsc];
     CBrushMip *pbmMip = pbscSector->bsc_pbmBrushMip;
     // move the sector to 3D object
@@ -872,7 +872,7 @@ BOOL CWorld::CanCopySectors(CBrushSectorSelection &selbscSectorsToCopy)
   // for all sectors in the selection
   FOREACHINDYNAMICCONTAINER(selbscSectorsToCopy, CBrushSector, itbsc) {
     // if sectors are not in the same mip
-    if( itbsc->bsc_pbmBrushMip != pbmMip) return FALSE;
+    if (itbsc->bsc_pbmBrushMip != pbmMip) return FALSE;
   }
   return TRUE;
 }
@@ -921,8 +921,8 @@ void CWorld::CopySectors(CBrushSectorSelection &selbscSectorsToCopy, CEntity *pe
   Snap(vCenter(1), 1.0);
   Snap(vCenter(2), 1.0);
   Snap(vCenter(3), 1.0);
-  CPlacement3D plCenter(vCenter, ANGLE3D(0,0,0));
-  CPlacement3D plCenterInverse(-vCenter, ANGLE3D(0,0,0));
+  CPlacement3D plCenter(vCenter, ANGLE3D(0.0f, 0.0f, 0.0f));
+  CPlacement3D plCenterInverse(-vCenter, ANGLE3D(0.0f, 0.0f, 0.0f));
   // make projection from source entity to center of selection
   CSimpleProjection3D_DOUBLE prToCenter;
   prToCenter.ObjectPlacementL() = penSource->en_plPlacement;
@@ -932,7 +932,7 @@ void CWorld::CopySectors(CBrushSectorSelection &selbscSectorsToCopy, CEntity *pe
   // convert the result to brush in target
   AddObjectToBrush(obObject, *penTarget);
 
-  if( bWithEntities)
+  if (bWithEntities)
   {
     // make a container of entities to copy
     CDynamicContainer<CEntity> cenToCopy;
@@ -1006,14 +1006,14 @@ void CheckOnePolygon(CBrushSector &bsc, CBrushPolygon &bpo)
   CBrushPlane *pbplPlane=bpo.bpo_pbplPlane;
   INDEX ctEdges=bpo.bpo_abpePolygonEdges.Count();
   INDEX ctVertices=bpo.bpo_apbvxTriangleVertices.Count();
-  for(INDEX iEdge=0;iEdge<ctEdges;iEdge++)
+  for (INDEX iEdge=0;iEdge<ctEdges;iEdge++)
   {
     CBrushPolygonEdge &edg=bpo.bpo_abpePolygonEdges[iEdge];
     CBrushEdge &be=*edg.bpe_pbedEdge;
     CBrushVertex *pbvx0, *pbvx1;
     edg.GetVertices(pbvx0, pbvx1);
   }
-  for(INDEX iVtx=0;iVtx<ctVertices;iVtx++)
+  for (INDEX iVtx=0;iVtx<ctVertices;iVtx++)
   {
     CBrushVertex &vtx=*bpo.bpo_apbvxTriangleVertices[iVtx];
     FLOAT3D vAbs=vtx.bvx_vAbsolute;
@@ -1022,7 +1022,7 @@ void CheckOnePolygon(CBrushSector &bsc, CBrushPolygon &bpo)
     DOUBLE3D *pvdPreciseAbsolute=vtx.bvx_pvdPreciseAbsolute;
     CBrushSector &bsc=*vtx.bvx_pbscSector;
   }
-  for(INDEX ite=0;ite<bpo.bpo_aiTriangleElements.Count();ite++)
+  for (INDEX ite=0;ite<bpo.bpo_aiTriangleElements.Count();ite++)
   {
     INDEX iTriangleVtx=bpo.bpo_aiTriangleElements[ite];
     CBrushSector &bsc=*bpo.bpo_pbscSector;
@@ -1057,7 +1057,7 @@ void CWorld::CopyPolygonInWorld(CBrushPolygon &bpoSrc, CBrushSector &bscDst, IND
   // copy vertices
   INDEX ctEdg=bpoSrc.bpo_abpePolygonEdges.Count();
   bpoDst.bpo_abpePolygonEdges.New(ctEdg);
-  for( INDEX i=0; i<ctEdg; i++)
+  for (INDEX i=0; i<ctEdg; i++)
   {
     // set vertex
     CBrushVertex *pbvx0, *pbvx1;
@@ -1171,7 +1171,7 @@ void CWorld::DeletePolygons(CDynamicContainer<CBrushPolygon> &dcPolygons)
   {
     CBrushPolygon &bpo = *itbpo;
     bpo.bpo_ulFlags|=BPOF_MARKED_FOR_USE;
-    if( !dcSectors.IsMember(bpo.bpo_pbscSector))
+    if (!dcSectors.IsMember(bpo.bpo_pbscSector))
     {
       dcSectors.Add(bpo.bpo_pbscSector);
     }
@@ -1185,7 +1185,7 @@ void CWorld::DeletePolygons(CDynamicContainer<CBrushPolygon> &dcPolygons)
   {
     CBrushSector &bsc = *itbsc;
     // reoptimize mips
-    if( !dcBrushMips.IsMember(bsc.bsc_pbmBrushMip))
+    if (!dcBrushMips.IsMember(bsc.bsc_pbmBrushMip))
     {
       dcBrushMips.Add(bsc.bsc_pbmBrushMip);
     }
@@ -1202,13 +1202,13 @@ void CWorld::DeletePolygons(CDynamicContainer<CBrushPolygon> &dcPolygons)
 
 void CWorld::CreatePolygon(CBrushVertexSelection &selVtx)
 {
-  if(selVtx.Count()!=3) return;
+  if (selVtx.Count()!=3) return;
   
   CBrushSector *pbsc=NULL;
   {FOREACHINDYNAMICCONTAINER(selVtx, CBrushVertex, itvtx)
   {
     CBrushVertex &bvtx=*itvtx;
-    if( bvtx.bvx_pbscSector==NULL || (pbsc!=NULL && pbsc!=bvtx.bvx_pbscSector)) return;
+    if (bvtx.bvx_pbscSector==NULL || (pbsc!=NULL && pbsc!=bvtx.bvx_pbscSector)) return;
     pbsc=bvtx.bvx_pbscSector;
   }}
 
@@ -1232,7 +1232,7 @@ void CWorld::CreatePolygon(CBrushVertexSelection &selVtx)
   {FOREACHINSTATICARRAY(pbsc->bsc_abpoPolygons, CBrushPolygon, itbpo)
   {
     CBrushPolygon &bpo = *itbpo;
-    for(INDEX iEdg=0; iEdg<bpo.bpo_abpePolygonEdges.Count(); iEdg++)
+    for (INDEX iEdg=0; iEdg<bpo.bpo_abpePolygonEdges.Count(); iEdg++)
     {
       CBrushPolygonEdge &bpe = bpo.bpo_abpePolygonEdges[iEdg];
       bpe.bpe_pbedEdge=(CBrushEdge*)((UBYTE*)bpe.bpe_pbedEdge+((UBYTE*)abpeNew-(UBYTE*)abpeOld));
@@ -1274,7 +1274,7 @@ void CWorld::CreatePolygon(CBrushVertexSelection &selVtx)
   // initialize working planes
   pbsc->bsc_awplPlanes.Delete();
   pbsc->bsc_awplPlanes.New(ctPlanesOld+1);
-  for( INDEX iPlane=0; iPlane<ctPlanesOld+1; iPlane++)
+  for (INDEX iPlane=0; iPlane<ctPlanesOld+1; iPlane++)
   {
     pbsc->bsc_abplPlanes[iPlane].bpl_pwplWorking=&pbsc->bsc_awplPlanes[iPlane];
   }
@@ -1284,7 +1284,7 @@ void CWorld::CreatePolygon(CBrushVertexSelection &selVtx)
   
   CStaticArray<CBrushPolygon> abpNewPolygons;
   abpNewPolygons.New(ctOldPolygons+1);
-  for(INDEX iPol=0; iPol<ctOldPolygons; iPol++)
+  for (INDEX iPol=0; iPol<ctOldPolygons; iPol++)
   {
     abpNewPolygons[iPol].CopyPolygon(pbsc->bsc_abpoPolygons[iPol]);
   }
@@ -1350,7 +1350,7 @@ void CWorld::FlipPolygon(CBrushPolygon &bpo)
   }}
   
   // invert order of triangle vertices
-  for( INDEX iVtx=0; iVtx<bpo.bpo_aiTriangleElements.Count(); iVtx+=3)
+  for (INDEX iVtx=0; iVtx<bpo.bpo_aiTriangleElements.Count(); iVtx+=3)
   {
     INDEX iOldFirst=bpo.bpo_aiTriangleElements[iVtx+0];
     bpo.bpo_aiTriangleElements[iVtx+0]=bpo.bpo_aiTriangleElements[iVtx+2];
@@ -1378,14 +1378,14 @@ void CWorld::FlipPolygon(CBrushPolygon &bpo)
   // initialize working planes
   bsc.bsc_awplPlanes.Delete();
   bsc.bsc_awplPlanes.New(ctPlanesOld+1);
-  for( INDEX iPlane=0; iPlane<ctPlanesOld+1; iPlane++)
+  for (INDEX iPlane=0; iPlane<ctPlanesOld+1; iPlane++)
   {
     bsc.bsc_abplPlanes[iPlane].bpl_pwplWorking=&bsc.bsc_awplPlanes[iPlane];
   }
   
   // flip polygon edges
   INDEX ctEdg=bpo.bpo_abpePolygonEdges.Count();
-  for( INDEX i=0; i<ctEdg; i++)
+  for (INDEX i=0; i<ctEdg; i++)
   {
     CBrushPolygonEdge &edg=bpo.bpo_abpePolygonEdges[i];
     edg.bpe_bReverse=!edg.bpe_bReverse;

@@ -162,8 +162,8 @@ void CBrushMip::Copy(CBrushMip &bmOther, FLOAT fStretch, BOOL bMirrorX)
   // if there is some mirror or stretch
   if (fStretch!=1.0f || bMirrorX) {
     CSimpleProjection3D_DOUBLE prMirrorAndStretch;
-    prMirrorAndStretch.ObjectPlacementL() = CPlacement3D(FLOAT3D(0,0,0), ANGLE3D(0,0,0));
-    prMirrorAndStretch.ViewerPlacementL() = CPlacement3D(FLOAT3D(0,0,0), ANGLE3D(0,0,0));
+    prMirrorAndStretch.ObjectPlacementL() = CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));
+    prMirrorAndStretch.ViewerPlacementL() = CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));
     if (bMirrorX) {
       prMirrorAndStretch.ObjectStretchL() = FLOAT3D(-fStretch, fStretch, fStretch);
     } else {
@@ -238,7 +238,7 @@ void CBrushMip::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prBrushToAbso
     bm_boxBoundingBox = FLOATaabbox3D(
       prBrushToAbsolute.ObjectPlacementR().pl_PositionVector,
       0.01f);
-    bm_boxRelative = FLOATaabbox3D(FLOAT3D(0,0,0), 0.01f);
+    bm_boxRelative = FLOATaabbox3D(FLOAT3D(0.0f, 0.0f, 0.0f), 0.01f);
     return;
   }
   // for all sectors in the brush mip
@@ -304,7 +304,7 @@ void CBrushMip::RemoveDummyPortals(BOOL bClearPortalFlags)
         bpo.bpo_ulFlags&=~OPOF_PORTAL;
 
         // also start rendering as a wall so that user can see that 
-        if(bClearPortalFlags)
+        if (bClearPortalFlags)
         {
           bpo.bpo_ulFlags &= ~(BPOF_PASSABLE|BPOF_PORTAL);
         }

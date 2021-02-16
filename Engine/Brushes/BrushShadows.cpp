@@ -114,7 +114,7 @@ void CBrushPolygon::InitializeShadowMap(void)
   INDEX iMipLevel = (MAX_MEX_LOG2+bpo_bppProperties.bpp_sbShadowClusterSize-1);
 
   // expand shadow map for the sake of dark corners
-  if( bpo_ulFlags&BPOF_DARKCORNERS) {
+  if (bpo_ulFlags&BPOF_DARKCORNERS) {
     mexSizeU += 2<<iMipLevel;
     mexSizeV += 2<<iMipLevel;
   }
@@ -133,7 +133,7 @@ void CBrushPolygon::InitializeShadowMap(void)
   iMipLevel += iMipAdj;
 
   // move shadow map offset for the sake of dark corners
-  if( bpo_ulFlags&BPOF_DARKCORNERS) {
+  if (bpo_ulFlags&BPOF_DARKCORNERS) {
     mexMinU -= 1<<iMipLevel;
     mexMinV -= 1<<iMipLevel;
   }
@@ -207,7 +207,7 @@ void CBrushShadowMap::ReadLayers_t( CTStream *pstrm)  // throw char *
     INDEX ctLayers;
     *pstrm>>ctLayers;
     // for each shadow layer
-    for(INDEX iLayer=0; iLayer<ctLayers; iLayer++) {
+    for (INDEX iLayer=0; iLayer<ctLayers; iLayer++) {
       // create a new layer
       CBrushShadowLayer *pbsl = new CBrushShadowLayer;
       pbsl->bsl_colLastAnim = 0x12345678;
@@ -265,7 +265,7 @@ void CBrushShadowMap::ReadLayers_t( CTStream *pstrm)  // throw char *
     INDEX ctLayers;
     *pstrm>>ctLayers;
     // for each shadow layer
-    for(INDEX iLayer=0; iLayer<ctLayers; iLayer++) {
+    for (INDEX iLayer=0; iLayer<ctLayers; iLayer++) {
       // create a new layer
       CBrushShadowLayer *pbsl = new CBrushShadowLayer;
       pbsl->bsl_colLastAnim = 0x12345678;
@@ -308,7 +308,7 @@ void CBrushShadowMap::ReadLayers_t( CTStream *pstrm)  // throw char *
     INDEX ctLayers;
     *pstrm>>ctLayers;
     // for each shadow layer
-    for(INDEX iLayer=0; iLayer<ctLayers; iLayer++) {
+    for (INDEX iLayer=0; iLayer<ctLayers; iLayer++) {
       // create a new layer
       CBrushShadowLayer *pbsl = new CBrushShadowLayer;
       pbsl->bsl_colLastAnim = 0x12345678;
@@ -482,7 +482,7 @@ void CBrushShadowMap::FindLightRectangle(CLightSource &ls, class CLightRectangle
   PIX pixMinU, pixMinV, pixMaxU, pixMaxV;
 
   // if the light is directional
-  if( ls.ls_ulFlags&LSF_DIRECTIONAL)
+  if (ls.ls_ulFlags&LSF_DIRECTIONAL)
   {
     pixMinU = 0;
     pixMinV = 0;
@@ -513,7 +513,7 @@ void CBrushShadowMap::FindLightRectangle(CLightSource &ls, class CLightRectangle
     bpoPolygon.bpo_mdShadow.GetTextureCoordinates(
       bpoPolygon.bpo_pbplPlane->bpl_pwplWorking->wpl_mvRelative, vHotPoint, vmexHotPoint);
 
-    if( !(bpoPolygon.bpo_ulFlags&BPOF_DARKCORNERS)) {
+    if (!(bpoPolygon.bpo_ulFlags&BPOF_DARKCORNERS)) {
       lr.lr_fpixHotU = FLOAT(vmexHotPoint(1)+sm_mexOffsetX+(1<<iMipLevel))/(1L<<iMipLevel);
       lr.lr_fpixHotV = FLOAT(vmexHotPoint(2)+sm_mexOffsetY+(1<<iMipLevel))/(1L<<iMipLevel);
     } else {
@@ -553,7 +553,7 @@ void CBrushShadowMap::FindLightRectangle(CLightSource &ls, class CLightRectangle
 void CBrushShadowMap::CheckLayersUpToDate(void)
 {
   // do nothing if the shadow map is not cached at all or hasn't got any animating lights
-  if( ((sm_pulDynamicShadowMap==NULL || (sm_ulFlags&SMF_DYNAMICBLACK))
+  if (((sm_pulDynamicShadowMap==NULL || (sm_ulFlags&SMF_DYNAMICBLACK))
    && !(sm_ulFlags&SMF_ANIMATINGLIGHTS))
    ||   sm_pulCachedShadowMap==NULL) return;
 
@@ -561,16 +561,16 @@ void CBrushShadowMap::CheckLayersUpToDate(void)
   FOREACHINLIST( CBrushShadowLayer, bsl_lnInShadowMap, bsm_lhLayers, itbsl)
   { // ignore if the layer is all dark
     CBrushShadowLayer &bsl = *itbsl;
-    if( bsl.bsl_ulFlags&BSLF_ALLDARK) continue;
+    if (bsl.bsl_ulFlags&BSLF_ALLDARK) continue;
     // light source must be valid
     CLightSource &ls = *bsl.bsl_plsLightSource;
     ASSERT( &ls!=NULL);
-    if( &ls==NULL) continue;
+    if (&ls==NULL) continue;
     // if the layer is not up to date
-    if( bsl.bsl_colLastAnim != ls.GetLightColor()) {
+    if (bsl.bsl_colLastAnim != ls.GetLightColor()) {
       // invalidate entire shadow map
       Invalidate( ls.ls_ulFlags&LSF_DYNAMIC);
-      if( !(ls.ls_ulFlags&LSF_DYNAMIC)) return;
+      if (!(ls.ls_ulFlags&LSF_DYNAMIC)) return;
     }
   }
 }
@@ -584,9 +584,9 @@ BOOL CBrushShadowMap::HasDynamicLayers(void)
   { // light source must be valid
     CLightSource &ls = *itbsl->bsl_plsLightSource;
     ASSERT( &ls!=NULL);
-    if( &ls==NULL) continue;
+    if (&ls==NULL) continue;
     // if the layer is dynamic, it has
-    if( ls.ls_ulFlags&LSF_DYNAMIC) return TRUE;
+    if (ls.ls_ulFlags&LSF_DYNAMIC) return TRUE;
   }
   // hasn't
   return FALSE;
@@ -601,7 +601,7 @@ BOOL CBrushShadowMap::IsShadowFlat( COLOR &colFlat)
   extern INDEX shd_bAllowFlats;
   extern INDEX shd_iForceFlats;
   shd_iForceFlats = Clamp( shd_iForceFlats, 0L, 2L);
-  if( !shd_bAllowFlats && shd_iForceFlats<1) return FALSE;
+  if (!shd_bAllowFlats && shd_iForceFlats<1) return FALSE;
 
   COLOR col;
   UBYTE ubR,ubG,ubB, ubR1,ubG1,ubB1;
@@ -622,20 +622,20 @@ BOOL CBrushShadowMap::IsShadowFlat( COLOR &colFlat)
 
   // if gradient layer is present
   const ULONG ulGradientType = pbpo->bpo_bppProperties.bpp_ubGradientType;
-  if( ulGradientType>0)
+  if (ulGradientType>0)
   { 
     CGradientParameters gp;
     CEntity *pen = pbpo->bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
-    if( pen!=NULL && pen->GetGradient( ulGradientType, gp)) {
+    if (pen!=NULL && pen->GetGradient( ulGradientType, gp)) {
       // shadowmap cannot be flat
-      if( shd_iForceFlats<1) return FALSE;
+      if (shd_iForceFlats<1) return FALSE;
       // unless it has been forced
       ColorToRGB( gp.gp_col0, ubR, ubG, ubB);
       ColorToRGB( gp.gp_col1, ubR1,ubG1,ubB1);
       const SLONG slAvgR = ((ULONG)ubR + ubR1) /2;
       const SLONG slAvgG = ((ULONG)ubG + ubG1) /2;
       const SLONG slAvgB = ((ULONG)ubB + ubB1) /2;
-      if( gp.gp_bDark) { slR -= slAvgR;  slG -= slAvgR;  slB -= slAvgR; }
+      if (gp.gp_bDark) { slR -= slAvgR;  slG -= slAvgR;  slB -= slAvgR; }
       else             { slR += slAvgR;  slG += slAvgR;  slB += slAvgR; }
     }
   }
@@ -647,35 +647,35 @@ BOOL CBrushShadowMap::IsShadowFlat( COLOR &colFlat)
     // skip dynamic layers
     CBrushShadowLayer &bsl = *itbsl;
     CLightSource &ls = *bsl.bsl_plsLightSource;
-    if( ls.ls_ulFlags&LSF_DYNAMIC) continue;
+    if (ls.ls_ulFlags&LSF_DYNAMIC) continue;
 
     // if light is directional 
-    if( ls.ls_ulFlags&LSF_DIRECTIONAL)
+    if (ls.ls_ulFlags&LSF_DIRECTIONAL)
     {
       // fail if calculated and not all dark or all light
-      if( (bsl.bsl_ulFlags&BSLF_CALCULATED) && !(bsl.bsl_ulFlags&(BSLF_ALLDARK|BSLF_ALLLIGHT))) {
+      if ((bsl.bsl_ulFlags&BSLF_CALCULATED) && !(bsl.bsl_ulFlags&(BSLF_ALLDARK|BSLF_ALLLIGHT))) {
         // but only if flats have not been forced!
-        if( shd_iForceFlats<1) return FALSE;
+        if (shd_iForceFlats<1) return FALSE;
       }
 
       // if polygon allows directional light ambient component
-      if( pbpo->bpo_ulFlags&BPOF_HASDIRECTIONALAMBIENT) {
+      if (pbpo->bpo_ulFlags&BPOF_HASDIRECTIONALAMBIENT) {
         // mix in ambient color
         col = AdjustColor( ls.GetLightAmbient(), _slShdHueShift, _slShdSaturation);
         ColorToRGB( col, ubR,ubG,ubB);
         slR += ubR;  slG += ubG;  slB += ubB; 
       }
       // done with this layer if it's all dark, or all light but without directional component
-      if( (bsl.bsl_ulFlags&BSLF_ALLDARK) || !(pbpo->bpo_ulFlags&BPOF_HASDIRECTIONALLIGHT)) continue;
+      if ((bsl.bsl_ulFlags&BSLF_ALLDARK) || !(pbpo->bpo_ulFlags&BPOF_HASDIRECTIONALLIGHT)) continue;
 
       // layer is all light, so calculate intensity
       col = ls.GetLightColor();
-      if( !(pbpo->bpo_ulFlags&BPOF_NOPLANEDIFFUSION)) {
+      if (!(pbpo->bpo_ulFlags&BPOF_NOPLANEDIFFUSION)) {
         FLOAT3D vLightDirection;
         AnglesToDirectionVector( ls.ls_penEntity->GetPlacement().pl_OrientationAngle, vLightDirection);
         const FLOAT fIntensity = -((pbpo->bpo_pbplPlane->bpl_plAbsolute)%vLightDirection);
         // done if polygon is turn away from light source (we already added ambient component)
-        if( fIntensity<0.01f) continue;
+        if (fIntensity<0.01f) continue;
         ULONG ulIntensity = NormFloatToByte(fIntensity);
         ulIntensity = (ulIntensity<<CT_RSHIFT) | (ulIntensity<<CT_GSHIFT) | (ulIntensity<<CT_BSHIFT);
         col = MulColors( col, ulIntensity);
@@ -691,22 +691,22 @@ BOOL CBrushShadowMap::IsShadowFlat( COLOR &colFlat)
     else
     {
       // just fail if layer isn't all dark
-      if( !(bsl.bsl_ulFlags&BSLF_ALLDARK)) {
+      if (!(bsl.bsl_ulFlags&BSLF_ALLDARK)) {
         // and flat shadows aren't forced
-        if( shd_iForceFlats<1) return FALSE;
+        if (shd_iForceFlats<1) return FALSE;
       }
     }
   }
 
   // fake directional light if needed and allowed
-  if( shd_iForceFlats>0 && !bDirLightApplied) {
+  if (shd_iForceFlats>0 && !bDirLightApplied) {
     FLOAT3D vLightDir;
     vLightDir(1) = -3.0f;
     vLightDir(2) = -2.0f;
     vLightDir(3) = -1.0f;
     vLightDir.Normalize();
     const FLOAT fIntensity = -((pbpo->bpo_pbplPlane->bpl_plAbsolute)%vLightDir);
-    if( fIntensity>0.01f) {
+    if (fIntensity>0.01f) {
       const UBYTE ubGray = NormFloatToByte(fIntensity*0.49f);
       slR += ubGray;  slG += ubGray;  slB += ubGray; 
     }
@@ -728,12 +728,12 @@ SLONG CBrushShadowMap::GetUsedMemory(void)
   SLONG slUsedMemory = sizeof(CBrushShadowMap);
 
   // add polyhon mask (if any)
-  if( bsm_pubPolygonMask!=NULL) {
+  if (bsm_pubPolygonMask!=NULL) {
     // loop and add mip-maps
     SLONG slPolyMaskSize = 0;
     PIX pixPolySizeU = sm_pixPolygonSizeU;
     PIX pixPolySizeV = sm_pixPolygonSizeV;
-    while( pixPolySizeU>0 && pixPolySizeV>0) {
+    while (pixPolySizeU>0 && pixPolySizeV>0) {
       slPolyMaskSize += pixPolySizeU * pixPolySizeV;
       pixPolySizeU  >>= 1;
       pixPolySizeV  >>= 1;
@@ -746,7 +746,7 @@ SLONG CBrushShadowMap::GetUsedMemory(void)
   FOREACHINLIST( CBrushShadowLayer, bsl_lnInShadowMap, bsm_lhLayers, itbsl) { // count shadow layers
     CBrushShadowLayer &bsl = *itbsl;
     slUsedMemory += sizeof(CBrushShadowLayer);
-    if( bsl.bsl_pubLayer!=NULL) slUsedMemory += bsl.bsl_pixSizeU * bsl.bsl_pixSizeV /8; 
+    if (bsl.bsl_pubLayer!=NULL) slUsedMemory += bsl.bsl_pixSizeU * bsl.bsl_pixSizeV /8; 
   }
 
   // done

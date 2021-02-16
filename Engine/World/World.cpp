@@ -301,16 +301,16 @@ void CWorld::DestroyEntities(CEntitySelection &senToDestroy)
 void CWorld::UntargetEntity(CEntity *penToUntarget)
 {
   // for all entities in this world
-  FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, itenInWorld){
+  FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, itenInWorld) {
     // get the DLL class of this entity
     CDLLEntityClass *pdecDLLClass = itenInWorld->en_pecClass->ec_pdecDLLClass;
 
     // for all classes in hierarchy of this entity
-    for(;
+    for (;
         pdecDLLClass!=NULL;
         pdecDLLClass = pdecDLLClass->dec_pdecBase) {
       // for all properties
-      for(INDEX iProperty=0; iProperty<pdecDLLClass->dec_ctProperties; iProperty++) {
+      for (INDEX iProperty=0; iProperty<pdecDLLClass->dec_ctProperties; iProperty++) {
         CEntityProperty &epProperty = pdecDLLClass->dec_aepProperties[iProperty];
 
         // if the property type is entity pointer
@@ -588,7 +588,7 @@ void CWorld::HideSelectedEntities(CEntitySelection &selenEntitiesToHide)
 {
   // for all entities in the selection
   FOREACHINDYNAMICCONTAINER(selenEntitiesToHide, CEntity, iten) {
-    if( iten->IsSelected(ENF_SELECTED) &&
+    if (iten->IsSelected(ENF_SELECTED) &&
         !((iten->en_RenderType==CEntity::RT_BRUSH) && (iten->en_ulFlags&ENF_ZONING)) )
     {
       // hide the entity
@@ -605,7 +605,7 @@ void CWorld::HideUnselectedEntities(void)
   // for each entity in the world
   FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten)
   {
-    if( !iten->IsSelected(ENF_SELECTED) &&
+    if (!iten->IsSelected(ENF_SELECTED) &&
         !((iten->en_RenderType==CEntity::RT_BRUSH)&&(iten->en_ulFlags&ENF_ZONING)) )
     {
       // hide it
@@ -838,7 +838,7 @@ void CWorld::LinkEntitiesToSectors(void)
   {FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     CEntity &en = *iten;
     if (en.en_RenderType==CEntity::RT_BRUSH && 
-      (en.en_ulFlags&ENF_ZONING) && (en.en_ulPhysicsFlags&EPF_MOVABLE)){
+      (en.en_ulFlags&ENF_ZONING) && (en.en_ulPhysicsFlags&EPF_MOVABLE)) {
       // recalculate all bounding boxes relative to new position
       extern BOOL _bDontDiscardLinks;
       _bDontDiscardLinks = TRUE;
@@ -883,7 +883,7 @@ void CWorld::UpdateSectorsDuringVertexChange( CBrushVertexSelection &selVertex)
   }}
 
   // for each sector to be updated
-  {FOREACHINDYNAMICCONTAINER( cbscToUpdate, CBrushSector, itbsc){
+  {FOREACHINDYNAMICCONTAINER( cbscToUpdate, CBrushSector, itbsc) {
     // recalculate planes for polygons from their vertices
     itbsc->MakePlanesFromVertices();
   }}
@@ -904,7 +904,7 @@ void CWorld::UpdateSectorsAfterVertexChange( CBrushVertexSelection &selVertex)
   }}
 
   // for each sector to be updated
-  {FOREACHINDYNAMICCONTAINER( cbscToUpdate, CBrushSector, itbsc){
+  {FOREACHINDYNAMICCONTAINER( cbscToUpdate, CBrushSector, itbsc) {
     // update it
     itbsc->UpdateVertexChanges();
   }}
@@ -925,7 +925,7 @@ void CWorld::TriangularizeForVertices( CBrushVertexSelection &selVertex)
   }}
 
   // for each sector to be updated
-  {FOREACHINDYNAMICCONTAINER( cbscToTriangularize, CBrushSector, itbsc){
+  {FOREACHINDYNAMICCONTAINER( cbscToTriangularize, CBrushSector, itbsc) {
     // update it
     itbsc->TriangularizeForVertices(selVertex);
   }}
@@ -985,7 +985,7 @@ void CWorld::MarkForPrediction(void)
   TICK llTickNow = _pNetwork->ga_sesSessionState.ses_llPredictionHeadTick;
 
   // for each predictable entity
-  {FOREACHINDYNAMICCONTAINER(wo_cenPredictable, CEntity, iten){
+  {FOREACHINDYNAMICCONTAINER(wo_cenPredictable, CEntity, iten) {
     CEntity &en = *iten;
     // it must not be void (so that its coordinates are relevant)
     ASSERT(en.GetRenderType()!=CEntity::RT_VOID);
@@ -1011,7 +1011,7 @@ void CWorld::MarkForPrediction(void)
       const FLOAT3D &v = en.GetPlacement().pl_PositionVector;
       // check if it is within range of any local player
       BOOL bInRange = FALSE;
-      for(INDEX i=0; i<avLocalPlayers.Count(); i++) {
+      for (INDEX i=0; i<avLocalPlayers.Count(); i++) {
         if ((avLocalPlayers[i]-v).Length()<fRange) {
           bInRange = TRUE;
           break;
@@ -1031,7 +1031,7 @@ void CWorld::MarkForPrediction(void)
 void CWorld::UnmarkForPrediction(void)
 {
   // for each entity marked
-  {FOREACHINDYNAMICCONTAINER(wo_cenWillBePredicted, CEntity, iten){
+  {FOREACHINDYNAMICCONTAINER(wo_cenWillBePredicted, CEntity, iten) {
     // unmark for prediction
     iten->en_ulFlags&=~ENF_WILLBEPREDICTED;
   }}
@@ -1043,7 +1043,7 @@ void CWorld::CreatePredictors(void)
 {
   CDynamicContainer<CEntity> cenForPrediction;
   // for each entity marked
-  {FOREACHINDYNAMICCONTAINER(wo_cenWillBePredicted, CEntity, iten){
+  {FOREACHINDYNAMICCONTAINER(wo_cenWillBePredicted, CEntity, iten) {
     // if not deleted
     if (!(iten->en_ulFlags&ENF_DELETED)) {
       // add to container
@@ -1071,7 +1071,7 @@ void CWorld::DeletePredictors(void)
   // make a copy of predictor container (for safe iteration)
   CDynamicContainer<CEntity> cenPredictor = wo_cenPredictor;
   // for each predictor
-  {FOREACHINDYNAMICCONTAINER( cenPredictor, CEntity, iten){
+  {FOREACHINDYNAMICCONTAINER( cenPredictor, CEntity, iten) {
     CEntity &en = *iten;
     ASSERT(en.IsPredictor());
     // destroy it
@@ -1079,7 +1079,7 @@ void CWorld::DeletePredictors(void)
   }}
 
   // for each predicted
-  {FOREACHINDYNAMICCONTAINER( wo_cenPredicted, CEntity, iten){
+  {FOREACHINDYNAMICCONTAINER( wo_cenPredicted, CEntity, iten) {
     CEntity &en = *iten;
     ASSERT(en.IsPredicted());
     // kill its pointer to predictor
@@ -1123,7 +1123,7 @@ void CWorld::TriangularizePolygons(CDynamicContainer<CBrushPolygon> &dcPolygons)
     CBrushPolygon &bp=*itbpo;
     bp.bpo_ulFlags |= BPOF_MARKED_FOR_USE;
     CBrushSector *pbsc=bp.bpo_pbscSector;
-    if( !cbscToProcess.IsMember( pbsc))
+    if (!cbscToProcess.IsMember( pbsc))
     {
       cbscToProcess.Add( pbsc);
     }

@@ -64,15 +64,15 @@ static void UpdateDepthPointsVisibility( const CDrawPort *pdp, const INDEX iMirr
   const CRaster *pra = pdp->dp_Raster;
 
   // OpenGL
-  if( eAPI==GAT_OGL)
+  if (eAPI==GAT_OGL)
   { 
     _sfStats.StartTimer(CStatForm::STI_GFXAPI);
     FLOAT fPointOoK;
     // for each stored point
-    for( INDEX idi=0; idi<ctCount; idi++) {
+    for (INDEX idi=0; idi<ctCount; idi++) {
       DepthInfo &di = pdi[idi];
       // skip if not in required mirror level or was already checked in this iteration
-      if( iMirrorLevel!=di.di_iMirrorLevel || _iCheckIteration!=di.di_iSwapLastRequest) continue;
+      if (iMirrorLevel!=di.di_iMirrorLevel || _iCheckIteration!=di.di_iSwapLastRequest) continue;
       const PIX pixJ = pra->ra_Height-1 - di.di_pixJ; // OpenGL has Y-inversed buffer!
       pglReadPixels( di.di_pixI, pixJ, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &fPointOoK);
       OGL_CHECKERROR;
@@ -86,7 +86,7 @@ static void UpdateDepthPointsVisibility( const CDrawPort *pdp, const INDEX iMirr
 
   // Direct3D
 #ifdef SE1_D3D
-  if( eAPI==GAT_D3D)
+  if (eAPI==GAT_D3D)
   {
     _sfStats.StartTimer(CStatForm::STI_GFXAPI);
     // ok, this will get really complicated ...
@@ -103,13 +103,13 @@ static void UpdateDepthPointsVisibility( const CDrawPort *pdp, const INDEX iMirr
     LPDIRECT3DSURFACE8 pBackBuffer;
     // fetch back buffer (different for full screen and windowed mode)
     const BOOL bFullScreen = _pGfx->gl_ulFlags & GLF_FULLSCREEN;
-    if( bFullScreen) {
+    if (bFullScreen) {
       hr = _pGfx->gl_pd3dDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
     } else {
       hr = pra->ra_pvpViewPort->vp_pSwapChain->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
     }
     // what, cannot get a back buffer?
-    if( hr!=D3D_OK) { 
+    if (hr!=D3D_OK) { 
       // to hell with it all
       _sfStats.StopTimer(CStatForm::STI_GFXAPI);
       return;
@@ -121,15 +121,15 @@ static void UpdateDepthPointsVisibility( const CDrawPort *pdp, const INDEX iMirr
     // prepare array that'll back-buffer colors from depth point locations
     _acolDelayed.Push(ctCount);
     // store all colors
-    for( idi=0; idi<ctCount; idi++) {
+    for (idi=0; idi<ctCount; idi++) {
       DepthInfo &di = pdi[idi];
       // skip if not in required mirror level or was already checked in this iteration
-      if( iMirrorLevel!=di.di_iMirrorLevel || _iCheckIteration!=di.di_iSwapLastRequest) continue;
+      if (iMirrorLevel!=di.di_iMirrorLevel || _iCheckIteration!=di.di_iSwapLastRequest) continue;
       // fetch pixel
       _acolDelayed[idi] = 0;
       const RECT rectToLock = { di.di_pixI, di.di_pixJ, di.di_pixI+1, di.di_pixJ+1 };
       hr = pBackBuffer->LockRect( &rectLocked, &rectToLock, D3DLOCK_READONLY);
-      if( hr!=D3D_OK) continue; // skip if lock didn't make it
+      if (hr!=D3D_OK) continue; // skip if lock didn't make it
       // read, convert and store original color
       _acolDelayed[idi] = UnpackColor_D3D( (UBYTE*)rectLocked.pBits, d3dfBack, slColSize) | CT_OPAQUE;
       pBackBuffer->UnlockRect();
@@ -149,11 +149,11 @@ static void UpdateDepthPointsVisibility( const CDrawPort *pdp, const INDEX iMirr
 
     // draw one trianle around each depth point
     INDEX ctVertex = 0;
-    for( idi=0; idi<ctCount; idi++) {
+    for (idi=0; idi<ctCount; idi++) {
       DepthInfo &di = pdi[idi];
       col = _acolDelayed[idi];
       // skip if not in required mirror level or was already checked in this iteration, or wasn't fetched at all
-      if( iMirrorLevel!=di.di_iMirrorLevel || _iCheckIteration!=di.di_iSwapLastRequest || col==0) continue;
+      if (iMirrorLevel!=di.di_iMirrorLevel || _iCheckIteration!=di.di_iSwapLastRequest || col==0) continue;
       const ULONG d3dCol = rgba2argb(col^0x20103000);
       const PIX pixI = di.di_pixI - pdp->dp_MinI; // convert raster loc to drawport loc
       const PIX pixJ = di.di_pixJ - pdp->dp_MinJ;
@@ -170,15 +170,15 @@ static void UpdateDepthPointsVisibility( const CDrawPort *pdp, const INDEX iMirr
     D3D_CHECKERROR(hr);
 
     // readout colors again and compare to old ones
-    for( idi=0; idi<ctCount; idi++) {
+    for (idi=0; idi<ctCount; idi++) {
       DepthInfo &di = pdi[idi];
       col = _acolDelayed[idi];
       // skip if not in required mirror level or was already checked in this iteration, or wasn't fetched at all
-      if( iMirrorLevel!=di.di_iMirrorLevel || _iCheckIteration!=di.di_iSwapLastRequest || col==0) continue;
+      if (iMirrorLevel!=di.di_iMirrorLevel || _iCheckIteration!=di.di_iSwapLastRequest || col==0) continue;
       // fetch pixel
       const RECT rectToLock = { di.di_pixI, di.di_pixJ, di.di_pixI+1, di.di_pixJ+1 };
       hr = pBackBuffer->LockRect( &rectLocked, &rectToLock, D3DLOCK_READONLY);
-      if( hr!=D3D_OK) continue; // skip if lock didn't make it
+      if (hr!=D3D_OK) continue; // skip if lock didn't make it
       // read new color
       const COLOR colNew = UnpackColor_D3D( (UBYTE*)rectLocked.pBits, d3dfBack, slColSize) | CT_OPAQUE;
       pBackBuffer->UnlockRect();
@@ -202,14 +202,14 @@ extern BOOL CheckDepthPoint( const CDrawPort *pdp, PIX pixI, PIX pixJ, FLOAT fOo
 {
   // no raster?
   const CRaster *pra = pdp->dp_Raster;
-  if( pra==NULL) return FALSE;
+  if (pra==NULL) return FALSE;
   // almoust out of raster?
   pixI += pdp->dp_MinI;
   pixJ += pdp->dp_MinJ;
-  if( pixI<1 || pixJ<1 || pixI>pra->ra_Width-2 || pixJ>pra->ra_Height-2) return FALSE;
+  if (pixI<1 || pixJ<1 || pixI>pra->ra_Width-2 || pixJ>pra->ra_Height-2) return FALSE;
 
   // if shouldn't delay
-  if( gap_iOptimizeDepthReads==0) {
+  if (gap_iOptimizeDepthReads==0) {
     // just check immediately
     DepthInfo di = { iID, pixI, pixJ, fOoK, _iCheckIteration, iMirrorLevel, FALSE };
     UpdateDepthPointsVisibility( pdp, iMirrorLevel, &di, 1);
@@ -217,10 +217,10 @@ extern BOOL CheckDepthPoint( const CDrawPort *pdp, PIX pixI, PIX pixJ, FLOAT fOo
   }
 
   // for each stored point
-  for( INDEX idi=0; idi<_adiDelayed.Count(); idi++) {
+  for (INDEX idi=0; idi<_adiDelayed.Count(); idi++) {
     DepthInfo &di = _adiDelayed[idi];
     // if same id
-    if( di.di_iID == iID) {
+    if (di.di_iID == iID) {
       // remember parameters
       di.di_pixI = pixI;
       di.di_pixJ = pixJ;
@@ -252,26 +252,26 @@ extern void CheckDelayedDepthPoints( const CDrawPort *pdp, INDEX iMirrorLevel/*=
 {
   // skip if not delayed or mirror level is to high
   gap_iOptimizeDepthReads = Clamp( gap_iOptimizeDepthReads, 0L, 2L);
-  if( gap_iOptimizeDepthReads==0 || iMirrorLevel>7) return; 
+  if (gap_iOptimizeDepthReads==0 || iMirrorLevel>7) return; 
   ASSERT( pdp!=NULL && iMirrorLevel>=0);
 
   // check only if time lapse allows
   const CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
   const TIME tmDelta = (tvNow-_tvLast[iMirrorLevel]).GetSeconds();
   ASSERT( tmDelta>=0);
-  if( gap_iOptimizeDepthReads==2 && tmDelta<0.1f) return;
+  if (gap_iOptimizeDepthReads==2 && tmDelta<0.1f) return;
 
   // prepare
   _tvLast[iMirrorLevel] = tvNow;
   INDEX ctPoints = _adiDelayed.Count();
-  if( ctPoints==0) return; // done if no points in queue
+  if (ctPoints==0) return; // done if no points in queue
 
   // for each point
   INDEX iPoint = 0;
-  while( iPoint<ctPoints) {
+  while (iPoint<ctPoints) {
     DepthInfo &di = _adiDelayed[iPoint];
     // if the point is not active any more
-    if( iMirrorLevel==di.di_iMirrorLevel && di.di_iSwapLastRequest<_iCheckIteration-KEEP_BEHIND) {
+    if (iMirrorLevel==di.di_iMirrorLevel && di.di_iSwapLastRequest<_iCheckIteration-KEEP_BEHIND) {
       // delete it by moving the last one on its place
       di = _adiDelayed[ctPoints-1];
       ctPoints--;
@@ -283,15 +283,15 @@ extern void CheckDelayedDepthPoints( const CDrawPort *pdp, INDEX iMirrorLevel/*=
   }
 
   // remove unused points at the end
-  if( ctPoints==0) _adiDelayed.PopAll();
+  if (ctPoints==0) _adiDelayed.PopAll();
   else _adiDelayed.PopUntil(ctPoints-1);
 
   // ignore stalls
-  if( tmDelta>1.0f) return;
+  if (tmDelta>1.0f) return;
 
   // check and upadete visibility of what has left
   ASSERT( ctPoints == _adiDelayed.Count());
-  if( ctPoints>0) UpdateDepthPointsVisibility( pdp, iMirrorLevel, &_adiDelayed[0], ctPoints);
+  if (ctPoints>0) UpdateDepthPointsVisibility( pdp, iMirrorLevel, &_adiDelayed[0], ctPoints);
   // mark checking
   _iCheckIteration++;
 }

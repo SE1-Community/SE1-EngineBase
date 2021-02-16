@@ -24,7 +24,7 @@ enum FPUPrecisionType GetFPUPrecision(void)
   ULONG fpcw = _control87( 0, 0);
 
   // extract the precision from the flags
-  switch(fpcw&_MCW_PC) {
+  switch (fpcw&_MCW_PC) {
   case _PC_24:
     return FPT_24BIT;
     break;
@@ -45,7 +45,7 @@ void SetFPUPrecision(enum FPUPrecisionType fptNew)
 {
   ULONG fpcw;
   // create FPU flags from the precision
-  switch(fptNew) {
+  switch (fptNew) {
   case FPT_24BIT:
     fpcw=_PC_24;
     break;

@@ -62,7 +62,7 @@ static ULONG ulRNDSeed;
 
 inline void Randomize( ULONG ulSeed)
 {
-  if( ulSeed==0) ulSeed = 0x87654321;
+  if (ulSeed==0) ulSeed = 0x87654321;
   ulRNDSeed = ulSeed*262147;
 };
 
@@ -230,10 +230,10 @@ void AnimateRandomSurfer(CTextureEffectSource *ptes)
   sf.fV += 2*cos(sf.fAngle);
   PutPixel9SLONG_WATER(sf.fU, sf.fV, 250);
 
-  if((RNDW&15)==0) {
+  if ((RNDW&15)==0) {
     sf.fAngle += 3.14f/7.0f;
   }
-  if((RNDW&15)==0) {
+  if ((RNDW&15)==0) {
     sf.fAngle -= 3.14f/5.0f;
   }
 }
@@ -1109,8 +1109,8 @@ static void AnimateWater( SLONG slDensity)
 
   // inner rectangle (without 1 pixel top and bottom line)
   pixOffset = _pixBufferWidth + 1;
-  for( pixV=_pixBufferHeight-2; pixV>0; pixV--) {
-    for( pixU=_pixBufferWidth; pixU>0; pixU--) {
+  for (pixV=_pixBufferHeight-2; pixV>0; pixV--) {
+    for (pixU=_pixBufferWidth; pixU>0; pixU--) {
       iNew = (( (SLONG)pOld[pixOffset - _pixBufferWidth]
               + (SLONG)pOld[pixOffset + _pixBufferWidth]
               + (SLONG)pOld[pixOffset - 1]
@@ -1128,7 +1128,7 @@ static void AnimateWater( SLONG slDensity)
   slLineLeft = 0;
   slLineRight = 2;
   pixOffset = 1;
-  for( pixU=_pixBufferWidth-2; pixU>0; pixU--) {
+  for (pixU=_pixBufferWidth-2; pixU>0; pixU--) {
     iNew = (( (SLONG)pOld[slLineAbove]
             + (SLONG)pOld[slLineBelow]
             + (SLONG)pOld[slLineLeft]
@@ -1148,7 +1148,7 @@ static void AnimateWater( SLONG slDensity)
   slLineLeft = (_pixBufferHeight-1)*_pixBufferWidth;
   slLineRight = ((_pixBufferHeight-1)*_pixBufferWidth) + 2;
   pixOffset = ((_pixBufferHeight-1)*_pixBufferWidth) + 1;
-  for( pixU=_pixBufferWidth-2; pixU>0; pixU--) {
+  for (pixU=_pixBufferWidth-2; pixU>0; pixU--) {
     iNew = (( (SLONG)pOld[slLineAbove]
             + (SLONG)pOld[slLineBelow]
             + (SLONG)pOld[slLineLeft]
@@ -1233,7 +1233,7 @@ static void RenderWater(void)
           _pixBufferWidth*sizeof(SWORD)*2);
 
   // execute corresponding displace routine
-  if( _pixBufferWidth >= _pixTexWidth)
+  if (_pixBufferWidth >= _pixTexWidth)
   { // SUB-SAMPLING
     SLONG slHeightMapStep, slHeightRowStep;
 
@@ -1315,9 +1315,9 @@ pixLoop:
     slHeightMapStep  = _pixBufferWidth/pixBaseWidth
     slHeightRowStep  = (slHeightMapStep-1)*_pixBufferWidth;
     mmShift = DISTORSION+ FastLog2(slHeightMapStep) +2;
-    for( PIX pixV=0; pixV<_pixTexHeight; pixV++)
+    for (PIX pixV=0; pixV<_pixTexHeight; pixV++)
     { // row loop
-      for( PIX pixU=0; pixU<_pixTexWidth; pixU++)
+      for (PIX pixU=0; pixU<_pixTexWidth; pixU++)
       { // texel loop
         pixPos =  pswHeightMap[0];
         pixDU  = (pswHeightMap[1]               - pixPos) >>(SLONG&)mmShift;
@@ -1334,7 +1334,7 @@ pixLoop:
 #endif
 
   }
-  else if( _pixBufferWidth*2 == _pixTexWidth)
+  else if (_pixBufferWidth*2 == _pixTexWidth)
   { // BILINEAR SUPER-SAMPLING 2
 
 #if ASMOPT == 1
@@ -1474,9 +1474,9 @@ pixLoop2:
 
     SLONG slU_00, slU_01, slU_10, slU_11;
     SLONG slV_00, slV_01, slV_10, slV_11;
-    for( PIX pixV=0; pixV<_pixBufferHeight; pixV++)
+    for (PIX pixV=0; pixV<_pixBufferHeight; pixV++)
     { // row loop
-      for( PIX pixU=0; pixU<_pixBufferWidth; pixU++)
+      for (PIX pixU=0; pixU<_pixBufferWidth; pixU++)
       { // texel loop
         slU_00 = pswHeightMap[_pixBufferWidth*0+1] - pswHeightMap[_pixBufferWidth*0+0] + ((pixU+0)<<(DISTORSION+1+1));
         slV_00 = pswHeightMap[_pixBufferWidth*1+0] - pswHeightMap[_pixBufferWidth*0+0] + ((pixV+0)<<(DISTORSION+1+1));
@@ -1502,7 +1502,7 @@ pixLoop2:
 #endif
 
   }
-  else if( _pixBufferWidth*4 == _pixTexWidth)
+  else if (_pixBufferWidth*4 == _pixTexWidth)
   { // BILINEAR SUPER-SAMPLING 4
 
 #if ASMOPT == 1
@@ -1845,9 +1845,9 @@ pixLoop4:
     SLONG slU_00, slU_01, slU_10, slU_11;
     SLONG slV_00, slV_01, slV_10, slV_11;
     mmBaseWidthShift = FastLog2( pixBaseWidth);        // faster multiplying with shift
-    for( PIX pixV=0; pixV<_pixBufferHeight; pixV++)
+    for (PIX pixV=0; pixV<_pixBufferHeight; pixV++)
     { // row loop
-      for( PIX pixU=0; pixU<_pixBufferWidth; pixU++)
+      for (PIX pixU=0; pixU<_pixBufferWidth; pixU++)
       { // texel loop
         slU_00 = pswHeightMap[_pixBufferWidth*0+1] - pswHeightMap[_pixBufferWidth*0+0] + ((pixU+0)<<(DISTORSION+2));
         slV_00 = pswHeightMap[_pixBufferWidth*1+0] - pswHeightMap[_pixBufferWidth*0+0] + ((pixV+0)<<(DISTORSION+2));
@@ -1938,8 +1938,8 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
   if (eType == ptNormal) {
     // inner rectangle (without 1 pixel border)
     pixOffset = _pixBufferWidth;
-    for( pixV=1; pixV<_pixBufferHeight-1; pixV++) {
-      for( pixU=0; pixU<_pixBufferWidth; pixU++) {
+    for (pixV=1; pixV<_pixBufferHeight-1; pixV++) {
+      for (pixU=0; pixU<_pixBufferWidth; pixU++) {
         ulNew = ((((ULONG)pOld[pixOffset - _pixBufferWidth] +
                    (ULONG)pOld[pixOffset + _pixBufferWidth] +
                    (ULONG)pOld[pixOffset - 1] +
@@ -1957,7 +1957,7 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
     slLineLeft = 0;
     slLineRight = 2;
     pixOffset = 1;
-    for( pixU=_pixBufferWidth-2; pixU>0; pixU--) {
+    for (pixU=_pixBufferWidth-2; pixU>0; pixU--) {
       ulNew = ((((ULONG)pOld[slLineAbove] +
                  (ULONG)pOld[slLineBelow] +
                  (ULONG)pOld[slLineLeft] +
@@ -1978,7 +1978,7 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
     slLineLeft = (_pixBufferHeight-1)*_pixBufferWidth;
     slLineRight = ((_pixBufferHeight-1)*_pixBufferWidth) + 2;
     pixOffset = ((_pixBufferHeight-1)*_pixBufferWidth) + 1;
-    for( pixU=_pixBufferWidth-2; pixU>0; pixU--) {
+    for (pixU=_pixBufferWidth-2; pixU>0; pixU--) {
       ulNew = ((((ULONG)pOld[slLineAbove] +
                  (ULONG)pOld[slLineBelow] +
                  (ULONG)pOld[slLineLeft] +
@@ -2037,8 +2037,8 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
   } else if (eType==ptUp || eType==ptUpTile) {
     // inner rectangle (without 1 pixel border)
     pixOffset = _pixBufferWidth;
-    for( pixV=1; pixV<_pixBufferHeight-1; pixV++) {
-      for( pixU=0; pixU<_pixBufferWidth; pixU++) {
+    for (pixV=1; pixV<_pixBufferHeight-1; pixV++) {
+      for (pixU=0; pixU<_pixBufferWidth; pixU++) {
         ulNew = ((((ULONG)pOld[pixOffset - _pixBufferWidth] +
                    (ULONG)pOld[pixOffset + _pixBufferWidth] +
                    (ULONG)pOld[pixOffset - 1] +
@@ -2058,7 +2058,7 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
       slLineLeft = 0;
       slLineRight = 2;
       pixOffset = 1;
-      for( pixU=_pixBufferWidth-2; pixU>0; pixU--) {
+      for (pixU=_pixBufferWidth-2; pixU>0; pixU--) {
         ulNew = ((((ULONG)pOld[slLineAbove] +
                    (ULONG)pOld[slLineBelow] +
                    (ULONG)pOld[slLineLeft] +
@@ -2079,7 +2079,7 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
       slLineLeft = (_pixBufferHeight-1)*_pixBufferWidth;
       slLineRight = ((_pixBufferHeight-1)*_pixBufferWidth) + 2;
       pixOffset = ((_pixBufferHeight-1)*_pixBufferWidth) + 1;
-      for( pixU=_pixBufferWidth-2; pixU>0; pixU--) {
+      for (pixU=_pixBufferWidth-2; pixU>0; pixU--) {
         ulNew = ((((ULONG)pOld[slLineAbove] +
                    (ULONG)pOld[slLineBelow] +
                    (ULONG)pOld[slLineLeft] +
@@ -2139,8 +2139,8 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
   } else if (eType==ptDown || eType==ptDownTile) {
     // inner rectangle (without 1 pixel border)
     pixOffset = _pixBufferWidth;
-    for( pixV=1; pixV<_pixBufferHeight-1; pixV++) {
-      for( pixU=0; pixU<_pixBufferWidth; pixU++) {
+    for (pixV=1; pixV<_pixBufferHeight-1; pixV++) {
+      for (pixU=0; pixU<_pixBufferWidth; pixU++) {
         ulNew = ((((ULONG)pOld[pixOffset - _pixBufferWidth] +
                    (ULONG)pOld[pixOffset + _pixBufferWidth] +
                    (ULONG)pOld[pixOffset - 1] +
@@ -2160,7 +2160,7 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
       slLineLeft = 0;
       slLineRight = 2;
       pixOffset = 1;
-      for( pixU=_pixBufferWidth-2; pixU>0; pixU--) {
+      for (pixU=_pixBufferWidth-2; pixU>0; pixU--) {
         ulNew = ((((ULONG)pOld[slLineAbove] +
                    (ULONG)pOld[slLineBelow] +
                    (ULONG)pOld[slLineLeft] +
@@ -2181,7 +2181,7 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
       slLineLeft = (_pixBufferHeight-1)*_pixBufferWidth;
       slLineRight = ((_pixBufferHeight-1)*_pixBufferWidth) + 2;
       pixOffset = ((_pixBufferHeight-1)*_pixBufferWidth) + 1;
-      for( pixU=_pixBufferWidth-2; pixU>0; pixU--) {
+      for (pixU=_pixBufferWidth-2; pixU>0; pixU--) {
         ulNew = ((((ULONG)pOld[slLineAbove] +
                    (ULONG)pOld[slLineBelow] +
                    (ULONG)pOld[slLineLeft] +
@@ -2310,13 +2310,13 @@ pixDone:
 #else
 
   // inner rectangle (without 1 pixel border)
-  for( PIX pixU=0; pixU<_pixBufferWidth; pixU++)
+  for (PIX pixU=0; pixU<_pixBufferWidth; pixU++)
   {
     SLONG slOffset = pixU;
-    for( PIX pixV=1; pixV<_pixBufferHeight-1; pixV++)
+    for (PIX pixV=1; pixV<_pixBufferHeight-1; pixV++)
     {
       ULONG ulNew = ((ULONG)pubNew[_pixBufferWidth+slOffset] + (ULONG)pubNew[_pixBufferWidth*2+slOffset]) >>1;
-      if( ulNew>slDensity) {
+      if (ulNew>slDensity) {
         ULONG ulNewDensity = RNDW&slDensity;
         ulNew -= ulNewDensity;
         SLONG slDifusion = (SLONG)asbMod3Sub1Table[ulNewDensity]; // (SLONG)(ulNewDensity%3-1);
@@ -2384,9 +2384,9 @@ pixLoopF:
 #else
 
   INDEX iPalette;
-  for( INDEX pixV=0; pixV<_pixTexHeight; pixV++) {
+  for (INDEX pixV=0; pixV<_pixTexHeight; pixV++) {
     // for every pixel in horizontal line
-    for( INDEX pixU=0; pixU<_pixTexWidth; pixU++) {
+    for (INDEX pixU=0; pixU<_pixTexWidth; pixU++) {
       iPalette = (*pubHeat)>>slBaseMipShift;
       *pulTexture++ = pulTextureBase[iPalette];
       pubHeat += slHeatMapStep;
@@ -2630,9 +2630,9 @@ void CTextureEffectGlobal::AddEffectSource( ULONG ulEffectSourceType, PIX pixU0,
 void CTextureEffectGlobal::Animate(void)
 {
   // if not set yet (funny word construction:)
-  if( !bTableSet) {
+  if (!bTableSet) {
     // set table for fast modulo 3 minus 1
-    for( INDEX i=0; i<256; i++) asbMod3Sub1Table[i]=(SBYTE)((i%3)-1);
+    for (INDEX i=0; i<256; i++) asbMod3Sub1Table[i]=(SBYTE)((i%3)-1);
     bTableSet = TRUE;
   }
 
@@ -2667,7 +2667,7 @@ void CTextureEffectGlobal::Render( INDEX iWantedMipLevel, PIX pixTexWidth, PIX p
   _pixBufferWidth  = _ptdEffect->td_pixBufferWidth;
   _pixBufferHeight = _ptdEffect->td_pixBufferHeight;
 
-  if( IsWater()) {
+  if (IsWater()) {
     // use water rendering routine
     _pixTexWidth  = pixTexWidth;
     _pixTexHeight = pixTexHeight;

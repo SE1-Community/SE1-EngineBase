@@ -20,7 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 
 #define FOREACHINSTATICARRAY(array, type, iter) \
-  for(CStaticArrayIterator<type> iter(array); !iter.IsPastEnd(); iter.MoveToNext() )
+  for (CStaticArrayIterator<type> iter(array); !iter.IsPastEnd(); iter.MoveToNext() )
 
 #include <Engine/Base/Console.h>
 #include <Engine/Templates/StaticArray.h>
@@ -71,8 +71,8 @@ inline void CStaticArray<Type>::New(INDEX iCount) {
   }
   //ASSERT(sa_Count==0 && sa_Array==NULL);
 #ifndef NDEBUG
-  if(!(sa_Count==0 && sa_Array==NULL)) {
-    if(sa_Array == NULL) {
+  if (!(sa_Count==0 && sa_Array==NULL)) {
+    if (sa_Array == NULL) {
       CPrintF("CStaticArray array not set!\n");
     } else {
       CPrintF("CStaticArray new(%d) called while already holding %d elements!\n", iCount, sa_Count);

@@ -265,7 +265,7 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox)
         {FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbscNonZoning) {
           CBrushSector &bscNonZoning = *itbscNonZoning;
           // add it to list of active sectors
-          if(!bscNonZoning.bsc_lnInActiveSectors.IsLinked()) {
+          if (!bscNonZoning.bsc_lnInActiveSectors.IsLinked()) {
             ct_lhActiveSectors.AddTail(bscNonZoning.bsc_lnInActiveSectors);
           }
         }}

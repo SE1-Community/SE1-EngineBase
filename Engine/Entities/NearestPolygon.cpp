@@ -70,7 +70,7 @@ static void AddAllSectorsOfBrush(CBrush3D *pbr)
 void SearchThroughSectors(void)
 {
   // for each active sector (sectors are added during iteration!)
-  for(INDEX ias=0; ias<_aas.Count(); ias++) {
+  for (INDEX ias=0; ias<_aas.Count(); ias++) {
     CBrushSector *pbsc = _aas[ias].as_pbsc;
     // for each polygon in the sector
     {FOREACHINSTATICARRAY(pbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
@@ -171,14 +171,14 @@ CBrushPolygon *CEntity::GetNearestPolygon(
   SearchThroughSectors();
 
   // for each active sector
-  for(INDEX ias=0; ias<_aas.Count(); ias++) {
+  for (INDEX ias=0; ias<_aas.Count(); ias++) {
     // mark it as inactive
     _aas[ias].as_pbsc->bsc_ulFlags&=~BSCF_NEARTESTED;
   }
   _aas.PopAll();
 
   // if there is some polygon found
-  if( _pbpoNear!=NULL) {
+  if (_pbpoNear!=NULL) {
     // return info
     plPlane = _pbpoNear->bpo_pbplPlane->bpl_plAbsolute;
     vPoint = _vNearPoint;

@@ -127,7 +127,7 @@ static void PrintHeader(FILE *f)
 void TranslateBackSlashes(char *str)
 {
   char *strNextSlash = str;
-  while((strNextSlash = strchr(strNextSlash, '\\'))!=NULL) {
+  while ((strNextSlash = strchr(strNextSlash, '\\'))!=NULL) {
     *strNextSlash = '/';
   }
 }
@@ -146,12 +146,12 @@ void ReplaceFileRL(const char *strOld, const char *strNew)
 
   // open files
   pfNew = fopen(strNew,"rb");
-  if(!pfNew) goto Error;
+  if (!pfNew) goto Error;
   pfOld = fopen(strOld,"wb");
-  if(!pfOld) goto Error;
+  if (!pfOld) goto Error;
 
   // until eof
-  while(!feof(pfNew))
+  while (!feof(pfNew))
   {
     // clear buffers
     memset(&strOldBuff,0,sizeof(strOldBuff));
@@ -164,26 +164,26 @@ void ReplaceFileRL(const char *strOld, const char *strNew)
     // read one line from file
     int iRead = fread(strNewBuff,1,READSIZE,pfNew);
     char *chLineEnd = strchr(strNewBuff,13);
-    if(chLineEnd) *(chLineEnd+2) = 0;
+    if (chLineEnd) *(chLineEnd+2) = 0;
     // get line length
     int ctch = strlen(strNewBuff);
     int iSeek = -iRead+ctch;
     // seek file for extra characters read
-    if(iSeek!=0) fseek(pfNew,iSeek ,SEEK_CUR);
-    if(strncmp(strNewBuff,"#line",5)==0)
+    if (iSeek!=0) fseek(pfNew,iSeek ,SEEK_CUR);
+    if (strncmp(strNewBuff,"#line",5)==0)
     {
       continue;
     }
 
     // process each charachter
-    for(int ich=0;ich<ctch;ich++)
+    for (int ich=0;ich<ctch;ich++)
     {
       char *pchOld = &strOldBuff[iOldch];
       char *pchNew = &strNewBuff[ich];
 
-      if((*pchNew == '{') || (*pchNew == '}') || *pchNew == ';')
+      if ((*pchNew == '{') || (*pchNew == '}') || *pchNew == ';')
       {
-        if((!bComment) && (!bQuotes) && (*(pchNew+1) != 13))
+        if ((!bComment) && (!bQuotes) && (*(pchNew+1) != 13))
         {
           strOldBuff[iOldch++] = strNewBuff[ich];
           strOldBuff[iOldch++] = 13;
@@ -191,13 +191,13 @@ void ReplaceFileRL(const char *strOld, const char *strNew)
           continue;
         }
       }
-      if(*pchNew == '"')
+      if (*pchNew == '"')
       {
         // if this is quote
-        if((ich>0) && (*(pchNew-1)=='\\')) { }
+        if ((ich>0) && (*(pchNew-1)=='\\')) { }
         else bQuotes = !bQuotes;
       }
-      else if((*pchNew == '/') && (*(pchNew+1) == '/'))
+      else if ((*pchNew == '/') && (*(pchNew+1) == '/'))
       {
         // if this is comment
         bComment = 1;
@@ -207,19 +207,19 @@ void ReplaceFileRL(const char *strOld, const char *strNew)
     fwrite(&strOldBuff,1,iOldch,pfOld);
   }
 
-  if(pfNew) fclose(pfNew);
-  if(pfOld) fclose(pfOld);
+  if (pfNew) fclose(pfNew);
+  if (pfOld) fclose(pfOld);
   remove(strNew);
   return;
 Error:
-  if(pfNew) fclose(pfNew);
-  if(pfOld) fclose(pfOld);
+  if (pfNew) fclose(pfNew);
+  if (pfOld) fclose(pfOld);
 }
 
 /* Replace a file with a new file. */
 void ReplaceFile(const char *strOld, const char *strNew)
 {
-  if(_bRemoveLineDirective)
+  if (_bRemoveLineDirective)
   {
     ReplaceFileRL(strOld,strNew);
     return;
@@ -243,10 +243,10 @@ void ReplaceIfChanged(const char *strOld, const char *strNew)
       char strNewLine[4096] = "#l";
 
       // skip #line directives
-      while(strNewLine[0]=='#' && strNewLine[1]=='l' && !feof(fNew)) {
+      while (strNewLine[0]=='#' && strNewLine[1]=='l' && !feof(fNew)) {
         fgets(strNewLine, sizeof(strNewLine)-1, fNew);
       }
-      while(strOldLine[0]=='#' && strOldLine[1]=='l' && !feof(fOld)) {
+      while (strOldLine[0]=='#' && strOldLine[1]=='l' && !feof(fOld)) {
         fgets(strOldLine, sizeof(strOldLine)-1, fOld);
       }
       if (strcmp(strNewLine, strOldLine)!=0) {
@@ -275,9 +275,9 @@ int main(int argc, char *argv[])
     //quit
     return EXIT_FAILURE;
   }
-  if(argc>2)
+  if (argc>2)
   {
-    if(strcmp(argv[2],"-line")==0)
+    if (strcmp(argv[2],"-line")==0)
     {
       _bRemoveLineDirective=1;
     }
@@ -301,11 +301,11 @@ int main(int argc, char *argv[])
   _strFileNameBase = ChangeFileNameExtension(argv[1], "");
   _strFileNameBaseIdentifier = strdup(_strFileNameBase);
   {char *strNextSlash = _strFileNameBaseIdentifier;
-  while((strNextSlash = strchr(strNextSlash, '/'))!=NULL) {
+  while ((strNextSlash = strchr(strNextSlash, '/'))!=NULL) {
     *strNextSlash = '_';
   }}
   {char *strNextSlash = _strFileNameBaseIdentifier;
-  while((strNextSlash = strchr(strNextSlash, '\\'))!=NULL) {
+  while ((strNextSlash = strchr(strNextSlash, '\\'))!=NULL) {
     *strNextSlash = '_';
   }}
   // print their headers

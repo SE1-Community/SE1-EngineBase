@@ -39,7 +39,7 @@ CTFileName CTFileName::FileDir() const
   // find last backlash in it
   char *pPathBackSlash = strrchr( strPath.str_String, '\\');
   // if there is no backslash
-  if( pPathBackSlash == NULL) {
+  if (pPathBackSlash == NULL) {
     // return emptystring as directory
     return( CTFileName(""));
   }
@@ -67,7 +67,7 @@ CTFileName CTFileName::FileName() const
   // find last dot in it
   char *pDot = strrchr( strPath.str_String, '.');
   // if there is a dot
-  if( pDot != NULL) {
+  if (pDot != NULL) {
     // set end of string there
     pDot[0] = 0;
   }
@@ -75,7 +75,7 @@ CTFileName CTFileName::FileName() const
   // find last backlash in what's left
   char *pBackSlash = strrchr( strPath.str_String, '\\');
   // if there is no backslash
-  if( pBackSlash == NULL) {
+  if (pBackSlash == NULL) {
     // return it all as filename
     return( CTFileName(strPath));
   }
@@ -93,7 +93,7 @@ CTFileName CTFileName::FileExt() const
   // find last dot in the string
   char *pExtension = strrchr( str_String, '.');
   // if there is no dot
-  if( pExtension == NULL) {
+  if (pExtension == NULL) {
     // return no extension
     return( CTFileName(""));
   }

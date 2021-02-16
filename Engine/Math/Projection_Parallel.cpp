@@ -152,45 +152,45 @@ INDEX CParallelProjection3D::TestSphereToFrustum(const FLOAT3D &vViewPoint, FLOA
   INDEX iPass = 1;
 
   // check to near
-  if( fZ-fRadius>-pr_NearClipDistance) {
+  if (fZ-fRadius>-pr_NearClipDistance) {
     return -1;
-  } else if( fZ+fRadius>-pr_NearClipDistance) {
+  } else if (fZ+fRadius>-pr_NearClipDistance) {
     iPass = 0;
   }
   // check to far
-  if( pr_FarClipDistance>0) {
-    if( fZ+fRadius<-pr_FarClipDistance) {
+  if (pr_FarClipDistance>0) {
+    if (fZ+fRadius<-pr_FarClipDistance) {
       return -1;
-    } else if( fZ-fRadius<-pr_FarClipDistance) {
+    } else if (fZ-fRadius<-pr_FarClipDistance) {
       iPass = 0;
     }
   }
   // check to left
   FLOAT fL = fX*pr_plClipL(1) + fZ*pr_plClipL(3) - pr_plClipL.Distance();
-  if( fL<-fRadius) {
+  if (fL<-fRadius) {
     return -1;
-  } else if( fL<fRadius) {
+  } else if (fL<fRadius) {
     iPass = 0;
   }
   // check to right
   FLOAT fR = fX*pr_plClipR(1) + fZ*pr_plClipR(3) - pr_plClipR.Distance();
-  if( fR<-fRadius) {
+  if (fR<-fRadius) {
     return -1;
-  } else if( fR<fRadius) {
+  } else if (fR<fRadius) {
     iPass = 0;
   }
   // check to up
   FLOAT fU = fY*pr_plClipU(2) + fZ*pr_plClipU(3) - pr_plClipU.Distance();
-  if( fU<-fRadius) {
+  if (fU<-fRadius) {
     return -1;
-  } else if( fU<fRadius) {
+  } else if (fU<fRadius) {
     iPass = 0;
   }
   // check to down
   FLOAT fD = fY*pr_plClipD(2) + fZ*pr_plClipD(3) - pr_plClipD.Distance();
-  if( fD<-fRadius) {
+  if (fD<-fRadius) {
     return -1;
-  } else if( fD<fRadius) {
+  } else if (fD<fRadius) {
     iPass = 0;
   }
   // all done
@@ -206,46 +206,46 @@ INDEX CParallelProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
 
   // check to near
   iTest = box.TestAgainstPlane(FLOATplane3D(FLOAT3D(0,0,-1), pr_NearClipDistance));
-  if( iTest<0) {
+  if (iTest<0) {
     return -1;
-  } else if( iTest==0) {
+  } else if (iTest==0) {
     iPass = 0;
   }
   // check to far
-  if( pr_FarClipDistance>0) {
-    iTest = box.TestAgainstPlane(FLOATplane3D(FLOAT3D(0,0,1), -pr_FarClipDistance));
-    if( iTest<0) {
+  if (pr_FarClipDistance>0) {
+    iTest = box.TestAgainstPlane(FLOATplane3D(FLOAT3D(0.0f, 0.0f, 1.0f), -pr_FarClipDistance));
+    if (iTest<0) {
       return -1;
-    } else if( iTest==0) {
+    } else if (iTest==0) {
       iPass = 0;
     }
   }
   // check to left
   iTest = box.TestAgainstPlane(pr_plClipL);
-  if( iTest<0) {
+  if (iTest<0) {
     return -1;
-  } else if( iTest==0) {
+  } else if (iTest==0) {
     iPass = 0;
   }
   // check to right
   iTest = box.TestAgainstPlane(pr_plClipR);
-  if( iTest<0) {
+  if (iTest<0) {
     return -1;
-  } else if( iTest==0) {
+  } else if (iTest==0) {
     iPass = 0;
   }
   // check to up
   iTest = box.TestAgainstPlane(pr_plClipU);
-  if( iTest<0) {
+  if (iTest<0) {
     return -1;
-  } else if( iTest==0) {
+  } else if (iTest==0) {
     iPass = 0;
   }
   // check to down
   iTest = box.TestAgainstPlane(pr_plClipD);
-  if( iTest<0) {
+  if (iTest<0) {
     return -1;
-  } else if( iTest==0) {
+  } else if (iTest==0) {
     iPass = 0;
   }
   // all done

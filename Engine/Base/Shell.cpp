@@ -167,7 +167,7 @@ CTString ScriptEsc(const CTString &str)
   buf[1] = 0;
 
   while (*pchSrc!=0) {
-    switch(*pchSrc) {
+    switch (*pchSrc) {
     case  10: strResult+="\\n"; break;
     case  13: strResult+="\\r"; break;
     case '\\': strResult+="\\\\"; break;
@@ -183,7 +183,7 @@ CTString ScriptEsc(const CTString &str)
 void MakeAccessViolation(void* pArgs)
 {
   INDEX bDont = NEXTARGUMENT(INDEX);
-  if( bDont) return;
+  if (bDont) return;
   char *p=NULL;
   *p=1;
 }
@@ -192,7 +192,7 @@ extern int _a=123;
 void MakeStackOverflow(void* pArgs)
 {
   INDEX bDont = NEXTARGUMENT(INDEX);
-  if( bDont) return;
+  if (bDont) return;
   int a[1000];
   a[999] = _a;
   MakeStackOverflow(0);
@@ -202,7 +202,7 @@ void MakeStackOverflow(void* pArgs)
 void MakeFatalError(void* pArgs)
 {
   INDEX bDont = NEXTARGUMENT(INDEX);
-  if( bDont) return;
+  if (bDont) return;
   FatalError( "MakeFatalError()");
 }
 
@@ -239,7 +239,7 @@ static void MemoryInfo(void)
    INDEX ctFree = 0;
 
    CPrintF( "Walking heap...\n");
-   while( ( heapstatus = _heapwalk( &hinfo ) ) == _HEAPOK )
+   while (( heapstatus = _heapwalk( &hinfo ) ) == _HEAPOK )
    {
      if (hinfo._useflag == _USEDENTRY ) {
        slTotalUsed+=hinfo._size;
@@ -249,7 +249,7 @@ static void MemoryInfo(void)
        ctFree++;
      }
    }
-   switch( heapstatus )   {
+   switch (heapstatus )   {
      case _HEAPEMPTY:     CPrintF( "Heap empty?!?\n" );                break;
      case _HEAPEND:       CPrintF( "Heap ok.\n" );                     break;
      case _HEAPBADPTR:    CPrintF( "ERROR - bad pointer to heap\n" );  break;
@@ -280,7 +280,7 @@ extern CTString GetShellSymbolHelp_t(const CTString &strSymbol)
     strHelpInFile.TrimSpacesLeft();
     strHelpInFile.TrimSpacesRight();
     // if that is the one
-    if( strSymbolInFile.Matches(strPattern)) {
+    if (strSymbolInFile.Matches(strPattern)) {
       // print the help
       return strHelpInFile;
     }
@@ -436,7 +436,7 @@ void LoadCommands(void)
   CDynamicStackArray<CTFileName> afnmCmds;
   MakeDirList( afnmCmds, CTString("Scripts\\Commands\\"), "*.ini", DLI_RECURSIVE);
   // for each file
-  for(INDEX i=0; i<afnmCmds.Count(); i++) {
+  for (INDEX i=0; i<afnmCmds.Count(); i++) {
     CTFileName &fnm = afnmCmds[i];
     // load the file
     CTString strCmd;
@@ -473,7 +473,7 @@ void LoadCommands(void)
 CTString ToUpper(const CTString &strResult)
 {
   char *pch = (char*)(const char *)strResult;
-  for(INDEX i=0; i<strlen(pch); i++) {
+  for (INDEX i=0; i<strlen(pch); i++) {
     pch[i]=toupper(pch[i]);
   }
   return strResult;
@@ -486,7 +486,7 @@ CTString ToUpperCfunc(void* pArgs)
 CTString ToLower(const CTString &strResult)
 {
   char *pch = (char*)(const char *)strResult;
-  for(INDEX i=0; i<strlen(pch); i++) {
+  for (INDEX i=0; i<strlen(pch); i++) {
     pch[i]=tolower(pch[i]);
   }
   return strResult;
@@ -756,7 +756,7 @@ CTString CShell::GetValue(const CTString &strName)
   // get it
   ShellTypeType stt = _shell_ast[pss->ss_istType].st_sttType;
   CTString strValue;
-  switch(stt) {
+  switch (stt) {
   case STT_STRING:
     strValue = *(CTString*)pss->ss_pvValue;
     break;
@@ -787,7 +787,7 @@ void CShell::SetValue(const CTString &strName, const CTString &strValue)
   } 
   // get it
   ShellTypeType stt = _shell_ast[pss->ss_istType].st_sttType;
-  switch(stt) {
+  switch (stt) {
   case STT_STRING:
     *(CTString*)pss->ss_pvValue = strValue;
     break;
@@ -868,19 +868,19 @@ void CShell::StorePersistentSymbols(const CTFileName &fnScript)
         // if float
         if (stBase.st_sttType==STT_FLOAT) {
           // dump all members as floats
-          for(INDEX i=0; i<st.st_ctArraySize; i++) {
+          for (INDEX i=0; i<st.st_ctArraySize; i++) {
             fScript.FPrintF_t("%s[%d]=(FLOAT)%g;\n", ss.ss_strName, i, ((FLOAT*)ss.ss_pvValue)[i]);
           }
         // if index
         } else if (stBase.st_sttType==STT_INDEX) {
           // dump all members as indices
-          for(INDEX i=0; i<st.st_ctArraySize; i++) {
+          for (INDEX i=0; i<st.st_ctArraySize; i++) {
             fScript.FPrintF_t("%s[%d]=(INDEX)%d;\n", ss.ss_strName, i, ((INDEX*)ss.ss_pvValue)[i]);
           }
         // if string
         } else if (stBase.st_sttType==STT_STRING) {
           // dump all members
-          for(INDEX i=0; i<st.st_ctArraySize; i++) {
+          for (INDEX i=0; i<st.st_ctArraySize; i++) {
             fScript.FPrintF_t("%s[%d]=\"%s\";\n", ss.ss_strName, i, (const char*)(ScriptEsc(*(CTString*)ss.ss_pvValue)[i]) );
           }
         // otherwise

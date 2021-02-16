@@ -207,13 +207,13 @@ WAVEFORMATEX PCMWaveInput::LoadInfo_t(CTStream *pCstrInput)
   pwi_wfeWave.cbSize = 0;   // Only for PCM Wave !!!
 
   // WARNING !!! - Only for PCM Wave - Skip extra information if exists
-  if( slFmtLength > 16) {
+  if (slFmtLength > 16) {
     //WarningMessage("PCM Wave Input: Wave format Extra information skipped!");
     pCstrInput->Seek_t(slFmtLength - 16, CTStream::SD_CUR);
   }
 
   // WARNING - If exist Fact chunk skip it (purpose unknown)
-  if( pCstrInput->GetID_t() == CChunkID("fact")) {
+  if (pCstrInput->GetID_t() == CChunkID("fact")) {
     //WarningMessage("PCM Wave Input: Fact Chunk skipped!");
     SLONG  slSkipLength;
     (*pCstrInput) >> slSkipLength;
@@ -278,7 +278,7 @@ void PCMWaveInput::LoadData_t(CTStream *pCstrInput, SWORD *pswMemory, WAVEFORMAT
   }
 
   // data is loaded (and maybe converted from 16-bits)
-  if( pwi_wfeWave.wBitsPerSample==8) SwfeDesired.nBlockAlign *= 2; 
+  if (pwi_wfeWave.wBitsPerSample==8) SwfeDesired.nBlockAlign *= 2; 
   pwi_bDataLoaded = TRUE;
 }
 

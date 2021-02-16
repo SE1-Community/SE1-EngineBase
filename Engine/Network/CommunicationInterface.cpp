@@ -310,7 +310,7 @@ void CCommunicationInterface::PrepareForUse(BOOL bUseNetwork, BOOL bClient)
     if (phe!=NULL) {
       // get the addresses
       cm_strAddress = "";
-      for(INDEX i=0; phe->h_addr_list[i]!=NULL; i++) {
+      for (INDEX i=0; phe->h_addr_list[i]!=NULL; i++) {
         if (i>0) {
           cm_strAddress += ", ";
         }
@@ -607,7 +607,7 @@ void CCommunicationInterface::Server_Init_t(void)
 
 
   // for each client
-  for(INDEX iClient=0; iClient<SERVER_CLIENTS; iClient++) {
+  for (INDEX iClient=0; iClient<SERVER_CLIENTS; iClient++) {
     // clear its status
     cm_aciClients[iClient].Clear();
 		cm_aciClients[iClient].ci_pbOutputBuffer.pb_ppbsStats = &_pbsSend;
@@ -898,7 +898,7 @@ void CCommunicationInterface::Client_Close(void)
   ASSERT(cci_bInitialized);
 
 	// dispatch remaining packets (keep trying for half a second - 10 attempts)
-  for(TIME tmWait=0; tmWait<500;
+  for (TIME tmWait=0; tmWait<500;
     Sleep(NET_WAITMESSAGE_DELAY), tmWait+=NET_WAITMESSAGE_DELAY) {
     // if all packets are successfully sent, exit loop
 		if  ((cm_ciLocalClient.ci_pbOutputBuffer.pb_ulNumOfPackets == 0) 
@@ -977,7 +977,7 @@ void CCommunicationInterface::Client_OpenNet_t(ULONG ulServerAddress)
 	cm_ciLocalClient.ci_adrAddress.adr_uwPort = net_iPort;
 	
   // for each retry
-  for(INDEX iRetry=0; iRetry<ctRetries; iRetry++) {
+  for (INDEX iRetry=0; iRetry<ctRetries; iRetry++) {
 		// send/receive and juggle the buffers
 		if (Client_Update() == FALSE) {
 			break;

@@ -208,8 +208,8 @@ static void InitTryToMove(void)
 {
   _ctTryToMoveCheckCounter = MAXCOLLISIONRETRIES;
   _ctSliding = 0;
-  _vSlideOffDir = FLOAT3D(0,0,0);
-  _vSlideDir = FLOAT3D(0,0,0);
+  _vSlideOffDir = FLOAT3D(0.0f, 0.0f, 0.0f);
+  _vSlideDir = FLOAT3D(0.0f, 0.0f, 0.0f);
 }
 
 // array of forces for current entity
@@ -243,15 +243,15 @@ properties:
   // NOTE: all properties that are not marked as 'adjustable' should be threated read-only
 
   // translation and rotation speed that this entity would like to have (in relative system)
-  1 FLOAT3D en_vDesiredTranslationRelative = FLOAT3D(0.0f,0.0f,0.0f),
-  2 ANGLE3D en_aDesiredRotationRelative = ANGLE3D(0,0,0),
+  1 FLOAT3D en_vDesiredTranslationRelative = FLOAT3D(0.0f, 0.0f, 0.0f),
+  2 ANGLE3D en_aDesiredRotationRelative = ANGLE3D(0.0f, 0.0f, 0.0f),
 
   // translation and rotation speed that this entity currently has in absolute system
-  3 FLOAT3D en_vCurrentTranslationAbsolute = FLOAT3D(0.0f,0.0f,0.0f),
-  4 ANGLE3D en_aCurrentRotationAbsolute = ANGLE3D(0,0,0),
+  3 FLOAT3D en_vCurrentTranslationAbsolute = FLOAT3D(0.0f, 0.0f, 0.0f),
+  4 ANGLE3D en_aCurrentRotationAbsolute = ANGLE3D(0.0f, 0.0f, 0.0f),
 
   6 CEntityPointer en_penReference, // reference entity (for standing on)
-  7 FLOAT3D en_vReferencePlane = FLOAT3D(0.0f,0.0f,0.0f),   // reference plane (only for standing on)
+  7 FLOAT3D en_vReferencePlane = FLOAT3D(0.0f, 0.0f, 0.0f),   // reference plane (only for standing on)
   8 INDEX en_iReferenceSurface = 0,     // surface on reference entity
   9 CEntityPointer en_penLastValidReference,  // last valid reference entity (for impact damage)
  14 TICK en_llLastVerticalMove = 0,   // last time entity moved significantly up/down
@@ -268,7 +268,7 @@ properties:
  25 FLOAT3D en_vGravityDir = FLOAT3D(0,-1,0),
  26 FLOAT en_fGravityA = 0.0f,
  27 FLOAT en_fGravityV = 0.0f,
- 66 FLOAT3D en_vForceDir = FLOAT3D(1,0,0),
+ 66 FLOAT3D en_vForceDir = FLOAT3D(1.0f, 0.0f, 0.0f),
  67 FLOAT en_fForceA = 0.0f,
  68 FLOAT en_fForceV = 0.0f,
  // jumping parameters
@@ -287,11 +287,11 @@ properties:
  40 FLOAT en_fCollisionSpeedLimit = 20.0f,      // max. collision speed without damage (adjustable)
  41 FLOAT en_fCollisionDamageFactor = 20.0f,    // collision damage ammount multiplier (adjustable)
 
- 51 FLOATaabbox3D en_boxMovingEstimate = FLOATaabbox3D(FLOAT3D(0,0,0), 0.01f), // overestimate of movement in next few ticks
- 52 FLOATaabbox3D en_boxNearCached = FLOATaabbox3D(FLOAT3D(0,0,0), 0.01f),     // box in which the polygons are cached
+ 51 FLOATaabbox3D en_boxMovingEstimate = FLOATaabbox3D(FLOAT3D(0.0f, 0.0f, 0.0f), 0.01f), // overestimate of movement in next few ticks
+ 52 FLOATaabbox3D en_boxNearCached = FLOATaabbox3D(FLOAT3D(0.0f, 0.0f, 0.0f), 0.01f),     // box in which the polygons are cached
 
  // intended movement in this tick
- 64  FLOAT3D en_vIntendedTranslation = FLOAT3D(0,0,0),  // can be read on receiving a touch event, holds last velocity before touch
+ 64  FLOAT3D en_vIntendedTranslation = FLOAT3D(0.0f, 0.0f, 0.0f),  // can be read on receiving a touch event, holds last velocity before touch
  65  FLOATmatrix3D en_mIntendedRotation = FLOATmatrix3D(0),
 
 {
@@ -329,7 +329,7 @@ functions:
   void ResetPredictionFilter(void) {
     en_llLastPredictionHead = -2;
     en_vLastHead = en_plPlacement.pl_PositionVector;
-    en_vPredError = en_vPredErrorLast = FLOAT3D(0,0,0);
+    en_vPredError = en_vPredErrorLast = FLOAT3D(0.0f, 0.0f, 0.0f);
   }
 
   /* Constructor. */
@@ -345,7 +345,7 @@ functions:
   {
     CRationalEntity::OnInitialize(eeInput);
     ClearTemporaryData();
-    en_vIntendedTranslation = FLOAT3D(0,0,0);
+    en_vIntendedTranslation = FLOAT3D(0.0f, 0.0f, 0.0f);
     en_mIntendedRotation.Diagonal(1.0f);
     en_boxNearCached = FLOATaabbox3D();
     en_boxMovingEstimate = FLOATaabbox3D();
@@ -400,9 +400,9 @@ functions:
     // init moving parameters so that they are valid for collision if entity is not moving
     en_vNextPosition = en_plPlacement.pl_PositionVector;
     en_mNextRotation = en_mRotation;
-///*!*/    en_vIntendedTranslation = FLOAT3D(0,0,0);
+///*!*/    en_vIntendedTranslation = FLOAT3D(0.0f, 0.0f, 0.0f);
 ///*!*/    en_mIntendedRotation.Diagonal(1.0f);
-    en_vAppliedTranslation = FLOAT3D(0,0,0);
+    en_vAppliedTranslation = FLOAT3D(0.0f, 0.0f, 0.0f);
     en_mAppliedRotation.Diagonal(1.0f);
     ResetPredictionFilter();
 
@@ -518,7 +518,7 @@ functions:
       if (ctbpoNear>0) {
         en_apbpoNearPolygons.PopAll();
         en_apbpoNearPolygons.Push(ctbpoNear);
-        for(INDEX i=0; i<ctbpoNear; i++) {
+        for (INDEX i=0; i<ctbpoNear; i++) {
           INDEX ibpo;
           (*istr)>>ibpo;
            en_apbpoNearPolygons[i] = GetWorldPolygonPointer(ibpo);
@@ -554,7 +554,7 @@ functions:
 
     INDEX ctbpoNear = en_apbpoNearPolygons.Count();
     (*ostr)<<ctbpoNear;
-    for(INDEX i=0; i<ctbpoNear; i++) {
+    for (INDEX i=0; i<ctbpoNear; i++) {
       INDEX ibpo;
       ibpo = GetWorldPolygonIndex(en_apbpoNearPolygons[i]);
       (*ostr)<<ibpo;
@@ -632,9 +632,9 @@ functions:
   /* Add an impulse to the current speed of the entity (used for instantaneous launching). */
   export void GiveImpulseTranslationRelative(const FLOAT3D &vImpulseSpeedRelative)
   {
-    CPlacement3D plImpulseSpeedAbsolute( vImpulseSpeedRelative, ANGLE3D(0,0,0)); 
+    CPlacement3D plImpulseSpeedAbsolute( vImpulseSpeedRelative, ANGLE3D(0.0f, 0.0f, 0.0f)); 
     plImpulseSpeedAbsolute.RelativeToAbsolute(
-      CPlacement3D(FLOAT3D(0.0f,0.0f,0.0f), en_plPlacement.pl_OrientationAngle));
+      CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), en_plPlacement.pl_OrientationAngle));
     en_vCurrentTranslationAbsolute += plImpulseSpeedAbsolute.pl_PositionVector;
     AddToMovers();
   }
@@ -663,15 +663,15 @@ functions:
 
   /* Stop all translation */
   export void ForceStopTranslation(void) {
-    en_vDesiredTranslationRelative = FLOAT3D(0.0f,0.0f,0.0f);
-    en_vCurrentTranslationAbsolute = FLOAT3D(0.0f,0.0f,0.0f);
-    en_vAppliedTranslation = FLOAT3D(0.0f,0.0f,0.0f);
+    en_vDesiredTranslationRelative = FLOAT3D(0.0f, 0.0f, 0.0f);
+    en_vCurrentTranslationAbsolute = FLOAT3D(0.0f, 0.0f, 0.0f);
+    en_vAppliedTranslation = FLOAT3D(0.0f, 0.0f, 0.0f);
   }
 
   /* Stop all rotation */
   export void ForceStopRotation(void) {
-    en_aDesiredRotationRelative = ANGLE3D(0,0,0);
-    en_aCurrentRotationAbsolute = ANGLE3D(0,0,0);
+    en_aDesiredRotationRelative = ANGLE3D(0.0f, 0.0f, 0.0f);
+    en_aCurrentRotationAbsolute = ANGLE3D(0.0f, 0.0f, 0.0f);
     en_mAppliedRotation.Diagonal(1.0f);
   }
 
@@ -701,7 +701,7 @@ functions:
 
     // clamp translation speed
     FLOAT fLength = en_vCurrentTranslationAbsolute.Length();
-    if( fLength > fMaxExitSpeed)
+    if (fLength > fMaxExitSpeed)
     {
       en_vCurrentTranslationAbsolute = 
         en_vCurrentTranslationAbsolute/fLength*fMaxExitSpeed;
@@ -809,7 +809,7 @@ functions:
     BOOL bAnyIn = FALSE;
     CStaticArray<CMovingSphere> &absSpheres = en_pciCollisionInfo->ci_absSpheres;
     // for each sphere
-    for(INDEX iSphere=0; iSphere<absSpheres.Count(); iSphere++) {
+    for (INDEX iSphere=0; iSphere<absSpheres.Count(); iSphere++) {
       CMovingSphere &ms = absSpheres[iSphere];
       // if the sphere is in field sector
       if (bsc.bsc_bspBSPTree.TestSphere(
@@ -824,7 +824,7 @@ functions:
 
     // try to find the force in container
     CEntityForce *pef = NULL;
-    for(INDEX iForce=0; iForce<_aefForces.Count(); iForce++) {
+    for (INDEX iForce=0; iForce<_aefForces.Count(); iForce++) {
       if (penEntity ==_aefForces[iForce].ef_penEntity
         &&iForceType==_aefForces[iForce].ef_iForceType) {
         pef = &_aefForces[iForce];
@@ -947,7 +947,7 @@ functions:
     FLOAT3D vForceV(0,0,0);
     FLOAT fRatioSum = 0.0f;
 
-    {for(INDEX iForce=0; iForce<_aefForces.Count(); iForce++) {
+    {for (INDEX iForce=0; iForce<_aefForces.Count(); iForce++) {
       CForceStrength fsGravity;
       CForceStrength fsField;
       _aefForces[iForce].ef_penEntity->GetForce(
@@ -1301,7 +1301,7 @@ functions:
 
     CStaticStackArray<CBrushPolygon *> &apbpo = en_apbpoNearPolygons;
     // for each cached near polygon
-    for(INDEX iPolygon=0; iPolygon<apbpo.Count(); iPolygon++) {
+    for (INDEX iPolygon=0; iPolygon<apbpo.Count(); iPolygon++) {
       CBrushPolygon *pbpo = apbpo[iPolygon];
       // if it is below
       if (IsPolygonBelowPoint(pbpo, en_vNextPosition, en_fStepDnHeight)) {
@@ -1436,7 +1436,7 @@ out:;
 
     //CPrintF("Trying: (%g) ", vTranslationHorizontal(3));
     // if the movement has no substantial value
-    if(vTranslationHorizontal.Length()<0.001f) {
+    if (vTranslationHorizontal.Length()<0.001f) {
       //CPrintF("no value\n");
       // don't do it
       _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_TRYTOGOUPSTAIRS);
@@ -1484,7 +1484,7 @@ out:;
     avTranslation[2] = en_vGravityDir*fStairsHeight;
 
     // for each translation step
-    for(INDEX iStep=0; iStep<3; iStep++) {
+    for (INDEX iStep=0; iStep<3; iStep++) {
       BOOL bStepOK = TRUE;
       // create new placement with the translation step
       en_vNextPosition = en_plPlacement.pl_PositionVector+avTranslation[iStep];
@@ -1600,7 +1600,7 @@ out:;
     if (bTranslate) {
       en_vNextPosition = en_plPlacement.pl_PositionVector+en_vMoveTranslation;
 /* STREAMDUMP START
-       if(GetRenderType()==RT_MODEL)
+       if (GetRenderType()==RT_MODEL)
         {
           try
           {
@@ -1675,7 +1675,7 @@ out:;
       _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_TRYTOMOVE_CLIP);
 
       /* STREAMDUMP START
-        if(GetRenderType()==RT_MODEL)
+        if (GetRenderType()==RT_MODEL)
         {
           try
           {
@@ -1760,7 +1760,7 @@ out:;
         // rotate slower
         en_aDesiredRotationRelative *= en_fBounceDampParallel;
         if (en_aDesiredRotationRelative.Length()<10) {
-          en_aDesiredRotationRelative = ANGLE3D(0,0,0);
+          en_aDesiredRotationRelative = ANGLE3D(0.0f, 0.0f, 0.0f);
         }
       }
       
@@ -1802,7 +1802,7 @@ out:;
         ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_SLIDE)||
         ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_BOUNCE)||
         ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_CLIMBORSLIDE)||
-        ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_STOPEXACT) ){
+        ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_STOPEXACT) ) {
 
         // if translating
         if (bTranslate) {
@@ -1883,7 +1883,7 @@ out:;
           // entity shouldn't really slide
           if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_STOPEXACT) {
             // kill sliding
-            vSliding = FLOAT3D(0,0,0);
+            vSliding = FLOAT3D(0.0f, 0.0f, 0.0f);
           }
 
           ASSERT(IsValidFloat(vSliding(1)));
@@ -1893,7 +1893,7 @@ out:;
             (ClampUp(en_vMoveTranslation.Length(), 0.5f)/100.0f);
 
           // if initial movement has some substantial value
-          if(en_vMoveTranslation.Length()>0.001f && cmMove.cm_fMovementFraction>0.002f) {
+          if (en_vMoveTranslation.Length()>0.001f && cmMove.cm_fMovementFraction>0.002f) {
             // go to where it is clipped (little bit before)
             vSliding += en_vMoveTranslation*(cmMove.cm_fMovementFraction*0.985f);
           }
@@ -1929,7 +1929,7 @@ out:;
             // rotate slower
             en_aDesiredRotationRelative *= en_fBounceDampParallel;
             if (en_aDesiredRotationRelative.Length()<10) {
-              en_aDesiredRotationRelative = ANGLE3D(0,0,0);
+              en_aDesiredRotationRelative = ANGLE3D(0.0f, 0.0f, 0.0f);
             }
             _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_TRYTOTRANSLATE);
             // move is not successful
@@ -2039,7 +2039,7 @@ out:;
     FLOAT fTickQuantum=_pTimer->TickQuantum; // used for normalizing from SI units to game ticks
 
     // trig break point if required
-    if( dbg_bBreak) {
+    if (dbg_bBreak) {
       dbg_bBreak = FALSE; // auto turn off breakpoint when triggered
       try { 
         Breakpoint();
@@ -2296,7 +2296,7 @@ out:;
           // rotate slower
           en_aDesiredRotationRelative *= en_fJumpControlMultiplier;
           if (en_aDesiredRotationRelative.Length()<10) {
-            en_aDesiredRotationRelative = ANGLE3D(0,0,0);
+            en_aDesiredRotationRelative = ANGLE3D(0.0f, 0.0f, 0.0f);
           }
         }
       }
@@ -2381,7 +2381,7 @@ out:;
       // reduce desired rotation
       en_aDesiredRotationRelative *= (1-fSpeedModifier*0.05f);
       if (en_aDesiredRotationRelative.Length()<10) {
-        en_aDesiredRotationRelative = ANGLE3D(0,0,0);
+        en_aDesiredRotationRelative = ANGLE3D(0.0f, 0.0f, 0.0f);
       }
     }
 
@@ -2400,13 +2400,13 @@ out:;
 
     // make box of the entity for its current rotation
     FLOATaabbox3D box;
-    en_pciCollisionInfo->MakeBoxAtPlacement(FLOAT3D(0,0,0), en_mRotation, box);
+    en_pciCollisionInfo->MakeBoxAtPlacement(FLOAT3D(0.0f, 0.0f, 0.0f), en_mRotation, box);
     // if it is a light source
     {CLightSource *pls = GetLightSource();
     if (pls!=NULL && !(pls->ls_ulFlags&LSF_LENSFLAREONLY)) {
       // expand the box to be sure that it contains light range
       ASSERT(!(pls->ls_ulFlags&LSF_DIRECTIONAL));
-      box |= FLOATaabbox3D(FLOAT3D(0,0,0), pls->ls_rFallOff);
+      box |= FLOATaabbox3D(FLOAT3D(0.0f, 0.0f, 0.0f), pls->ls_rFallOff);
     }}
     // add a bit around it
     box.ExpandByFactor( phy_fCollisionCacheAround-1.0f);
@@ -2455,7 +2455,7 @@ out:;
 /* old */    FLOAT fTickQuantum=_pTimer->TickQuantum; // used for normalizing from SI units to game ticks
 /* old */
 /* old */    // trig break point if required
-/* old */    if( dbg_bBreak) {
+/* old */    if (dbg_bBreak) {
 /* old */      dbg_bBreak = FALSE; // auto turn off breakpoint when triggered
 /* old */      try { 
 /* old */        Breakpoint();
@@ -2711,7 +2711,7 @@ out:;
 /* old */          // rotate slower
 /* old */          en_aDesiredRotationRelative *= en_fJumpControlMultiplier;
 /* old */          if (en_aDesiredRotationRelative.Length()<10) {
-/* old */            en_aDesiredRotationRelative = ANGLE3D(0,0,0);
+/* old */            en_aDesiredRotationRelative = ANGLE3D(0.0f, 0.0f, 0.0f);
 /* old */          }
 /* old */        }
 /* old */      }
@@ -2796,7 +2796,7 @@ out:;
 /* old */      // reduce desired rotation
 /* old */      en_aDesiredRotationRelative *= (1-fSpeedModifier*0.05f);
 /* old */      if (en_aDesiredRotationRelative.Length()<10) {
-/* old */        en_aDesiredRotationRelative = ANGLE3D(0,0,0);
+/* old */        en_aDesiredRotationRelative = ANGLE3D(0.0f, 0.0f, 0.0f);
 /* old */      }
 /* old */    }
 /* old */
@@ -2814,13 +2814,13 @@ out:;
 /* old */
 /* old */    // make box of the entity for its current rotation
 /* old */    FLOATaabbox3D box;
-/* old */    en_pciCollisionInfo->MakeBoxAtPlacement(FLOAT3D(0,0,0), en_mRotation, box);
+/* old */    en_pciCollisionInfo->MakeBoxAtPlacement(FLOAT3D(0.0f, 0.0f, 0.0f), en_mRotation, box);
 /* old */    // if it is a light source
 /* old */    {CLightSource *pls = GetLightSource();
 /* old */    if (pls!=NULL && !(pls->ls_ulFlags&LSF_LENSFLAREONLY)) {
 /* old */      // expand the box to be sure that it contains light range
 /* old */      ASSERT(!(pls->ls_ulFlags&LSF_DIRECTIONAL));
-/* old */      box |= FLOATaabbox3D(FLOAT3D(0,0,0), pls->ls_rFallOff);
+/* old */      box |= FLOATaabbox3D(FLOAT3D(0.0f, 0.0f, 0.0f), pls->ls_rFallOff);
 /* old */    }}
 /* old */    // add a bit around it
 /* old */    box.ExpandByFactor( phy_fCollisionCacheAround-1.0f);
@@ -3021,8 +3021,8 @@ out:;
  
       if (penTail->en_llLastPredictionHead < -1) {
         penTail->en_vLastHead = en_plPlacement.pl_PositionVector;
-        penTail->en_vPredError = FLOAT3D(0,0,0);
-        penTail->en_vPredErrorLast = FLOAT3D(0,0,0);
+        penTail->en_vPredError = FLOAT3D(0.0f, 0.0f, 0.0f);
+        penTail->en_vPredErrorLast = FLOAT3D(0.0f, 0.0f, 0.0f);
       }
 
       // if this is a predictor

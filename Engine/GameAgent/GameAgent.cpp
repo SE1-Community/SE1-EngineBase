@@ -84,11 +84,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
                     "\\queryid\\1.1"
 
 
-#define CHK_BUFFSTRLEN if((iLen < 0) || (iLen > BUFFSZSTR)) { \
+#define CHK_BUFFSTRLEN if ((iLen < 0) || (iLen > BUFFSZSTR)) { \
                         CPrintF("\n" \
                             "Error: the used buffer is smaller than how much needed (%d < %d)\n" \
                             "\n", iLen, BUFFSZSTR); \
-                            if(cMsstring) free (cMsstring); \
+                            if (cMsstring) free (cMsstring); \
                             closesocket(_sock); \
                             WSACleanup(); \
                         }
@@ -96,7 +96,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define CLEANMSSRUFF1       closesocket(_sock); \
                             WSACleanup();
 
-#define CLEANMSSRUFF2       if(cResponse) free (cResponse); \
+#define CLEANMSSRUFF2       if (cResponse) free (cResponse); \
                             closesocket(_sock); \
                             WSACleanup();
 
@@ -138,7 +138,7 @@ extern BOOL ga_bMSLegacy = TRUE;
 void _uninitWinsock();
 void _initializeWinsock(void)
 {
-  if(_wsaData != NULL && _socket != NULL) {
+  if (_wsaData != NULL && _socket != NULL) {
     return;
   }
 
@@ -146,13 +146,13 @@ void _initializeWinsock(void)
   _socket = NULL;
 
   // make the buffer that we'll use for packet reading
-  if(_szBuffer != NULL) {
+  if (_szBuffer != NULL) {
     delete[] _szBuffer;
   }
   _szBuffer = new char[2050];
 
   // start WSA
-  if(WSAStartup(MAKEWORD(2, 2), _wsaData) != 0) {
+  if (WSAStartup(MAKEWORD(2, 2), _wsaData) != 0) {
     CPrintF("Error initializing winsock!\n");
     _uninitWinsock();
     return;
@@ -160,13 +160,13 @@ void _initializeWinsock(void)
 
   // get the host IP
   hostent* phe;
-  if(!ga_bMSLegacy) {
+  if (!ga_bMSLegacy) {
     phe = gethostbyname(ga_strServer);
   } else {
     phe = gethostbyname(ga_strMSLegacy);
   }
   // if we couldn't resolve the hostname
-  if(phe == NULL) {
+  if (phe == NULL) {
     // report and stop
     CPrintF("Couldn't resolve GameAgent server %s.\n", ga_strServer);
     _uninitWinsock();
@@ -177,7 +177,7 @@ void _initializeWinsock(void)
   _sin = new sockaddr_in;
   _sin->sin_family = AF_INET;
   _sin->sin_addr.s_addr = *(ULONG*)phe->h_addr_list[0];
-  if(!ga_bMSLegacy) {
+  if (!ga_bMSLegacy) {
     _sin->sin_port = htons(9005);
   } else {
     _sin->sin_port = htons(27900);
@@ -187,7 +187,7 @@ void _initializeWinsock(void)
   _socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
   // if we're a server
-  if(_bServer) {
+  if (_bServer) {
     // create the local socket source address
     _sinLocal = new sockaddr_in;
     _sinLocal->sin_family = AF_INET;
@@ -200,7 +200,7 @@ void _initializeWinsock(void)
 
   // set the socket to be nonblocking
   DWORD dwNonBlocking = 1;
-  if(ioctlsocket(_socket, FIONBIO, &dwNonBlocking) != 0) {
+  if (ioctlsocket(_socket, FIONBIO, &dwNonBlocking) != 0) {
     CPrintF("Error setting socket to nonblocking!\n");
     _uninitWinsock();
     return;
@@ -209,7 +209,7 @@ void _initializeWinsock(void)
 
 void _uninitWinsock()
 {
-  if(_wsaData != NULL) {
+  if (_wsaData != NULL) {
     closesocket(_socket);
     delete _wsaData;
     _wsaData = NULL;
@@ -248,7 +248,7 @@ CTString _getGameModeName(INDEX iGameMode)
   // get function that will provide us the info about gametype
   CShellSymbol *pss = _pShell->GetSymbol("GetGameTypeNameSS", /*bDeclaredOnly=*/ TRUE);
 
-  if(pss == NULL) {
+  if (pss == NULL) {
     return "";
   }
 
@@ -334,15 +334,15 @@ extern void GameAgent_ServerEnd(void)
 /// GameAgent server update call which responds to enumeration pings and sends pings to masterserver.
 extern void GameAgent_ServerUpdate(void)
 {
-  if((_socket == NULL) || (!_bInitialized)) {
+  if ((_socket == NULL) || (!_bInitialized)) {
     return;
   }
 
   int iLen = _recvPacket();
-  if(iLen > 0) {
+  if (iLen > 0) {
     if (!ga_bMSLegacy) {
     // check the received packet ID
-    switch(_szBuffer[0]) {
+    switch (_szBuffer[0]) {
     case 1: // server join response
       {
         int iChallenge = *(INDEX*)(_szBuffer + 1);
@@ -372,15 +372,15 @@ extern void GameAgent_ServerUpdate(void)
         // send the player status response
         CTString strPacket;
         strPacket.PrintF("\x01players\x02%d\x03", _pNetwork->ga_srvServer.GetPlayersCount());
-        for(INDEX i=0; i<_pNetwork->ga_srvServer.GetPlayersCount(); i++) {
+        for (INDEX i=0; i<_pNetwork->ga_srvServer.GetPlayersCount(); i++) {
           CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[i];
           CPlayerTarget &plt = _pNetwork->ga_sesSessionState.ses_apltPlayers[i];
-          if(plt.plt_bActive) {
+          if (plt.plt_bActive) {
             CTString strPlayer;
             plt.plt_penPlayerEntity->GetGameAgentPlayerInfo(plb.plb_Index, strPlayer);
 
             // if we don't have enough space left for the next player
-            if(strlen(strPacket) + strlen(strPlayer) > 2048) {
+            if (strlen(strPacket) + strlen(strPlayer) > 2048) {
               // send the packet
               _sendPacketTo(strPacket, &_sinFrom);
               strPacket = "";
@@ -412,11 +412,11 @@ extern void GameAgent_ServerUpdate(void)
       sPch2 = strstr(_szBuffer, "\\info\\");
       sPch3 = strstr(_szBuffer, "\\basic\\");
       sPch4 = strstr(_szBuffer, "\\players\\");
-      if(sPch1) {
+      if (sPch1) {
         CTString strPacket;
         CTString strLocation;
         strLocation = _pShell->GetString("net_strLocalHost");
-        if ( strLocation == ""){
+        if ( strLocation == "") {
           strLocation = "Heartland";
         }
         strPacket.PrintF( PCKQUERY,
@@ -439,15 +439,15 @@ extern void GameAgent_ServerUpdate(void)
           _pShell->GetINDEX("gam_bInfiniteAmmo"),
           _pShell->GetINDEX("gam_bRespawnInPlace"));
 
-          for(INDEX i=0; i<_pNetwork->ga_srvServer.GetPlayersCount(); i++) {
+          for (INDEX i=0; i<_pNetwork->ga_srvServer.GetPlayersCount(); i++) {
             CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[i];
             CPlayerTarget &plt = _pNetwork->ga_sesSessionState.ses_apltPlayers[i];
-            if(plt.plt_bActive) {
+            if (plt.plt_bActive) {
               CTString strPlayer;
               plt.plt_penPlayerEntity->GetMSLegacyPlayerInf(plb.plb_Index, strPlayer);
 
               // if we don't have enough space left for the next player
-              if(strlen(strPacket) + strlen(strPlayer) > 2048) {
+              if (strlen(strPacket) + strlen(strPlayer) > 2048) {
                 // send the packet
                 _sendPacketTo(strPacket, &_sinFrom);
                 strPacket = "";
@@ -459,7 +459,7 @@ extern void GameAgent_ServerUpdate(void)
         strPacket += "\\final\\\\queryid\\333.1";
         _sendPacketTo(strPacket, &_sinFrom);
 
-      } else if (sPch2){
+      } else if (sPch2) {
 
         CTString strPacket;
         strPacket.PrintF( PCKINFO,
@@ -471,12 +471,12 @@ extern void GameAgent_ServerUpdate(void)
           _pNetwork->ga_sesSessionState.ses_ctMaxPlayers);
         _sendPacketTo(strPacket, &_sinFrom);
 
-      } else if (sPch3){
+      } else if (sPch3) {
 
         CTString strPacket;
         CTString strLocation;
         strLocation = _pShell->GetString("net_strLocalHost");
-        if ( strLocation == ""){
+        if ( strLocation == "") {
           strLocation = "Heartland";
         }
         strPacket.PrintF( PCKBASIC,
@@ -486,20 +486,20 @@ extern void GameAgent_ServerUpdate(void)
           strLocation);
         _sendPacketTo(strPacket, &_sinFrom);
 
-      } else if (sPch4){
+      } else if (sPch4) {
 
         // send the player status response
         CTString strPacket;
         strPacket = "";
-        for(INDEX i=0; i<_pNetwork->ga_srvServer.GetPlayersCount(); i++) {
+        for (INDEX i=0; i<_pNetwork->ga_srvServer.GetPlayersCount(); i++) {
           CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[i];
           CPlayerTarget &plt = _pNetwork->ga_sesSessionState.ses_apltPlayers[i];
-          if(plt.plt_bActive) {
+          if (plt.plt_bActive) {
             CTString strPlayer;
             plt.plt_penPlayerEntity->GetMSLegacyPlayerInf(plb.plb_Index, strPlayer);
 
             // if we don't have enough space left for the next player
-            if(strlen(strPacket) + strlen(strPlayer) > 2048) {
+            if (strlen(strPacket) + strlen(strPlayer) > 2048) {
               // send the packet
               _sendPacketTo(strPacket, &_sinFrom);
               strPacket = "";
@@ -520,7 +520,7 @@ extern void GameAgent_ServerUpdate(void)
  }
 
  // send a heartbeat every 150 seconds
- if(_pTimer->GetTimeTick() - _llLastHeartbeat >= CTimer::InTicks(150.0f)) {
+ if (_pTimer->GetTimeTick() - _llLastHeartbeat >= CTimer::InTicks(150.0f)) {
     _sendHeartbeat(0);
  }
 }
@@ -566,16 +566,16 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
 	struct in_addr addr;
 
     // make the buffer that we'll use for packet reading
-    if(_szIPPortBufferLocal != NULL) {
+    if (_szIPPortBufferLocal != NULL) {
        return;
     }
     _szIPPortBufferLocal = new char[1024];
 	
 	// start WSA
 	_wsaRequested = MAKEWORD( 2, 2 );
-    if( WSAStartup(_wsaRequested, &wsaData) != 0) {
+    if (WSAStartup(_wsaRequested, &wsaData) != 0) {
 		CPrintF("Error initializing winsock!\n");
-		if(_szIPPortBufferLocal != NULL) {
+		if (_szIPPortBufferLocal != NULL) {
 			delete[] _szIPPortBufferLocal;
 		}
 		_szIPPortBufferLocal = NULL;
@@ -591,17 +591,17 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
 	_iLen = 0;
 	strcpy(_strFinal,"\\final\\");
 	
-    if( gethostname ( _cName, sizeof(_cName)) == 0)
+    if (gethostname ( _cName, sizeof(_cName)) == 0)
 	{
-		if((_phHostinfo = gethostbyname(_cName)) != NULL)
+		if ((_phHostinfo = gethostbyname(_cName)) != NULL)
 		{
 			int _iCount = 0;
-			while(_phHostinfo->h_addr_list[_iCount])
+			while (_phHostinfo->h_addr_list[_iCount])
 			{
 				addr.s_addr = *(u_long *) _phHostinfo->h_addr_list[_iCount];
 				_uIP = htonl(addr.s_addr);
 				
-				for (UINT uPort = 25601; uPort < 25622; ++uPort){
+				for (UINT uPort = 25601; uPort < 25622; ++uPort) {
 					_uPort = htons(uPort);
 					memcpy(_pch,_pchIP,4);
 					_pch  +=4;
@@ -672,7 +672,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
     strcpy(cMS,ga_strMSLegacy);
 
     WSADATA wsadata;
-    if(WSAStartup(MAKEWORD(2,2), &wsadata) != 0) {
+    if (WSAStartup(MAKEWORD(2,2), &wsadata) != 0) {
         CPrintF("Error initializing winsock!\n");
         return;
     }
@@ -684,12 +684,12 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
     peer.sin_family      = AF_INET;
 
     _sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if(_sock < 0) {
+    if (_sock < 0) {
         CPrintF("Error creating TCP socket!\n");
         WSACleanup();
         return;
     }
-    if(connect(_sock, (struct sockaddr *)&peer, sizeof(peer)) < 0) {
+    if (connect(_sock, (struct sockaddr *)&peer, sizeof(peer)) < 0) {
         CPrintF("Error connecting to TCP socket!\n");
         CLEANMSSRUFF1;
         return;
@@ -698,7 +698,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
 /* Allocate memory for a buffer and get a pointer to it */
 
     cResponse = (char*) malloc(BUFFSZSTR + 1);
-    if(!cResponse) {
+    if (!cResponse) {
         CPrintF("Error initializing memory buffer!\n");
         CLEANMSSRUFF1;
         return;
@@ -708,7 +708,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
 
     iLen = 0;
     iErr = recv(_sock, (char*)cResponse + iLen, BUFFSZSTR - iLen, 0);
-    if(iErr < 0) {
+    if (iErr < 0) {
         CPrintF("Error reading from TCP socket!\n");
         CLEANMSSRUFF2;
         return;
@@ -720,7 +720,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
 /* Allocate memory for a buffer and get a pointer to it */
 
     ucSec = (u_char*) malloc(BUFFSZSTR + 1);
-    if(!ucSec) {
+    if (!ucSec) {
         CPrintF("Error initializing memory buffer!\n");
         CLEANMSSRUFF2;
         return;
@@ -731,7 +731,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
 /* Geting the secret key from a string */
 
     cSec = strstr(cResponse, "\\secure\\");
-    if(!cSec) {
+    if (!cSec) {
         CPrintF("Not valid master server response!\n");
         CLEANMSSRUFF2;
         return;
@@ -743,13 +743,13 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
         ucKey = gsseckey(ucSec, ucGamekey, iEnctype);
     }
     ucSec -= 15;
-    if(cResponse) free (cResponse);
-    if(ucSec) free (ucSec);
+    if (cResponse) free (cResponse);
+    if (ucSec) free (ucSec);
 
 /* Generate a string for the response (to Master Server) with the specified (Validate ucKey) */
 
     cMsstring = (char*) malloc(BUFFSZSTR + 1);
-    if(!cMsstring) {
+    if (!cMsstring) {
         CPrintF("Not valid master server response!\n");
         CLEANMSSRUFF1;
         return;
@@ -772,23 +772,23 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
 
 /* The string sent to master server */
 
-    if(send(_sock,cMsstring, iLen, 0) < 0){
+    if (send(_sock,cMsstring, iLen, 0) < 0) {
         CPrintF("Error reading from TCP socket!\n");
-        if(cMsstring) free (cMsstring);
+        if (cMsstring) free (cMsstring);
         CLEANMSSRUFF1;
         return;
     }
-    if(cMsstring) free (cMsstring);
+    if (cMsstring) free (cMsstring);
 
  /* Allocate memory for a buffer and get a pointer to it */
 
-    if(_szIPPortBuffer ) {
+    if (_szIPPortBuffer ) {
         CLEANMSSRUFF1;
         return;
     };
 
     _szIPPortBuffer = (char*) malloc(BUFFSZ + 1);
-    if(!_szIPPortBuffer) {
+    if (!_szIPPortBuffer) {
         CPrintF("Error reading from TCP socket!\n");
         CLEANMSSRUFF1;
         return;
@@ -799,14 +799,14 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
 /* The received encoded data after sending the string (Validate key) */
 
     iLen = 0;
-    while((iErr = recv(_sock, _szIPPortBuffer + iLen, iDynsz - iLen, 0)) > 0) {
+    while ((iErr = recv(_sock, _szIPPortBuffer + iLen, iDynsz - iLen, 0)) > 0) {
         iLen += iErr;
-        if(iLen >= iDynsz) {
+        if (iLen >= iDynsz) {
             iDynsz += BUFFSZ;
             _szIPPortBuffer = (char*)realloc(_szIPPortBuffer, iDynsz);
-            if(!_szIPPortBuffer) {
+            if (!_szIPPortBuffer) {
                 CPrintF("Error reallocation memory buffer!\n");
-                if(_szIPPortBuffer) free (_szIPPortBuffer);
+                if (_szIPPortBuffer) free (_szIPPortBuffer);
                 CLEANMSSRUFF1;
                 return;
             }
@@ -827,16 +827,16 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
 extern void GameAgent_EnumUpdate(void)
 {
 
-  if((_socket == NULL) || (!_bInitialized)) {
+  if ((_socket == NULL) || (!_bInitialized)) {
     return;
   }
 
   if (!ga_bMSLegacy) {
    int iLen = _recvPacket();
-   if(iLen != -1) {
+   if (iLen != -1) {
     // null terminate the buffer
     _szBuffer[iLen] = 0;
-    switch(_szBuffer[0]) {
+    switch (_szBuffer[0]) {
     case 's':
       {
         struct sIPPort {
@@ -849,7 +849,7 @@ extern void GameAgent_EnumUpdate(void)
         _pNetwork->ga_strEnumerationStatus = "";
 
         sIPPort* pServers = (sIPPort*)(_szBuffer + 1);
-        while(iLen - ((CHAR*)pServers - _szBuffer) >= sizeof(sIPPort)) {
+        while (iLen - ((CHAR*)pServers - _szBuffer) >= sizeof(sIPPort)) {
           sIPPort ip = *pServers;
 
           CTString strIP;
@@ -890,23 +890,23 @@ extern void GameAgent_EnumUpdate(void)
         CTString strKey;
         CTString strValue;
 
-        while(*pszPacket != 0) {
-          switch(*pszPacket) {
+        while (*pszPacket != 0) {
+          switch (*pszPacket) {
           case ';':
-            if(strKey != "sessionname") {
-              if(bReadValue) {
+            if (strKey != "sessionname") {
+              if (bReadValue) {
                 // we're done reading the value, check which key it was
-                if(strKey == "players") {
+                if (strKey == "players") {
                   strPlayers = strValue;
-                } else if(strKey == "maxplayers") {
+                } else if (strKey == "maxplayers") {
                   strMaxPlayers = strValue;
-                } else if(strKey == "level") {
+                } else if (strKey == "level") {
                   strLevel = strValue;
-                } else if(strKey == "gametype") {
+                } else if (strKey == "gametype") {
                   strGameType = strValue;
-                } else if(strKey == "version") {
+                } else if (strKey == "version") {
                   strVersion = strValue;
-                } else if(strKey == "gamename") {
+                } else if (strKey == "gamename") {
                   strGameName = strValue;
                 } else {
                   CPrintF("Unknown GameAgent parameter key '%s'!", strKey);
@@ -922,7 +922,7 @@ extern void GameAgent_EnumUpdate(void)
 
           default:
             // read into the value or into the key, depending where we are
-            if(bReadValue) {
+            if (bReadValue) {
               strValue.InsertChar(strlen(strValue), *pszPacket);
             } else {
               strKey.InsertChar(strlen(strKey), *pszPacket);
@@ -935,7 +935,7 @@ extern void GameAgent_EnumUpdate(void)
         }
 
         // check if we still have a sessionname to back up
-        if(strKey == "sessionname") {
+        if (strKey == "sessionname") {
           strSessionName = strValue;
         }
 
@@ -945,16 +945,16 @@ extern void GameAgent_EnumUpdate(void)
 
         long long tmPing = -1;
         // find the request in the request array
-        for(INDEX i=0; i<ga_asrRequests.Count(); i++) {
+        for (INDEX i=0; i<ga_asrRequests.Count(); i++) {
           CServerRequest &req = ga_asrRequests[i];
-          if(req.sr_ulAddress == _sinFrom.sin_addr.s_addr && req.sr_iPort == _sinFrom.sin_port) {
+          if (req.sr_ulAddress == _sinFrom.sin_addr.s_addr && req.sr_iPort == _sinFrom.sin_port) {
             tmPing = _pTimer->GetHighPrecisionTimer().GetMilliseconds() - req.sr_tmRequestTime;
             ga_asrRequests.Delete(&req);
             break;
           }
         }
 
-        if(tmPing == -1) {
+        if (tmPing == -1) {
           // server status was never requested
           break;
         }
@@ -979,7 +979,7 @@ extern void GameAgent_EnumUpdate(void)
   }
  } else {
  /* MSLegacy */
-    if(_bActivated) {
+    if (_bActivated) {
         HANDLE  _hThread;
         DWORD   _dwThreadId;
 
@@ -989,7 +989,7 @@ extern void GameAgent_EnumUpdate(void)
         }
         _bActivated = FALSE;		
     }
-    if(_bActivatedLocal) {
+    if (_bActivatedLocal) {
         HANDLE  _hThread;
         DWORD   _dwThreadId;
 
@@ -1024,14 +1024,14 @@ DWORD WINAPI _MS_Thread(LPVOID lpParam) {
 
     _setStatus("");
     _sockudp = socket(AF_INET, SOCK_DGRAM, 0);
-    if (_sockudp == INVALID_SOCKET){
+    if (_sockudp == INVALID_SOCKET) {
         WSACleanup();
         return -1;
     }
 
     _sIPPort* pServerIP = (_sIPPort*)(_szIPPortBuffer);
-    while(_iIPPortBufferLen >= 6) {
-        if(!strncmp((char *)pServerIP, "\\final\\", 7)) {
+    while (_iIPPortBufferLen >= 6) {
+        if (!strncmp((char *)pServerIP, "\\final\\", 7)) {
                 break;
             }
 
@@ -1071,12 +1071,12 @@ DWORD WINAPI _MS_Thread(LPVOID lpParam) {
           /** do recvfrom stuff **/
           iRet =  recvfrom(_sockudp, _szBuffer, 2048, 0, (sockaddr*)&_sinClient, &_iClientLength);
           FD_CLR(_sockudp, &readfds_udp);
-          if(iRet != -1 && iRet > 100 && iRet != SOCKET_ERROR) {
+          if (iRet != -1 && iRet > 100 && iRet != SOCKET_ERROR) {
             // null terminate the buffer
             _szBuffer[iRet] = 0;
             char *sPch = NULL;
             sPch = strstr(_szBuffer, "\\gamename\\serioussamse\\");
-            if(!sPch) {
+            if (!sPch) {
                 CPrintF("Unknown query server response!\n");
                 return -1;
             } else {
@@ -1100,31 +1100,31 @@ DWORD WINAPI _MS_Thread(LPVOID lpParam) {
                 CTString strKey;
                 CTString strValue;
 
-                while(*pszPacket != 0) {
-                switch(*pszPacket) {
+                while (*pszPacket != 0) {
+                switch (*pszPacket) {
                 case '\\':
-                    if(strKey != "gamemode") {
-                      if(bReadValue) {
+                    if (strKey != "gamemode") {
+                      if (bReadValue) {
                         // we're done reading the value, check which key it was
-                        if(strKey == "gamename") {
+                        if (strKey == "gamename") {
                             strGameName = strValue;
-                        } else if(strKey == "gamever") {
+                        } else if (strKey == "gamever") {
                             strVersion = strValue;
-                        } else if(strKey == "location") {
+                        } else if (strKey == "location") {
                             strServerLocation = strValue;
-                        } else if(strKey == "hostname") {
+                        } else if (strKey == "hostname") {
                             strSessionName = strValue;
-                        } else if(strKey == "hostport") {
+                        } else if (strKey == "hostport") {
                             strGamePort = strValue;
-                        } else if(strKey == "mapname") {
+                        } else if (strKey == "mapname") {
                             strLevel = strValue;
-                        } else if(strKey == "gametype") {
+                        } else if (strKey == "gametype") {
                             strGameType = strValue;
-                        } else if(strKey == "activemod") {
+                        } else if (strKey == "activemod") {
                             strActiveMod = strValue;
-                        } else if(strKey == "numplayers") {
+                        } else if (strKey == "numplayers") {
                             strPlayers = strValue;
-                        } else if(strKey == "maxplayers") {
+                        } else if (strKey == "maxplayers") {
                             strMaxPlayers = strValue;
                         } else {
                             //CPrintF("Unknown GameAgent parameter key '%s'!", strKey);
@@ -1139,7 +1139,7 @@ DWORD WINAPI _MS_Thread(LPVOID lpParam) {
 
                 default:
                     // read into the value or into the key, depending where we are
-                    if(bReadValue) {
+                    if (bReadValue) {
                         strValue.InsertChar(strlen(strValue), *pszPacket);
                     } else {
                         strKey.InsertChar(strlen(strKey), *pszPacket);
@@ -1151,25 +1151,25 @@ DWORD WINAPI _MS_Thread(LPVOID lpParam) {
                 }
 
                 // check if we still have a maxplayers to back up
-                if(strKey == "gamemode") {
+                if (strKey == "gamemode") {
                     strGameMode = strValue;
                 }
-                if(strActiveMod != "") {
+                if (strActiveMod != "") {
                     strGameName = strActiveMod;
                 }
 				
                 long long tmPing = -1;
                 // find the request in the request array
-                for(INDEX i=0; i<ga_asrRequests.Count(); i++) {
+                for (INDEX i=0; i<ga_asrRequests.Count(); i++) {
                     CServerRequest &req = ga_asrRequests[i];
-                    if(req.sr_ulAddress == _sinClient.sin_addr.s_addr && req.sr_iPort == _sinClient.sin_port) {
+                    if (req.sr_ulAddress == _sinClient.sin_addr.s_addr && req.sr_iPort == _sinClient.sin_port) {
                         tmPing = _pTimer->GetHighPrecisionTimer().GetMilliseconds() - req.sr_tmRequestTime;
                         ga_asrRequests.Delete(&req);
                         break;
                     }
                 }
 
-                if(tmPing > 0 && tmPing < 2500000) {
+                if (tmPing > 0 && tmPing < 2500000) {
 				    // insert the server into the serverlist
                     CNetworkSession &ns = *new CNetworkSession;
                     _pNetwork->ga_lhEnumeratedSessions.AddTail(ns.ns_lnNode);
@@ -1188,9 +1188,9 @@ DWORD WINAPI _MS_Thread(LPVOID lpParam) {
             }
           } else {
             // find the request in the request array
-            for(INDEX i=0; i<ga_asrRequests.Count(); i++) {
+            for (INDEX i=0; i<ga_asrRequests.Count(); i++) {
               CServerRequest &req = ga_asrRequests[i];
-              if(req.sr_ulAddress == _sinClient.sin_addr.s_addr && req.sr_iPort == _sinClient.sin_port) {
+              if (req.sr_ulAddress == _sinClient.sin_addr.s_addr && req.sr_iPort == _sinClient.sin_port) {
                 ga_asrRequests.Delete(&req);
                 break;
               }
@@ -1200,7 +1200,7 @@ DWORD WINAPI _MS_Thread(LPVOID lpParam) {
         pServerIP++;
         _iIPPortBufferLen -= 6;
     }
-    if(_szIPPortBuffer) free (_szIPPortBuffer);
+    if (_szIPPortBuffer) free (_szIPPortBuffer);
     _szIPPortBuffer = NULL;
 
     closesocket(_sockudp);
@@ -1222,10 +1222,10 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
       };
 
     _sockudp = socket(AF_INET, SOCK_DGRAM, 0);
-    if (_sockudp == INVALID_SOCKET){
+    if (_sockudp == INVALID_SOCKET) {
         WSACleanup();
         _pNetwork->ga_strEnumerationStatus = "";
-		if(_szIPPortBufferLocal != NULL) {
+		if (_szIPPortBufferLocal != NULL) {
 			delete[] _szIPPortBufferLocal;
 		}
 		_szIPPortBufferLocal = NULL;		
@@ -1233,8 +1233,8 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
     }
 
     _sIPPort* pServerIP = (_sIPPort*)(_szIPPortBufferLocal);
-    while(_iIPPortBufferLocalLen >= 6) {
-        if(!strncmp((char *)pServerIP, "\\final\\", 7)) {
+    while (_iIPPortBufferLocalLen >= 6) {
+        if (!strncmp((char *)pServerIP, "\\final\\", 7)) {
                 break;
             }
 
@@ -1274,14 +1274,14 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
           /** do recvfrom stuff **/
           iRet =  recvfrom(_sockudp, _szBuffer, 2048, 0, (sockaddr*)&_sinClient, &_iClientLength);
           FD_CLR(_sockudp, &readfds_udp);
-          if(iRet != -1 && iRet > 100 && iRet != SOCKET_ERROR) {
+          if (iRet != -1 && iRet > 100 && iRet != SOCKET_ERROR) {
             // null terminate the buffer
             _szBuffer[iRet] = 0;
             char *sPch = NULL;
             sPch = strstr(_szBuffer, "\\gamename\\serioussamse\\");
-            if(!sPch) {
+            if (!sPch) {
                 CPrintF("Unknown query server response!\n");
-				if(_szIPPortBufferLocal != NULL) {
+				if (_szIPPortBufferLocal != NULL) {
 					delete[] _szIPPortBufferLocal;
 				}
 				_szIPPortBufferLocal = NULL;               
@@ -1308,31 +1308,31 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
                 CTString strKey;
                 CTString strValue;
 
-                while(*pszPacket != 0) {
-                switch(*pszPacket) {
+                while (*pszPacket != 0) {
+                switch (*pszPacket) {
                 case '\\':
-                    if(strKey != "gamemode") {
-                      if(bReadValue) {
+                    if (strKey != "gamemode") {
+                      if (bReadValue) {
                         // we're done reading the value, check which key it was
-                        if(strKey == "gamename") {
+                        if (strKey == "gamename") {
                             strGameName = strValue;
-                        } else if(strKey == "gamever") {
+                        } else if (strKey == "gamever") {
                             strVersion = strValue;
-                        } else if(strKey == "location") {
+                        } else if (strKey == "location") {
                             strServerLocation = strValue;
-                        } else if(strKey == "hostname") {
+                        } else if (strKey == "hostname") {
                             strSessionName = strValue;
-                        } else if(strKey == "hostport") {
+                        } else if (strKey == "hostport") {
                             strGamePort = strValue;
-                        } else if(strKey == "mapname") {
+                        } else if (strKey == "mapname") {
                             strLevel = strValue;
-                        } else if(strKey == "gametype") {
+                        } else if (strKey == "gametype") {
                             strGameType = strValue;
-                        } else if(strKey == "activemod") {
+                        } else if (strKey == "activemod") {
                             strActiveMod = strValue;
-                        } else if(strKey == "numplayers") {
+                        } else if (strKey == "numplayers") {
                             strPlayers = strValue;
-                        } else if(strKey == "maxplayers") {
+                        } else if (strKey == "maxplayers") {
                             strMaxPlayers = strValue;
                         } else {
 							//CPrintF("Unknown GameAgent parameter key '%s'!", strKey);
@@ -1347,7 +1347,7 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
 
                 default:
                     // read into the value or into the key, depending where we are
-                    if(bReadValue) {
+                    if (bReadValue) {
                         strValue.InsertChar(strlen(strValue), *pszPacket);
                     } else {
                         strKey.InsertChar(strlen(strKey), *pszPacket);
@@ -1359,25 +1359,25 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
                 }
 
                 // check if we still have a maxplayers to back up
-                if(strKey == "gamemode") {
+                if (strKey == "gamemode") {
                     strGameMode = strValue;
                 }
-                if(strActiveMod != "") {
+                if (strActiveMod != "") {
                     strGameName = strActiveMod;
                 }
 
                 long long tmPing = -1;
                 // find the request in the request array
-                for(INDEX i=0; i<ga_asrRequests.Count(); i++) {
+                for (INDEX i=0; i<ga_asrRequests.Count(); i++) {
                     CServerRequest &req = ga_asrRequests[i];
-                    if(req.sr_ulAddress == _sinClient.sin_addr.s_addr && req.sr_iPort == _sinClient.sin_port) {
+                    if (req.sr_ulAddress == _sinClient.sin_addr.s_addr && req.sr_iPort == _sinClient.sin_port) {
                         tmPing = _pTimer->GetHighPrecisionTimer().GetMilliseconds() - req.sr_tmRequestTime;
                         ga_asrRequests.Delete(&req);
                         break;
                     }
                 }
 
-                if(tmPing > 0 && tmPing < 2500000) {
+                if (tmPing > 0 && tmPing < 2500000) {
 				    // insert the server into the serverlist
                     _pNetwork->ga_strEnumerationStatus = "";
 					CNetworkSession &ns = *new CNetworkSession;
@@ -1397,9 +1397,9 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
             }
           } else {
             // find the request in the request array
-            for(INDEX i=0; i<ga_asrRequests.Count(); i++) {
+            for (INDEX i=0; i<ga_asrRequests.Count(); i++) {
               CServerRequest &req = ga_asrRequests[i];
-              if(req.sr_ulAddress == _sinClient.sin_addr.s_addr && req.sr_iPort == _sinClient.sin_port) {
+              if (req.sr_ulAddress == _sinClient.sin_addr.s_addr && req.sr_iPort == _sinClient.sin_port) {
                 ga_asrRequests.Delete(&req);
                 break;
               }
@@ -1409,7 +1409,7 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
         pServerIP++;
         _iIPPortBufferLocalLen -= 6;
     }
-	if(_szIPPortBufferLocal != NULL) {
+	if (_szIPPortBufferLocal != NULL) {
       delete[] _szIPPortBufferLocal;
     }
 	_szIPPortBufferLocal = NULL;

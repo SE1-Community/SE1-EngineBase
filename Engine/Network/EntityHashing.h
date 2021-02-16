@@ -32,10 +32,10 @@ struct CClientEntry {
 
   CClientEntry() {
     ce_tmLastUpdated = -1.0f;
-    ce_plLastSentPlacement.pl_PositionVector = FLOAT3D(0,0,0);
-    ce_plLastSentPlacement.pl_OrientationAngle = ANGLE3D(0,0,0);
-    ce_plLastSentSpeed.pl_PositionVector = FLOAT3D(0,0,0);
-    ce_plLastSentSpeed.pl_OrientationAngle = ANGLE3D(0,0,0);
+    ce_plLastSentPlacement.pl_PositionVector = FLOAT3D(0.0f, 0.0f, 0.0f);
+    ce_plLastSentPlacement.pl_OrientationAngle = ANGLE3D(0.0f, 0.0f, 0.0f);
+    ce_plLastSentSpeed.pl_PositionVector = FLOAT3D(0.0f, 0.0f, 0.0f);
+    ce_plLastSentSpeed.pl_OrientationAngle = ANGLE3D(0.0f, 0.0f, 0.0f);
   }
 
 }

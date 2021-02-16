@@ -107,7 +107,7 @@ BOOL IsDerivedFromClass(CEntity *pen, const char *pstrClassName)
     return FALSE;
   }
   // for all classes in hierarchy of the entity
-  for(CDLLEntityClass *pdecDLLClass = pen->GetClass()->ec_pdecDLLClass;
+  for (CDLLEntityClass *pdecDLLClass = pen->GetClass()->ec_pdecDLLClass;
       pdecDLLClass!=NULL;
       pdecDLLClass = pdecDLLClass->dec_pdecBase) {
     // if it is the wanted class
@@ -167,15 +167,15 @@ CEntity::~CEntity(void)
   */
 
   // if it is brush of terrain
-  if(en_pbrBrush != NULL) {
+  if (en_pbrBrush != NULL) {
     INDEX btType = en_pbrBrush->GetBrushType();
     // if this is brush3d
-    if(btType==CBrushBase::BT_BRUSH3D) {
+    if (btType==CBrushBase::BT_BRUSH3D) {
       // free the brush
       en_pwoWorld->wo_baBrushes.ba_abrBrushes.Delete(en_pbrBrush);
       en_pbrBrush = NULL;
     // if this is terrain
-    } else if(btType==CBrushBase::BT_TERRAIN) {
+    } else if (btType==CBrushBase::BT_TERRAIN) {
       // free the brush
       en_pwoWorld->wo_taTerrains.ta_atrTerrains.Delete(en_ptrTerrain);
       en_pbrBrush = NULL;
@@ -268,7 +268,7 @@ void CEntity::GetSize(FLOATaabbox3D &box)
   if (en_RenderType==CEntity::RT_MODEL || en_RenderType==CEntity::RT_EDITORMODEL) {
     en_pmoModelObject->GetCurrentFrameBBox( box);
     box.StretchByVector(en_pmoModelObject->mo_Stretch);
-  } else if(en_RenderType==CEntity::RT_SKAMODEL || en_RenderType==CEntity::RT_SKAEDITORMODEL) {
+  } else if (en_RenderType==CEntity::RT_SKAMODEL || en_RenderType==CEntity::RT_SKAEDITORMODEL) {
     GetModelInstance()->GetCurrentColisionBox( box);
     box.StretchByVector(GetModelInstance()->mi_vStretch);
   } else if (en_RenderType==CEntity::RT_TERRAIN) {
@@ -276,14 +276,14 @@ void CEntity::GetSize(FLOATaabbox3D &box)
   } else if (en_RenderType==CEntity::RT_BRUSH || en_RenderType==CEntity::RT_FIELDBRUSH) {
     CBrushMip *pbm = en_pbrBrush->GetFirstMip();
     if (pbm == NULL) {
-      box = FLOATaabbox3D(FLOAT3D(0,0,0), FLOAT3D(0,0,0));
+      box = FLOATaabbox3D(FLOAT3D(0.0f, 0.0f, 0.0f), FLOAT3D(0.0f, 0.0f, 0.0f));
     } else {
       box = pbm->bm_boxBoundingBox;
       box += -GetPlacement().pl_PositionVector;
     }
   }
   else {
-    box = FLOATaabbox3D(FLOAT3D(0,0,0), FLOAT3D(0,0,0));
+    box = FLOATaabbox3D(FLOAT3D(0.0f, 0.0f, 0.0f), FLOAT3D(0.0f, 0.0f, 0.0f));
   }
 }
 
@@ -455,7 +455,7 @@ BOOL CEntity::GetGradient(INDEX iGradient, class CGradientParameters &gpGradient
 
 FLOAT3D CEntity::GetClassificationBoxStretch(void)
 {
-  return FLOAT3D( 1.0f, 1.0f, 1.0f);
+  return FLOAT3D(1.0f, 1.0f, 1.0f);
 }
 
 /* Get field information - return NULL if not a field. */
@@ -478,7 +478,7 @@ INDEX CEntity::GetCollisionBoxIndex(void)
 void CEntity::GetCollisionBoxParameters(INDEX iBox, FLOATaabbox3D &box, INDEX &iEquality)
 {
   // if this is ska model
-  if(en_RenderType==RT_SKAMODEL || en_RenderType==RT_SKAEDITORMODEL) {
+  if (en_RenderType==RT_SKAMODEL || en_RenderType==RT_SKAEDITORMODEL) {
     box.minvect = GetModelInstance()->GetCollisionBoxMin(iBox);
     box.maxvect = GetModelInstance()->GetCollisionBoxMax(iBox);
     FLOATaabbox3D boxNS = box;
@@ -774,7 +774,7 @@ void CEntity::End_internal(void)
   en_boxSpatialClassification = FLOATaabbox3D();
 
   // depending on entity type
-  switch(en_RenderType) {
+  switch (en_RenderType) {
   // if it is brush
   case RT_BRUSH:
     DiscardCollisionInfo();
@@ -937,21 +937,21 @@ void CEntity::FallDownToFloor( void)
 {
   CEntity::RenderType rt = GetRenderType();
   // is this old model
-  if(rt==CEntity::RT_MODEL || rt==CEntity::RT_EDITORMODEL) {
+  if (rt==CEntity::RT_MODEL || rt==CEntity::RT_EDITORMODEL) {
     ASSERT(en_pmoModelObject != NULL);
   // is this ska model
-  } else if(rt==CEntity::RT_SKAMODEL || rt==CEntity::RT_SKAEDITORMODEL) {
+  } else if (rt==CEntity::RT_SKAMODEL || rt==CEntity::RT_SKAEDITORMODEL) {
     ASSERT(GetModelInstance() != NULL);
   } else {
     return;
   }
-  // if( rt!=CEntity::RT_MODEL && rt!=CEntity::RT_EDITORMODEL) return;
+  // if (rt!=CEntity::RT_MODEL && rt!=CEntity::RT_EDITORMODEL) return;
   // ASSERT(en_pmoModelObject != NULL);
 
   CPlacement3D plPlacement = GetPlacement();
   FLOAT3D vRay[4];
   // if it is movable entity
-  if( en_ulPhysicsFlags & EPF_MOVABLE) {
+  if (en_ulPhysicsFlags & EPF_MOVABLE) {
     INDEX iEq;
     FLOATaabbox3D box;
     GetCollisionBoxParameters(GetCollisionBoxIndex(), box, iEq);
@@ -974,7 +974,7 @@ void CEntity::FallDownToFloor( void)
   }
   else {
     FLOATaabbox3D box;
-    if(rt==CEntity::RT_SKAMODEL || rt==CEntity::RT_SKAEDITORMODEL) {
+    if (rt==CEntity::RT_SKAMODEL || rt==CEntity::RT_SKAEDITORMODEL) {
       GetModelInstance()->GetCurrentColisionBox( box);
     } else {
       en_pmoModelObject->GetCurrentFrameBBox( box);
@@ -990,7 +990,7 @@ void CEntity::FallDownToFloor( void)
 
   FLOAT fMaxY = -9999999.0f;
   BOOL bFloorHitted = FALSE;
-  for( INDEX iRay=0; iRay<4; iRay++)
+  for (INDEX iRay=0; iRay<4; iRay++)
   {
     FLOAT3D vSource = plPlacement.pl_PositionVector+vRay[iRay];
     FLOAT3D vTarget = vSource;
@@ -1000,12 +1000,12 @@ void CEntity::FallDownToFloor( void)
     crRay.cr_bHitTranslucentPortals = TRUE;
     crRay.cr_bPhysical = TRUE;
     GetWorld()->CastRay(crRay);
-    if( (crRay.cr_penHit != NULL) && (crRay.cr_vHit(2) > fMaxY)) {
+    if ((crRay.cr_penHit != NULL) && (crRay.cr_vHit(2) > fMaxY)) {
       fMaxY = crRay.cr_vHit(2);
       bFloorHitted = TRUE;
     }
   }
-  if( bFloorHitted) plPlacement.pl_PositionVector(2) += fMaxY-plPlacement.pl_PositionVector(2)+0.01f;
+  if (bFloorHitted) plPlacement.pl_PositionVector(2) += fMaxY-plPlacement.pl_PositionVector(2)+0.01f;
   SetPlacement( plPlacement);
 }
 
@@ -1084,7 +1084,7 @@ void CEntity::SetPlacement_internal(const CPlacement3D &plNew, const FLOATmatrix
     }
 
     _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_SETPLACEMENT_BRUSHUPDATE);
-  } else if(en_RenderType==RT_TERRAIN) {
+  } else if (en_RenderType==RT_TERRAIN) {
     // Update terrain shadow map
     CTerrain *ptrTerrain = GetTerrain();
     ASSERT(ptrTerrain!=NULL);
@@ -1349,7 +1349,7 @@ static void CheckTerrainForShadingInfo(CTerrain *ptrTerrain)
   vTerrainNormal = FLOAT3D(0,-1,0) * pen->en_mRotation;
   FLOAT fDistance = TestRayCastHit(ptrTerrain,pen->en_mRotation,pen->en_plPlacement.pl_PositionVector,
                                    _vHandle,_vHandle+vTerrainNormal,_fNearDistance,FALSE,plHitPlane,vHitPoint);
-  if(fDistance<_fNearDistance) {
+  if (fDistance<_fNearDistance) {
     _vNearPoint = vHitPoint;
     _fNearDistance = fDistance;
     _ptrTerrainNear = ptrTerrain;
@@ -1394,7 +1394,7 @@ void CEntity::FindShadingInfo(void)
   if (en_ulPhysicsFlags&EPF_MOVABLE) {
     // for each cached near polygon
     CStaticStackArray<CBrushPolygon *> &apbpo = ((CMovableEntity*)this)->en_apbpoNearPolygons;
-    for(INDEX iPolygon=0; iPolygon<apbpo.Count(); iPolygon++) {
+    for (INDEX iPolygon=0; iPolygon<apbpo.Count(); iPolygon++) {
       CheckPolygonForShadingInfo(*apbpo[iPolygon]);
     }
   }
@@ -1403,9 +1403,9 @@ void CEntity::FindShadingInfo(void)
   {FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     // for each brush or terrain in this sector
     {FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
-      if(pen->en_RenderType==CEntity::RT_TERRAIN) {
+      if (pen->en_RenderType==CEntity::RT_TERRAIN) {
         CheckTerrainForShadingInfo(pen->GetTerrain());
-      } else if(pen->en_RenderType!=CEntity::RT_BRUSH && pen->en_RenderType!=CEntity::RT_FIELDBRUSH) {
+      } else if (pen->en_RenderType!=CEntity::RT_BRUSH && pen->en_RenderType!=CEntity::RT_FIELDBRUSH) {
         break;
       }
     }}
@@ -1424,7 +1424,7 @@ void CEntity::FindShadingInfo(void)
   }
 
   // if there is some polygon found
-  if( _pbpoNear!=NULL) {
+  if (_pbpoNear!=NULL) {
     // remember shading info
     en_psiShadingInfo->si_pbpoPolygon = _pbpoNear;
     _pbpoNear->bpo_lhShadingInfos.AddTail(en_psiShadingInfo->si_lnInPolygon);
@@ -1451,7 +1451,7 @@ void CEntity::FindShadingInfo(void)
     en_psiShadingInfo->si_fLRRatio = fpixV-en_psiShadingInfo->si_pixShadowV;
 
   // else if there is some terrain found
-  } else if(_ptrTerrainNear!=NULL) {
+  } else if (_ptrTerrainNear!=NULL) {
     // remember shading info
     en_psiShadingInfo->si_ptrTerrain = _ptrTerrainNear;
     en_psiShadingInfo->si_vNearPoint = _vNearPoint;
@@ -1565,7 +1565,7 @@ void CCollisionInfo::FromModel(CEntity *penModel, INDEX iBox)
   ci_absSpheres.Clear();
   ci_absSpheres.New(ctSpheres);
   // for each sphere
-  for(INDEX iSphere=0; iSphere<ctSpheres; iSphere++) {
+  for (INDEX iSphere=0; iSphere<ctSpheres; iSphere++) {
     CMovingSphere &ms = ci_absSpheres[iSphere];
     // set its center and radius
     ms.ms_vCenter(iAxis1) = fSphereCenterX;
@@ -1844,7 +1844,7 @@ void CEntity::FindSectorsAroundEntity(void)
       // for each sector in the brush mip
       FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
         // if the sector's bounding box has contact with the sphere 
-        if(itbsc->bsc_boxBoundingBox.TouchesSphere(vSphereCenter, fSphereRadius)
+        if (itbsc->bsc_boxBoundingBox.TouchesSphere(vSphereCenter, fSphereRadius)
           // and with the box
           && boxEntity.HasContactWith(FLOATobbox3D(itbsc->bsc_boxBoundingBox))) {
           
@@ -1903,7 +1903,7 @@ void CEntity::FindSectorsAroundEntityNear(void)
 
   CStaticStackArray<CBrushPolygon *> &apbpo = pen->en_apbpoNearPolygons;
   // for each cached polygon
-  for(INDEX iPolygon=0; iPolygon<apbpo.Count(); iPolygon++) {
+  for (INDEX iPolygon=0; iPolygon<apbpo.Count(); iPolygon++) {
     CBrushSector *pbsc = apbpo[iPolygon]->bpo_pbscSector;
     // add its sector if not already added, and has BSP (is zoning)
     if (!pbsc->bsc_lnInActiveSectors.IsLinked() && pbsc->bsc_bspBSPTree.bt_pbnRoot!=NULL) {
@@ -1971,7 +1971,7 @@ void CEntity::FindSectorsAroundEntityNear(void)
  */
 void CEntity::UncacheShadowsForGradient(INDEX iGradient)
 {
-  if(en_RenderType != CEntity::RT_BRUSH)
+  if (en_RenderType != CEntity::RT_BRUSH)
   {
     ASSERTALWAYS("Uncache shadows for gradient called on non-brush entity!");
     return;
@@ -2183,7 +2183,7 @@ void CEntity::HandleSentEvents(void)
   }
 
   // for each event
-  for(INDEX iee=0; iee<_aseSentEvents.Count(); iee++) {
+  for (INDEX iee=0; iee<_aseSentEvents.Count(); iee++) {
     CSentEvent &se = _aseSentEvents[iee];
     // release the entity and destroy the event
     se.se_penEntity = NULL;
@@ -2233,7 +2233,7 @@ void CEntity::InitAsTerrain(void)
 {
   en_RenderType = RT_TERRAIN;
   // if there is no existing terrain
-  if(en_ptrTerrain == NULL) {
+  if (en_ptrTerrain == NULL) {
     // create a new empty terrain in the brush archive of current world
     en_ptrTerrain = en_pwoWorld->wo_taTerrains.ta_atrTerrains.New();
     en_ptrTerrain->tr_penEntity = this;
@@ -2326,9 +2326,9 @@ void CEntity::InitAsFieldBrush(void)
 void CEntity::SwitchToModel(void)
 {
   // change to editor model
-  if(en_RenderType==RT_MODEL || en_RenderType==RT_EDITORMODEL) {
+  if (en_RenderType==RT_MODEL || en_RenderType==RT_EDITORMODEL) {
     en_RenderType = RT_MODEL;
-  } else if( en_RenderType==RT_SKAMODEL || en_RenderType==RT_SKAEDITORMODEL) {
+  } else if (en_RenderType==RT_SKAMODEL || en_RenderType==RT_SKAEDITORMODEL) {
     en_RenderType = RT_SKAMODEL;
   } else {
     // it must be model (not brush)
@@ -2338,9 +2338,9 @@ void CEntity::SwitchToModel(void)
 void CEntity::SwitchToEditorModel(void)
 {
   // change to editor model
-  if(en_RenderType==RT_MODEL || en_RenderType==RT_EDITORMODEL) {
+  if (en_RenderType==RT_MODEL || en_RenderType==RT_EDITORMODEL) {
     en_RenderType = RT_EDITORMODEL;
-  } else if( en_RenderType==RT_SKAMODEL || en_RenderType==RT_SKAEDITORMODEL) {
+  } else if (en_RenderType==RT_SKAMODEL || en_RenderType==RT_SKAEDITORMODEL) {
     en_RenderType = RT_SKAEDITORMODEL;
   } else {
     // it must be model (not brush)
@@ -2390,7 +2390,7 @@ void CEntity::SetSkaColisionInfo()
 {
   ASSERT(en_RenderType==RT_SKAMODEL || en_RenderType==RT_SKAEDITORMODEL);
   // if there is no colision boxes for ska model 
-  if(en_pmiModelInstance->mi_cbAABox.Count() == 0) {
+  if (en_pmiModelInstance->mi_cbAABox.Count() == 0) {
     // add one default colision box
     en_pmiModelInstance->AddColisionBox("Default",FLOAT3D(-0.5,0,-0.5),FLOAT3D(0.5,2,0.5));
   }
@@ -2402,7 +2402,7 @@ void CEntity::SetSkaModel_t(const CTString &fnmModel)
 {
   ASSERT(en_RenderType==RT_SKAMODEL || en_RenderType==RT_SKAEDITORMODEL);
   // if model instance allready exists
-  if(en_pmiModelInstance!=NULL) {
+  if (en_pmiModelInstance!=NULL) {
     // release it first
     en_pmiModelInstance->Clear();
   }
@@ -2544,10 +2544,10 @@ void CEntity::AddAttachment(INDEX iAttachment, ULONG ulIDModel, ULONG ulIDTextur
 }
 void CEntity::AddAttachment(INDEX iAttachment, CTFileName fnModel, CTFileName fnTexture)
 {
-  if( fnModel == CTString("")) return;
+  if (fnModel == CTString("")) return;
   CModelObject *pmo = GetModelObject();
   ASSERT( pmo != NULL);
-  if( pmo == NULL) return;
+  if (pmo == NULL) return;
 
   CAttachmentModelObject *pamo = pmo->AddAttachmentModel( iAttachment);
   try
@@ -2599,7 +2599,7 @@ void CEntity::GetModelVerticesAbsolute( CStaticStackArray<FLOAT3D> &avVertices, 
   // calculate rotation matrix
   FLOATmatrix3D mRotation;
   MakeRotationMatrixFast(mRotation, plPlacement.pl_OrientationAngle);
-  if(en_RenderType==RT_MODEL || en_RenderType==RT_EDITORMODEL) {
+  if (en_RenderType==RT_MODEL || en_RenderType==RT_EDITORMODEL) {
     en_pmoModelObject->GetModelVertices( avVertices, mRotation, plPlacement.pl_PositionVector, fNormalOffset, fMipFactor);
   } else {
     GetModelInstance()->GetModelVertices( avVertices, mRotation, plPlacement.pl_PositionVector, fNormalOffset, fMipFactor);
@@ -2619,7 +2619,7 @@ void EntityAdjustShaderParamsCallback(void *pData,INDEX iSurfaceID,CShader *pSha
 BOOL CEntity::GetBoneRelPosition(INDEX iBoneID, FLOAT3D &vStartPoint, FLOAT3D &vEndPoint)
 {
   ASSERT(en_RenderType==RT_SKAMODEL || en_RenderType==RT_SKAEDITORMODEL);
-  RM_SetObjectPlacement(CPlacement3D(FLOAT3D(0.0f,0.0f,0.0f),ANGLE3D(0.0f,0.0f,0.0f)));
+  RM_SetObjectPlacement(CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f),ANGLE3D(0.0f, 0.0f, 0.0f)));
   RM_SetBoneAdjustCallback(&EntityAdjustBonesCallback,this);
   return RM_GetBoneAbsPosition(*GetModelInstance(),iBoneID,vStartPoint,vEndPoint);
 }
@@ -2789,7 +2789,7 @@ CLastPositions *CEntity::GetLastPositions(INDEX ctPositions)
     en_plpLastPositions->lp_iLast = 0;
     en_plpLastPositions->lp_llLastAdded = llTickNow;
     const FLOAT3D &vNow = GetPlacement().pl_PositionVector;
-    for(INDEX iPos = 0; iPos<ctPositions; iPos++) {
+    for (INDEX iPos = 0; iPos<ctPositions; iPos++) {
       en_plpLastPositions->lp_avPositions[iPos] = vNow;
     }
   }
@@ -2845,7 +2845,7 @@ void CEntity::GetEntityPointRatio(const FLOAT3D &vRatio, FLOAT3D &vAbsPoint, BOO
     vOff(2) *= vRatio(2);
     vOff(3) *= vRatio(3);
     FLOAT3D vPos = vMin+vOff;
-    if( bLerped)
+    if (bLerped)
     {
       CPlacement3D plLerped=GetLerpedPlacement();
       FLOATmatrix3D mRot;
@@ -2870,7 +2870,7 @@ CBrushSector *CEntity::GetSectorFromPoint(const FLOAT3D &vPointAbs)
   // for each sector around entity
   {FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     // if point is in this sector
-    if( pbsc->bsc_bspBSPTree.TestSphere(FLOATtoDOUBLE(vPointAbs), 0.01)>=0) {
+    if (pbsc->bsc_bspBSPTree.TestSphere(FLOATtoDOUBLE(vPointAbs), 0.01)>=0) {
       // return that
       return pbsc;
     }
@@ -2882,8 +2882,8 @@ CBrushSector *CEntity::GetSectorFromPoint(const FLOAT3D &vPointAbs)
 void CEntity::ModelChangeNotify(void)
 {
   // if this is ska model
-  if(en_RenderType == RT_SKAMODEL || en_RenderType == RT_SKAEDITORMODEL) {
-    if(GetModelInstance()==NULL) {
+  if (en_RenderType == RT_SKAMODEL || en_RenderType == RT_SKAEDITORMODEL) {
+    if (GetModelInstance()==NULL) {
       return;
     }
 
@@ -3027,7 +3027,7 @@ static BOOL CheckModelRangeDamage(
 
   // check if any point can be hit
   BOOL bCanHit = FALSE;
-  for(INDEX i=0; i<3; i++) {
+  for (INDEX i=0; i<3; i++) {
     CCastRay crRay( &en, avPoints[i], vCenter);
     crRay.cr_ttHitModels = CCastRay::TT_NONE;     // only brushes block the damage
     crRay.cr_bHitTranslucentPortals = FALSE;
@@ -3220,7 +3220,7 @@ void CEntity::NotifyCollisionChanged(void)
   en_pwoWorld->FindEntitiesNearBox(en_pciCollisionInfo->ci_boxCurrent, apenNearEntities);
   
   // for each of the found entities
-  {for(INDEX ienFound=0; ienFound<apenNearEntities.Count(); ienFound++) {
+  {for (INDEX ienFound=0; ienFound<apenNearEntities.Count(); ienFound++) {
     CEntity &enToNear = *apenNearEntities[ienFound];
 
     // if movable
@@ -3340,7 +3340,7 @@ void CEntity::Read_t( CTStream *istr) // throw char *
     // read model
     ReadModelObject_t(*istr, *en_pmoModelObject);
   // if this is a ska model
-  } else if( en_RenderType == RT_SKAMODEL || en_RenderType == RT_SKAEDITORMODEL) {
+  } else if (en_RenderType == RT_SKAMODEL || en_RenderType == RT_SKAEDITORMODEL) {
     en_pmiModelInstance = CreateModelInstance("Temp");
     en_psiShadingInfo = new CShadingInfo;
     en_ulFlags &= ~ENF_VALIDSHADINGINFO;
@@ -3533,7 +3533,7 @@ void CEntity::DumpSync_t(CTStream &strm, INDEX iExtensiveSyncCheck)  // throw ch
       (ULONG&)en_mRotation(1,1), (ULONG&)en_mRotation(1,2), (ULONG&)en_mRotation(1,3),
       (ULONG&)en_mRotation(2,1), (ULONG&)en_mRotation(2,2), (ULONG&)en_mRotation(2,3),
       (ULONG&)en_mRotation(3,1), (ULONG&)en_mRotation(3,2), (ULONG&)en_mRotation(3,3));
-    if( en_pciCollisionInfo == NULL) {
+    if (en_pciCollisionInfo == NULL) {
       strm.FPrintF_t("Collision info NULL\n");
     } else if (en_RenderType==RT_BRUSH || en_RenderType==RT_FIELDBRUSH) {
       strm.FPrintF_t("Collision info: Brush entity\n");
@@ -3579,7 +3579,7 @@ SLONG CEntity::GetUsedMemory(void)
   slUsedMemory += en_rdSectors.Count() * sizeof(CRelationLnk);
 
   // add allocated memory for model type (if any)
-  switch( en_RenderType) {
+  switch (en_RenderType) {
   case CEntity::RT_MODEL:
   case CEntity::RT_EDITORMODEL:
     slUsedMemory += en_pmoModelObject->GetUsedMemory();
@@ -3592,15 +3592,15 @@ SLONG CEntity::GetUsedMemory(void)
   }
 
   // add shading info (if any)
-  if( en_psiShadingInfo !=NULL) {
+  if (en_psiShadingInfo !=NULL) {
     slUsedMemory += sizeof(CShadingInfo);
   }
   // add collision info (if any)
-  if( en_pciCollisionInfo!=NULL) {
+  if (en_pciCollisionInfo!=NULL) {
     slUsedMemory += sizeof(CCollisionInfo) + (en_pciCollisionInfo->ci_absSpheres.sa_Count * sizeof(CMovingSphere));
   }
   // add last positions memory (if any)
-  if( en_plpLastPositions!=NULL) {
+  if (en_plpLastPositions!=NULL) {
     slUsedMemory += sizeof(CLastPositions) + (en_plpLastPositions->lp_avPositions.sa_Count * sizeof(FLOAT3D));
   }
 
@@ -3800,7 +3800,7 @@ void CRationalEntity::Write_t( CTStream *ostr) // throw char *
 
   // write the state stack
   (*ostr)<<en_stslStateStack.Count();
-  for(INDEX iState=0; iState<en_stslStateStack.Count(); iState++) {
+  for (INDEX iState=0; iState<en_stslStateStack.Count(); iState++) {
     (*ostr)<<en_stslStateStack[iState];
   }
 }
@@ -3852,7 +3852,7 @@ void CRationalEntity::UnsetTimer(void) {
 void CRationalEntity::UnwindStack(SLONG slThisState)
 {
   // for each state on the stack (from top to bottom)
-  for(INDEX iStateInStack=en_stslStateStack.Count()-1; iStateInStack>=0; iStateInStack--) {
+  for (INDEX iStateInStack=en_stslStateStack.Count()-1; iStateInStack>=0; iStateInStack--) {
     // if it is the state
     if (en_stslStateStack[iStateInStack]==slThisState) {
       // unwind to it
@@ -3913,7 +3913,7 @@ const char *CRationalEntity::PrintStackDebug(void)
   _RPT2(_CRT_WARN, "-- stack of '%s'@%gs\n", GetName(), CTimer::InSeconds(_pTimer->GetGameTick()));
 
   INDEX ctStates = en_stslStateStack.Count();
-  for(INDEX iState=ctStates-1; iState>=0; iState--) {
+  for (INDEX iState=ctStates-1; iState>=0; iState--) {
     SLONG slState = en_stslStateStack[iState];
     _RPT2(_CRT_WARN, "0x%08x %s\n", slState, 
       en_pecClass->ec_pdecDLLClass->HandlerNameForState(slState));
@@ -3928,7 +3928,7 @@ const char *CRationalEntity::PrintStackDebug(void)
 BOOL CRationalEntity::HandleEvent(const CEntityEvent &ee)
 {
   // for each state on the stack (from top to bottom)
-  for(INDEX iStateInStack=en_stslStateStack.Count()-1; iStateInStack>=0; iStateInStack--) {
+  for (INDEX iStateInStack=en_stslStateStack.Count()-1; iStateInStack>=0; iStateInStack--) {
     // try to find a handler in that state
     pEventHandler pehHandler =
       HandlerForStateAndEvent(en_stslStateStack[iStateInStack], ee.ee_slEvent);

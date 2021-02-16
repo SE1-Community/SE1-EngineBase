@@ -47,7 +47,7 @@ void CBrushVertex::SetAbsolutePosition(const DOUBLE3D &vAbsolute)
   bvx_vdPreciseRelative = vRelative;
   bvx_vAbsolute = DOUBLEtoFLOAT(vAbsolute);
   bvx_vRelative = DOUBLEtoFLOAT(vRelative);
-  if(bvx_pwvxWorking!=NULL)
+  if (bvx_pwvxWorking!=NULL)
   {
     bvx_pwvxWorking->wvx_vRelative = bvx_vRelative;
   }
@@ -92,7 +92,7 @@ void CBrushPolygon::CreateBSPPolygon(BSPPolygon<DOUBLE, 3> &bspo)
 
   // for all edges in the polygon
   bspo.bpo_abedPolygonEdges.Lock();
-  {for(INDEX iEdge=0; iEdge<ctEdges; iEdge++){
+  {for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
     CBrushPolygonEdge &brped = brpo.bpo_abpePolygonEdges[iEdge];
     BSPEdge<DOUBLE, 3>  &bed = bspo.bpo_abedPolygonEdges[iEdge];
     // create the bsp edge in the bsp polygon
@@ -121,7 +121,7 @@ void CBrushPolygon::CreateBSPPolygonNonPrecise(BSPPolygon<DOUBLE, 3> &bspo)
 
   // for all edges in the polygon
   bspo.bpo_abedPolygonEdges.Lock();
-  {for(INDEX iEdge=0; iEdge<ctEdges; iEdge++){
+  {for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
     CBrushPolygonEdge &brped = brpo.bpo_abpePolygonEdges[iEdge];
     BSPEdge<DOUBLE, 3>  &bed = bspo.bpo_abedPolygonEdges[iEdge];
     // create the offseted bsp edge in the bsp polygon
@@ -321,12 +321,12 @@ void CBrushPolygon::MovePolygonEdges(CBrushPolygon &bpoSource)
   abpeNew.New(ctEdgesThis+ctEdgesSource);
   INDEX ibpeNew = 0;
   // copy edges of this polygon
-  {for(INDEX ibpeThis=0; ibpeThis<ctEdgesThis; ibpeThis++) {
+  {for (INDEX ibpeThis=0; ibpeThis<ctEdgesThis; ibpeThis++) {
     abpeNew[ibpeNew] = bpo_abpePolygonEdges[ibpeThis];
     ibpeNew++;
   }}
   // copy edges of source polygon
-  {for(INDEX ibpeSource=0; ibpeSource<ctEdgesSource; ibpeSource++) {
+  {for (INDEX ibpeSource=0; ibpeSource<ctEdgesSource; ibpeSource++) {
     abpeNew[ibpeNew] = bpoSource.bpo_abpePolygonEdges[ibpeSource];
     ibpeNew++;
   }}
@@ -349,7 +349,7 @@ BOOL CBrushEdge::TouchesInSameSector(CBrushEdge &bedOther)
     // they touch
     return TRUE;
   // if they have no common vertices
-  } else if( !wed_bIgnoreTJunctions) {
+  } else if (!wed_bIgnoreTJunctions) {
     // test if some vertex is on the other edge
     FLOAT fA0A1 = (bed_pbvxVertex0->bvx_vRelative-bed_pbvxVertex1->bvx_vRelative).Length();
     FLOAT fB0B1 = (bedOther.bed_pbvxVertex0->bvx_vRelative-bedOther.bed_pbvxVertex1->bvx_vRelative).Length();
@@ -381,7 +381,7 @@ BOOL CBrushEdge::TouchesInAnySector(CBrushEdge &bedOther)
     bed_pbvxVertex1->bvx_vRelative==bedOther.bed_pbvxVertex1->bvx_vRelative) {
     return TRUE;
   // if they have no common vertices
-  } else if( !wed_bIgnoreTJunctions) {
+  } else if (!wed_bIgnoreTJunctions) {
     // test if some vertex is on the other edge
     FLOAT fA0A1 = (bed_pbvxVertex0->bvx_vRelative-bed_pbvxVertex1->bvx_vRelative).Length();
     FLOAT fB0B1 = (bedOther.bed_pbvxVertex0->bvx_vRelative-bedOther.bed_pbvxVertex1->bvx_vRelative).Length();
@@ -409,10 +409,10 @@ BOOL CBrushPolygon::TouchesInAnySector(CBrushPolygon &bpoOther)
   INDEX ctEdgesThis  = bpo_abpePolygonEdges.Count();
   INDEX ctEdgesOther = bpoOther.bpo_abpePolygonEdges.Count();
   // for each edge in this polygon
-  {for(INDEX ibpeThis=0; ibpeThis<ctEdgesThis; ibpeThis++) {
+  {for (INDEX ibpeThis=0; ibpeThis<ctEdgesThis; ibpeThis++) {
     CBrushEdge &bedThis = *bpo_abpePolygonEdges[ibpeThis].bpe_pbedEdge;
     // for each edge in other polygon
-    {for(INDEX ibpeOther=0; ibpeOther<ctEdgesOther; ibpeOther++) {
+    {for (INDEX ibpeOther=0; ibpeOther<ctEdgesOther; ibpeOther++) {
       CBrushEdge &bedOther = *bpoOther.bpo_abpePolygonEdges[ibpeOther].bpe_pbedEdge;
       // if they touch
       if (bedThis.TouchesInAnySector(bedOther)) {
@@ -429,10 +429,10 @@ BOOL CBrushPolygon::TouchesInSameSector(CBrushPolygon &bpoOther)
   INDEX ctEdgesThis  = bpo_abpePolygonEdges.Count();
   INDEX ctEdgesOther = bpoOther.bpo_abpePolygonEdges.Count();
   // for each edge in this polygon
-  {for(INDEX ibpeThis=0; ibpeThis<ctEdgesThis; ibpeThis++) {
+  {for (INDEX ibpeThis=0; ibpeThis<ctEdgesThis; ibpeThis++) {
     CBrushEdge &bedThis = *bpo_abpePolygonEdges[ibpeThis].bpe_pbedEdge;
     // for each edge in other polygon
-    {for(INDEX ibpeOther=0; ibpeOther<ctEdgesOther; ibpeOther++) {
+    {for (INDEX ibpeOther=0; ibpeOther<ctEdgesOther; ibpeOther++) {
       CBrushEdge &bedOther = *bpoOther.bpo_abpePolygonEdges[ibpeOther].bpe_pbedEdge;
       // if they touch
       if (bedThis.TouchesInSameSector(bedOther)) {
@@ -453,7 +453,7 @@ FLOAT CBrushPolygon::GetDistanceFromEdges(const FLOAT3D &vC)
   // start with infinite squared distance (all is calculated in squared distances!)
   FLOAT fMinD2 = +1E20f;
   // for each edge
-  {for(INDEX ibpe=0; ibpe<ctEdges; ibpe++) {
+  {for (INDEX ibpe=0; ibpe<ctEdges; ibpe++) {
     // for all edges in the polygon
     FOREACHINSTATICARRAY(bpo_abpePolygonEdges, CBrushPolygonEdge, itbpePolygonEdge) {
       // get edge vertices (edge direction is irrelevant here!)

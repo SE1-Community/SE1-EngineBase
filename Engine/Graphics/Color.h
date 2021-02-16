@@ -307,7 +307,7 @@ inline void StoreLongs( ULONG ulVal, ULONG *pulDst, INDEX ctLongs)
     rep   stosd
   }
 #else
-  for( INDEX i=0; i<ctLongs; i++) pulDst[i] = ulVal;
+  for (INDEX i=0; i<ctLongs; i++) pulDst[i] = ulVal;
 #endif
 }
 

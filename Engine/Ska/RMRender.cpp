@@ -268,14 +268,14 @@ static BOOL IsModelInFog( FLOAT3D &vMin, FLOAT3D &vMax)
 {
   GFXTexCoord tex;
   GFXVertex4  vtx;
-  vtx.x=vMin(1); vtx.y=vMin(2); vtx.z=vMin(3); GetFogMapInVertex(vtx,tex); if(InFog(tex.t)) return TRUE;
-  vtx.x=vMin(1); vtx.y=vMin(2); vtx.z=vMax(3); GetFogMapInVertex(vtx,tex); if(InFog(tex.t)) return TRUE;
-  vtx.x=vMin(1); vtx.y=vMax(2); vtx.z=vMin(3); GetFogMapInVertex(vtx,tex); if(InFog(tex.t)) return TRUE;
-  vtx.x=vMin(1); vtx.y=vMax(2); vtx.z=vMax(3); GetFogMapInVertex(vtx,tex); if(InFog(tex.t)) return TRUE;
-  vtx.x=vMax(1); vtx.y=vMin(2); vtx.z=vMin(3); GetFogMapInVertex(vtx,tex); if(InFog(tex.t)) return TRUE;
-  vtx.x=vMax(1); vtx.y=vMin(2); vtx.z=vMax(3); GetFogMapInVertex(vtx,tex); if(InFog(tex.t)) return TRUE;
-  vtx.x=vMax(1); vtx.y=vMax(2); vtx.z=vMin(3); GetFogMapInVertex(vtx,tex); if(InFog(tex.t)) return TRUE;
-  vtx.x=vMax(1); vtx.y=vMax(2); vtx.z=vMax(3); GetFogMapInVertex(vtx,tex); if(InFog(tex.t)) return TRUE;
+  vtx.x=vMin(1); vtx.y=vMin(2); vtx.z=vMin(3); GetFogMapInVertex(vtx,tex); if (InFog(tex.t)) return TRUE;
+  vtx.x=vMin(1); vtx.y=vMin(2); vtx.z=vMax(3); GetFogMapInVertex(vtx,tex); if (InFog(tex.t)) return TRUE;
+  vtx.x=vMin(1); vtx.y=vMax(2); vtx.z=vMin(3); GetFogMapInVertex(vtx,tex); if (InFog(tex.t)) return TRUE;
+  vtx.x=vMin(1); vtx.y=vMax(2); vtx.z=vMax(3); GetFogMapInVertex(vtx,tex); if (InFog(tex.t)) return TRUE;
+  vtx.x=vMax(1); vtx.y=vMin(2); vtx.z=vMin(3); GetFogMapInVertex(vtx,tex); if (InFog(tex.t)) return TRUE;
+  vtx.x=vMax(1); vtx.y=vMin(2); vtx.z=vMax(3); GetFogMapInVertex(vtx,tex); if (InFog(tex.t)) return TRUE;
+  vtx.x=vMax(1); vtx.y=vMax(2); vtx.z=vMin(3); GetFogMapInVertex(vtx,tex); if (InFog(tex.t)) return TRUE;
+  vtx.x=vMax(1); vtx.y=vMax(2); vtx.z=vMax(3); GetFogMapInVertex(vtx,tex); if (InFog(tex.t)) return TRUE;
   return FALSE;
 }
 
@@ -284,21 +284,21 @@ static BOOL IsModelInHaze( FLOAT3D &vMin, FLOAT3D &vMax)
 {
   FLOAT fS;
   GFXVertex4 vtx; 
-  vtx.x=vMin(1); vtx.y=vMin(2); vtx.z=vMin(3); GetHazeMapInVertex(vtx,fS); if(InHaze(fS)) return TRUE;
-  vtx.x=vMin(1); vtx.y=vMin(2); vtx.z=vMax(3); GetHazeMapInVertex(vtx,fS); if(InHaze(fS)) return TRUE;
-  vtx.x=vMin(1); vtx.y=vMax(2); vtx.z=vMin(3); GetHazeMapInVertex(vtx,fS); if(InHaze(fS)) return TRUE;
-  vtx.x=vMin(1); vtx.y=vMax(2); vtx.z=vMax(3); GetHazeMapInVertex(vtx,fS); if(InHaze(fS)) return TRUE;
-  vtx.x=vMax(1); vtx.y=vMin(2); vtx.z=vMin(3); GetHazeMapInVertex(vtx,fS); if(InHaze(fS)) return TRUE;
-  vtx.x=vMax(1); vtx.y=vMin(2); vtx.z=vMax(3); GetHazeMapInVertex(vtx,fS); if(InHaze(fS)) return TRUE;
-  vtx.x=vMax(1); vtx.y=vMax(2); vtx.z=vMin(3); GetHazeMapInVertex(vtx,fS); if(InHaze(fS)) return TRUE;
-  vtx.x=vMax(1); vtx.y=vMax(2); vtx.z=vMax(3); GetHazeMapInVertex(vtx,fS); if(InHaze(fS)) return TRUE;
+  vtx.x=vMin(1); vtx.y=vMin(2); vtx.z=vMin(3); GetHazeMapInVertex(vtx,fS); if (InHaze(fS)) return TRUE;
+  vtx.x=vMin(1); vtx.y=vMin(2); vtx.z=vMax(3); GetHazeMapInVertex(vtx,fS); if (InHaze(fS)) return TRUE;
+  vtx.x=vMin(1); vtx.y=vMax(2); vtx.z=vMin(3); GetHazeMapInVertex(vtx,fS); if (InHaze(fS)) return TRUE;
+  vtx.x=vMin(1); vtx.y=vMax(2); vtx.z=vMax(3); GetHazeMapInVertex(vtx,fS); if (InHaze(fS)) return TRUE;
+  vtx.x=vMax(1); vtx.y=vMin(2); vtx.z=vMin(3); GetHazeMapInVertex(vtx,fS); if (InHaze(fS)) return TRUE;
+  vtx.x=vMax(1); vtx.y=vMin(2); vtx.z=vMax(3); GetHazeMapInVertex(vtx,fS); if (InHaze(fS)) return TRUE;
+  vtx.x=vMax(1); vtx.y=vMax(2); vtx.z=vMin(3); GetHazeMapInVertex(vtx,fS); if (InHaze(fS)) return TRUE;
+  vtx.x=vMax(1); vtx.y=vMax(2); vtx.z=vMax(3); GetHazeMapInVertex(vtx,fS); if (InHaze(fS)) return TRUE;
   return FALSE;
 }
 
 BOOL PrepareHaze(void)
 {
   ULONG &ulRenFlags = RM_GetRenderFlags();
-  if( ulRenFlags & SRMF_HAZE) {
+  if (ulRenFlags & SRMF_HAZE) {
     _fHazeAdd  = _haze_hp.hp_fNear;
     _fHazeAdd += -_mObjToView[11];
 /*
@@ -327,7 +327,7 @@ BOOL PrepareFog(void)
 {
   ULONG &ulRenFlags = RM_GetRenderFlags();
 
-  if( ulRenFlags & SRMF_FOG) {
+  if (ulRenFlags & SRMF_FOG) {
     // get viewer -z in viewer space
     _vZDirView = FLOAT3D(0,0,-1);
     // get fog direction in viewer space
@@ -362,26 +362,26 @@ void RM_DoFogAndHaze(BOOL bOpaqueSurface)
   paHazeColors = shaGetNewColorArray();
 
   // if this is opaque surface
-  if(bOpaqueSurface) {
+  if (bOpaqueSurface) {
     // 
-    if(PrepareFog()) {
+    if (PrepareFog()) {
       _aTexMipFogy.PopAll();
       _aTexMipFogy.Push(ctVertices);
       // setup tex coords only
-      for( INDEX ivtx=0; ivtx<ctVertices; ivtx++) {
+      for (INDEX ivtx=0; ivtx<ctVertices; ivtx++) {
         GetFogMapInVertex( paVertices[ivtx], _aTexMipFogy[ivtx]);
       }
       shaSetFogUVMap(&_aTexMipFogy[0]);
     }
     // 
-    if(PrepareHaze()) {
+    if (PrepareHaze()) {
       _aTexMipHazey.PopAll();
       _aTexMipHazey.Push(ctVertices);
       const COLOR colH = AdjustColor( _haze_hp.hp_colColor, _slTexHueShift, _slTexSaturation);
       GFXColor colHaze(colH);
 
       // setup haze tex coords and color
-      for( INDEX ivtx=0; ivtx<ctVertices; ivtx++) {
+      for (INDEX ivtx=0; ivtx<ctVertices; ivtx++) {
         GetHazeMapInVertex( paVertices[ivtx], _aTexMipHazey[ivtx].s);
         _aTexMipHazey[ivtx].t = 0.0f;
         paHazeColors[ivtx] = colHaze;
@@ -392,19 +392,19 @@ void RM_DoFogAndHaze(BOOL bOpaqueSurface)
   // surface is translucent
   } else {
     // 
-    if(PrepareFog()) {
+    if (PrepareFog()) {
       GFXTexCoord tex;
-      for( INDEX ivtx=0; ivtx<ctVertices; ivtx++) {
+      for (INDEX ivtx=0; ivtx<ctVertices; ivtx++) {
         GetFogMapInVertex( paVertices[ivtx], tex);
         UBYTE ub = GetFogAlpha(tex) ^255;
         paColors[ivtx].AttenuateA( ub);
       }
     }
     // 
-    if(PrepareHaze()) {
+    if (PrepareHaze()) {
       
       FLOAT tx1;
-      for( INDEX ivtx=0; ivtx<ctVertices; ivtx++) {
+      for (INDEX ivtx=0; ivtx<ctVertices; ivtx++) {
         GetHazeMapInVertex( paVertices[ivtx], tx1);
         FLOAT ub = GetHazeAlpha(tx1) ^255;
         paHazeColors[ivtx] = paColors[ivtx];
@@ -450,11 +450,11 @@ void RM_GetModelVertices( CModelInstance &mi, CStaticStackArray<FLOAT3D> &avVert
 
   // for each ren model
   INDEX ctrmsh = _aRenModels.Count();
-  for(int irmsh=1;irmsh<ctrmsh;irmsh++) {
+  for (int irmsh=1;irmsh<ctrmsh;irmsh++) {
     RenModel &rm = _aRenModels[irmsh];
     INDEX ctmsh = rm.rm_iFirstMesh + rm.rm_ctMeshes;
     // for each mesh in renmodel
-    for(int imsh=rm.rm_iFirstMesh;imsh<ctmsh;imsh++) {
+    for (int imsh=rm.rm_iFirstMesh;imsh<ctmsh;imsh++) {
       // prepare mesh for rendering
       RenMesh &rmsh = _aRenMesh[imsh];
       PrepareMeshForRendering(rmsh,rm.rm_iSkeletonLODIndex);
@@ -462,7 +462,7 @@ void RM_GetModelVertices( CModelInstance &mi, CStaticStackArray<FLOAT3D> &avVert
       INDEX ctvtxGiven = avVertices.Count();
       avVertices.Push(ctvtx);
       // for each vertex in prepared mesh
-      for(INDEX ivtx=0;ivtx<ctvtx;ivtx++) {
+      for (INDEX ivtx=0;ivtx<ctvtx;ivtx++) {
         #pragma message(">> Fix this")
         FLOAT3D vVtx = FLOAT3D(_pavFinalVertices[ivtx].x,_pavFinalVertices[ivtx].y,_pavFinalVertices[ivtx].z);
         FLOAT3D vNor = FLOAT3D(_panFinalNormals[ivtx].nx,_panFinalNormals[ivtx].ny,_panFinalNormals[ivtx].nz);
@@ -500,17 +500,17 @@ FLOAT RM_TestRayCastHit( CModelInstance &mi, FLOATmatrix3D &mRotation, FLOAT3D &
 	CalculateRenderingData(mi);
 	// for each ren model
 	INDEX ctrmsh = _aRenModels.Count();
-	for(int irmsh=1;irmsh<ctrmsh;irmsh++) {
+	for (int irmsh=1;irmsh<ctrmsh;irmsh++) {
 		RenModel &rm = _aRenModels[irmsh];
 		INDEX ctmsh = rm.rm_iFirstMesh + rm.rm_ctMeshes;
 		// for each mesh in renmodel
-		for(int imsh=rm.rm_iFirstMesh;imsh<ctmsh;imsh++) {
+		for (int imsh=rm.rm_iFirstMesh;imsh<ctmsh;imsh++) {
 			// prepare mesh for rendering
 			RenMesh &rmsh = _aRenMesh[imsh];
 			PrepareMeshForRendering(rmsh,rm.rm_iSkeletonLODIndex);
 			MeshLOD &mshlod = rmsh.rmsh_pMeshInst->mi_pMesh->msh_aMeshLODs[rmsh.rmsh_iMeshLODIndex];
 			INDEX ctsurf = mshlod.mlod_aSurfaces.Count();
-			for(int isurf=0;isurf<ctsurf;isurf++) {
+			for (int isurf=0;isurf<ctsurf;isurf++) {
 				MeshSurface &mshsurf = mshlod.mlod_aSurfaces[isurf];
 				INDEX cttri = mshsurf.msrf_aTriangles.Count();
 				for (int itri=0; itri<cttri;itri++) {
@@ -636,7 +636,7 @@ void RM_AddSimpleShadow_View(CModelInstance &mi, const FLOAT fIntensity, const F
   // get viewer in absolute space
   FLOAT3D vViewerAbs = _aprProjection->ViewerPlacementR().pl_PositionVector;
   // if shadow destination plane is not visible, don't cast shadows
-  if( plShadowPlane.PointDistance(vViewerAbs)<0.01f) {
+  if (plShadowPlane.PointDistance(vViewerAbs)<0.01f) {
     // _pfModelProfile.StopTimer( CModelProfile::PTI_VIEW_RENDERSIMPLESHADOW);
     return;
   }
@@ -653,7 +653,7 @@ void RM_AddSimpleShadow_View(CModelInstance &mi, const FLOAT fIntensity, const F
   FLOATplane3D plShadowPlaneObj = (plShadowPlane-vAbsToObj) * !mAbsToObj;
 
   // project object handle so we can calc how it is far away from viewer
-  FLOAT3D vRef = plShadowPlaneObj.ProjectPoint(FLOAT3D(0,0,0));
+  FLOAT3D vRef = plShadowPlaneObj.ProjectPoint(FLOAT3D(0.0f, 0.0f, 0.0f));
   TransformVector(vRef.vector,_mObjToViewStretch);
   plShadowPlaneObj.pl_distance += ClampDn( -vRef(3)*0.001f, 0.01f); // move plane towards the viewer a bit to avoid z-fighting
 
@@ -662,7 +662,7 @@ void RM_AddSimpleShadow_View(CModelInstance &mi, const FLOAT fIntensity, const F
   // find points on plane nearest to bounding box edges
   FLOAT3D vMin = box.Min() * 1.25f;
   FLOAT3D vMax = box.Max() * 1.25f;
-  if( _ulRenFlags & SRMF_SPECTATOR) { vMin*=2; vMax*=2; } // enlarge shadow for 1st person view
+  if (_ulRenFlags & SRMF_SPECTATOR) { vMin*=2; vMax*=2; } // enlarge shadow for 1st person view
   FLOAT3D v00 = plShadowPlaneObj.ProjectPoint(FLOAT3D(vMin(1),vMin(2),vMin(3)));
   FLOAT3D v01 = plShadowPlaneObj.ProjectPoint(FLOAT3D(vMin(1),vMin(2),vMax(3)));
   FLOAT3D v10 = plShadowPlaneObj.ProjectPoint(FLOAT3D(vMax(1),vMin(2),vMin(3)));
@@ -690,7 +690,7 @@ void RM_AddSimpleShadow_View(CModelInstance &mi, const FLOAT fIntensity, const F
   // vertices
   pvtx[0].x = v00(1);  pvtx[0].y = v00(2);  pvtx[0].z = v00(3);
   pvtx[2].x = v11(1);  pvtx[2].y = v11(2);  pvtx[2].z = v11(3);
-  if( _ulRenFlags & SRMF_INVERTED) { // must re-adjust order for mirrored projection
+  if (_ulRenFlags & SRMF_INVERTED) { // must re-adjust order for mirrored projection
     pvtx[1].x = v10(1);  pvtx[1].y = v10(2);  pvtx[1].z = v10(3);
     pvtx[3].x = v01(1);  pvtx[3].y = v01(2);  pvtx[3].z = v01(3);
   } else {
@@ -709,10 +709,10 @@ void RM_AddSimpleShadow_View(CModelInstance &mi, const FLOAT fIntensity, const F
   pcol[3].abgr = ulAAAA;
 
   // if this model has fog
-  if( _ulRenFlags & SRMF_FOG)
+  if (_ulRenFlags & SRMF_FOG)
   { // for each vertex in shadow quad
     GFXTexCoord tex;
-    for( INDEX i=0; i<4; i++) {
+    for (INDEX i=0; i<4; i++) {
       GFXVertex &vtx = pvtx[i];
       // get distance along viewer axis and fog axis and map to texture and attenuate shadow color
       const FLOAT fH = vtx.x*_fog_vHDirView(1) + vtx.y*_fog_vHDirView(2) + vtx.z*_fog_vHDirView(3);
@@ -722,9 +722,9 @@ void RM_AddSimpleShadow_View(CModelInstance &mi, const FLOAT fIntensity, const F
     }
   }
   // if this model has haze
-  if( _ulRenFlags & SRMF_HAZE)
+  if (_ulRenFlags & SRMF_HAZE)
   { // for each vertex in shadow quad
-    for( INDEX i=0; i<4; i++) {
+    for (INDEX i=0; i<4; i++) {
       // get distance along viewer axis map to texture  and attenuate shadow color
       const FLOAT fS = (_haze_fAdd-pvtx[i].z) *_haze_fMul;
       pcol[i].AttenuateRGB(GetHazeAlpha(fS)^255);
@@ -778,7 +778,7 @@ void RM_RenderGround(CTextureObject &to)
   tcBoxTex[2].u =        0; tcBoxTex[2].v =  vVtx(3);
   tcBoxTex[3].u =  vVtx(1); tcBoxTex[3].v =  vVtx(3);
 
-  for(INDEX ivx=0;ivx<4;ivx++) {
+  for (INDEX ivx=0;ivx<4;ivx++) {
     TransformVertex(vBoxVtxs[ivx],_mAbsToViewer);
   }
   aiIndices[0] = 0; aiIndices[1] = 2; aiIndices[2] = 1;
@@ -796,16 +796,16 @@ static void RenderWireframeBox(FLOAT3D vMinVtx, FLOAT3D vMaxVtx, COLOR col)
   gfxDisableTexture();
   // fill vertex array so it represents bounding box
   FLOAT3D vBoxVtxs[8];
-  vBoxVtxs[0] = FLOAT3D( vMinVtx(1), vMinVtx(2), vMinVtx(3));
-  vBoxVtxs[1] = FLOAT3D( vMaxVtx(1), vMinVtx(2), vMinVtx(3));
-  vBoxVtxs[2] = FLOAT3D( vMaxVtx(1), vMinVtx(2), vMaxVtx(3));
-  vBoxVtxs[3] = FLOAT3D( vMinVtx(1), vMinVtx(2), vMaxVtx(3));
-  vBoxVtxs[4] = FLOAT3D( vMinVtx(1), vMaxVtx(2), vMinVtx(3));
-  vBoxVtxs[5] = FLOAT3D( vMaxVtx(1), vMaxVtx(2), vMinVtx(3));
-  vBoxVtxs[6] = FLOAT3D( vMaxVtx(1), vMaxVtx(2), vMaxVtx(3));
-  vBoxVtxs[7] = FLOAT3D( vMinVtx(1), vMaxVtx(2), vMaxVtx(3));
+  vBoxVtxs[0] = FLOAT3D(vMinVtx(1), vMinVtx(2), vMinVtx(3));
+  vBoxVtxs[1] = FLOAT3D(vMaxVtx(1), vMinVtx(2), vMinVtx(3));
+  vBoxVtxs[2] = FLOAT3D(vMaxVtx(1), vMinVtx(2), vMaxVtx(3));
+  vBoxVtxs[3] = FLOAT3D(vMinVtx(1), vMinVtx(2), vMaxVtx(3));
+  vBoxVtxs[4] = FLOAT3D(vMinVtx(1), vMaxVtx(2), vMinVtx(3));
+  vBoxVtxs[5] = FLOAT3D(vMaxVtx(1), vMaxVtx(2), vMinVtx(3));
+  vBoxVtxs[6] = FLOAT3D(vMaxVtx(1), vMaxVtx(2), vMaxVtx(3));
+  vBoxVtxs[7] = FLOAT3D(vMinVtx(1), vMaxVtx(2), vMaxVtx(3));
 
-  for(INDEX iwx=0;iwx<8;iwx++) TransformVector(vBoxVtxs[iwx].vector,_mObjToViewStretch);
+  for (INDEX iwx=0;iwx<8;iwx++) TransformVector(vBoxVtxs[iwx].vector,_mObjToViewStretch);
 
   // connect vertices into lines of bounding box
   INDEX iBoxLines[12][2];
@@ -816,7 +816,7 @@ static void RenderWireframeBox(FLOAT3D vMinVtx, FLOAT3D vMaxVtx, COLOR col)
   iBoxLines[ 8][0] = 4;  iBoxLines[ 8][1] = 5;  iBoxLines[ 9][0] = 5;  iBoxLines[ 9][1] = 6;
   iBoxLines[10][0] = 6;  iBoxLines[10][1] = 7;  iBoxLines[11][0] = 7;  iBoxLines[11][1] = 4;
   // for all vertices in bounding box
-  for( INDEX i=0; i<12; i++) {
+  for (INDEX i=0; i<12; i++) {
     // get starting and ending vertices of one line
     FLOAT3D &v0 = vBoxVtxs[iBoxLines[i][0]];
     FLOAT3D &v1 = vBoxVtxs[iBoxLines[i][1]];
@@ -847,7 +847,7 @@ static void RenderBox(FLOAT3D vMinVtx, FLOAT3D vMaxVtx, COLOR col)
   vBoxVtxs[6].x = vMaxVtx(1); vBoxVtxs[6].y = vMinVtx(2); vBoxVtxs[6].z = vMinVtx(3);
   vBoxVtxs[7].x = vMaxVtx(1); vBoxVtxs[7].y = vMinVtx(2); vBoxVtxs[7].z = vMaxVtx(3);
 
-  for(INDEX iwx=0;iwx<8;iwx++) {
+  for (INDEX iwx=0;iwx<8;iwx++) {
     TransformVertex(vBoxVtxs[iwx],_mObjToViewStretch);
   }
   INDEX aiIndices[36];
@@ -880,7 +880,7 @@ void RM_RenderColisionBox(CModelInstance &mi,ColisionBox &cb, COLOR col)
 {
   //ColisionBox &cb = mi.GetColisionBox(icb);
   gfxSetViewMatrix(NULL);
-  if(RM_GetFlags() & RMF_WIREFRAME) {
+  if (RM_GetFlags() & RMF_WIREFRAME) {
     RenderWireframeBox(cb.Min(),cb.Max(),col|CT_OPAQUE);
   } else {
     gfxEnableBlend();
@@ -897,7 +897,7 @@ static void RenderMeshWireframe(RenMesh &rmsh)
   // count surfaces in mesh
   INDEX ctsrf = mlod.mlod_aSurfaces.Count();
   // for each surface
-  for(INDEX isrf=0; isrf<ctsrf; isrf++)
+  for (INDEX isrf=0; isrf<ctsrf; isrf++)
   {
     MeshSurface &msrf = mlod.mlod_aSurfaces[isrf];
     COLOR colErrColor = 0xCDCDCDFF;
@@ -919,7 +919,7 @@ static void RenderModelWireframe(RenModel &rm)
 {
   INDEX ctmsh = rm.rm_iFirstMesh + rm.rm_ctMeshes;
   // for each mesh in renmodel
-  for(int imsh=rm.rm_iFirstMesh;imsh<ctmsh;imsh++) {
+  for (int imsh=rm.rm_iFirstMesh;imsh<ctmsh;imsh++) {
     // render mesh
     RenMesh &rmsh = _aRenMesh[imsh];
     PrepareMeshForRendering(rmsh,rm.rm_iSkeletonLODIndex);
@@ -931,11 +931,11 @@ static void RenderModelWireframe(RenModel &rm)
 static void RenderNormals()
 {
   // only if rendering to view
-  if( _iRenderingType!=1) return;
+  if (_iRenderingType!=1) return;
 
   gfxDisableTexture();
   INDEX ctNormals = _aFinalNormals.Count();
-  for(INDEX ivx=0;ivx<ctNormals;ivx++)
+  for (INDEX ivx=0;ivx<ctNormals;ivx++)
   {
     FLOAT3D vNormal = FLOAT3D(_panFinalNormals[ivx].nx,_panFinalNormals[ivx].ny,_panFinalNormals[ivx].nz);
     // vNormal.Normalize();
@@ -954,8 +954,8 @@ static void RenderBone(RenBone &rb, COLOR col)
   FLOAT3D vRingPt[4];
   
   vRingPt[0] = FLOAT3D(-fSize,-fSize,-fSize*2);
-  vRingPt[1] = FLOAT3D( fSize,-fSize,-fSize*2);
-  vRingPt[2] = FLOAT3D( fSize, fSize,-fSize*2);
+  vRingPt[1] = FLOAT3D(fSize,-fSize,-fSize*2);
+  vRingPt[2] = FLOAT3D(fSize, fSize,-fSize*2);
   vRingPt[3] = FLOAT3D(-fSize, fSize,-fSize*2);
   TransformVector(vBoneEnd.vector,rb.rb_mBonePlacement);
   TransformVector(vRingPt[0].vector,rb.rb_mBonePlacement);
@@ -965,13 +965,13 @@ static void RenderBone(RenBone &rb, COLOR col)
 
   // connect start point of bone with end point
   INDEX il=0;
-  for(;il<4;il++) {
+  for (;il<4;il++) {
     _pdp->DrawLine3D(vBoneStart,vRingPt[il],col);
     _pdp->DrawLine3D(vBoneEnd,vRingPt[il],col);
   }
 
   // draw ring
-  for(il=0;il<3;il++) {
+  for (il=0;il<3;il++) {
     _pdp->DrawLine3D(vRingPt[il],vRingPt[il+1],col);
   }
   _pdp->DrawLine3D(vRingPt[0],vRingPt[3],col);
@@ -995,20 +995,20 @@ void RM_RenderBone(CModelInstance &mi,INDEX iBoneID)
   // find all renmeshes that uses this bone weightmap
   INDEX ctrm = _aRenModels.Count();
   // for each renmodel
-  for(INDEX irm=1;irm<ctrm;irm++) {
+  for (INDEX irm=1;irm<ctrm;irm++) {
     RenModel &rm = _aRenModels[irm];
     // try to find bone in this renmodel
-    if(FindRenBone(rm,iBoneID,&iBoneIndex)) {
+    if (FindRenBone(rm,iBoneID,&iBoneIndex)) {
       // for each renmesh in rm
       INDEX ctmsh = rm.rm_iFirstMesh+rm.rm_ctMeshes;
-      for(INDEX imsh=rm.rm_iFirstMesh;imsh<ctmsh;imsh++) {
+      for (INDEX imsh=rm.rm_iFirstMesh;imsh<ctmsh;imsh++) {
         RenMesh &rm = _aRenMesh[imsh];
         // for each weightmap in this renmesh
         INDEX ctwm = rm.rmsh_iFirstWeight+rm.rmsh_ctWeights;
-        for(INDEX iwm=rm.rmsh_iFirstWeight;iwm<ctwm;iwm++) {
+        for (INDEX iwm=rm.rmsh_iFirstWeight;iwm<ctwm;iwm++) {
           RenWeight &rw = _aRenWeights[iwm];
           // if weight map id is same as bone id
-          if(rw.rw_pwmWeightMap->mwm_iID == iBoneID) {
+          if (rw.rw_pwmWeightMap->mwm_iID == iBoneID) {
             INDEX &irmi = aiRenModelIndices.Push();
             INDEX &irmshi = aiRenMeshIndices.Push();
             // rememeber this weight map 
@@ -1022,10 +1022,10 @@ void RM_RenderBone(CModelInstance &mi,INDEX iBoneID)
   }
 
   // if weightmap is found
-  if(iWeightIndex>=0) {
+  if (iWeightIndex>=0) {
     // show wertex weights for each mesh that uses this bones weightmap
     INDEX ctmshi=aiRenMeshIndices.Count();
-    for(INDEX imshi=0;imshi<ctmshi;imshi++)
+    for (INDEX imshi=0;imshi<ctmshi;imshi++)
     {
       INDEX iMeshIndex = aiRenMeshIndices[imshi]; // index of mesh that uses selected bone
       INDEX iModelIndex = aiRenModelIndices[imshi]; // index of model in witch is mesh
@@ -1042,18 +1042,18 @@ void RM_RenderBone(CModelInstance &mi,INDEX iBoneID)
       PrepareMeshForRendering(rmsh,rm.rm_iSkeletonLODIndex);
 
       // all vertices by default are not visible ( have alpha set to 0 )
-      for(INDEX ivx=0;ivx<ctVertices;ivx++) {
+      for (INDEX ivx=0;ivx<ctVertices;ivx++) {
         _aMeshColors[ivx].a = 0;
       }
     
       INDEX ctwm = rmsh.rmsh_iFirstWeight+rmsh.rmsh_ctWeights;
       // for each weightmap in this mesh
-      for(INDEX irw=rmsh.rmsh_iFirstWeight;irw<ctwm;irw++) {
+      for (INDEX irw=rmsh.rmsh_iFirstWeight;irw<ctwm;irw++) {
         RenWeight &rw = _aRenWeights[irw];
-        if(rw.rw_iBoneIndex != iBoneIndex) continue;
+        if (rw.rw_iBoneIndex != iBoneIndex) continue;
         INDEX ctvw = rw.rw_pwmWeightMap->mwm_aVertexWeight.Count();
         // for each vertex in this veight
-        for(int ivw=0; ivw<ctvw; ivw++)
+        for (int ivw=0; ivw<ctvw; ivw++)
         {
           // modify color and alpha value of this vertex 
           MeshVertexWeight &vw = rw.rw_pwmWeightMap->mwm_aVertexWeight[ivw];
@@ -1068,7 +1068,7 @@ void RM_RenderBone(CModelInstance &mi,INDEX iBoneID)
       // count surfaces in mesh
       INDEX ctsrf = mlod.mlod_aSurfaces.Count();
       // for each surface
-      for(INDEX isrf=0; isrf<ctsrf; isrf++) {
+      for (INDEX isrf=0; isrf<ctsrf; isrf++) {
         MeshSurface &msrf = mlod.mlod_aSurfaces[isrf];
         shaSetVertexArray((GFXVertex4*)&_pavFinalVertices[msrf.msrf_iFirstVertex],msrf.msrf_ctVertices);
         shaSetNormalArray((GFXNormal*)&_panFinalNormals[msrf.msrf_iFirstVertex]);
@@ -1088,7 +1088,7 @@ void RM_RenderBone(CModelInstance &mi,INDEX iBoneID)
   }
   
   // draw bone
-  if(iBoneIndex>=0) {
+  if (iBoneIndex>=0) {
     gfxSetViewMatrix(NULL);
     gfxDisableDepthTest();
     // show bone in yellow color
@@ -1106,7 +1106,7 @@ static void RenderSkeleton(void)
 {
   gfxSetViewMatrix(NULL);
   // for each bone, except the dummy one
-  for(int irb=1; irb<_aRenBones.Count(); irb++)
+  for (int irb=1; irb<_aRenBones.Count(); irb++)
   {
     RenBone &rb = _aRenBones[irb];
     RenderBone(rb,0x5A5ADCFF); // render in blue color
@@ -1116,28 +1116,28 @@ static void RenderSkeleton(void)
 static void RenderActiveBones(RenModel &rm)
 {
   CModelInstance *pmi = rm.rm_pmiModel;
-  if(pmi==NULL) return;
+  if (pmi==NULL) return;
   // count animlists
   INDEX ctal = pmi->mi_aqAnims.aq_Lists.Count();
   // find newes animlist that has fully faded in
   INDEX iFirstAnimList = 0;
   // loop from newer to older
   INDEX ial=ctal-1;
-  for(;ial>=0;ial--) {
+  for (;ial>=0;ial--) {
     AnimList &alList = pmi->mi_aqAnims.aq_Lists[ial];
     // calculate fade factor
     FLOAT fFadeFactor = CalculateFadeFactor(alList);
-    if(fFadeFactor >= 1.0f) {
+    if (fFadeFactor >= 1.0f) {
       iFirstAnimList = ial;
       break;
     }
   }
   // for each anim list after iFirstAnimList
-  for(ial=iFirstAnimList;ial<ctal;ial++) {
+  for (ial=iFirstAnimList;ial<ctal;ial++) {
     AnimList &alList = pmi->mi_aqAnims.aq_Lists[ial];
     INDEX ctpa = alList.al_PlayedAnims.Count();
     // for each played anim
-    for(INDEX ipa=0;ipa<ctpa;ipa++) {
+    for (INDEX ipa=0;ipa<ctpa;ipa++) {
       PlayedAnim &pa = alList.al_PlayedAnims[ipa];
       INDEX iAnimSet,iAnimIndex;
       pmi->FindAnimationByID(pa.pa_iAnimID,&iAnimSet,&iAnimIndex);
@@ -1145,11 +1145,11 @@ static void RenderActiveBones(RenModel &rm)
       Animation &an = as.as_Anims[iAnimIndex];
       INDEX ctbe = an.an_abeBones.Count();
       // for each bone envelope
-      for(INDEX ibe=0;ibe<ctbe;ibe++) {
+      for (INDEX ibe=0;ibe<ctbe;ibe++) {
         BoneEnvelope &be = an.an_abeBones[ibe];
         INDEX iBoneIndex = 0;
         // try to find renbone for this bone envelope
-        if(FindRenBone(rm,be.be_iBoneID,&iBoneIndex)) {
+        if (FindRenBone(rm,be.be_iBoneID,&iBoneIndex)) {
           RenBone &rb = _aRenBones[iBoneIndex];
           // render bone
           RenderBone(rb,0x00FF00FF);
@@ -1165,7 +1165,7 @@ static void RenderActiveBones(void)
   gfxSetViewMatrix(NULL);
   // for each renmodel
   INDEX ctrm = _aRenModels.Count();
-  for(INT irm=0;irm<ctrm;irm++) {
+  for (INT irm=0;irm<ctrm;irm++) {
     RenModel &rm = _aRenModels[irm];
     RenderActiveBones(rm);
   }
@@ -1205,10 +1205,10 @@ static void FindTextureData(CTextureObject **ptoTextures, INDEX iTextureID, Mesh
 {
   // for each texture instances
   INDEX ctti=mshi.mi_tiTextures.Count();
-  for(INDEX iti=0;iti<ctti;iti++)
+  for (INDEX iti=0;iti<ctti;iti++)
   {
     TextureInstance &ti = mshi.mi_tiTextures[iti];
-    if(ti.GetID() == iTextureID)
+    if (ti.GetID() == iTextureID)
     {
       *ptoTextures = &ti.ti_toTexture;
       return;
@@ -1225,14 +1225,14 @@ static INDEX FindFrame(UBYTE *pFirstMember, INDEX iFind, INDEX ctfn, UINT uiSize
   INDEX iMid;
 
   UWORD iHighFrameNum = *(UWORD*)(pFirstMember+(uiSize*iHigh));
-  if(iFind == iHighFrameNum) return iHigh;
+  if (iFind == iHighFrameNum) return iHigh;
 
-  while(TRUE) {
+  while (TRUE) {
     iMid = (iHigh+iLow)/2;
     UWORD iMidFrameNum = *(UWORD*)(pFirstMember+(uiSize*iMid));
     UWORD iMidFrameNumPlusOne = *(UWORD*)(pFirstMember+(uiSize*(iMid+1)));
-    if(iFind < iMidFrameNum) iHigh = iMid;
-    else if((iMid == iHigh) || (iMidFrameNumPlusOne > iFind)) return iMid;
+    if (iFind < iMidFrameNum) iHigh = iMid;
+    else if ((iMid == iHigh) || (iMidFrameNumPlusOne > iFind)) return iMid;
     else iLow = iMid;
   }
 }
@@ -1242,9 +1242,9 @@ static BOOL FindRenBone(RenModel &rm,int iBoneID,INDEX *piBoneIndex)
 {
   int ctb = rm.rm_iFirstBone + rm.rm_ctBones;
   // for each renbone in this ren model
-  for(int ib=rm.rm_iFirstBone;ib<ctb;ib++) {
+  for (int ib=rm.rm_iFirstBone;ib<ctb;ib++) {
     // if bone id's match 
-    if(iBoneID == _aRenBones[ib].rb_psbBone->sb_iID) {
+    if (iBoneID == _aRenBones[ib].rb_psbBone->sb_iID) {
       // return index of this renbone
       *piBoneIndex = ib;
       return TRUE;
@@ -1258,10 +1258,10 @@ RenBone *RM_FindRenBone(INDEX iBoneID)
 {
   INDEX ctrb=_aRenBones.Count();
   // for each renbone
-  for(INDEX irb=1;irb<ctrb;irb++) {
+  for (INDEX irb=1;irb<ctrb;irb++) {
     RenBone &rb = _aRenBones[irb];
     // if bone id's match
-    if(rb.rb_psbBone->sb_iID == iBoneID) {
+    if (rb.rb_psbBone->sb_iID == iBoneID) {
       // return this renbone
       return &rb;
     }
@@ -1273,7 +1273,7 @@ RenBone *RM_FindRenBone(INDEX iBoneID)
 RenBone *RM_GetRenBoneArray(INDEX &ctrb)
 {
   ctrb = _aRenBones.Count();
-  if(ctrb>0) {
+  if (ctrb>0) {
     return &_aRenBones[0];
   } else {
     return NULL;
@@ -1285,12 +1285,12 @@ static BOOL FindRenMorph(RenModel &rm,int iMorphID,INDEX *piMorphIndex)
 {
   // for each renmesh in given renmodel
   INDEX ctmsh = rm.rm_iFirstMesh + rm.rm_ctMeshes;
-  for(INDEX irmsh=rm.rm_iFirstMesh;irmsh<ctmsh;irmsh++) {
+  for (INDEX irmsh=rm.rm_iFirstMesh;irmsh<ctmsh;irmsh++) {
     // for each renmorph in this renmesh
     INDEX ctmm = _aRenMesh[irmsh].rmsh_iFirstMorph + _aRenMesh[irmsh].rmsh_ctMorphs;
-    for(INDEX imm=_aRenMesh[irmsh].rmsh_iFirstMorph;imm<ctmm;imm++) {
+    for (INDEX imm=_aRenMesh[irmsh].rmsh_iFirstMorph;imm<ctmm;imm++) {
       // if id's match
-      if(iMorphID == _aRenMorph[imm].rmp_pmmmMorphMap->mmp_iID) {
+      if (iMorphID == _aRenMorph[imm].rmp_pmmmMorphMap->mmp_iID) {
         // return this renmorph
         *piMorphIndex = imm;
         return TRUE;
@@ -1305,15 +1305,15 @@ static BOOL FindRenMorph(RenModel &rm,int iMorphID,INDEX *piMorphIndex)
 static BOOL FindBone(int iBoneID, INDEX *piBoneIndex, CModelInstance *pmi,INDEX iSkeletonLod)
 {
   // if model instance does not have skeleton
-  if(pmi->mi_psklSkeleton == NULL) return FALSE;
+  if (pmi->mi_psklSkeleton == NULL) return FALSE;
   // if current skeleton lod is invalid
-  if(iSkeletonLod < 0) return FALSE;
+  if (iSkeletonLod < 0) return FALSE;
 
   INDEX ctslods = pmi->mi_psklSkeleton->skl_aSkeletonLODs.Count();
   // if skeleton lods count is invalid
-  if(ctslods<1) return FALSE;
+  if (ctslods<1) return FALSE;
   // if skeleton lod is larger than lod count
-  if(iSkeletonLod >= ctslods) {
+  if (iSkeletonLod >= ctslods) {
     // use skeleton finest skeleton lod
     #pragma message(">> Check if this is ok")
     iSkeletonLod = 0;
@@ -1322,9 +1322,9 @@ static BOOL FindBone(int iBoneID, INDEX *piBoneIndex, CModelInstance *pmi,INDEX 
 
   SkeletonLOD &slod = pmi->mi_psklSkeleton->skl_aSkeletonLODs[iSkeletonLod];
   // for each bone in skeleton lod
-  for(int i=0;i<slod.slod_aBones.Count();i++) {
+  for (int i=0;i<slod.slod_aBones.Count();i++) {
     // check if bone id's match
-    if(iBoneID == slod.slod_aBones[i].sb_iID) {
+    if (iBoneID == slod.slod_aBones[i].sb_iID) {
       // bone index is allready set just return true
       return TRUE;
     }
@@ -1333,9 +1333,9 @@ static BOOL FindBone(int iBoneID, INDEX *piBoneIndex, CModelInstance *pmi,INDEX 
 
   // for each child of given model instance
   INDEX ctmich = pmi->mi_cmiChildren.Count();
-  for(INDEX imich =0;imich<ctmich;imich++) {
+  for (INDEX imich =0;imich<ctmich;imich++) {
     // try to find bone in child model instance
-    if(FindBone(iBoneID,piBoneIndex,&pmi->mi_cmiChildren[imich],iSkeletonLod)) 
+    if (FindBone(iBoneID,piBoneIndex,&pmi->mi_cmiChildren[imich],iSkeletonLod)) 
       return TRUE;
   }
   // bone was not found
@@ -1364,11 +1364,11 @@ void RM_BeginRenderingView(CAnyProjection3D &apr, CDrawPort *pdp)
   _iRenderingType = 1;
   _pdp = pdp;
   // prepare and set the projection
-  apr->ObjectPlacementL() = CPlacement3D(FLOAT3D(0,0,0), ANGLE3D(0,0,0));
+  apr->ObjectPlacementL() = CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));
   apr->Prepare();
   // in case of mirror projection, move mirror clip plane a bit father from the mirrored models,
   // so we have less clipping (for instance, player feet)
-  if( apr->pr_bMirror) apr->pr_plMirrorView.pl_distance -= 0.06f; // -0.06 is because entire projection is offseted by +0.05
+  if (apr->pr_bMirror) apr->pr_plMirrorView.pl_distance -= 0.06f; // -0.06 is because entire projection is offseted by +0.05
   _aprProjection = apr;
   _pdp->SetProjection( _aprProjection);
 
@@ -1394,7 +1394,7 @@ void RM_EndRenderingView( BOOL bRestoreOrtho/*=TRUE*/)
   SetFPUPrecision(_fpuOldPrecision);
 
   // back to 2D projection?
-  if( bRestoreOrtho) _pdp->SetOrtho();
+  if (bRestoreOrtho) _pdp->SetOrtho();
   _pdp->SetOrtho();
   _iRenderingType = 0;
   _pdp = NULL;
@@ -1419,7 +1419,7 @@ void RM_BeginModelRenderingMask( CAnyProjection3D &prProjection, UBYTE *pubMask,
   _slMaskHeight = slMaskHeight; 
 
   // prepare and set the projection
-  _aprProjection->ObjectPlacementL() = CPlacement3D(FLOAT3D(0,0,0), ANGLE3D(0,0,0));
+  _aprProjection->ObjectPlacementL() = CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));
   _aprProjection->Prepare();
   // remember the abs to viewer transformation
   MatrixVectorToMatrix12(_mAbsToViewer,
@@ -1462,15 +1462,15 @@ void RM_SetObjectMatrices(CModelInstance &mi)
   ULONG ulFlags = RM_GetRenderFlags();
 
   // adjust clipping to frustum
-  if( ulFlags & SRMF_INSIDE) gfxDisableClipping();
+  if (ulFlags & SRMF_INSIDE) gfxDisableClipping();
   else gfxEnableClipping();
 
   // adjust clipping to mirror-plane (if any)
   extern INDEX gap_iOptimizeClipping;
 
-	if((CProjection3D *)_aprProjection != NULL) {
-		if( gap_iOptimizeClipping>0 && (_aprProjection->pr_bMirror || _aprProjection->pr_bWarp)) {
-			if( ulFlags & SRMF_INMIRROR) {
+	if ((CProjection3D *)_aprProjection != NULL) {
+		if (gap_iOptimizeClipping>0 && (_aprProjection->pr_bMirror || _aprProjection->pr_bWarp)) {
+			if (ulFlags & SRMF_INMIRROR) {
 				gfxDisableClipPlane();
 				gfxFrontFace( GFX_CCW);
 			} else {
@@ -1519,19 +1519,19 @@ INDEX GetSkeletonLOD(CSkeleton &sk, FLOAT fDistance)
   INDEX iSkeletonLod = -1;
 
   // if custom lod distance is set
-  if(_fCustomSlodDistance!=-1) {
+  if (_fCustomSlodDistance!=-1) {
     // set object distance as custom distance
     fDistance = _fCustomSlodDistance;
   }
   // for each lod in skeleton
   INDEX ctslods = sk.skl_aSkeletonLODs.Count();
-  for(INDEX islod=0;islod<ctslods;islod++) {
+  for (INDEX islod=0;islod<ctslods;islod++) {
     SkeletonLOD &slod = sk.skl_aSkeletonLODs[islod];
     // adjust lod distance by custom settings
     FLOAT fLodMaxDistance = slod.slod_fMaxDistance*ska_fLODMul+ska_fLODAdd;
 
     // check if this lod max distance is smaller than distance to object
-    if(fDistance < fLodMaxDistance && fLodMaxDistance < fMinDistance) {
+    if (fDistance < fLodMaxDistance && fLodMaxDistance < fMinDistance) {
       // remember this lod
       fMinDistance = fLodMaxDistance;
       iSkeletonLod = islod;
@@ -1547,19 +1547,19 @@ INDEX GetMeshLOD(CMesh &msh, FLOAT fDistance)
   INDEX iMeshLod = -1;
 
   // if custom lod distance is set
-  if(_fCustomMlodDistance!=-1) {
+  if (_fCustomMlodDistance!=-1) {
     // set object distance as custom distance
     fDistance = _fCustomMlodDistance;
   }
   // for each lod in mesh
   INDEX ctmlods = msh.msh_aMeshLODs.Count();
-  for(INDEX imlod=0;imlod<ctmlods;imlod++) {
+  for (INDEX imlod=0;imlod<ctmlods;imlod++) {
     MeshLOD &mlod = msh.msh_aMeshLODs[imlod];
     // adjust lod distance by custom settings
     FLOAT fLodMaxDistance = mlod.mlod_fMaxDistance*ska_fLODMul+ska_fLODAdd;
 
     // check if this lod max distance is smaller than distance to object
-    if(fDistance<fLodMaxDistance && fLodMaxDistance<fMinDistance) {
+    if (fDistance<fLodMaxDistance && fLodMaxDistance<fMinDistance) {
       // remember this lod
       fMinDistance = fLodMaxDistance;
       iMeshLod = imlod;
@@ -1602,14 +1602,14 @@ static INDEX BuildHierarchy(CModelInstance *pmiModel, INDEX irmParent)
   rm.rm_ctBones = 0;
 
   // if this model is root model
-  if(pmiModel->mi_iParentBoneID == (-1)) {
+  if (pmiModel->mi_iParentBoneID == (-1)) {
     // set is parent bone index as 0
     rm.rm_iParentBoneIndex = rmParent.rm_iFirstBone;
   // model instance is attached to another model's bone 
   } else {
     INDEX iParentBoneIndex = -1;
     // does parent model insntance has a skeleton
-    if(rmParent.rm_pmiModel->mi_psklSkeleton != NULL && rmParent.rm_iSkeletonLODIndex>=0)  {
+    if (rmParent.rm_pmiModel->mi_psklSkeleton != NULL && rmParent.rm_iSkeletonLODIndex>=0)  {
       // get index of parent bone
       iParentBoneIndex = rmParent.rm_pmiModel->mi_psklSkeleton->FindBoneInLOD(pmiModel->mi_iParentBoneID,rmParent.rm_iSkeletonLODIndex);
     // model instance does not have skeleton
@@ -1619,7 +1619,7 @@ static INDEX BuildHierarchy(CModelInstance *pmiModel, INDEX irmParent)
       return -1;
     }
     // if parent bone index was not found ( not visible in current lod)
-    if(iParentBoneIndex == (-1)) {
+    if (iParentBoneIndex == (-1)) {
       // do not draw this model
       _aRenModels.Pop();
       return -1;
@@ -1631,23 +1631,23 @@ static INDEX BuildHierarchy(CModelInstance *pmiModel, INDEX irmParent)
   }
  
   // if this model instance has skeleton
-  if(pmiModel->mi_psklSkeleton!=NULL) {
+  if (pmiModel->mi_psklSkeleton!=NULL) {
     // adjust mip factor in case of dynamic stretch factor
     FLOAT fDistFactor = _fDistanceFactor;
     FLOAT3D &vStretch = pmiModel->mi_vStretch;
     // if model is stretched 
-    if( vStretch != FLOAT3D(1,1,1)) {
+    if (vStretch != FLOAT3D(1.0f, 1.0f, 1.0f)) {
       // calculate new distance factor
       fDistFactor = fDistFactor / Max(vStretch(1),Max(vStretch(2),vStretch(3)));
     }
     // calulate its current skeleton lod
     rm.rm_iSkeletonLODIndex = GetSkeletonLOD(*pmiModel->mi_psklSkeleton,fDistFactor);
     // if current skeleton lod is valid and visible
-    if(rm.rm_iSkeletonLODIndex > -1) {
+    if (rm.rm_iSkeletonLODIndex > -1) {
       // count all bones in this skeleton
       INDEX ctsb = pmiModel->mi_psklSkeleton->skl_aSkeletonLODs[rm.rm_iSkeletonLODIndex].slod_aBones.Count();
       // for each bone in skeleton
-      for(INDEX irb=0;irb<ctsb;irb++) {
+      for (INDEX irb=0;irb<ctsb;irb++) {
         SkeletonBone *pSkeletonBone = &pmiModel->mi_psklSkeleton->skl_aSkeletonLODs[rm.rm_iSkeletonLODIndex].slod_aBones[irb];
         // add one renbone
         RenBone &rb = _aRenBones.Push();
@@ -1659,7 +1659,7 @@ static INDEX BuildHierarchy(CModelInstance *pmiModel, INDEX irmParent)
         rb.rb_arRot.ar_qRot = pSkeletonBone->sb_qvRelPlacement.qRot;
 
         // if this is root bone for this model instance
-        if(pSkeletonBone->sb_iParentID == (-1)) {
+        if (pSkeletonBone->sb_iParentID == (-1)) {
           // set its parent bone index to be parent bone of this model instance
           rb.rb_iParentIndex = rm.rm_iParentBoneIndex;
         // this is child bone
@@ -1677,12 +1677,12 @@ static INDEX BuildHierarchy(CModelInstance *pmiModel, INDEX irmParent)
 
   INDEX ctm = pmiModel->mi_aMeshInst.Count();
   // for each mesh instance in this model instance
-  for(INDEX im=0;im<ctm;im++) {
+  for (INDEX im=0;im<ctm;im++) {
     // adjust mip factor in case of dynamic stretch factor
     FLOAT fDistFactor = _fDistanceFactor;
     FLOAT3D &vStretch = pmiModel->mi_vStretch;
     // if model is stretched 
-    if( vStretch != FLOAT3D(1,1,1)) {
+    if (vStretch != FLOAT3D(1.0f, 1.0f, 1.0f)) {
       // calculate new distance factor
       fDistFactor = fDistFactor / Max(vStretch(1),Max(vStretch(2),vStretch(3)));// Log2( Max(vStretch(1),Max(vStretch(2),vStretch(3))));
     }
@@ -1690,7 +1690,7 @@ static INDEX BuildHierarchy(CModelInstance *pmiModel, INDEX irmParent)
     // calculate current mesh lod
     INDEX iMeshLodIndex = GetMeshLOD(*pmiModel->mi_aMeshInst[im].mi_pMesh,fDistFactor);
     // if mesh lod is visible
-    if(iMeshLodIndex > -1) {
+    if (iMeshLodIndex > -1) {
       // add one ren mesh
       RenMesh &rmsh = _aRenMesh.Push();
       rm.rm_ctMeshes++;
@@ -1706,7 +1706,7 @@ static INDEX BuildHierarchy(CModelInstance *pmiModel, INDEX irmParent)
 
       // for each morph map in this mesh lod
       INDEX ctmm = rmsh.rmsh_pMeshInst->mi_pMesh->msh_aMeshLODs[rmsh.rmsh_iMeshLODIndex].mlod_aMorphMaps.Count();
-      for(INDEX imm=0;imm<ctmm;imm++) {
+      for (INDEX imm=0;imm<ctmm;imm++) {
         // add this morph map in array of renmorphs
         RenMorph &rm = _aRenMorph.Push();
         rmsh.rmsh_ctMorphs++;
@@ -1716,7 +1716,7 @@ static INDEX BuildHierarchy(CModelInstance *pmiModel, INDEX irmParent)
 
       // for each weight map in this mesh lod
       INDEX ctw = rmsh.rmsh_pMeshInst->mi_pMesh->msh_aMeshLODs[rmsh.rmsh_iMeshLODIndex].mlod_aWeightMaps.Count();
-      for(INDEX iw=0;iw<ctw;iw++) {
+      for (INDEX iw=0;iw<ctw;iw++) {
         // add this weight map in array of renweights
         RenWeight &rw = _aRenWeights.Push();
         MeshWeightMap &mwm = rmsh.rmsh_pMeshInst->mi_pMesh->msh_aMeshLODs[rmsh.rmsh_iMeshLODIndex].mlod_aWeightMaps[iw];
@@ -1724,7 +1724,7 @@ static INDEX BuildHierarchy(CModelInstance *pmiModel, INDEX irmParent)
         rmsh.rmsh_ctWeights++;
         rw.rw_iBoneIndex = rm.rm_iFirstBone;
         // find bone of this weight in current skeleton lod and get its index for this renweight
-        if(!FindBone(mwm.mwm_iID,&rw.rw_iBoneIndex,pmiModel,rm.rm_iSkeletonLODIndex))
+        if (!FindBone(mwm.mwm_iID,&rw.rw_iBoneIndex,pmiModel,rm.rm_iSkeletonLODIndex))
         {
           // if bone not found, set boneindex in renweight to -1
           rw.rw_iBoneIndex = -1;
@@ -1736,11 +1736,11 @@ static INDEX BuildHierarchy(CModelInstance *pmiModel, INDEX irmParent)
   rm.rm_iFirstChildModel = -1;
   // for each child in this model instance
   INDEX ctmich = pmiModel->mi_cmiChildren.Count();
-  for(int imich=0;imich<ctmich;imich++) {
+  for (int imich=0;imich<ctmich;imich++) {
     // build hierarchy for child model instance
     INDEX irmChildIndex = BuildHierarchy(&pmiModel->mi_cmiChildren[imich],ctrm);
     // if child is visible 
-    if(irmChildIndex != (-1)) {
+    if (irmChildIndex != (-1)) {
       // set model sibling
       _aRenModels[irmChildIndex].rm_iNextSiblingModel = rm.rm_iFirstChildModel;
       rm.rm_iFirstChildModel = irmChildIndex;
@@ -1757,7 +1757,7 @@ static void CalculateBoneTransforms()
   MatrixCopy(_aRenBones[0].rb_mStrTransform, _aRenBones[0].rb_mTransform);
 
   // if callback function was specified
-  if(_pAdjustBonesCallback!=NULL) {
+  if (_pAdjustBonesCallback!=NULL) {
     // Call callback function
     _pAdjustBonesCallback(_pAdjustBonesData);
   }
@@ -1765,7 +1765,7 @@ static void CalculateBoneTransforms()
   Matrix12 mStretch;
   // for each renbone after first dummy one
   int irb=1;
-  for(; irb<_aRenBones.Count(); irb++) {
+  for (; irb<_aRenBones.Count(); irb++) {
     Matrix12 mRelPlacement;
     Matrix12 mOffset;
     RenBone &rb = _aRenBones[irb];
@@ -1777,7 +1777,7 @@ static void CalculateBoneTransforms()
     QVectToMatrix12(mRelPlacement,qv);
 
     // if this is root bone
-    if(rb.rb_psbBone->sb_iParentID == (-1)) {
+    if (rb.rb_psbBone->sb_iParentID == (-1)) {
       // stretch root bone
       RenModel &rm= _aRenModels[rb.rb_iRenModelIndex];
       MakeStretchMatrix(mStretch, rm.rm_pmiModel->mi_vStretch);
@@ -1804,7 +1804,7 @@ static void CalculateBoneTransforms()
   }
 
   // for each renmodel after first dummy one
-  for(int irm=1; irm<_aRenModels.Count(); irm++) {
+  for (int irm=1; irm<_aRenModels.Count(); irm++) {
     // remember transforms for bone-less models for every renmodel, except the dummy one
     Matrix12 mOffset;
     Matrix12 mStretch;
@@ -1820,7 +1820,7 @@ static void CalculateBoneTransforms()
 
   Matrix12 mInvert;
   // for each renbone
-  for(irb=1; irb<_aRenBones.Count(); irb++) {
+  for (irb=1; irb<_aRenBones.Count(); irb++) {
     RenBone &rb = _aRenBones[irb];
     // multiply every transform with invert matrix of bone abs placement
     MatrixTranspose(mInvert,rb.rb_psbBone->sb_mAbsPlacement);
@@ -1837,28 +1837,28 @@ static void MatchAnims(RenModel &rm)
 
   // return if no animsets
   INDEX ctas = rm.rm_pmiModel->mi_aAnimSet.Count();
-  if(ctas == 0) return;
+  if (ctas == 0) return;
   // count animlists
   INDEX ctal = rm.rm_pmiModel->mi_aqAnims.aq_Lists.Count();
   // find newes animlist that has fully faded in
   INDEX iFirstAnimList = 0;
   // loop from newer to older
   INDEX ial=ctal-1;
-  for(;ial>=0;ial--) {
+  for (;ial>=0;ial--) {
     AnimList &alList = rm.rm_pmiModel->mi_aqAnims.aq_Lists[ial];
     // calculate fade factor
     FLOAT fFadeFactor = CalculateFadeFactor(alList);
-    if(fFadeFactor >= 1.0f) {
+    if (fFadeFactor >= 1.0f) {
       iFirstAnimList = ial;
       break;
     }
   }
 
   // for each anim list after iFirstAnimList
-  for(ial=iFirstAnimList;ial<ctal;ial++) {
+  for (ial=iFirstAnimList;ial<ctal;ial++) {
     AnimList &alList = rm.rm_pmiModel->mi_aqAnims.aq_Lists[ial];
     AnimList *palListNext=NULL;
-    if(ial+1<ctal) palListNext = &rm.rm_pmiModel->mi_aqAnims.aq_Lists[ial+1];
+    if (ial+1<ctal) palListNext = &rm.rm_pmiModel->mi_aqAnims.aq_Lists[ial+1];
     
     // calculate fade factor
     FLOAT fFadeFactor = CalculateFadeFactor(alList);
@@ -1874,7 +1874,7 @@ static void MatchAnims(RenModel &rm)
       INDEX iAnimSetIndex;
       INDEX iAnimIndex;
       // find anim by ID in all anim sets within this model
-      if(rm.rm_pmiModel->FindAnimationByID(pa.pa_iAnimID,&iAnimSetIndex,&iAnimIndex)) {
+      if (rm.rm_pmiModel->FindAnimationByID(pa.pa_iAnimID,&iAnimSetIndex,&iAnimIndex)) {
         // if found, animate bones
         Animation &an = rm.rm_pmiModel->mi_aAnimSet[iAnimSetIndex].as_Anims[iAnimIndex];
         
@@ -1900,13 +1900,13 @@ static void MatchAnims(RenModel &rm)
         INDEX iCurentFrame;
         INDEX iAnimFrame,iNextAnimFrame;
         
-        if(bAnimLooping) {
+        if (bAnimLooping) {
           f = fmod(f,an.an_iFrames);
           iCurentFrame = INDEX(f);
           iAnimFrame = iCurentFrame % an.an_iFrames;
           iNextAnimFrame = (iCurentFrame+1) % an.an_iFrames;
         } else {
-          if(f>an.an_iFrames) f = an.an_iFrames-1;
+          if (f>an.an_iFrames) f = an.an_iFrames-1;
           iCurentFrame = INDEX(f);
           iAnimFrame = ClampUp(iCurentFrame,an.an_iFrames-1L);
           iNextAnimFrame = ClampUp(iCurentFrame+1L,an.an_iFrames-1L);
@@ -1914,10 +1914,10 @@ static void MatchAnims(RenModel &rm)
         
         // for each bone envelope
         INDEX ctbe = an.an_abeBones.Count();
-        for(int ibe=0;ibe<ctbe;ibe++) {
+        for (int ibe=0;ibe<ctbe;ibe++) {
           INDEX iBoneIndex;
           // find its renbone in array of renbones
-          if(FindRenBone(rm,an.an_abeBones[ibe].be_iBoneID, &iBoneIndex)) {
+          if (FindRenBone(rm,an.an_abeBones[ibe].be_iBoneID, &iBoneIndex)) {
             RenBone &rb = _aRenBones[iBoneIndex];
             BoneEnvelope &be = an.an_abeBones[ibe];
 
@@ -1933,14 +1933,14 @@ static void MatchAnims(RenModel &rm)
             FLOATquat3D *pqRotNext;
             
             // if animation is not compresed
-            if(!an.an_bCompresed) {
+            if (!an.an_bCompresed) {
               AnimRot *arFirst = &be.be_arRot[0];
               INDEX ctfn = be.be_arRot.Count();
               // find index of closest frame
               iRotFrameIndex = FindFrame((UBYTE*)arFirst,iAnimFrame,ctfn,sizeof(AnimRot));
               
               // get index of next frame
-              if(bAnimLooping) {
+              if (bAnimLooping) {
                 iNextRotFrameIndex = (iRotFrameIndex+1) % be.be_arRot.Count();
               } else {
                 iNextRotFrameIndex = ClampUp(iRotFrameIndex+1L,be.be_arRot.Count() - 1L);
@@ -1957,7 +1957,7 @@ static void MatchAnims(RenModel &rm)
               iRotFrameIndex = FindFrame((UBYTE*)aroFirst,iAnimFrame,ctfn,sizeof(AnimRotOpt));
 
               // get index of next frame
-              if(bAnimLooping) { 
+              if (bAnimLooping) { 
                 iNextRotFrameIndex = (iRotFrameIndex+1L) % be.be_arRotOpt.Count();
               } else {
                 iNextRotFrameIndex = ClampUp(iRotFrameIndex+1L,be.be_arRotOpt.Count() - 1L);
@@ -1982,7 +1982,7 @@ static void MatchAnims(RenModel &rm)
               pqRotNext = &qRotNext;
             }
 
-            if(iNextRotFrameNum<=iRotFrameNum) {
+            if (iNextRotFrameNum<=iRotFrameNum) {
               // calculate slerp factor for rotations
               fSlerpFactor = (f-iRotFrameNum) / (an.an_iFrames-iRotFrameNum);
             } else {
@@ -2001,7 +2001,7 @@ static void MatchAnims(RenModel &rm)
 
             INDEX iNextPosFrameIndex;
             // is animation looping
-            if(bAnimLooping) { 
+            if (bAnimLooping) { 
               iNextPosFrameIndex = (iPosFrameIndex+1) % be.be_apPos.Count();
             } else {
               iNextPosFrameIndex = ClampUp(iPosFrameIndex+1L,be.be_apPos.Count()-1L);
@@ -2011,7 +2011,7 @@ static void MatchAnims(RenModel &rm)
             INDEX iNextPosFrameNum = be.be_apPos[iNextPosFrameIndex].ap_iFrameNum;
 
             FLOAT fLerpFactor;
-            if(iNextPosFrameNum<=iPosFrameNum) fLerpFactor = (f-iPosFrameNum) / (an.an_iFrames-iPosFrameNum);
+            if (iNextPosFrameNum<=iPosFrameNum) fLerpFactor = (f-iPosFrameNum) / (an.an_iFrames-iPosFrameNum);
             else fLerpFactor = (f-iPosFrameNum) / (iNextPosFrameNum-iPosFrameNum);
             
             FLOAT3D vPos;
@@ -2019,7 +2019,7 @@ static void MatchAnims(RenModel &rm)
             FLOAT3D vBonePosNext = be.be_apPos[iNextPosFrameIndex].ap_vPos;
 
             // if bone envelope and bone have some length 
-            if((be.be_OffSetLen > 0) && (rb.rb_psbBone->sb_fOffSetLen > 0)) {
+            if ((be.be_OffSetLen > 0) && (rb.rb_psbBone->sb_fOffSetLen > 0)) {
               // size bone to fit bone envelope
               vBonePosCurrent *= (rb.rb_psbBone->sb_fOffSetLen / be.be_OffSetLen);
               vBonePosNext *= (rb.rb_psbBone->sb_fOffSetLen / be.be_OffSetLen);
@@ -2033,10 +2033,10 @@ static void MatchAnims(RenModel &rm)
         }
 
         // for each morphmap
-        for(INDEX im=0;im<an.an_ameMorphs.Count();im++) {
+        for (INDEX im=0;im<an.an_ameMorphs.Count();im++) {
           INDEX iMorphIndex;
           // find it in renmorph
-          if(FindRenMorph(rm,an.an_ameMorphs[im].me_iMorphMapID,&iMorphIndex)) {
+          if (FindRenMorph(rm,an.an_ameMorphs[im].me_iMorphMapID,&iMorphIndex)) {
             // lerp morphs
             FLOAT &fCurFactor = an.an_ameMorphs[im].me_aFactors[iAnimFrame];
             FLOAT &fLastFactor = an.an_ameMorphs[im].me_aFactors[iNextAnimFrame];
@@ -2065,21 +2065,21 @@ static void RenderMesh(RenMesh &rmsh,RenModel &rm)
   // Count surfaces in mesh
   INDEX ctsrf = mlod.mlod_aSurfaces.Count();
   // for each surface
-  for(INDEX isrf=0; isrf<ctsrf; isrf++)
+  for (INDEX isrf=0; isrf<ctsrf; isrf++)
   {
     MeshSurface &msrf = mlod.mlod_aSurfaces[isrf];
     CShader  *pShader = msrf.msrf_pShader;
-    if( _iRenderingType==2) pShader = &_shMaskShader; // force mask shader for rendering to shadowmaps
+    if (_iRenderingType==2) pShader = &_shMaskShader; // force mask shader for rendering to shadowmaps
 
     // if this surface has valid shader and show texure flag is set
-    if( pShader!=NULL && (RM_GetFlags() & RMF_SHOWTEXTURE))
+    if (pShader!=NULL && (RM_GetFlags() & RMF_SHOWTEXTURE))
     {
       // Create copy of shading params
       ShaderParams *pShaderParams = &msrf.msrf_ShadingParams;
       ShaderParams spForAdjustment;
 
       // if callback function was specified
-      if(_pAdjustShaderParams!=NULL) {
+      if (_pAdjustShaderParams!=NULL) {
         // Call callback function
         spForAdjustment = msrf.msrf_ShadingParams;
         _pAdjustShaderParams( _pAdjustShaderData, msrf.msrf_iSurfaceID, pShader, spForAdjustment);
@@ -2092,9 +2092,9 @@ static void RenderMesh(RenMesh &rmsh,RenModel &rm)
       // cttx = ClampUp(cttx,cttxMax);
 
       _patoTextures.PopAll();
-      if(cttx>0)_patoTextures.Push(cttx);
+      if (cttx>0)_patoTextures.Push(cttx);
       // for each texture ID
-      for(INDEX itx=0;itx<cttx;itx++) {
+      for (INDEX itx=0;itx<cttx;itx++) {
         // find texture in mesh and get pointer to texture by texture ID
         FindTextureData( &_patoTextures[itx], pShaderParams->sp_aiTextureIDs[itx], *rmsh.rmsh_pMeshInst);
       }
@@ -2104,13 +2104,13 @@ static void RenderMesh(RenMesh &rmsh,RenModel &rm)
       // ctuvm = ClampUp(ctuvm,mlod.mlod_aUVMaps.Count());
       
       _paTexCoords.PopAll();
-      if(ctuvm>0)_paTexCoords.Push(ctuvm);
+      if (ctuvm>0)_paTexCoords.Push(ctuvm);
       // for each uvamp
-      for( INDEX iuvm=0; iuvm<ctuvm; iuvm++) {
+      for (INDEX iuvm=0; iuvm<ctuvm; iuvm++) {
         // set pointer of uvmap in array of uvmaps for shader
         INDEX iuvmIndex = pShaderParams->sp_aiTexCoordsIndex[iuvm];
         // if mesh lod has this uv map
-        if(iuvmIndex<mlod.mlod_aUVMaps.Count()) {
+        if (iuvmIndex<mlod.mlod_aUVMaps.Count()) {
           _paTexCoords[iuvm] = (GFXTexCoord*)&mlod.mlod_aUVMaps[iuvmIndex].muv_aTexCoords[msrf.msrf_iFirstVertex];
         } else {
           _paTexCoords[iuvm] = NULL;
@@ -2124,7 +2124,7 @@ static void RenderMesh(RenMesh &rmsh,RenModel &rm)
 
       // begin model rendering
       const BOOL bModelSetupTimer = _sfStats.CheckTimer(CStatForm::STI_MODELSETUP);
-      if( bModelSetupTimer) _sfStats.StopTimer(CStatForm::STI_MODELSETUP);
+      if (bModelSetupTimer) _sfStats.StopTimer(CStatForm::STI_MODELSETUP);
       _sfStats.StartTimer(CStatForm::STI_MODELRENDERING);
 
       shaBegin( _aprProjection, pShader);
@@ -2135,7 +2135,7 @@ static void RenderMesh(RenMesh &rmsh,RenModel &rm)
 
       
       // if mesh is transformed to view space
-      if(rmsh.rmsh_bTransToViewSpace) {
+      if (rmsh.rmsh_bTransToViewSpace) {
         #pragma message(">> FIX THIS !!!")
         // no ObjToView matrix is needed in shader so set empty matrix
         Matrix12 mIdentity;
@@ -2156,14 +2156,14 @@ static void RenderMesh(RenMesh &rmsh,RenModel &rm)
       // Set model color
       shaSetModelColor(rm.rm_pmiModel->mi_colModelColor);
 
-      if(ctTextures>0)  shaSetTextureArray(&_patoTextures[0],ctTextures);
-      if(ctTexCoords>0) shaSetUVMapsArray(&_paTexCoords[0],ctTexCoords);
-      if(ctColors>0)    shaSetColorArray(&pShaderParams->sp_acolColors[0],ctColors);
-      if(ctFloats>0)    shaSetFloatArray(&pShaderParams->sp_afFloats[0],ctFloats);
+      if (ctTextures>0)  shaSetTextureArray(&_patoTextures[0],ctTextures);
+      if (ctTexCoords>0) shaSetUVMapsArray(&_paTexCoords[0],ctTexCoords);
+      if (ctColors>0)    shaSetColorArray(&pShaderParams->sp_acolColors[0],ctColors);
+      if (ctFloats>0)    shaSetFloatArray(&pShaderParams->sp_afFloats[0],ctFloats);
       shaEnd();
 
       _sfStats.StopTimer(CStatForm::STI_MODELRENDERING);
-      if( bModelSetupTimer) _sfStats.StartTimer(CStatForm::STI_MODELSETUP);
+      if (bModelSetupTimer) _sfStats.StartTimer(CStatForm::STI_MODELSETUP);
     }
     // surface has no shader or textures are turned off
     else {
@@ -2226,15 +2226,15 @@ static void PrepareMeshForRendering(RenMesh &rmsh, INDEX iSkeletonlod)
 
   INDEX ctmm = rmsh.rmsh_iFirstMorph + rmsh.rmsh_ctMorphs;
   // blend vertices and normals for each RenMorph 
-  for(int irm=rmsh.rmsh_iFirstMorph;irm<ctmm;irm++)
+  for (int irm=rmsh.rmsh_iFirstMorph;irm<ctmm;irm++)
   {
     RenMorph &rm = _aRenMorph[irm];
     // blend only if factor is > 0
-    if(rm.rmp_fFactor > 0.0f) {
+    if (rm.rmp_fFactor > 0.0f) {
       // for each vertex and normal in morphmap
-      for(int ivx=0;ivx<rm.rmp_pmmmMorphMap->mmp_aMorphMap.Count();ivx++) {
+      for (int ivx=0;ivx<rm.rmp_pmmmMorphMap->mmp_aMorphMap.Count();ivx++) {
         // blend vertices and normals
-        if(rm.rmp_pmmmMorphMap->mmp_bRelative) {
+        if (rm.rmp_pmmmMorphMap->mmp_bRelative) {
           // blend relative (new = cur + f*(dst-src))
           INDEX vtx = rm.rmp_pmmmMorphMap->mmp_aMorphMap[ivx].mwm_iVxIndex;
           MeshVertex &mvSrc = mlod.mlod_aVertices[vtx];
@@ -2270,20 +2270,20 @@ static void PrepareMeshForRendering(RenMesh &rmsh, INDEX iSkeletonlod)
   INDEX ctbones = 0;
   CSkeleton *pskl = _aRenModels[rmsh.rmsh_iRenModelIndex].rm_pmiModel->mi_psklSkeleton;
   // if skeleton for this model exists and its currently visible
-  if((pskl!=NULL) && (iSkeletonlod > -1)) {
+  if ((pskl!=NULL) && (iSkeletonlod > -1)) {
     // count bones in skeleton
     ctbones = pskl->skl_aSkeletonLODs[iSkeletonlod].slod_aBones.Count();
   }
 
   // if there is skeleton attached to this mesh transfrom all vertices
-  if(ctbones > 0 && ctrw>0) {
+  if (ctbones > 0 && ctrw>0) {
     // for each renweight
-    for(int irw=rmsh.rmsh_iFirstWeight; irw<ctrw; irw++) {
+    for (int irw=rmsh.rmsh_iFirstWeight; irw<ctrw; irw++) {
       RenWeight &rw = _aRenWeights[irw];
       Matrix12 mTransform;
       Matrix12 mStrTransform;
       // if no bone for this weight 
-      if(rw.rw_iBoneIndex == (-1)) {
+      if (rw.rw_iBoneIndex == (-1)) {
         // transform vertex using default model transform matrix (for boneless models)
         MatrixCopy(mStrTransform, _aRenModels[rmsh.rmsh_iRenModelIndex].rm_mStrTransform);
         MatrixCopy(mTransform,    _aRenModels[rmsh.rmsh_iRenModelIndex].rm_mTransform);
@@ -2294,13 +2294,13 @@ static void PrepareMeshForRendering(RenMesh &rmsh, INDEX iSkeletonlod)
       }
 
       // if this is front face mesh remove rotation from transfrom matrix
-      if(mlod.mlod_ulFlags & ML_FULL_FACE_FORWARD) {
+      if (mlod.mlod_ulFlags & ML_FULL_FACE_FORWARD) {
         RemoveRotationFromMatrix(mStrTransform);
       }
 
       // for each vertex in this weight
       INDEX ctvw = rw.rw_pwmWeightMap->mwm_aVertexWeight.Count();
-      for(int ivw=0; ivw<ctvw; ivw++) {
+      for (int ivw=0; ivw<ctvw; ivw++) {
         MeshVertexWeight &vw = rw.rw_pwmWeightMap->mwm_aVertexWeight[ivw];
         INDEX ivx = vw.mww_iVertex;
         MeshVertex mv = _aMorphedVtxs[ivx];
@@ -2330,7 +2330,7 @@ static void PrepareMeshForRendering(RenMesh &rmsh, INDEX iSkeletonlod)
   // if no skeleton
   } else {
     // if flag is set to transform all vertices to view space
-    if(_bTransformBonelessModelToViewSpace) {
+    if (_bTransformBonelessModelToViewSpace) {
       // transform every vertex using default model transform matrix (for boneless models)
       Matrix12 mTransform;
       Matrix12 mStrTransform;
@@ -2338,12 +2338,12 @@ static void PrepareMeshForRendering(RenMesh &rmsh, INDEX iSkeletonlod)
       MatrixCopy(mStrTransform, _aRenModels[rmsh.rmsh_iRenModelIndex].rm_mStrTransform);
 
       // if this is front face mesh remove rotation from transfrom matrix
-      if(mlod.mlod_ulFlags & ML_FULL_FACE_FORWARD) {
+      if (mlod.mlod_ulFlags & ML_FULL_FACE_FORWARD) {
         RemoveRotationFromMatrix(mStrTransform);
       }
       
       // for each vertex
-      for(int ivx=0;ivx<ctVertices;ivx++) {
+      for (int ivx=0;ivx<ctVertices;ivx++) {
         MeshVertex &mv = _aMorphedVtxs[ivx];
         MeshNormal &mn = _aMorphedNormals[ivx];
         // Transform vertex
@@ -2397,14 +2397,14 @@ static void RenderModel_View(RenModel &rm)
 
   // for each mesh in renmodel
   INDEX ctmsh = rm.rm_iFirstMesh + rm.rm_ctMeshes;
-  for( int imsh=rm.rm_iFirstMesh;imsh<ctmsh;imsh++) {
+  for (int imsh=rm.rm_iFirstMesh;imsh<ctmsh;imsh++) {
     RenMesh &rmsh = _aRenMesh[imsh];
     // prepare mesh for rendering
     PrepareMeshForRendering(rmsh,rm.rm_iSkeletonLODIndex);
     // render mesh
     RenderMesh(rmsh,rm);
     // show normals in required
-    if( bShowNormals) RenderNormals();
+    if (bShowNormals) RenderNormals();
   }
 }
 
@@ -2419,7 +2419,7 @@ static void RenderModel_Mask(RenModel &rm)
 
   INDEX ctmsh = rm.rm_iFirstMesh + rm.rm_ctMeshes;
   // for each mesh in renmodel
-  for(int imsh=rm.rm_iFirstMesh;imsh<ctmsh;imsh++) {
+  for (int imsh=rm.rm_iFirstMesh;imsh<ctmsh;imsh++) {
     // render mesh
     RenMesh &rmsh = _aRenMesh[imsh];
     PrepareMeshForRendering(rmsh,rm.rm_iSkeletonLODIndex);
@@ -2438,10 +2438,10 @@ BOOL RM_GetRenBoneAbs(CModelInstance &mi,INDEX iBoneID,RenBone &rb)
   CalculateRenderingData(mi);
   INDEX ctrb = _aRenBones.Count();
   // for each render bone after dummy one
-  for(INDEX irb=1;irb<ctrb;irb++) {
+  for (INDEX irb=1;irb<ctrb;irb++) {
     RenBone &rbone = _aRenBones[irb];
     // check if this is serched bone
-    if(rbone.rb_psbBone->sb_iID == iBoneID) {
+    if (rbone.rb_psbBone->sb_iID == iBoneID) {
       rb = rbone;
       ClearRenArrays();
       return TRUE;
@@ -2462,11 +2462,11 @@ BOOL RM_GetBoneAbsPosition(CModelInstance &mi,INDEX iBoneID, FLOAT3D &vStartPoin
   CalculateRenderingData(mi);
   INDEX ctrb = _aRenBones.Count();
   // for each render bone after dummy one
-  for(INDEX irb=1;irb<ctrb;irb++) {
+  for (INDEX irb=1;irb<ctrb;irb++) {
     RenBone &rb = _aRenBones[irb];
     // check if this is serched bone
-    if(rb.rb_psbBone->sb_iID == iBoneID) {
-      vStartPoint = FLOAT3D(0,0,0);
+    if (rb.rb_psbBone->sb_iID == iBoneID) {
+      vStartPoint = FLOAT3D(0.0f, 0.0f, 0.0f);
       vEndPoint   = FLOAT3D(0,0,rb.rb_psbBone->sb_fBoneLength);
       TransformVector(vStartPoint.vector,rb.rb_mBonePlacement);
       TransformVector(vEndPoint.vector,rb.rb_mBonePlacement);
@@ -2493,7 +2493,7 @@ static void CalculateRenderingData(CModelInstance &mi)
 
   INDEX ctrm = _aRenModels.Count();
   // for each renmodel 
-  for(int irm=1;irm<ctrm;irm++) {
+  for (int irm=1;irm<ctrm;irm++) {
     // match model animations
     MatchAnims(_aRenModels[irm]);
   }
@@ -2505,22 +2505,22 @@ static void CalculateRenderingData(CModelInstance &mi)
 void RM_RenderSKA(CModelInstance &mi)
 {
   // Calculate all rendering data for this model instance
-  //if( _iRenderingType==2) CalculateRenderingData( mi, 0);
+  //if (_iRenderingType==2) CalculateRenderingData( mi, 0);
   //else 
   CalculateRenderingData(mi);
 
   // for each renmodel
   INDEX ctrmsh = _aRenModels.Count();
-  for(int irmsh=1;irmsh<ctrmsh;irmsh++) {
+  for (int irmsh=1;irmsh<ctrmsh;irmsh++) {
     RenModel &rm = _aRenModels[irmsh];
     // set object matrices
     RM_SetObjectMatrices(*rm.rm_pmiModel);
     // render this model
-    if( _iRenderingType==1) RenderModel_View(rm);
+    if (_iRenderingType==1) RenderModel_View(rm);
     else RenderModel_Mask(rm);
   }
   // done if cluster shadows were rendered
-  if( _iRenderingType==2) {
+  if (_iRenderingType==2) {
     // reset arrays
     ClearRenArrays();
     return;
@@ -2530,7 +2530,7 @@ void RM_RenderSKA(CModelInstance &mi)
   ASSERT( _iRenderingType==1);
 
   // if render wireframe is requested
-  if(RM_GetFlags() & RMF_WIREFRAME) {
+  if (RM_GetFlags() & RMF_WIREFRAME) {
     gfxDisableTexture();
     
     // set polygon offset
@@ -2539,7 +2539,7 @@ void RM_RenderSKA(CModelInstance &mi)
 
     // for each ren model 
     INDEX ctrmsh = _aRenModels.Count();
-    for(int irmsh=1;irmsh<ctrmsh;irmsh++)
+    for (int irmsh=1;irmsh<ctrmsh;irmsh++)
     {
       RenModel &rm = _aRenModels[irmsh];
       // render renmodel in wireframe
@@ -2555,7 +2555,7 @@ void RM_RenderSKA(CModelInstance &mi)
   extern INDEX ska_bShowSkeleton;
 
   // show skeleton
-  if(ska_bShowSkeleton || RM_GetFlags() & RMF_SHOWSKELETON) {
+  if (ska_bShowSkeleton || RM_GetFlags() & RMF_SHOWSKELETON) {
     gfxDisableTexture();
     gfxDisableDepthTest();
     // render skeleton
@@ -2563,7 +2563,7 @@ void RM_RenderSKA(CModelInstance &mi)
     gfxEnableDepthTest();
   }
   #pragma message(">> Add ska_bShowActiveBones")
-  if(/*ska_bShowActiveBones || */ RM_GetFlags() & RMF_SHOWACTIVEBONES) {
+  if (/*ska_bShowActiveBones || */ RM_GetFlags() & RMF_SHOWACTIVEBONES) {
     gfxDisableTexture();
     gfxDisableDepthTest();
     // render only active bones
@@ -2572,7 +2572,7 @@ void RM_RenderSKA(CModelInstance &mi)
   }
 
   // show root model instance colision box
-  if(ska_bShowColision) {
+  if (ska_bShowColision) {
     RM_SetObjectMatrices(mi);
     if (mi.mi_cbAABox.Count()>0)
     {

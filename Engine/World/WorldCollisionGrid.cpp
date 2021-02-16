@@ -141,7 +141,7 @@ void CCollisionGrid::Clear(void)
   cg_ageEntries.SetAllocationStep(1024);
 
   // mark all cells as unused
-  for(INDEX iKey=0; iKey<GRID_HASHTABLESIZE; iKey++) {
+  for (INDEX iKey=0; iKey<GRID_HASHTABLESIZE; iKey++) {
     cg_aiFirstCells[iKey] = -1;
   }
 }
@@ -174,7 +174,7 @@ void CCollisionGrid::RemoveCell(INDEX igc)
   // find the cell's index pointer
   INDEX *pigc = &cg_aiFirstCells[iKey];
   ASSERT(*pigc>=0);
-  while(*pigc>=0) {
+  while (*pigc>=0) {
     CGridCell &gc = cg_agcCells[*pigc];
     if (*pigc==igc) {
       *pigc = gc.gc_iNextCell;
@@ -248,7 +248,7 @@ void CCollisionGrid::RemoveEntry(INDEX igc, CEntity *pen)
   // find the entry's index pointer
   INDEX *pige = &gc.gc_iFirstEntry;
   ASSERT(*pige>=0);
-  while(*pige>=0) {
+  while (*pige>=0) {
     CGridEntry &ge = cg_ageEntries[*pige];
     if (ge.ge_penEntity==pen) {
       // remove the entry from the list
@@ -296,8 +296,8 @@ void CWorld::AddEntityToCollisionGrid(CEntity *pen, const FLOATaabbox3D &boxEnti
   INDEX iMinX, iMaxX, iMinZ, iMaxZ;
   BoxToGrid(boxEntity, iMinX, iMaxX, iMinZ, iMaxZ);
   // for each cell spanned by the entity
-  for(INDEX iX=iMinX; iX<=iMaxX; iX++) {
-    for(INDEX iZ=iMinZ; iZ<=iMaxZ; iZ++) {
+  for (INDEX iX=iMinX; iX<=iMaxX; iX++) {
+    for (INDEX iZ=iMinZ; iZ<=iMaxZ; iZ++) {
       // find that cell
       INDEX igc = wo_pcgCollisionGrid->FindCell(iX, iZ, TRUE);
       // add the entity to the cell
@@ -316,8 +316,8 @@ void CWorld::RemoveEntityFromCollisionGrid(CEntity *pen, const FLOATaabbox3D &bo
   INDEX iMinX, iMaxX, iMinZ, iMaxZ;
   BoxToGrid(boxEntity, iMinX, iMaxX, iMinZ, iMaxZ);
   // for each cell spanned by the entity
-  for(INDEX iX=iMinX; iX<=iMaxX; iX++) {
-    for(INDEX iZ=iMinZ; iZ<=iMaxZ; iZ++) {
+  for (INDEX iX=iMinX; iX<=iMaxX; iX++) {
+    for (INDEX iZ=iMinZ; iZ<=iMaxZ; iZ++) {
       // find that cell
       INDEX igc = wo_pcgCollisionGrid->FindCell(iX, iZ, FALSE);
       ASSERT(igc>=0);
@@ -343,8 +343,8 @@ void CWorld::MoveEntityInCollisionGrid(CEntity *pen,
   BoxToGrid(boxNew, iNewMinX, iNewMaxX, iNewMinZ, iNewMaxZ);
 
   // for each cell spanned by the entity before moving but not after moving
-  {for(INDEX iX=iOldMinX; iX<=iOldMaxX; iX++) {
-    for(INDEX iZ=iOldMinZ; iZ<=iOldMaxZ; iZ++) {
+  {for (INDEX iX=iOldMinX; iX<=iOldMaxX; iX++) {
+    for (INDEX iZ=iOldMinZ; iZ<=iOldMaxZ; iZ++) {
       if (iX>=iNewMinX && iX<=iNewMaxX
         &&iZ>=iNewMinZ && iZ<=iNewMaxZ) {
         continue;
@@ -360,8 +360,8 @@ void CWorld::MoveEntityInCollisionGrid(CEntity *pen,
   }}
 
   // for each cell spanned by the entity after moving but not before moving
-  {for(INDEX iX=iNewMinX; iX<=iNewMaxX; iX++) {
-    for(INDEX iZ=iNewMinZ; iZ<=iNewMaxZ; iZ++) {
+  {for (INDEX iX=iNewMinX; iX<=iNewMaxX; iX++) {
+    for (INDEX iZ=iNewMinZ; iZ<=iNewMaxZ; iZ++) {
       if (iX>=iOldMinX && iX<=iOldMaxX
         &&iZ>=iOldMinZ && iZ<=iOldMaxZ) {
         continue;
@@ -402,8 +402,8 @@ void CWorld::FindEntitiesNearBox(const FLOATaabbox3D &boxNear,
   apenNearEntities.PopAll();
 
   // for each cell spanned by the box
-  {for(INDEX iX=iMinX; iX<=iMaxX; iX++) {
-    for(INDEX iZ=iMinZ; iZ<=iMaxZ; iZ++) {
+  {for (INDEX iX=iMinX; iX<=iMaxX; iX++) {
+    for (INDEX iZ=iMinZ; iZ<=iMaxZ; iZ++) {
       _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_NEARCELLSFOUND);
       // find that cell
       INDEX igc = wo_pcgCollisionGrid->FindCell(iX, iZ, FALSE);
@@ -414,7 +414,7 @@ void CWorld::FindEntitiesNearBox(const FLOATaabbox3D &boxNear,
       }
       _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_NEAROCCUPIEDCELLSFOUND);
       // for each entity in the cell
-      for(INDEX iEntry = wo_pcgCollisionGrid->cg_agcCells[igc].gc_iFirstEntry;
+      for (INDEX iEntry = wo_pcgCollisionGrid->cg_agcCells[igc].gc_iFirstEntry;
           iEntry>=0;
           iEntry = wo_pcgCollisionGrid->cg_ageEntries[iEntry].ge_iNextEntry) {
         CEntity *penEntity = wo_pcgCollisionGrid->cg_ageEntries[iEntry].ge_penEntity;
@@ -433,7 +433,7 @@ void CWorld::FindEntitiesNearBox(const FLOATaabbox3D &boxNear,
   _pfPhysicsProfile.IncrementCounter(
     CPhysicsProfile::PCI_NEARENTITIESFOUND, apenNearEntities.Count());
   // for each of the found entities
-  for(INDEX ienFound=0; ienFound<apenNearEntities.Count(); ienFound++) {
+  for (INDEX ienFound=0; ienFound<apenNearEntities.Count(); ienFound++) {
     // clear found flag
     apenNearEntities[ienFound]->en_ulFlags&=~ENF_FOUNDINGRIDSEARCH;
   }
@@ -446,7 +446,7 @@ void CWorld::FindEntitiesNearBox(const FLOATaabbox3D &boxNear,
 extern SLONG GetCollisionGridMemory( CCollisionGrid *pcg)
 {
   // no collision grid?
-  if( pcg==NULL) return 0;
+  if (pcg==NULL) return 0;
 
   // phew, it's here!
   SLONG slUsedMemory = pcg->cg_aiFirstCells.Count() * sizeof(INDEX);

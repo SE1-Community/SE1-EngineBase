@@ -162,7 +162,7 @@ static void DetectCPU(void)
   sys_bCPUHasCMOV = bCMOV!=0;
   sys_iCPUMHz = INDEX(_pTimer->tm_llCPUSpeedHZ/1E6);
 
-  if( !bMMX) FatalError( TRANS("MMX support required but not present!"));
+  if (!bMMX) FatalError( TRANS("MMX support required but not present!"));
 }
 
 static void DetectCPUWrapper(void)
@@ -179,7 +179,7 @@ void StrRev( char *str) {
   char ctmp;
   char *pch0 = str;
   char *pch1 = str+strlen(str)-1;
-  while( pch1>pch0) {
+  while (pch1>pch0) {
     ctmp  = *pch0;
     *pch0 = *pch1;
     *pch1 = ctmp;
@@ -205,16 +205,16 @@ static void AnalyzeApplicationPath(void)
   StrRev(strTmpPath);  
   // find last backslash
   char *pstr = strchr( strTmpPath, '\\');
-  if( pstr==NULL) {
+  if (pstr==NULL) {
     // not found - path is just "\"
     strcpy( strTmpPath, "\\");
     pstr = strTmpPath;
   } 
   // remove 'debug' from app path if needed
-  if( strnicmp( pstr, "\\gubed", 6)==0) pstr += 6;
-  if( pstr[0] = '\\') pstr++;
+  if (strnicmp( pstr, "\\gubed", 6)==0) pstr += 6;
+  if (pstr[0] = '\\') pstr++;
   char *pstrFin = strchr( pstr, '\\');
-  if( pstrFin==NULL) {
+  if (pstrFin==NULL) {
     strcpy( pstr, "\\");
     pstrFin = pstr;
   }
@@ -229,7 +229,7 @@ static void AnalyzeApplicationPath(void)
 ENGINE_API void SE_InitEngine(CTString strGameID)
 {
   #pragma message(">> Remove this from SE_InitEngine : _bWorldEditorApp")
-  if(strGameID=="SeriousEditor") {
+  if (strGameID=="SeriousEditor") {
     _bWorldEditorApp = TRUE;
   }
 
@@ -448,7 +448,7 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   HDC  hdc = GetDC(NULL);
   BOOL bOK = GetDeviceGammaRamp( hdc, &auwSystemGamma[0]);
   _pGfx->gl_ulFlags |= GLF_ADJUSTABLEGAMMA;
-  if( !bOK) {
+  if (!bOK) {
     _pGfx->gl_ulFlags &= ~GLF_ADJUSTABLEGAMMA;
     CPrintF( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
   } // done
@@ -457,16 +457,16 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   // init IFeel
   HWND hwnd = NULL;//GetDesktopWindow();
   HINSTANCE hInstance = GetModuleHandle(NULL);
-  if(IFeel_InitDevice(hInstance,hwnd))
+  if (IFeel_InitDevice(hInstance,hwnd))
   {
     CTString strDefaultProject = "Data\\Default.ifr";
     // get project file name for this device
     CTString strIFeel = IFeel_GetProjectFileName();
     // if no file name is returned use default file
-    if(strIFeel.Length()==0) strIFeel = strDefaultProject;
-    if(!IFeel_LoadFile(strIFeel))
+    if (strIFeel.Length()==0) strIFeel = strDefaultProject;
+    if (!IFeel_LoadFile(strIFeel))
     {
-      if(strIFeel!=strDefaultProject)
+      if (strIFeel!=strDefaultProject)
       {
         IFeel_LoadFile(strDefaultProject);
       }
@@ -480,7 +480,7 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
 ENGINE_API void SE_EndEngine(void)
 {
   // restore system gamma table (if needed)
-  if( _pGfx->gl_ulFlags&GLF_ADJUSTABLEGAMMA) {
+  if (_pGfx->gl_ulFlags&GLF_ADJUSTABLEGAMMA) {
     HDC  hdc = GetDC(NULL);
     BOOL bOK = SetDeviceGammaRamp( hdc, &auwSystemGamma[0]);
     //ASSERT(bOK);
@@ -502,7 +502,7 @@ ENGINE_API void SE_EndEngine(void)
   CRCT_Clear();
 
   // shutdown
-  if( _pNetwork != NULL) { delete _pNetwork;  _pNetwork=NULL; }
+  if (_pNetwork != NULL) { delete _pNetwork;  _pNetwork=NULL; }
   delete _pInput;    _pInput   = NULL;  
   delete _pSound;    _pSound   = NULL;  
   delete _pGfx;      _pGfx     = NULL;    
@@ -530,8 +530,8 @@ ENGINE_API void SE_EndEngine(void)
   _pfPhysicsProfile       .pf_aptTimers  .Clear();
 
   // remove default fonts if needed
-  if( _pfdDisplayFont != NULL) { delete _pfdDisplayFont;  _pfdDisplayFont=NULL; }
-  if( _pfdConsoleFont != NULL) { delete _pfdConsoleFont;  _pfdConsoleFont=NULL; } 
+  if (_pfdDisplayFont != NULL) { delete _pfdDisplayFont;  _pfdDisplayFont=NULL; }
+  if (_pfdConsoleFont != NULL) { delete _pfdConsoleFont;  _pfdConsoleFont=NULL; } 
 
   // deinit IFeel
   IFeel_DeleteDevice();
@@ -574,11 +574,11 @@ static BOOL TouchBlock(UBYTE *pubMemoryBlock, INDEX ctBlockSize)
 {
   // cannot pretouch block that are smaller than 64KB :(
   ctBlockSize -= 16*0x1000;
-  if( ctBlockSize<4) return FALSE; 
+  if (ctBlockSize<4) return FALSE; 
 
   __try {
     // 4 times should be just enough
-    for( INDEX i=0; i<4; i++) {
+    for (INDEX i=0; i<4; i++) {
       // must do it in asm - don't know what VC will try to optimize
       __asm {
         // The 16-page skip is to keep Win 95 from thinking we're trying to page ourselves in
@@ -609,7 +609,7 @@ ENGINE_API extern void SE_PretouchIfNeeded(void)
 {
   // only if pretouching is needed?
   extern INDEX gam_bPretouch;
-  if( !_bNeedPretouch || !gam_bPretouch) return;
+  if (!_bNeedPretouch || !gam_bPretouch) return;
   _bNeedPretouch = FALSE;
 
   // set progress bar
@@ -620,33 +620,33 @@ ENGINE_API extern void SE_PretouchIfNeeded(void)
   BOOL bPretouched = TRUE;
   INDEX ctFails, ctBytes, ctBlocks;
   INDEX ctPassBytes, ctTotalBlocks;
-  for( INDEX iPass=1; iPass<=2; iPass++)
+  for (INDEX iPass=1; iPass<=2; iPass++)
   { 
     // flush variables
     ctFails=0; ctBytes=0; ctBlocks=0; ctTotalBlocks=0;
     void *pvNextBlock = NULL;
     MEMORY_BASIC_INFORMATION mbi;
     // lets walk thru memory blocks
-    while( VirtualQuery( pvNextBlock, &mbi, sizeof(mbi)))
+    while (VirtualQuery( pvNextBlock, &mbi, sizeof(mbi)))
     { 
       // don't mess with kernel's memory and zero-sized blocks    
-      if( ((ULONG)pvNextBlock)>0x7FFF0000UL || mbi.RegionSize<1) break;
+      if (((ULONG)pvNextBlock)>0x7FFF0000UL || mbi.RegionSize<1) break;
 
       // if this region of memory belongs to our process
       BOOL bCanAccess = (mbi.Protect==PAGE_READWRITE); // || (mbi.Protect==PAGE_EXECUTE_READWRITE);
-      if( mbi.State==MEM_COMMIT && bCanAccess && mbi.Type==MEM_PRIVATE) // && !IsBadReadPtr( mbi.BaseAddress, 1)
+      if (mbi.State==MEM_COMMIT && bCanAccess && mbi.Type==MEM_PRIVATE) // && !IsBadReadPtr( mbi.BaseAddress, 1)
       { 
         // increase counters
         ctBlocks++;
         ctBytes += mbi.RegionSize;
         // in first pass we only count
-        if( iPass==1) goto nextRegion;
+        if (iPass==1) goto nextRegion;
         // update progress bar
         CallProgressHook_t( (FLOAT)ctBytes/ctPassBytes);
         // pretouch
         ASSERT( mbi.RegionSize>0);
         BOOL bOK = TouchBlock((UBYTE *)mbi.BaseAddress, mbi.RegionSize);
-        if( !bOK) { 
+        if (!bOK) { 
           // whoops!
           ctFails++;
         }
@@ -660,7 +660,7 @@ nextRegion:
     }
     // done with one pass
     ctPassBytes = ctBytes;
-    if( (ctPassBytes/1024/1024)>sys_iRAMPhys) {
+    if ((ctPassBytes/1024/1024)>sys_iRAMPhys) {
       // not enough RAM, sorry :(
       bPretouched = FALSE;
       break;
@@ -668,7 +668,7 @@ nextRegion:
   }
 
   // report
-  if( bPretouched) {
+  if (bPretouched) {
     // success
     CPrintF( TRANS("Pretouched %d KB of memory in %d blocks.\n"), ctBytes/1024, ctBlocks); //, ctTotalBlocks);
   } else {
@@ -676,7 +676,7 @@ nextRegion:
     CPrintF( TRANS("Cannot pretouch due to lack of physical memory (%d KB of overflow).\n"), ctPassBytes/1024-sys_iRAMPhys*1024);
   }
   // some blocks failed?
-  if( ctFails>1) CPrintF( TRANS("(%d blocks were skipped)\n"), ctFails);
+  if (ctFails>1) CPrintF( TRANS("(%d blocks were skipped)\n"), ctFails);
   //_pShell->Execute("StockDump();");
 }
 
@@ -689,7 +689,7 @@ nextRegion:
       CPrintF("--------\n");
       CTString strTmp1, strTmp2;
       CPrintF("Base/Alloc Address: 0x%8X / 0x%8X - Size: %d KB\n", mbi.BaseAddress, mbi.AllocationBase, mbi.RegionSize/1024);
-      switch( mbi.Protect) {
+      switch (mbi.Protect) {
       case PAGE_READONLY:          strTmp1 = "PAGE_READONLY";          break;
       case PAGE_READWRITE:         strTmp1 = "PAGE_READWRITE";         break;
       case PAGE_WRITECOPY:         strTmp1 = "PAGE_WRITECOPY";         break;
@@ -700,7 +700,7 @@ nextRegion:
       case PAGE_NOACCESS:          strTmp1 = "PAGE_NOACCESS";          break;
       case PAGE_NOCACHE:           strTmp1 = "PAGE_NOCACHE";           break;
       }
-      switch( mbi.AllocationProtect) {
+      switch (mbi.AllocationProtect) {
       case PAGE_READONLY:          strTmp2 = "PAGE_READONLY";          break;
       case PAGE_READWRITE:         strTmp2 = "PAGE_READWRITE";         break;
       case PAGE_WRITECOPY:         strTmp2 = "PAGE_WRITECOPY";         break;
@@ -712,12 +712,12 @@ nextRegion:
       case PAGE_NOCACHE:           strTmp2 = "PAGE_NOCACHE";           break;
       }
       CPrintF("Current/Alloc protect: %s / %s\n", strTmp1, strTmp2);
-      switch( mbi.State) {
+      switch (mbi.State) {
       case MEM_COMMIT:  strTmp1 = "MEM_COMMIT";  break;
       case MEM_FREE:    strTmp1 = "MEM_FREE";    break;
       case MEM_RESERVE: strTmp1 = "MEM_RESERVE"; break;
       }
-      switch( mbi.Type) {
+      switch (mbi.Type) {
       case MEM_IMAGE:   strTmp2 = "MEM_IMAGE";   break;
       case MEM_MAPPED:  strTmp2 = "MEM_MAPPED";  break;
       case MEM_PRIVATE: strTmp2 = "MEM_PRIVATE"; break;

@@ -48,7 +48,7 @@ void FatalError(const char *strFormat, ...)
   CDS_ResetMode();
 
   // hide fullscreen window if any
-  if( _bFullScreen) {
+  if (_bFullScreen) {
     // must do minimize first - don't know why :(
     ShowWindow( _hwndMain, SW_MINIMIZE);
     ShowWindow( _hwndMain, SW_HIDE);
@@ -94,7 +94,7 @@ void WarningMessage(const char *strFormat, ...)
   // print it to console
   CPrintF("%s\n", strBuffer);
   // if warnings are enabled
-  if( !con_bNoWarnings) {
+  if (!con_bNoWarnings) {
     // create message box
     MessageBoxA(NULL, strBuffer, TRANS("Warning"), MB_OK|MB_ICONEXCLAMATION|MB_SETFOREGROUND|MB_TASKMODAL);
   }

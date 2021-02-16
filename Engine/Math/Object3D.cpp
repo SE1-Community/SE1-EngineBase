@@ -53,7 +53,7 @@ void CObject3D::CreateSectorIndices(void)
   // get the number of sectors in object
   INDEX ctSectors = ob_aoscSectors.Count();
   // set sectors indices
-  for(INDEX iSector=0; iSector<ctSectors; iSector++) {
+  for (INDEX iSector=0; iSector<ctSectors; iSector++) {
     ob_aoscSectors[iSector].osc_Index = iSector;
   }
 
@@ -65,7 +65,7 @@ BOOL CObject3D::ArePolygonsPlanar(void)
   // for all sectors
   FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itsc)
   {
-    if( !itsc->ArePolygonsPlanar()) return FALSE;
+    if (!itsc->ArePolygonsPlanar()) return FALSE;
   }
   return TRUE;
 }

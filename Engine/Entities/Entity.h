@@ -706,7 +706,7 @@ inline void CEntity::RemReference(void) {
   if (this!=NULL) {
     ASSERT(en_ctReferences>0);
     en_ctReferences--;
-    if(en_ctReferences==0) {
+    if (en_ctReferences==0) {
       delete this;
     }
   }

@@ -44,7 +44,7 @@ BOOL CDependInfo::IsFileOnDiskUpdated(void)
   // mark as it is not updated
   BOOL bUpdated = FALSE;
   // if opened succesefully
-  if( file_handle != -1)
+  if (file_handle != -1)
   {
     struct stat statFileStatus;
     // get file status
@@ -52,13 +52,13 @@ BOOL CDependInfo::IsFileOnDiskUpdated(void)
     ASSERT(statFileStatus.st_mtime<=time(NULL));
 
     // if last modification time is same as remembered in dependency info object
-    if( difftime( statFileStatus.st_mtime, di_tTime) >= 0)
+    if (difftime( statFileStatus.st_mtime, di_tTime) >= 0)
     {
       // mark file as updated
       bUpdated = TRUE;
     }
   }
-  if(file_handle!=-1) {
+  if (file_handle!=-1) {
     _close(file_handle);
   }
 
@@ -72,7 +72,7 @@ BOOL CDependencyList::ExistsInList(CListHead &lh, CTFileName fnTestName) const
   FOREACHINLIST( CDependInfo, di_Node, lh, itDependInfo)
   {
     // if this DependInfo is describing searching file
-    if( itDependInfo->di_fnFileName == fnTestName)
+    if (itDependInfo->di_fnFileName == fnTestName)
     {
       // return true
       return TRUE;
@@ -100,7 +100,7 @@ void CDependencyList::ExtractDependencies()
   // for all list members
   CListHead lhToProcess;
   lhToProcess.MoveList(dl_ListHead);
-  while(!lhToProcess.IsEmpty()) {
+  while (!lhToProcess.IsEmpty()) {
     CDependInfo *pdi = LIST_HEAD(lhToProcess, CDependInfo, di_Node);
 
     pdi->di_Node.Remove();
@@ -110,7 +110,7 @@ void CDependencyList::ExtractDependencies()
     // try to open file for reading
     file_handle = _open( _fnmApplicationPath + fnFileName, _O_RDONLY | _O_BINARY);
     // if an error occured
-    if( file_handle == -1)
+    if (file_handle == -1)
     {
       // if file is not available remove it from list
       //FatalError( "File %s can't be opened!", (CTString&)(_fnmApplicationPath + fnFileName));
@@ -132,31 +132,31 @@ void CDependencyList::ExtractDependencies()
       // must be allocated properly
       ASSERT( pFileInMemory != NULL);
       // read file
-      if( _read( file_handle, pFileInMemory, ulSize) != ulSize)
+      if (_read( file_handle, pFileInMemory, ulSize) != ulSize)
       {
         FatalError( "Fatal error ocured while reading file: %s.", (CTString&)pdi->di_fnFileName);
       }
-      if(file_handle!=-1) {
+      if (file_handle!=-1) {
         _close(file_handle);
       }
 
       // find all file name indentifiers in memory file ("EFNM" or "DFNM")
-      for( INDEX charCt=0; charCt<ulSize-4; charCt++)
+      for (INDEX charCt=0; charCt<ulSize-4; charCt++)
       {
         ULONG ulMemValue = *((ULONG *)(pFileInMemory + charCt));
         char *pchrDependentFile;
         // if we found file name inside exe file (notice little-big indian convetion)
-        if( ulMemValue == ulEFNM)
+        if (ulMemValue == ulEFNM)
         {
           // after describing long we will find file name
           pchrDependentFile = pFileInMemory + charCt + 4;
           // create full file name
           CTFileName fnTestName = CTString(pchrDependentFile);
-          if( strlen(fnTestName) > 254) {
+          if (strlen(fnTestName) > 254) {
             continue;
           }
           // if found file name does not yet exists in dependacy list
-          if( (fnTestName!="") && 
+          if ((fnTestName!="") && 
             (!ExistsInList(dl_ListHead, fnTestName)) &&
             (!ExistsInList(lhToProcess, fnTestName)))
           {
@@ -167,18 +167,18 @@ void CDependencyList::ExtractDependencies()
           }
         }
         // if we found file name inside data file (notice little-big indian convetion)
-        else if( ulMemValue == ulDFNM)
+        else if (ulMemValue == ulDFNM)
         {
           char chrFileName[ 256];
           INDEX iStringLenght = *(INDEX *)(pFileInMemory + charCt + 4);
-          if( iStringLenght > 254 || iStringLenght<0) {
+          if (iStringLenght > 254 || iStringLenght<0) {
             continue;
           }
           memcpy( chrFileName, pFileInMemory + charCt + 8, iStringLenght);
           chrFileName[ iStringLenght] = 0;
           // create full file name
           CTFileName fnTestName = CTString(chrFileName);
-          if( fnTestName!="" &&
+          if (fnTestName!="" &&
             (!ExistsInList(dl_ListHead, fnTestName)) &&
             (!ExistsInList(lhToProcess, fnTestName)))
           {
@@ -190,7 +190,7 @@ void CDependencyList::ExtractDependencies()
           }
         }
         // if we found file name inside text file (notice little-big indian convetion)
-        else if( ulMemValue == ulTFNM)
+        else if (ulMemValue == ulTFNM)
         {
           // after describing long and one space we will find file name
           pchrDependentFile = pFileInMemory + charCt + 4 + 1;
@@ -198,16 +198,16 @@ void CDependencyList::ExtractDependencies()
           char chrFileName[ 256];
           char *chrSrc = pchrDependentFile;
           char *chrDst = chrFileName;
-          while(*chrSrc!='\n' && *chrSrc!='\r' && chrSrc-pchrDependentFile<254) {
+          while (*chrSrc!='\n' && *chrSrc!='\r' && chrSrc-pchrDependentFile<254) {
             *chrDst++ = *chrSrc++;
           }
           *chrDst = 0;
           CTFileName fnTestName = CTString(chrFileName);
-          if( strlen(fnTestName) > 254) {
+          if (strlen(fnTestName) > 254) {
             continue;
           }
           // if found file name does not yet exists in dependacy list
-          if( (fnTestName!="") && 
+          if ((fnTestName!="") && 
             (!ExistsInList(dl_ListHead, fnTestName)) &&
             (!ExistsInList(lhToProcess, fnTestName)))
           {
@@ -234,17 +234,17 @@ void CDependencyList::Substract( CDependencyList &dlToSubstract)
     FOREACHINLIST( CDependInfo, di_Node, dlToSubstract.dl_ListHead, itOther)
     {
       // if we found same file in other dependency list
-      if( itThis->di_fnFileName == itOther->di_fnFileName)
+      if (itThis->di_fnFileName == itOther->di_fnFileName)
       {
         // if file is updated
-        if( itOther->IsUpdated( *itThis))
+        if (itOther->IsUpdated( *itThis))
         {
           // remove it from list
           delete &itThis.Current();
           break;
         }
         // if file to substract is newer than this one
-        else if( itThis->IsOlder( *itOther))
+        else if (itThis->IsOlder( *itOther))
         {
           FatalError( "File \"%s\" is newer in substracting dependency file.",
                       (CTString&)itThis->di_fnFileName);
@@ -285,7 +285,7 @@ void CDependencyList::ImportASCII( CTFileName fnAsciiFile)
       file_handle = _open( _fnmApplicationPath+fnFileName, _O_RDONLY | _O_BINARY);
 
       // if opened succesefully
-      if( file_handle != -1) {
+      if (file_handle != -1) {
         // create new depend info object
         CDependInfo *pDI = new CDependInfo( fnFileName, fnAsciiFile);
         struct stat statFileStatus;
@@ -320,7 +320,7 @@ void CDependencyList::RemoveUpdatedFiles()
   FORDELETELIST( CDependInfo, di_Node, dl_ListHead, itDependInfo)
   {
     // if file is updated
-    if( itDependInfo->IsFileOnDiskUpdated())
+    if (itDependInfo->IsFileOnDiskUpdated())
     {
       // remove it from list
       delete &itDependInfo.Current();
@@ -376,7 +376,7 @@ static void AddStringForTranslation(const CTString &str)
   // for each existing pair
   _atpPairs.Lock();
   INDEX ct = _atpPairs.Count();
-  for(INDEX i=0; i<ct; i++) {
+  for (INDEX i=0; i<ct; i++) {
     // if it is that one
     if (strcmp(_atpPairs[i].tp_strSrc, str)==0) {
       // just mark it as used
@@ -405,7 +405,7 @@ static void WriteTranslationString_t(CTStream &strm, CTString str)
   INDEX iLen=strlen(s);
   for (INDEX i=0; i<iLen; i++) {
     char c = s[i];
-    switch(c) {
+    switch (c) {
     case '\n':
       strm<<UBYTE('\\')<<UBYTE('n')<<UBYTE('\n');
       break;
@@ -438,7 +438,7 @@ void CDependencyList::ExtractTranslations_t( const CTFileName &fnTranslations)
     strm.Read_t(pubFile, slSize);
 
     // for each byte in file
-    for(INDEX iByte=0; iByte<slSize-4; iByte++) {
+    for (INDEX iByte=0; iByte<slSize-4; iByte++) {
       UBYTE *pub = pubFile+iByte;
       ULONG *pul = (ULONG*)pub;
 
@@ -452,7 +452,7 @@ void CDependencyList::ExtractTranslations_t( const CTFileName &fnTranslations)
       } else if (*pul=='SRTD') {
         char achr[ 256];
         INDEX iStrLen = *(INDEX *)(pub + 4);
-        if( iStrLen > 254 || iStrLen<0) {
+        if (iStrLen > 254 || iStrLen<0) {
           continue;
         }
         memcpy( achr, pub + 8, iStrLen);
@@ -470,12 +470,12 @@ void CDependencyList::ExtractTranslations_t( const CTFileName &fnTranslations)
         char chrString[ 256];
         char *chrSrc = pchrStart;
         char *chrDst = chrString;
-        while(*chrSrc!='\n' && *chrSrc!='\r' && chrSrc-pchrStart<254) {
+        while (*chrSrc!='\n' && *chrSrc!='\r' && chrSrc-pchrStart<254) {
           *chrDst++ = *chrSrc++;
         }
         *chrDst = 0;
         CTString str = CTString(chrString);
-        if( strlen(str) > 254) {
+        if (strlen(str) > 254) {
           continue;
         }
         // add it
@@ -491,8 +491,8 @@ void CDependencyList::ExtractTranslations_t( const CTFileName &fnTranslations)
   _atpPairs.Lock();
   INDEX ctUsedPairs = 0;
   {INDEX ct = _atpPairs.Count();
-  for(INDEX i=0; i<ct; i++) {
-    if(_atpPairs[i].m_bUsed) {
+  for (INDEX i=0; i<ct; i++) {
+    if (_atpPairs[i].m_bUsed) {
       ctUsedPairs++;
     }
   }}
@@ -509,9 +509,9 @@ void CDependencyList::ExtractTranslations_t( const CTFileName &fnTranslations)
   // for each used pair
   _atpPairs.Lock();
   {INDEX ct = _atpPairs.Count();
-  for(INDEX i=0; i<ct; i++) {
+  for (INDEX i=0; i<ct; i++) {
     CTranslationPair &tp = _atpPairs[i];
-    if(!tp.m_bUsed) {
+    if (!tp.m_bUsed) {
       continue;
     }
     // write it, as source and destination, with tags in front
@@ -535,7 +535,7 @@ void CDependencyList::Read_t( CTStream *istrFile)
   // read number of entries in list
   *istrFile >> ctFiles;
   // load all list members
-  for( INDEX i=0; i<ctFiles; i++)
+  for (INDEX i=0; i<ctFiles; i++)
   {
     // create new depend info object
     CDependInfo *pDI = new CDependInfo( CTString(""), istrFile->GetDescription());

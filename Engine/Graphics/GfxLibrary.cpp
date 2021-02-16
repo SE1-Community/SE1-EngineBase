@@ -360,7 +360,7 @@ LRESULT CALLBACK LowLevelKeyboardProc (INT nCode, WPARAM wParam, LPARAM lParam)
 
 void DisableWindowsKeys(void)
 {
-  //if( _hLLKeyHook!=NULL) UnhookWindowsHookEx(_hLLKeyHook);
+  //if (_hLLKeyHook!=NULL) UnhookWindowsHookEx(_hLLKeyHook);
   //_hLLKeyHook = SetWindowsHookEx(WH_KEYBOARD_LL, &LowLevelKeyboardProc, NULL, GetCurrentThreadId());
 
   INDEX iDummy;
@@ -371,17 +371,17 @@ void EnableWindowsKeys(void)
 {
   INDEX iDummy;
   SystemParametersInfo(SPI_SETSCREENSAVERRUNNING, FALSE, &iDummy, 0);
-  // if( _hLLKeyHook!=NULL) UnhookWindowsHookEx(_hLLKeyHook);
+  // if (_hLLKeyHook!=NULL) UnhookWindowsHookEx(_hLLKeyHook);
 }
 
 // texture size reporting
 
 static CTString ReportQuality( INDEX iQuality)
 {
-  if( iQuality==0) return "optimal";
-  if( iQuality==1) return "16-bit";
-  if( iQuality==2) return "32-bit";
-  if( iQuality==3) return "compressed";
+  if (iQuality==0) return "optimal";
+  if (iQuality==1) return "16-bit";
+  if (iQuality==2) return "32-bit";
+  if (iQuality==3) return "compressed";
   ASSERTALWAYS( "Invalid texture quality.");
   return "?";
 }
@@ -408,16 +408,16 @@ static void TexturesInfo(void)
     // get texture size
     PIX pixTextureSize = td.GetPixWidth() * td.GetPixHeight();
     PIX pixMipmapSize  = pixTextureSize;
-    if( !gap_bAllowSingleMipmap || td.td_ctFineMipLevels>1) pixMipmapSize = pixMipmapSize *4/3;
+    if (!gap_bAllowSingleMipmap || td.td_ctFineMipLevels>1) pixMipmapSize = pixMipmapSize *4/3;
     // increase corresponding counters
-    if( pixTextureSize<4096) {
-      if( bAlpha) { pixK04A+=pixMipmapSize;  slKB04A+=slBytes;  ctNo04A+=ctFrames; }
+    if (pixTextureSize<4096) {
+      if (bAlpha) { pixK04A+=pixMipmapSize;  slKB04A+=slBytes;  ctNo04A+=ctFrames; }
       else        { pixK04O+=pixMipmapSize;  slKB04O+=slBytes;  ctNo04O+=ctFrames; }
-    } else if( pixTextureSize<=65536) {
-      if( bAlpha) { pixK64A+=pixMipmapSize;  slKB64A+=slBytes;  ctNo64A+=ctFrames; }
+    } else if (pixTextureSize<=65536) {
+      if (bAlpha) { pixK64A+=pixMipmapSize;  slKB64A+=slBytes;  ctNo64A+=ctFrames; }
       else        { pixK64O+=pixMipmapSize;  slKB64O+=slBytes;  ctNo64O+=ctFrames; }
     } else {
-      if( bAlpha) { pixKMXA+=pixMipmapSize;  slKBMXA+=slBytes;  ctNoMXA+=ctFrames; }
+      if (bAlpha) { pixKMXA+=pixMipmapSize;  slKBMXA+=slBytes;  ctNoMXA+=ctFrames; }
       else        { pixKMXO+=pixMipmapSize;  slKBMXO+=slBytes;  ctNoMXO+=ctFrames; }
     }
   }}
@@ -460,14 +460,14 @@ extern CTString ReformatExtensionsString( CTString strUnformatted)
   char *pcSrc = (char*)(const char*)strUnformatted;
   FOREVER {
     char *pcSpace = strchr( pcSrc, ' ');
-    if( pcSpace==NULL) break;
+    if (pcSpace==NULL) break;
     *pcSpace = 0;
     strTmp.PrintF( "    %s\n", pcSrc);
     strDst += strTmp;
     *pcSpace = ' ';
     pcSrc = pcSpace +1;
   }
-  if(strDst=="\n") {
+  if (strDst=="\n") {
     strDst = "none\n";
   }
   // done
@@ -488,7 +488,7 @@ static void GAPInfo(void)
   CPrintF( "\n");
 
   // in case of driver hasn't been initialized yet
-  if( (_pGfx->go_hglRC==NULL 
+  if ((_pGfx->go_hglRC==NULL 
 #ifdef SE1_D3D
     && _pGfx->gl_pd3dDevice==NULL
 #endif // SE1_D3D
@@ -500,7 +500,7 @@ static void GAPInfo(void)
 
   // report API
   CPrintF( "- Graphics API: ");
-  if( eAPI==GAT_OGL) CPrintF( "OpenGL\n");
+  if (eAPI==GAT_OGL) CPrintF( "OpenGL\n");
   else CPrintF( "Direct3D\n");
   // and number of adapters
   CPrintF( "- Adapters found: %d\n", _pGfx->gl_gaAPI[eAPI].ga_ctAdapters);
@@ -508,59 +508,59 @@ static void GAPInfo(void)
 
   // report renderer
   CDisplayAdapter &da = _pGfx->gl_gaAPI[eAPI].ga_adaAdapter[_pGfx->gl_iCurrentAdapter];
-  if( eAPI==GAT_OGL) CPrintF( "- Vendor:   %s\n", da.da_strVendor);
+  if (eAPI==GAT_OGL) CPrintF( "- Vendor:   %s\n", da.da_strVendor);
   CPrintF( "- Renderer: %s\n", da.da_strRenderer);
   CPrintF( "- Version:  %s\n", da.da_strVersion);
   CPrintF( "\n");
 
   // Z-buffer depth
   CPrintF( "- Z-buffer precision: ");
-  if( _pGfx->gl_iCurrentDepth==0) CPrintF( "default\n");
+  if (_pGfx->gl_iCurrentDepth==0) CPrintF( "default\n");
   else CPrintF( "%d bits\n", _pGfx->gl_iCurrentDepth);
 
   // 32-bit textures
   CPrintF( "- 32-bit textures: ");
-  if( _pGfx->gl_ulFlags & GLF_32BITTEXTURES) CPrintF( "supported\n");
+  if (_pGfx->gl_ulFlags & GLF_32BITTEXTURES) CPrintF( "supported\n");
   else CPrintF( "not supported\n");
   // grayscale textures
   CPrintF( "- Grayscale textures: ");
-  if( gap_bAllowGrayTextures) CPrintF( "allowed\n");
+  if (gap_bAllowGrayTextures) CPrintF( "allowed\n");
   else CPrintF( "not allowed\n");
   // report maximum texture dimension
   CPrintF( "- Max texture dimension: %d pixels\n", _pGfx->gl_pixMaxTextureDimension);
 
   // report multitexturing capabilities
   CPrintF( "- Multi-texturing: ");
-  if( _pGfx->gl_ctRealTextureUnits<2) CPrintF( "not supported\n");
+  if (_pGfx->gl_ctRealTextureUnits<2) CPrintF( "not supported\n");
   else {
-    if( gap_iUseTextureUnits>1) CPrintF( "enabled (using %d texture units)\n", gap_iUseTextureUnits);
+    if (gap_iUseTextureUnits>1) CPrintF( "enabled (using %d texture units)\n", gap_iUseTextureUnits);
     else CPrintF( "disabled\n");
     CPrintF( "- Texture units: %d", _pGfx->gl_ctRealTextureUnits);
-    if( _pGfx->gl_ctTextureUnits < _pGfx->gl_ctRealTextureUnits)  {
+    if (_pGfx->gl_ctTextureUnits < _pGfx->gl_ctRealTextureUnits)  {
       CPrintF(" (%d can be used)\n", _pGfx->gl_ctTextureUnits); 
     } else CPrintF("\n"); 
   }
 
   // report texture anisotropy degree
-  if( _pGfx->gl_iMaxTextureAnisotropy>=2) {
+  if (_pGfx->gl_iMaxTextureAnisotropy>=2) {
     CPrintF( "- Texture anisotropy: %d of %d\n", _tpGlobal[0].tp_iAnisotropy, _pGfx->gl_iMaxTextureAnisotropy);
   } else CPrintF( "- Anisotropic texture filtering: not supported\n");
 
   // report texture LOD bias range
   const FLOAT fMaxLODBias = _pGfx->gl_fMaxTextureLODBias;
-  if( fMaxLODBias>0) {
+  if (fMaxLODBias>0) {
     CPrintF( "- Texture LOD bias: %.1f of +/-%.1f\n", _pGfx->gl_fTextureLODBias, fMaxLODBias);
   } else CPrintF( "- Texture LOD biasing: not supported\n");
 
   // OpenGL only stuff ...
-  if( eAPI==GAT_OGL) 
+  if (eAPI==GAT_OGL) 
   {
     // report truform tessellation
     CPrintF( "- Truform tessellation: ");
-    if( _pGfx->gl_iMaxTessellationLevel>0) {
-      if( _pGfx->gl_iTessellationLevel>0) {
+    if (_pGfx->gl_iMaxTessellationLevel>0) {
+      if (_pGfx->gl_iTessellationLevel>0) {
         CPrintF( "enabled ");
-        if( gap_bForceTruform) CPrintF( "(for all models)\n");
+        if (gap_bForceTruform) CPrintF( "(for all models)\n");
         else CPrintF( "(only for Truform-ready models)\n");
         CTString strNormalMode = ogl_bTruformLinearNormals ? "linear" : "quadratic";
         CPrintF( "- Tesselation level: %d of %d (%s normals)\n", _pGfx->gl_iTessellationLevel, _pGfx->gl_iMaxTessellationLevel, strNormalMode);
@@ -568,57 +568,57 @@ static void GAPInfo(void)
     } else CPrintF( "not supported\n");
 
     // report current swap interval (only if fullscreen)
-    if( _pGfx->gl_ulFlags&GLF_FULLSCREEN) {
+    if (_pGfx->gl_ulFlags&GLF_FULLSCREEN) {
       // report current swap interval
       CPrintF( "- Swap interval: ");
-      if( _pGfx->gl_ulFlags&GLF_VSYNC) {
+      if (_pGfx->gl_ulFlags&GLF_VSYNC) {
         GLint gliWaits = pwglGetSwapIntervalEXT();
-        if( gliWaits>=0) {
+        if (gliWaits>=0) {
           ASSERT( gliWaits==_pGfx->gl_iSwapInterval);
           CPrintF( "%d frame(s)\n", gliWaits);
         } else CPrintF( "not readable\n");
       } else CPrintF( "not adjustable\n");
     }
     // report T-Buffer support
-    if( _pGfx->gl_ulFlags & GLF_EXT_TBUFFER) {
+    if (_pGfx->gl_ulFlags & GLF_EXT_TBUFFER) {
       CPrintF( "- T-Buffer effect: ");
-      if( _pGfx->go_ctSampleBuffers==0) CPrintF( "disabled\n");
+      if (_pGfx->go_ctSampleBuffers==0) CPrintF( "disabled\n");
       else {
         ogl_iTBufferEffect = Clamp( ogl_iTBufferEffect, 0L, 2L);
         CTString strEffect = "Partial anti-aliasing";
-        if( ogl_iTBufferEffect<1) strEffect = "none";
-        if( ogl_iTBufferEffect>1) strEffect = "Motion blur";
+        if (ogl_iTBufferEffect<1) strEffect = "none";
+        if (ogl_iTBufferEffect>1) strEffect = "Motion blur";
         CPrintF( "%s (%d buffers used)\n", strEffect, _pGfx->go_ctSampleBuffers);
       }
     }
 
     // compiled vertex arrays support
     CPrintF( "- Compiled Vertex Arrays: ");
-    if( _pGfx->gl_ulFlags & GLF_EXT_COMPILEDVERTEXARRAY) {
+    if (_pGfx->gl_ulFlags & GLF_EXT_COMPILEDVERTEXARRAY) {
       extern BOOL CVA_b2D;
       extern BOOL CVA_bWorld;
       extern BOOL CVA_bModels;    
-      if( ogl_bUseCompiledVertexArrays) {
+      if (ogl_bUseCompiledVertexArrays) {
         CTString strSep="";
         CPrintF( "enabled (for ");
-        if( CVA_bWorld)  { CPrintF( "world");               strSep="/"; }
-        if( CVA_bModels) { CPrintF( "%smodels",    strSep); strSep="/"; }
-        if( CVA_b2D)     { CPrintF( "%sparticles", strSep); }
+        if (CVA_bWorld)  { CPrintF( "world");               strSep="/"; }
+        if (CVA_bModels) { CPrintF( "%smodels",    strSep); strSep="/"; }
+        if (CVA_b2D)     { CPrintF( "%sparticles", strSep); }
         CPrintF( ")\n");
       } else CPrintF( "disabled\n");
     } else CPrintF( "not supported\n");
 
     // report texture compression type
     CPrintF( "- Supported texture compression system(s): ");
-    if( !(_pGfx->gl_ulFlags&GLF_TEXTURECOMPRESSION)) CPrintF( "none\n");
+    if (!(_pGfx->gl_ulFlags&GLF_TEXTURECOMPRESSION)) CPrintF( "none\n");
     else {
       CTString strSep="";
-      if( _pGfx->gl_ulFlags & GLF_EXTC_ARB)    { CPrintF( "ARB");                strSep=", "; }
-      if( _pGfx->gl_ulFlags & GLF_EXTC_S3TC)   { CPrintF( "%sS3TC",     strSep); strSep=", "; }
-      if( _pGfx->gl_ulFlags & GLF_EXTC_FXT1)   { CPrintF( "%sFTX1",     strSep); strSep=", "; }
-      if( _pGfx->gl_ulFlags & GLF_EXTC_LEGACY) { CPrintF( "%sold S3TC", strSep); }
+      if (_pGfx->gl_ulFlags & GLF_EXTC_ARB)    { CPrintF( "ARB");                strSep=", "; }
+      if (_pGfx->gl_ulFlags & GLF_EXTC_S3TC)   { CPrintF( "%sS3TC",     strSep); strSep=", "; }
+      if (_pGfx->gl_ulFlags & GLF_EXTC_FXT1)   { CPrintF( "%sFTX1",     strSep); strSep=", "; }
+      if (_pGfx->gl_ulFlags & GLF_EXTC_LEGACY) { CPrintF( "%sold S3TC", strSep); }
       CPrintF( "\n- Current texture compression system: ");
-      switch( ogl_iTextureCompressionType) {
+      switch (ogl_iTextureCompressionType) {
       case 0:   CPrintF( "none\n");         break;
       case 1:   CPrintF( "ARB wrapper\n");  break;
       case 2:   CPrintF( "S3TC\n");         break;
@@ -627,18 +627,18 @@ static void GAPInfo(void)
       }
     }
     /* if exist, report vertex array range extension usage
-    if( ulExt & GOEXT_VERTEXARRAYRANGE) {
+    if (ulExt & GOEXT_VERTEXARRAYRANGE) {
       extern BOOL  VB_bSetupFailed;
       extern SLONG VB_slVertexBufferSize;
       extern INDEX VB_iVertexBufferType;
       extern INDEX ogl_iVertexBuffers;
-      if( VB_bSetupFailed) { // didn't manage to setup vertex buffers
+      if (VB_bSetupFailed) { // didn't manage to setup vertex buffers
         CPrintF( "- Enhanced HW T&L: fail\n");
-      } else if( VB_iVertexBufferType==0) {  // not used
+      } else if (VB_iVertexBufferType==0) {  // not used
         CPrintF( "- Enhanced HW T&L: disabled\n");
       } else {  // works! :)
         CTString strBufferType("AGP");
-        if( VB_iVertexBufferType==2) strBufferType = "video";
+        if (VB_iVertexBufferType==2) strBufferType = "video";
         const SLONG slMemSize = VB_slVertexBufferSize/1024;
         CPrintF( "- Enhanced hardware T&L: %d buffers in %d KB of %s memory",
                  ogl_iVertexBuffers, slMemSize, strBufferType);
@@ -647,19 +647,19 @@ static void GAPInfo(void)
     // report OpenGL externsions
     CPrintF("\n");
     CPrintF("- Published extensions: %s", ReformatExtensionsString(_pGfx->go_strExtensions));
-    if( _pGfx->go_strWinExtensions != "") CPrintF("%s", ReformatExtensionsString(_pGfx->go_strWinExtensions));
+    if (_pGfx->go_strWinExtensions != "") CPrintF("%s", ReformatExtensionsString(_pGfx->go_strWinExtensions));
     CPrintF("\n- Supported extensions: %s\n", ReformatExtensionsString(_pGfx->go_strSupportedExtensions));
   }
 
   // Direct3D only stuff
 #ifdef SE1_D3D
-  if( eAPI==GAT_D3D)
+  if (eAPI==GAT_D3D)
   {
     // HW T&L
     CPrintF( "- Hardware T&L: ");
-    if( _pGfx->gl_ulFlags&GLF_D3D_HASHWTNL) {
-      if( _pGfx->gl_ctMaxStreams<GFX_MINSTREAMS) CPrintF( "cannot be used\n");
-      else if( _pGfx->gl_ulFlags&GLF_D3D_USINGHWTNL) CPrintF( "enabled (%d streams)\n", _pGfx->gl_ctMaxStreams);
+    if (_pGfx->gl_ulFlags&GLF_D3D_HASHWTNL) {
+      if (_pGfx->gl_ctMaxStreams<GFX_MINSTREAMS) CPrintF( "cannot be used\n");
+      else if (_pGfx->gl_ulFlags&GLF_D3D_USINGHWTNL) CPrintF( "enabled (%d streams)\n", _pGfx->gl_ctMaxStreams);
       else CPrintF( "disabled\n");
     } else CPrintF( "not present\n");
 
@@ -670,11 +670,11 @@ static void GAPInfo(void)
 
     // N-Patches tessellation (Truform)
     CPrintF( "- N-Patches: ");
-    if( _pGfx->gl_iMaxTessellationLevel>0) {
-      if( !(_pGfx->gl_ulFlags&GLF_D3D_USINGHWTNL)) CPrintF( "not possible with SW T&L\n");
-      else if( _pGfx->gl_iTessellationLevel>0) {
+    if (_pGfx->gl_iMaxTessellationLevel>0) {
+      if (!(_pGfx->gl_ulFlags&GLF_D3D_USINGHWTNL)) CPrintF( "not possible with SW T&L\n");
+      else if (_pGfx->gl_iTessellationLevel>0) {
         CPrintF( "enabled ");
-        if( gap_bForceTruform) CPrintF( "(for all models)\n");
+        if (gap_bForceTruform) CPrintF( "(for all models)\n");
         else CPrintF( "(only for Truform-ready models)\n");
         CPrintF( "- Tesselation level: %d of %d\n", _pGfx->gl_iTessellationLevel, _pGfx->gl_iMaxTessellationLevel);
       } else CPrintF( "disabled\n");
@@ -682,28 +682,28 @@ static void GAPInfo(void)
 
     // texture compression
     CPrintF( "- Texture compression: ");
-    if( _pGfx->gl_ulFlags&GLF_TEXTURECOMPRESSION) CPrintF( "supported\n");
+    if (_pGfx->gl_ulFlags&GLF_TEXTURECOMPRESSION) CPrintF( "supported\n");
     else CPrintF( "not supported\n");
 
     // custom clip plane support
     CPrintF( "- Custom clip plane: ");
-    if( _pGfx->gl_ulFlags&GLF_D3D_CLIPPLANE) CPrintF( "supported\n");
+    if (_pGfx->gl_ulFlags&GLF_D3D_CLIPPLANE) CPrintF( "supported\n");
     else CPrintF( "not supported\n");
 
     // color buffer writes enable/disable support
     CPrintF( "- Color masking: ");
-    if( _pGfx->gl_ulFlags&GLF_D3D_COLORWRITES) CPrintF( "supported\n");
+    if (_pGfx->gl_ulFlags&GLF_D3D_COLORWRITES) CPrintF( "supported\n");
     else CPrintF( "not supported\n");
 
     // depth (Z) bias support
     CPrintF( "- Depth biasing: ");
-    if( _pGfx->gl_ulFlags&GLF_D3D_ZBIAS) CPrintF( "supported\n");
+    if (_pGfx->gl_ulFlags&GLF_D3D_ZBIAS) CPrintF( "supported\n");
     else CPrintF( "not supported\n");
 
     // current swap interval (only if fullscreen)
-    if( _pGfx->gl_ulFlags&GLF_FULLSCREEN) {
+    if (_pGfx->gl_ulFlags&GLF_FULLSCREEN) {
       CPrintF( "- Swap interval: ");
-      if( _pGfx->gl_ulFlags&GLF_VSYNC) {
+      if (_pGfx->gl_ulFlags&GLF_VSYNC) {
         CPrintF( "%d frame(s)\n", _pGfx->gl_iSwapInterval);
       } else CPrintF( "not adjustable\n");
     }
@@ -727,21 +727,21 @@ extern void UpdateGfxSysCVars(void)
   sys_bHasCVAs = 1;
   sys_bUsingOpenGL = 0;
   sys_bUsingDirect3D = 0;
-  if( _pGfx->gl_iMaxTextureAnisotropy>1) sys_bHasTextureAnisotropy = 1;
-  if( _pGfx->gl_fMaxTextureLODBias>0) sys_bHasTextureLODBias = 1;
-  if( _pGfx->gl_ctTextureUnits>1) sys_bHasMultitexturing = 1;
-  if( _pGfx->gl_iMaxTessellationLevel>0) sys_bHasTruform = 1;
-  if( _pGfx->gl_ulFlags & GLF_TEXTURECOMPRESSION) sys_bHasTextureCompression = 1;
-  if( _pGfx->gl_ulFlags & GLF_ADJUSTABLEGAMMA) sys_bHasAdjustableGamma = 1;
-  if( _pGfx->gl_ulFlags & GLF_32BITTEXTURES) sys_bHas32bitTextures = 1;
-  if( _pGfx->gl_ulFlags & GLF_VSYNC) sys_bHasSwapInterval = 1;
-  if( _pGfx->gl_eCurrentAPI==GAT_OGL && !(_pGfx->gl_ulFlags&GLF_EXT_COMPILEDVERTEXARRAY)) sys_bHasCVAs = 0;
+  if (_pGfx->gl_iMaxTextureAnisotropy>1) sys_bHasTextureAnisotropy = 1;
+  if (_pGfx->gl_fMaxTextureLODBias>0) sys_bHasTextureLODBias = 1;
+  if (_pGfx->gl_ctTextureUnits>1) sys_bHasMultitexturing = 1;
+  if (_pGfx->gl_iMaxTessellationLevel>0) sys_bHasTruform = 1;
+  if (_pGfx->gl_ulFlags & GLF_TEXTURECOMPRESSION) sys_bHasTextureCompression = 1;
+  if (_pGfx->gl_ulFlags & GLF_ADJUSTABLEGAMMA) sys_bHasAdjustableGamma = 1;
+  if (_pGfx->gl_ulFlags & GLF_32BITTEXTURES) sys_bHas32bitTextures = 1;
+  if (_pGfx->gl_ulFlags & GLF_VSYNC) sys_bHasSwapInterval = 1;
+  if (_pGfx->gl_eCurrentAPI==GAT_OGL && !(_pGfx->gl_ulFlags&GLF_EXT_COMPILEDVERTEXARRAY)) sys_bHasCVAs = 0;
 #ifdef SE1_D3D
-  if( _pGfx->gl_eCurrentAPI==GAT_D3D && !(_pGfx->gl_ulFlags&GLF_D3D_HASHWTNL)) sys_bHasHardwareTnL = 0;
+  if (_pGfx->gl_eCurrentAPI==GAT_D3D && !(_pGfx->gl_ulFlags&GLF_D3D_HASHWTNL)) sys_bHasHardwareTnL = 0;
 #endif // SE1_D3D
-  if( _pGfx->gl_eCurrentAPI==GAT_OGL) sys_bUsingOpenGL = 1;
+  if (_pGfx->gl_eCurrentAPI==GAT_OGL) sys_bUsingOpenGL = 1;
 #ifdef SE1_D3D
-  if( _pGfx->gl_eCurrentAPI==GAT_D3D) sys_bUsingDirect3D = 1;
+  if (_pGfx->gl_eCurrentAPI==GAT_D3D) sys_bUsingDirect3D = 1;
 #endif // SE1_D3D
 }
 
@@ -751,16 +751,16 @@ extern void UpdateGfxSysCVars(void)
 extern BOOL ProbeMode( CTimerValue tvLast)
 {
   // probing off ?
-  if( !_pGfx->gl_bAllowProbing) return FALSE;
-  if( gfx_tmProbeDecay<1) {
+  if (!_pGfx->gl_bAllowProbing) return FALSE;
+  if (gfx_tmProbeDecay<1) {
     gfx_tmProbeDecay = 0;  
     return FALSE;
   }
   // clamp and determine probe mode
-  if( gfx_tmProbeDecay>999) gfx_tmProbeDecay = 999;
+  if (gfx_tmProbeDecay>999) gfx_tmProbeDecay = 999;
   CTimerValue tvNow  = _pTimer->GetHighPrecisionTimer();
   const TIME tmDelta = (tvNow-tvLast).GetSeconds();
-  if( tmDelta>gfx_tmProbeDecay) return TRUE;
+  if (tmDelta>gfx_tmProbeDecay) return TRUE;
   return FALSE;
 }
    
@@ -781,7 +781,7 @@ extern void UncacheShadows(void)
           
   CListHead &lhOriginal = _pGfx->gl_lhCachedShadows;
   // while there is some shadow in main list
-  while( !lhOriginal.IsEmpty()) {
+  while (!lhOriginal.IsEmpty()) {
     CShadowMap &sm = *LIST_HEAD( lhOriginal, CShadowMap, sm_lnInGfx);
     sm.Uncache();
   }
@@ -797,7 +797,7 @@ static void RecacheShadows(void)
   // mute all sounds
   _pSound->Mute();
   UncacheShadows();
-  if( shd_bCacheAll) CacheShadows();
+  if (shd_bCacheAll) CacheShadows();
   else CPrintF( TRANS("All shadows uncached.\n"));
 }
 
@@ -849,7 +849,7 @@ extern void ReloadTextures(void)
   /*
   // reset are renderable textures, too
   CListHead &lhOriginal = _pGfx->gl_lhRenderTextures;
-  while( !lhOriginal.IsEmpty()) {
+  while (!lhOriginal.IsEmpty()) {
     CRenderTexture &rt = *LIST_HEAD( lhOriginal, CRenderTexture, rt_lnInGfx);
     rt.Reset();
   }
@@ -894,7 +894,7 @@ static BOOL _bLastModelQuality = -1;
 static void MdlPostFunc(void *pvVar)
 {
   mdl_bFineQuality = Clamp( mdl_bFineQuality, 0L, 1L);
-  if( _bLastModelQuality!=mdl_bFineQuality) {
+  if (_bLastModelQuality!=mdl_bFineQuality) {
     _bLastModelQuality = mdl_bFineQuality;
     ReloadModels();
   }
@@ -909,16 +909,16 @@ static void PrepareTables(void)
 {
   INDEX i;
   // prepare array for fast clamping to 0..255
-  for( i=-256*2; i<256*4; i++) aubClipByte[i+256*2] = (UBYTE)Clamp( i, 0L, 255L);
+  for (i=-256*2; i<256*4; i++) aubClipByte[i+256*2] = (UBYTE)Clamp( i, 0L, 255L);
   // prepare fast sqrt tables
-  for( i=0; i<SQRTTABLESIZE; i++) aubSqrt[i]   = (UBYTE)(sqrt((FLOAT)(i*65536/SQRTTABLESIZE)));
-  for( i=1; i<SQRTTABLESIZE; i++) auw1oSqrt[i] = (UWORD)(sqrt((FLOAT)(SQRTTABLESIZE-1)/i)*255.0f);
+  for (i=0; i<SQRTTABLESIZE; i++) aubSqrt[i]   = (UBYTE)(sqrt((FLOAT)(i*65536/SQRTTABLESIZE)));
+  for (i=1; i<SQRTTABLESIZE; i++) auw1oSqrt[i] = (UWORD)(sqrt((FLOAT)(SQRTTABLESIZE-1)/i)*255.0f);
   auw1oSqrt[0] = MAX_UWORD;
   // prepare fast sin/cos table
-  for( i=-256; i<256+64; i++) afSinTable[i+256] = Sin((i-128)/256.0f*360.0f);
+  for (i=-256; i<256+64; i++) afSinTable[i+256] = Sin((i-128)/256.0f*360.0f);
   // prepare gouraud conversion table
-  for( INDEX h=0; h<128; h++) {
-    for( INDEX p=0; p<128; p++) {
+  for (INDEX h=0; h<128; h++) {
+    for (INDEX p=0; p<128; p++) {
       const FLOAT fSinH = pfSinTable[h*2];
       const FLOAT fSinP = pfSinTable[p*2];
       const FLOAT fCosH = pfCosTable[h*2];
@@ -974,7 +974,7 @@ CGfxLibrary::CGfxLibrary(void)
   gl_pd3dIdx = NULL;
   gl_pd3dVtx = NULL;
   gl_pd3dNor = NULL;
-  for( INDEX i=0; i<GFX_MAXLAYERS; i++) gl_pd3dCol[i] = gl_pd3dTex[i] = NULL;
+  for (INDEX i=0; i<GFX_MAXLAYERS; i++) gl_pd3dCol[i] = gl_pd3dTex[i] = NULL;
 #endif // SE1_D3D
   gl_ctVertices = 0;
   gl_ctIndices  = 0;
@@ -1248,12 +1248,12 @@ BOOL CGfxLibrary::SetDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pixS
 
   // determine new API
   GfxAPIType eNewAPI = eAPI;
-  if( eNewAPI==GAT_CURRENT) eNewAPI = gl_eCurrentAPI;
+  if (eNewAPI==GAT_CURRENT) eNewAPI = gl_eCurrentAPI;
   
   // shutdown old and startup new API, and mode and ... stuff, you know!
   StopDisplayMode();
   BOOL bRet = StartDisplayMode( eNewAPI, iAdapter, pixSizeI, pixSizeJ, eColorDepth);
-  if( !bRet) return FALSE; // didn't make it?
+  if (!bRet) return FALSE; // didn't make it?
 
   // update some info
   gl_iCurrentAdapter = gl_gaAPI[gl_eCurrentAPI].ga_iCurrentAdapter = iAdapter;
@@ -1266,7 +1266,7 @@ BOOL CGfxLibrary::SetDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pixS
   DetermineSupportedTextureFormats(gl_eCurrentAPI);
 
   // made it! (eventually disable windows system keys)
-  if( gfx_bDisableWindowsKeys) DisableWindowsKeys();
+  if (gfx_bDisableWindowsKeys) DisableWindowsKeys();
 
   return TRUE;
 }
@@ -1277,12 +1277,12 @@ BOOL CGfxLibrary::ResetDisplayMode( enum GfxAPIType eAPI/*=GAT_CURRENT*/)
 {
   // determine new API
   GfxAPIType eNewAPI = eAPI;
-  if( eNewAPI==GAT_CURRENT) eNewAPI = gl_eCurrentAPI;
+  if (eNewAPI==GAT_CURRENT) eNewAPI = gl_eCurrentAPI;
 
   // shutdown old and startup new API, and mode and ... stuff, you know!
   StopDisplayMode();
   BOOL bRet = StartDisplayMode( eNewAPI, 0, 0, 0, DD_DEFAULT);
-  if( !bRet) return FALSE; // didn't make it?
+  if (!bRet) return FALSE; // didn't make it?
 
   // update some info
   gl_iCurrentAdapter = 0;
@@ -1328,14 +1328,14 @@ BOOL CGfxLibrary::StartDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pi
  _iLastVertexBufferSize = 0;
 
   // OpenGL driver ?
-  if( eAPI==GAT_OGL)
+  if (eAPI==GAT_OGL)
   {
     // disable multimonitor support if it can interfere with OpenGL
     MonitorsOff();
-    if( bFullScreen) {
+    if (bFullScreen) {
       // set windows mode to fit same size
       bSuccess = CDS_SetMode( pixSizeI, pixSizeJ, eColorDepth);
-      if( !bSuccess) return FALSE;
+      if (!bSuccess) return FALSE;
     } else {
       // reset windows mode
       CDS_ResetMode();
@@ -1343,7 +1343,7 @@ BOOL CGfxLibrary::StartDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pi
     // startup OpenGL
     bSuccess = InitDriver_OGL(iAdapter!=0);
     // try to setup sub-driver
-    if( !bSuccess) {
+    if (!bSuccess) {
       // reset windows mode and fail
       CDS_ResetMode();
       return FALSE;
@@ -1354,13 +1354,13 @@ BOOL CGfxLibrary::StartDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pi
 
   // DirectX driver ?
 #ifdef SE1_D3D
-  else if( eAPI==GAT_D3D)
+  else if (eAPI==GAT_D3D)
   {
     // startup D3D
     bSuccess = InitDriver_D3D();
-    if( !bSuccess) return FALSE; // what, didn't make it?
+    if (!bSuccess) return FALSE; // what, didn't make it?
     bSuccess = InitDisplay_D3D( iAdapter, pixSizeI, pixSizeJ, eColorDepth);
-    if( !bSuccess) return FALSE;
+    if (!bSuccess) return FALSE;
     // made it
     gl_eCurrentAPI = GAT_D3D;
   }
@@ -1399,14 +1399,14 @@ void CGfxLibrary::StopDisplayMode(void)
   UncacheShadows();
 
   // shutdown API
-  if( gl_eCurrentAPI==GAT_OGL)
+  if (gl_eCurrentAPI==GAT_OGL)
   { // OpenGL
     EndDriver_OGL();
     MonitorsOn();       // re-enable multimonitor support if disabled
     CDS_ResetMode();
   }
 #ifdef SE1_D3D
-  else if( gl_eCurrentAPI==GAT_D3D)
+  else if (gl_eCurrentAPI==GAT_D3D)
   { // Direct3D
     EndDriver_D3D();
     MonitorsOn();
@@ -1418,7 +1418,7 @@ void CGfxLibrary::StopDisplayMode(void)
   }
 
   // free driver DLL
-  if( gl_hiDriver!=NONE) FreeLibrary(gl_hiDriver);
+  if (gl_hiDriver!=NONE) FreeLibrary(gl_hiDriver);
   gl_hiDriver = NONE;
 
   // reset some vars
@@ -1436,11 +1436,11 @@ void CGfxLibrary::StopDisplayMode(void)
 // prepare current viewport for rendering
 BOOL CGfxLibrary::SetCurrentViewport(CViewPort *pvp)
 {
-  if( gl_eCurrentAPI==GAT_OGL)  return SetCurrentViewport_OGL(pvp);
+  if (gl_eCurrentAPI==GAT_OGL)  return SetCurrentViewport_OGL(pvp);
 #ifdef SE1_D3D
-  if( gl_eCurrentAPI==GAT_D3D)  return SetCurrentViewport_D3D(pvp);
+  if (gl_eCurrentAPI==GAT_D3D)  return SetCurrentViewport_D3D(pvp);
 #endif // SE1_D3D
-  if( gl_eCurrentAPI==GAT_NONE) return TRUE;
+  if (gl_eCurrentAPI==GAT_NONE) return TRUE;
   ASSERTALWAYS( "SetCurrenViewport: Wrong API!");
   return FALSE;
 }
@@ -1457,18 +1457,18 @@ BOOL CGfxLibrary::LockDrawPort( CDrawPort *pdpToLock)
 #endif // SE1_D3D
 
   // don't allow locking if drawport is too small
-  if( pdpToLock->dp_Width<1 || pdpToLock->dp_Height<1) return FALSE;
+  if (pdpToLock->dp_Width<1 || pdpToLock->dp_Height<1) return FALSE;
 
   // don't set if same as last
   const ULONG ulThisDrawPortID = pdpToLock->GetID();
-  if( GFX_ulLastDrawPortID==ulThisDrawPortID && gap_bOptimizeStateChanges) {
+  if (GFX_ulLastDrawPortID==ulThisDrawPortID && gap_bOptimizeStateChanges) {
     // just set projection
     pdpToLock->SetOrtho();
     return TRUE;
   }
 
   // OpenGL ...
-  if( gl_eCurrentAPI==GAT_OGL)
+  if (gl_eCurrentAPI==GAT_OGL)
   {
     // pass drawport dimensions to OpenGL
     const PIX pixMinSI = pdpToLock->dp_ScissorMinI;
@@ -1481,7 +1481,7 @@ BOOL CGfxLibrary::LockDrawPort( CDrawPort *pdpToLock)
   }
   // Direct3D ...
 #ifdef SE1_D3D
-  else if( gl_eCurrentAPI==GAT_D3D)
+  else if (gl_eCurrentAPI==GAT_D3D)
   { 
     // set viewport
     const PIX pixMinSI = pdpToLock->dp_ScissorMinI;
@@ -1624,7 +1624,7 @@ void CGfxLibrary::ReduceShadows(void)
   const TIME tmAcientDelay = Clamp( shd_tmFlushDelay*3, 60.0f, 300.0f);
 
   // determine cached shadowmaps stats (if needed)
-  if( _bShadowsUpdated)
+  if (_bShadowsUpdated)
   {
     _bShadowsUpdated = FALSE;
     slCachedShadowMemory=0; slDynamicShadowMemory=0;
@@ -1635,15 +1635,15 @@ void CGfxLibrary::ReduceShadows(void)
       ASSERT( sm.sm_slMemoryUsed>0 && sm.sm_slMemoryUsed<=SHADOWMAXBYTES); // and have valid size
       // remove acient shadowmaps from list (if allowed)
       const TIME tmDelta = (tvNow-sm.sm_tvLastDrawn).GetSeconds();
-      if( tmDelta>tmAcientDelay && !(sm.sm_ulFlags&SMF_PROBED) && !shd_bCacheAll) {
+      if (tmDelta>tmAcientDelay && !(sm.sm_ulFlags&SMF_PROBED) && !shd_bCacheAll) {
         sm.Uncache();
         continue;
       }
       // determine type and occupied space
       const BOOL bDynamic = sm.sm_pulDynamicShadowMap!=NULL;
       const BOOL bFlat    = sm.sm_pulCachedShadowMap==&sm.sm_colFlat;
-      if( bDynamic) { slDynamicShadowMemory += sm.sm_slMemoryUsed;    ctDynamicShadows++; }
-      if( !bFlat)   { slCachedShadowMemory  += sm.sm_slMemoryUsed;    ctCachedShadows++;  }
+      if (bDynamic) { slDynamicShadowMemory += sm.sm_slMemoryUsed;    ctDynamicShadows++; }
+      if (!bFlat)   { slCachedShadowMemory  += sm.sm_slMemoryUsed;    ctCachedShadows++;  }
       else          { slCachedShadowMemory  += sizeof(sm.sm_colFlat); ctFlatShadows++;    }
     }}
   }
@@ -1660,7 +1660,7 @@ void CGfxLibrary::ReduceShadows(void)
        _sfStats.IncrementCounter(  CStatForm::SCI_DYNAMICSHADOWS,     ctDynamicShadows);
 
   // done if reducing is not allowed 
-  if( shd_bCacheAll) {
+  if (shd_bCacheAll) {
     _sfStats.StopTimer( CStatForm::STI_SHADOWUPDATE);
     return;  
   }
@@ -1668,7 +1668,7 @@ void CGfxLibrary::ReduceShadows(void)
   // optimize only if low on memory                                
   ULONG ulShadowCacheSize  = (ULONG)(shd_fCacheSize*1024*1024); // in bytes
   ULONG ulUsedShadowMemory = slCachedShadowMemory + slDynamicShadowMemory;
-  if( ulUsedShadowMemory  <= ulShadowCacheSize) {
+  if (ulUsedShadowMemory  <= ulShadowCacheSize) {
     _sfStats.StopTimer( CStatForm::STI_SHADOWUPDATE);
     return;
   }
@@ -1676,7 +1676,7 @@ void CGfxLibrary::ReduceShadows(void)
   // reduce shadow delay if needed
   // (lineary from specified value to 2sec for cachedsize>specsize to cachedsize>2*specsize)
   TIME tmFlushDelay = shd_tmFlushDelay;
-  if( tmFlushDelay>2.0f) {
+  if (tmFlushDelay>2.0f) {
     FLOAT fRatio = (FLOAT)ulUsedShadowMemory / ulShadowCacheSize;
     ASSERT( fRatio>=1.0f);
     fRatio = ClampUp( fRatio/2.0f, 1.0f);
@@ -1689,7 +1689,7 @@ void CGfxLibrary::ReduceShadows(void)
     // or we have enough memory for cached shadows that remain
     CShadowMap &sm = *itsm;
     const TIME tmDelta = (tvNow-sm.sm_tvLastDrawn).GetSeconds();
-    if( tmDelta<tmFlushDelay || ulUsedShadowMemory<ulShadowCacheSize) break;
+    if (tmDelta<tmFlushDelay || ulUsedShadowMemory<ulShadowCacheSize) break;
     // uncache shadow (this returns ammount of memory that has been freed)
     ulUsedShadowMemory -= sm.Uncache();
     ASSERT( ulUsedShadowMemory>=0);
@@ -1724,7 +1724,7 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
 
   // safety check
   ASSERT( gl_pvpActive!=NULL);
-  if( pvp!=gl_pvpActive) {
+  if (pvp!=gl_pvpActive) {
     ASSERTALWAYS( "Swapping viewport that was not last drawn to!");
     return;
   }
@@ -1745,14 +1745,14 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
   d3d_iFinish = Clamp( d3d_iFinish, 0L, 3L);
 
   // OpenGL  
-  if( gl_eCurrentAPI==GAT_OGL)
+  if (gl_eCurrentAPI==GAT_OGL)
   {
     // force finishing of all rendering operations (if required)
-    if( ogl_iFinish==2) gfxFinish();
+    if (ogl_iFinish==2) gfxFinish();
 
     // check state of swap interval extension usage
-    if( gl_ulFlags & GLF_VSYNC) {
-      if( gl_iSwapInterval != gap_iSwapInterval) {
+    if (gl_ulFlags & GLF_VSYNC) {
+      if (gl_iSwapInterval != gap_iSwapInterval) {
         gl_iSwapInterval = gap_iSwapInterval;
         pwglSwapIntervalEXT( gl_iSwapInterval);
       }
@@ -1762,29 +1762,29 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
     pwglSwapBuffers(tdc.hdc);
 
     // force finishing of all rendering operations (if required)
-    if( ogl_iFinish==3) gfxFinish();
+    if (ogl_iFinish==3) gfxFinish();
 
     // reset CVA usage if ext is not present
-    if( !(gl_ulFlags&GLF_EXT_COMPILEDVERTEXARRAY)) ogl_bUseCompiledVertexArrays = 0;
+    if (!(gl_ulFlags&GLF_EXT_COMPILEDVERTEXARRAY)) ogl_bUseCompiledVertexArrays = 0;
   }
 
   // Direct3D
 #ifdef SE1_D3D
-  else if( gl_eCurrentAPI==GAT_D3D)
+  else if (gl_eCurrentAPI==GAT_D3D)
   {
     // force finishing of all rendering operations (if required)
-    if( d3d_iFinish==2) gfxFinish();
+    if (d3d_iFinish==2) gfxFinish();
 
     // end scene rendering
     HRESULT hr;
-    if( GFX_bRenderingScene) {
+    if (GFX_bRenderingScene) {
       hr = gl_pd3dDevice->EndScene(); 
       D3D_CHECKERROR(hr);
     }
     CDisplayMode dm;
     GetCurrentDisplayMode(dm);
     ASSERT( (dm.dm_pixSizeI==0 && dm.dm_pixSizeJ==0) || (dm.dm_pixSizeI!=0 && dm.dm_pixSizeJ!=0));
-    if( dm.dm_pixSizeI==0 || dm.dm_pixSizeJ==0 ) {
+    if (dm.dm_pixSizeI==0 || dm.dm_pixSizeJ==0 ) {
       // windowed mode
       hr = pvp->vp_pSwapChain->Present( NULL, NULL, NULL, NULL);
     } else {
@@ -1794,10 +1794,10 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
     D3D_CHECKERROR(hr); 
 
     // force finishing of all rendering operations (if required)
-    if( d3d_iFinish==3) gfxFinish();
+    if (d3d_iFinish==3) gfxFinish();
 
     // eventually reset vertex buffer if something got changed
-    if( _iLastVertexBufferSize!=d3d_iVertexBuffersSize
+    if (_iLastVertexBufferSize!=d3d_iVertexBuffersSize
     || (gl_iTessellationLevel<1 && gap_iTruformLevel>0)
     || (gl_iTessellationLevel>0 && gap_iTruformLevel<1)) {
       extern void SetupVertexArrays_D3D( INDEX ctVertices);
@@ -1853,32 +1853,32 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
   CVA_bWorld  = ogl_bUseCompiledVertexArrays /10 %10;
   CVA_bModels = ogl_bUseCompiledVertexArrays %10;    
   ogl_bUseCompiledVertexArrays = 0;
-  if( CVA_b2D)     ogl_bUseCompiledVertexArrays += 100;
-  if( CVA_bWorld)  ogl_bUseCompiledVertexArrays += 10;
-  if( CVA_bModels) ogl_bUseCompiledVertexArrays += 1;
+  if (CVA_b2D)     ogl_bUseCompiledVertexArrays += 100;
+  if (CVA_bWorld)  ogl_bUseCompiledVertexArrays += 10;
+  if (CVA_bModels) ogl_bUseCompiledVertexArrays += 1;
 
   // eventually advance to next sample buffer
-  if( (gl_ulFlags&GLF_EXT_TBUFFER) && go_ctSampleBuffers>1) {
+  if ((gl_ulFlags&GLF_EXT_TBUFFER) && go_ctSampleBuffers>1) {
     go_iCurrentWriteBuffer--;
-    if( go_iCurrentWriteBuffer<0) go_iCurrentWriteBuffer = go_ctSampleBuffers-1;
+    if (go_iCurrentWriteBuffer<0) go_iCurrentWriteBuffer = go_ctSampleBuffers-1;
     pglDisable( GL_MULTISAMPLE_3DFX);
   }
 
   // clear viewport if needed
-  if( gfx_bClearScreen) pvp->vp_Raster.ra_MainDrawPort.Fill( C_BLACK|CT_OPAQUE);
+  if (gfx_bClearScreen) pvp->vp_Raster.ra_MainDrawPort.Fill( C_BLACK|CT_OPAQUE);
   //pvp->vp_Raster.ra_MainDrawPort.FillZBuffer(ZBUF_BACK);
 
   // adjust gamma table if supported ...
-  if( gl_ulFlags & GLF_ADJUSTABLEGAMMA) {
+  if (gl_ulFlags & GLF_ADJUSTABLEGAMMA) {
     // ... and required
     const BOOL bTableSet = GenerateGammaTable();
-    if( bTableSet) {
-      if( gl_eCurrentAPI==GAT_OGL) {
+    if (bTableSet) {
+      if (gl_eCurrentAPI==GAT_OGL) {
         CTempDC tdc(pvp->vp_hWnd);
         SetDeviceGammaRamp( tdc.hdc, &_auwGammaTable[0]);
       } 
 #ifdef SE1_D3D
-      else if( gl_eCurrentAPI==GAT_D3D) {
+      else if (gl_eCurrentAPI==GAT_D3D) {
         gl_pd3dDevice->SetGammaRamp( D3DSGR_NO_CALIBRATION, (D3DGAMMARAMP*)&_auwGammaTable[0]);
       }
 #endif // SE1_D3D
@@ -1903,8 +1903,8 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
 // get array of all supported display modes
 CDisplayMode *CGfxLibrary::EnumDisplayModes( INDEX &ctModes, enum GfxAPIType eAPI/*=GAT_CURRENT*/, INDEX iAdapter/*=0*/)
 {
-  if( eAPI==GAT_CURRENT) eAPI = gl_eCurrentAPI;
-  if( iAdapter==0) iAdapter = gl_iCurrentAdapter;
+  if (eAPI==GAT_CURRENT) eAPI = gl_eCurrentAPI;
+  if (iAdapter==0) iAdapter = gl_iCurrentAdapter;
   CDisplayAdapter *pda = &gl_gaAPI[eAPI].ga_adaAdapter[iAdapter];
   ctModes = pda->da_ctDisplayModes;
   return &pda->da_admDisplayModes[0];
@@ -1919,10 +1919,10 @@ BOOL CGfxLibrary::LockRaster( CRaster *praToLock)
   // SetFPUPrecision(FPT_24BIT); 
   ASSERT( praToLock->ra_pvpViewPort!=NULL);
   BOOL bRes = SetCurrentViewport( praToLock->ra_pvpViewPort);
-  if( bRes) {
+  if (bRes) {
     // must signal to picky Direct3D
 #ifdef SE1_D3D
-    if( gl_eCurrentAPI==GAT_D3D && !GFX_bRenderingScene) {  
+    if (gl_eCurrentAPI==GAT_D3D && !GFX_bRenderingScene) {  
       HRESULT hr = gl_pd3dDevice->BeginScene(); 
       D3D_CHECKERROR(hr);
       bRes = (hr==D3D_OK);
@@ -1948,7 +1948,7 @@ void CGfxLibrary::UnlockRaster( CRaster *praToUnlock)
 static BOOL GenerateGammaTable(void)
 {
   // only if needed
-  if( _fLastBrightness == gfx_fBrightness
+  if (_fLastBrightness == gfx_fBrightness
    && _fLastContrast   == gfx_fContrast
    && _fLastGamma      == gfx_fGamma
    && _iLastLevels == gfx_iLevels
@@ -1975,14 +1975,14 @@ static BOOL GenerateGammaTable(void)
                 
   // fill and adjust gamma
   const FLOAT f1oGamma = 1.0f / gfx_fGamma;
-  for( i=0; i<256; i++) {
+  for (i=0; i<256; i++) {
     FLOAT fVal = i/255.0f;
     fVal = Clamp( (FLOAT)pow(fVal,f1oGamma), 0.0f, 1.0f);
     _auwGammaTable[i] = (UWORD)(fVal*65280);
   }
 
   // adjust contrast
-  for( i=0; i<256; i++) {
+  for (i=0; i<256; i++) {
     FLOAT fVal = _auwGammaTable[i]/65280.0f;
     fVal = Clamp( (fVal-0.5f)*gfx_fContrast +0.5f, 0.0f, 1.0f);
     _auwGammaTable[i] = (UWORD)(fVal*65280);
@@ -1990,14 +1990,14 @@ static BOOL GenerateGammaTable(void)
 
   // adjust brightness
   INDEX iAdd = 256* 256*gfx_fBrightness;
-  for( i=0; i<256; i++) {
+  for (i=0; i<256; i++) {
     _auwGammaTable[i] = Clamp( _auwGammaTable[i]+iAdd, 0L, 65280L);
   }
 
   // adjust levels (posterize)
-  if( gfx_iLevels<256) {
+  if (gfx_iLevels<256) {
     const FLOAT fLevels = 256 * 256.0f/gfx_iLevels;
-    for( i=0; i<256; i++) {
+    for (i=0; i<256; i++) {
       INDEX iVal = _auwGammaTable[i];
       iVal = ((INDEX)(iVal/fLevels)) *fLevels;
       _auwGammaTable[i] = ClampUp( iVal, 0xFF00L);
@@ -2005,7 +2005,7 @@ static BOOL GenerateGammaTable(void)
   }
 
   // copy R to G and B array
-  for( i=0; i<256; i++) {
+  for (i=0; i<256; i++) {
     FLOAT fR,fG,fB;
     fR=fG=fB = _auwGammaTable[i]/65280.0f;
     fR = Clamp( fR*gfx_fBiasR, 0.0f, 1.0f);

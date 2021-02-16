@@ -342,7 +342,7 @@ void CTriangularizer::MakeEdgesForTriangularization(void)
   tr_abedEdges.Lock();
 
   // for each edge
-  for(INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
+  for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
     CBrushPolygonEdge &bpe = tr_abpeOriginalEdges[iEdge];
     CBrushEdge &bed = tr_abedEdges[iEdge];
     // if polygon edge is reversed
@@ -660,7 +660,7 @@ void CTriangularizer::FindBestTriangle(void)
   // for each edge 
   tr_abedEdges.Lock();
   INDEX ctEdges = tr_abedEdges.Count();
-  for(INDEX ibedBottom=0; ibedBottom<tr_abedEdges.Count(); ibedBottom++) {
+  for (INDEX ibedBottom=0; ibedBottom<tr_abedEdges.Count(); ibedBottom++) {
     // consider this edge as bottom edge of triangle
     tr_pbedBottom = &tr_abedEdges[(ibedBottom+iBottomEdgeOffset)%ctEdges];
 
@@ -671,7 +671,7 @@ void CTriangularizer::FindBestTriangle(void)
 
     iTopEdgeOffset++;
     // for each edge
-    for(INDEX ibedTop=0; ibedTop<ctEdges; ibedTop++) {
+    for (INDEX ibedTop=0; ibedTop<ctEdges; ibedTop++) {
       // consider first vertex of this edge as top vertex of triangle
       tr_pbvxTopVertex = tr_abedEdges[(ibedTop+ibedBottom+iTopEdgeOffset)%ctEdges].bed_pbvxVertex0;
 
@@ -767,11 +767,11 @@ void CTriangularizer::FindVerticesUsed(void)
   tr_apbvxVertices.PopAll();
   // for each triangle vertex
   tr_apbvxTriangleVertices.Lock();
-  for(INDEX ipbvx=0; ipbvx<tr_apbvxTriangleVertices.Count(); ipbvx++) {
+  for (INDEX ipbvx=0; ipbvx<tr_apbvxTriangleVertices.Count(); ipbvx++) {
     CBrushVertex *pbvx = tr_apbvxTriangleVertices[ipbvx];
     // for each vertex already added
     BOOL bFound=FALSE;
-    for(INDEX ipbvxAdded=0; ipbvxAdded<tr_apbvxVertices.Count(); ipbvxAdded++) {
+    for (INDEX ipbvxAdded=0; ipbvxAdded<tr_apbvxVertices.Count(); ipbvxAdded++) {
       // if it is the same one, stop searching
       if (tr_apbvxVertices[ipbvxAdded]==pbvx) {
         bFound = TRUE;
@@ -795,11 +795,11 @@ void CTriangularizer::MakeElements(void)
   tr_aiElements.New(ctElements);
   // for each triangle vertex
   tr_apbvxTriangleVertices.Lock();
-  for(INDEX i=0; i<ctElements; i++) {
+  for (INDEX i=0; i<ctElements; i++) {
     CBrushVertex *pbvx = tr_apbvxTriangleVertices[i];
     // find its element index
     BOOL bFound=FALSE;
-    for(INDEX ipbvx=0; ipbvx<tr_apbvxVertices.Count(); ipbvx++) {
+    for (INDEX ipbvx=0; ipbvx<tr_apbvxVertices.Count(); ipbvx++) {
       // if it is the same one, stop searching
       if (tr_apbvxVertices[ipbvx]==pbvx) {
         tr_aiElements[i] = ipbvx;
@@ -824,7 +824,7 @@ CTriangularizer::CTriangularizer(CBrushPolygon &bpoOriginalPolygon)
   INDEX iMaxNormal = bpoOriginalPolygon.bpo_pbplPlane->bpl_pldPreciseRelative.GetMaxNormal();
   INDEX iMaxSign = Sgn(bpoOriginalPolygon.bpo_pbplPlane->bpl_pldPreciseRelative(iMaxNormal));
   ASSERT(iMaxSign!=0);
-  switch(iMaxNormal) {
+  switch (iMaxNormal) {
   case 1: 
     if (iMaxSign==-1) {
       tr_iAxis0 = 3; tr_iAxis1 = 2; tr_vPolygonNormal = DOUBLE3D(-1,0,0);

@@ -75,7 +75,7 @@ static BOOL HitBoundingBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOAT
 	/* Find candidate planes; this loop can be avoided if
    	rays cast all from the eye(assume perpsective view) */
   for (i=0; i<NUMDIM; i++) {
-		if(origin[i] < minB[i]) {
+		if (origin[i] < minB[i]) {
 			quadrant[i] = LEFT;
 			candidatePlane[i] = minB[i];
 			bInside = FALSE;
@@ -89,7 +89,7 @@ static BOOL HitBoundingBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOAT
   }
 
 	/* Ray origin inside bounding box */
-	if(bInside)	{
+	if (bInside)	{
     vHit = FLOAT3D(origin[0],origin[1],origin[2]);
 		return (TRUE);
 	}
@@ -149,20 +149,20 @@ static BOOL RayHitsAABBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOATa
 	/* Find candidate planes; this loop can be avoided if
    	rays cast all from the eye(assume perpsective view) */
 	for (i=0; i<3; i++)
-		if(origin[i] < minB[i]) {
+		if (origin[i] < minB[i]) {
 			quadrant[i] = LEFT;
 			candidatePlane[i] = minB[i];
 			inside = FALSE;
-		}else if (origin[i] > maxB[i]) {
+		} else if (origin[i] > maxB[i]) {
 			quadrant[i] = RIGHT;
 			candidatePlane[i] = maxB[i];
 			inside = FALSE;
-		}else	{
+		} else	{
 			quadrant[i] = MIDDLE;
 		}
 
 	/* Ray origin inside bounding box */
-	if(inside)	{
+	if (inside)	{
     vHit = FLOAT3D(origin[0],origin[1],origin[2]);
     return TRUE;
 	}
@@ -220,7 +220,7 @@ FLOAT GetExactHitLocation(INDEX iTileIndex, FLOAT3D &vOrigin, FLOAT3D &vTarget, 
   FLOAT fDistance = fDummyDist;
 
   // for each triangle
-  for(INDEX iTri=0;iTri<ctIndices;iTri+=3) {
+  for (INDEX iTri=0;iTri<ctIndices;iTri+=3) {
     INDEX *pind = &paiIndices[iTri];
     GFXVertex &v0 = pavVertices[pind[0]];
     GFXVertex &v1 = pavVertices[pind[1]];
@@ -274,7 +274,7 @@ FLOAT GetExactHitLocation(INDEX iTileIndex, FLOAT3D &vOrigin, FLOAT3D &vTarget, 
   		}
     }
   }
-  if(fDistance!=fDummyDist) {
+  if (fDistance!=fDummyDist) {
     _vHitLocation = vHitLocation;
     return fDistance;
   } else {
@@ -306,7 +306,7 @@ Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bboxExtract
   _aiExtColors.PopAll();
 
   Rect rc;
-  if(!bFixSize) {
+  if (!bFixSize) {
     // max vector of bbox in incremented for one, because first vertex is at 0,0,0 in world and in heightmap is at 1,1
     rc.rc_iLeft   = Clamp((INDEX)(bbox.minvect(1)-0),(INDEX)0,ptrTerrain->tr_pixHeightMapWidth);
     rc.rc_iTop    = Clamp((INDEX)(bbox.minvect(3)-0),(INDEX)0,ptrTerrain->tr_pixHeightMapHeight);
@@ -337,7 +337,7 @@ Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bboxExtract
   INDEX ctIndices = (iWidth-1)*(iHeight-1)*6;
   
 //  ASSERT(ctVertices>0 && ctIndices>0);
-  if(ctVertices==0 || ctIndices==0) {
+  if (ctVertices==0 || ctIndices==0) {
     ctVtx = 0;
     ctInd = 0;
     return Rect(0,0,0,0);
@@ -352,9 +352,9 @@ Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bboxExtract
 
   // for each row
   INDEX iy=0;
-  for(;iy<iHeight;iy++) {
+  for (;iy<iHeight;iy++) {
     // for each column
-    for(INDEX ix=0;ix<iWidth;ix++) {
+    for (INDEX ix=0;ix<iWidth;ix++) {
       // Add one vertex
       GFXVertex4 &vx = *pavVertices;
       vx.x = (FLOAT)(ix+iStartX)*ptrTerrain->tr_vStretch(1);
@@ -378,13 +378,13 @@ Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bboxExtract
   INDEX ctVisTris = 0; // Visible tris
 
   // for each row
-  for(iy=0;iy<iHeight-1;iy++) {
+  for (iy=0;iy<iHeight-1;iy++) {
     // for each column
-    for(INDEX ix=0;ix<iWidth-1;ix++) {
+    for (INDEX ix=0;ix<iWidth-1;ix++) {
       // Add one quad ( if it is visible )
-      if(iFacing&1) {
+      if (iFacing&1) {
         // if all vertices in this triangle are visible
-        if(pavExtVtx[ivx].shade + pavExtVtx[ivx+iWidth].shade + pavExtVtx[ivx+1].shade == 255*3) { 
+        if (pavExtVtx[ivx].shade + pavExtVtx[ivx+iWidth].shade + pavExtVtx[ivx+1].shade == 255*3) { 
           // Add one triangle
           pauiIndices[0] = ivx;
           pauiIndices[1] = ivx+iWidth;
@@ -393,7 +393,7 @@ Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bboxExtract
           ctVisTris++;
         }
         // if all vertices in this triangle are visible
-        if(pavExtVtx[ivx+1].shade + pavExtVtx[ivx+iWidth].shade + pavExtVtx[ivx+iWidth+1].shade == 255*3) {
+        if (pavExtVtx[ivx+1].shade + pavExtVtx[ivx+iWidth].shade + pavExtVtx[ivx+iWidth+1].shade == 255*3) {
           // Add one triangle
           pauiIndices[0] = ivx+1;
           pauiIndices[1] = ivx+iWidth;
@@ -403,7 +403,7 @@ Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bboxExtract
         }
       } else {
         // if all vertices in this triangle are visible
-        if(pavExtVtx[ivx+iWidth].shade + pavExtVtx[ivx+iWidth+1].shade + pavExtVtx[ivx].shade == 255*3) { 
+        if (pavExtVtx[ivx+iWidth].shade + pavExtVtx[ivx+iWidth+1].shade + pavExtVtx[ivx].shade == 255*3) { 
           // Add one triangle
           pauiIndices[0] = ivx+iWidth;
           pauiIndices[1] = ivx+iWidth+1;
@@ -412,7 +412,7 @@ Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bboxExtract
           ctVisTris++;
         }
         // if all vertices in this triangle are visible
-        if(pavExtVtx[ivx].shade + pavExtVtx[ivx+iWidth+1].shade + pavExtVtx[ivx+1].shade == 255*3) {
+        if (pavExtVtx[ivx].shade + pavExtVtx[ivx+iWidth+1].shade + pavExtVtx[ivx+1].shade == 255*3) {
           // Add one triangle
           pauiIndices[0] = ivx;
           pauiIndices[1] = ivx+iWidth+1;
@@ -424,7 +424,7 @@ Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bboxExtract
       iFacing++;
       ivx++;
     }
-    if(iWidth&1) iFacing++;
+    if (iWidth&1) iFacing++;
     ivx++;
   }
 
@@ -448,7 +448,7 @@ void ExtractVerticesInRect(CTerrain *ptrTerrain, Rect &rc, GFXVertex4 **pavVtx,
   ctVtx = iWidth*iHeight;
   ctInd  = (iWidth-1)*(iHeight-1)*6;
 
-  if(ctVtx==0 || ctInd==0) {
+  if (ctVtx==0 || ctInd==0) {
     return;
   }
   _avExtVertices.Push(ctVtx);
@@ -466,8 +466,8 @@ void ExtractVerticesInRect(CTerrain *ptrTerrain, Rect &rc, GFXVertex4 **pavVtx,
 
   GFXVertex *pavVertices = &_avExtVertices[0];
   INDEX iy=0;
-  for(;iy<iHeight;iy++) {
-    for(INDEX ix=0;ix<iWidth;ix++) {
+  for (;iy<iHeight;iy++) {
+    for (INDEX ix=0;ix<iWidth;ix++) {
       pavVertices->x = (FLOAT)(ix+iStartX)*ptrTerrain->tr_vStretch(1);
       pavVertices->z = (FLOAT)(iy+iStartY)*ptrTerrain->tr_vStretch(3);
       pavVertices->y = *puwHeight * ptrTerrain->tr_vStretch(2);
@@ -482,10 +482,10 @@ void ExtractVerticesInRect(CTerrain *ptrTerrain, Rect &rc, GFXVertex4 **pavVtx,
   INDEX ind=0;
   INDEX iFacing=iFirstHeight;
   // for each row
-  for(iy=0;iy<iHeight-1;iy++) {
+  for (iy=0;iy<iHeight-1;iy++) {
     // for each column
-    for(INDEX ix=0;ix<iWidth-1;ix++) {
-      if(iFacing&1) {
+    for (INDEX ix=0;ix<iWidth-1;ix++) {
+      if (iFacing&1) {
         pauiIndices[0] = ivx;   pauiIndices[1] = ivx+iWidth; pauiIndices[2] = ivx+1;
         pauiIndices[3] = ivx+1; pauiIndices[4] = ivx+iWidth; pauiIndices[5] = ivx+iWidth+1;
       } else {
@@ -497,7 +497,7 @@ void ExtractVerticesInRect(CTerrain *ptrTerrain, Rect &rc, GFXVertex4 **pavVtx,
       iFacing++;
       ivx++;
     }
-    if(iWidth&1) iFacing++;
+    if (iWidth&1) iFacing++;
     ivx++;
   }
 }
@@ -508,10 +508,10 @@ void FindTilesInBox(CTerrain *ptrTerrain, FLOATaabbox3D &bbox)
   ASSERT(ptrTerrain!=NULL);
   _aiHitTiles.PopAll();
   // for each terrain tile
-  for(INDEX itt=0;itt<_ptrTerrain->tr_ctTiles;itt++) {
+  for (INDEX itt=0;itt<_ptrTerrain->tr_ctTiles;itt++) {
     QuadTreeNode &qtn = _ptrTerrain->tr_aqtnQuadTreeNodes[itt];
     // if it is coliding with given box
-    if(qtn.qtn_aabbox.HasContactWith(bbox)) {
+    if (qtn.qtn_aabbox.HasContactWith(bbox)) {
       // add it to array of coliding tiles
       INDEX &iHitTile = _aiHitTiles.Push();
       iHitTile = itt;
@@ -525,7 +525,7 @@ void AddFlagsToExtractedTiles(ULONG ulFlags)
   ASSERT(_ptrTerrain!=NULL);
   // for each tile that has contact with extraction box
   INDEX ctht = _aiHitTiles.Count();
-  for(INDEX iht=0;iht<ctht;iht++) {
+  for (INDEX iht=0;iht<ctht;iht++) {
     // Add tile to regen queue
     INDEX iTileIndex = _aiHitTiles[iht];
     CTerrainTile &tt = _ptrTerrain->tr_attTiles[iTileIndex];
@@ -548,7 +548,7 @@ UBYTE GetValueFromMask(CTerrain *ptrTerrain, INDEX iLayer, FLOAT3D vHitPoint)
 
   CTerrainLayer &tl = ptrTerrain->GetLayer(iLayer);
   INDEX iVtx = vHit(1) + tl.tl_iMaskWidth*vHit(3);
-  if(iVtx<0 || iVtx>=tl.tl_iMaskWidth*tl.tl_iMaskHeight) {
+  if (iVtx<0 || iVtx>=tl.tl_iMaskWidth*tl.tl_iMaskHeight) {
     ASSERTALWAYS("Invalid hit point");
     return 0;
   }
@@ -560,7 +560,7 @@ UBYTE GetValueFromMask(CTerrain *ptrTerrain, INDEX iLayer, FLOAT3D vHitPoint)
 void CreateTexture(CTextureData &tdTopMap, PIX pixWidth, PIX pixHeight,ULONG ulFlags)
 {
   // clear current top map
-  if(tdTopMap.td_pulFrames!=NULL) {
+  if (tdTopMap.td_pulFrames!=NULL) {
     FreeMemory( tdTopMap.td_pulFrames);
     tdTopMap.td_pulFrames = NULL;
   }
@@ -605,9 +605,9 @@ void PrepareSharedTopMapMemory(CTextureData *ptdTopMap, INDEX iTileIndex)
 {
   SLONG slSize = ptdTopMap->td_slFrameSize;
   // if this is global top map
-  if(iTileIndex==(-1)) {
+  if (iTileIndex==(-1)) {
     // if shared memory is larger then global top map
-    if(slSize<=_slSharedTopMapSize && _pulSharedTopMap!=NULL) {
+    if (slSize<=_slSharedTopMapSize && _pulSharedTopMap!=NULL) {
       // assign pointer of global top map to shared memory
       ptdTopMap->td_pulFrames = _pulSharedTopMap;
       return;
@@ -619,9 +619,9 @@ void PrepareSharedTopMapMemory(CTextureData *ptdTopMap, INDEX iTileIndex)
   // else this is normal top map
   } else {
     // if required memory is larger than currently allocated one
-    if(slSize>_slSharedTopMapSize) {
+    if (slSize>_slSharedTopMapSize) {
       // if shared memory exists
-      if(_pulSharedTopMap!=NULL) {
+      if (_pulSharedTopMap!=NULL) {
         // free current shared memory
         FreeMemory(_pulSharedTopMap);
         _pulSharedTopMap = NULL;
@@ -639,9 +639,9 @@ void PrepareSharedTopMapMemory(CTextureData *ptdTopMap, INDEX iTileIndex)
 void FreeSharedTopMapMemory(CTextureData *ptdTopMap, INDEX iTileIndex)
 {
   // if this is global top map
-  if(iTileIndex==(-1)) {
+  if (iTileIndex==(-1)) {
     // if global top map isn't using shared memory
-    if(ptdTopMap->td_pulFrames!=_pulSharedTopMap) {
+    if (ptdTopMap->td_pulFrames!=_pulSharedTopMap) {
       // free memory global top map is using
       FreeMemory(ptdTopMap->td_pulFrames);
     }
@@ -693,7 +693,7 @@ static FLOAT3D CalculateNormalFromPoint(FLOAT fPosX, FLOAT fPosZ, FLOAT3D *pvStr
   }
   ASSERT(Abs(vNormal.Length()-1)<0.01);
 
-  if(pvStrPos!=NULL) {
+  if (pvStrPos!=NULL) {
     FLOAT fResX1 = Lerp(avVtx[0](2),avVtx[1](2),fLerpX);
     FLOAT fResX2 = Lerp(avVtx[2](2),avVtx[3](2),fLerpX);
     FLOAT fPosY  = Lerp(fResX1,fResX2,fLerpZ);
@@ -723,9 +723,9 @@ static void CalcPointLight(CPlacement3D &plLight, CLightSource *plsLight, Rect &
   GFXColor *pacolData  = (GFXColor*)&_ptrTerrain->tr_tdShadowMap.td_pulFrames[pixFirst];
 
   // for each row in shadow map
-  for(PIX pixY=pixTop;pixY<pixBottom;pixY++) {
+  for (PIX pixY=pixTop;pixY<pixBottom;pixY++) {
     // for each in column
-    for(PIX pixX=pixLeft;pixX<pixRight;pixX++) {
+    for (PIX pixX=pixLeft;pixX<pixRight;pixX++) {
       FLOAT fPosX = (FLOAT)(pixX*fSHDiffX);
       FLOAT fPosZ = (FLOAT)(pixY*fSHDiffZ);
 
@@ -742,9 +742,9 @@ static void CalcPointLight(CPlacement3D &plLight, CLightSource *plsLight, Rect &
       FLOAT fIntensity = 1.0f;
       FLOAT fFallOff   = plsLight->ls_rFallOff;
       FLOAT fHotSpot   = plsLight->ls_rHotSpot;
-      if(fDistance>fFallOff) {
+      if (fDistance>fFallOff) {
         fIntensity = 0;
-      } else if(fDistance>fHotSpot) {
+      } else if (fDistance>fHotSpot) {
         fIntensity = CalculateRatio(fDistance, fHotSpot, fFallOff, 0.0f, 1.0f);
       }
       ULONG ulIntensity = NormFloatToByte(fIntensity);
@@ -795,7 +795,7 @@ static void CalcDirectionalLight(CPlacement3D &plLight, CLightSource *plsLight, 
   BOOL bOverBrightning = mdl_bAllowOverbright && _pGfx->gl_ctTextureUnits>1;
 
   // is overbrightning enabled
-  if(bOverBrightning) {
+  if (bOverBrightning) {
     slar = ClampUp(slar,127L);
     slag = ClampUp(slag,127L);
     slab = ClampUp(slab,127L);
@@ -813,9 +813,9 @@ static void CalcDirectionalLight(CPlacement3D &plLight, CLightSource *plsLight, 
   vLightNormal = -vLightNormal.Normalize();
 
   // for each row in shadow map
-  for(PIX pixY=pixTop;pixY<pixBottom;pixY++) {
+  for (PIX pixY=pixTop;pixY<pixBottom;pixY++) {
     // for each in column
-    for(PIX pixX=pixLeft;pixX<pixRight;pixX++) {
+    for (PIX pixX=pixLeft;pixX<pixRight;pixX++) {
       FLOAT fPosX = (FLOAT)(pixX*fSHDiffX);
       FLOAT fPosZ = (FLOAT)(pixY*fSHDiffZ);
       FLOAT3D vNormal = CalculateNormalFromPoint(fPosX,fPosZ);
@@ -847,9 +847,9 @@ static void ClearPartOfShadowMap(CTerrain *ptrTerrain, Rect &rcUpdate)
   PIX pixFirst = rcUpdate.rc_iLeft + rcUpdate.rc_iTop * ptrTerrain->GetShadowMapWidth();
   GFXColor *pacolData  = (GFXColor*)&_ptrTerrain->tr_tdShadowMap.td_pulFrames[pixFirst];
   // for each row in shadow map
-  for(PIX pixY=pixTop;pixY<pixBottom;pixY++) {
+  for (PIX pixY=pixTop;pixY<pixBottom;pixY++) {
     // for each in column
-    for(PIX pixX=pixLeft;pixX<pixRight;pixX++) {
+    for (PIX pixX=pixLeft;pixX<pixRight;pixX++) {
       *pacolData = 0x00000000;
       pacolData++;
     }
@@ -895,7 +895,7 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
 {
   // if this is not world editor app 
   extern BOOL _bWorldEditorApp;
-  if(!_bWorldEditorApp) {
+  if (!_bWorldEditorApp) {
 
     ASSERTALWAYS("Terrain shadow map can only be updated from world editor!");
     return;
@@ -911,18 +911,18 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
 
   ptrTerrain->GetAllTerrainBBox(boxAllTerrain);
   // if request to update whole terrain is given
-  if(pboxUpdate==NULL) {
+  if (pboxUpdate==NULL) {
     // take all terrain bbox as update box
     boxUpdate = boxAllTerrain;
   } else {
     // use given bbox as update box
     boxUpdate = *pboxUpdate;
-    if(bAbsoluteSpace) {
+    if (bAbsoluteSpace) {
       boxUpdate = AbsoluteToRelative(ptrTerrain, boxUpdate);
     }
     
     // do not update terrain if update box isn't in terrain box
-    if(!boxUpdate.HasContactWith(boxAllTerrain)) {
+    if (!boxUpdate.HasContactWith(boxAllTerrain)) {
       return;
     }
 
@@ -962,7 +962,7 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
       // Get light bounding box
       FLOATaabbox3D boxLight(plLight.pl_PositionVector, pls->ls_rFallOff);
       // if light is directional
-      if(pls->ls_ulFlags &LSF_DIRECTIONAL) {
+      if (pls->ls_ulFlags &LSF_DIRECTIONAL) {
         // Calculate lightning
         CalcDirectionalLight(plLight,pls,rcUpdate);
       // if it is point light
@@ -970,11 +970,11 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
         _bboxDrawOne = boxLight;
         _bboxDrawTwo = boxUpdate;
         // if point light box have contact with update box
-        if(boxLight.HasContactWith(boxUpdate)) {
+        if (boxLight.HasContactWith(boxUpdate)) {
           _ctShadowMapUpdates++;
 
           // if light box is inside update box
-          if(boxLight.minvect(1)>=boxUpdate.minvect(1) && boxLight.minvect(3)>boxUpdate.minvect(3) && 
+          if (boxLight.minvect(1)>=boxUpdate.minvect(1) && boxLight.minvect(3)>boxUpdate.minvect(3) && 
             boxLight.maxvect(1)<=boxUpdate.maxvect(1) && boxLight.maxvect(3)<=boxUpdate.maxvect(3)) {
             // Recalculate only light box
             Rect rcLightUpdate = GetUpdateRectFromBox(ptrTerrain,boxLight);
@@ -1000,7 +1000,7 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
   ULONG *ppixShadowMip = &ptrTerrain->tr_tdShadowMap.td_pulFrames[iMipOffset];
 
   INDEX ctpixs = ptrTerrain->GetShadingMapWidth()*ptrTerrain->GetShadingMapHeight();
-  for(PIX ipix=0;ipix<ctpixs;ipix++) {
+  for (PIX ipix=0;ipix<ctpixs;ipix++) {
     ULONG ulPixel = ByteSwap(*ppixShadowMip);
     // ULONG ulPixel = ulTemp;
     *puwShade = (((ulPixel>>27)&0x001F)<<10) | 

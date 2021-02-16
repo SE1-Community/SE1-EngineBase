@@ -57,7 +57,7 @@ void DeleteModelInstance(CModelInstance *pmi)
 {
   ASSERT(pmi!=NULL);
   // if model instance is valid
-  if(pmi!=NULL) {
+  if (pmi!=NULL) {
     // Clear model instance
     pmi->Clear();
     // Delete model instance
@@ -103,7 +103,7 @@ CModelInstance::CModelInstance()
   mi_psklSkeleton = NULL;
   mi_iParentBoneID = -1;
   mi_colModelColor = 0;
-  mi_vStretch = FLOAT3D(1,1,1);
+  mi_vStretch = FLOAT3D(1.0f, 1.0f, 1.0f);
   mi_colModelColor = 0xFFFFFFFF;
   mi_aqAnims.aq_Lists.SetAllocationStep(1);
   mi_cmiChildren.SetAllocationStep(1);
@@ -159,10 +159,10 @@ INDEX CModelInstance::GetColisionBoxIndex(INDEX iBoxID)
 {
   INDEX ctcb = mi_cbAABox.Count();
   // for each existing box
-  for(INT icb=0;icb<ctcb;icb++) {
+  for (INT icb=0;icb<ctcb;icb++) {
     ColisionBox &cb = mi_cbAABox[icb];
     // if this is searched box
-    if(cb.GetID() == iBoxID) {
+    if (cb.GetID() == iBoxID) {
       // return index of box
       return icb;
     }
@@ -197,7 +197,7 @@ FLOAT3D CModelInstance::GetCollisionBoxMax(INDEX iCollisionBox/*=0*/)
 INDEX CModelInstance::GetCollisionBoxDimensionEquality(INDEX iCollisionBox/*=0*/)
 {
   // if colision box does not exists
-  if(iCollisionBox>=mi_cbAABox.Count()) {
+  if (iCollisionBox>=mi_cbAABox.Count()) {
     // give last colision box
     iCollisionBox = mi_cbAABox.Count()-1;
   }
@@ -208,9 +208,9 @@ INDEX CModelInstance::GetCollisionBoxDimensionEquality(INDEX iCollisionBox/*=0*/
   FLOAT fWeigth = cb.Max()(1) - cb.Min()(1);
   FLOAT fHeight = cb.Max()(2) - cb.Min()(2);
   FLOAT fLength = cb.Max()(3) - cb.Min()(3);
-  if(fLength == fHeight) {
+  if (fLength == fHeight) {
     return SKA_LENGTH_EQ_HEIGHT;
-  } else if(fHeight == fWeigth) {
+  } else if (fHeight == fWeigth) {
     return SKA_HEIGHT_EQ_WIDTH;
   // default fLength == fWeight
   } else {
@@ -237,8 +237,8 @@ void CModelInstance::RemoveColisionBox(INDEX iIndex)
   INDEX icbNew = 0;
   CStaticArray<struct ColisionBox> aColisionBoxesTemp;
   aColisionBoxesTemp.New(ctcb-1);
-  for(INDEX icb=0;icb<ctcb;icb++) {
-    if(iIndex != icb) { 
+  for (INDEX icb=0;icb<ctcb;icb++) {
+    if (iIndex != icb) { 
       aColisionBoxesTemp[icbNew] = mi_cbAABox[icb];
       icbNew++;
     }
@@ -250,7 +250,7 @@ void CModelInstance::RemoveColisionBox(INDEX iIndex)
 void CModelInstance::AddChild(CModelInstance *pmi, INDEX iParentBoneID /* = -1 */)
 {
   SKAASSERT(pmi!=NULL);
-  if(pmi==NULL) return;
+  if (pmi==NULL) return;
   mi_cmiChildren.Add(pmi);
   if (iParentBoneID>0) {
     pmi->SetParentBone(iParentBoneID);
@@ -263,8 +263,8 @@ void CModelInstance::RemoveChild(CModelInstance *pmi)
   ASSERT(pmi!=this);
   SKAASSERT(pmi!=NULL);
   // aditional check
-  if(pmi==NULL) return;
-  if(pmi==this) return;
+  if (pmi==NULL) return;
+  if (pmi==this) return;
 
   mi_cmiChildren.Remove(pmi);
 }
@@ -318,7 +318,7 @@ void CModelInstance::StretchSingleModel(FLOAT3D &vStretch)
   mi_vStretch = vStretch;
   // for each child of model instance
   INDEX ctch = mi_cmiChildren.Count();
-  for(INDEX ich=0;ich<ctch;ich++) {
+  for (INDEX ich=0;ich<ctch;ich++) {
     // set new stretch of model instance
     CModelInstance &chmi = mi_cmiChildren[ich];
     chmi.StretchSingleModel(FLOAT3D(1/vStretch(1),1/vStretch(2),1/vStretch(3)));
@@ -350,9 +350,9 @@ void CModelInstance::AddAnimSet_t(CTFileName fnAnimSet)
 // Add texture to ModelInstance (if no mesh instance given, add texture to last mesh instance)
 void CModelInstance::AddTexture_t(CTFileName fnTexture, CTString strTexID,MeshInstance *pmshi)
 {
-  if(pmshi == NULL) {
+  if (pmshi == NULL) {
     INDEX ctMeshInst = mi_aMeshInst.Count();
-    if(ctMeshInst<=0) throw("Error adding texture\nMesh instance does not exists");
+    if (ctMeshInst<=0) throw("Error adding texture\nMesh instance does not exists");
     pmshi = &mi_aMeshInst[ctMeshInst-1];
   }
 
@@ -371,11 +371,11 @@ void CModelInstance::RemoveTexture(TextureInstance *ptiRemove,MeshInstance *pmsh
   atiTextures.New(ctti-1);
   // for each texture instance in mesh instance
   INDEX iIndexSrc=0;
-  for(INDEX iti=0;iti<ctti;iti++)
+  for (INDEX iti=0;iti<ctti;iti++)
   {
     TextureInstance *pti = &pmshi->mi_tiTextures[iti];
     // if texture instance is different from selected one 
-    if(pti != ptiRemove) {
+    if (pti != ptiRemove) {
       // copy it to new array of texture isntances
       atiTextures[iIndexSrc] = pmshi->mi_tiTextures[iti];
       iIndexSrc++;
@@ -392,14 +392,14 @@ TextureInstance *CModelInstance::FindTexureInstance(INDEX iTexID)
 {
   // for each mesh instance
   INDEX ctmshi = mi_aMeshInst.Count();
-  for(INDEX imshi=0;imshi<ctmshi;imshi++) {
+  for (INDEX imshi=0;imshi<ctmshi;imshi++) {
     MeshInstance &mshi = mi_aMeshInst[imshi];
     // for each texture instance in meshinstance
     INDEX ctti = mshi.mi_tiTextures.Count();
-    for(INDEX iti=0;iti<ctti;iti++) {
+    for (INDEX iti=0;iti<ctti;iti++) {
       TextureInstance &ti = mshi.mi_tiTextures[iti];
       // if this is texinstance that is beeing serched for
-      if(ti.GetID() == iTexID) {
+      if (ti.GetID() == iTexID) {
         // return it
         return &ti;
       }
@@ -414,10 +414,10 @@ TextureInstance *CModelInstance::FindTexureInstance(INDEX iTexID, MeshInstance &
 {
   // for each texture instance in given mesh instance
   INDEX ctti = mshi.mi_tiTextures.Count();
-  for(INDEX iti=0;iti<ctti;iti++) {
+  for (INDEX iti=0;iti<ctti;iti++) {
     TextureInstance &ti = mshi.mi_tiTextures[iti];
     // if this is texinstance that is beeing serched for
-    if(ti.GetID() == iTexID) {
+    if (ti.GetID() == iTexID) {
       // return it
       return &ti;
     }
@@ -432,11 +432,11 @@ void CModelInstance::ChangeParent(CModelInstance *pmiOldParent, CModelInstance *
   SKAASSERT(pmiOldParent!=NULL);
   SKAASSERT(pmiNewParent!=NULL);
 
-  if(pmiOldParent == NULL) {
+  if (pmiOldParent == NULL) {
     CPrintF("Model Instance doesn't have a parent\n");
     return;
   }
-  if(pmiNewParent == NULL) {
+  if (pmiNewParent == NULL) {
     CPrintF("New parent of model instance is NULL\n");
     return;
   }
@@ -450,18 +450,18 @@ CModelInstance *CModelInstance::GetParent(CModelInstance *pmiStartFrom)
 {
   ASSERT(pmiStartFrom!=NULL);
   // aditional check
-  if(pmiStartFrom==NULL) return NULL;
+  if (pmiStartFrom==NULL) return NULL;
   // if 'this' is member of pmiStartFrom return it
-  if(pmiStartFrom->mi_cmiChildren.IsMember(this)) {
+  if (pmiStartFrom->mi_cmiChildren.IsMember(this)) {
     return pmiStartFrom;
   }
   // count childrent of pmiStartFrom
   INDEX ctcmi = pmiStartFrom->mi_cmiChildren.Count();
   // for each child of pmiStartFrom
-  for(INDEX icmi=0;icmi<ctcmi;icmi++) {
+  for (INDEX icmi=0;icmi<ctcmi;icmi++) {
     // if some of children have 'this' as member return them as parent
     CModelInstance *pmiReturned = GetParent(&pmiStartFrom->mi_cmiChildren[icmi]);
-    if(pmiReturned != NULL) {
+    if (pmiReturned != NULL) {
       return pmiReturned;
     }
   }
@@ -472,9 +472,9 @@ CModelInstance *CModelInstance::GetParent(CModelInstance *pmiStartFrom)
 /*CModelInstance *CModelInstance::GetChild(INDEX iChildID, BOOL bRecursive)
 {
   INDEX ctcmi = mi_cmiChildren.Count();
-  for(INDEX icmi=0;icmi<ctcmi;icmi++) {
+  for (INDEX icmi=0;icmi<ctcmi;icmi++) {
     CModelInstance *pmi = &mi_cmiChildren[icmi];
-    if(pmi->mi_iModelID == iChildID) {
+    if (pmi->mi_iModelID == iChildID) {
       return pmi;
     }
   }
@@ -483,13 +483,13 @@ CModelInstance *CModelInstance::GetParent(CModelInstance *pmiStartFrom)
 CModelInstance *CModelInstance::GetChild(INDEX iChildID, BOOL bRecursive/*=FALSE*/)
 {
   INDEX ctcmi = mi_cmiChildren.Count();
-  for(INDEX icmi=0;icmi<ctcmi;icmi++) {
+  for (INDEX icmi=0;icmi<ctcmi;icmi++) {
     CModelInstance *pmi = &mi_cmiChildren[icmi];
-    if(pmi->mi_iModelID == iChildID) {
+    if (pmi->mi_iModelID == iChildID) {
       return pmi;
     }
     // if child has own children, go recursive
-    if(bRecursive && pmi->mi_cmiChildren.Count()>0) {      
+    if (bRecursive && pmi->mi_cmiChildren.Count()>0) {      
       pmi = pmi->GetChild(iChildID, TRUE);
       if (pmi!=NULL) return pmi;
     }    
@@ -504,9 +504,9 @@ CModelInstance *CModelInstance::GetFirstNonReferencedParent(CModelInstance *pmiR
   ASSERT(pmiRoot!=NULL);
   CModelInstance *pmiParent = this->GetParent(pmiRoot);
   CModelInstance *pmiLast = this;
-  while(pmiParent != NULL)
+  while (pmiParent != NULL)
   {
-    if(pmiParent->mi_fnSourceFile != mi_fnSourceFile)
+    if (pmiParent->mi_fnSourceFile != mi_fnSourceFile)
     {
       return pmiLast;
     }
@@ -531,10 +531,10 @@ if (!FindAnimationByID(iAnimID, &iDummy1, &iDummy2)) {
 
   fSpeedMul = 1/fSpeedMul;
   // if no restart flag was set
-  if(ulFlags&AN_NORESTART) {
+  if (ulFlags&AN_NORESTART) {
     // if given animtion is allready playing
-    if(IsAnimationPlaying(iAnimID)) {
-      if(ulFlags&AN_LOOPING) {
+    if (IsAnimationPlaying(iAnimID)) {
+      if (ulFlags&AN_LOOPING) {
         AddFlagsToPlayingAnim(iAnimID,AN_LOOPING);
       }
       // return without adding animtion
@@ -543,18 +543,18 @@ if (!FindAnimationByID(iAnimID, &iDummy1, &iDummy2)) {
   }
 
   // if flag for new cleared state is set
-  if(ulFlags&AN_CLEAR) {
+  if (ulFlags&AN_CLEAR) {
     // do new clear state with default length
     NewClearState(CLEAR_STATE_LENGTH);
   // if flag for new cloned state is set
-  } else if(ulFlags&AN_CLONE) {
+  } else if (ulFlags&AN_CLONE) {
     // do new clear state with default length
     NewClonedState(CLONED_STATE_LENGTH);
   }
 
   // if anim queue is empty 
   INDEX ctal = mi_aqAnims.aq_Lists.Count();
-  if(ctal == 0) {
+  if (ctal == 0) {
     // add new clear state
     NewClearState(0);
   }
@@ -563,7 +563,7 @@ if (!FindAnimationByID(iAnimID, &iDummy1, &iDummy2)) {
   AnimList &alList = mi_aqAnims.aq_Lists[ctal-1];
 
   // if flag is set not to sort anims
-  if(ulFlags&AN_NOGROUP_SORT) {
+  if (ulFlags&AN_NOGROUP_SORT) {
     // just add new animations to end of list
     PlayedAnim &plAnim = alList.al_PlayedAnims.Push();
     plAnim.pa_iAnimID = iAnimID;
@@ -579,13 +579,13 @@ if (!FindAnimationByID(iAnimID, &iDummy1, &iDummy2)) {
     INDEX ctpa = alList.al_PlayedAnims.Count();
 
     INDEX ipa=ctpa-1;
-    if(ipa>0) {
+    if (ipa>0) {
       // for each old animation from last to first
-      for(;ipa>0;ipa--) {
+      for (;ipa>0;ipa--) {
         PlayedAnim &pa = alList.al_PlayedAnims[ipa-1];
         PlayedAnim &paNext = alList.al_PlayedAnims[ipa];
         // if anim group id is larger than new group id
-        if(pa.pa_GroupID>iGroupID) {
+        if (pa.pa_GroupID>iGroupID) {
           // move animation in array to right
           paNext = pa;
         } else break;
@@ -607,7 +607,7 @@ void CModelInstance::RemAnimation(INDEX iAnimID)
 {
   INDEX ctal = mi_aqAnims.aq_Lists.Count();
   // if anim queue is empty
-  if(ctal < 1) {
+  if (ctal < 1) {
     SKAASSERT(FALSE);
     // no anim to remove
     return;
@@ -618,12 +618,12 @@ void CModelInstance::RemAnimation(INDEX iAnimID)
   // count played anims in anim list
   INDEX ctpa = alList.al_PlayedAnims.Count();
   // loop each played anim in anim list
-  for(int ipa=0;ipa<ctpa;ipa++) {
+  for (int ipa=0;ipa<ctpa;ipa++) {
     PlayedAnim &paAnim = alList.al_PlayedAnims[ipa];
     // remove if same ID
-    if(paAnim.pa_iAnimID == iAnimID) {
+    if (paAnim.pa_iAnimID == iAnimID) {
       // copy all latter anims over this one
-      for(int ira=ipa;ira<ctpa-1;ira++) {
+      for (int ira=ipa;ira<ctpa-1;ira++) {
         alList.al_PlayedAnims[ira] = alList.al_PlayedAnims[ira+1];
       }
       // decrease played anims count
@@ -639,7 +639,7 @@ void CModelInstance::RemAnimsWithID(INDEX iGroupID)
 {
   INDEX ctal = mi_aqAnims.aq_Lists.Count();
   // if anim queue is empty
-  if(ctal < 1) {
+  if (ctal < 1) {
     SKAASSERT(FALSE);
     // no anim to remove
     return;
@@ -650,12 +650,12 @@ void CModelInstance::RemAnimsWithID(INDEX iGroupID)
   // count played anims in anim list
   INDEX ctpa = alList.al_PlayedAnims.Count();
   // loop each played anim in anim list
-  for(int ipa=0;ipa<ctpa;ipa++) {
+  for (int ipa=0;ipa<ctpa;ipa++) {
     PlayedAnim &paAnim = alList.al_PlayedAnims[ipa];
     // remove if same Group ID
-    if(paAnim.pa_GroupID == iGroupID) {
+    if (paAnim.pa_GroupID == iGroupID) {
       // copy all latter anims over this one
-      for(int ira=ipa;ira<ctpa-1;ira++) {
+      for (int ira=ipa;ira<ctpa-1;ira++) {
         alList.al_PlayedAnims[ira] = alList.al_PlayedAnims[ira+1];
       }
       // decrease played anims count
@@ -675,20 +675,20 @@ void CModelInstance::RemovePassedAnimsFromQueue()
   INDEX iFirstAnimList = -1;
   // for each anim list from last to first
   INDEX ial=ctal-1;
-  for(;ial>=0;ial--)
+  for (;ial>=0;ial--)
   {
     AnimList &alList = mi_aqAnims.aq_Lists[ial];
     // calculate fade factor for this animlist
     FLOAT fFadeFactor = CalculateFadeFactor(alList);
     // if factor is 1 remove all animlists before this one
-    if(fFadeFactor >= 1.0f) {
+    if (fFadeFactor >= 1.0f) {
       iFirstAnimList = ial;
       break;
     }
   }
-  if(iFirstAnimList <= 0) return;
+  if (iFirstAnimList <= 0) return;
   // move later anim lists to first pos
-  for(ial=iFirstAnimList;ial<ctal;ial++)
+  for (ial=iFirstAnimList;ial<ctal;ial++)
   {
     mi_aqAnims.aq_Lists[ial-iFirstAnimList] = mi_aqAnims.aq_Lists[ial];
     mi_aqAnims.aq_Lists[ial].al_PlayedAnims.PopAll();
@@ -702,7 +702,7 @@ void CModelInstance::NewClonedState(FLOAT fFadeTime)
 {
   RemovePassedAnimsFromQueue();
   INDEX ctal = mi_aqAnims.aq_Lists.Count();
-  if(ctal == 0) 
+  if (ctal == 0) 
   {
   // if anim queue is empty add new clear state
     NewClearState(fFadeTime);
@@ -734,7 +734,7 @@ void CModelInstance::NewClearState(FLOAT fFadeTime)
 void CModelInstance::StopAllAnimations(FLOAT fFadeTime)
 {
   INDEX ctmi = mi_cmiChildren.Count();
-  for(INDEX imi=0;imi<ctmi;imi++)
+  for (INDEX imi=0;imi<ctmi;imi++)
   {
     CModelInstance &cmi = mi_cmiChildren[imi];
     cmi.StopAllAnimations(fFadeTime);
@@ -746,7 +746,7 @@ void CModelInstance::StopAllAnimations(FLOAT fFadeTime)
 void CModelInstance::OffSetAnimationQueue(TIME fOffsetTime) {
   // for each anim list in anim queue
   INDEX ctal = mi_aqAnims.aq_Lists.Count();
-  for(INDEX ial=0;ial<ctal;ial++) {
+  for (INDEX ial=0;ial<ctal;ial++) {
     AnimList &al = mi_aqAnims.aq_Lists[ial];
     // Modify anim list start time
     al.al_llStartTime += CTimer::InTicks(fOffsetTime);
@@ -759,14 +759,14 @@ BOOL CModelInstance::FindAnimationByID(int iAnimID,INDEX *piAnimSetIndex,INDEX *
   INDEX ctas = mi_aAnimSet.Count();
   if (ctas<=0) return FALSE;
   // for each animset
-  for(int ias=ctas-1;ias>=0;ias--) {
+  for (int ias=ctas-1;ias>=0;ias--) {
     CAnimSet &asAnimSet = mi_aAnimSet[ias];
     INDEX ctan = asAnimSet.as_Anims.Count();
     // for each animation
-    for(int ian=0;ian<ctan;ian++) {
+    for (int ian=0;ian<ctan;ian++) {
       Animation &an = asAnimSet.as_Anims[ian];
       // if this is animation to find
-      if(an.an_iID == iAnimID) {
+      if (an.an_iID == iAnimID) {
         // set pointers of indices to animset and animation
         *piAnimSetIndex = ias;
         *piAnimIndex = ian;
@@ -784,11 +784,11 @@ INDEX CModelInstance::FindFirstAnimationID()
 {
   INDEX ctas = mi_aAnimSet.Count();
   // for each animset
-  for(int ias=0; ias<ctas; ias--) {
+  for (int ias=0; ias<ctas; ias--) {
     CAnimSet &asAnimSet = mi_aAnimSet[ias];
     INDEX ctan = asAnimSet.as_Anims.Count();
     // for each animation
-    for(int ian=0;ian<ctan;ian++) {
+    for (int ian=0;ian<ctan;ian++) {
       Animation &an = asAnimSet.as_Anims[ian];
       return an.an_iID;      
     }
@@ -813,13 +813,13 @@ BOOL CModelInstance::IsAnimationPlaying(INDEX iAnimID)
   // check last anim list if animation iAnimID exists in it
   INDEX ctal = mi_aqAnims.aq_Lists.Count();
   // if there are anim lists in animqueue
-  if(ctal>0) {
+  if (ctal>0) {
     // check last one
     AnimList &al = mi_aqAnims.aq_Lists[ctal-1];
     INDEX ctpa = al.al_PlayedAnims.Count();
-    for(INDEX ipa=0;ipa<ctpa;ipa++) {
+    for (INDEX ipa=0;ipa<ctpa;ipa++) {
       PlayedAnim &pa = al.al_PlayedAnims[ipa];
-      if(pa.pa_iAnimID == iAnimID) {
+      if (pa.pa_iAnimID == iAnimID) {
         // found it
         return TRUE;
       }
@@ -835,13 +835,13 @@ BOOL CModelInstance::AddFlagsToPlayingAnim(INDEX iAnimID, ULONG ulFlags)
   // check last anim list if animation iAnimID exists in it
   INDEX ctal = mi_aqAnims.aq_Lists.Count();
   // if there are anim lists in animqueue
-  if(ctal>0) {
+  if (ctal>0) {
     // check last one
     AnimList &al = mi_aqAnims.aq_Lists[ctal-1];
     INDEX ctpa = al.al_PlayedAnims.Count();
-    for(INDEX ipa=0;ipa<ctpa;ipa++) {
+    for (INDEX ipa=0;ipa<ctpa;ipa++) {
       PlayedAnim &pa = al.al_PlayedAnims[ipa];
-      if(pa.pa_iAnimID == iAnimID) {
+      if (pa.pa_iAnimID == iAnimID) {
         pa.pa_ulFlags |= ulFlags;
         // found it
         return TRUE;
@@ -887,7 +887,7 @@ void CModelInstance::SetModelColor(COLOR colNewColor)
   mi_colModelColor = colNewColor;
   INDEX ctch = mi_cmiChildren.Count();
   // for each child
-  for(INDEX ich=0;ich<ctch;ich++) {
+  for (INDEX ich=0;ich<ctch;ich++) {
     CModelInstance &cmi = mi_cmiChildren[ich];
     // set child model color 
     cmi.SetModelColor(colNewColor);
@@ -917,7 +917,7 @@ void CModelInstance::AddSimpleShadow( const FLOAT fIntensity, const FLOATplane3D
 
   // if shadows are not rendered for current mip, model is half/full face-forward,
   // intensitiy is too low or projection is not perspective - do nothing!
-  //if( !HasShadow(1) || fIntensity<0.01f || !_aprProjection.IsPerspective()
+  //if (!HasShadow(1) || fIntensity<0.01f || !_aprProjection.IsPerspective()
   // || (rm.rm_pmdModelData->md_Flags&(MF_FACE_FORWARD|MF_HALF_FACE_FORWARD))) return;
   // ASSERT( _iRenderingType==1);
   ASSERT( fIntensity>0 && fIntensity<=1);
@@ -940,7 +940,7 @@ void CModelInstance::CopyMeshInstance(CModelInstance &miOther)
 {
   INDEX ctmshi = miOther.mi_aMeshInst.Count();
   // for each mesh insntace
-  for(INDEX imshi=0;imshi<ctmshi;imshi++) {
+  for (INDEX imshi=0;imshi<ctmshi;imshi++) {
     MeshInstance &mshiOther = miOther.mi_aMeshInst[imshi];
     // add its mesh
     AddMesh_t(mshiOther.mi_pMesh->GetName());
@@ -948,7 +948,7 @@ void CModelInstance::CopyMeshInstance(CModelInstance &miOther)
 
     INDEX ctti = mshiOther.mi_tiTextures.Count();
     // for each texture in mesh instance
-    for(INDEX iti=0;iti<ctti;iti++) {
+    for (INDEX iti=0;iti<ctti;iti++) {
       TextureInstance &tiOther = mshiOther.mi_tiTextures[iti];
       CTString strTexID = ska_GetStringFromTable(tiOther.GetID());
       // CTextureData *ptd = (CTextureData*)tiOther.ti_toTexture.GetData();
@@ -978,7 +978,7 @@ void CModelInstance::Copy(CModelInstance &miOther)
   CopyMeshInstance(miOther);
 
   // if skeleton exists 
-  if(miOther.mi_psklSkeleton!=NULL) {
+  if (miOther.mi_psklSkeleton!=NULL) {
     // copy skeleton
     AddSkeleton_t(miOther.mi_psklSkeleton->GetName());
   }
@@ -986,7 +986,7 @@ void CModelInstance::Copy(CModelInstance &miOther)
   // copy animsets
   INDEX ctas = miOther.mi_aAnimSet.Count();
   // for each animset
-  for(INDEX ias=0;ias<ctas;ias++) {
+  for (INDEX ias=0;ias<ctas;ias++) {
     // add animset to this model instance
     CAnimSet &asOther = miOther.mi_aAnimSet[ias];
     AddAnimSet_t(asOther.GetName());
@@ -995,7 +995,7 @@ void CModelInstance::Copy(CModelInstance &miOther)
   // copy children
   INDEX ctch = miOther.mi_cmiChildren.Count();
   // for each child in other model instance
-  for(INDEX ich=0;ich<ctch;ich++) {
+  for (INDEX ich=0;ich<ctch;ich++) {
     CModelInstance &chmiOther = miOther.mi_cmiChildren[ich];
     CModelInstance *pchmi = CreateModelInstance("Temp");
     pchmi->Copy(chmiOther);
@@ -1016,11 +1016,11 @@ void CModelInstance::Synchronize(CModelInstance &miOther)
 
   // for each child in model instance
   INDEX ctchmi=mi_cmiChildren.Count();
-  for(INDEX ichmi=0;ichmi<ctchmi;ichmi++) {
+  for (INDEX ichmi=0;ichmi<ctchmi;ichmi++) {
     CModelInstance &chmi = mi_cmiChildren[ichmi];
     CModelInstance *pchmiOther = miOther.GetChild(chmi.GetID(),FALSE);
     // if both model instance have this child 
-    if(pchmiOther!=NULL) {
+    if (pchmiOther!=NULL) {
       // sync child
       chmi.Synchronize(*pchmiOther);
     }
@@ -1032,7 +1032,7 @@ void CModelInstance::Clear(void)
 {
   // for each child of this model instance
   INDEX ctcmi = mi_cmiChildren.Count();
-  for(INDEX icmi=0; icmi<ctcmi; icmi++) {
+  for (INDEX icmi=0; icmi<ctcmi; icmi++) {
     // delete child
     CModelInstance *pcmi = &mi_cmiChildren[0];
     mi_cmiChildren.Remove(pcmi);
@@ -1041,29 +1041,29 @@ void CModelInstance::Clear(void)
 
   // release all meshes in stock used by mi
   INDEX ctmshi = mi_aMeshInst.Count();
-  for(INDEX imshi=0; imshi<ctmshi; imshi++) {
+  for (INDEX imshi=0; imshi<ctmshi; imshi++) {
     MeshInstance &mshi = mi_aMeshInst[imshi];
     CMesh *pmesh = mshi.mi_pMesh;
-    if(pmesh != NULL) {
+    if (pmesh != NULL) {
       _pMeshStock->Release(pmesh);
     }
     // release all textures in stock used by mesh
     INDEX ctti = mshi.mi_tiTextures.Count();
-    for(INDEX iti=0;iti<ctti;iti++) {
+    for (INDEX iti=0;iti<ctti;iti++) {
       TextureInstance &ti = mshi.mi_tiTextures[iti];
       ti.ti_toTexture.SetData(NULL);
     }
   }
   mi_aMeshInst.Clear();
   // release skeleton in stock used by mi(if it exist)
-  if(mi_psklSkeleton != NULL) {
+  if (mi_psklSkeleton != NULL) {
     _pSkeletonStock->Release(mi_psklSkeleton);
     mi_psklSkeleton = NULL;
   }
 
   // release all animsets in stock used by mi
   INDEX ctas = mi_aAnimSet.Count();
-  for(INDEX ias=0;ias<ctas;ias++) {
+  for (INDEX ias=0;ias<ctas;ias++) {
     _pAnimSetStock->Release(&mi_aAnimSet[ias]);  
   }
   mi_aAnimSet.Clear();
@@ -1080,7 +1080,7 @@ SLONG CModelInstance::GetUsedMemory(void)
   SLONG slMemoryUsed = sizeof(*this);
   // Count mesh instances
   INDEX ctmshi = mi_aMeshInst.Count();
-  for(INDEX imshi=0;imshi<ctmshi;imshi++) {
+  for (INDEX imshi=0;imshi<ctmshi;imshi++) {
     MeshInstance &mshi = mi_aMeshInst[imshi];
     slMemoryUsed += mshi.mi_tiTextures.Count() * sizeof(TextureInstance);
   }
@@ -1089,7 +1089,7 @@ SLONG CModelInstance::GetUsedMemory(void)
   slMemoryUsed += mi_cbAABox.Count() * sizeof(ColisionBox);
   // Cound child model instances
   INDEX ctcmi = mi_cmiChildren.Count();
-  for(INDEX icmi=0;icmi<ctcmi;icmi++) {
+  for (INDEX icmi=0;icmi<ctcmi;icmi++) {
     CModelInstance &cmi = mi_cmiChildren[icmi];
     slMemoryUsed += cmi.GetUsedMemory();
   }

@@ -121,7 +121,7 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
   bsc_abvxVertices.New(ctVertices);
   bsc_awvxVertices.New(ctVertices);
   // copy all vertices and set their indices
-  for(INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
+  for (INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
     bsc_abvxVertices[iVertex].bvx_vdPreciseRelative = osc.osc_aovxVertices[iVertex];
     bsc_abvxVertices[iVertex].bvx_pbscSector = this;
     osc.osc_aovxVertices[iVertex].ovx_Index = iVertex;
@@ -135,7 +135,7 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
   bsc_abplPlanes.New(ctPlanes);
   bsc_awplPlanes.New(ctPlanes);
   // copy all planes and set their indices
-  for(INDEX iPlane=0; iPlane<ctPlanes; iPlane++) {
+  for (INDEX iPlane=0; iPlane<ctPlanes; iPlane++) {
     bsc_abplPlanes[iPlane].bpl_pldPreciseRelative = osc.osc_aoplPlanes[iPlane];
     osc.osc_aoplPlanes[iPlane].opl_Index = iPlane;
   }
@@ -148,7 +148,7 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
   bsc_abedEdges.New(ctEdges);
   bsc_awedEdges.New(ctEdges);
   // for all edges in object
-  for(INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
+  for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
     CObjectEdge &oed = osc.osc_aoedEdges[iEdge];  // object edge alias
     CBrushEdge &bed = bsc_abedEdges[iEdge];      // brush edge alias
     CWorkingEdge &wed = bsc_awedEdges[iEdge];
@@ -171,7 +171,7 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
   bsc_abpoPolygons.New(ctPolygons);
 
   // copy all polygons and set their indices
-  for(INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++) {
+  for (INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++) {
     CBrushPolygon  &bpo =    bsc_abpoPolygons[iPolygon];  // brush polygon alias
     CObjectPolygon &opo = osc.osc_aopoPolygons[iPolygon];  // object polygon alias
 
@@ -214,7 +214,7 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
     bpo.bpo_ulFlags = opo.opo_ulFlags & ~(OPOF_IGNOREDBYCSG|BPOF_SELECTED);
 
     // if the polygon was just created
-    if(!(bpo.bpo_ulFlags&BPOF_WASBRUSHPOLYGON)) {
+    if (!(bpo.bpo_ulFlags&BPOF_WASBRUSHPOLYGON)) {
       // initialize its textures and properties properly
       bpo.bpo_bppProperties.bpp_ubShadowBlend = 1;
       bpo.bpo_colShadow = C_WHITE|CT_OPAQUE;

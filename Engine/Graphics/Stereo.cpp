@@ -37,11 +37,11 @@ BOOL Stereo_IsEnabled(void)
 // set buffer for stereo rendering left/right/nostereo
 void Stereo_SetBuffer(INDEX iEye)
 {
-  if( gfx_bStereoInvert) gfx_bStereoInvert = 1; 
+  if (gfx_bStereoInvert) gfx_bStereoInvert = 1; 
   const ULONG ulLeftMask  = gfx_bStereoInvert ? CT_BMASK|CT_GMASK : CT_RMASK;
   const ULONG ulRightMask = gfx_bStereoInvert ? CT_RMASK : CT_BMASK|CT_GMASK;
 
-  if( iEye==STEREO_BOTH || gfx_iStereo==0) {
+  if (iEye==STEREO_BOTH || gfx_iStereo==0) {
     gfxSetColorMask(CT_RMASK|CT_GMASK|CT_BMASK|CT_AMASK);
   } else if (iEye==STEREO_LEFT) {
     gfxSetColorMask(ulLeftMask);

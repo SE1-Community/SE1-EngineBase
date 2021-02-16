@@ -167,6 +167,6 @@ char *StringDuplicate(const char *strOriginal) {
 // return position where we encounter zero byte or iBytes
 INDEX FindZero( UBYTE *pubMemory, INDEX iBytes)
 {
-  for( INDEX i=0; i<iBytes; i++) if( pubMemory[i]==0) return i;
+  for (INDEX i=0; i<iBytes; i++) if (pubMemory[i]==0) return i;
   return iBytes;
 }

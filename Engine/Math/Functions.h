@@ -52,8 +52,8 @@ inline Type Min( const Type a, const Type b)
 template<class Type>
 inline Type Lerp( const Type x0, const Type x1, const FLOAT fRatio)
 {
-       if( fRatio==0) return x0;
-  else if( fRatio==1) return x1;
+       if (fRatio==0) return x0;
+  else if (fRatio==1) return x1;
   else return x0+(x1-x0)*fRatio;
 }
 
@@ -551,15 +551,15 @@ inline ANGLE LerpANGLE(ANGLE a0, ANGLE a1, FLOAT fFactor)
 // (ie. 0.2f means 20% fade in, 0.1f stands for 10% fade out)
 inline FLOAT CalculateRatio(FLOAT fCurr, FLOAT fMin, FLOAT fMax, FLOAT fFadeInRatio, FLOAT fFadeOutRatio)
 {
-  if(fCurr<=fMin || fCurr>=fMax)
+  if (fCurr<=fMin || fCurr>=fMax)
   {
     return 0.0f;
   }
   FLOAT fDelta = fMax-fMin;
   FLOAT fRatio=(fCurr-fMin)/fDelta;
-  if(fRatio<fFadeInRatio) {
+  if (fRatio<fFadeInRatio) {
     fRatio = Clamp( fRatio/fFadeInRatio, 0.0f, 1.0f);
-  } else if(fRatio>(1-fFadeOutRatio)) {
+  } else if (fRatio>(1-fFadeOutRatio)) {
     fRatio = Clamp( (1.0f-fRatio)/fFadeOutRatio, 0.0f, 1.0f);
   } else {
     fRatio = 1.0f;

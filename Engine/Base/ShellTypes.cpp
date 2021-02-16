@@ -79,7 +79,7 @@ INDEX ShellTypeNewString(void)
 }
 INDEX ShellTypeNewByType(enum ShellTypeType stt)
 {
-  switch(stt) {
+  switch (stt) {
   default: ASSERT(FALSE);
   case STT_VOID:    return ShellTypeNewVoid();
   case STT_INDEX:   return ShellTypeNewIndex();

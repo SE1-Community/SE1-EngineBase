@@ -90,14 +90,14 @@ typedef long int INDEX;     // for indexed values and quantities
 
 #define NONE 0
 #define NOTHING ((void) 0)
-#define FOREVER for(;;)
+#define FOREVER for (;;)
 
 #define DECLARE_NOCOPYING(classname)        \
   classname(const classname &c);            \
   classname &operator=(const classname &c); 
 #define IMPLEMENT_NOCOPYING(classname)      \
   classname::classname(const classname &c) { ASSERT(FALSE); };            \
-  classname &classname::operator=(const classname &c){ ASSERT(FALSE); return *this; }; 
+  classname &classname::operator=(const classname &c) { ASSERT(FALSE); return *this; }; 
 
 // standard angles
 #define ANGLE_0    (  0.0f)

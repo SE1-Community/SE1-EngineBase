@@ -212,7 +212,7 @@ static inline void DrawArrow(CDrawPort &dp, PIX i0, PIX j0, PIX i1, PIX j1, COLO
 inline COLOR CRenderer::ColorForVertices(COLOR colorPolygon, COLOR colorSector)
 {
   // check vertices fill type
-  switch(_wrpWorldRenderPrefs.wrp_ftVertices) {
+  switch (_wrpWorldRenderPrefs.wrp_ftVertices) {
   // if it is fixed ink
   case CWorldRenderPrefs::FT_INKCOLOR:
     // use the vertex ink
@@ -247,7 +247,7 @@ inline COLOR CRenderer::ColorForVertices(COLOR colorPolygon, COLOR colorSector)
 inline COLOR CRenderer::ColorForEdges(COLOR colorPolygon, COLOR colorSector)
 {
   // check edges fill type
-  switch(_wrpWorldRenderPrefs.wrp_ftEdges) {
+  switch (_wrpWorldRenderPrefs.wrp_ftEdges) {
   // if it is fixed ink
   case CWorldRenderPrefs::FT_INKCOLOR:
     // use the edge ink
@@ -282,7 +282,7 @@ inline COLOR CRenderer::ColorForEdges(COLOR colorPolygon, COLOR colorSector)
 inline COLOR CRenderer::ColorForPolygons(COLOR colorPolygon, COLOR colorSector)
 {
   // check polygons fill type
-  switch(_wrpWorldRenderPrefs.wrp_ftPolygons) {
+  switch (_wrpWorldRenderPrefs.wrp_ftPolygons) {
   // if it is fixed ink
   case CWorldRenderPrefs::FT_INKCOLOR:
     // use the polygon ink
@@ -376,15 +376,15 @@ void CRenderer::RenderEntityTargets(void)
     }
 
     // for all classes in hierarchy of this entity
-    for(CDLLEntityClass *pdecDLLClass = enSource.en_pecClass->ec_pdecDLLClass;
+    for (CDLLEntityClass *pdecDLLClass = enSource.en_pecClass->ec_pdecDLLClass;
         pdecDLLClass!=NULL; 
         pdecDLLClass = pdecDLLClass->dec_pdecBase) {
       // for all properties
-      for(INDEX iProperty=0; iProperty<pdecDLLClass->dec_ctProperties; iProperty++) {
+      for (INDEX iProperty=0; iProperty<pdecDLLClass->dec_ctProperties; iProperty++) {
         CEntityProperty &epProperty = pdecDLLClass->dec_aepProperties[iProperty];
         // if the property is not entity pointer
-        if( (epProperty.ep_eptType!=CEntityProperty::EPT_ENTITYPTR)||
-            (strlen(epProperty.ep_strName)==0) ){
+        if ((epProperty.ep_eptType!=CEntityProperty::EPT_ENTITYPTR)||
+            (strlen(epProperty.ep_strName)==0) ) {
           // skip it
           continue;
         }
@@ -410,13 +410,13 @@ extern CFontData *_pfdConsoleFont;
 void CRenderer::RenderEntityNames(void)
 {
   // for each of models that were kept for delayed rendering
-  for( INDEX iModel=0; iModel<re_admDelayedModels.Count(); iModel++)
+  for (INDEX iModel=0; iModel<re_admDelayedModels.Count(); iModel++)
   {
     CDelayedModel &dm = re_admDelayedModels[iModel];
     CEntity &en = *dm.dm_penModel;
     CTString strName=en.GetName();
-    if( strName=="") continue;
-    if( (en.GetRenderType()==CEntity::RT_EDITORMODEL || en.GetRenderType()==CEntity::RT_SKAEDITORMODEL) &&
+    if (strName=="") continue;
+    if ((en.GetRenderType()==CEntity::RT_EDITORMODEL || en.GetRenderType()==CEntity::RT_SKAEDITORMODEL) &&
       !_wrpWorldRenderPrefs.IsEditorModelsOn()) continue;
 
     FLOATaabbox3D boxModel;
@@ -426,7 +426,7 @@ void CRenderer::RenderEntityNames(void)
     if (en.GetRenderType()==CEntity::RT_MODEL || en.GetRenderType()==CEntity::RT_EDITORMODEL) {
       pmoModelObject = dm.dm_pmoModel;
       pmoModelObject->GetCurrentFrameBBox(boxModel);
-      if(en.en_pciCollisionInfo!=NULL) {
+      if (en.en_pciCollisionInfo!=NULL) {
         // get its collision box
         INDEX iCollision = en.GetCollisionBoxIndex();
         FLOAT3D vMin = pmoModelObject->GetCollisionBoxMin(iCollision);
@@ -439,7 +439,7 @@ void CRenderer::RenderEntityNames(void)
     } else if (en.GetRenderType()==CEntity::RT_SKAMODEL || en.GetRenderType()==CEntity::RT_SKAEDITORMODEL) {
       pmiModelInstance = en.GetModelInstance();
       pmiModelInstance->GetAllFramesBBox(boxModel);
-      if(en.en_pciCollisionInfo!=NULL) {  
+      if (en.en_pciCollisionInfo!=NULL) {  
       // get its collision box
         FLOATaabbox3D box;
         pmiModelInstance->GetCurrentColisionBox(box);
@@ -452,17 +452,17 @@ void CRenderer::RenderEntityNames(void)
     }
         
     FLOAT fSize = boxModel.Size().Length()*0.3f;
-    _wrpWorldRenderPrefs.wrp_pmoSelectedEntity->mo_Stretch = FLOAT3D( fSize, fSize, fSize);
+    _wrpWorldRenderPrefs.wrp_pmoSelectedEntity->mo_Stretch = FLOAT3D(fSize, fSize, fSize);
     CPlacement3D plSelection = en.GetLerpedPlacement();
     plSelection.Translate_OwnSystem( FLOAT3D(0.0f, boxModel.Max()(2), 0.0f));
     FLOAT3D vOrigin=plSelection.pl_PositionVector;
-    FLOAT3D vProjected=FLOAT3D(0,0,0);
+    FLOAT3D vProjected=FLOAT3D(0.0f, 0.0f, 0.0f);
     re_prProjection->ProjectCoordinate( vOrigin, vProjected);
-    if( vProjected(3)>0.0f) continue;
+    if (vProjected(3)>0.0f) continue;
     FLOAT fSizeFactor=1.0f+fSize;
     FLOAT fRatio=Clamp( -vProjected(3)/fSizeFactor, 0.0f, 25.0f);
     FLOAT fPower=CalculateRatio(fRatio, 0, 25.0f, 0, 0.25f);
-    if( fPower==0) continue;
+    if (fPower==0) continue;
 
     PIX pixH=re_pdpDrawPort->GetHeight();
     re_pdpDrawPort->SetFont( _pfdConsoleFont);

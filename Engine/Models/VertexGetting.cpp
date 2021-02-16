@@ -44,7 +44,7 @@ static struct ModelFrameVertex16 *_pFrame16_1;
 
 void UnpackVertex( const INDEX iVertex, FLOAT3D &vVertex)
 {
-  if( _b16Bit ) {
+  if (_b16Bit ) {
     // get 16 bit packed vertices
     const SWPOINT3D &vsw0 = _pFrame16_0[iVertex].mfv_SWPoint;
     const SWPOINT3D &vsw1 = _pFrame16_1[iVertex].mfv_SWPoint;
@@ -78,7 +78,7 @@ void CModelObject::GetModelVertices( CStaticStackArray<FLOAT3D> &avVertices, FLO
   GetFrame( iFrame0, iFrame1, fLerpRatio);
 
   // set pFrame to point to last and next frames' vertices
-  if( pmd->md_Flags & MF_COMPRESSED_16BIT)
+  if (pmd->md_Flags & MF_COMPRESSED_16BIT)
   {
     pFrame16_0 = &pmd->md_FrameVertices16[ iFrame0 * pmd->md_VerticesCt];
     pFrame16_1 = &pmd->md_FrameVertices16[ iFrame1 * pmd->md_VerticesCt];
@@ -104,7 +104,7 @@ void CModelObject::GetModelVertices( CStaticStackArray<FLOAT3D> &avVertices, FLO
   BOOL bInverted  = bXInverted!=bYInverted!=bZInverted;
 
   // if dynamic stretch factor should be applied
-  if( mo_Stretch != FLOAT3D( 1.0f, 1.0f, 1.0f)) {
+  if (mo_Stretch != FLOAT3D(1.0f, 1.0f, 1.0f)) {
     fMipFactor -= Log2(Max(mo_Stretch(1),Max(mo_Stretch(2),mo_Stretch(3))));
   }
   // adjust mip factor by custom settings
@@ -120,9 +120,9 @@ void CModelObject::GetModelVertices( CStaticStackArray<FLOAT3D> &avVertices, FLO
   FLOAT3D *pvFirstVtx = avVertices.Push( pmmiMip->mmpi_ctMipVx);
 
   // Transform a vertex in model with lerping
-  if( pmd->md_Flags & MF_COMPRESSED_16BIT) {
+  if (pmd->md_Flags & MF_COMPRESSED_16BIT) {
     // for each vertex in mip
-    for( INDEX iMipVx=0; iMipVx<pmmiMip->mmpi_ctMipVx; iMipVx++) {
+    for (INDEX iMipVx=0; iMipVx<pmmiMip->mmpi_ctMipVx; iMipVx++) {
       // get destination for unpacking
       INDEX iMdlVx = pmmiMip->mmpi_auwMipToMdl[iMipVx];
       ModelFrameVertex16 &mfv0 = pFrame16_0[iMdlVx];
@@ -159,7 +159,7 @@ void CModelObject::GetModelVertices( CStaticStackArray<FLOAT3D> &avVertices, FLO
     }
   } else {
     // for each vertex in mip
-    for( INDEX iMipVx=0; iMipVx<pmmiMip->mmpi_ctMipVx; iMipVx++) {
+    for (INDEX iMipVx=0; iMipVx<pmmiMip->mmpi_ctMipVx; iMipVx++) {
       // get destination for unpacking
       INDEX iMdlVx = pmmiMip->mmpi_auwMipToMdl[iMipVx];
       // get 16 bit packed vertices
@@ -188,7 +188,7 @@ void CModelObject::GetModelVertices( CStaticStackArray<FLOAT3D> &avVertices, FLO
     CAttachmentModelObject *pamo = itamo;
     CModelData *pmd=pamo->amo_moModelObject.GetData();
     ASSERT(pmd!=NULL);
-    if(pmd==NULL || pmd->md_Flags&(MF_FACE_FORWARD|MF_HALF_FACE_FORWARD)) continue;
+    if (pmd==NULL || pmd->md_Flags&(MF_FACE_FORWARD|MF_HALF_FACE_FORWARD)) continue;
     FLOATmatrix3D mNew = mRotation;
     FLOAT3D vNew = vPosition;
     // get new rotation and position matrices
@@ -216,7 +216,7 @@ void CModelObject::GetAttachmentMatrices( CAttachmentModelObject *pamo, FLOATmat
   INDEX iFrame0, iFrame1;
   GetFrame( iFrame0, iFrame1, _fRatio);
   const INDEX ctVertices = pmdMain->md_VerticesCt;
-  if( pmdMain->md_Flags & MF_COMPRESSED_16BIT) {
+  if (pmdMain->md_Flags & MF_COMPRESSED_16BIT) {
     _b16Bit = TRUE;
     // set pFrame to point to last and next frames' vertices
     _pFrame16_0 = &pmdMain->md_FrameVertices16[iFrame0 *ctVertices];
@@ -291,7 +291,7 @@ void CModelObject::GetAttachmentTransformations( INDEX iAttachment, FLOATmatrix3
   INDEX iFrame0, iFrame1;
   GetFrame( iFrame0, iFrame1, _fRatio);
   const INDEX ctVertices = pmdMain->md_VerticesCt;
-  if( pmdMain->md_Flags & MF_COMPRESSED_16BIT) {
+  if (pmdMain->md_Flags & MF_COMPRESSED_16BIT) {
     _b16Bit = TRUE;
     // set pFrame to point to last and next frames' vertices
     _pFrame16_0 = &pmdMain->md_FrameVertices16[iFrame0 *ctVertices];

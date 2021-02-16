@@ -72,13 +72,13 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
     MappingSurface &ms = *itms;
     ULONG ulFlags = ms.ms_ulRenderingFlags;
     // if surface is invisible or empty, skip it
-    if( (ulFlags&SRF_INVISIBLE) || ms.ms_ctSrfVx==0) continue;
+    if ((ulFlags&SRF_INVISIBLE) || ms.ms_ctSrfVx==0) continue;
     // if rendering back side and surface is not double sided, skip entire surface
-    if( iVisibility==VISIBLE_BACK && !(ulFlags&SRF_DOUBLESIDED)) continue;
+    if (iVisibility==VISIBLE_BACK && !(ulFlags&SRF_DOUBLESIDED)) continue;
 
     // for each vertex in the surface
     BOOL bTransparency = ms.ms_sttTranslucencyType!=STT_OPAQUE;
-    for( INDEX ivx=0; ivx<ms.ms_aiTextureVertices.Count(); ivx++) {
+    for (INDEX ivx=0; ivx<ms.ms_aiTextureVertices.Count(); ivx++) {
       ModelTextureVertex    &mtv = mmiMip.mmpi_TextureVertices[ms.ms_aiTextureVertices[ivx]];
       TransformedVertexData &tvd = rm.rm_pmdModelData->md_TransformedVertices[mtv.mtv_iTransformedVertex];
       // adjust texture coordinates for texture mapping and clipping
@@ -89,31 +89,31 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
     }
 
     // for each polygon in the surface
-    for( INDEX iipo=0; iipo<ms.ms_aiPolygons.Count(); iipo++)
+    for (INDEX iipo=0; iipo<ms.ms_aiPolygons.Count(); iipo++)
     {
       ModelPolygon &mpPolygon = mmiMip.mmpi_Polygons[ms.ms_aiPolygons[iipo]];
       // if the polygon is not visible on this side, skip it
-      if( mpPolygon.mp_slVisibility != iVisibility) continue;
+      if (mpPolygon.mp_slVisibility != iVisibility) continue;
 
       // if the polygon needs to be clipped to near clip plane
-      if( mpPolygon.mp_bClipped) {
+      if (mpPolygon.mp_bClipped) {
         // create array of vertices for polygon clipped to near clip plane
         ctvxDst=0;
         INDEX ivx0=mpPolygon.mp_PolygonVertices.Count()-1;
         INDEX ivx1=0;
-        {for( INDEX ivx=0; ivx<mpPolygon.mp_PolygonVertices.Count(); ivx++)
+        {for (INDEX ivx=0; ivx<mpPolygon.mp_PolygonVertices.Count(); ivx++)
         {
           TransformedVertexData &tvd0 = *mpPolygon.mp_PolygonVertices[ivx0].mpv_ptvTransformedVertex;
           TransformedVertexData &tvd1 = *mpPolygon.mp_PolygonVertices[ivx1].mpv_ptvTransformedVertex;
           FLOAT fd0 = fFrontClipDistance-tvd0.tvd_fZ;
           FLOAT fd1 = fFrontClipDistance-tvd1.tvd_fZ;
           // if first vertex is in
-          if( fd0>=0) {
+          if (fd0>=0) {
             // add it to clip array
             ptvdDst[ctvxDst] = tvd0;
             ctvxDst++;
             // if second vertex is out
-            if( fd1<0) {
+            if (fd1<0) {
               // add clipped vertex at exit
               TransformedVertexData &tvdClipped = ptvdDst[ctvxDst];
               ctvxDst++;
@@ -130,7 +130,7 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
           // if first vertex is out (don't add it into clip array)
           } else {
             // if second vertex is in
-            if( fd1>=0) {
+            if (fd1>=0) {
               // add clipped vertex at entry
               TransformedVertexData &tvdClipped = ptvdDst[ctvxDst];
               ctvxDst++;
@@ -154,23 +154,23 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
         Swap( ctvxSrc, ctvxDst);
 
         // if clipping to far clip plane is on
-        if( fBackClipDistance<0) {
+        if (fBackClipDistance<0) {
           ctvxDst=0;
           INDEX ivx0=ctvxSrc-1;
           INDEX ivx1=0;
-          {for( INDEX ivx=0; ivx<ctvxSrc; ivx++)
+          {for (INDEX ivx=0; ivx<ctvxSrc; ivx++)
           {
             TransformedVertexData &tvd0 = ptvdSrc[ivx0];
             TransformedVertexData &tvd1 = ptvdSrc[ivx1];
             FLOAT fd0 = tvd0.tvd_fZ-fBackClipDistance;
             FLOAT fd1 = tvd1.tvd_fZ-fBackClipDistance;
             // if first vertex is in
-            if( fd0>=0) {
+            if (fd0>=0) {
               // add it to clip array
               ptvdDst[ctvxDst] = tvd0;
               ctvxDst++;
               // if second vertex is out
-              if( fd1<0) {
+              if (fd1<0) {
                 // add clipped vertex at exit
                 TransformedVertexData &tvdClipped = ptvdDst[ctvxDst];
                 ctvxDst++;
@@ -187,7 +187,7 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
             // if first vertex is out (don't add it into clip array)
             } else {
               // if second vertex is in
-              if( fd1>=0) {
+              if (fd1>=0) {
                 // add clipped vertex at entry
                 TransformedVertexData &tvdClipped = ptvdDst[ctvxDst];
                 ctvxDst++;
@@ -212,11 +212,11 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
         }
 
         // for each vertex
-        {for( INDEX ivx=0; ivx<ctvxSrc; ivx++)
+        {for (INDEX ivx=0; ivx<ctvxSrc; ivx++)
         {
           // calculate projection
           TransformedVertexData &tvd = ptvdSrc[ivx];
-          if( bPerspective) {
+          if (bPerspective) {
             const FLOAT f1oZ = 1.0f/tvd.tvd_fZ;
             tvd.tvd_pv2.pv2_fI = fCenterI+tvd.tvd_fX*fRatioI*f1oZ;
             tvd.tvd_pv2.pv2_fJ = fCenterJ-tvd.tvd_fY*fRatioJ*f1oZ;
@@ -230,19 +230,19 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
         ctvxDst=0;
         ivx0=ctvxSrc-1;
         ivx1=0;
-        {for( INDEX ivx=0; ivx<ctvxSrc; ivx++)
+        {for (INDEX ivx=0; ivx<ctvxSrc; ivx++)
         {
           PolyVertex2D &pv20 = ptvdSrc[ivx0].tvd_pv2;
           PolyVertex2D &pv21 = ptvdSrc[ivx1].tvd_pv2;
           FLOAT fd0 = pv20.pv2_fI-0;
           FLOAT fd1 = pv21.pv2_fI-0;
           // if first vertex is in
-          if( fd0>=0) {
+          if (fd0>=0) {
             // add it to clip array
             ptvdDst[ctvxDst].tvd_pv2 = pv20;
             ctvxDst++;
             // if second vertex is out
-            if( fd1<0) {
+            if (fd1<0) {
               PolyVertex2D &pv2Clipped = ptvdDst[ctvxDst].tvd_pv2;
               ctvxDst++;
               FLOAT fF = fd1/(fd1-fd0);
@@ -255,7 +255,7 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
           // if first vertex is out (don't add it into clip array)
           } else {
             // if second vertex is in
-            if( fd1>=0) {
+            if (fd1>=0) {
               // add clipped vertex at entry
               PolyVertex2D &pv2Clipped = ptvdDst[ctvxDst].tvd_pv2;
               ctvxDst++;
@@ -279,19 +279,19 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
         ctvxDst=0;
         ivx0=ctvxSrc-1;
         ivx1=0;
-        {for( INDEX ivx=0; ivx<ctvxSrc; ivx++)
+        {for (INDEX ivx=0; ivx<ctvxSrc; ivx++)
         {
           PolyVertex2D &pv20 = ptvdSrc[ivx0].tvd_pv2;
           PolyVertex2D &pv21 = ptvdSrc[ivx1].tvd_pv2;
           FLOAT fd0 = pixWidth-pv20.pv2_fI;
           FLOAT fd1 = pixWidth-pv21.pv2_fI;
           // if first vertex is in
-          if( fd0>=0) {
+          if (fd0>=0) {
             // add it to clip array
             ptvdDst[ctvxDst].tvd_pv2 = pv20;
             ctvxDst++;
             // if second vertex is out
-            if( fd1<0) {
+            if (fd1<0) {
               PolyVertex2D &pv2Clipped = ptvdDst[ctvxDst].tvd_pv2;
               ctvxDst++;
               FLOAT fF = fd1/(fd1-fd0);
@@ -304,7 +304,7 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
           // if first vertex is out (don't add it into clip array)
           } else {
             // if second vertex is in
-            if( fd1>=0) {
+            if (fd1>=0) {
               // add clipped vertex at entry
               PolyVertex2D &pv2Clipped = ptvdDst[ctvxDst].tvd_pv2;
               ctvxDst++;
@@ -326,7 +326,7 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
 
         // draw all triangles in clipped polygon as a triangle fan, with clipping
         PolyVertex2D &pvx0 = ptvdSrc[0].tvd_pv2;
-        {for( INDEX ivx=1; ivx<ctvxSrc-1; ivx++) {
+        {for (INDEX ivx=1; ivx<ctvxSrc-1; ivx++) {
           PolyVertex2D &pvx1 = ptvdSrc[ivx+0].tvd_pv2;
           PolyVertex2D &pvx2 = ptvdSrc[ivx+1].tvd_pv2;
           DrawTriangle_Mask( _pubMask, _slMaskWidth, _slMaskHeight, &pvx0, &pvx1, &pvx2, bTransparency);
@@ -338,7 +338,7 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
       {
         // draw all triangles as a triangle fan
         PolyVertex2D &pvx0 = mpPolygon.mp_PolygonVertices[0].mpv_ptvTransformedVertex->tvd_pv2;
-        {for( INDEX ivx=1; ivx<mpPolygon.mp_PolygonVertices.Count()-1; ivx++) {
+        {for (INDEX ivx=1; ivx<mpPolygon.mp_PolygonVertices.Count()-1; ivx++) {
           PolyVertex2D &pvx1 = mpPolygon.mp_PolygonVertices[ivx+0].mpv_ptvTransformedVertex->tvd_pv2;
           PolyVertex2D &pvx2 = mpPolygon.mp_PolygonVertices[ivx+1].mpv_ptvTransformedVertex->tvd_pv2;
           DrawTriangle_Mask( _pubMask, _slMaskWidth, _slMaskHeight, &pvx0, &pvx1, &pvx2, bTransparency);
@@ -358,7 +358,7 @@ void CModelObject::RenderModel_Mask( CRenderModel &rm)
 {
   // skip shadow generation if effect texture has been set
   CTextureData *ptd = (CTextureData*)mo_toTexture.GetData();
-  if( ptd!=NULL && ptd->td_ptegEffect!=NULL) {
+  if (ptd!=NULL && ptd->td_ptegEffect!=NULL) {
     // report to console
     CPrintF( TRANS("WARNING: model '%s' cast cluster shadows but has an effect texture.\n"), GetData()->GetName());
     return;
@@ -372,17 +372,17 @@ void CModelObject::RenderModel_Mask( CRenderModel &rm)
 
   // test if projection is parallel or perspective
   bPerspective = TRUE;
-  if( !_aprProjection.IsPerspective()) bPerspective = FALSE;
+  if (!_aprProjection.IsPerspective()) bPerspective = FALSE;
   b16BitCompression = rm.rm_pmdModelData->md_Flags & MF_COMPRESSED_16BIT;
   ulColorMask = mo_ColorMask;
 
   // if texture is invalid, backup to white color mode
-  if( ptd==NULL) rm.rm_rtRenderType = (rm.rm_rtRenderType&~RT_TEXTURE_MASK)|RT_WHITE_TEXTURE;
+  if (ptd==NULL) rm.rm_rtRenderType = (rm.rm_rtRenderType&~RT_TEXTURE_MASK)|RT_WHITE_TEXTURE;
 
   // if texture is ok
   iMipLevel = 31;
   ULONG *pulCurrentMipmap = NULL;
-  if( rm.rm_rtRenderType & RT_TEXTURE) {
+  if (rm.rm_rtRenderType & RT_TEXTURE) {
     // reload texture
     ptd->Force( TEX_STATIC);
     // get texture parameters for current frame and needed mip factor
@@ -400,7 +400,7 @@ void CModelObject::RenderModel_Mask( CRenderModel &rm)
   const FLOATmatrix3D &m = rm.rm_mObjectToView;
   const FLOAT3D       &v = rm.rm_vObjectToView;
 
-  if( bPerspective) {
+  if (bPerspective) {
     fCenterI = prPerspective.pr_ScreenCenter(1);
     fCenterJ = prPerspective.pr_ScreenCenter(2);
     fRatioI  = prPerspective.ppr_PerspectiveRatios(1);
@@ -425,12 +425,12 @@ void CModelObject::RenderModel_Mask( CRenderModel &rm)
   }
 
   // for each vertex
-  for( INDEX ivx=0; ivx<rm.rm_pmdModelData->md_VerticesCt; ivx++)
+  for (INDEX ivx=0; ivx<rm.rm_pmdModelData->md_VerticesCt; ivx++)
   {
     TransformedVertexData &tvd = rm.rm_pmdModelData->md_TransformedVertices[ ivx];
     tvd.tvd_bClipped = FALSE;   // initially, vertex is not clipped
     float fxOld, fyOld, fzOld;
-    if( b16BitCompression) {
+    if (b16BitCompression) {
       ModelFrameVertex16 &mfv = rm.rm_pFrame16_0[ivx];
       fxOld = (mfv.mfv_SWPoint(1)-rm.rm_vOffset(1)) *rm.rm_vStretch(1);
       fyOld = (mfv.mfv_SWPoint(2)-rm.rm_vOffset(2)) *rm.rm_vStretch(2);
@@ -447,7 +447,7 @@ void CModelObject::RenderModel_Mask( CRenderModel &rm)
     tvd.tvd_fZ = fxOld*m(3,1) + fyOld*m(3,2) + fzOld*m(3,3) + v(3);
 
     // prepare screen coordinates for software
-    if( bPerspective) {
+    if (bPerspective) {
       const FLOAT f1oZ = 1.0f/tvd.tvd_fZ;
       tvd.tvd_pv2.pv2_fI   = fCenterI+tvd.tvd_fX*fRatioI*f1oZ;
       tvd.tvd_pv2.pv2_fJ   = fCenterJ-tvd.tvd_fY*fRatioJ*f1oZ;
@@ -459,7 +459,7 @@ void CModelObject::RenderModel_Mask( CRenderModel &rm)
     }
 
     // check clipping against horizontal screen boundaries and near clip plane
-    if( tvd.tvd_pv2.pv2_fI<0 || tvd.tvd_pv2.pv2_fI>=pixWidth  ||
+    if (tvd.tvd_pv2.pv2_fI<0 || tvd.tvd_pv2.pv2_fI>=pixWidth  ||
         tvd.tvd_fZ>fFrontClipDistance || (fBackClipDistance<0 && tvd.tvd_fZ<fBackClipDistance)) {
       tvd.tvd_bClipped = TRUE;
     }
@@ -488,7 +488,7 @@ void CModelObject::RenderModel_Mask( CRenderModel &rm)
     FLOAT fNZ = fD2X*fD1Y - fD2Y*fD1X;
     // calculate polygon normal visibility
     FLOAT fVisible;
-    if( bPerspective) {
+    if (bPerspective) {
       fVisible = fNX*tvd0.tvd_fX + fNY*tvd0.tvd_fY + fNZ*tvd0.tvd_fZ;
     } else {
       fVisible = fNX*prParallel.pr_vViewDirection(1) +
@@ -497,9 +497,9 @@ void CModelObject::RenderModel_Mask( CRenderModel &rm)
     }
 
     // if the polygon is back-facing
-    if( fVisible<0) {
+    if (fVisible<0) {
       // if the polygon is double sided
-      if( ulRenderFlags & SRF_DOUBLESIDED) {
+      if (ulRenderFlags & SRF_DOUBLESIDED) {
         // mark it as back-facing double sided
         mp.mp_slVisibility = VISIBLE_BACK;
       // if the polygon is not double sided
@@ -516,12 +516,12 @@ void CModelObject::RenderModel_Mask( CRenderModel &rm)
     // initally assume that polygon doesn't need clipping
     mp.mp_bClipped = FALSE;
     // if the polygon plane is not invisible
-    if( mp.mp_slVisibility != VISIBLE_NOT) {
+    if (mp.mp_slVisibility != VISIBLE_NOT) {
       // for all vertices
-      {for( INDEX ivx=0; ivx<mp.mp_PolygonVertices.Count(); ivx++) {
+      {for (INDEX ivx=0; ivx<mp.mp_PolygonVertices.Count(); ivx++) {
         const TransformedVertexData &tvd = *mp.mp_PolygonVertices[ivx].mpv_ptvTransformedVertex;
         // if vertex is clipped to near plane
-        if( tvd.tvd_bClipped) {
+        if (tvd.tvd_bClipped) {
           // mark that the polygon needs clipping
           mp.mp_bClipped = TRUE;
           break;

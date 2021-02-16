@@ -53,7 +53,7 @@ SHADER_MAIN(Detail)
   BOOL bDoubleSided = shaGetFlags()&BASE_DOUBLE_SIDED;
   BOOL bOpaque = (colModelColor&0xFF)==0xFF;
 
-  if(bDoubleSided) {
+  if (bDoubleSided) {
     shaCullFace(GFX_NONE);
   } else {
     shaCullFace(GFX_BACK);
@@ -62,7 +62,7 @@ SHADER_MAIN(Detail)
   shaCalculateLight();
 
   // if fully opaque
-  if(bOpaque) {
+  if (bOpaque) {
     // shaEnableAlphaTest(TRUE);
     shaDisableBlend();
     shaEnableDepthWrite();
@@ -75,11 +75,11 @@ SHADER_MAIN(Detail)
     shaModifyColorForFog();
   }
 
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
 
   shaRender();
 
-  if(bOpaque) {
+  if (bOpaque) {
     shaDoFogPass();
   }
 
@@ -96,8 +96,8 @@ SHADER_MAIN(Detail)
   GFXTexCoord *ptxcOld = shaGetUVMap(0);
   GFXTexCoord *ptxcNew = shaGetNewTexCoordArray();
   INDEX ctTexCoords = shaGetVertexCount();
-  if(ctTexCoords>0) {
-    for(INDEX itxc=0;itxc<ctTexCoords;itxc++)
+  if (ctTexCoords>0) {
+    for (INDEX itxc=0;itxc<ctTexCoords;itxc++)
     {
       ptxcNew[itxc].u = ptxcOld[itxc].u * fMul;
       ptxcNew[itxc].v = ptxcOld[itxc].v * fMul;
@@ -125,9 +125,9 @@ SHADER_MAIN(Detail)
   INDEX ctTexCoords=0;
   GFXTexCoord *ptxcOld = shaGetUVMap(0,ctTexCoords);
   GFXTexCoord *ptxcNew = shaGetEmptyUVMap(ctTexCoords);
-  if(ctTexCoords>0)
+  if (ctTexCoords>0)
   {
-    for(INDEX itxc=0;itxc<ctTexCoords;itxc++)
+    for (INDEX itxc=0;itxc<ctTexCoords;itxc++)
     {
       ptxcNew[itxc].u = ptxcOld[itxc].u * fMul;
       ptxcNew[itxc].v = ptxcOld[itxc].v * fMul;
@@ -137,7 +137,7 @@ SHADER_MAIN(Detail)
   shaRender();
   shaEnableBlend(FALSE);
 */
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
 }
 
 SHADER_DESC(Detail,ShaderDesc &shDesc)

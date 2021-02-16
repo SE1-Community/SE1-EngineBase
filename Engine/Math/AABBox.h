@@ -305,7 +305,7 @@ inline BOOL AABBox<Type, iDimensions>::HasContactWith(const AABBox<Type, iDimens
   // for all dimensions
   for ( int i=1; i<=iDimensions; i++ ) {
     // if spans in that dimension don't have contact
-    if( (maxvect(i)+tEpsilon<b.minvect(i))
+    if ((maxvect(i)+tEpsilon<b.minvect(i))
       ||(minvect(i)-tEpsilon>b.maxvect(i)) ) {
       // whole bounding boxes don't have contact
       return FALSE;
@@ -321,7 +321,7 @@ inline BOOL AABBox<Type, iDimensions>::TouchesSphere(
   // for all dimensions
   for ( int i=1; i<=iDimensions; i++ ) {
     // if spans in that dimension don't have contact
-    if( (vSphereCenter(i)+fSphereRadius<minvect(i))
+    if ((vSphereCenter(i)+fSphereRadius<minvect(i))
       ||(vSphereCenter(i)-fSphereRadius>maxvect(i)) ) {
       // no contact
       return FALSE;

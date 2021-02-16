@@ -178,8 +178,8 @@ inline BOOL OBBox<Type>::HasContactWith(const OBBox<Type> &boxB) const
 
   // calculate rotation matrix from B to A
   Type mR[3][3];
-  {for(INDEX i=0; i<3; i++) {
-    {for(INDEX j=0; j<3; j++) {
+  {for (INDEX i=0; i<3; i++) {
+    {for (INDEX j=0; j<3; j++) {
       mR[i][j] = boxA.box_avAxis[i]%boxB.box_avAxis[j]; 
     }}
   }}
@@ -187,7 +187,7 @@ inline BOOL OBBox<Type>::HasContactWith(const OBBox<Type> &boxB) const
   Type tRa, tRb, tT;
 
   // check each axis of A
-  {for(INDEX i=0; i<3; i++ ) {
+  {for (INDEX i=0; i<3; i++ ) {
     tRa = boxA.box_atSize[i];
     tRb = boxB.box_atSize[0]*Abs(mR[i][0]) + boxB.box_atSize[1]*Abs(mR[i][1]) + boxB.box_atSize[2]*Abs(mR[i][2]);
     tT = Abs( vOffA[i] );
@@ -195,7 +195,7 @@ inline BOOL OBBox<Type>::HasContactWith(const OBBox<Type> &boxB) const
   }}
 
   // check each axis of B
-  {for(INDEX i=0; i<3; i++ ) {
+  {for (INDEX i=0; i<3; i++ ) {
     tRa = boxA.box_atSize[0]*Abs(mR[0][i]) + boxA.box_atSize[1]*Abs(mR[1][i]) + boxA.box_atSize[2]*Abs(mR[2][i]);
     tRb = boxB.box_atSize[i];
     tT = Abs( vOffA[0]*mR[0][i] + vOffA[1]*mR[1][i] + vOffA[2]*mR[2][i] );
@@ -206,55 +206,55 @@ inline BOOL OBBox<Type>::HasContactWith(const OBBox<Type> &boxB) const
   tRa = boxA.box_atSize[1]*Abs(mR[2][0]) + boxA.box_atSize[2]*Abs(mR[1][0]);
   tRb = boxB.box_atSize[1]*Abs(mR[0][2]) + boxB.box_atSize[2]*Abs(mR[0][1]);
   tT =  Abs( vOffA[2]*mR[1][0] - vOffA[1]*mR[2][0] );
-  if(tT>tRa+tRb) return FALSE;
+  if (tT>tRa+tRb) return FALSE;
   
   // check A0 x B1
   tRa = boxA.box_atSize[1]*Abs(mR[2][1]) + boxA.box_atSize[2]*Abs(mR[1][1]);
   tRb = boxB.box_atSize[0]*Abs(mR[0][2]) + boxB.box_atSize[2]*Abs(mR[0][0]);
   tT = Abs( vOffA[2]*mR[1][1] - vOffA[1]*mR[2][1] );
-  if(tT>tRa+tRb) return FALSE;
+  if (tT>tRa+tRb) return FALSE;
   
   // check A0 x B2
   tRa = boxA.box_atSize[1]*Abs(mR[2][2]) + boxA.box_atSize[2]*Abs(mR[1][2]);
   tRb = boxB.box_atSize[0]*Abs(mR[0][1]) + boxB.box_atSize[1]*Abs(mR[0][0]);
   tT = Abs( vOffA[2]*mR[1][2] - vOffA[1]*mR[2][2] );
-  if(tT>tRa+tRb) return FALSE;
+  if (tT>tRa+tRb) return FALSE;
   
   // check A1 x B0
   tRa = boxA.box_atSize[0]*Abs(mR[2][0]) + boxA.box_atSize[2]*Abs(mR[0][0]);
   tRb = boxB.box_atSize[1]*Abs(mR[1][2]) + boxB.box_atSize[2]*Abs(mR[1][1]);
   tT = Abs( vOffA[0]*mR[2][0] - vOffA[2]*mR[0][0] );
-  if(tT>tRa+tRb) return FALSE;
+  if (tT>tRa+tRb) return FALSE;
   
   // check A1 x B1
   tRa = boxA.box_atSize[0]*Abs(mR[2][1]) + boxA.box_atSize[2]*Abs(mR[0][1]);
   tRb = boxB.box_atSize[0]*Abs(mR[1][2]) + boxB.box_atSize[2]*Abs(mR[1][0]);
   tT = Abs( vOffA[0]*mR[2][1] - vOffA[2]*mR[0][1] );
-  if(tT>tRa+tRb) return FALSE;
+  if (tT>tRa+tRb) return FALSE;
   
   // check A1 x B2
   tRa = boxA.box_atSize[0]*Abs(mR[2][2]) + boxA.box_atSize[2]*Abs(mR[0][2]);
   tRb = boxB.box_atSize[0]*Abs(mR[1][1]) + boxB.box_atSize[1]*Abs(mR[1][0]);
   tT = Abs( vOffA[0]*mR[2][2] - vOffA[2]*mR[0][2] );
-  if(tT>tRa+tRb) return FALSE;
+  if (tT>tRa+tRb) return FALSE;
   
   // check A2 x B0
   tRa = boxA.box_atSize[0]*Abs(mR[1][0]) + boxA.box_atSize[1]*Abs(mR[0][0]);
   tRb = boxB.box_atSize[1]*Abs(mR[2][2]) + boxB.box_atSize[2]*Abs(mR[2][1]);
   tT = Abs( vOffA[1]*mR[0][0] - vOffA[0]*mR[1][0] );
-  if(tT>tRa+tRb) return FALSE;
+  if (tT>tRa+tRb) return FALSE;
   
   // check A2 x B1
   tRa = boxA.box_atSize[0]*Abs(mR[1][1]) + boxA.box_atSize[1]*Abs(mR[0][1]);
   tRb = boxB.box_atSize[0] *Abs(mR[2][2]) + boxB.box_atSize[2]*Abs(mR[2][0]);
   tT = Abs( vOffA[1]*mR[0][1] - vOffA[0]*mR[1][1] );
-  if(tT>tRa+tRb) return FALSE;
+  if (tT>tRa+tRb) return FALSE;
   
   // check A2 x B2
   tRa = boxA.box_atSize[0]*Abs(mR[1][2]) + boxA.box_atSize[1]*Abs(mR[0][2]);
   tRb = boxB.box_atSize[0]*Abs(mR[2][1]) + boxB.box_atSize[1]*Abs(mR[2][0]);
   tT = Abs( vOffA[1]*mR[0][2] - vOffA[0]*mR[1][2] );
-  if(tT>tRa+tRb) return FALSE;
+  if (tT>tRa+tRb) return FALSE;
 
   return TRUE;
 }

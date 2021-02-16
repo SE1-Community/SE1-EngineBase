@@ -51,7 +51,7 @@ SHADER_MAIN(MultiLayer)
   BOOL bDoubleSided = shaGetFlags()&BASE_DOUBLE_SIDED;
   BOOL bOpaque = (colModelColor&0xFF)==0xFF;
 
-  if(bDoubleSided) {
+  if (bDoubleSided) {
     shaCullFace(GFX_NONE);
   } else {
     shaCullFace(GFX_BACK);
@@ -60,7 +60,7 @@ SHADER_MAIN(MultiLayer)
   shaCalculateLight();
 
   // if fully opaque
-  if(bOpaque) {
+  if (bOpaque) {
     // shaEnableAlphaTest(TRUE);
     shaDisableBlend();
     shaEnableDepthWrite();
@@ -73,15 +73,15 @@ SHADER_MAIN(MultiLayer)
     shaModifyColorForFog();
   }
 
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
 
   fLayerTiling = shaGetFloat(LAYER0_TILING);
   if (fLayerTiling!=1.0f) {
     GFXTexCoord *ptxcOld = shaGetUVMap(LAYER0_UVMAP);
     GFXTexCoord *ptxcNew = shaGetNewTexCoordArray();
     INDEX ctTexCoords = shaGetVertexCount();
-    if(ctTexCoords>0 && ptxcOld!=NULL) {
-      for(INDEX itxc=0;itxc<ctTexCoords;itxc++)
+    if (ctTexCoords>0 && ptxcOld!=NULL) {
+      for (INDEX itxc=0;itxc<ctTexCoords;itxc++)
       {
         ptxcNew[itxc].u = ptxcOld[itxc].u * fLayerTiling;
         ptxcNew[itxc].v = ptxcOld[itxc].v * fLayerTiling;
@@ -90,7 +90,7 @@ SHADER_MAIN(MultiLayer)
     }
   }
   shaRender();
-  if(bOpaque) {
+  if (bOpaque) {
     shaDoFogPass();
   }
 
@@ -109,8 +109,8 @@ SHADER_MAIN(MultiLayer)
     GFXTexCoord *ptxcOld = shaGetUVMap(LAYER1_UVMAP);
     GFXTexCoord *ptxcNew = shaGetNewTexCoordArray();
     INDEX ctTexCoords = shaGetVertexCount();
-    if(ctTexCoords>0 && ptxcOld!=NULL) {
-      for(INDEX itxc=0; itxc<ctTexCoords; itxc++)
+    if (ctTexCoords>0 && ptxcOld!=NULL) {
+      for (INDEX itxc=0; itxc<ctTexCoords; itxc++)
       {
         ptxcNew[itxc].u = ptxcOld[itxc].u * fLayerTiling;
         ptxcNew[itxc].v = ptxcOld[itxc].v * fLayerTiling;
@@ -121,7 +121,7 @@ SHADER_MAIN(MultiLayer)
   shaRender();
   shaDisableBlend();
 
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
 }
 
 SHADER_DESC(MultiLayer, ShaderDesc &shDesc)

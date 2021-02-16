@@ -70,16 +70,16 @@ struct inflate_blocks_state {
 #define LEAVE {UPDATE return inflate_flush(s,z,r);}
 /*   get bytes and bits */
 #define LOADIN {p=z->next_in;n=z->avail_in;b=s->bitb;k=s->bitk;}
-#define NEEDBYTE {if(n)r=Z_OK;else LEAVE}
+#define NEEDBYTE {if (n)r=Z_OK;else LEAVE}
 #define NEXTBYTE (n--,*p++)
-#define NEEDBITS(j) {while(k<(j)){NEEDBYTE;b|=((uLong)NEXTBYTE)<<k;k+=8;}}
+#define NEEDBITS(j) {while (k<(j)) {NEEDBYTE;b|=((uLong)NEXTBYTE)<<k;k+=8;}}
 #define DUMPBITS(j) {b>>=(j);k-=(j);}
 /*   output bytes */
 #define WAVAIL (uInt)(q<s->read?s->read-q-1:s->end-q)
 #define LOADOUT {q=s->write;m=(uInt)WAVAIL;}
-#define WRAP {if(q==s->end&&s->read!=s->window){q=s->window;m=(uInt)WAVAIL;}}
+#define WRAP {if (q==s->end&&s->read!=s->window) {q=s->window;m=(uInt)WAVAIL;}}
 #define FLUSH {UPDOUT r=inflate_flush(s,z,r); LOADOUT}
-#define NEEDOUT {if(m==0){WRAP if(m==0){FLUSH WRAP if(m==0) LEAVE}}r=Z_OK;}
+#define NEEDOUT {if (m==0) {WRAP if (m==0) {FLUSH WRAP if (m==0) LEAVE}}r=Z_OK;}
 #define OUTBYTE(a) {*q++=(Byte)(a);m--;}
 /*   load local pointers */
 #define LOAD {LOADIN LOADOUT}

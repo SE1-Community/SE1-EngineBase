@@ -280,9 +280,9 @@ public:
   virtual BOOL PointerInStream(void* pPointer);
 
   // from CTStream
-  inline virtual BOOL IsWriteable(void){ return !fstrm_bReadOnly;};
-  inline virtual BOOL IsReadable(void){ return TRUE;};
-  inline virtual BOOL IsSeekable(void){ return TRUE;};
+  inline virtual BOOL IsWriteable(void) { return !fstrm_bReadOnly;};
+  inline virtual BOOL IsReadable(void) { return TRUE;};
+  inline virtual BOOL IsSeekable(void) { return TRUE;};
 };
 
 /*

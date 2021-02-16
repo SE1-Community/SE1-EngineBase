@@ -122,7 +122,7 @@ ENGINE_API void ReadTranslationTable_t(
   CTranslationPair *atp = atpPairs.New(ctPairs);
 
   // for each pair
-  for(INDEX iPair=0; iPair<ctPairs; iPair++) {
+  for (INDEX iPair=0; iPair<ctPairs; iPair++) {
     CTranslationPair &tp = atp[iPair];
     // read one token
     int iToken = ReadOneChar_t(strm);
@@ -163,7 +163,7 @@ ENGINE_API void FinishTranslationTable(void)
   INDEX ctPairs = _atpPairs.Count();
   // for each pair
   _atpPairs.Lock();
-  for(INDEX iPair=0; iPair<ctPairs; iPair++) {
+  for (INDEX iPair=0; iPair<ctPairs; iPair++) {
     // add pair to name table
     _nttpPairs.Add(&_atpPairs[iPair]);
   };
@@ -185,7 +185,7 @@ ENGINE_API void AddTranslationTablesDir_t(const CTFileName &fnmDir, const CTFile
   // list the translation tables matching given pattern
   CDynamicStackArray<CTFileName> afnmTables;
   MakeDirList(afnmTables, fnmDir, fnmPattern, 0);
-  for(INDEX i=0; i<afnmTables.Count(); i++) {
+  for (INDEX i=0; i<afnmTables.Count(); i++) {
     ReadTranslationTable_t(_atpPairs, afnmTables[i]);
   }
 }

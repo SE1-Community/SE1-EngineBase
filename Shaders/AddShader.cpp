@@ -35,7 +35,7 @@ SHADER_MAIN(Add)
   shaEnableDepthTest();
   shaDepthFunc(GFX_LESS_EQUAL);
 
-  if(shaGetFlags()&BASE_DOUBLE_SIDED) {
+  if (shaGetFlags()&BASE_DOUBLE_SIDED) {
     shaCullFace(GFX_NONE);
   } else {
     shaCullFace(GFX_BACK);
@@ -48,9 +48,9 @@ SHADER_MAIN(Add)
   shaDisableAlphaTest();
   shaDisableDepthWrite();
 
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
   shaRender();
-  if(shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
 }
 
 SHADER_DESC(Add,ShaderDesc &shDesc)

@@ -301,7 +301,7 @@ extern void d3dSetVertexShader(DWORD dwHandle);
   INDEX ref; \
   do { \
     ref = (object)->Release(); \
-    if(check) ASSERT(ref==0); \
-  } while(ref>0);  \
+    if (check) ASSERT(ref==0); \
+  } while (ref>0);  \
   object = NONE; \
 }

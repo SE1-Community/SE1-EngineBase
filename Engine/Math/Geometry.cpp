@@ -226,9 +226,9 @@ void UpVectorToAngles(const FLOAT3D &vY, ANGLE3D &a3dAngles)
   // create any front vector
   FLOAT3D vZ;
   if (Abs(vY(2))>0.5f) {
-    vZ = FLOAT3D(1,0,0)*vY;
+    vZ = FLOAT3D(1.0f, 0.0f, 0.0f)*vY;
   } else {
-    vZ = FLOAT3D(0,1,0)*vY;
+    vZ = FLOAT3D(0.0f, 1.0f, 0.0f)*vY;
   }
   vZ.Normalize();
   // side vector is cross product

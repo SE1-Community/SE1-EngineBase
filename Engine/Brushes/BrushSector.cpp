@@ -83,7 +83,7 @@ void CBrushSector::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prRelative
   bsc_boxRelative = FLOATaabbox3D();
 
   // for each vertex in sector
-  for(INDEX ivx=0; ivx<bsc_abvxVertices.Count(); ivx++) {
+  for (INDEX ivx=0; ivx<bsc_abvxVertices.Count(); ivx++) {
     // make the original vertex point to absolute vertex
     bsc_abvxVertices[ivx].bvx_pvdPreciseAbsolute = &avdAbsoluteVertices[ivx];
     bsc_abvxVertices[ivx].bvx_pwvxWorking = &bsc_awvxVertices[ivx];
@@ -102,7 +102,7 @@ void CBrushSector::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prRelative
   apldAbsolutePlanes.New(bsc_abplPlanes.Count());
 
   // for each plane in sector
-  for(INDEX ipl=0; ipl<bsc_abplPlanes.Count(); ipl++){
+  for (INDEX ipl=0; ipl<bsc_abplPlanes.Count(); ipl++) {
     // make the original plane point to absolute plane
     bsc_abplPlanes[ipl].bpl_ppldPreciseAbsolute = &apldAbsolutePlanes[ipl];
     bsc_abplPlanes[ipl].bpl_pwplWorking = &bsc_awplPlanes[ipl];
@@ -145,7 +145,7 @@ void CBrushSector::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prRelative
 
       // for all polygons in this sector
       arbpoPolygons.Lock();
-      {for(INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++){
+      {for (INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++) {
         // create a BSP polygon from the brush polygon
         CBrushPolygon         &brpo = bsc_abpoPolygons[iPolygon];
         BSPPolygon<DOUBLE, 3> &bspo = arbpoPolygons[iPolygon];
@@ -164,12 +164,12 @@ void CBrushSector::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prRelative
 // if in debug version
 #ifndef NDEBUG
   // for each vertex in sector
-  {for(INDEX ivx=0; ivx<bsc_abvxVertices.Count(); ivx++){
+  {for (INDEX ivx=0; ivx<bsc_abvxVertices.Count(); ivx++) {
     // discard absolute vertex pointer
     bsc_abvxVertices[ivx].bvx_pvdPreciseAbsolute = NULL;
   }}
   // for each plane in sector
-  {for(INDEX ipl=0; ipl<bsc_abplPlanes.Count(); ipl++){
+  {for (INDEX ipl=0; ipl<bsc_abplPlanes.Count(); ipl++) {
     // discard absolute plane pointer
     bsc_abplPlanes[ipl].bpl_ppldPreciseAbsolute = NULL;
   }}
@@ -179,7 +179,7 @@ void CBrushSector::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prRelative
   // but should save size of polygon in mex (not shadow map)
   // NOTE: but this is also called in FromObject3D (?!)
   // for each polygon
-  {for(INDEX iPolygon=0; iPolygon<bsc_abpoPolygons.Count(); iPolygon++) {
+  {for (INDEX iPolygon=0; iPolygon<bsc_abpoPolygons.Count(); iPolygon++) {
     CBrushPolygon  &bpo =    bsc_abpoPolygons[iPolygon];  // brush polygon alias
     // if the shadow map of the polygon is not initialized
     if (bpo.bpo_smShadowMap.sm_mexWidth==0 || bpo.bpo_smShadowMap.sm_pixPolygonSizeU<0) {
@@ -230,7 +230,7 @@ void CBrushSector::FindEntitiesInSector(void)
     FLOAT fSphereRadius = iten->en_fSpatialClassificationRadius;
     const FLOAT3D &vSphereCenter = iten->en_plPlacement.pl_PositionVector;
     // if the sector's bounding box has contact with the sphere
-    if(bsc_boxBoundingBox.TouchesSphere(vSphereCenter, fSphereRadius)) {
+    if (bsc_boxBoundingBox.TouchesSphere(vSphereCenter, fSphereRadius)) {
       
       // if the sphere is inside the sector
       if (bsc_bspBSPTree.TestSphere(
@@ -352,7 +352,7 @@ void CBrushSector::UpdateSector(void)
 
   // for each polygon
   INDEX ctPolygons = bsc_abpoPolygons.Count();
-  {for(INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++) {
+  {for (INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++) {
     CBrushPolygon  &bpo =    bsc_abpoPolygons[iPolygon];  // brush polygon alias
     // initialize the shadow map of the polygon
     bpo.InitializeShadowMap();
@@ -379,7 +379,7 @@ void CBrushSector::MakePlanesFromVertices(void)
 
   // for all polygons
   INDEX ctPolygons = bsc_abpoPolygons.Count();
-  for(INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++) {
+  for (INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++) {
     CBrushPolygon &bpo = bsc_abpoPolygons[iPolygon];  // brush polygon alias
     CBrushPlane   &bpl = bsc_abplPlanes[iPolygon];
     CWorkingPlane &wpl = bsc_awplPlanes[iPolygon];
@@ -393,7 +393,7 @@ void CBrushSector::MakePlanesFromVertices(void)
 
     // for all edges in polygon
     INDEX ctVertices = bpo.bpo_abpePolygonEdges.Count();
-    {for(INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
+    {for (INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
 		  // get its vertices in counterclockwise order
       CBrushPolygonEdge &bpe = bpo.bpo_abpePolygonEdges[iVertex];
       DOUBLE3D v0, v1;
@@ -401,9 +401,9 @@ void CBrushSector::MakePlanesFromVertices(void)
       DOUBLE3D vSum = v0+v1;
       DOUBLE3D vDif = v0-v1;
 		  // add the edge contribution to the normal vector
-      vNormal(1) += vDif(2)*vSum(3);
-      vNormal(2) += vDif(3)*vSum(1);
-      vNormal(3) += vDif(1)*vSum(2);
+      vNormal(1) += vDif (2)*vSum(3);
+      vNormal(2) += vDif (3)*vSum(1);
+      vNormal(3) += vDif (1)*vSum(2);
       vAnyVertex = v0;
     }}
 
@@ -454,13 +454,13 @@ void CBrushSector::TriangularizeForVertices( CBrushVertexSelection &selVertex)
   {FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo)
   {
     // if polygon is already marked for triangularization
-    if( itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE)
+    if (itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE)
     {
       // no need to test it again
       continue;
     }
     // if this polygon is triangle
-    if( itbpo->bpo_aiTriangleElements.Count() == 3)
+    if (itbpo->bpo_aiTriangleElements.Count() == 3)
     {
       // skip it
       continue;
@@ -469,7 +469,7 @@ void CBrushSector::TriangularizeForVertices( CBrushVertexSelection &selVertex)
     {FOREACHINSTATICARRAY(itbpo->bpo_apbvxTriangleVertices, CBrushVertex *, itpbvx)
     {
       // if any of polygon's vertices is selected
-      if( (*itpbvx)->bvx_ulFlags&BVXF_SELECTED)
+      if ((*itpbvx)->bvx_ulFlags&BVXF_SELECTED)
       {
         // mark for triangularized
         itbpo->bpo_ulFlags |= BPOF_MARKED_FOR_USE;
@@ -493,13 +493,13 @@ void CBrushSector::TriangularizeMarkedPolygons( void)
   {FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo)
   {
     // if this polygon is triangle
-    if( itbpo->bpo_aiTriangleElements.Count() == 3)
+    if (itbpo->bpo_aiTriangleElements.Count() == 3)
     {
       // skip it
       continue;
     }
     // if polygon is already marked for triangularization
-    if( itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE)
+    if (itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE)
     {
       // count polygon
       ctPolygonsToRemove++;
@@ -509,7 +509,7 @@ void CBrushSector::TriangularizeMarkedPolygons( void)
   }}
 
   // if all marked polygons are already triangularized
-  if( ctPolygonsToRemove == 0)
+  if (ctPolygonsToRemove == 0)
   {
     // don't do anything
     return;
@@ -527,7 +527,7 @@ void CBrushSector::TriangularizeMarkedPolygons( void)
 
   // copy old edges to new edge array
   INDEX iEdge;
-  for( iEdge=0; iEdge<ctOldEdges; iEdge++)
+  for (iEdge=0; iEdge<ctOldEdges; iEdge++)
   {
     abedEdgesNew[iEdge] = bsc_abedEdges[iEdge];
   }
@@ -542,7 +542,7 @@ void CBrushSector::TriangularizeMarkedPolygons( void)
     CBrushPolygon &bpoOld = *itbpo;
 
     // polygon shouldn't be triangularized
-    if( !(itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE))
+    if (!(itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE))
     {
       CBrushPolygon &bpoNew = abpoPolygonsNew[ iNewPolygons];
       // copy the old polygon
@@ -563,7 +563,7 @@ void CBrushSector::TriangularizeMarkedPolygons( void)
       // allocate new polygon edges
       bpoNew.bpo_abpePolygonEdges.New(ctEdgesToRemap);
       // for each edge in polygon
-      for( INDEX iRemapEdge=0; iRemapEdge<ctEdgesToRemap; iRemapEdge++)
+      for (INDEX iRemapEdge=0; iRemapEdge<ctEdgesToRemap; iRemapEdge++)
       {
         CBrushPolygonEdge &bpeOld = itbpo->bpo_abpePolygonEdges[iRemapEdge];
         CBrushPolygonEdge &bpeNew = bpoNew.bpo_abpePolygonEdges[iRemapEdge];
@@ -590,7 +590,7 @@ void CBrushSector::TriangularizeMarkedPolygons( void)
     {
       INDEX ctTriangles = itbpo->bpo_aiTriangleElements.Count()/3;
       // for each triangle in old polygon
-      for( INDEX iTriangle=0; iTriangle<ctTriangles; iTriangle++)
+      for (INDEX iTriangle=0; iTriangle<ctTriangles; iTriangle++)
       {
         CBrushPolygon &bpoNew = abpoPolygonsNew[ iNewPolygons];
         INDEX iVtx0 = itbpo->bpo_aiTriangleElements[iTriangle*3+0];
@@ -686,7 +686,7 @@ void CBrushSector::TriangularizeMarkedPolygons( void)
 
 void CBrushSector::InsertVertexIntoTriangle( CBrushPolygonSelection &selPolygon, FLOAT3D vVertex)
 {
-  if( selPolygon.Count() != 1)
+  if (selPolygon.Count() != 1)
   {
     return;
   }
@@ -713,7 +713,7 @@ void CBrushSector::SubdivideTriangles( CBrushPolygonSelection &selPolygon)
   {
     // mark them for use
     itbpo->bpo_ulFlags |= BPOF_MARKED_FOR_USE;
-    if( itbpo->bpo_aiTriangleElements.Count() != 3)
+    if (itbpo->bpo_aiTriangleElements.Count() != 3)
     {
       return;
     }
@@ -740,7 +740,7 @@ void CBrushSector::SubdivideTriangles( CBrushPolygonSelection &selPolygon)
 
   // copy old vertices to new vertex array
   INDEX iVtx;
-  for( iVtx=0; iVtx<ctOldVertices; iVtx++)
+  for (iVtx=0; iVtx<ctOldVertices; iVtx++)
   {
     abvxVerticesNew[iVtx] = bsc_abvxVertices[iVtx];
     awvxVerticesNew[iVtx] = bsc_awvxVertices[iVtx];
@@ -748,14 +748,14 @@ void CBrushSector::SubdivideTriangles( CBrushPolygonSelection &selPolygon)
   // note that iVtx points to first new vertex
 
   // initialize working vertex ptrs
-  for( INDEX iVtxTemp=0; iVtxTemp<abvxVerticesNew.Count(); iVtxTemp++)
+  for (INDEX iVtxTemp=0; iVtxTemp<abvxVerticesNew.Count(); iVtxTemp++)
   {
     abvxVerticesNew[iVtxTemp].bvx_pwvxWorking = &awvxVerticesNew[iVtxTemp];
   }
   
   // copy old edges to new edge array
   INDEX iEdge;
-  for( iEdge=0; iEdge<ctOldEdges; iEdge++)
+  for (iEdge=0; iEdge<ctOldEdges; iEdge++)
   {
     // remap old vertices into new vertex array using their indices
     INDEX iOldVtx0 = bsc_abvxVertices.Index( bsc_abedEdges[iEdge].bed_pbvxVertex0);
@@ -774,7 +774,7 @@ void CBrushSector::SubdivideTriangles( CBrushPolygonSelection &selPolygon)
     CBrushPolygon &bpoOld = *itbpo;
 
     // polygon shouldn't be subdivided
-    if( !(itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE))
+    if (!(itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE))
     {
       // copy the old polygon
       CBrushPolygon &bpoNew = abpoPolygonsNew[ iNewPolygons];
@@ -795,7 +795,7 @@ void CBrushSector::SubdivideTriangles( CBrushPolygonSelection &selPolygon)
       // allocate new polygon edges
       bpoNew.bpo_abpePolygonEdges.New(ctEdgesToRemap);
       // for each edge in polygon
-      for( INDEX iRemapEdge=0; iRemapEdge<ctEdgesToRemap; iRemapEdge++)
+      for (INDEX iRemapEdge=0; iRemapEdge<ctEdgesToRemap; iRemapEdge++)
       {
         CBrushPolygonEdge &bpeOld = bpoOld.bpo_abpePolygonEdges[iRemapEdge];
         CBrushPolygonEdge &bpeNew = bpoNew.bpo_abpePolygonEdges[iRemapEdge];
@@ -812,7 +812,7 @@ void CBrushSector::SubdivideTriangles( CBrushPolygonSelection &selPolygon)
       // allocate and set vertex pointers
       bpoNew.bpo_apbvxTriangleVertices.New(3);
       // remap brush vertex pointers
-      for( INDEX iTVtx=0; iTVtx<3; iTVtx++)
+      for (INDEX iTVtx=0; iTVtx<3; iTVtx++)
       {
         INDEX iOldVtx = bsc_abvxVertices.Index( bpoOld.bpo_apbvxTriangleVertices[iTVtx]);
         bpoNew.bpo_apbvxTriangleVertices[iTVtx] = &abvxVerticesNew[iOldVtx];
@@ -1019,11 +1019,11 @@ void CBrushSector::SubdivideTriangles( CBrushPolygonSelection &selPolygon)
 // Search for shared edge in two given triangles
 void GetSharedEdge( CBrushPolygon *pbpo0, CBrushPolygon *pbpo1, CBrushEdge *&pse)
 {
-  for( INDEX iFirst=0; iFirst<3; iFirst++)
+  for (INDEX iFirst=0; iFirst<3; iFirst++)
   {
-    for( INDEX iSecond=0; iSecond<3; iSecond++)
+    for (INDEX iSecond=0; iSecond<3; iSecond++)
     {
-      if( pbpo0->bpo_abpePolygonEdges[iFirst].bpe_pbedEdge == 
+      if (pbpo0->bpo_abpePolygonEdges[iFirst].bpe_pbedEdge == 
           pbpo1->bpo_abpePolygonEdges[iSecond].bpe_pbedEdge )
       {
         pse = pbpo0->bpo_abpePolygonEdges[iFirst].bpe_pbedEdge;
@@ -1037,18 +1037,18 @@ void GetSharedEdge( CBrushPolygon *pbpo0, CBrushPolygon *pbpo1, CBrushEdge *&pse
 BOOL CBrushSector::IsReTripleAvailable( CBrushPolygonSelection &selPolygon)
 {
   // we must have two polygons in selection
-  if( selPolygon.Count() != 2) return FALSE;
+  if (selPolygon.Count() != 2) return FALSE;
   
   // obtain polygons
   CBrushPolygon *pbpoOld0 = selPolygon.sa_Array[0];
   CBrushPolygon *pbpoOld1 = selPolygon.sa_Array[1];
   
   // must be in the same sector
-  if( pbpoOld0->bpo_pbscSector != pbpoOld1->bpo_pbscSector) return FALSE;
+  if (pbpoOld0->bpo_pbscSector != pbpoOld1->bpo_pbscSector) return FALSE;
 
   // both of them must be triangles
-  if( pbpoOld0->bpo_aiTriangleElements.Count() != 3) return FALSE;
-  if( pbpoOld1->bpo_aiTriangleElements.Count() != 3) return FALSE;
+  if (pbpoOld0->bpo_aiTriangleElements.Count() != 3) return FALSE;
+  if (pbpoOld1->bpo_aiTriangleElements.Count() != 3) return FALSE;
 
   // triangles must share an edge
   CBrushEdge *pse = NULL;
@@ -1065,10 +1065,10 @@ void GetNonSharedEdgesContainingVtx(CBrushPolygon *pbpo0, CBrushPolygon *pbpo1,
   pbpe1 = NULL;
 
   // for first triangle
-  for( INDEX itri0=0; itri0<3; itri0++)
+  for (INDEX itri0=0; itri0<3; itri0++)
   {
     CBrushPolygonEdge *pbpeTest = &pbpo0->bpo_abpePolygonEdges[itri0];
-    if( ( pbpeTest->bpe_pbedEdge != pse) && // if it is not shared edge
+    if (( pbpeTest->bpe_pbedEdge != pse) && // if it is not shared edge
         ((pbpeTest->bpe_pbedEdge->bed_pbvxVertex0 == pvtx) || // and contains given vertex
          (pbpeTest->bpe_pbedEdge->bed_pbvxVertex1 == pvtx)) )
     {
@@ -1076,10 +1076,10 @@ void GetNonSharedEdgesContainingVtx(CBrushPolygon *pbpo0, CBrushPolygon *pbpo1,
     }
   }
   // for second triangle
-  for( INDEX itri1=0; itri1<3; itri1++)
+  for (INDEX itri1=0; itri1<3; itri1++)
   {
     CBrushPolygonEdge *pbpeTest = &pbpo1->bpo_abpePolygonEdges[itri1];
-    if( ( pbpeTest->bpe_pbedEdge != pse) && // if it is not shared edge
+    if (( pbpeTest->bpe_pbedEdge != pse) && // if it is not shared edge
         ((pbpeTest->bpe_pbedEdge->bed_pbvxVertex0 == pvtx) || // and contains given vertex
          (pbpeTest->bpe_pbedEdge->bed_pbvxVertex1 == pvtx)) )
     {
@@ -1096,15 +1096,15 @@ void GetNonSharedEdgesContainingVtx(CBrushPolygon *pbpo0, CBrushPolygon *pbpo1,
 void CBrushSector::ReTriple( CBrushPolygonSelection &selPolygon)
 {
   // we must have two polygons in selection
-  if( selPolygon.Count() != 2) return;
+  if (selPolygon.Count() != 2) return;
   
   // obtain polygons
   CBrushPolygon *pbpoOld0 = selPolygon.sa_Array[0];
   CBrushPolygon *pbpoOld1 = selPolygon.sa_Array[1];
 
   // both of them must be triangles
-  if( pbpoOld0->bpo_aiTriangleElements.Count() != 3) return;
-  if( pbpoOld1->bpo_aiTriangleElements.Count() != 3) return;
+  if (pbpoOld0->bpo_aiTriangleElements.Count() != 3) return;
+  if (pbpoOld1->bpo_aiTriangleElements.Count() != 3) return;
 
   // clear marked for use flag on all polygons in world
   CWorld *pwo=bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->en_pwoWorld;
@@ -1130,7 +1130,7 @@ void CBrushSector::ReTriple( CBrushPolygonSelection &selPolygon)
 
   // copy old edges to new edge array
   INDEX iEdge;
-  for( iEdge=0; iEdge<ctOldEdges; iEdge++)
+  for (iEdge=0; iEdge<ctOldEdges; iEdge++)
   {
     // copy vertex ptrs
     abedEdgesNew[iEdge].bed_pbvxVertex0 = bsc_abedEdges[iEdge].bed_pbvxVertex0;
@@ -1146,7 +1146,7 @@ void CBrushSector::ReTriple( CBrushPolygonSelection &selPolygon)
     CBrushPolygon &bpoOld = *itbpo;
 
     // polygon shouldn't be subdivided
-    if( !(itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE))
+    if (!(itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE))
     {
       // copy the old polygon
       CBrushPolygon &bpoNew = abpoPolygonsNew[ iNewPolygons];
@@ -1167,7 +1167,7 @@ void CBrushSector::ReTriple( CBrushPolygonSelection &selPolygon)
       // allocate new polygon edges
       bpoNew.bpo_abpePolygonEdges.New(ctEdgesToRemap);
       // for each edge in polygon
-      for( INDEX iRemapEdge=0; iRemapEdge<ctEdgesToRemap; iRemapEdge++)
+      for (INDEX iRemapEdge=0; iRemapEdge<ctEdgesToRemap; iRemapEdge++)
       {
         CBrushPolygonEdge &bpeOld = bpoOld.bpo_abpePolygonEdges[iRemapEdge];
         CBrushPolygonEdge &bpeNew = bpoNew.bpo_abpePolygonEdges[iRemapEdge];
@@ -1185,7 +1185,7 @@ void CBrushSector::ReTriple( CBrushPolygonSelection &selPolygon)
       INDEX ctOldTVtx = bpoOld.bpo_apbvxTriangleVertices.Count();
       bpoNew.bpo_apbvxTriangleVertices.New(ctOldTVtx);
       // copy old brush vertex pointers
-      for( INDEX iTVtx=0; iTVtx<ctOldTVtx; iTVtx++)
+      for (INDEX iTVtx=0; iTVtx<ctOldTVtx; iTVtx++)
       {
         bpoNew.bpo_apbvxTriangleVertices[iTVtx] = bpoOld.bpo_apbvxTriangleVertices[iTVtx];
       }
@@ -1232,7 +1232,7 @@ void CBrushSector::ReTriple( CBrushPolygonSelection &selPolygon)
   // find edges that exit and enter shared edge's vertex 0
   CBrushPolygonEdge *pbpeExit;
   CBrushPolygonEdge *pbpeEnter;
-  if( ((pbpev0e0->bpe_pbedEdge->bed_pbvxVertex0 == pv0se) && !pbpev0e0->bpe_bReverse) ||
+  if (((pbpev0e0->bpe_pbedEdge->bed_pbvxVertex0 == pv0se) && !pbpev0e0->bpe_bReverse) ||
       ((pbpev0e0->bpe_pbedEdge->bed_pbvxVertex1 == pv0se) && pbpev0e0->bpe_bReverse) )
   {
     pbpeExit = pbpev0e0;
@@ -1246,7 +1246,7 @@ void CBrushSector::ReTriple( CBrushPolygonSelection &selPolygon)
 
   // find start vertex of new edge
   CBrushVertex *pvNew0;
-  if( pbpeExit->bpe_pbedEdge->bed_pbvxVertex0 != pv0se)
+  if (pbpeExit->bpe_pbedEdge->bed_pbvxVertex0 != pv0se)
   {
     pvNew0 = pbpeExit->bpe_pbedEdge->bed_pbvxVertex0;
   }
@@ -1256,7 +1256,7 @@ void CBrushSector::ReTriple( CBrushPolygonSelection &selPolygon)
   }
   // find end vertex of new edge
   CBrushVertex *pvNew1;
-  if( pbpeEnter->bpe_pbedEdge->bed_pbvxVertex0 != pv0se)
+  if (pbpeEnter->bpe_pbedEdge->bed_pbvxVertex0 != pv0se)
   {
     pvNew1 = pbpeEnter->bpe_pbedEdge->bed_pbvxVertex0;
   }

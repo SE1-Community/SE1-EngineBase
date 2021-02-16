@@ -74,7 +74,7 @@ static const INDEX MAX_RESOLUTIONS = sizeof(_areResolutions)/sizeof(_areResoluti
 void CGfxLibrary::InitAPIs(void)
 {
   // no need for gfx when dedicated server is on
-  if( _bDedicatedServer) return;
+  if (_bDedicatedServer) return;
 
   CDisplayAdapter *pda;
   INDEX iResolution;
@@ -102,7 +102,7 @@ void CGfxLibrary::InitAPIs(void)
   pda->da_iCurrentDisplayMode = -1;
 
   // enumerate modes thru resolution list
-  for( iResolution=0; iResolution<MAX_RESOLUTIONS; iResolution++)
+  for (iResolution=0; iResolution<MAX_RESOLUTIONS; iResolution++)
   {
     DEVMODE devmode;
     memset( &devmode, 0, sizeof(devmode));
@@ -116,7 +116,7 @@ void CGfxLibrary::InitAPIs(void)
     devmode.dmFields = DM_PELSWIDTH|DM_PELSHEIGHT|DM_DISPLAYFLAGS;
     LONG lRes = ChangeDisplaySettings( &devmode, CDS_TEST|CDS_FULLSCREEN);
     // skip if not successfull
-    if( lRes!=DISP_CHANGE_SUCCESSFUL) continue;
+    if (lRes!=DISP_CHANGE_SUCCESSFUL) continue;
 
     // make a new display mode
     CDisplayMode &dm = pda->da_admDisplayModes[pda->da_ctDisplayModes];
@@ -131,7 +131,7 @@ void CGfxLibrary::InitAPIs(void)
   char  strBuffer[_MAX_PATH+1];
   int iRes = SearchPathA( NULL, "3DFXVGL.DLL", NULL, _MAX_PATH, strBuffer, &strDummy);
   // if present
-  if(iRes) {
+  if (iRes) {
     // set adapter and force some enumeration of voodoo1/2 display modes
     gl_gaAPI[GAT_OGL].ga_ctAdapters++;
     pda = &gl_gaAPI[GAT_OGL].ga_adaAdapter[1];
@@ -150,14 +150,14 @@ void CGfxLibrary::InitAPIs(void)
   // try to init Direct3D 8
 #ifdef SE1_D3D
   BOOL bRes = InitDriver_D3D();
-  if( !bRes) return; // didn't made it?
+  if (!bRes) return; // didn't made it?
   
   // determine DX8 adapters and display modes
   const INDEX ctMaxAdapters = gl_pD3D->GetAdapterCount();
   INDEX &ctAdapters = gl_gaAPI[GAT_D3D].ga_ctAdapters;
   ctAdapters = 0;
 
-  for( INDEX iAdapter=0; iAdapter<ctMaxAdapters; iAdapter++)
+  for (INDEX iAdapter=0; iAdapter<ctMaxAdapters; iAdapter++)
   {
     pda = &gl_gaAPI[1].ga_adaAdapter[ctAdapters];
     pda->da_ulFlags = NONE;
@@ -168,30 +168,30 @@ void CGfxLibrary::InitAPIs(void)
 
     // check whether 32-bits rendering modes are supported
     hr = gl_pD3D->CheckDeviceType( iAdapter, d3dDevType, D3DFMT_A8R8G8B8, D3DFMT_A8R8G8B8, FALSE);
-    if( hr!=D3D_OK) {
+    if (hr!=D3D_OK) {
       hr = gl_pD3D->CheckDeviceType( iAdapter, d3dDevType, D3DFMT_X8R8G8B8, D3DFMT_X8R8G8B8, FALSE);
-      if( hr!=D3D_OK) pda->da_ulFlags |= DAF_16BITONLY;
+      if (hr!=D3D_OK) pda->da_ulFlags |= DAF_16BITONLY;
     }
 
     // check whether windowed rendering modes are supported
     D3DCAPS8 d3dCaps;
     gl_pD3D->GetDeviceCaps( iAdapter, d3dDevType, &d3dCaps);
-    if( !(d3dCaps.Caps2 & D3DCAPS2_CANRENDERWINDOWED)) pda->da_ulFlags |= DAF_FULLSCREENONLY;
+    if (!(d3dCaps.Caps2 & D3DCAPS2_CANRENDERWINDOWED)) pda->da_ulFlags |= DAF_FULLSCREENONLY;
 
     // enumerate modes thru resolution list
-    for( iResolution=0; iResolution<MAX_RESOLUTIONS; iResolution++)
+    for (iResolution=0; iResolution<MAX_RESOLUTIONS; iResolution++)
     {
       CResolution &re = _areResolutions[iResolution];
-      for( iMode=0; iMode<ctModes; iMode++) {
+      for (iMode=0; iMode<ctModes; iMode++) {
         // if resolution matches and display depth is 16 or 32 bit
         D3DDISPLAYMODE d3dDisplayMode;
         gl_pD3D->EnumAdapterModes( iAdapter, iMode, &d3dDisplayMode);
-        if( d3dDisplayMode.Width==re.re_pixSizeI && d3dDisplayMode.Height==re.re_pixSizeJ
+        if (d3dDisplayMode.Width==re.re_pixSizeI && d3dDisplayMode.Height==re.re_pixSizeJ
          && (d3dDisplayMode.Format==D3DFMT_A8R8G8B8 || d3dDisplayMode.Format==D3DFMT_X8R8G8B8
          ||  d3dDisplayMode.Format==D3DFMT_A1R5G5B5 || d3dDisplayMode.Format==D3DFMT_X1R5G5B5 
          ||  d3dDisplayMode.Format==D3DFMT_R5G6B5)) {
           hr = gl_pD3D->CheckDeviceType( iAdapter, d3dDevType, d3dDisplayMode.Format, d3dDisplayMode.Format, FALSE);
-          if( hr!=D3D_OK) continue;
+          if (hr!=D3D_OK) continue;
 
           // make a new display mode
           CDisplayMode &dm = pda->da_admDisplayModes[pda->da_ctDisplayModes];
@@ -217,7 +217,7 @@ void CGfxLibrary::InitAPIs(void)
   }
   // shutdown DX8 (we'll start it again if needed)
   D3DRELEASE( gl_pD3D, TRUE);
-  if( gl_hiDriver!=NONE) FreeLibrary(gl_hiDriver);
+  if (gl_hiDriver!=NONE) FreeLibrary(gl_hiDriver);
   gl_hiDriver = NONE;
 #endif // SE1_D3D
 }
@@ -233,7 +233,7 @@ CListHead &CDS_GetModes(void)
 BOOL CDS_SetMode( PIX pixSizeI, PIX pixSizeJ, enum DisplayDepth dd)
 {
   // no need for gfx when dedicated server is on
-  if( _bDedicatedServer) return FALSE;
+  if (_bDedicatedServer) return FALSE;
 
   // prepare general mode parameters
   DEVMODE devmode;
@@ -244,13 +244,13 @@ BOOL CDS_SetMode( PIX pixSizeI, PIX pixSizeJ, enum DisplayDepth dd)
   devmode.dmDisplayFlags = CDS_FULLSCREEN;
   devmode.dmFields = DM_PELSWIDTH|DM_PELSHEIGHT|DM_DISPLAYFLAGS;
   extern INDEX gap_iRefreshRate;
-  if( gap_iRefreshRate>0) {
+  if (gap_iRefreshRate>0) {
     devmode.dmFields |= DM_DISPLAYFREQUENCY;
     devmode.dmDisplayFrequency = gap_iRefreshRate;
   }
   // determine bits per pixel to try to set
   SLONG slBPP2 = 0;
-  switch(dd) {
+  switch (dd) {
   case DD_16BIT:
     devmode.dmBitsPerPel = 16;
     slBPP2 = 15;
@@ -273,14 +273,14 @@ BOOL CDS_SetMode( PIX pixSizeI, PIX pixSizeJ, enum DisplayDepth dd)
   LONG lRes = ChangeDisplaySettings(&devmode, CDS_FULLSCREEN);
 
   // if failed
-  if( lRes!=DISP_CHANGE_SUCCESSFUL) {
+  if (lRes!=DISP_CHANGE_SUCCESSFUL) {
     // try to set secondary depth
     devmode.dmBitsPerPel = slBPP2;
     LONG lRes2 = ChangeDisplaySettings(&devmode, CDS_FULLSCREEN);
     // if failed
-    if( lRes2!=DISP_CHANGE_SUCCESSFUL) {
+    if (lRes2!=DISP_CHANGE_SUCCESSFUL) {
       CTString strError;
-      switch(lRes) {
+      switch (lRes) {
       case DISP_CHANGE_SUCCESSFUL:  strError = "DISP_CHANGE_SUCCESSFUL"; break;
       case DISP_CHANGE_RESTART:     strError = "DISP_CHANGE_RESTART"; break;
       case DISP_CHANGE_BADFLAGS:    strError = "DISP_CHANGE_BADFLAGS"; break;
@@ -304,7 +304,7 @@ BOOL CDS_SetMode( PIX pixSizeI, PIX pixSizeJ, enum DisplayDepth dd)
 void CDS_ResetMode(void)
 {
   // no need for gfx when dedicated server is on
-  if( _bDedicatedServer) return;
+  if (_bDedicatedServer) return;
 
   LONG lRes = ChangeDisplaySettings( NULL, 0);
   ASSERT(lRes==DISP_CHANGE_SUCCESSFUL);

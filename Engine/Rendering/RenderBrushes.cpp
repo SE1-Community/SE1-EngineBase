@@ -31,8 +31,8 @@ void CRenderer::DrawBrushPolygonVerticesAndEdges(CBrushPolygon &bpo)
   if (bpo.IsSelected(BPOF_SELECTED)) {
     // for all edges in the polygon
     INDEX cttri = bpo.bpo_aiTriangleElements.Count()/3;
-    for(INDEX itri=0; itri<cttri; itri++) {
-      for(INDEX ied=0; ied<3; ied++) {
+    for (INDEX itri=0; itri<cttri; itri++) {
+      for (INDEX ied=0; ied<3; ied++) {
     
       // get transformed end vertices
       INDEX ielem0 = bpo.bpo_aiTriangleElements[itri*3+ied];
@@ -59,7 +59,7 @@ void CRenderer::DrawBrushPolygonVerticesAndEdges(CBrushPolygon &bpo)
         FLOAT fI1 = v3d1(1); FLOAT fJ1 = v3d1(2);
       
         // if the edge is too short
-        if( Abs(fI1-fI0)<2 && fabs(fJ1-fJ0)<2) {
+        if (Abs(fI1-fI0)<2 && fabs(fJ1-fJ0)<2) {
           // skip it
           continue;
         }
@@ -95,7 +95,7 @@ void CRenderer::DrawBrushPolygonVerticesAndEdges(CBrushPolygon &bpo)
       FLOAT fI1 = v3d1(1); FLOAT fJ1 = v3d1(2);
       
       // if the edge is too short
-      if( Abs(fI1-fI0)<2 && fabs(fJ1-fJ0)<2) {
+      if (Abs(fI1-fI0)<2 && fabs(fJ1-fJ0)<2) {
         // skip it
         continue;
       }
@@ -374,7 +374,7 @@ ScenePolygon *CRenderer::SortTranslucentPolygons(ScenePolygon *pspoFirst)
   // make empty new list of polygons
   ScenePolygon *pspoNewFirst = NULL;
   // for each polygon in container
-  for(INDEX iPolygon=0; iPolygon<re_atcTranslucentPolygons.Count(); iPolygon++) {
+  for (INDEX iPolygon=0; iPolygon<re_atcTranslucentPolygons.Count(); iPolygon++) {
     ScenePolygon *pspo = re_atcTranslucentPolygons[iPolygon].tp_pspoPolygon;
     // add it to new list
     pspo->spo_pspoSucc = pspoNewFirst;

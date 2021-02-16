@@ -103,7 +103,7 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
   istrm>>ctProperties;
 
   // for all saved properties
-  for(INDEX iProperty=0; iProperty<ctProperties; iProperty++) {
+  for (INDEX iProperty=0; iProperty<ctProperties; iProperty++) {
     pdecDLLClass->dec_ctProperties;
     // read packed identifier
     ULONG ulIDAndType;
@@ -325,13 +325,13 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
           break;
         }
         // try to replace file name if it doesn't exist
-        for(;;)
+        for (;;)
         {
-          if( !FileExists( PROPERTY(pepProperty->ep_slOffset, CTFileName)))
+          if (!FileExists( PROPERTY(pepProperty->ep_slOffset, CTFileName)))
           {
             // if file was not found, ask for replacing file
             CTFileName fnReplacingFile;
-            if( GetReplacingFile( PROPERTY(pepProperty->ep_slOffset, CTFileName),
+            if (GetReplacingFile( PROPERTY(pepProperty->ep_slOffset, CTFileName),
                                   fnReplacingFile, FILTER_ALL FILTER_END))
             {
               // replacing file was provided
@@ -429,7 +429,7 @@ void CEntity::WriteProperties_t(CTStream &ostrm) // throw char *
 {
   INDEX ctProperties = 0;
   // for all classes in hierarchy of this entity
-  {for(CDLLEntityClass *pdecDLLClass = en_pecClass->ec_pdecDLLClass;
+  {for (CDLLEntityClass *pdecDLLClass = en_pecClass->ec_pdecDLLClass;
       pdecDLLClass!=NULL;
       pdecDLLClass = pdecDLLClass->dec_pdecBase) {
     // count the properties
@@ -441,11 +441,11 @@ void CEntity::WriteProperties_t(CTStream &ostrm) // throw char *
   ostrm<<ctProperties;
 
   // for all classes in hierarchy of this entity
-  {for(CDLLEntityClass *pdecDLLClass = en_pecClass->ec_pdecDLLClass;
+  {for (CDLLEntityClass *pdecDLLClass = en_pecClass->ec_pdecDLLClass;
       pdecDLLClass!=NULL;
       pdecDLLClass = pdecDLLClass->dec_pdecBase) {
     // for all properties
-    for(INDEX iProperty=0; iProperty<pdecDLLClass->dec_ctProperties; iProperty++) {
+    for (INDEX iProperty=0; iProperty<pdecDLLClass->dec_ctProperties; iProperty++) {
       CEntityProperty &epProperty = pdecDLLClass->dec_aepProperties[iProperty];
 
       // pack property ID and property type together
@@ -592,7 +592,7 @@ void CEntityComponent::Obtain_t(void)  // throw char *
 
   INDEX ctUsed = 0;
   // check the component type
-  switch(ec_ectType) {
+  switch (ec_ectType) {
     // if texture
     case ECT_TEXTURE:
       // obtain texture data
@@ -624,7 +624,7 @@ void CEntityComponent::Obtain_t(void)  // throw char *
   }
 
   // if not already loaded and should not be precaching now
-  if( ctUsed<=1 && !_precache_bNowPrecaching) {
+  if (ctUsed<=1 && !_precache_bNowPrecaching) {
     // report warning
     CPrintF(TRANS("Not precached: (0x%08X)'%s'\n"), this->ec_slID, ec_fnmComponent);
   }
@@ -652,7 +652,7 @@ void CEntityComponent::AddToCRCTable(void)
   }
 
   // add it
-  switch(ec_ectType) {
+  switch (ec_ectType) {
     case ECT_TEXTURE: ec_ptdTexture->AddToCRCTable(); break;
     case ECT_MODEL:   ec_pmdModel->AddToCRCTable(); break;
     case ECT_SOUND:   ec_psdSound->AddToCRCTable(); break;
@@ -671,7 +671,7 @@ void CEntityComponent::Release(void)
     return;
   }
   // check the component type
-  switch(ec_ectType) {
+  switch (ec_ectType) {
     // if texture
     case ECT_TEXTURE:
       // release texture data

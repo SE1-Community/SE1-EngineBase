@@ -57,11 +57,11 @@ void BeginModelRenderingView( CAnyProjection3D &prProjection, CDrawPort *pdp)
   // set 3D projection
   _iRenderingType = 1;
   _pdp = pdp;
-  prProjection->ObjectPlacementL() = CPlacement3D(FLOAT3D(0,0,0), ANGLE3D(0,0,0));
+  prProjection->ObjectPlacementL() = CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));
   prProjection->Prepare();
   // in case of mirror projection, move mirror clip plane a bit father from the mirrored models,
   // so we have less clipping (for instance, player feet)
-  if( prProjection->pr_bMirror) prProjection->pr_plMirrorView.pl_distance -= 0.06f; // -0.06 is because entire projection is offseted by +0.05
+  if (prProjection->pr_bMirror) prProjection->pr_plMirrorView.pl_distance -= 0.06f; // -0.06 is because entire projection is offseted by +0.05
   _aprProjection = prProjection;
   _pdp->SetProjection( _aprProjection);
   // make FPU precision low
@@ -76,8 +76,8 @@ void BeginModelRenderingView( CAnyProjection3D &prProjection, CDrawPort *pdp)
   // eventually setup truform
   extern INDEX gap_bForceTruform;
   extern INDEX ogl_bTruformLinearNormals;
-  if( ogl_bTruformLinearNormals) ogl_bTruformLinearNormals = 1;
-  if( gap_bForceTruform) {
+  if (ogl_bTruformLinearNormals) ogl_bTruformLinearNormals = 1;
+  if (gap_bForceTruform) {
     gap_bForceTruform = 1;
     gfxSetTruform( _pGfx->gl_iTessellationLevel, ogl_bTruformLinearNormals);
   }
@@ -96,12 +96,12 @@ void EndModelRenderingView( BOOL bRestoreOrtho/*=TRUE*/)
   extern void RenderBatchedSimpleShadows_View(void);
   RenderBatchedSimpleShadows_View();
   // back to 2D projection?
-  if( bRestoreOrtho) _pdp->SetOrtho();
+  if (bRestoreOrtho) _pdp->SetOrtho();
   _iRenderingType = 0;
   _pdp = NULL;
   // eventually disable re-enable clipping
   gfxEnableClipping();
-  if( _aprProjection->pr_bMirror || _aprProjection->pr_bWarp) gfxEnableClipPlane();
+  if (_aprProjection->pr_bMirror || _aprProjection->pr_bWarp) gfxEnableClipPlane();
 }
 
 
@@ -129,7 +129,7 @@ void EndModelRenderingMask(void)
 // calculate models bounding box (needed for simple shadows and trivial rejection of in-fog/haze-case)
 static void CalculateBoundingBox( CModelObject *pmo, CRenderModel &rm)
 {
-  if( rm.rm_ulFlags & RMF_BBOXSET) return;
+  if (rm.rm_ulFlags & RMF_BBOXSET) return;
   // get model's data and lerp info
   rm.rm_pmdModelData = (CModelData*)pmo->GetData();
   pmo->GetFrame( rm.rm_iFrame0, rm.rm_iFrame1, rm.rm_fRatio);
@@ -160,7 +160,7 @@ CRenderModel::CRenderModel(void)
 
 CRenderModel::~CRenderModel(void)
 {
-  if( !(rm_ulFlags&RMF_ATTACHMENT)) _armRenderModels.PopAll();
+  if (!(rm_ulFlags&RMF_ATTACHMENT)) _armRenderModels.PopAll();
 }
 
 
@@ -185,13 +185,13 @@ void CRenderModel::SetModelView(void)
   _pfModelProfile.IncrementTimerAveragingCounter( CModelProfile::PTI_VIEW_SETMODELVIEW);
 
   // adjust clipping to frustum
-  if( rm_ulFlags & RMF_INSIDE) gfxDisableClipping();
+  if (rm_ulFlags & RMF_INSIDE) gfxDisableClipping();
   else gfxEnableClipping();
 
   // adjust clipping to mirror-plane (if any)
   extern INDEX gap_iOptimizeClipping;
-  if( gap_iOptimizeClipping>0 && (_aprProjection->pr_bMirror || _aprProjection->pr_bWarp)) {
-    if( rm_ulFlags & RMF_INMIRROR) gfxDisableClipPlane();
+  if (gap_iOptimizeClipping>0 && (_aprProjection->pr_bMirror || _aprProjection->pr_bWarp)) {
+    if (rm_ulFlags & RMF_INMIRROR) gfxDisableClipPlane();
     else gfxEnableClipPlane();
   }
 
@@ -214,7 +214,7 @@ void CRenderModel::SetModelView(void)
 // transform a vertex in model with lerping
 void CModelObject::UnpackVertex( CRenderModel &rm, const INDEX iVertex, FLOAT3D &vVertex)
 {
-  if( ((CModelData*)GetData())->md_Flags & MF_COMPRESSED_16BIT) {
+  if (((CModelData*)GetData())->md_Flags & MF_COMPRESSED_16BIT) {
     // get 16 bit packed vertices
     const SWPOINT3D &vsw0 = rm.rm_pFrame16_0[iVertex].mfv_SWPoint;
     const SWPOINT3D &vsw1 = rm.rm_pFrame16_1[iVertex].mfv_SWPoint;
@@ -297,7 +297,7 @@ BOOL CModelObject::CreateAttachment( CRenderModel &rmMain, CAttachmentModelObjec
 
   // done here if clipping optimizations are not allowed
   extern INDEX gap_iOptimizeClipping;
-  if( gap_iOptimizeClipping<1) { 
+  if (gap_iOptimizeClipping<1) { 
     gap_iOptimizeClipping = 0;
     _pfModelProfile.StopTimer( CModelProfile::PTI_CREATEATTACHMENT);
     return TRUE;
@@ -313,33 +313,33 @@ BOOL CModelObject::CreateAttachment( CRenderModel &rmMain, CAttachmentModelObjec
   const FLOATobbox3D boxEntity( FLOATaabbox3D(rmAttached.rm_vObjectMinBB, rmAttached.rm_vObjectMaxBB),
                                 vHandle, _aprProjection->pr_ViewerRotationMatrix*mOrientation);
   // frustum test?
-  if( gap_iOptimizeClipping>1) {
+  if (gap_iOptimizeClipping>1) {
     // test sphere against frustrum
     INDEX iFrustumTest = _aprProjection->TestSphereToFrustum(vHandle,fR);
-    if( iFrustumTest==0) {
+    if (iFrustumTest==0) {
       // test box if sphere cut one of frustum planes
       iFrustumTest = _aprProjection->TestBoxToFrustum(boxEntity);
     }
     // mark if attachment is fully inside frustum
-         if( iFrustumTest>0) rmAttached.rm_ulFlags |= RMF_INSIDE; 
-    else if( iFrustumTest<0) { // if completely outside of frustum
+         if (iFrustumTest>0) rmAttached.rm_ulFlags |= RMF_INSIDE; 
+    else if (iFrustumTest<0) { // if completely outside of frustum
       // signal skip rendering only if doesn't have any attachments
       _pfModelProfile.StopTimer( CModelProfile::PTI_CREATEATTACHMENT);
       return !amo.amo_moModelObject.mo_lhAttachments.IsEmpty(); 
     }
   }
   // test sphere against mirror/warp plane (if any)
-  if( _aprProjection->pr_bMirror || _aprProjection->pr_bWarp) {
+  if (_aprProjection->pr_bMirror || _aprProjection->pr_bWarp) {
     INDEX iMirrorPlaneTest;
     const FLOAT fPlaneDistance = _aprProjection->pr_plMirrorView.PointDistance(vHandle);
-         if( fPlaneDistance < -fR) iMirrorPlaneTest = -1;
-    else if( fPlaneDistance > +fR) iMirrorPlaneTest = +1;
+         if (fPlaneDistance < -fR) iMirrorPlaneTest = -1;
+    else if (fPlaneDistance > +fR) iMirrorPlaneTest = +1;
     else { // test box if sphere cut mirror plane
       iMirrorPlaneTest = boxEntity.TestAgainstPlane(_aprProjection->pr_plMirrorView);
     }
     // mark if attachment is fully inside mirror
-         if( iMirrorPlaneTest>0) rmAttached.rm_ulFlags |= RMF_INMIRROR; 
-    else if( iMirrorPlaneTest<0) { // if completely outside mirror
+         if (iMirrorPlaneTest>0) rmAttached.rm_ulFlags |= RMF_INMIRROR; 
+    else if (iMirrorPlaneTest<0) { // if completely outside mirror
       // signal skip rendering only if doesn't have any attachments
       _pfModelProfile.StopTimer( CModelProfile::PTI_CREATEATTACHMENT);
       return !amo.amo_moModelObject.mo_lhAttachments.IsEmpty(); 
@@ -366,7 +366,7 @@ static void PrepareView( CRenderModel &rm)
   const FLOAT3D &vViewer = _aprProjection->pr_vViewerPosition;
   FLOATmatrix3D &m = rm.rm_mObjectToView;
   // if half face forward
-  if( rm.rm_pmdModelData->md_Flags&MF_HALF_FACE_FORWARD) {
+  if (rm.rm_pmdModelData->md_Flags&MF_HALF_FACE_FORWARD) {
     // get the y-axis vector of object rotation
     FLOAT3D vY(rm.rm_mObjectRotation(1,2), rm.rm_mObjectRotation(2,2), rm.rm_mObjectRotation(3,2));
     // find z axis of viewer
@@ -382,12 +382,12 @@ static void PrepareView( CRenderModel &rm)
     // add viewer rotation to that
     m = mViewer * m;
   } // if full face forward
-  else if( rm.rm_pmdModelData->md_Flags&MF_FACE_FORWARD) {
+  else if (rm.rm_pmdModelData->md_Flags&MF_FACE_FORWARD) {
     // use just object banking for rotation
     FLOAT fSinP = -rm.rm_mObjectRotation(2,3);
     FLOAT fCosP = Sqrt(1-fSinP*fSinP);
     FLOAT fSinB, fCosB;
-    if( fCosP>0.001f) {
+    if (fCosP>0.001f) {
       const FLOAT f1oCosP = 1.0f/fCosP;
       fSinB = rm.rm_mObjectRotation(2,1)*f1oCosP;
       fCosB = rm.rm_mObjectRotation(2,2)*f1oCosP;
@@ -413,7 +413,7 @@ static void PrepareView( CRenderModel &rm)
 static void RenderWireframeBox( FLOAT3D vMinVtx, FLOAT3D vMaxVtx, COLOR col)
 {
   // only for OpenGL (for now)
-  if( _pGfx->gl_eCurrentAPI!=GAT_OGL) return;
+  if (_pGfx->gl_eCurrentAPI!=GAT_OGL) return;
 
   // prepare wireframe OpenGL settings
   gfxDisableDepthTest();
@@ -423,14 +423,14 @@ static void RenderWireframeBox( FLOAT3D vMinVtx, FLOAT3D vMaxVtx, COLOR col)
   gfxDisableTexture();
   // fill vertex array so it represents bounding box
   FLOAT3D vBoxVtxs[8];
-  vBoxVtxs[0] = FLOAT3D( vMinVtx(1), vMinVtx(2), vMinVtx(3));
-  vBoxVtxs[1] = FLOAT3D( vMaxVtx(1), vMinVtx(2), vMinVtx(3));
-  vBoxVtxs[2] = FLOAT3D( vMaxVtx(1), vMinVtx(2), vMaxVtx(3));
-  vBoxVtxs[3] = FLOAT3D( vMinVtx(1), vMinVtx(2), vMaxVtx(3));
-  vBoxVtxs[4] = FLOAT3D( vMinVtx(1), vMaxVtx(2), vMinVtx(3));
-  vBoxVtxs[5] = FLOAT3D( vMaxVtx(1), vMaxVtx(2), vMinVtx(3));
-  vBoxVtxs[6] = FLOAT3D( vMaxVtx(1), vMaxVtx(2), vMaxVtx(3));
-  vBoxVtxs[7] = FLOAT3D( vMinVtx(1), vMaxVtx(2), vMaxVtx(3));
+  vBoxVtxs[0] = FLOAT3D(vMinVtx(1), vMinVtx(2), vMinVtx(3));
+  vBoxVtxs[1] = FLOAT3D(vMaxVtx(1), vMinVtx(2), vMinVtx(3));
+  vBoxVtxs[2] = FLOAT3D(vMaxVtx(1), vMinVtx(2), vMaxVtx(3));
+  vBoxVtxs[3] = FLOAT3D(vMinVtx(1), vMinVtx(2), vMaxVtx(3));
+  vBoxVtxs[4] = FLOAT3D(vMinVtx(1), vMaxVtx(2), vMinVtx(3));
+  vBoxVtxs[5] = FLOAT3D(vMaxVtx(1), vMaxVtx(2), vMinVtx(3));
+  vBoxVtxs[6] = FLOAT3D(vMaxVtx(1), vMaxVtx(2), vMaxVtx(3));
+  vBoxVtxs[7] = FLOAT3D(vMinVtx(1), vMaxVtx(2), vMaxVtx(3));
   // connect vertices into lines of bounding box
   INDEX iBoxLines[12][2];
   iBoxLines[ 0][0] = 0;  iBoxLines[ 0][1] = 1;  iBoxLines[ 1][0] = 1;  iBoxLines[ 1][1] = 2;
@@ -442,7 +442,7 @@ static void RenderWireframeBox( FLOAT3D vMinVtx, FLOAT3D vMaxVtx, COLOR col)
   // for all vertices in bounding box
   glCOLOR(col);
   pglBegin( GL_LINES);
-  for( INDEX i=0; i<12; i++) {
+  for (INDEX i=0; i<12; i++) {
     // get starting and ending vertices of one line
     FLOAT3D &v0 = vBoxVtxs[iBoxLines[i][0]];
     FLOAT3D &v1 = vBoxVtxs[iBoxLines[i][1]];
@@ -467,7 +467,7 @@ void CModelObject::SetupModelRendering( CRenderModel &rm)
   rm.rm_pmdModelData = (CModelData*)GetData();
   GetFrame( rm.rm_iFrame0, rm.rm_iFrame1, rm.rm_fRatio);
   const INDEX ctVertices = rm.rm_pmdModelData->md_VerticesCt;
-  if( rm.rm_pmdModelData->md_Flags & MF_COMPRESSED_16BIT) {
+  if (rm.rm_pmdModelData->md_Flags & MF_COMPRESSED_16BIT) {
     // set pFrame to point to last and next frames' vertices
     rm.rm_pFrame16_0 = &rm.rm_pmdModelData->md_FrameVertices16[rm.rm_iFrame0 *ctVertices];
     rm.rm_pFrame16_1 = &rm.rm_pmdModelData->md_FrameVertices16[rm.rm_iFrame1 *ctVertices];
@@ -493,7 +493,7 @@ void CModelObject::SetupModelRendering( CRenderModel &rm)
   BOOL bYInverted = rm.rm_vStretch(2) < 0;
   BOOL bZInverted = rm.rm_vStretch(3) < 0;
   rm.rm_ulFlags &= ~RMF_INVERTED;
-  if( bXInverted != bYInverted != bZInverted != _aprProjection->pr_bInverted) rm.rm_ulFlags |= RMF_INVERTED;
+  if (bXInverted != bYInverted != bZInverted != _aprProjection->pr_bInverted) rm.rm_ulFlags |= RMF_INVERTED;
 
   // prepare projections
   _pfModelProfile.StartTimer( CModelProfile::PTI_INITPROJECTION);
@@ -502,13 +502,13 @@ void CModelObject::SetupModelRendering( CRenderModel &rm)
   _pfModelProfile.StopTimer( CModelProfile::PTI_INITPROJECTION);
 
   // get mip factor from projection (if needed)
-  if( (INDEX&)rm.rm_fDistanceFactor==12345678) {
+  if ((INDEX&)rm.rm_fDistanceFactor==12345678) {
     FLOAT3D vObjectAbs;
     _aprProjection->PreClip( rm.rm_vObjectPosition, vObjectAbs);
     rm.rm_fDistanceFactor = _aprProjection->MipFactor( Min(vObjectAbs(3), 0.0f));
   }
   // adjust mip factor in case of dynamic stretch factor
-  if( mo_Stretch != FLOAT3D(1,1,1)) {
+  if (mo_Stretch != FLOAT3D(1.0f, 1.0f, 1.0f)) {
     rm.rm_fMipFactor = rm.rm_fDistanceFactor - Log2( Max(mo_Stretch(1),Max(mo_Stretch(2),mo_Stretch(3))));
   } else {
     rm.rm_fMipFactor = rm.rm_fDistanceFactor;
@@ -523,7 +523,7 @@ void CModelObject::SetupModelRendering( CRenderModel &rm)
   rm.rm_pmmiMip = &rm.rm_pmdModelData->md_MipInfos[rm.rm_iMipLevel];
 
   // don't allow any shading, if shading is turned off
-  if( rm.rm_rtRenderType & RT_SHADING_NONE) {
+  if (rm.rm_rtRenderType & RT_SHADING_NONE) {
     rm.rm_colAmbient = C_WHITE|CT_OPAQUE;
     rm.rm_colLight   = C_BLACK;
   }
@@ -531,10 +531,10 @@ void CModelObject::SetupModelRendering( CRenderModel &rm)
   // calculate light vector as seen from model, so that vertex normals
   // do not need to be transformed for lighting calculations
   FLOAT fLightDirection=(rm.rm_vLightDirection).Length();
-  if( fLightDirection>0.001f) {
+  if (fLightDirection>0.001f) {
     rm.rm_vLightDirection /= fLightDirection;
   } else {
-    rm.rm_vLightDirection = FLOAT3D(0,0,0);
+    rm.rm_vLightDirection = FLOAT3D(0.0f, 0.0f, 0.0f);
   }
   rm.rm_vLightObj = rm.rm_vLightDirection * !rm.rm_mObjectRotation;
 
@@ -543,7 +543,7 @@ void CModelObject::SetupModelRendering( CRenderModel &rm)
   PrepareModelForRendering( *rm.rm_pmdModelData);
 
   // done with setup if viewing from this model
-  if( rm.rm_ulFlags&RMF_SPECTATOR) {
+  if (rm.rm_ulFlags&RMF_SPECTATOR) {
     _pfModelProfile.StopTimer( CModelProfile::PTI_INITMODELRENDERING);
     return;
   }
@@ -556,7 +556,7 @@ void CModelObject::SetupModelRendering( CRenderModel &rm)
     // create new render model structure
     pamo->amo_prm = &_armRenderModels.Push();
     const BOOL bVisible = CreateAttachment( rm, *pamo);
-    if( !bVisible) { // skip if not visible
+    if (!bVisible) { // skip if not visible
       pamo->amo_prm = NULL;
       _armRenderModels.Pop();
       continue;
@@ -578,13 +578,13 @@ void CModelObject::SetupModelRendering( CRenderModel &rm)
 void CModelObject::RenderModel( CRenderModel &rm)
 {
   // skip invisible models
-  if( mo_Stretch == FLOAT3D(0,0,0)) return;
+  if (mo_Stretch == FLOAT3D(0.0f, 0.0f, 0.0f)) return;
 
   _pfModelProfile.StartTimer( CModelProfile::PTI_RENDERMODEL);
   _pfModelProfile.IncrementTimerAveragingCounter( CModelProfile::PTI_RENDERMODEL);
 
   // cluster shadows rendering?
-  if( _iRenderingType==2) {
+  if (_iRenderingType==2) {
     RenderModel_Mask(rm);
     _pfModelProfile.StopTimer( CModelProfile::PTI_RENDERMODEL);
     return;
@@ -592,17 +592,17 @@ void CModelObject::RenderModel( CRenderModel &rm)
   ASSERT( _iRenderingType==1);
 
   // if we should draw polygons and model 
-  if( !(rm.rm_ulFlags&RMF_SPECTATOR)   && (!(rm.rm_rtRenderType&RT_NO_POLYGON_FILL)
+  if (!(rm.rm_ulFlags&RMF_SPECTATOR)   && (!(rm.rm_rtRenderType&RT_NO_POLYGON_FILL)
     || (rm.rm_rtRenderType&RT_WIRE_ON) ||   (rm.rm_rtRenderType&RT_HIDDEN_LINES)) ) {
     // eventually calculate projection model bounding box in object space (needed for fog/haze trivial rejection)
-    if( rm.rm_ulFlags&(RMF_FOG|RMF_HAZE)) CalculateBoundingBox( this, rm);
+    if (rm.rm_ulFlags&(RMF_FOG|RMF_HAZE)) CalculateBoundingBox( this, rm);
     // render complete model
     rm.SetModelView();
     RenderModel_View(rm);
   }
 
   // if we should draw current frame bounding box
-  if( _mrpModelRenderPrefs.BBoxFrameVisible()) {
+  if (_mrpModelRenderPrefs.BBoxFrameVisible()) {
     // get min and max coordinates of bounding box
     FLOAT3D vMin = rm.rm_pmdModelData->md_FrameInfos[rm.rm_iFrame0].mfi_Box.Min();
     FLOAT3D vMax = rm.rm_pmdModelData->md_FrameInfos[rm.rm_iFrame0].mfi_Box.Max();
@@ -611,10 +611,10 @@ void CModelObject::RenderModel( CRenderModel &rm)
   }
 
   // if we should draw all frames bounding box
-  if( _mrpModelRenderPrefs.BBoxAllVisible()) {
+  if (_mrpModelRenderPrefs.BBoxAllVisible()) {
     // calculate all frames bounding box
     FLOATaabbox3D aabbMax;
-    for( INDEX i=0; i<rm.rm_pmdModelData->md_FramesCt; i++) {
+    for (INDEX i=0; i<rm.rm_pmdModelData->md_FramesCt; i++) {
       aabbMax |= rm.rm_pmdModelData->md_FrameInfos[i].mfi_Box;
     } // pass min and max coordinates of all frames bounding box
     rm.SetModelView();
@@ -626,7 +626,7 @@ void CModelObject::RenderModel( CRenderModel &rm)
   { 
     // calculate bounding box of an attachment    
     CAttachmentModelObject *pamo = itamo;
-    if( pamo->amo_prm==NULL) continue; // skip view-rejected attachments
+    if (pamo->amo_prm==NULL) continue; // skip view-rejected attachments
     _pfModelProfile.StopTimer( CModelProfile::PTI_RENDERMODEL);
     pamo->amo_moModelObject.RenderModel( *pamo->amo_prm);
     _pfModelProfile.StartTimer( CModelProfile::PTI_RENDERMODEL);
@@ -646,7 +646,7 @@ void CModelObject::RenderShadow( CRenderModel &rm, const CPlacement3D &plLight,
                                  const FLOATplane3D &plShadowPlane)
 {
   // if shadows are not rendered for current mip or model is half/full face-forward, do nothing
-  if( !HasShadow(rm.rm_iMipLevel)
+  if (!HasShadow(rm.rm_iMipLevel)
    || (rm.rm_pmdModelData->md_Flags&(MF_FACE_FORWARD|MF_HALF_FACE_FORWARD))) return;
   ASSERT( _iRenderingType==1);
   ASSERT( fIntensity>=0 && fIntensity<=1);
@@ -662,7 +662,7 @@ void CModelObject::RenderShadow( CRenderModel &rm, const CPlacement3D &plLight,
   // render shadow or each attachment on this model object
   FOREACHINLIST( CAttachmentModelObject, amo_lnInMain, mo_lhAttachments, itamo) {
     CAttachmentModelObject *pamo = itamo;
-    if( pamo->amo_prm==NULL) continue; // skip view-rejected attachments
+    if (pamo->amo_prm==NULL) continue; // skip view-rejected attachments
     _pfModelProfile.StopTimer( CModelProfile::PTI_RENDERSHADOW);
     pamo->amo_moModelObject.RenderShadow( *pamo->amo_prm, plLight, fFallOff, fHotSpot, fIntensity, plShadowPlane);
     _pfModelProfile.StartTimer( CModelProfile::PTI_RENDERSHADOW);
@@ -676,7 +676,7 @@ void CModelObject::AddSimpleShadow( CRenderModel &rm, const FLOAT fIntensity, co
 {
   // if shadows are not rendered for current mip, model is half/full face-forward,
   // intensitiy is too low or projection is not perspective - do nothing!
-  if( !HasShadow(rm.rm_iMipLevel) || fIntensity<0.01f || !_aprProjection.IsPerspective()
+  if (!HasShadow(rm.rm_iMipLevel) || fIntensity<0.01f || !_aprProjection.IsPerspective()
    || (rm.rm_pmdModelData->md_Flags&(MF_FACE_FORWARD|MF_HALF_FACE_FORWARD))) return;
   ASSERT( _iRenderingType==1);
   ASSERT( fIntensity>0 && fIntensity<=1);

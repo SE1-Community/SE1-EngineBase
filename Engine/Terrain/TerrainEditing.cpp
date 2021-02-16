@@ -58,15 +58,15 @@ static INDEX GetFirstTileInMidLod(CTerrain *ptrTerrain, Rect &rcExtract)
 {
   FLOATaabbox3D bboxExtract = CalculateAABBoxFromRect(ptrTerrain,rcExtract);
   // for each terrain tile
-  for(INDEX itt=0;itt<ptrTerrain->tr_ctTiles;itt++) {
+  for (INDEX itt=0;itt<ptrTerrain->tr_ctTiles;itt++) {
     QuadTreeNode &qtn = ptrTerrain->tr_aqtnQuadTreeNodes[itt];
     CTerrainTile &tt =  ptrTerrain->tr_attTiles[itt];
     // if it is coliding with given box
-    if(qtn.qtn_aabbox.HasContactWith(bboxExtract)) {
+    if (qtn.qtn_aabbox.HasContactWith(bboxExtract)) {
       // calculate its real distance factor
       FLOAT fDistance = (qtn.qtn_aabbox.Center() - _vViewerAbs).Length();
       INDEX iRealLod = Clamp((INDEX)(fDistance/ptrTerrain->tr_fDistFactor),(INDEX)0,ptrTerrain->tr_iMaxTileLod);
-      if(iRealLod>0 && iRealLod<ptrTerrain->tr_iMaxTileLod) {
+      if (iRealLod>0 && iRealLod<ptrTerrain->tr_iMaxTileLod) {
         // found one
         return itt;
       }
@@ -82,13 +82,13 @@ static void AddFlagsToTilesInRect(CTerrain *ptrTerrain, Rect &rcExtract, ULONG u
   FLOATaabbox3D bboxExtract = CalculateAABBoxFromRect(ptrTerrain, rcExtract);
   
   // for each terrain tile
-  for(INDEX itt=0;itt<ptrTerrain->tr_ctTiles;itt++) {
+  for (INDEX itt=0;itt<ptrTerrain->tr_ctTiles;itt++) {
     QuadTreeNode &qtn = ptrTerrain->tr_aqtnQuadTreeNodes[itt];
     CTerrainTile &tt =  ptrTerrain->tr_attTiles[itt];
     // if it is coliding with given box
-    if(qtn.qtn_aabbox.HasContactWith(bboxExtract)) {
+    if (qtn.qtn_aabbox.HasContactWith(bboxExtract)) {
       // if tile must regenerate
-      if(bRegenerateTiles) {
+      if (bRegenerateTiles) {
         // add tile to regen queue
         ptrTerrain->AddTileToRegenQueue(itt);
       }
@@ -109,7 +109,7 @@ static void UpdateShadowMapRect(CTerrain *ptrTerrain, Rect &rcExtract)
 static void UpdateTerrainGlobalTopMap(CTerrain *ptrTerrain, Rect &rcExtract)
 {
   // if there aren't any tiles in 
-  if(GetFirstTileInMidLod(ptrTerrain,rcExtract)==(-1)) {
+  if (GetFirstTileInMidLod(ptrTerrain,rcExtract)==(-1)) {
     // update gloabal terrain top map now
     ptrTerrain->UpdateTopMap(-1);
   // else 
@@ -157,13 +157,13 @@ void ShowSelectionInternal(CTerrain *ptrTerrain, Rect &rcExtract, CTextureData *
   // Extract vertices in selection rect
   ExtractVerticesInRect(ptrTerrain, rcSelection, &pavVertices, &paiIndices, ctVertices, ctIndices);
 
-  if(ctVertices!=rcSelection.Width()*rcSelection.Height()) {
+  if (ctVertices!=rcSelection.Width()*rcSelection.Height()) {
     ASSERT(FALSE);
     return;
   }
 
   // if no vertices
-  if(ctVertices==0) {
+  if (ctVertices==0) {
     return;
   }
 
@@ -172,10 +172,10 @@ void ShowSelectionInternal(CTerrain *ptrTerrain, Rect &rcExtract, CTextureData *
   PIX pixHeight = rcSelection.Height();
   INDEX iStepX  = ptdBrush->GetWidth() - pixWidth;
   INDEX iFirst  = 0;
-  if(rcExtract.rc_iTop<0) {
+  if (rcExtract.rc_iTop<0) {
     iFirst += -rcExtract.rc_iTop*ptdBrush->GetWidth();
   }
-  if(rcExtract.rc_iLeft<0) {
+  if (rcExtract.rc_iLeft<0) {
     iFirst += -rcExtract.rc_iLeft;
   }
 
@@ -186,9 +186,9 @@ void ShowSelectionInternal(CTerrain *ptrTerrain, Rect &rcExtract, CTextureData *
   // Fill vertex colors for selection preview
   SLONG slStrength = Clamp(Abs(fStrenght),0.0f,1.0f) * 256.0f;
   // for each row
-  for(INDEX iy=0;iy<pixHeight;iy++) {
+  for (INDEX iy=0;iy<pixHeight;iy++) {
     // for each col
-    for(INDEX ix=0;ix<pixWidth;ix++) {
+    for (INDEX ix=0;ix<pixWidth;ix++) {
       pacolColor->abgr = colSelection.abgr;
       pacolColor->a    = (pacolBrush->r*slStrength)>>8;
       pacolColor++;
@@ -198,12 +198,12 @@ void ShowSelectionInternal(CTerrain *ptrTerrain, Rect &rcExtract, CTextureData *
   }
 
   // Render selected polygons for selection preview
-  if(sfFill == SF_WIREFRAME) {
+  if (sfFill == SF_WIREFRAME) {
     gfxPolygonMode(GFX_LINE);
     gfxEnableDepthBias();
   }
 
-  if(sfFill != SF_POINTS) {
+  if (sfFill != SF_POINTS) {
     // Draw selection
     gfxDisableTexture();
     gfxDisableAlphaTest();
@@ -217,12 +217,12 @@ void ShowSelectionInternal(CTerrain *ptrTerrain, Rect &rcExtract, CTextureData *
     gfxDisableBlend();
   }
 
-  if(sfFill == SF_WIREFRAME) {
+  if (sfFill == SF_WIREFRAME) {
     gfxDisableDepthBias();
     gfxPolygonMode(GFX_FILL);
   }
 
-  if(sfFill == SF_POINTS) {
+  if (sfFill == SF_POINTS) {
     DrawSelectedVertices(pavVertices,&_aiExtColors[0],ctVertices);
   }
 }
@@ -230,7 +230,7 @@ void ShowSelectionInternal(CTerrain *ptrTerrain, Rect &rcExtract, CTextureData *
 void ShowSelectionInternal(CTerrain *ptrTerrain)
 {
   // just in case
-  if(ptrTerrain!=_ptrSelectionTerrain) {
+  if (ptrTerrain!=_ptrSelectionTerrain) {
     return;
   }
 
@@ -256,15 +256,15 @@ void ShowSelection(CTerrain *ptrTerrain, Rect &rcExtract, CTextureData *ptdBrush
 static void UpdateEditedTerrainTiles(CTerrain *ptrTerrain, Rect &rcExtract, BufferType btBufferType)
 {
   // Update terrain tiles
-  if(btBufferType == BT_HEIGHT_MAP) {
+  if (btBufferType == BT_HEIGHT_MAP) {
     AddFlagsToTilesInRect(ptrTerrain, rcExtract, TT_NO_LODING|TT_QUADTREENODE_REGEN, TRUE);
     UpdateShadowMapRect(ptrTerrain, rcExtract);
 
-  } else if(btBufferType == BT_LAYER_MASK) {
+  } else if (btBufferType == BT_LAYER_MASK) {
     AddFlagsToTilesInRect(ptrTerrain, rcExtract, TT_NO_LODING|TT_FORCE_TOPMAP_REGEN, TRUE);
     UpdateTerrainGlobalTopMap(ptrTerrain,rcExtract);
 
-  } else if(btBufferType == BT_EDGE_MAP) {
+  } else if (btBufferType == BT_EDGE_MAP) {
     AddFlagsToTilesInRect(ptrTerrain, rcExtract, TT_NO_LODING|TT_FORCE_TOPMAP_REGEN, TRUE);
     UpdateTerrainGlobalTopMap(ptrTerrain,rcExtract);
 
@@ -297,14 +297,14 @@ UWORD *GetBufferForEditing(CTerrain *ptrTerrain, Rect &rcExtract, BufferType btB
   UWORD *puwBufferData = &pauwEditingBuffer[0];
 
   // if buffer type is height map
-  if(btBufferType==BT_HEIGHT_MAP) {
+  if (btBufferType==BT_HEIGHT_MAP) {
     // Extract data from terrain height map
     UWORD *puwFirstInHeightMap = &ptrTerrain->tr_auwHeightMap[0];
     // for each row
-    for(PIX pixY=pixTop;pixY<pixBottom;pixY++) {
+    for (PIX pixY=pixTop;pixY<pixBottom;pixY++) {
       PIX pixRealY = Clamp(pixY,0L,pixMaxHeight-1L);
       // for each col
-      for(PIX pixX=pixLeft;pixX<pixRight;pixX++) {
+      for (PIX pixX=pixLeft;pixX<pixRight;pixX++) {
         PIX pixRealX = Clamp(pixX,0L,pixMaxWidth-1L);
         // Copy current pixel from height map to dest buffer
         UWORD *puwHeight = &puwFirstInHeightMap[pixRealX + pixRealY*pixMaxWidth];
@@ -313,15 +313,15 @@ UWORD *GetBufferForEditing(CTerrain *ptrTerrain, Rect &rcExtract, BufferType btB
       }
     }
   // if buffer type is layer mask
-  } else if(btBufferType==BT_LAYER_MASK) {
+  } else if (btBufferType==BT_LAYER_MASK) {
     // Extract data from layer mask
     CTerrainLayer &tl = ptrTerrain->GetLayer(iBufferData);
     UBYTE *pubFirstInLayer  = &tl.tl_aubColors[0];
     // for each row
-    for(PIX pixY=pixTop;pixY<pixBottom;pixY++) {
+    for (PIX pixY=pixTop;pixY<pixBottom;pixY++) {
       PIX pixRealY = Clamp(pixY,0L,pixMaxHeight-1L);
       // for each col
-      for(PIX pixX=pixLeft;pixX<pixRight;pixX++) {
+      for (PIX pixX=pixLeft;pixX<pixRight;pixX++) {
         PIX pixRealX = Clamp(pixX,0L,pixMaxWidth-1L);
         // Copy current pixel from layer mask to dest buffer
         UBYTE *pubMaskValue = &pubFirstInLayer[pixRealX + pixRealY*pixMaxWidth];
@@ -330,18 +330,18 @@ UWORD *GetBufferForEditing(CTerrain *ptrTerrain, Rect &rcExtract, BufferType btB
       }
     }
   // if buffer type is edge map
-  } else if(btBufferType==BT_EDGE_MAP) {
+  } else if (btBufferType==BT_EDGE_MAP) {
     // Extract data from edge map
     UBYTE *pubFirstInEdgeMap = &ptrTerrain->tr_aubEdgeMap[0];
     // for each row
-    for(PIX pixY=pixTop;pixY<pixBottom;pixY++) {
+    for (PIX pixY=pixTop;pixY<pixBottom;pixY++) {
       PIX pixRealY = Clamp(pixY,0L,pixMaxHeight-1L);
       // for each col
-      for(PIX pixX=pixLeft;pixX<pixRight;pixX++) {
+      for (PIX pixX=pixLeft;pixX<pixRight;pixX++) {
         PIX pixRealX = Clamp(pixX,0L,pixMaxWidth-1L);
         // Copy current pixel from layer mask to dest buffer
         UBYTE *pubEdgeValue = &pubFirstInEdgeMap[pixRealX + pixRealY*pixMaxWidth];
-        if((*pubEdgeValue)==255) {
+        if ((*pubEdgeValue)==255) {
           *puwBufferData = 1;
         } else {
           *puwBufferData = 0;
@@ -376,17 +376,17 @@ void SetBufferForEditing(CTerrain *ptrTerrain, UWORD *puwEditedBuffer, Rect &rcE
   UWORD *puwBufferData = &puwEditedBuffer[0];
 
   // if buffer type is height map
-  if(btBufferType==BT_HEIGHT_MAP) {
+  if (btBufferType==BT_HEIGHT_MAP) {
     // put data from buffer to terrain height map
     UWORD *puwFirstInHeightMap = &ptrTerrain->tr_auwHeightMap[0];
     // for each row
-    for(PIX pixY=pixTop;pixY<pixBottom;pixY++) {
+    for (PIX pixY=pixTop;pixY<pixBottom;pixY++) {
       // if pixY is inside terrain rect
-      if(pixY>=0 && pixY<pixMaxHeight) {
+      if (pixY>=0 && pixY<pixMaxHeight) {
         // for each col
-        for(PIX pixX=pixLeft;pixX<pixRight;pixX++) {
+        for (PIX pixX=pixLeft;pixX<pixRight;pixX++) {
           // if pixX is inside terrain rect
-          if(pixX>=0 && pixX<pixMaxWidth) {
+          if (pixX>=0 && pixX<pixMaxWidth) {
             // Copy current pixel from editing buffer to height map
             UWORD *puwHeight = &puwFirstInHeightMap[pixX + pixY*pixMaxWidth];
             *puwHeight = *puwBufferData;
@@ -399,18 +399,18 @@ void SetBufferForEditing(CTerrain *ptrTerrain, UWORD *puwEditedBuffer, Rect &rcE
         puwBufferData+=pixRight-pixLeft;
       }
     }
-  } else if(btBufferType==BT_LAYER_MASK) {
+  } else if (btBufferType==BT_LAYER_MASK) {
     // Extract data from layer mask
     CTerrainLayer &tl = ptrTerrain->GetLayer(iBufferData);
     UBYTE *pubFirstInLayer  = &tl.tl_aubColors[0];
     // for each row
-    for(PIX pixY=pixTop;pixY<pixBottom;pixY++) {
+    for (PIX pixY=pixTop;pixY<pixBottom;pixY++) {
       // if pixY is inside terrain rect
-      if(pixY>=0 && pixY<pixMaxHeight) {
+      if (pixY>=0 && pixY<pixMaxHeight) {
         // for each col
-        for(PIX pixX=pixLeft;pixX<pixRight;pixX++) {
+        for (PIX pixX=pixLeft;pixX<pixRight;pixX++) {
           // if pixX is inside terrain rect
-          if(pixX>=0 && pixX<pixMaxWidth) {
+          if (pixX>=0 && pixX<pixMaxWidth) {
             // Copy current pixel from editing buffer to height map
             UBYTE *pubMask = &pubFirstInLayer[pixX + pixY*pixMaxWidth];
             *pubMask = (*puwBufferData)>>8;
@@ -423,20 +423,20 @@ void SetBufferForEditing(CTerrain *ptrTerrain, UWORD *puwEditedBuffer, Rect &rcE
         puwBufferData+=pixRight-pixLeft;
       }
     }
-  } else if(btBufferType==BT_EDGE_MAP) {
+  } else if (btBufferType==BT_EDGE_MAP) {
     // Extract data from edge map
     UBYTE *pubFirstInEdgeMap  = &ptrTerrain->tr_aubEdgeMap[0];
     // for each row
-    for(PIX pixY=pixTop;pixY<pixBottom;pixY++) {
+    for (PIX pixY=pixTop;pixY<pixBottom;pixY++) {
       // if pixY is inside terrain rect
-      if(pixY>=0 && pixY<pixMaxHeight) {
+      if (pixY>=0 && pixY<pixMaxHeight) {
         // for each col
-        for(PIX pixX=pixLeft;pixX<pixRight;pixX++) {
+        for (PIX pixX=pixLeft;pixX<pixRight;pixX++) {
           // if pixX is inside terrain rect
-          if(pixX>=0 && pixX<pixMaxWidth) {
+          if (pixX>=0 && pixX<pixMaxWidth) {
             // Copy current pixel from editing buffer to edge map
             UBYTE *pubMask = &pubFirstInEdgeMap[pixX + pixY*pixMaxWidth];
-            if(*puwBufferData>=1) {
+            if (*puwBufferData>=1) {
               *pubMask = 255;
             } else {
               *pubMask = 0;

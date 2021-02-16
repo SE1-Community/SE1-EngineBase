@@ -76,7 +76,7 @@ inline Type &CDynamicStackArray<Type>::Push(void) {
 template<class Type>
 inline Type *CDynamicStackArray<Type>::Push(INDEX ct) {
   // if there are no free elements in the array
-  while(CDynamicArray<Type>::Count()-da_ctUsed<ct) {
+  while (CDynamicArray<Type>::Count()-da_ctUsed<ct) {
     // alocate a new block
     CDynamicArray<Type>::New(da_ctAllocationStep);
   }

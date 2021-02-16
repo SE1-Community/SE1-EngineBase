@@ -52,7 +52,7 @@ CHashTableSlot_TYPE *CHashTable_TYPE::FindSlot(ULONG ulKey, VALUE_TYPE &Value)
   
   // for each slot in the compartment
   INDEX iSlot = iComp*ht_ctSlotsPerComp;
-  for(INDEX iSlotInComp=0; iSlotInComp<ht_ctSlotsPerComp; iSlotInComp++, iSlot++) {
+  for (INDEX iSlotInComp=0; iSlotInComp<ht_ctSlotsPerComp; iSlotInComp++, iSlot++) {
     CHashTableSlot_TYPE *phts = &ht_ahtsSlots[iSlot];
     // if empty
     if (phts->hts_ptElement==NULL) {
@@ -84,7 +84,7 @@ INDEX CHashTable_TYPE::FindSlotIndex(ULONG ulKey, VALUE_TYPE &Value)
   
   // for each slot in the compartment
   INDEX iSlot = iComp*ht_ctSlotsPerComp;
-  for(INDEX iSlotInComp=0; iSlotInComp<ht_ctSlotsPerComp; iSlotInComp++, iSlot++) {
+  for (INDEX iSlotInComp=0; iSlotInComp<ht_ctSlotsPerComp; iSlotInComp++, iSlot++) {
     CHashTableSlot_TYPE *phts = &ht_ahtsSlots[iSlot];
     // if empty
     if (phts->hts_ptElement==NULL) {
@@ -181,9 +181,9 @@ void CHashTable_TYPE::Expand(void)
   ht_ahtsSlots.New(ht_ctSlotsPerComp*ht_ctCompartments);
 
   // for each compartment
-  for(INDEX iComp =0; iComp<ht_ctCompartments; iComp++) {
+  for (INDEX iComp =0; iComp<ht_ctCompartments; iComp++) {
     // for each old slot in compartment
-    for(INDEX iSlotInComp=0; iSlotInComp<ctOldSlotsPerComp; iSlotInComp++) {
+    for (INDEX iSlotInComp=0; iSlotInComp<ctOldSlotsPerComp; iSlotInComp++) {
       CHashTableSlot_TYPE &htsOld = ahtsSlotsOld[iSlotInComp+iComp*ctOldSlotsPerComp];
       CHashTableSlot_TYPE &htsNew = ht_ahtsSlots[iSlotInComp+iComp*ht_ctSlotsPerComp];
       // if it is used
@@ -211,7 +211,7 @@ void CHashTable_TYPE::Add(TYPE *ptNew)
   
   // for each slot in the compartment
   INDEX iSlot = iComp*ht_ctSlotsPerComp;
-  for(INDEX iSlotInComp=0; iSlotInComp<ht_ctSlotsPerComp; iSlotInComp++, iSlot++) {
+  for (INDEX iSlotInComp=0; iSlotInComp<ht_ctSlotsPerComp; iSlotInComp++, iSlot++) {
     CHashTableSlot_TYPE *phts = &ht_ahtsSlots[iSlot];
     // if it is empty
     if (phts->hts_ptElement==NULL) {
@@ -243,7 +243,7 @@ void CHashTable_TYPE::Remove(TYPE *ptOld)
   // find its slot
   VALUE_TYPE Value = ht_GetItemValue(ptOld);
   CHashTableSlot_TYPE *phts = FindSlot(ht_GetItemKey(Value), Value);
-  if( phts!=NULL) {
+  if (phts!=NULL) {
     // mark slot as unused
     ASSERT( phts->hts_ptElement==ptOld);
     phts->hts_ptElement = NULL;
@@ -260,7 +260,7 @@ void CHashTable_TYPE::RemoveAll()
     // for each slot in the compartment
     INDEX iSlot = iComp*ht_ctSlotsPerComp;
 
-    for(INDEX iSlotInComp=0; iSlotInComp<ht_ctSlotsPerComp; iSlotInComp++, iSlot++) {
+    for (INDEX iSlotInComp=0; iSlotInComp<ht_ctSlotsPerComp; iSlotInComp++, iSlot++) {
       // if it is not empty
       CHashTableSlot_TYPE &hts = ht_ahtsSlots[iSlot];
       if (ht_ahtsSlots[iSlot].hts_ptElement!=NULL) {
@@ -274,7 +274,7 @@ void CHashTable_TYPE::RemoveAll()
 // remove all objects but keep slots
 void CHashTable_TYPE::Reset(void)
 {
-  for(INDEX iSlot=0; iSlot<ht_ahtsSlots.Count(); iSlot++) {
+  for (INDEX iSlot=0; iSlot<ht_ahtsSlots.Count(); iSlot++) {
     ht_ahtsSlots[iSlot].Clear();
   }
 }
@@ -290,7 +290,7 @@ void CHashTable_TYPE::ReportEfficiency()
   for (INDEX iComp=0;iComp<ht_ctCompartments;iComp++) {
     INDEX iCount = 0;
     for (INDEX iSlot=iComp*ht_ctSlotsPerComp;iSlot<(iComp+1)*ht_ctSlotsPerComp;iSlot++) {
-      if(ht_ahtsSlots[iSlot].hts_ptElement != NULL) {
+      if (ht_ahtsSlots[iSlot].hts_ptElement != NULL) {
         iCount++;
         ulCount++;
       }

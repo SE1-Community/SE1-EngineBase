@@ -48,7 +48,7 @@ void CPlacement3D::AbsoluteToRelative(const CPlacement3D &plSystem)
   prSimple.ViewerPlacementL() = plSystem;
   // set the absolute system as object
   prSimple.ObjectPlacementL().pl_PositionVector = FLOAT3D(0.0f, 0.0f, 0.0f);
-  prSimple.ObjectPlacementL().pl_OrientationAngle = ANGLE3D(0, 0, 0);
+  prSimple.ObjectPlacementL().pl_OrientationAngle = ANGLE3D(0.0f, 0.0f, 0.0f);
   // prepare the projection
   prSimple.Prepare();
   // project this placement using the projection
@@ -62,7 +62,7 @@ void CPlacement3D::AbsoluteToRelativeSmooth(const CPlacement3D &plSystem)
   prSimple.ViewerPlacementL() = plSystem;
   // set the absolute system as object
   prSimple.ObjectPlacementL().pl_PositionVector = FLOAT3D(0.0f, 0.0f, 0.0f);
-  prSimple.ObjectPlacementL().pl_OrientationAngle = ANGLE3D(0, 0, 0);
+  prSimple.ObjectPlacementL().pl_OrientationAngle = ANGLE3D(0.0f, 0.0f, 0.0f);
   // prepare the projection
   prSimple.Prepare();
   // project this placement using the projection
@@ -78,7 +78,7 @@ void CPlacement3D::RelativeToAbsolute(const CPlacement3D &plSystem)
   CSimpleProjection3D prSimple;
   // set the absolute system as the viewer
   prSimple.ViewerPlacementL().pl_PositionVector = FLOAT3D(0.0f, 0.0f, 0.0f);
-  prSimple.ViewerPlacementL().pl_OrientationAngle = ANGLE3D(0, 0, 0);
+  prSimple.ViewerPlacementL().pl_OrientationAngle = ANGLE3D(0.0f, 0.0f, 0.0f);
   // set the relative system as object
   prSimple.ObjectPlacementL() = plSystem;
   // prepare the projection
@@ -92,7 +92,7 @@ void CPlacement3D::RelativeToAbsoluteSmooth(const CPlacement3D &plSystem)
   CSimpleProjection3D prSimple;
   // set the absolute system as the viewer
   prSimple.ViewerPlacementL().pl_PositionVector = FLOAT3D(0.0f, 0.0f, 0.0f);
-  prSimple.ViewerPlacementL().pl_OrientationAngle = ANGLE3D(0, 0, 0);
+  prSimple.ViewerPlacementL().pl_OrientationAngle = ANGLE3D(0.0f, 0.0f, 0.0f);
   // set the relative system as object
   prSimple.ObjectPlacementL() = plSystem;
   // prepare the projection

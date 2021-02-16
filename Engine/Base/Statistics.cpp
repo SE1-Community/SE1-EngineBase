@@ -160,7 +160,7 @@ void CStatForm::Reset(void)
   // for each timer
   for (INDEX iTimer = 0; iTimer<sf_astTimers.Count(); iTimer++) {
     // double-check that timer has been stopped (only for timers in main thread!)
-    if( iTimer!=STI_TIMER && iTimer!=STI_SOUNDMIXING) {
+    if (iTimer!=STI_TIMER && iTimer!=STI_SOUNDMIXING) {
       ASSERT( sf_astTimers[iTimer].st_tvStarted.tv_llValue == -1);
     } // reset it
     sf_astTimers[iTimer].st_tvElapsed.Clear();

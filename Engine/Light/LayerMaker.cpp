@@ -123,7 +123,7 @@ static void MakeMipmapsForMask(UBYTE *pubMask, PIX pixSizeU, PIX pixSizeV, SLONG
   PIX pixNextSizeU;
   PIX pixNextSizeV;
   // repeat
-  for(;;) {
+  for (;;) {
     // calculate size and position of next mip map
     pubNext = pubThis+pixThisSizeU*pixThisSizeV;
     pixNextSizeU = pixThisSizeU/2;
@@ -324,7 +324,7 @@ CLayerMaker::CLayerMaker(void)
 void CLayerMaker::SpreadShadowMaskOutwards(void)
 {
   // for each mip map of the layer
-  for(INDEX iMipmap=0; iMipmap<lm_mmtLayer.mmt_ctMipmaps; iMipmap++) {
+  for (INDEX iMipmap=0; iMipmap<lm_mmtLayer.mmt_ctMipmaps; iMipmap++) {
     PIX pixLayerMinU = lm_pixLayerMinU>>iMipmap;
     PIX pixLayerMinV = lm_pixLayerMinV>>iMipmap;
     PIX pixLayerSizeU = lm_pixLayerSizeU>>iMipmap;
@@ -414,7 +414,7 @@ void CLayerMaker::SpreadShadowMaskOutwards(void)
 void CLayerMaker::SpreadShadowMaskInwards(void)
 {
   // for each mip map of the layer
-  for(INDEX iMipmap=0; iMipmap<lm_mmtLayer.mmt_ctMipmaps; iMipmap++) {
+  for (INDEX iMipmap=0; iMipmap<lm_mmtLayer.mmt_ctMipmaps; iMipmap++) {
     PIX pixLayerMinU = lm_pixLayerMinU>>iMipmap;
     PIX pixLayerMinV = lm_pixLayerMinV>>iMipmap;
     PIX pixLayerSizeU = lm_pixLayerSizeU>>iMipmap;
@@ -448,7 +448,7 @@ void CLayerMaker::SpreadShadowMaskInwards(void)
       &&(pixLayerV+(dv)>=0)                                                 \
       &&(pixLayerV+(dv)<pixLayerSizeV))                                      \
           {\
-      if(!pubPolygonMask[slOffsetMap+(du)+((dv)<<pixSizeULog2)]) {          \
+      if (!pubPolygonMask[slOffsetMap+(du)+((dv)<<pixSizeULog2)]) {          \
       ctOutPolygon++;                                                        \
       ctLighted+=pubLayer[slOffsetLayer+(du)+(dv)*pixLayerSizeU]&0x01;   \
       }\
@@ -638,7 +638,7 @@ ULONG CLayerMaker::MakeShadowMask(CBrushShadowLayer *pbsl)
   // if this polygon requires exact shadows
   if (lm_pbpoPolygon->bpo_ulFlags & BPOF_ACCURATESHADOWS) {
     // make each mip-map of mask for itself
-    for(INDEX iMip=0; iMip<lm_mmtLayer.mmt_ctMipmaps; iMip++) {
+    for (INDEX iMip=0; iMip<lm_mmtLayer.mmt_ctMipmaps; iMip++) {
       ulLighted&=MakeOneShadowMaskMip(iMip);
     }
   } else {
@@ -650,7 +650,7 @@ ULONG CLayerMaker::MakeShadowMask(CBrushShadowLayer *pbsl)
   }
 
   // spread the shadow mask towards pixels outside of polygon
-  if( !(lm_pbpoPolygon->bpo_ulFlags&BPOF_DARKCORNERS)) {
+  if (!(lm_pbpoPolygon->bpo_ulFlags&BPOF_DARKCORNERS)) {
     SpreadShadowMaskOutwards();
   } else {
     SpreadShadowMaskInwards();
@@ -744,7 +744,7 @@ ULONG CLayerMaker::MakeOneShadowMaskMip(INDEX iMip)
 
     // prepare perspective projection as if viewing from light and the shadow map is screen
     CPerspectiveProjection3D prProjection;
-    if( !(lm_pbpoPolygon->bpo_ulFlags&BPOF_DARKCORNERS)) {
+    if (!(lm_pbpoPolygon->bpo_ulFlags&BPOF_DARKCORNERS)) {
       prProjection.ScreenBBoxL() = FLOATaabbox2D(
         FLOAT2D(pixLayerMinU-fpixHotU+1,
                 pixLayerMinV-fpixHotV+1),
@@ -833,7 +833,7 @@ BOOL CLayerMaker::CreateLayers(CBrushPolygon &bpo, CWorld &woWorld, BOOL bDoDire
     }
 
     // if not yet initialized
-    if( !bInitialized) {
+    if (!bInitialized) {
       // remember general data
       CalculateData();
       // make bit-packed mask of where the polygon is in the shadow map
@@ -851,22 +851,22 @@ BOOL CLayerMaker::CreateLayers(CBrushPolygon &bpo, CWorld &woWorld, BOOL bDoDire
     bsl.bsl_ulFlags |= ulLighted;
 
     // if the layer is not needed
-    if( ulLighted&(BSLF_ALLLIGHT|BSLF_ALLDARK)) {
+    if (ulLighted&(BSLF_ALLLIGHT|BSLF_ALLDARK)) {
       // free it
-      if( bsl.bsl_pubLayer!=NULL) FreeMemory( bsl.bsl_pubLayer);
+      if (bsl.bsl_pubLayer!=NULL) FreeMemory( bsl.bsl_pubLayer);
       bsl.bsl_pubLayer = NULL;
     }
     bCalculatedSome = TRUE;
   }
 
   // if was intialized
-  if( bInitialized) {
+  if (bInitialized) {
     // free bit-packed polygon mask
     FreeMemory( lm_pubPolygonMask);
   }
 
   // if some new layers have been calculated
-  if( bCalculatedSome) {
+  if (bCalculatedSome) {
     // invalidate mixed layers
     bpo.bpo_smShadowMap.Invalidate();
   }

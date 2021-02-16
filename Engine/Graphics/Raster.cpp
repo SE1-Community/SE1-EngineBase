@@ -83,14 +83,14 @@ BOOL CRaster::Lock()
   ASSERT( ra_LockCount>=0);
 
   // if raster size is too small in some axis
-  if( ra_Width<1 || ra_Height<1) {
+  if (ra_Width<1 || ra_Height<1) {
     // do not allow locking
     ASSERTALWAYS( "Raster size to small to be locked!");
     return FALSE;
   }
 
   // if allready locked
-  if( ra_LockCount>0) {
+  if (ra_LockCount>0) {
     // just increment counter
     ra_LockCount++;
     return TRUE;
@@ -100,7 +100,7 @@ BOOL CRaster::Lock()
     // try to lock with driver
     BOOL bLocked = _pGfx->LockRaster(this);
     // if succeeded in locking
-    if( bLocked) {
+    if (bLocked) {
       // set the counter to 1
       ra_LockCount = 1;
       return TRUE;
@@ -122,7 +122,7 @@ void CRaster::Unlock()
   // decrement counter
   ra_LockCount--;
   // if reached zero
-  if( ra_LockCount==0 ) {
+  if (ra_LockCount==0 ) {
     // unlock it with driver
     _pGfx->UnlockRaster(this);
   }
@@ -135,8 +135,8 @@ void CRaster::Unlock()
 void CRaster::Resize( PIX pixWidth, PIX pixHeight)
 {
   ASSERT( pixWidth>0 && pixHeight>0);
-  if( pixWidth <=0) pixWidth  = 1;
-  if( pixHeight<=0) pixHeight = 1;
+  if (pixWidth <=0) pixWidth  = 1;
+  if (pixHeight<=0) pixHeight = 1;
   ra_Width  = pixWidth;
   ra_Height = pixHeight;
   RecalculateDrawPortsDimensions();

@@ -57,7 +57,7 @@ void CPlayerSource::Start_t(CPlayerCharacter &pcCharacter) // throw char *
   pls_pcCharacter = pcCharacter;
   // clear actions
   pls_paAction.Clear();;
-  for(INDEX ipa=0; ipa<PLS_MAXLASTACTIONS; ipa++) {
+  for (INDEX ipa=0; ipa<PLS_MAXLASTACTIONS; ipa++) {
     pls_apaLastActions[ipa].Clear();
   }
 
@@ -66,7 +66,7 @@ void CPlayerSource::Start_t(CPlayerCharacter &pcCharacter) // throw char *
   nmRegisterPlayer<<pls_pcCharacter;    // player's character data
   _pNetwork->SendToServerReliable(nmRegisterPlayer);
 
-  for(TIME tmWait=0; 
+  for (TIME tmWait=0; 
       tmWait<net_tmConnectionTimeout*1000; 
       Sleep(NET_WAITMESSAGE_DELAY), tmWait+=NET_WAITMESSAGE_DELAY) {
     if (_pNetwork->ga_IsServer) {
@@ -216,12 +216,12 @@ void CPlayerSource::WriteActionPacket(CNetworkMessage &nm)
 
   // save sendbehind if needed
   nm.WriteBits(&iSendBehind, 2);
-  for(INDEX i=0; i<iSendBehind; i++) {
+  for (INDEX i=0; i<iSendBehind; i++) {
     nm<<pls_apaLastActions[i];
   }
 
   // remember last action
-  for(INDEX ipa=1; ipa<PLS_MAXLASTACTIONS; ipa++) {
+  for (INDEX ipa=1; ipa<PLS_MAXLASTACTIONS; ipa++) {
     pls_apaLastActions[ipa] = pls_apaLastActions[ipa-1];
   }
   pls_apaLastActions[0] = pls_paAction;

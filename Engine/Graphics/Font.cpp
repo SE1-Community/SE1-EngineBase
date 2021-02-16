@@ -67,7 +67,7 @@ CFontData::~CFontData()
 
 void CFontData::Clear()
 {
-  if( fd_ptdTextureData != NULL) {
+  if (fd_ptdTextureData != NULL) {
     fd_fnTexture = CTString("");
     _pTextureStock->Release(fd_ptdTextureData);
     fd_ptdTextureData = NULL;
@@ -86,7 +86,7 @@ void CFontData::Read_t( CTStream *inFile) // throw char *
   *inFile >> fd_pixCharWidth;
   *inFile >> fd_pixCharHeight;
   // read entire letter data table
-  for( INDEX iLetterData=0; iLetterData<256; iLetterData ++) {
+  for (INDEX iLetterData=0; iLetterData<256; iLetterData ++) {
     fd_fcdFontCharData[ iLetterData].Read_t( inFile);
   }
   // load corresponding texture file
@@ -113,7 +113,7 @@ void CFontData::Write_t( CTStream *outFile) // throw char *
   *outFile << fd_pixCharHeight;
 
   // write entire letter data table
-  for( INDEX iLetterData=0; iLetterData<256; iLetterData ++) {
+  for (INDEX iLetterData=0; iLetterData<256; iLetterData ++) {
     fd_fcdFontCharData[ iLetterData].Write_t( outFile);
   }
 }
@@ -149,12 +149,12 @@ void CFontData::Make_t( const CTFileName &fnTexture, PIX pixCharWidth, PIX pixCh
 
   // find number of letters in line (assuming that the 1st line represents the width of every line)
   INDEX iLettersInLine=0;
-  while( (strLettersOrder[iLettersInLine]!='\n') && iLettersInLine<strlen(strLettersOrder)) iLettersInLine++;
-  if( iLettersInLine<=0) FatalError( "Invalid font definition ASCII file.");
+  while ((strLettersOrder[iLettersInLine]!='\n') && iLettersInLine<strlen(strLettersOrder)) iLettersInLine++;
+  if (iLettersInLine<=0) FatalError( "Invalid font definition ASCII file.");
 
   // determine pixelcheck mast depending of alpha channel usage
   COLOR colPixMask = 0xFFFFFF00;  // FC is because of small tolerance for black 
-  if( bUseAlpha) colPixMask = 0xFFFFFFFF;
+  if (bUseAlpha) colPixMask = 0xFFFFFFFF;
 
   // how much we must add to jump to character down
   PIX pixFontCharModulo = pixTexWidth * fd_pixCharHeight;
@@ -162,31 +162,31 @@ void CFontData::Make_t( const CTFileName &fnTexture, PIX pixCharWidth, PIX pixCh
   // for all letters in font (ranging from space to last letter that user defined)
   INDEX iLetter=0;
   INDEX iCurrentLetterLine = 0;
-  while( iLetter<strlen(strLettersOrder))
+  while (iLetter<strlen(strLettersOrder))
   { // for letters in one line
-    for( INDEX iCurrentLetterColumn=0; iCurrentLetterColumn<iLettersInLine; iCurrentLetterColumn++)
+    for (INDEX iCurrentLetterColumn=0; iCurrentLetterColumn<iLettersInLine; iCurrentLetterColumn++)
     { // test if we at the end of whole array
-      if( iLetter>=strlen(strLettersOrder)) break;
+      if (iLetter>=strlen(strLettersOrder)) break;
       // get char params
       unsigned char chrLetter = strLettersOrder[iLetter++];
       // reset current letter's width
       PIX pixCurrentStart = fd_pixCharWidth;
       PIX pixCurrentEnd   = 0;
       // for all of the letter's lines
-      for( INDEX iPixelLine=0; iPixelLine<fd_pixCharHeight; iPixelLine++)
+      for (INDEX iPixelLine=0; iPixelLine<fd_pixCharHeight; iPixelLine++)
       { // for all of the letter's pixels
-        for( INDEX iPixelColumn=0; iPixelColumn<fd_pixCharWidth; iPixelColumn++)
+        for (INDEX iPixelColumn=0; iPixelColumn<fd_pixCharWidth; iPixelColumn++)
         { // calculate current pixel's adress in font's texture
           ULONG *puwPixel = (ULONG*)( pulFont + pixFontCharModulo * iCurrentLetterLine +  // calc right letter line
                                       fd_pixCharWidth * iCurrentLetterColumn +            // move to right letter column
                                       pixTexWidth * iPixelLine +   // move trough pixel lines of one letter
                                       iPixelColumn);               // move trough pixel columns of one letter
           // if we test alpha channel and alpha value is not 0
-          if( ByteSwap(*puwPixel) & colPixMask) {
+          if (ByteSwap(*puwPixel) & colPixMask) {
             // if examined pixel is narrower in letter than last opaque pixel found, remember it as left-most pixel
-            if( iPixelColumn < pixCurrentStart) pixCurrentStart = iPixelColumn;
+            if (iPixelColumn < pixCurrentStart) pixCurrentStart = iPixelColumn;
             // if examined pixel is wider in letter than last opaque pixel found, remember it as right-most pixel
-            if( iPixelColumn > pixCurrentEnd) pixCurrentEnd = iPixelColumn;
+            if (iPixelColumn > pixCurrentEnd) pixCurrentEnd = iPixelColumn;
           }
         }
       }
