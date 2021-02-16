@@ -47,9 +47,9 @@ enum LineDirectionType {
 };
 
 // polygon direction flags
-#define PDF_FLIPEDGESPRE    (1UL<<0)    // flip edges before clipping
-#define PDF_FLIPEDGESPOST   (1UL<<1)    // flip edges after clipping
-#define PDF_POLYGONVISIBLE  (1UL<<2)    // polygon is visible
+#define PDF_FLIPEDGESPRE    (1UL << 0)    // flip edges before clipping
+#define PDF_FLIPEDGESPOST   (1UL << 1)    // flip edges after clipping
+#define PDF_POLYGONVISIBLE  (1UL << 2)    // polygon is visible
 
 /*
  * A polygon projected to screen, clipped and used in rendering.
@@ -91,7 +91,7 @@ public:
   
   /* Test if this polygon is a portal. */
   inline BOOL IsPortal(void) { 
-    return spo_pbpoBrushPolygon!=NULL && spo_pbpoBrushPolygon->bpo_ulFlags&BPOF_RENDERASPORTAL;
+    return spo_pbpoBrushPolygon != NULL && spo_pbpoBrushPolygon->bpo_ulFlags&BPOF_RENDERASPORTAL;
   };
   /* Clear the object. */
   inline void Clear(void) {};
@@ -197,12 +197,12 @@ inline void Clear(Vector<float,2> &dummy) {};
 /*
  * Model that is to be rendered in this frame.
  */
-#define DMF_HASALPHA (1UL<<0)  // if the model uses alpha blending (sorted last)
-#define DMF_VISIBLE  (1UL<<1)  // really visible (particles are rendered even for invisibles)
-#define DMF_FOG      (1UL<<2)  // in fog
-#define DMF_HAZE     (1UL<<3)  // in haze
-#define DMF_INSIDE   (1UL<<4)  // completely inside frustum (not clipped)
-#define DMF_INMIRROR (1UL<<5)  // completely inside mirror (not clipped)
+#define DMF_HASALPHA (1UL << 0)  // if the model uses alpha blending (sorted last)
+#define DMF_VISIBLE  (1UL << 1)  // really visible (particles are rendered even for invisibles)
+#define DMF_FOG      (1UL << 2)  // in fog
+#define DMF_HAZE     (1UL << 3)  // in haze
+#define DMF_INSIDE   (1UL << 4)  // completely inside frustum (not clipped)
+#define DMF_INMIRROR (1UL << 5)  // completely inside mirror (not clipped)
 
 class CDelayedModel {
 public:
@@ -217,10 +217,10 @@ public:
 /*
  * Lens flare that could rendered in this frame.
  */
-#define LFF_ACTIVE  (1UL<<0) // set if was active in this frame
-#define LFF_VISIBLE (1UL<<1) // set if the light source is visible in this frame
-#define LFF_FOG     (1UL<<2) // in fog
-#define LFF_HAZE    (1UL<<3) // in haze
+#define LFF_ACTIVE  (1UL << 0) // set if was active in this frame
+#define LFF_VISIBLE (1UL << 1) // set if the light source is visible in this frame
+#define LFF_FOG     (1UL << 2) // in fog
+#define LFF_HAZE    (1UL << 3) // in haze
 class CLensFlareInfo {
 public:
   INDEX lfi_iID;                      // unique ID of a lens flare info

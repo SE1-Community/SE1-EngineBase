@@ -116,7 +116,7 @@ void CGfxLibrary::InitAPIs(void)
     devmode.dmFields = DM_PELSWIDTH|DM_PELSHEIGHT|DM_DISPLAYFLAGS;
     LONG lRes = ChangeDisplaySettings( &devmode, CDS_TEST|CDS_FULLSCREEN);
     // skip if not successfull
-    if (lRes!=DISP_CHANGE_SUCCESSFUL) continue;
+    if (lRes != DISP_CHANGE_SUCCESSFUL) continue;
 
     // make a new display mode
     CDisplayMode &dm = pda->da_admDisplayModes[pda->da_ctDisplayModes];
@@ -168,9 +168,9 @@ void CGfxLibrary::InitAPIs(void)
 
     // check whether 32-bits rendering modes are supported
     hr = gl_pD3D->CheckDeviceType( iAdapter, d3dDevType, D3DFMT_A8R8G8B8, D3DFMT_A8R8G8B8, FALSE);
-    if (hr!=D3D_OK) {
+    if (hr != D3D_OK) {
       hr = gl_pD3D->CheckDeviceType( iAdapter, d3dDevType, D3DFMT_X8R8G8B8, D3DFMT_X8R8G8B8, FALSE);
-      if (hr!=D3D_OK) pda->da_ulFlags |= DAF_16BITONLY;
+      if (hr != D3D_OK) pda->da_ulFlags |= DAF_16BITONLY;
     }
 
     // check whether windowed rendering modes are supported
@@ -186,12 +186,12 @@ void CGfxLibrary::InitAPIs(void)
         // if resolution matches and display depth is 16 or 32 bit
         D3DDISPLAYMODE d3dDisplayMode;
         gl_pD3D->EnumAdapterModes( iAdapter, iMode, &d3dDisplayMode);
-        if (d3dDisplayMode.Width==re.re_pixSizeI && d3dDisplayMode.Height==re.re_pixSizeJ
-         && (d3dDisplayMode.Format==D3DFMT_A8R8G8B8 || d3dDisplayMode.Format==D3DFMT_X8R8G8B8
-         ||  d3dDisplayMode.Format==D3DFMT_A1R5G5B5 || d3dDisplayMode.Format==D3DFMT_X1R5G5B5 
-         ||  d3dDisplayMode.Format==D3DFMT_R5G6B5)) {
+        if (d3dDisplayMode.Width == re.re_pixSizeI && d3dDisplayMode.Height == re.re_pixSizeJ
+         && (d3dDisplayMode.Format == D3DFMT_A8R8G8B8 || d3dDisplayMode.Format == D3DFMT_X8R8G8B8
+         ||  d3dDisplayMode.Format == D3DFMT_A1R5G5B5 || d3dDisplayMode.Format == D3DFMT_X1R5G5B5 
+         ||  d3dDisplayMode.Format == D3DFMT_R5G6B5)) {
           hr = gl_pD3D->CheckDeviceType( iAdapter, d3dDevType, d3dDisplayMode.Format, d3dDisplayMode.Format, FALSE);
-          if (hr!=D3D_OK) continue;
+          if (hr != D3D_OK) continue;
 
           // make a new display mode
           CDisplayMode &dm = pda->da_admDisplayModes[pda->da_ctDisplayModes];
@@ -210,14 +210,14 @@ void CGfxLibrary::InitAPIs(void)
     gl_pD3D->GetAdapterIdentifier( iAdapter, D3DENUM_NO_WHQL_LEVEL, &d3dAdapterIdentifier);
     pda->da_strVendor   = "MS DirectX 8";
     pda->da_strRenderer = d3dAdapterIdentifier.Description;
-    pda->da_strVersion.PrintF("%d.%d.%d.%d", d3dAdapterIdentifier.DriverVersion.HighPart >>16,
+    pda->da_strVersion.PrintF("%d.%d.%d.%d", d3dAdapterIdentifier.DriverVersion.HighPart >> 16,
                                              d3dAdapterIdentifier.DriverVersion.HighPart & 0xFFFF,
-                                             d3dAdapterIdentifier.DriverVersion.LowPart >>16,    
+                                             d3dAdapterIdentifier.DriverVersion.LowPart >> 16,    
                                              d3dAdapterIdentifier.DriverVersion.LowPart & 0xFFFF);
   }
   // shutdown DX8 (we'll start it again if needed)
   D3DRELEASE( gl_pD3D, TRUE);
-  if (gl_hiDriver!=NONE) FreeLibrary(gl_hiDriver);
+  if (gl_hiDriver != NONE) FreeLibrary(gl_hiDriver);
   gl_hiDriver = NONE;
 #endif // SE1_D3D
 }
@@ -273,12 +273,12 @@ BOOL CDS_SetMode( PIX pixSizeI, PIX pixSizeJ, enum DisplayDepth dd)
   LONG lRes = ChangeDisplaySettings(&devmode, CDS_FULLSCREEN);
 
   // if failed
-  if (lRes!=DISP_CHANGE_SUCCESSFUL) {
+  if (lRes != DISP_CHANGE_SUCCESSFUL) {
     // try to set secondary depth
     devmode.dmBitsPerPel = slBPP2;
     LONG lRes2 = ChangeDisplaySettings(&devmode, CDS_FULLSCREEN);
     // if failed
-    if (lRes2!=DISP_CHANGE_SUCCESSFUL) {
+    if (lRes2 != DISP_CHANGE_SUCCESSFUL) {
       CTString strError;
       switch (lRes) {
       case DISP_CHANGE_SUCCESSFUL:  strError = "DISP_CHANGE_SUCCESSFUL"; break;
@@ -307,6 +307,6 @@ void CDS_ResetMode(void)
   if (_bDedicatedServer) return;
 
   LONG lRes = ChangeDisplaySettings( NULL, 0);
-  ASSERT(lRes==DISP_CHANGE_SUCCESSFUL);
+  ASSERT(lRes == DISP_CHANGE_SUCCESSFUL);
   CPrintF(TRANS("  CDS: mode reset to original desktop settings\n"));
 }

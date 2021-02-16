@@ -43,7 +43,7 @@ SHADER_MAIN(AddDS)
   shaDisableDepthWrite();
 /*
   COLOR colModelColor = MulColors(shaGetModelColor(),shaGetConstantColor());
-  BOOL bOpaque = (colModelColor&0xFF)==0xFF;
+  BOOL bOpaque = (colModelColor&0xFF) == 0xFF;
   // if fully opaque
   if (bOpaque) {
     shaEnableAlphaTest(FALSE);

@@ -30,7 +30,7 @@ extern FLOAT gfx_fStereoSeparation;
 // query whether user has turned stereo rendering on
 BOOL Stereo_IsEnabled(void)
 {
-  return gfx_iStereo!=0;
+  return gfx_iStereo != 0;
 }
 
 
@@ -41,11 +41,11 @@ void Stereo_SetBuffer(INDEX iEye)
   const ULONG ulLeftMask  = gfx_bStereoInvert ? CT_BMASK|CT_GMASK : CT_RMASK;
   const ULONG ulRightMask = gfx_bStereoInvert ? CT_RMASK : CT_BMASK|CT_GMASK;
 
-  if (iEye==STEREO_BOTH || gfx_iStereo==0) {
+  if (iEye == STEREO_BOTH || gfx_iStereo == 0) {
     gfxSetColorMask(CT_RMASK|CT_GMASK|CT_BMASK|CT_AMASK);
-  } else if (iEye==STEREO_LEFT) {
+  } else if (iEye == STEREO_LEFT) {
     gfxSetColorMask(ulLeftMask);
-  } else if (iEye==STEREO_RIGHT) {
+  } else if (iEye == STEREO_RIGHT) {
     gfxSetColorMask(ulRightMask);
   }
 }
@@ -59,13 +59,13 @@ void Stereo_AdjustProjection(CProjection3D &pr, INDEX iEye, FLOAT fFactor)
   gfx_fStereoSeparation = Clamp( gfx_fStereoSeparation, 0.01f, 1.0f);
   gfx_iStereoOffset     = Clamp( gfx_iStereoOffset, -100L, +100L);
   // apply!
-  if (iEye==STEREO_BOTH || gfx_iStereo==0) {
+  if (iEye == STEREO_BOTH || gfx_iStereo == 0) {
     NOTHING;
-  } else if (iEye==STEREO_LEFT) {
+  } else if (iEye == STEREO_LEFT) {
     pr.ViewerPlacementL().Translate_OwnSystem( FLOAT3D(-gfx_fStereoSeparation*fFactor/2,0,0) );
     ppr.ppr_boxSubScreen  = ppr.pr_ScreenBBox;
     ppr.ppr_boxSubScreen -= FLOAT2D(-gfx_iStereoOffset/2.0f, 0.0f);
-  } else if (iEye==STEREO_RIGHT) {
+  } else if (iEye == STEREO_RIGHT) {
     pr.ViewerPlacementL().Translate_OwnSystem( FLOAT3D(+gfx_fStereoSeparation*fFactor/2,0,0) );
     ppr.ppr_boxSubScreen  = ppr.pr_ScreenBBox;
     ppr.ppr_boxSubScreen -= FLOAT2D(+gfx_iStereoOffset/2.0f, 0.0f);

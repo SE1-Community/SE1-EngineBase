@@ -48,8 +48,8 @@ public:
   /* Default constructor and string constructor. */
   inline CChunkID(const char *strString = "    ");
   /* Comparison operator. */
-  inline int operator==(const CChunkID &cidOther) const;
-  inline int operator!=(const CChunkID &cidOther) const;
+  inline int operator == (const CChunkID &cidOther) const;
+  inline int operator != (const CChunkID &cidOther) const;
   inline operator const char *(void) const { return cid_ID; }
   inline operator char *(void) { return cid_ID; }
 };
@@ -57,14 +57,14 @@ public:
 // inline implementations
 /* Default constructor and string constructor. */
 inline CChunkID::CChunkID(const char *strString /*= "    "*/) {
-  ASSERT(strlen(strString)==CID_LENGTH);
+  ASSERT(strlen(strString) == CID_LENGTH);
   memcpy(cid_ID, strString, CID_LENGTH+1);
 };
 /* Comparison operator. */
-inline int CChunkID::operator==(const CChunkID &cidOther) const {
+inline int CChunkID::operator == (const CChunkID &cidOther) const {
   return (*((ULONG *)&cid_ID[0]) == *((ULONG *)&cidOther.cid_ID[0]));
 };
-inline int CChunkID::operator!=(const CChunkID &cidOther) const {
+inline int CChunkID::operator != (const CChunkID &cidOther) const {
   return (*((ULONG *)&cid_ID[0]) != *((ULONG *)&cidOther.cid_ID[0]));
 };
 
@@ -357,9 +357,9 @@ ENGINE_API BOOL RemoveFile(const CTFileName &fnmFile);
 // Expand a file's filename to full path
 
 // these are input flags for describing what you need the file for
-#define EFP_READ   (1UL<<0)  // will open for reading
-#define EFP_WRITE  (1UL<<1)  // will open for writing
-#define EFP_NOZIPS (1UL<<31) // add this flag to forbid searching in zips
+#define EFP_READ   (1UL << 0)  // will open for reading
+#define EFP_WRITE  (1UL << 1)  // will open for writing
+#define EFP_NOZIPS (1UL << 31) // add this flag to forbid searching in zips
 // these are return values 
 #define EFP_NONE       0  // doesn't exist
 #define EFP_FILE       1  // generic file on disk
@@ -368,8 +368,8 @@ ENGINE_API BOOL RemoveFile(const CTFileName &fnmFile);
 ENGINE_API INDEX ExpandFilePath(ULONG ulType, const CTFileName &fnmFile, CTFileName &fnmExpanded);
 
 // these are input flags for directory reading
-#define DLI_RECURSIVE  (1UL<<0)  // recurse into subdirs
-#define DLI_SEARCHCD   (1UL<<1)  // search the CD path also
+#define DLI_RECURSIVE  (1UL << 0)  // recurse into subdirs
+#define DLI_SEARCHCD   (1UL << 1)  // search the CD path also
 // make a list of all files in a directory
 ENGINE_API void MakeDirList(
   CDynamicStackArray<CTFileName> &adeDir, 

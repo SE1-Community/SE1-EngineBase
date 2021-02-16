@@ -178,8 +178,8 @@ static void SndPostFunc(void *pArgs)
   snd_iDevice    = Clamp( snd_iDevice, -1L, 15L);
   snd_iInterface = Clamp( snd_iInterface, 0L, 2L);
   // if any variable has been changed
-  if (_tmLastMixAhead!=snd_tmMixAhead || _iLastFormat!=snd_iFormat
-   || _iLastDevice!=snd_iDevice || _iLastAPI!=snd_iInterface) {
+  if (_tmLastMixAhead != snd_tmMixAhead || _iLastFormat != snd_iFormat
+   || _iLastDevice != snd_iDevice || _iLastAPI != snd_iInterface) {
     // reinit sound format
     _pSound->SetFormat( (enum CSoundLibrary::SoundFormat)snd_iFormat, TRUE);
   }
@@ -199,7 +199,7 @@ static void ShutDown_dsound( CSoundLibrary &sl)
   sl.sl_bUsingDirectSound = FALSE;
   sl.sl_bUsingEAX = FALSE;
 
-  if (sl.sl_pDSSourceRight!=NULL) {
+  if (sl.sl_pDSSourceRight != NULL) {
     sl.sl_pDSSourceRight->Release();
     sl.sl_pDSSourceRight = NULL;
   }
@@ -222,7 +222,7 @@ static void ShutDown_dsound( CSoundLibrary &sl)
     sl.sl_pDSSecondary->Release();
     sl.sl_pDSSecondary = NULL;
   }
-  if (sl.sl_pDSPrimary!=NULL) {
+  if (sl.sl_pDSPrimary != NULL) {
     sl.sl_pDSPrimary->Stop();
     sl.sl_pDSPrimary->Release();
     sl.sl_pDSPrimary = NULL;
@@ -234,9 +234,9 @@ static void ShutDown_dsound( CSoundLibrary &sl)
   }
 
   // free direct sound object
-  if (sl.sl_pDS!=NULL) {
+  if (sl.sl_pDS != NULL) {
     // reset cooperative level
-    if (_hwndCurrent!=NULL) sl.sl_pDS->SetCooperativeLevel( _hwndCurrent, DSSCL_NORMAL);
+    if (_hwndCurrent != NULL) sl.sl_pDS->SetCooperativeLevel( _hwndCurrent, DSSCL_NORMAL);
     sl.sl_pDS->Release();
     sl.sl_pDS = NULL;
   }
@@ -246,11 +246,11 @@ static void ShutDown_dsound( CSoundLibrary &sl)
     _hInstDS = NULL;
   }
   // free memory
-  if (sl.sl_pslMixerBuffer!=NULL) {
+  if (sl.sl_pslMixerBuffer != NULL) {
     FreeMemory( sl.sl_pslMixerBuffer);
     sl.sl_pslMixerBuffer = NULL;
   }
-  if (sl.sl_pswDecodeBuffer!=NULL) {
+  if (sl.sl_pswDecodeBuffer != NULL) {
     FreeMemory( sl.sl_pswDecodeBuffer);
     sl.sl_pswDecodeBuffer = NULL;
   }
@@ -318,7 +318,7 @@ static BOOL DSInitSecondary( CSoundLibrary &sl, LPDIRECTSOUNDBUFFER &pBuffer, SL
 {
   // eventuallt adjust for EAX
   DWORD dwFlag3D = NONE;
-  if (snd_iInterface==2) {
+  if (snd_iInterface == 2) {
     dwFlag3D = DSBCAPS_CTRL3D;
     sl.sl_SwfeFormat.nChannels=1;  // mono output
     sl.sl_SwfeFormat.nBlockAlign/=2;
@@ -332,7 +332,7 @@ static BOOL DSInitSecondary( CSoundLibrary &sl, LPDIRECTSOUNDBUFFER &pBuffer, SL
   dsBuffer.dwBufferBytes = slSize; 
   dsBuffer.lpwfxFormat = &sl.sl_SwfeFormat;
   HRESULT hResult = sl.sl_pDS->CreateSoundBuffer( &dsBuffer, &pBuffer, NULL);
-  if (snd_iInterface==2) {
+  if (snd_iInterface == 2) {
       // revert back to original wave format (stereo)
     sl.sl_SwfeFormat.nChannels=2;
     sl.sl_SwfeFormat.nBlockAlign*=2;
@@ -349,8 +349,8 @@ static BOOL DSLockBuffer( CSoundLibrary &sl, LPDIRECTSOUNDBUFFER pBuffer, SLONG 
   if (sl.sl_bUsingEAX) slSize/=2; // buffer is mono in case of EAX
   FOREVER {
     HRESULT hResult = pBuffer->Lock( 0, slSize, &lpData, &dwSize, NULL, NULL, 0);
-    if (hResult==DS_OK && slSize==dwSize) return TRUE;
-    if (hResult!=DSERR_BUFFERLOST) return DSFail( sl, TRANS("  ! DirectSound error: Cannot lock sound buffer.\n"));
+    if (hResult == DS_OK && slSize == dwSize) return TRUE;
+    if (hResult != DSERR_BUFFERLOST) return DSFail( sl, TRANS("  ! DirectSound error: Cannot lock sound buffer.\n"));
     if (ctRetries-- == 0) return DSFail( sl, TRANS("  ! DirectSound error: Couldn't restore sound buffer.\n"));
     pBuffer->Restore();
   }
@@ -361,10 +361,10 @@ static void DSPlayBuffers( CSoundLibrary &sl)
 {
   DWORD dw;
   BOOL bInitiatePlay = FALSE;
-  ASSERT( sl.sl_pDSSecondary!=NULL && sl.sl_pDSPrimary!=NULL);
-  if (sl.sl_bUsingEAX && sl.sl_pDSSecondary2->GetStatus(&dw)==DS_OK && !(dw&DSBSTATUS_PLAYING)) bInitiatePlay = TRUE;
-  if (sl.sl_pDSSecondary->GetStatus(&dw)==DS_OK && !(dw&DSBSTATUS_PLAYING)) bInitiatePlay = TRUE;
-  if (sl.sl_pDSPrimary->GetStatus(&dw)==DS_OK && !(dw&DSBSTATUS_PLAYING))  bInitiatePlay = TRUE;
+  ASSERT( sl.sl_pDSSecondary != NULL && sl.sl_pDSPrimary != NULL);
+  if (sl.sl_bUsingEAX && sl.sl_pDSSecondary2->GetStatus(&dw) == DS_OK && !(dw&DSBSTATUS_PLAYING)) bInitiatePlay = TRUE;
+  if (sl.sl_pDSSecondary->GetStatus(&dw) == DS_OK && !(dw&DSBSTATUS_PLAYING)) bInitiatePlay = TRUE;
+  if (sl.sl_pDSPrimary->GetStatus(&dw) == DS_OK && !(dw&DSBSTATUS_PLAYING))  bInitiatePlay = TRUE;
 
   // done if all buffers are already playing
   if (!bInitiatePlay) return;
@@ -376,7 +376,7 @@ static void DSPlayBuffers( CSoundLibrary &sl)
   
   // check sound buffer lock and clear sound buffer(s) 
   LPVOID lpData;
-  DWORD	 dwSize;
+  DWORD   dwSize;
   if (!DSLockBuffer( sl, sl.sl_pDSSecondary, sl.sl_slMixerBufferSize, lpData, dwSize)) return;
   memset( lpData, 0, dwSize);
   sl.sl_pDSSecondary->Unlock( lpData, dwSize, NULL, 0);
@@ -414,10 +414,10 @@ static void DSPlayBuffers( CSoundLibrary &sl)
     _iWriteOffset2 += _iWriteOffset2 & 3;
 
     // assure that first writing offsets are inside buffers
-    if (_iWriteOffset >=sl.sl_slMixerBufferSize) _iWriteOffset  -= sl.sl_slMixerBufferSize;
-    if (_iWriteOffset2>=sl.sl_slMixerBufferSize) _iWriteOffset2 -= sl.sl_slMixerBufferSize;
-    ASSERT( _iWriteOffset >=0 && _iWriteOffset <sl.sl_slMixerBufferSize);
-    ASSERT( _iWriteOffset2>=0 && _iWriteOffset2<sl.sl_slMixerBufferSize);
+    if (_iWriteOffset >= sl.sl_slMixerBufferSize) _iWriteOffset  -= sl.sl_slMixerBufferSize;
+    if (_iWriteOffset2 >= sl.sl_slMixerBufferSize) _iWriteOffset2 -= sl.sl_slMixerBufferSize;
+    ASSERT( _iWriteOffset >= 0 && _iWriteOffset <sl.sl_slMixerBufferSize);
+    ASSERT( _iWriteOffset2 >= 0 && _iWriteOffset2<sl.sl_slMixerBufferSize);
   }
 }
 
@@ -428,24 +428,24 @@ static BOOL StartUp_dsound( CSoundLibrary &sl, BOOL bReport=TRUE)
 {
   // startup
   sl.sl_bUsingDirectSound = FALSE;
-  ASSERT( _hInstDS==NULL && sl.sl_pDS==NULL);
-  ASSERT( sl.sl_pDSSecondary==NULL && sl.sl_pDSPrimary==NULL);
+  ASSERT( _hInstDS == NULL && sl.sl_pDS == NULL);
+  ASSERT( sl.sl_pDSSecondary == NULL && sl.sl_pDSPrimary == NULL);
   // update window handle (just in case)
   HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplpDS, IUnknown FAR *pUnkOuter);
   
   if (bReport) CPrintF(TRANS("Direct Sound initialization ...\n"));
-  ASSERT( _hInstDS==NULL);
+  ASSERT( _hInstDS == NULL);
   _hInstDS = LoadLibraryA( "dsound.dll");
-  if (_hInstDS==NULL) {
+  if (_hInstDS == NULL) {
     CPrintF( TRANS("  ! DirectSound error: Cannot load 'DSOUND.DLL'.\n"));
     return FALSE;
   }
   // get main procedure address
   pDirectSoundCreate = (HRESULT(WINAPI *)(GUID FAR *, LPDIRECTSOUND FAR *, IUnknown FAR *))GetProcAddress( _hInstDS, "DirectSoundCreate");
-  if (pDirectSoundCreate==NULL) return DSFail( sl, TRANS("  ! DirectSound error: Cannot get procedure address.\n"));
+  if (pDirectSoundCreate == NULL) return DSFail( sl, TRANS("  ! DirectSound error: Cannot get procedure address.\n"));
 
   // init dsound
-  HRESULT	hResult;
+  HRESULT  hResult;
   hResult = pDirectSoundCreate( NULL, &sl.sl_pDS, NULL);
   if (hResult != DS_OK) return DSFail( sl, TRANS("  ! DirectSound error: Cannot create object.\n"));
 
@@ -469,7 +469,7 @@ static BOOL StartUp_dsound( CSoundLibrary &sl, BOOL bReport=TRUE)
 
   // prepare 3D flag if EAX
   DWORD dwFlag3D = NONE;
-  if (snd_iInterface==2) dwFlag3D = DSBCAPS_CTRL3D;
+  if (snd_iInterface == 2) dwFlag3D = DSBCAPS_CTRL3D;
 
   // create primary sound buffer (must have one)
   DSBUFFERDESC dsBuffer;
@@ -492,7 +492,7 @@ static BOOL StartUp_dsound( CSoundLibrary &sl, BOOL bReport=TRUE)
   if (!DSInitSecondary( sl, sl.sl_pDSSecondary, slBufferSize)) return FALSE;
 
   // set some additionals for EAX
-  if (snd_iInterface==2)
+  if (snd_iInterface == 2)
   {
     // 2nd secondary buffer
     if (!DSInitSecondary( sl, sl.sl_pDSSecondary2, slBufferSize)) return FALSE;
@@ -501,22 +501,22 @@ static BOOL StartUp_dsound( CSoundLibrary &sl, BOOL bReport=TRUE)
     hr1 = sl.sl_pDSPrimary->QueryInterface(  IID_IDirectSound3DListener, (LPVOID*)&sl.sl_pDSListener);
     hr2 = sl.sl_pDSSecondary->QueryInterface(  IID_IDirectSound3DBuffer, (LPVOID*)&sl.sl_pDSSourceLeft);
     hr3 = sl.sl_pDSSecondary2->QueryInterface( IID_IDirectSound3DBuffer, (LPVOID*)&sl.sl_pDSSourceRight);
-    if (hr1!=DS_OK || hr2!=DS_OK || hr3!=DS_OK) return DSFail( sl, TRANS("  ! DirectSound3D error: Cannot set 3D sound buffer.\n"));
+    if (hr1 != DS_OK || hr2 != DS_OK || hr3 != DS_OK) return DSFail( sl, TRANS("  ! DirectSound3D error: Cannot set 3D sound buffer.\n"));
 
     hr1 = sl.sl_pDSListener->SetPosition( 0,0,0, DS3D_DEFERRED);
     hr2 = sl.sl_pDSListener->SetOrientation( 0,0,1, 0,1,0, DS3D_DEFERRED);
     hr3 = sl.sl_pDSListener->SetRolloffFactor( 1, DS3D_DEFERRED);
-    if (hr1!=DS_OK || hr2!=DS_OK || hr3!=DS_OK) return DSFail( sl, TRANS("  ! DirectSound3D error: Cannot set 3D parameters for listener.\n"));
+    if (hr1 != DS_OK || hr2 != DS_OK || hr3 != DS_OK) return DSFail( sl, TRANS("  ! DirectSound3D error: Cannot set 3D parameters for listener.\n"));
     hr1 = sl.sl_pDSSourceLeft->SetMinDistance(  MINPAN, DS3D_DEFERRED);
     hr2 = sl.sl_pDSSourceLeft->SetMaxDistance(  MAXPAN, DS3D_DEFERRED);
     hr3 = sl.sl_pDSSourceRight->SetMinDistance( MINPAN, DS3D_DEFERRED);
     hr4 = sl.sl_pDSSourceRight->SetMaxDistance( MAXPAN, DS3D_DEFERRED);
-    if (hr1!=DS_OK || hr2!=DS_OK || hr3!=DS_OK || hr4!=DS_OK) {
+    if (hr1 != DS_OK || hr2 != DS_OK || hr3 != DS_OK || hr4 != DS_OK) {
       return DSFail( sl, TRANS("  ! DirectSound3D error: Cannot set 3D parameters for sound source.\n"));
     }
     // apply
     hResult = sl.sl_pDSListener->CommitDeferredSettings();
-    if (hResult!=DS_OK) return DSFail( sl, TRANS("  ! DirectSound3D error: Cannot apply 3D parameters.\n"));
+    if (hResult != DS_OK) return DSFail( sl, TRANS("  ! DirectSound3D error: Cannot apply 3D parameters.\n"));
     // reset EAX parameters
     _fLastPanning = 1234; 
     _iLastEnvType = 1234;
@@ -549,7 +549,7 @@ static BOOL StartUp_dsound( CSoundLibrary &sl, BOOL bReport=TRUE)
   // report success
   if (bReport) {
     CTString strDevice = TRANS("default device");
-    if (snd_iDevice>=0) strDevice.PrintF( TRANS("device %d"), snd_iDevice); 
+    if (snd_iDevice >= 0) strDevice.PrintF( TRANS("device %d"), snd_iDevice); 
     CPrintF( TRANS("  %dHz, %dbit, %s, mix-ahead: %gs\n"), 
              sl.sl_SwfeFormat.nSamplesPerSec, sl.sl_SwfeFormat.wBitsPerSample, strDevice, snd_tmMixAhead); 
     CPrintF(TRANS("  mixer buffer size:  %d KB\n"), sl.sl_slMixerBufferSize /1024);
@@ -586,7 +586,7 @@ static BOOL StartUp_waveout( CSoundLibrary &sl, BOOL bReport=TRUE)
     if (res == MMSYSERR_NOERROR) {
       _ctChannelsOpened++;
       // if first one
-      if (_ctChannelsOpened==1) {
+      if (_ctChannelsOpened == 1) {
         // remember as used waveout
         sl.sl_hwoWaveOut = hwo;
       // if extra channel
@@ -595,7 +595,7 @@ static BOOL StartUp_waveout( CSoundLibrary &sl, BOOL bReport=TRUE)
         sl.sl_ahwoExtra.Push() = hwo;
       }
       // if no extra channels should be taken
-      if (_ctChannelsOpened>=snd_iMaxExtraChannels+1) {
+      if (_ctChannelsOpened >= snd_iMaxExtraChannels+1) {
         // no more tries
         break;
       }    
@@ -616,7 +616,7 @@ static BOOL StartUp_waveout( CSoundLibrary &sl, BOOL bReport=TRUE)
   }
 
   // if couldn't set format
-  if (_ctChannelsOpened==0 && res != MMSYSERR_NOERROR) {
+  if (_ctChannelsOpened == 0 && res != MMSYSERR_NOERROR) {
     // report error
     CTString strError;
     switch (res) {
@@ -639,7 +639,7 @@ static BOOL StartUp_waveout( CSoundLibrary &sl, BOOL bReport=TRUE)
   // report success
   if (bReport) {
     CTString strDevice = TRANS("default device");
-    if (snd_iDevice>=0) strDevice.PrintF( TRANS("device %d"), snd_iDevice); 
+    if (snd_iDevice >= 0) strDevice.PrintF( TRANS("device %d"), snd_iDevice); 
     CPrintF( TRANS("  opened device: %s\n"), woc.szPname);
     CPrintF( TRANS("  %dHz, %dbit, %s\n"), 
              sl.sl_SwfeFormat.nSamplesPerSec, sl.sl_SwfeFormat.wBitsPerSample, strDevice);
@@ -714,11 +714,11 @@ static void SetFormat_internal( CSoundLibrary &sl, CSoundLibrary::SoundFormat Es
   snd_iInterface = Clamp( snd_iInterface, 0L, 2L);
 
   BOOL bSoundOK = FALSE;
-  if (snd_iInterface==2) {
+  if (snd_iInterface == 2) {
     // if wanted, 1st try to set EAX
     bSoundOK = StartUp_dsound( sl, bReport);  
   }
-  if (!bSoundOK && snd_iInterface==1) {
+  if (!bSoundOK && snd_iInterface == 1) {
     // if wanted, 2nd try to set DirectSound
     bSoundOK = StartUp_dsound( sl, bReport);  
   }
@@ -850,7 +850,7 @@ void CSoundLibrary::ClearLibrary(void)
   ShutDown_dsound(*this);
 
   // shut down wave out player buffers (if needed)
-  if (sl_hwoWaveOut!=NULL)
+  if (sl_hwoWaveOut != NULL)
   { // reset wave out play buffers (stop playing)
     MMRESULT res;
     res = waveOutReset(sl_hwoWaveOut);
@@ -878,15 +878,15 @@ void CSoundLibrary::ClearLibrary(void)
   sl_ahwoExtra.PopAll();
 
   // free memory
-  if (sl_pslMixerBuffer!=NULL) {
+  if (sl_pslMixerBuffer != NULL) {
     FreeMemory( sl_pslMixerBuffer);
     sl_pslMixerBuffer = NULL;
   }
-  if (sl_pswDecodeBuffer!=NULL) {
+  if (sl_pswDecodeBuffer != NULL) {
     FreeMemory( sl_pswDecodeBuffer);
     sl_pswDecodeBuffer = NULL;
   }
-  if (sl_pubBuffersMemory!=NULL) {
+  if (sl_pubBuffersMemory != NULL) {
     FreeMemory( sl_pubBuffersMemory);
     sl_pubBuffersMemory = NULL;
   }
@@ -916,7 +916,7 @@ void CSoundLibrary::Mute(void)
   IFeel_StopEffect(NULL);
 
   // erase direct sound buffer (waveout will shut-up by itself), but skip if there's no more sound library
-  if (this==NULL || !sl_bUsingDirectSound) return;
+  if (this == NULL || !sl_bUsingDirectSound) return;
 
   // synchronize access to sounds
   CTSingleLock slSounds(&sl_csSound, TRUE);
@@ -989,7 +989,7 @@ CSoundLibrary::SoundFormat CSoundLibrary::SetFormat( CSoundLibrary::SoundFormat 
 void CSoundLibrary::UpdateSounds(void)
 {
   // see if we have valid handle for direct sound and eventually reinit sound
-  if (sl_bUsingDirectSound && _hwndCurrent!=_hwndMain) {
+  if (sl_bUsingDirectSound && _hwndCurrent != _hwndMain) {
     _hwndCurrent = _hwndMain;
     SetFormat( sl_EsfFormat);
   }
@@ -1011,14 +1011,14 @@ void CSoundLibrary::UpdateSounds(void)
     ctListeners++;
   }}
   // if there's only one listener environment properties have been changed (in split-screen EAX is not supported)
-  if (ctListeners==1 && (_iLastEnvType!=sli->sli_iEnvironmentType || _fLastEnvSize!=sli->sli_fEnvironmentSize)) {
+  if (ctListeners == 1 && (_iLastEnvType != sli->sli_iEnvironmentType || _fLastEnvSize != sli->sli_fEnvironmentSize)) {
     // keep new properties and eventually update environment (EAX)
     _iLastEnvType = sli->sli_iEnvironmentType;
     _fLastEnvSize = sli->sli_fEnvironmentSize;
     SetEnvironment( _iLastEnvType, _fLastEnvSize);
   }
   // if there are no listeners - reset environment properties
-  if (ctListeners<1 && (_iLastEnvType!=1 || _fLastEnvSize!=1.4f)) {
+  if (ctListeners<1 && (_iLastEnvType != 1 || _fLastEnvSize != 1.4f)) {
     // keep new properties and update environment
     _iLastEnvType = 1;
     _fLastEnvSize = 1.4f;
@@ -1027,7 +1027,7 @@ void CSoundLibrary::UpdateSounds(void)
 
   // adjust panning if needed
   snd_fEAXPanning = Clamp( snd_fEAXPanning, -1.0f, +1.0f);
-  if (sl_bUsingEAX && _fLastPanning!=snd_fEAXPanning)
+  if (sl_bUsingEAX && _fLastPanning != snd_fEAXPanning)
   { // determine new panning
     _fLastPanning = snd_fEAXPanning;
     FLOAT fPanLeft  = -1.0f;
@@ -1039,7 +1039,7 @@ void CSoundLibrary::UpdateSounds(void)
     hr1 = sl_pDSSourceLeft->SetPosition(  fPanLeft, 0,0, DS3D_DEFERRED);
     hr2 = sl_pDSSourceRight->SetPosition( fPanRight,0,0, DS3D_DEFERRED);
     hr3 = sl_pDSListener->CommitDeferredSettings();
-    if (hr1!=DS_OK || hr2!=DS_OK || hr3!=DS_OK) DSFail( *this, TRANS("  ! DirectSound3D error: Cannot set 3D position.\n"));
+    if (hr1 != DS_OK || hr2 != DS_OK || hr3 != DS_OK) DSFail( *this, TRANS("  ! DirectSound3D error: Cannot set 3D position.\n"));
   }
 
   // for each sound
@@ -1059,7 +1059,7 @@ void CSoundLibrary::UpdateSounds(void)
         // copy parameters
         so.so_sp = so.so_spNew;
         // prepare sound if not prepared already
-        if ( !(so.so_slFlags&SOF_PREPARE)) {
+        if (!(so.so_slFlags&SOF_PREPARE)) {
           so.PrepareSound();
           so.so_slFlags |= SOF_PREPARE;
         }
@@ -1125,8 +1125,8 @@ static void CopyMixerBuffer_dsound( CSoundLibrary &sl, SLONG slMixedSize)
     slPart2Size = slMixedSize - slPart1Size;
     CopyMixerBuffer_mono( slPart1Size, lpData, slPart2Size);
     _iWriteOffset += slMixedSize;
-    if (_iWriteOffset>=sl.sl_slMixerBufferSize) _iWriteOffset -= sl.sl_slMixerBufferSize;
-    ASSERT( _iWriteOffset>=0 && _iWriteOffset<sl.sl_slMixerBufferSize);
+    if (_iWriteOffset >= sl.sl_slMixerBufferSize) _iWriteOffset -= sl.sl_slMixerBufferSize;
+    ASSERT( _iWriteOffset >= 0 && _iWriteOffset<sl.sl_slMixerBufferSize);
     sl.sl_pDSSecondary->Unlock( lpData, dwSize, NULL, 0); 
 
     // lock right buffer and copy first part of 2nd mono block
@@ -1137,8 +1137,8 @@ static void CopyMixerBuffer_dsound( CSoundLibrary &sl, SLONG slMixedSize)
     slPart2Size = slMixedSize - slPart1Size;
     CopyMixerBuffer_mono( slPart1Size+2, lpData, slPart2Size);
     _iWriteOffset2 += slMixedSize;
-    if (_iWriteOffset2>=sl.sl_slMixerBufferSize) _iWriteOffset2 -= sl.sl_slMixerBufferSize;
-    ASSERT( _iWriteOffset2>=0 && _iWriteOffset2<sl.sl_slMixerBufferSize);
+    if (_iWriteOffset2 >= sl.sl_slMixerBufferSize) _iWriteOffset2 -= sl.sl_slMixerBufferSize;
+    ASSERT( _iWriteOffset2 >= 0 && _iWriteOffset2<sl.sl_slMixerBufferSize);
     sl.sl_pDSSecondary2->Unlock( lpData, dwSize, NULL, 0);
   }
   // if only standard DSound (no EAX)
@@ -1152,8 +1152,8 @@ static void CopyMixerBuffer_dsound( CSoundLibrary &sl, SLONG slMixedSize)
     slPart2Size = slMixedSize - slPart1Size;
     CopyMixerBuffer_stereo( slPart1Size, lpData, slPart2Size);
     _iWriteOffset += slMixedSize;
-    if (_iWriteOffset>=sl.sl_slMixerBufferSize) _iWriteOffset -= sl.sl_slMixerBufferSize;
-    ASSERT( _iWriteOffset>=0 && _iWriteOffset<sl.sl_slMixerBufferSize);
+    if (_iWriteOffset >= sl.sl_slMixerBufferSize) _iWriteOffset -= sl.sl_slMixerBufferSize;
+    ASSERT( _iWriteOffset >= 0 && _iWriteOffset<sl.sl_slMixerBufferSize);
     sl.sl_pDSSecondary->Unlock( lpData, dwSize, NULL, 0);
   }
 }
@@ -1172,9 +1172,9 @@ static void CopyMixerBuffer_waveout( CSoundLibrary &sl)
     slOffset += WAVEOUTBLOCKSIZE;
     // write wave buffer (ready for playing)
     res = waveOutPrepareHeader( sl.sl_hwoWaveOut, &wh, sizeof(wh));
-    ASSERT( res==MMSYSERR_NOERROR);
+    ASSERT( res == MMSYSERR_NOERROR);
     res = waveOutWrite( sl.sl_hwoWaveOut, &wh, sizeof(wh));
-    ASSERT( res==MMSYSERR_NOERROR);
+    ASSERT( res == MMSYSERR_NOERROR);
   }
 }
 
@@ -1186,35 +1186,35 @@ static SLONG PrepareSoundBuffer_dsound( CSoundLibrary &sl)
   HRESULT hr1,hr2;
   DWORD dwCurrentCursor, dwCurrentCursor2;
   SLONG slDataToMix;
-  ASSERT( sl.sl_pDSSecondary!=NULL && sl.sl_pDSPrimary!=NULL);
+  ASSERT( sl.sl_pDSSecondary != NULL && sl.sl_pDSPrimary != NULL);
 
   // if EAX is in use
   if (sl.sl_bUsingEAX)
   {
     hr1 = sl.sl_pDSSecondary->GetCurrentPosition(  &dwCurrentCursor,  NULL);
     hr2 = sl.sl_pDSSecondary2->GetCurrentPosition( &dwCurrentCursor2, NULL);
-    if (hr1!=DS_OK || hr2!=DS_OK) return DSFail( sl, TRANS("  ! DirectSound error: Cannot obtain sound buffer write position.\n"));
+    if (hr1 != DS_OK || hr2 != DS_OK) return DSFail( sl, TRANS("  ! DirectSound error: Cannot obtain sound buffer write position.\n"));
     dwCurrentCursor *=2; // stereo mixer
     dwCurrentCursor2*=2; // stereo mixer
     // store pointers and wrapped block sizes
     SLONG slDataToMix1 = dwCurrentCursor - _iWriteOffset;
     if (slDataToMix1<0) slDataToMix1 += sl.sl_slMixerBufferSize;
-    ASSERT( slDataToMix1>=0 && slDataToMix1<=sl.sl_slMixerBufferSize);
+    ASSERT( slDataToMix1 >= 0 && slDataToMix1 <= sl.sl_slMixerBufferSize);
     slDataToMix1 = Min( slDataToMix1, sl.sl_slMixerBufferSize); 
     SLONG slDataToMix2 = dwCurrentCursor2 - _iWriteOffset2;
     if (slDataToMix2<0) slDataToMix2 += sl.sl_slMixerBufferSize;
-    ASSERT( slDataToMix2>=0 && slDataToMix2<=sl.sl_slMixerBufferSize);
+    ASSERT( slDataToMix2 >= 0 && slDataToMix2 <= sl.sl_slMixerBufferSize);
     slDataToMix = Min( slDataToMix1, slDataToMix2);
   }
   // if only standard DSound (no EAX)
   else
   {
     hr1 = sl.sl_pDSSecondary->GetCurrentPosition( &dwCurrentCursor, NULL);
-    if (hr1!=DS_OK) return DSFail( sl, TRANS("  ! DirectSound error: Cannot obtain sound buffer write position.\n"));
+    if (hr1 != DS_OK) return DSFail( sl, TRANS("  ! DirectSound error: Cannot obtain sound buffer write position.\n"));
     // store pointer and wrapped block size
     slDataToMix = dwCurrentCursor - _iWriteOffset;
     if (slDataToMix<0) slDataToMix += sl.sl_slMixerBufferSize;
-    ASSERT( slDataToMix>=0 && slDataToMix<=sl.sl_slMixerBufferSize);
+    ASSERT( slDataToMix >= 0 && slDataToMix <= sl.sl_slMixerBufferSize);
     slDataToMix = Min( slDataToMix, sl.sl_slMixerBufferSize); 
   }
 
@@ -1255,7 +1255,7 @@ void CSoundLibrary::MixSounds(void)
   CTSingleLock slSounds( &sl_csSound, TRUE);
 
   // do nothing if no sound
-  if (sl_EsfFormat==SF_NONE || _bMuted) return;
+  if (sl_EsfFormat == SF_NONE || _bMuted) return;
 
   _sfStats.StartTimer(CStatForm::STI_SOUNDMIXING);
   _pfSoundProfile.IncrementAveragingCounter();
@@ -1270,8 +1270,8 @@ void CSoundLibrary::MixSounds(void)
   }
 
   // skip mixing if all sound buffers are still busy playing
-  ASSERT( slDataToMix>=0);
-  if (slDataToMix<=0) {
+  ASSERT( slDataToMix >= 0);
+  if (slDataToMix <= 0) {
     _pfSoundProfile.StopTimer(CSoundProfile::PTI_MIXSOUNDS);
     _sfStats.StopTimer(CStatForm::STI_SOUNDMIXING);
     return;

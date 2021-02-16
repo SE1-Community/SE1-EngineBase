@@ -64,12 +64,12 @@ CEntityClass::~CEntityClass(void)
 /////////////////////////////////////////////////////////////////////
 // Reference counting functions
 void CEntityClass::AddReference(void) {
-  if (this!=NULL) {
+  if (this != NULL) {
     MarkUsed();
   }
 };
 void CEntityClass::RemReference(void) {
-  if (this!=NULL) {
+  if (this != NULL) {
     _pEntityClassStock->Release(this);
   }
 };
@@ -106,7 +106,7 @@ void CEntityClass::CheckClassProperties(void)
 #ifndef NDEBUG
   // for all classes in hierarchy of this entity
   {for (CDLLEntityClass *pdecDLLClass1 = ec_pdecDLLClass;
-      pdecDLLClass1!=NULL;
+      pdecDLLClass1 != NULL;
       pdecDLLClass1 = pdecDLLClass1->dec_pdecBase) {
     // for all properties
     for (INDEX iProperty1=0; iProperty1<pdecDLLClass1->dec_ctProperties; iProperty1++) {
@@ -114,13 +114,13 @@ void CEntityClass::CheckClassProperties(void)
 
       // for all classes in hierarchy of this entity
       for (CDLLEntityClass *pdecDLLClass2 = ec_pdecDLLClass;
-          pdecDLLClass2!=NULL;
+          pdecDLLClass2 != NULL;
           pdecDLLClass2 = pdecDLLClass2->dec_pdecBase) {
         // for all properties
         for (INDEX iProperty2=0; iProperty2<pdecDLLClass2->dec_ctProperties; iProperty2++) {
           CEntityProperty &epProperty2 = pdecDLLClass2->dec_aepProperties[iProperty2];
           // the two properties must not have same id unless they are same property
-          ASSERTMSG(&epProperty1==&epProperty2 || epProperty1.ep_ulID!=epProperty2.ep_ulID,
+          ASSERTMSG(&epProperty1 == &epProperty2 || epProperty1.ep_ulID != epProperty2.ep_ulID,
             "No two properties may have same id!");
         }
       }
@@ -129,7 +129,7 @@ void CEntityClass::CheckClassProperties(void)
 
   // for all classes in hierarchy of this entity
   {for (CDLLEntityClass *pdecDLLClass1 = ec_pdecDLLClass;
-      pdecDLLClass1!=NULL;
+      pdecDLLClass1 != NULL;
       pdecDLLClass1 = pdecDLLClass1->dec_pdecBase) {
     // for all components
     for (INDEX iComponent1=0; iComponent1<pdecDLLClass1->dec_ctComponents; iComponent1++) {
@@ -137,13 +137,13 @@ void CEntityClass::CheckClassProperties(void)
 
       // for all classes in hierarchy of this entity
       for (CDLLEntityClass *pdecDLLClass2 = ec_pdecDLLClass;
-          pdecDLLClass2!=NULL;
+          pdecDLLClass2 != NULL;
           pdecDLLClass2 = pdecDLLClass2->dec_pdecBase) {
         // for all components
         for (INDEX iComponent2=0; iComponent2<pdecDLLClass2->dec_ctComponents; iComponent2++) {
           CEntityComponent &ecComponent2 = pdecDLLClass2->dec_aecComponents[iComponent2];
           // the two components must not have same id unless they are same component
-          ASSERTMSG(&ecComponent1==&ecComponent2 || ecComponent1.ec_slID!=ecComponent2.ec_slID,
+          ASSERTMSG(&ecComponent1 == &ecComponent2 || ecComponent1.ec_slID != ecComponent2.ec_slID,
             "No two components may have same id!");
         }
       }
@@ -158,7 +158,7 @@ void CEntityClass::CheckClassProperties(void)
 CEntity *CEntityClass::New(void)
 {
   // the DLL must be loaded
-  ASSERT(ec_pdecDLLClass!= NULL);
+  ASSERT(ec_pdecDLLClass != NULL);
   // ask the DLL class to call the 'operator new' in the scope where the class is declared
   CEntity *penNew = ec_pdecDLLClass->dec_New();
   // remember this class as class of the entity
@@ -182,7 +182,7 @@ void CEntityClass::ObtainComponents_t(void)
     if (gam_iPrecachePolicy<PRECACHE_ALL) {
       // if component is not class
       CEntityComponent &ec = ec_pdecDLLClass->dec_aecComponents[iComponent];
-      if (ec.ec_ectType!=ECT_CLASS) {
+      if (ec.ec_ectType != ECT_CLASS) {
         // skip it
         continue;
       }
@@ -195,7 +195,7 @@ void CEntityClass::ObtainComponents_t(void)
     // if failed
     } catch (char *) {
       // if in paranoia mode
-      if (gam_iPrecachePolicy==PRECACHE_PARANOIA) {
+      if (gam_iPrecachePolicy == PRECACHE_PARANOIA) {
         // fail
         throw;
       // if not in paranoia mode
@@ -229,7 +229,7 @@ HINSTANCE LoadDLL_t(const char *strFileName) // throw char *
   HINSTANCE hiDLL = ::LoadLibraryA(strFileName);
 
   // if the DLL can not be loaded
-  if (hiDLL==NULL) {
+  if (hiDLL == NULL) {
     // get the error code
     DWORD dwMessageId = GetLastError();
     // format the windows error message
@@ -245,7 +245,7 @@ HINSTANCE LoadDLL_t(const char *strFileName) // throw char *
     );
     CTString strWinError;
     // if formatting succeeds
-    if (dwSuccess!=0) {
+    if (dwSuccess != 0) {
       // copy the result
       strWinError = ((char *)lpMsgBuf);
       // free the windows message buffer
@@ -381,7 +381,7 @@ class CEntityComponent *CEntityClass::ComponentForPointer(void *pv) {
 const char *CEntityPropertyEnumType::NameForValue(INDEX iValue)
 {
   for (INDEX i=0; i<epet_ctValues; i++) {
-    if (epet_aepevValues[i].epev_iValue==iValue) {
+    if (epet_aepevValues[i].epev_iValue == iValue) {
       return epet_aepevValues[i].epev_strName;
     }
   }
@@ -396,13 +396,13 @@ class CEntityProperty *CDLLEntityClass::PropertyForName(const CTString &strPrope
   // for each property
   for (INDEX iProperty=0; iProperty<dec_ctProperties; iProperty++) {
     // if it has that name
-    if (dec_aepProperties[iProperty].ep_strName==strPropertyName) {
+    if (dec_aepProperties[iProperty].ep_strName == strPropertyName) {
       // return it
       return &dec_aepProperties[iProperty];
     }
   }
   // if base class exists
-  if (dec_pdecBase!=NULL) {
+  if (dec_pdecBase != NULL) {
     // look in the base class
     return dec_pdecBase->PropertyForName(strPropertyName);
   // otherwise
@@ -421,10 +421,10 @@ class CEntityProperty *CDLLEntityClass::PropertyForTypeAndID(
   // for each property
   for (INDEX iProperty=0; iProperty<dec_ctProperties; iProperty++) {
     // if it has that same identifier
-    if (dec_aepProperties[iProperty].ep_ulID==ulID) {
+    if (dec_aepProperties[iProperty].ep_ulID == ulID) {
 
       // if it also has same type
-      if (dec_aepProperties[iProperty].ep_eptType==eptType) {
+      if (dec_aepProperties[iProperty].ep_eptType == eptType) {
         // return it
         return &dec_aepProperties[iProperty];
 
@@ -436,7 +436,7 @@ class CEntityProperty *CDLLEntityClass::PropertyForTypeAndID(
     }
   }
   // if base class exists
-  if (dec_pdecBase!=NULL) {
+  if (dec_pdecBase != NULL) {
     // look in the base class
     return dec_pdecBase->PropertyForTypeAndID(eptType, ulID);
   // otherwise
@@ -455,10 +455,10 @@ class CEntityComponent *CDLLEntityClass::ComponentForTypeAndID(
   // for each component
   for (INDEX iComponent=0; iComponent<dec_ctComponents; iComponent++) {
     // if it has that same identifier
-    if (dec_aecComponents[iComponent].ec_slID==slID) {
+    if (dec_aecComponents[iComponent].ec_slID == slID) {
 
       // if it also has same type
-      if (dec_aecComponents[iComponent].ec_ectType==ectType) {
+      if (dec_aecComponents[iComponent].ec_ectType == ectType) {
         // obtain it
         dec_aecComponents[iComponent].ObtainWithCheck();
         // return it
@@ -472,7 +472,7 @@ class CEntityComponent *CDLLEntityClass::ComponentForTypeAndID(
     }
   }
   // if base class exists
-  if (dec_pdecBase!=NULL) {
+  if (dec_pdecBase != NULL) {
     // look in the base class
     return dec_pdecBase->ComponentForTypeAndID(ectType, slID);
   // otherwise
@@ -489,7 +489,7 @@ class CEntityComponent *CDLLEntityClass::ComponentForPointer(void *pv)
   // for each component
   for (INDEX iComponent=0; iComponent<dec_ctComponents; iComponent++) {
     // if it has that same pointer
-    if (dec_aecComponents[iComponent].ec_pvPointer==pv) {
+    if (dec_aecComponents[iComponent].ec_pvPointer == pv) {
       // obtain it
       dec_aecComponents[iComponent].ObtainWithCheck();
       // return it
@@ -497,7 +497,7 @@ class CEntityComponent *CDLLEntityClass::ComponentForPointer(void *pv)
     }
   }
   // if base class exists
-  if (dec_pdecBase!=NULL) {
+  if (dec_pdecBase != NULL) {
     // look in the base class
     return dec_pdecBase->ComponentForPointer(pv);
   // otherwise
@@ -513,7 +513,7 @@ void CDLLEntityClass::PrecacheModel(SLONG slID)
   CTmpPrecachingNow tpn;
 
   CEntityComponent *pecModel = ComponentForTypeAndID(ECT_MODEL, slID);
-  ASSERT(pecModel!=NULL);
+  ASSERT(pecModel != NULL);
   pecModel->ObtainWithCheck();
 }
 
@@ -522,7 +522,7 @@ void CDLLEntityClass::PrecacheTexture(SLONG slID)
   CTmpPrecachingNow tpn;
 
   CEntityComponent *pecTexture = ComponentForTypeAndID(ECT_TEXTURE, slID);
-  ASSERT(pecTexture!=NULL);
+  ASSERT(pecTexture != NULL);
   pecTexture->ObtainWithCheck();
 }
 
@@ -531,7 +531,7 @@ void CDLLEntityClass::PrecacheSound(SLONG slID)
   CTmpPrecachingNow tpn;
 
   CEntityComponent *pecSound = ComponentForTypeAndID(ECT_SOUND, slID);
-  ASSERT(pecSound!=NULL);
+  ASSERT(pecSound != NULL);
   pecSound->ObtainWithCheck();
 }
 
@@ -540,7 +540,7 @@ void CDLLEntityClass::PrecacheClass(SLONG slID, INDEX iUser /* = -1 */)
   CTmpPrecachingNow tpn;
 
   CEntityComponent *pecClass = ComponentForTypeAndID(ECT_CLASS, slID);
-  ASSERT(pecClass!=NULL);
+  ASSERT(pecClass != NULL);
   pecClass->ObtainWithCheck();
   pecClass->ec_pecEntityClass->ec_pdecDLLClass->dec_OnPrecache(
     pecClass->ec_pecEntityClass->ec_pdecDLLClass, iUser);
@@ -557,13 +557,13 @@ CEntity::pEventHandler CDLLEntityClass::HandlerForStateAndEvent(SLONG slState, S
   // for each handler
   for (INDEX iHandler=0; iHandler<dec_ctHandlers; iHandler++) {
     // if it has that same state
-    if (dec_aeheHandlers[iHandler].ehe_slState==slState) {
+    if (dec_aeheHandlers[iHandler].ehe_slState == slState) {
       // return it
       return dec_aeheHandlers[iHandler].ehe_pEventHandler;
     }
   }
   // if base class exists
-  if (dec_pdecBase!=NULL) {
+  if (dec_pdecBase != NULL) {
     // look in the base class
     return dec_pdecBase->HandlerForStateAndEvent(slState, slEvent);
   // otherwise
@@ -579,13 +579,13 @@ const char *CDLLEntityClass::HandlerNameForState(SLONG slState)
   // for each handler
   for (INDEX iHandler=0; iHandler<dec_ctHandlers; iHandler++) {
     // if it has that same state
-    if (dec_aeheHandlers[iHandler].ehe_slState==slState) {
+    if (dec_aeheHandlers[iHandler].ehe_slState == slState) {
       // return its name
       return dec_aeheHandlers[iHandler].ehe_strName;
     }
   }
   // if base class exists
-  if (dec_pdecBase!=NULL) {
+  if (dec_pdecBase != NULL) {
     // look in the base class
     return dec_pdecBase->HandlerNameForState(slState);
   // otherwise
@@ -601,14 +601,14 @@ SLONG CDLLEntityClass::GetOverridenState(SLONG slState)
   // for each handler
   for (INDEX iHandler=0; iHandler<dec_ctHandlers; iHandler++) {
     // if it has that same base state
-    if (dec_aeheHandlers[iHandler].ehe_slBaseState>=0 &&
-        dec_aeheHandlers[iHandler].ehe_slBaseState==slState) {
+    if (dec_aeheHandlers[iHandler].ehe_slBaseState >= 0 &&
+        dec_aeheHandlers[iHandler].ehe_slBaseState == slState) {
       // return overriden state with possible recursive overriding
       return GetOverridenState(dec_aeheHandlers[iHandler].ehe_slState);
     }
   }
   // if base class exists
-  if (dec_pdecBase!=NULL) {
+  if (dec_pdecBase != NULL) {
     // look in the base class
     return dec_pdecBase->GetOverridenState(slState);
   // otherwise

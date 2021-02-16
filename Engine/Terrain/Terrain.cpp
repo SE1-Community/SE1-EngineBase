@@ -93,7 +93,7 @@ void CTerrain::Render(CAnyProjection3D &apr, CDrawPort *pdp)
   // prepare gfx stuff
   PrepareScene(apr, pdp, this);
 
-  if (tr_ctDriverChanges!=_pGfx->gl_ctDriverChanges) {
+  if (tr_ctDriverChanges != _pGfx->gl_ctDriverChanges) {
     tr_ctDriverChanges = _pGfx->gl_ctDriverChanges;
     // RefreshTerrain();
   }
@@ -170,7 +170,7 @@ void CTerrain::RenderWireFrame(CAnyProjection3D &apr, CDrawPort *pdp, COLOR &col
   // prepare gfx stuff
   PrepareScene(apr, pdp, this);
   // Regenerate tiles 
-  if (tr_ctTiles>=0) {
+  if (tr_ctTiles >= 0) {
     CTerrainTile &tt = tr_attTiles[0];
     if (tt.tt_iLod == -1) {
       ReGenerate();
@@ -187,8 +187,8 @@ void CTerrain::CreateEmptyTerrain_t(PIX pixWidth,PIX pixHeight)
   // Clear old terrain data if exists
   Clear();
 
-  ASSERT(tr_auwHeightMap==NULL);
-  ASSERT(tr_aubEdgeMap==NULL);
+  ASSERT(tr_auwHeightMap == NULL);
+  ASSERT(tr_aubEdgeMap == NULL);
   
   AllocateHeightMap(pixWidth,pixHeight);
 
@@ -209,7 +209,7 @@ void CTerrain::ImportHeightMap_t(CTFileName fnHeightMap, BOOL bUse16b/*=TRUE*/)
   iiHeightMap.LoadAnyGfxFormat_t(fnHeightMap);
 
   // if new width and height are same 
-  if (tr_pixHeightMapWidth==iiHeightMap.ii_Width && tr_pixHeightMapHeight==iiHeightMap.ii_Height) {
+  if (tr_pixHeightMapWidth == iiHeightMap.ii_Width && tr_pixHeightMapHeight == iiHeightMap.ii_Height) {
     // Clear terrain data without removing layers
     bResizeTerrain = FALSE;
   } else {
@@ -220,10 +220,10 @@ void CTerrain::ImportHeightMap_t(CTFileName fnHeightMap, BOOL bUse16b/*=TRUE*/)
 
   FLOAT fLogWidht  = Log2(iiHeightMap.ii_Width-1);
   FLOAT fLogHeight = Log2(iiHeightMap.ii_Height-1);
-  if (fLogWidht!=INDEX(fLogWidht) || fLogHeight!=INDEX(fLogHeight)) {
+  if (fLogWidht != INDEX(fLogWidht) || fLogHeight != INDEX(fLogHeight)) {
     ThrowF_t("Invalid terrain width or height");
   }
-  if (iiHeightMap.ii_Width!= iiHeightMap.ii_Height) {
+  if (iiHeightMap.ii_Width != iiHeightMap.ii_Height) {
     ThrowF_t("Only terrains with same width and height are supported in this version");
   }
 
@@ -243,7 +243,7 @@ void CTerrain::ImportHeightMap_t(CTFileName fnHeightMap, BOOL bUse16b/*=TRUE*/)
       *puwDst = *(UWORD*)puwSrc;
     // use 8 bits for importing
     } else {
-      *puwDst = *(UBYTE*)puwSrc<<8;
+      *puwDst = *(UBYTE*)puwSrc << 8;
     }
     puwDst++;
     puwSrc+=iBpp;
@@ -258,7 +258,7 @@ void CTerrain::ImportHeightMap_t(CTFileName fnHeightMap, BOOL bUse16b/*=TRUE*/)
 // Export height map to targa file
 void CTerrain::ExportHeightMap_t(CTFileName fnHeightMap, BOOL bUse16b/*=TRUE*/)
 {
-  ASSERT(tr_auwHeightMap!=NULL);
+  ASSERT(tr_auwHeightMap != NULL);
   INDEX iSize = tr_pixHeightMapWidth*tr_pixHeightMapHeight;
 
   CImageInfo iiHeightMap;
@@ -277,7 +277,7 @@ void CTerrain::ExportHeightMap_t(CTFileName fnHeightMap, BOOL bUse16b/*=TRUE*/)
     } else {
       UBYTE *pubData = (UBYTE*)&pacolImage[0];
       UWORD *puwHData = puwHeight;
-      *pubData = (UBYTE)(*puwHData>>8);
+      *pubData = (UBYTE)(*puwHData >> 8);
     }
     pacolImage++;
     puwHeight++;
@@ -397,9 +397,9 @@ static void ResizeMap(INDEX iNewWidth, INDEX iNewHeight, INDEX iOldWidth, INDEX 
 {
   CropMap(iNewWidth,iNewHeight,iOldWidth,iOldHeight,pNewData,pOldData);
   /*
-  if (iNewWidth>=iOldWidth && iNewHeight>=iOldHeight) {
+  if (iNewWidth >= iOldWidth && iNewHeight >= iOldHeight) {
     StretchMap(iNewWidth,iNewHeight,iOldWidth,iOldHeight,pNewData,pOldData);
-  } else if (iNewWidth<=iOldWidth && iNewHeight<=iOldHeight) {
+  } else if (iNewWidth <= iOldWidth && iNewHeight <= iOldHeight) {
     ShrinkMap(iNewWidth,iNewHeight,iOldWidth,iOldHeight,pNewData,pOldData);
   } else {
     INDEX iTempWidth  = Max(iNewWidth ,iOldWidth);
@@ -416,12 +416,12 @@ static void ResizeMap(INDEX iNewWidth, INDEX iNewHeight, INDEX iOldWidth, INDEX 
 
 void CTerrain::AllocateHeightMap(PIX pixWidth, PIX pixHeight)
 {
-  ASSERT(tr_auwHeightMap==NULL);
-  ASSERT(tr_aubEdgeMap==NULL);
+  ASSERT(tr_auwHeightMap == NULL);
+  ASSERT(tr_aubEdgeMap == NULL);
 
   FLOAT fLogWidht  = Log2(pixWidth-1);
   FLOAT fLogHeight = Log2(pixHeight-1);
-  if (fLogWidht!=INDEX(fLogWidht) || fLogHeight!=INDEX(fLogHeight)) {
+  if (fLogWidht != INDEX(fLogWidht) || fLogHeight != INDEX(fLogHeight)) {
     ASSERTALWAYS("Invalid terrain width or height");
     return;
   }
@@ -447,12 +447,12 @@ void CTerrain::AllocateHeightMap(PIX pixWidth, PIX pixHeight)
 
 void CTerrain::ReAllocateHeightMap(PIX pixWidth, PIX pixHeight)
 {
-  ASSERT(tr_auwHeightMap!=NULL);
-  ASSERT(tr_aubEdgeMap!=NULL);
+  ASSERT(tr_auwHeightMap != NULL);
+  ASSERT(tr_aubEdgeMap != NULL);
 
   FLOAT fLogWidht  = Log2(pixWidth-1);
   FLOAT fLogHeight = Log2(pixHeight-1);
-  if (fLogWidht!=INDEX(fLogWidht) || fLogHeight!=INDEX(fLogHeight)) {
+  if (fLogWidht != INDEX(fLogWidht) || fLogHeight != INDEX(fLogHeight)) {
     ASSERTALWAYS("Invalid terrain width or height");
     return;
   }
@@ -493,7 +493,7 @@ void CTerrain::ReAllocateHeightMap(PIX pixWidth, PIX pixHeight)
     tl.tl_iMaskWidth  = pixWidth;
     tl.tl_iMaskHeight = pixHeight;
     // if this is first layer 
-    if (itl==0) {
+    if (itl == 0) {
       // fill it
       tl.ResetLayerMask(255);
     }
@@ -520,8 +520,8 @@ void CTerrain::ReAllocateHeightMap(PIX pixWidth, PIX pixHeight)
   ClearLayers();
   */
 /*
-  ASSERT(tr_auwHeightMap==NULL);
-  ASSERT(tr_aubEdgeMap==NULL);
+  ASSERT(tr_auwHeightMap == NULL);
+  ASSERT(tr_aubEdgeMap == NULL);
 
   INDEX iSize = sizeof(UBYTE)*pixWidth*pixHeight;
   // Allocate memory for heightmap
@@ -548,7 +548,7 @@ void CTerrain::SetShadowMapsSize(INDEX iShadowMapAspect, INDEX iShadingMapAspect
   if (iShadingMapAspect<0) {
     iShadingMapAspect = 0;
   }
-  ASSERT(iShadingMapAspect>=0);
+  ASSERT(iShadingMapAspect >= 0);
 
 
   tr_iShadowMapSizeAspect  = iShadowMapAspect;
@@ -580,13 +580,13 @@ void CTerrain::SetShadowMapsSize(INDEX iShadowMapAspect, INDEX iShadingMapAspect
   }
 
   // Create new shadow map texture
-  ASSERT(tr_tdShadowMap.td_pulFrames==NULL);
+  ASSERT(tr_tdShadowMap.td_pulFrames == NULL);
   CreateTexture(tr_tdShadowMap,pixShadowMapWidth,pixShadowMapHeight,ulShadowMapFlags);
   // Reset shadow map texture
   memset(&tr_tdShadowMap.td_pulFrames[0],0,sizeof(COLOR)*pixShadowMapWidth*pixShadowMapHeight);
 
   // Create new shading map
-  ASSERT(tr_auwShadingMap==NULL);
+  ASSERT(tr_auwShadingMap == NULL);
   tr_auwShadingMap = (UWORD*)AllocMemory(pixShadingMapWidth*pixShadingMapHeight*sizeof(UWORD));
   // Reset shading map
   memset(&tr_auwShadingMap[0],0,pixShadingMapWidth*pixShadingMapHeight*sizeof(UWORD));
@@ -596,7 +596,7 @@ void CTerrain::SetShadowMapsSize(INDEX iShadowMapAspect, INDEX iShadingMapAspect
 void CTerrain::SetGlobalTopMapSize(PIX pixTopMapSize)
 {
   FLOAT fLogSize = Log2(pixTopMapSize);
-  if (fLogSize!=INDEX(fLogSize)) {
+  if (fLogSize != INDEX(fLogSize)) {
     ASSERTALWAYS("Invalid top map size");
     return;
   }
@@ -609,7 +609,7 @@ void CTerrain::SetGlobalTopMapSize(PIX pixTopMapSize)
 void CTerrain::SetTileTopMapSize(PIX pixLodTopMapSize)
 {
   FLOAT fLogSize = Log2(pixLodTopMapSize);
-  if (fLogSize!=INDEX(fLogSize)) {
+  if (fLogSize != INDEX(fLogSize)) {
     ASSERTALWAYS("Invalid top map size");
     return;
   }
@@ -628,30 +628,30 @@ void CTerrain::SetLodDistanceFactor(FLOAT fLodDistance)
 inline PIX CTerrain::GetShadowMapWidth(void)
 {
   if (tr_iShadowMapSizeAspect<0) {
-    return (tr_pixHeightMapWidth-1)>>-tr_iShadowMapSizeAspect;
+    return (tr_pixHeightMapWidth-1) >> -tr_iShadowMapSizeAspect;
   } else {
-    return (tr_pixHeightMapWidth-1)<<tr_iShadowMapSizeAspect;
+    return (tr_pixHeightMapWidth-1) << tr_iShadowMapSizeAspect;
   }
 }
 inline PIX CTerrain::GetShadowMapHeight(void)
 {
   if (tr_iShadowMapSizeAspect<0) {
-    return (tr_pixHeightMapHeight-1)>>-tr_iShadowMapSizeAspect;
+    return (tr_pixHeightMapHeight-1) >> -tr_iShadowMapSizeAspect;
   } else {
-    return (tr_pixHeightMapHeight-1)<<tr_iShadowMapSizeAspect;
+    return (tr_pixHeightMapHeight-1) << tr_iShadowMapSizeAspect;
   }
 }
 
 // Get shading map size
 inline PIX CTerrain::GetShadingMapWidth(void)
 {
-  ASSERT(tr_iShadingMapSizeAspect>=0);
-  return GetShadowMapWidth()>>tr_iShadingMapSizeAspect;
+  ASSERT(tr_iShadingMapSizeAspect >= 0);
+  return GetShadowMapWidth() >> tr_iShadingMapSizeAspect;
 }
 inline PIX CTerrain::GetShadingMapHeight(void)
 {
-  ASSERT(tr_iShadingMapSizeAspect>=0);
-  return GetShadowMapHeight()>>tr_iShadingMapSizeAspect;
+  ASSERT(tr_iShadingMapSizeAspect >= 0);
+  return GetShadowMapHeight() >> tr_iShadingMapSizeAspect;
 }
 
 // Get reference to layer
@@ -660,7 +660,7 @@ CTerrainLayer &CTerrain::GetLayer(INDEX iLayer)
   INDEX cttl = tr_atlLayers.Count();
 
   ASSERT(iLayer<cttl);
-  ASSERT(iLayer>=0);
+  ASSERT(iLayer >= 0);
   return tr_atlLayers[iLayer];
 }
 
@@ -688,12 +688,12 @@ void CTerrain::RemoveLayer(INDEX iLayer, BOOL bUpdateTerrain/*=TRUE*/)
   CStaticStackArray<class CTerrainLayer> atlLayers;
   INDEX cttl = tr_atlLayers.Count();
 
-  if (iLayer<0 || iLayer>=cttl) {
+  if (iLayer<0 || iLayer >= cttl) {
     ASSERTALWAYS("Invalid layer index");
     return;
   }
 
-  if (iLayer==0 && cttl==1) {
+  if (iLayer == 0 && cttl == 1) {
     ASSERTALWAYS("Can't remove last layer");
     return;
   }
@@ -701,7 +701,7 @@ void CTerrain::RemoveLayer(INDEX iLayer, BOOL bUpdateTerrain/*=TRUE*/)
   // for each exisiting layer
   for (INDEX itl=0;itl<cttl;itl++) {
     // if this layer index is not same as index of layer that need to be removed
-    if (itl!=iLayer) {
+    if (itl != iLayer) {
       // Add new layer
       CTerrainLayer &tl = atlLayers.Push();
       // Copy this layer into new array
@@ -728,17 +728,17 @@ INDEX CTerrain::SetLayerIndex(INDEX iLayer, INDEX iNewIndex, BOOL bUpdateTerrain
   CStaticStackArray<class CTerrainLayer> atlLayers;
   INDEX cttl = tr_atlLayers.Count();
 
-  if (iLayer<0 || iLayer>=cttl) {
+  if (iLayer<0 || iLayer >= cttl) {
     ASSERTALWAYS("Invalid layer index");
     return iLayer;
   }
 
-  if (iLayer==0 && cttl==1) {
+  if (iLayer == 0 && cttl == 1) {
     ASSERTALWAYS("Can't move only layer");
     return iLayer;
   }
 
-  if (iLayer==iNewIndex) {
+  if (iLayer == iNewIndex) {
     ASSERTALWAYS("Old layer index is same as new one");
     return iLayer;
   }
@@ -754,11 +754,11 @@ INDEX CTerrain::SetLayerIndex(INDEX iLayer, INDEX iNewIndex, BOOL bUpdateTerrain
 
   for (INDEX iFrom=0; iFrom<cttl; iFrom++) {
     INDEX iTo=-1;
-    if (iNew==iOld) {
+    if (iNew == iOld) {
       iTo = iFrom;
     } if ((iFrom<iOld && iFrom<iNew) || (iFrom>iOld && iFrom>iNew)) {
       iTo = iFrom;
-    } else if (iFrom==iOld) {
+    } else if (iFrom == iOld) {
       iTo = iNew;
     } else {
       if (iNew>iOld) {
@@ -819,7 +819,7 @@ void CTerrain::UpdateShadowMap(FLOATaabbox3D *pbboxUpdate/*=NULL*/, BOOL bAbsolu
     return;
   }
   // if shadow update is allowed
-  if (_wrpWorldRenderPrefs.GetShadowsType()==CWorldRenderPrefs::SHT_FULL) {
+  if (_wrpWorldRenderPrefs.GetShadowsType() == CWorldRenderPrefs::SHT_FULL) {
     // update terrain shadow map
     UpdateTerrainShadowMap(this,pbboxUpdate,bAbsoluteSpace);
     // don't update shadow map next frame
@@ -871,7 +871,7 @@ static void SaveAsTga(CTextureData *ptdTex)
     } else {
       UBYTE *pubData = (UBYTE*)&pacolImage[0];
       UWORD *puwHData = puwHeight;
-      *pubData = (UBYTE)(*puwHData>>8);
+      *pubData = (UBYTE)(*puwHData >> 8);
     }
     pacolImage++;
     puwHeight++;
@@ -890,7 +890,7 @@ static void AddTileLayerToTopMap(CTerrain *ptrTerrain, INDEX iTileIndex, INDEX i
   INDEX iOffsetX = 0;
   INDEX iOffsetZ = 0;
 
-  if (iTileIndex==(-1)) {
+  if (iTileIndex == (-1)) {
     ptdDst = &ptrTerrain->tr_tdTopMap;
     ctQuadsPerTile = ptrTerrain->tr_ctTilesX * ptrTerrain->tr_ctQuadsInTileRow;
   } else {
@@ -908,11 +908,11 @@ static void AddTileLayerToTopMap(CTerrain *ptrTerrain, INDEX iTileIndex, INDEX i
   PIX pixSrcQuadWidth = tl.tl_pixTileWidth;
 
   // if dst quad is smaller then one pixel
-  if (pixDstQuadWidth==0) {
+  if (pixDstQuadWidth == 0) {
     return; 
   }
 
-  ASSERT(tl.tl_ctTilesInRow==tl.tl_ctTilesInCol);
+  ASSERT(tl.tl_ctTilesInRow == tl.tl_ctTilesInCol);
 
   INDEX iSrcMipmap = FastLog2((ptdSrc->GetPixWidth() / tl.tl_ctTilesInRow) / pixDstQuadWidth);
   INDEX iSrcMipMapOffset = GetMipmapOffset(iSrcMipmap,ptdSrc->GetPixWidth(),ptdSrc->GetPixHeight());
@@ -920,7 +920,7 @@ static void AddTileLayerToTopMap(CTerrain *ptrTerrain, INDEX iTileIndex, INDEX i
   INDEX iSrcMipQuadWidth = pixSrcQuadWidth >> iSrcMipmap;
   INDEX iSrcMipQuadHeight = iSrcMipQuadWidth;
 
-  ASSERT(pixDstQuadWidth==iSrcMipQuadWidth);
+  ASSERT(pixDstQuadWidth == iSrcMipQuadWidth);
    
   ULONG *pulSrcMip = &ptdSrc->td_pulFrames[iSrcMipMapOffset];
 
@@ -932,10 +932,10 @@ static void AddTileLayerToTopMap(CTerrain *ptrTerrain, INDEX iTileIndex, INDEX i
     for (INDEX iQuadX=0;iQuadX<ctQuadsPerTile;iQuadX++) {
 
       UBYTE ubMask = pubFirstInLayerMask[iMaskIndex];
-      BOOL  bFlipX   = (ubMask&TL_FLIPX)>>TL_FLIPX_SHIFT;
-      BOOL  bFlipY   = (ubMask&TL_FLIPY)>>TL_FLIPY_SHIFT;
-      BOOL  bSwapXY  = (ubMask&TL_SWAPXY)>>TL_SWAPXY_SHIFT;
-      BOOL  bVisible = (ubMask&TL_VISIBLE)>>TL_VISIBLE_SHIFT;
+      BOOL  bFlipX   = (ubMask&TL_FLIPX) >> TL_FLIPX_SHIFT;
+      BOOL  bFlipY   = (ubMask&TL_FLIPY) >> TL_FLIPY_SHIFT;
+      BOOL  bSwapXY  = (ubMask&TL_SWAPXY) >> TL_SWAPXY_SHIFT;
+      BOOL  bVisible = (ubMask&TL_VISIBLE) >> TL_VISIBLE_SHIFT;
       INDEX iTile = ubMask&TL_TILE_INDEX;
       INDEX iTileX = iTile%tl.tl_ctTilesInRow;
       INDEX iTileY = iTile/tl.tl_ctTilesInRow;
@@ -994,7 +994,7 @@ void CTerrain::UpdateTopMap(INDEX iTileIndex, Rect *prcDest/*=NULL*/)
 {
   //ReGenerateTopMap(this, iTileIndex);
   
-  if (iTileIndex==(-1)) {
+  if (iTileIndex == (-1)) {
     ctGlobalTopMaps++;
   } else {
     ctGeneratedTopMaps++;
@@ -1011,7 +1011,7 @@ void CTerrain::UpdateTopMap(INDEX iTileIndex, Rect *prcDest/*=NULL*/)
   CTextureData *ptdDest;
 
   // if global top map
-  if (iTileIndex==(-1)) {
+  if (iTileIndex == (-1)) {
     ptdDest = &tr_tdTopMap;
   // else tile top map
   } else {
@@ -1021,13 +1021,13 @@ void CTerrain::UpdateTopMap(INDEX iTileIndex, Rect *prcDest/*=NULL*/)
     iFirstInMask = iMaskWidth * tt.tt_iOffsetZ * (tr_ctVerticesInTileRow-1) + (tt.tt_iOffsetX * (tr_ctVerticesInTileRow-1));
   }
 
-  ASSERT(ptdDest->td_pulFrames==NULL);
+  ASSERT(ptdDest->td_pulFrames == NULL);
   PrepareSharedTopMapMemory(ptdDest, iTileIndex);
 
-  ASSERT(ptdDest!=NULL);
-  ASSERT(ptdDest->td_pulFrames!=NULL);
+  ASSERT(ptdDest != NULL);
+  ASSERT(ptdDest->td_pulFrames != NULL);
  
-  // ASSERT(ptdDest->GetPixWidth()>0 && ptdDest->GetPixHeight()>0 && ptdDest->GetPixWidth()==ptdDest->GetPixHeight());
+  // ASSERT(ptdDest->GetPixWidth()>0 && ptdDest->GetPixHeight()>0 && ptdDest->GetPixWidth() == ptdDest->GetPixHeight());
   // iTiling = ClampDn(iTiling,(INDEX)1);
   // INDEX iSrcMipWidth = ClampDn(ptdDest->GetWidth()/iTiling,(INDEX)1);
 
@@ -1041,12 +1041,12 @@ void CTerrain::UpdateTopMap(INDEX iTileIndex, Rect *prcDest/*=NULL*/)
       // skip it
       continue;
     }
-    if (tl.tl_ltType==LT_TILE) {
+    if (tl.tl_ltType == LT_TILE) {
       AddTileLayerToTopMap(this,iTileIndex,itl);
       continue;
     }
 
-    if (iTileIndex==(-1)) {
+    if (iTileIndex == (-1)) {
       // ptdDest = &tr_tdTopMap;
       iTiling = (INDEX)(tr_ctTilesX*tr_ctQuadsInTileRow*tl.tl_fStretchX);
 
@@ -1060,8 +1060,8 @@ void CTerrain::UpdateTopMap(INDEX iTileIndex, Rect *prcDest/*=NULL*/)
       iTiling = (INDEX)(tr_ctQuadsInTileRow*tl.tl_fStretchX);
     }
 
-    ASSERT(ptdDest->GetPixWidth()>0 && ptdDest->GetPixHeight()>0 && ptdDest->GetPixWidth()==ptdDest->GetPixHeight());
-    ASSERT(iTiling>=1);
+    ASSERT(ptdDest->GetPixWidth()>0 && ptdDest->GetPixHeight()>0 && ptdDest->GetPixWidth() == ptdDest->GetPixHeight());
+    ASSERT(iTiling >= 1);
     iTiling = ClampDn(iTiling,(INDEX)1);
 
     // get source texture
@@ -1098,7 +1098,7 @@ void CTerrain::UpdateTopMap(INDEX iTileIndex, Rect *prcDest/*=NULL*/)
     {
       // get first byte for src mip texture in this row
       ULONG *pulSrcRow = &pulFirstInMipSrc[(ir&(iSrcMipWidth-1))*iSrcMipWidth];//%
-      INDEX iMaskVPos = (INDEX)(xMaskVPos>>16) * (iMaskWidth);
+      INDEX iMaskVPos = (INDEX)(xMaskVPos >> 16) * (iMaskWidth);
       UBYTE *pubMaskRow = &ubFirstInMask[iMaskVPos];
       UBYTE *pubEdgeMaskRow = &ubFirstInEdgeMap[iMaskVPos];
       SLONG xMaskHPos = 0;
@@ -1106,24 +1106,24 @@ void CTerrain::UpdateTopMap(INDEX iTileIndex, Rect *prcDest/*=NULL*/)
       for (UINT ic=0;ic<ptdDest->GetPixWidth();ic++)
       {
         ULONG *ulSrc = &pulSrcRow[ic&(iSrcMipWidth-1)];
-        INDEX iMask = (INDEX)(xMaskHPos>>16);
+        INDEX iMask = (INDEX)(xMaskHPos >> 16);
 
-        SLONG x1 = (SLONG)(pubMaskRow[iMask+0]) <<0; //NormByteToFixInt(pubMaskRow[iMask]);
-        SLONG x2 = (SLONG)(pubMaskRow[iMask+1]) <<0; //NormByteToFixInt(pubMaskRow[iMask+1]);
-        SLONG x3 = (SLONG)(pubMaskRow[iMask+iMaskWidth+0]) <<0;//NormByteToFixInt(pubMaskRow[iMask+iMaskWidth+0]);
-        SLONG x4 = (SLONG)(pubMaskRow[iMask+iMaskWidth+1]) <<0;//NormByteToFixInt(pubMaskRow[iMask+iMaskWidth+1]);
+        SLONG x1 = (SLONG)(pubMaskRow[iMask+0]) << 0; //NormByteToFixInt(pubMaskRow[iMask]);
+        SLONG x2 = (SLONG)(pubMaskRow[iMask+1]) << 0; //NormByteToFixInt(pubMaskRow[iMask+1]);
+        SLONG x3 = (SLONG)(pubMaskRow[iMask+iMaskWidth+0]) << 0;//NormByteToFixInt(pubMaskRow[iMask+iMaskWidth+0]);
+        SLONG x4 = (SLONG)(pubMaskRow[iMask+iMaskWidth+1]) << 0;//NormByteToFixInt(pubMaskRow[iMask+iMaskWidth+1]);
         SLONG xFactH = xMaskHPos - (xMaskHPos&0xFFFF0000);
         SLONG xFactV = xMaskVPos - (xMaskVPos&0xFFFF0000);
         
-        SLONG xStrengthX1 = (x1<<7) + (SLONG)(((x2-x1)*xFactH)>>9); //Lerp(fi1,fi2,fiFactH);
-        SLONG xStrengthX2 = (x3<<7) + (SLONG)(((x4-x3)*xFactH)>>9); //Lerp(fi3,fi4,fiFactH);
-        SLONG xStrength   = (xStrengthX1<<1) + (SLONG)((((xStrengthX2>>0)-(xStrengthX1>>0))*xFactV)>>15);   //Lerp(fiStrengthX1,fiStrengthX2,fiFactV);
+        SLONG xStrengthX1 = (x1 << 7) + (SLONG)(((x2-x1)*xFactH) >> 9); //Lerp(fi1,fi2,fiFactH);
+        SLONG xStrengthX2 = (x3 << 7) + (SLONG)(((x4-x3)*xFactH) >> 9); //Lerp(fi3,fi4,fiFactH);
+        SLONG xStrength   = (xStrengthX1 << 1) + (SLONG)((((xStrengthX2 >> 0)-(xStrengthX1 >> 0))*xFactV) >> 15);   //Lerp(fiStrengthX1,fiStrengthX2,fiFactV);
         
         GFXColor *pcolSrc = (GFXColor*)pulTexDst;
         GFXColor *pcolDst = (GFXColor*)ulSrc;
-        pcolSrc->r = (BYTE)( (ULONG)pcolSrc->r + ((((ULONG)pcolDst->r - (ULONG)pcolSrc->r) * xStrength)>>16));
-        pcolSrc->g = (BYTE)( (ULONG)pcolSrc->g + ((((ULONG)pcolDst->g - (ULONG)pcolSrc->g) * xStrength)>>16));
-        pcolSrc->b = (BYTE)( (ULONG)pcolSrc->b + ((((ULONG)pcolDst->b - (ULONG)pcolSrc->b) * xStrength)>>16));
+        pcolSrc->r = (BYTE)( (ULONG)pcolSrc->r + ((((ULONG)pcolDst->r - (ULONG)pcolSrc->r) * xStrength) >> 16));
+        pcolSrc->g = (BYTE)( (ULONG)pcolSrc->g + ((((ULONG)pcolDst->g - (ULONG)pcolSrc->g) * xStrength) >> 16));
+        pcolSrc->b = (BYTE)( (ULONG)pcolSrc->b + ((((ULONG)pcolDst->b - (ULONG)pcolSrc->b) * xStrength) >> 16));
         pcolSrc->a = pubEdgeMaskRow[iMask];
         
         pulTexDst++;
@@ -1152,7 +1152,7 @@ void CTerrain::GetAllTerrainBBox(FLOATaabbox3D &bbox)
   INDEX ctqtl = tr_aqtlQuadTreeLevels.Count();
   QuadTreeLevel &qtl = tr_aqtlQuadTreeLevels[ctqtl-1];
 
-  ASSERT(qtl.qtl_ctNodes==1);
+  ASSERT(qtl.qtl_ctNodes == 1);
   // Get quad tree node for last level
   QuadTreeNode  &qtn = tr_aqtnQuadTreeNodes[qtl.qtl_iFirstNode];
   bbox = qtn.qtn_aabbox;
@@ -1161,8 +1161,8 @@ void CTerrain::GetAllTerrainBBox(FLOATaabbox3D &bbox)
 // Get shading color from tex coords in shading map
 COLOR CTerrain::GetShadeColor(CShadingInfo *psi)
 {
-  ASSERT(psi!=NULL);
-  ASSERT(tr_auwShadingMap!=NULL);
+  ASSERT(psi != NULL);
+  ASSERT(tr_auwShadingMap != NULL);
 
   PIX pixShadowU = Clamp(psi->si_pixShadowU,0L,GetShadingMapWidth()-2L);
   PIX pixShadowV = Clamp(psi->si_pixShadowV,0L,GetShadingMapHeight()-2L);
@@ -1180,21 +1180,21 @@ COLOR CTerrain::GetShadeColor(CShadingInfo *psi)
   auwShade[3] = tr_auwShadingMap[pixShadow+pixWidth+1];
 
   for (INDEX ish=0;ish<4;ish++) {
-    aslr[ish] = (auwShade[ish]&0x7C00)>>10;
-    aslg[ish] = (auwShade[ish]&0x03E0)>> 5;
-    aslb[ish] = (auwShade[ish]&0x001F)>> 0;
+    aslr[ish] = (auwShade[ish]&0x7C00) >> 10;
+    aslg[ish] = (auwShade[ish]&0x03E0) >> 5;
+    aslb[ish] = (auwShade[ish]&0x001F) >> 0;
 
-    aslr[ish] = (aslr[ish]<<3) | (aslr[ish]>>2);
-    aslg[ish] = (aslg[ish]<<3) | (aslg[ish]>>2);
-    aslb[ish] = (aslb[ish]<<3) | (aslb[ish]>>2);
+    aslr[ish] = (aslr[ish] << 3) | (aslr[ish] >> 2);
+    aslg[ish] = (aslg[ish] << 3) | (aslg[ish] >> 2);
+    aslb[ish] = (aslb[ish] << 3) | (aslb[ish] >> 2);
   }
 
   SLONG slRed   = Lerp( Lerp(aslr[0], aslr[1], fLRRatio), Lerp(aslr[2], aslr[3], fLRRatio), fUDRatio);
   SLONG slGreen = Lerp( Lerp(aslg[0], aslg[1], fLRRatio), Lerp(aslg[2], aslg[3], fLRRatio), fUDRatio);
   SLONG slBlue  = Lerp( Lerp(aslb[0], aslb[1], fLRRatio), Lerp(aslb[2], aslb[3], fLRRatio), fUDRatio);
 
-  ULONG ulPixel = ((slRed  <<24)&0xFF000000) |
-                  ((slGreen<<16)&0x00FF0000) | 
+  ULONG ulPixel = ((slRed << 24)&0xFF000000) |
+                  ((slGreen << 16)&0x00FF0000) | 
                   ((slBlue << 8)&0x0000FF00) | 0xFF;
 
   return ulPixel;
@@ -1203,7 +1203,7 @@ COLOR CTerrain::GetShadeColor(CShadingInfo *psi)
 // Get plane from given point
 FLOATplane3D CTerrain::GetPlaneFromPoint(FLOAT3D &vAbsPoint)
 {
-  ASSERT(tr_penEntity!=NULL);
+  ASSERT(tr_penEntity != NULL);
   FLOAT3D vRelPoint = (vAbsPoint-tr_penEntity->en_plPlacement.pl_PositionVector) * !tr_penEntity->en_mRotation;
   vRelPoint(1) /= tr_vStretch(1);
   vRelPoint(3) /= tr_vStretch(3);
@@ -1227,13 +1227,13 @@ FLOATplane3D CTerrain::GetPlaneFromPoint(FLOAT3D &vAbsPoint)
   vx3 = vx3 * tr_penEntity->en_mRotation + tr_penEntity->en_plPlacement.pl_PositionVector;
 
   if (bFacing) {
-    if (fXRatio>=fZRatio) {
+    if (fXRatio >= fZRatio) {
       return FLOATplane3D(vx0,vx2,vx1);
     } else {
       return FLOATplane3D(vx1,vx2,vx3);
     }
   } else {
-    if (fXRatio>=fZRatio) {
+    if (fXRatio >= fZRatio) {
       return FLOATplane3D(vx2,vx3,vx0);
     } else {
       return FLOATplane3D(vx0,vx3,vx1);
@@ -1245,7 +1245,7 @@ FLOATplane3D CTerrain::GetPlaneFromPoint(FLOAT3D &vAbsPoint)
 void CTerrain::SetQuadsPerTileRow(INDEX ctQuadsPerTileRow)
 {
   tr_ctQuadsInTileRow = Clamp(ctQuadsPerTileRow,(INDEX)4,(INDEX)(tr_pixHeightMapWidth-1));
-  if (tr_ctQuadsInTileRow!=ctQuadsPerTileRow) {
+  if (tr_ctQuadsInTileRow != ctQuadsPerTileRow) {
     CPrintF("Warning: Quads per tile has been changed from requested %d to %d\n",ctQuadsPerTileRow,tr_ctQuadsInTileRow);
   }
   // TODO: Assert that it is 2^n
@@ -1272,7 +1272,7 @@ void CTerrain::BuildTerrainData()
   tr_iMaxTileLod = 0;
   while (ctVtxInLod>2) {
     tr_iMaxTileLod++;
-    ctVtxInLod = ctVtxInLod>>1;
+    ctVtxInLod = ctVtxInLod >> 1;
   }
 
   // Allocate memory for terrain tile arrays
@@ -1326,7 +1326,7 @@ void CTerrain::GenerateTopMap(INDEX iTileIndex)
   // destionation texture (must have set allocated memory)
   CTextureData *ptdDest;
   // if global top map
-  if (iTileIndex==(-1)) {
+  if (iTileIndex == (-1)) {
     ptdDest = &tr_tdTopMap;
   // else tile top map
   } else {
@@ -1337,7 +1337,7 @@ void CTerrain::GenerateTopMap(INDEX iTileIndex)
     iTiling = (INDEX)(tr_ctQuadsInTileRow*tr_fTexStretch);
   }
  
-  ASSERT(ptdDest->GetPixWidth()>0 && ptdDest->GetPixHeight()>0 && ptdDest->GetPixWidth()==ptdDest->GetPixHeight());
+  ASSERT(ptdDest->GetPixWidth()>0 && ptdDest->GetPixHeight()>0 && ptdDest->GetPixWidth() == ptdDest->GetPixHeight());
   INDEX iSrcMipWidth = ClampDn(ptdDest->GetWidth()/iTiling,(INDEX)1);
 
 
@@ -1371,31 +1371,31 @@ void CTerrain::GenerateTopMap(INDEX iTileIndex)
     for (UINT ir=0;ir<ptdDest->GetHeight();ir++) {
       // get first byte for src mip texture in this row
       ULONG *pulSrcRow = &pulFirstInMipSrc[(ir&(iSrcMipWidth-1))*iSrcMipWidth];//%
-      INDEX iMaskVPos = (INDEX)(xMaskVPos>>16) * (iMaskWidth);
+      INDEX iMaskVPos = (INDEX)(xMaskVPos >> 16) * (iMaskWidth);
       UBYTE *pubMaskRow = &ubFirstInMask[iMaskVPos];
       SLONG xMaskHPos = 0;
       // for each column
       for (UINT ic=0;ic<ptdDest->GetWidth();ic++) {
 
         ULONG *ulSrc = &pulSrcRow[ic&(iSrcMipWidth-1)];
-        INDEX iMask = (INDEX)(xMaskHPos>>16);
+        INDEX iMask = (INDEX)(xMaskHPos >> 16);
 
-        SLONG x1 = (SLONG)(pubMaskRow[iMask+0]) <<0; //NormByteToFixInt(pubMaskRow[iMask]);
-        SLONG x2 = (SLONG)(pubMaskRow[iMask+1]) <<0; //NormByteToFixInt(pubMaskRow[iMask+1]);
-        SLONG x3 = (SLONG)(pubMaskRow[iMask+iMaskWidth+0]) <<0;//NormByteToFixInt(pubMaskRow[iMask+iMaskWidth+0]);
-        SLONG x4 = (SLONG)(pubMaskRow[iMask+iMaskWidth+1]) <<0;//NormByteToFixInt(pubMaskRow[iMask+iMaskWidth+1]);
+        SLONG x1 = (SLONG)(pubMaskRow[iMask+0]) << 0; //NormByteToFixInt(pubMaskRow[iMask]);
+        SLONG x2 = (SLONG)(pubMaskRow[iMask+1]) << 0; //NormByteToFixInt(pubMaskRow[iMask+1]);
+        SLONG x3 = (SLONG)(pubMaskRow[iMask+iMaskWidth+0]) << 0;//NormByteToFixInt(pubMaskRow[iMask+iMaskWidth+0]);
+        SLONG x4 = (SLONG)(pubMaskRow[iMask+iMaskWidth+1]) << 0;//NormByteToFixInt(pubMaskRow[iMask+iMaskWidth+1]);
         SLONG xFactH = xMaskHPos - (xMaskHPos&0xFFFF0000);
         SLONG xFactV = xMaskVPos - (xMaskVPos&0xFFFF0000);
         
-        SLONG xStrengthX1 = (x1<<7) + (SLONG)(((x2-x1)*xFactH)>>9); //Lerp(fi1,fi2,fiFactH);
-        SLONG xStrengthX2 = (x3<<7) + (SLONG)(((x4-x3)*xFactH)>>9); //Lerp(fi3,fi4,fiFactH);
-        SLONG xStrength   = (xStrengthX1<<1) + (SLONG)((((xStrengthX2>>0)-(xStrengthX1>>0))*xFactV)>>15);   //Lerp(fiStrengthX1,fiStrengthX2,fiFactV);
+        SLONG xStrengthX1 = (x1 << 7) + (SLONG)(((x2-x1)*xFactH) >> 9); //Lerp(fi1,fi2,fiFactH);
+        SLONG xStrengthX2 = (x3 << 7) + (SLONG)(((x4-x3)*xFactH) >> 9); //Lerp(fi3,fi4,fiFactH);
+        SLONG xStrength   = (xStrengthX1 << 1) + (SLONG)((((xStrengthX2 >> 0)-(xStrengthX1 >> 0))*xFactV) >> 15);   //Lerp(fiStrengthX1,fiStrengthX2,fiFactV);
         
         GFXColor *pcolSrc = (GFXColor*)pulTexDst;
         GFXColor *pcolDst = (GFXColor*)ulSrc;
-        pcolSrc->r = (BYTE)( (ULONG)pcolSrc->r + ((((ULONG)pcolDst->r - (ULONG)pcolSrc->r) * xStrength)>>16));
-        pcolSrc->g = (BYTE)( (ULONG)pcolSrc->g + ((((ULONG)pcolDst->g - (ULONG)pcolSrc->g) * xStrength)>>16));
-        pcolSrc->b = (BYTE)( (ULONG)pcolSrc->b + ((((ULONG)pcolDst->b - (ULONG)pcolSrc->b) * xStrength)>>16));
+        pcolSrc->r = (BYTE)( (ULONG)pcolSrc->r + ((((ULONG)pcolDst->r - (ULONG)pcolSrc->r) * xStrength) >> 16));
+        pcolSrc->g = (BYTE)( (ULONG)pcolSrc->g + ((((ULONG)pcolDst->g - (ULONG)pcolSrc->g) * xStrength) >> 16));
+        pcolSrc->b = (BYTE)( (ULONG)pcolSrc->b + ((((ULONG)pcolDst->b - (ULONG)pcolSrc->b) * xStrength) >> 16));
         pcolSrc->a = 255;
         
         pulTexDst++;
@@ -1420,7 +1420,7 @@ void CTerrain::GenerateTopMap(INDEX iTileIndex)
   // destionation texture (must have set required width and height)
   CTextureData *ptdDest;
   // if global top map
-  if (iTileIndex==(-1)) {
+  if (iTileIndex == (-1)) {
     ptdDest = &tr_tdTopMap;
   // else tile top map
   } else {
@@ -1431,7 +1431,7 @@ void CTerrain::GenerateTopMap(INDEX iTileIndex)
     iTiling = (INDEX)(tr_ctQuadsInTileRow*tr_fTexStretch);
   }
  
-  ASSERT(ptdDest->GetPixWidth()>0 && ptdDest->GetPixHeight()>0 && ptdDest->GetPixWidth()==ptdDest->GetPixHeight());
+  ASSERT(ptdDest->GetPixWidth()>0 && ptdDest->GetPixHeight()>0 && ptdDest->GetPixWidth() == ptdDest->GetPixHeight());
 
   INDEX iSrcMipWidth = ptdDest->GetWidth()/iTiling;
 
@@ -1534,15 +1534,15 @@ void CTerrain::BuildQuadTree(void)
       break;
     }
     if (ctQuadNodeCols%2 == 1 && ctQuadNodeCols != 1) {
-      ctQuadNodeCols = (ctQuadNodeCols+1)>>1;
+      ctQuadNodeCols = (ctQuadNodeCols+1) >> 1;
     } else {
-      ctQuadNodeCols = ctQuadNodeCols>>1;
+      ctQuadNodeCols = ctQuadNodeCols >> 1;
     }
 
     if (ctQuadNodeRows%2 == 1 && ctQuadNodeRows != 1) {
-      ctQuadNodeRows = (ctQuadNodeRows+1)>>1;
+      ctQuadNodeRows = (ctQuadNodeRows+1) >> 1;
     } else {
-      ctQuadNodeRows = ctQuadNodeRows>>1;
+      ctQuadNodeRows = ctQuadNodeRows >> 1;
     }
   }
   
@@ -1647,7 +1647,7 @@ void CTerrain::UpdateQuadTree()
       for (INDEX ichild=0;ichild<4;ichild++) {
         INDEX iqtnChild = qtn.qtn_iChild[ichild];
         // if child exists
-        if (iqtnChild!=(-1)) {
+        if (iqtnChild != (-1)) {
           QuadTreeNode &qtnChild = tr_aqtnQuadTreeNodes[iqtnChild];
           // if qtn box is empty 
           if (qtn.qtn_aabbox.IsEmpty()) {
@@ -1809,10 +1809,10 @@ static void ReadOldShadowMap(CTerrain *ptrTerrain, CTStream *istrFile)
   // Read shadow map size
   INDEX pixShadowMapWidth;
   INDEX pixShadowMapHeight;
-  (*istrFile)>>pixShadowMapWidth;
-  (*istrFile)>>pixShadowMapHeight;
+  (*istrFile) >> pixShadowMapWidth;
+  (*istrFile) >> pixShadowMapHeight;
   BOOL bHaveShadowMap;
-  (*istrFile)>>bHaveShadowMap;
+  (*istrFile) >> bHaveShadowMap;
   // is shadow map saved
   if (bHaveShadowMap) {
     // skip reading of first mip of shadow map
@@ -1832,25 +1832,25 @@ void CTerrain::ReadVersion_t( CTStream *istrFile, INDEX iSavedVersion)
   PIX pixWidth;
   PIX pixHeight;
   // read height map width and height
-  (*istrFile)>>pixWidth;
-  (*istrFile)>>pixHeight;
+  (*istrFile) >> pixWidth;
+  (*istrFile) >> pixHeight;
 
   // Reallocate memory for terrain with size
   AllocateHeightMap(pixWidth,pixHeight);
 
   // read terrain stretch
-  (*istrFile)>>tr_vStretch;
+  (*istrFile) >> tr_vStretch;
   // read texture stretch
   if (iSavedVersion<6) {
     FLOAT fTemp; // Read temp stretch
-    (*istrFile)>>fTemp;
+    (*istrFile) >> fTemp;
   }
   // read lod distance factor
-  (*istrFile)>>tr_fDistFactor;
+  (*istrFile) >> tr_fDistFactor;
 
   if (iSavedVersion>6) {
     // Read terrain size
-    (*istrFile)>>tr_vTerrainSize;
+    (*istrFile) >> tr_vTerrainSize;
 
     istrFile->ExpectID_t("TRSM"); // 'Terrain shadowmap'
 
@@ -1861,16 +1861,16 @@ void CTerrain::ReadVersion_t( CTStream *istrFile, INDEX iSavedVersion)
     } else {
       INDEX iShadowMapAspect;
       INDEX iShadingMapAspect;
-      (*istrFile)>>iShadowMapAspect;
-      (*istrFile)>>iShadingMapAspect;
+      (*istrFile) >> iShadowMapAspect;
+      (*istrFile) >> iShadingMapAspect;
       SetShadowMapsSize(iShadowMapAspect,iShadingMapAspect);
       INDEX iShadowMapSize = GetShadowMapWidth() * GetShadowMapHeight() * sizeof(ULONG);
       INDEX iShadingMapSize = GetShadingMapWidth() * GetShadingMapHeight() * sizeof(UWORD);
       // Read shadow map
-      ASSERT(tr_tdShadowMap.td_pulFrames!=NULL);
+      ASSERT(tr_tdShadowMap.td_pulFrames != NULL);
       istrFile->Read_t(&tr_tdShadowMap.td_pulFrames[0],iShadowMapSize);
       // Read shading map
-      ASSERT(tr_auwShadingMap!=NULL);
+      ASSERT(tr_auwShadingMap != NULL);
       istrFile->Read_t(&tr_auwShadingMap[0],iShadingMapSize);
     }
 
@@ -1884,7 +1884,7 @@ void CTerrain::ReadVersion_t( CTStream *istrFile, INDEX iSavedVersion)
 
 
     // if there is edge map saved
-    if (istrFile->PeekID_t()==CChunkID("TREM")) { // 'Terrain edge map'
+    if (istrFile->PeekID_t() == CChunkID("TREM")) { // 'Terrain edge map'
       // Read terrain edge map
       istrFile->ExpectID_t("TREM"); // 'Terrain edge map'
       // read edge map
@@ -1909,7 +1909,7 @@ void CTerrain::Read_t( CTStream *istrFile)
   (*istrFile).ExpectID_t("TERR");  // 'Terrain'
   // read the version number
   INDEX iSavedVersion;
-  (*istrFile)>>iSavedVersion;
+  (*istrFile) >> iSavedVersion;
   // is this version 6
   if (iSavedVersion>4) {
     ReadVersion_t(istrFile,iSavedVersion);
@@ -1924,7 +1924,7 @@ void CTerrain::Read_t( CTStream *istrFile)
   (*istrFile).ExpectID_t("TRLR");  // 'Terrain layers'
   // Read terrain layers
   INDEX cttl;
-  (*istrFile)>>cttl;
+  (*istrFile) >> cttl;
   // Create layers
   tr_atlLayers.Push(cttl);
   // for each terrain layer
@@ -1945,35 +1945,35 @@ void CTerrain::Write_t( CTStream *ostrFile)
   (*ostrFile).WriteID_t("TERR");  // 'Terrain'
 
   // write the terrain version
-  (*ostrFile)<<_iTerrainVersion;
+  (*ostrFile) << _iTerrainVersion;
   // write height map width and height
-  (*ostrFile)<<tr_pixHeightMapWidth;
-  (*ostrFile)<<tr_pixHeightMapHeight;
+  (*ostrFile) << tr_pixHeightMapWidth;
+  (*ostrFile) << tr_pixHeightMapHeight;
   // write terrain stretch
-  (*ostrFile)<<tr_vStretch;
+  (*ostrFile) << tr_vStretch;
   // write lod distance factor
-  (*ostrFile)<<tr_fDistFactor;
+  (*ostrFile) << tr_fDistFactor;
   // Write terrain size
-  (*ostrFile)<<tr_vTerrainSize;
+  (*ostrFile) << tr_vTerrainSize;
 
   // Write terrain shadow map
   ostrFile->WriteID_t("TRSM");    // 'Terrain shadowmap'
 
-  (*ostrFile)<<tr_iShadowMapSizeAspect;
-  (*ostrFile)<<tr_iShadingMapSizeAspect;
+  (*ostrFile) << tr_iShadowMapSizeAspect;
+  (*ostrFile) << tr_iShadingMapSizeAspect;
   INDEX iShadowMapSize = GetShadowMapWidth() * GetShadowMapHeight() * sizeof(ULONG);
   INDEX iShadingMapSize = GetShadingMapWidth() * GetShadingMapHeight() * sizeof(UWORD);
   // Write shadow map
-  ASSERT(tr_tdShadowMap.td_pulFrames!=NULL);
+  ASSERT(tr_tdShadowMap.td_pulFrames != NULL);
   ostrFile->Write_t(&tr_tdShadowMap.td_pulFrames[0],iShadowMapSize);
   // Write shading map
-  ASSERT(tr_auwShadingMap!=NULL);
+  ASSERT(tr_auwShadingMap != NULL);
   ostrFile->Write_t(&tr_auwShadingMap[0],iShadingMapSize);
 
   ostrFile->WriteID_t("TSEN");    // 'Terrain shadowmap end'
 
   // if edge map exists
-  if (tr_aubEdgeMap!=NULL) {
+  if (tr_aubEdgeMap != NULL) {
     ostrFile->WriteID_t("TREM");    // 'Terrain edge map'
     // Write edge map
     ostrFile->Write_t(&tr_aubEdgeMap[0],sizeof(UBYTE)*tr_pixHeightMapWidth*tr_pixHeightMapHeight);
@@ -1988,7 +1988,7 @@ void CTerrain::Write_t( CTStream *ostrFile)
   (*ostrFile).WriteID_t("TRLR");  // 'Terrain layers'
   // write terrain layers
   INDEX cttl = tr_atlLayers.Count();
-  (*ostrFile)<<cttl;
+  (*ostrFile) << cttl;
   for (INDEX itl=0;itl<cttl;itl++) {
     CTerrainLayer &tl = tr_atlLayers[itl];
     tl.Write_t(ostrFile);
@@ -2024,7 +2024,7 @@ void CTerrain::DiscardShadingInfos(void)
 void CTerrain::ClearHeightMap(void)
 {
   // if height map space was allocated
-  if (tr_auwHeightMap!=NULL) {
+  if (tr_auwHeightMap != NULL) {
     // release it
     FreeMemory(tr_auwHeightMap);
     tr_auwHeightMap = NULL;
@@ -2038,7 +2038,7 @@ void CTerrain::ClearShadowMap(void)
   tr_tdShadowMap.Clear();
 
   // Also clear shading map
-  if (tr_auwShadingMap!=NULL) {
+  if (tr_auwShadingMap != NULL) {
     FreeMemory(tr_auwShadingMap);
     tr_auwShadingMap = NULL;
   }
@@ -2047,7 +2047,7 @@ void CTerrain::ClearShadowMap(void)
 void CTerrain::ClearEdgeMap(void)
 {
   // if space for edge map was allocated
-  if (tr_aubEdgeMap!=NULL) {
+  if (tr_aubEdgeMap != NULL) {
     // release it
     FreeMemory(tr_aubEdgeMap);
     tr_aubEdgeMap = NULL;
@@ -2148,7 +2148,7 @@ void CTerrain::Clear(void)
   ClearQuadTree();
   ClearLayers();
 
-  if (tr_ptdDetailMap!=NULL) {
+  if (tr_ptdDetailMap != NULL) {
     _pTextureStock->Release(tr_ptdDetailMap);
     tr_ptdDetailMap = NULL;
   }

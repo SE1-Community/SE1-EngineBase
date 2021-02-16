@@ -29,10 +29,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 class ENGINE_API CImageInfo {
 public:
-  PIX    ii_Width;	           // width of image in pixels
-  PIX    ii_Height;	           // height of image in pixels
+  PIX    ii_Width;             // width of image in pixels
+  PIX    ii_Height;             // height of image in pixels
   SLONG  ii_BitsPerPixel;      // depth of image (color bits; 24 or 32=24+8 alpha)
-  UBYTE *ii_Picture; 	         // pointer to picture contents (raw bytes)
+  UBYTE *ii_Picture;            // pointer to picture contents (raw bytes)
 private:
   void LoadTGA_t( const CTFileName &strFileName); // throw char *
   void LoadPCX_t( const CTFileName &strFileName); // throw char *

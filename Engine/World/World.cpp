@@ -147,9 +147,9 @@ CWorld::~CWorld()
 void CWorld::Clear(void)
 {
   // detach worldbase class
-  if (wo_pecWorldBaseClass!=NULL) {
-    if ( wo_pecWorldBaseClass->ec_pdecDLLClass!=NULL
-       &&wo_pecWorldBaseClass->ec_pdecDLLClass->dec_OnWorldEnd!=NULL) {
+  if (wo_pecWorldBaseClass != NULL) {
+    if (wo_pecWorldBaseClass->ec_pdecDLLClass != NULL
+       &&wo_pecWorldBaseClass->ec_pdecDLLClass->dec_OnWorldEnd != NULL) {
       wo_pecWorldBaseClass->ec_pdecDLLClass->dec_OnWorldEnd(this);
     }
     wo_pecWorldBaseClass=NULL;
@@ -169,8 +169,8 @@ void CWorld::Clear(void)
       iten->Destroy();
     }}
     // the original container must be empty
-    ASSERT(wo_cenEntities.Count()==0);
-    ASSERT(wo_cenAllEntities.Count()==0);
+    ASSERT(wo_cenEntities.Count() == 0);
+    ASSERT(wo_cenAllEntities.Count() == 0);
     wo_cenEntities.Clear();
     wo_cenAllEntities.Clear();
     cenToDestroy.Clear();
@@ -198,12 +198,12 @@ CEntity *CWorld::CreateEntity(const CPlacement3D &plPlacement, CEntityClass *pec
   CSetFPUPrecision FPUPrecision(FPT_24BIT);
   
   // if the world base class is not yet remembered and this class is world base
-  if (wo_pecWorldBaseClass==NULL
-    && stricmp(pecClass->ec_pdecDLLClass->dec_strName, "WorldBase")==0) {
+  if (wo_pecWorldBaseClass == NULL
+    && stricmp(pecClass->ec_pdecDLLClass->dec_strName, "WorldBase") == 0) {
     // remember it
     wo_pecWorldBaseClass = pecClass;
     // execute the class attach function
-    if (pecClass->ec_pdecDLLClass->dec_OnWorldInit!=NULL) {
+    if (pecClass->ec_pdecDLLClass->dec_OnWorldInit != NULL) {
       pecClass->ec_pdecDLLClass->dec_OnWorldInit(this);
     }
   }
@@ -307,7 +307,7 @@ void CWorld::UntargetEntity(CEntity *penToUntarget)
 
     // for all classes in hierarchy of this entity
     for (;
-        pdecDLLClass!=NULL;
+        pdecDLLClass != NULL;
         pdecDLLClass = pdecDLLClass->dec_pdecBase) {
       // for all properties
       for (INDEX iProperty=0; iProperty<pdecDLLClass->dec_ctProperties; iProperty++) {
@@ -329,7 +329,7 @@ void CWorld::UntargetEntity(CEntity *penToUntarget)
     }
   }
   // if the entity is background viewer
-  if (wo_penBackgroundViewer==penToUntarget) {
+  if (wo_penBackgroundViewer == penToUntarget) {
     // reset background viewer
     SetBackgroundViewer(NULL);
   }
@@ -365,7 +365,7 @@ CPlayerEntity *CWorld::FindEntityWithCharacter(CPlayerCharacter &pcCharacter)
 void CWorld::AddTimer(CRationalEntity *penThinker)
 {
   ASSERT(penThinker->en_llTimer > _pTimer->GetGameTick());
-  ASSERT(GetFPUPrecision()==FPT_24BIT);
+  ASSERT(GetFPUPrecision() == FPT_24BIT);
 
   // if the entity is already in the list
   if (penThinker->en_lnInTimers.IsLinked()) {
@@ -450,7 +450,7 @@ void CWorld::SetBackgroundViewer(CEntity *penEntity)
 CEntity *CWorld::GetBackgroundViewer(void)
 {
   // if the background viewer entity is deleted
-  if (wo_penBackgroundViewer!=NULL && wo_penBackgroundViewer->en_ulFlags&ENF_DELETED) {
+  if (wo_penBackgroundViewer != NULL && wo_penBackgroundViewer->en_ulFlags&ENF_DELETED) {
     // clear the pointer
     wo_penBackgroundViewer = NULL;
   }
@@ -542,9 +542,9 @@ void CWorld::FindShadowLayers(
   FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     // if it is light entity and it influences the given range
     CLightSource *pls = iten->GetLightSource();
-    if (pls!=NULL) {
+    if (pls != NULL) {
       FLOATaabbox3D boxLight(iten->en_plPlacement.pl_PositionVector, pls->ls_rFallOff);
-      if ( bDirectional && (pls->ls_ulFlags &LSF_DIRECTIONAL)
+      if (bDirectional && (pls->ls_ulFlags &LSF_DIRECTIONAL)
         ||boxLight.HasContactWith(boxNear)) {
         // find layers for that light source
         pls->FindShadowLayers(bSelectedOnly);
@@ -589,7 +589,7 @@ void CWorld::HideSelectedEntities(CEntitySelection &selenEntitiesToHide)
   // for all entities in the selection
   FOREACHINDYNAMICCONTAINER(selenEntitiesToHide, CEntity, iten) {
     if (iten->IsSelected(ENF_SELECTED) &&
-        !((iten->en_RenderType==CEntity::RT_BRUSH) && (iten->en_ulFlags&ENF_ZONING)) )
+        !((iten->en_RenderType == CEntity::RT_BRUSH) && (iten->en_ulFlags&ENF_ZONING)) )
     {
       // hide the entity
       iten->en_ulFlags |= ENF_HIDDEN;
@@ -606,7 +606,7 @@ void CWorld::HideUnselectedEntities(void)
   FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten)
   {
     if (!iten->IsSelected(ENF_SELECTED) &&
-        !((iten->en_RenderType==CEntity::RT_BRUSH)&&(iten->en_ulFlags&ENF_ZONING)) )
+        !((iten->en_RenderType == CEntity::RT_BRUSH)&&(iten->en_ulFlags&ENF_ZONING)) )
     {
       // hide it
       iten->en_ulFlags |= ENF_HIDDEN;
@@ -703,7 +703,7 @@ void CWorld::SelectByTextureInSelectedSectors(
             FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo)
             {
               // if it is not portal and is not selected and has same texture
-              if ( (!(itbpo->bpo_ulFlags&BPOF_PORTAL) || (itbpo->bpo_ulFlags&(BPOF_TRANSLUCENT|BPOF_TRANSPARENT))) &&
+              if ((!(itbpo->bpo_ulFlags&BPOF_PORTAL) || (itbpo->bpo_ulFlags&(BPOF_TRANSLUCENT|BPOF_TRANSPARENT))) &&
                   !itbpo->IsSelected(BPOF_SELECTED) &&
                   (itbpo->bpo_abptTextures[iTexture].bpt_toTexture.GetData() != NULL) &&
                   (itbpo->bpo_abptTextures[iTexture].bpt_toTexture.GetData()->GetName()
@@ -736,7 +736,7 @@ void CWorld::SelectByTextureInWorld(
           FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo)
           {
             // if it is not non translucent portal and is not selected and has same texture
-            if ( (!(itbpo->bpo_ulFlags&BPOF_PORTAL) || (itbpo->bpo_ulFlags&(BPOF_TRANSLUCENT|BPOF_TRANSPARENT))) &&
+            if ((!(itbpo->bpo_ulFlags&BPOF_PORTAL) || (itbpo->bpo_ulFlags&(BPOF_TRANSLUCENT|BPOF_TRANSPARENT))) &&
                 !itbpo->IsSelected(BPOF_SELECTED) &&
                 (itbpo->bpo_abptTextures[iTexture].bpt_toTexture.GetData() != NULL) &&
                 (itbpo->bpo_abptTextures[iTexture].bpt_toTexture.GetData()->GetName()
@@ -797,8 +797,8 @@ void CWorld::FilterEntitiesBySpawnFlags(ULONG ulFlags)
   // for each entity in the world
   {FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     // if brush
-    if (iten->en_RenderType==CEntity::RT_BRUSH
-      ||iten->en_RenderType==CEntity::RT_FIELDBRUSH) {
+    if (iten->en_RenderType == CEntity::RT_BRUSH
+      ||iten->en_RenderType == CEntity::RT_FIELDBRUSH) {
       // skip it (brushes must not be deleted on the fly)
       continue;
     }
@@ -837,7 +837,7 @@ void CWorld::LinkEntitiesToSectors(void)
   // for each entity in the world
   {FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     CEntity &en = *iten;
-    if (en.en_RenderType==CEntity::RT_BRUSH && 
+    if (en.en_RenderType == CEntity::RT_BRUSH && 
       (en.en_ulFlags&ENF_ZONING) && (en.en_ulPhysicsFlags&EPF_MOVABLE)) {
       // recalculate all bounding boxes relative to new position
       extern BOOL _bDontDiscardLinks;
@@ -935,7 +935,7 @@ void CWorld::TriangularizeForVertices( CBrushVertexSelection &selVertex)
 void CEntity::AddToPrediction(void)
 {
   // this function may be called even for NULLs - so ignore it
-  if (this==NULL) {
+  if (this == NULL) {
     return;
   }
   // if already added
@@ -964,11 +964,11 @@ void CWorld::MarkForPrediction(void)
   for (INDEX iPlayer=0; iPlayer<CEntity::GetMaxPlayers(); iPlayer++) {
     CEntity *pen = CEntity::GetPlayerEntity(iPlayer);
     // if it exists
-    if (pen!=NULL) {
+    if (pen != NULL) {
       // find whether it is local
       BOOL bLocal = _pNetwork->IsPlayerLocal(pen);
       // if allowed for prediction
-      if (  bLocal && cli_bPredictLocalPlayers
+      if (bLocal && cli_bPredictLocalPlayers
         || !bLocal && cli_bPredictRemotePlayers) {
         // add it
         pen->AddToPrediction();
@@ -988,7 +988,7 @@ void CWorld::MarkForPrediction(void)
   {FOREACHINDYNAMICCONTAINER(wo_cenPredictable, CEntity, iten) {
     CEntity &en = *iten;
     // it must not be void (so that its coordinates are relevant)
-    ASSERT(en.GetRenderType()!=CEntity::RT_VOID);
+    ASSERT(en.GetRenderType() != CEntity::RT_VOID);
 
     // get its upper time limit for prediction
     TICK llLimit = en.GetPredictionTime();
@@ -1002,7 +1002,7 @@ void CWorld::MarkForPrediction(void)
     // if predicting entities by range
     if (cli_fPredictEntitiesRange>0) {
       FLOAT fRange = en.GetPredictionRange();
-      if (fRange<=0) {
+      if (fRange <= 0) {
         continue;
       }
       fRange = Min(fRange, cli_fPredictEntitiesRange);
@@ -1088,7 +1088,7 @@ void CWorld::DeletePredictors(void)
     en.en_ulFlags&=~ENF_PREDICTED;
   }}
 
-  ASSERT(_ctPredictorEntities==0);
+  ASSERT(_ctPredictorEntities == 0);
 
   wo_cenPredictor.Clear();
   wo_cenPredicted.Clear();
@@ -1104,7 +1104,7 @@ void CWorld::DeletePredictors(void)
 CEntity *CWorld::EntityFromID(ULONG ulID)
 {
   FOREACHINDYNAMICCONTAINER(wo_cenAllEntities, CEntity, iten) {
-    if (iten->en_ulID==ulID) {
+    if (iten->en_ulID == ulID) {
       return iten;
     }
   }

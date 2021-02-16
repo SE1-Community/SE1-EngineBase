@@ -43,7 +43,7 @@ void CIsometricProjection3D::Prepare(void)
   BOOL bYInverted = pr_ObjectStretch(2)<0;
   BOOL bZInverted = pr_ObjectStretch(3)<0;
 
-  pr_bInverted = bXInverted!=bYInverted!=bZInverted;
+  pr_bInverted = bXInverted != bYInverted != bZInverted;
 
   // if the projection is mirrored
   if (pr_bMirror) {
@@ -155,7 +155,7 @@ void CIsometricProjection3D::PostClip( const FLOAT3D &v3dTransformedPoint, FLOAT
 /* Test if a sphere in view space is inside view frustum. */
 INDEX CIsometricProjection3D::TestSphereToFrustum(const FLOAT3D &vViewPoint, FLOAT fRadius) const
 {
-  ASSERT( pr_Prepared && fRadius>=0);
+  ASSERT( pr_Prepared && fRadius >= 0);
   const FLOAT fX = vViewPoint(1);
   const FLOAT fY = vViewPoint(2);
   const FLOAT fZ = vViewPoint(3);
@@ -219,7 +219,7 @@ INDEX CIsometricProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
   iTest = box.TestAgainstPlane(FLOATplane3D(FLOAT3D(0,0,-1), pr_NearClipDistance));
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // check to far
@@ -227,7 +227,7 @@ INDEX CIsometricProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
     iTest = box.TestAgainstPlane(FLOATplane3D(FLOAT3D(0.0f, 0.0f, 1.0f), -pr_FarClipDistance));
     if (iTest<0) {
       return -1;
-    } else if (iTest==0) {
+    } else if (iTest == 0) {
       iPass = 0;
     }
   }
@@ -235,28 +235,28 @@ INDEX CIsometricProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
   iTest = box.TestAgainstPlane(pr_plClipL);
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // check to right
   iTest = box.TestAgainstPlane(pr_plClipR);
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // check to up
   iTest = box.TestAgainstPlane(pr_plClipU);
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // check to down
   iTest = box.TestAgainstPlane(pr_plClipD);
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // all done

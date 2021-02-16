@@ -27,7 +27,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Templates/Stock_CSoundData.h>
 
-/* ====================================================
+/* == == == == == == == == == == == == == == == == == == == == == == == == == == 
  *
  *  Sound data awareness functions
  */
@@ -76,7 +76,7 @@ void CSoundData::RemoveObjectLink(CSoundObject &CsoRemove)
 }
 
 
-/* ====================================================
+/* == == == == == == == == == == == == == == == == == == == == == == == == == == 
  *
  *  Class global methods
  */
@@ -98,7 +98,7 @@ CSoundData::~CSoundData()
 void CSoundData::ClearBuffer(void)
 {
   // if buffer exist
-  if (sd_pswBuffer!=NULL) {
+  if (sd_pswBuffer != NULL) {
     // release it
     FreeMemory( sd_pswBuffer);
     sd_pswBuffer = NULL;
@@ -122,7 +122,7 @@ double CSoundData::GetSecondsLength(void)
 }
 
 
-/* ====================================================
+/* == == == == == == == == == == == == == == == == == == == == == == == == == == 
  *
  *  Input methods (load sound in SoundData class)
  */
@@ -133,13 +133,13 @@ void CSoundData::Read_t(CTStream *inFile)  // throw char *
   // synchronize access to sounds
   CTSingleLock slSounds(&_pSound->sl_csSound, TRUE);
 
-  ASSERT( sd_pswBuffer==NULL);
+  ASSERT( sd_pswBuffer == NULL);
   sd_ulFlags = NONE;
 
   // get filename
   CTFileName fnm = inFile->GetDescription();
   // if this is encoded file
-  if (fnm.FileExt()==".ogg" || fnm.FileExt()==".mp3") {
+  if (fnm.FileExt() == ".ogg" || fnm.FileExt() == ".mp3") {
     CSoundDecoder *pmpd = new CSoundDecoder(fnm);
     if (pmpd->IsOpen()) {
       pmpd->GetFormat(sd_wfeFormat);
@@ -195,13 +195,13 @@ CTString CSoundData::GetDescription(void)
   str.PrintF("%dkHz %dbit %s %.2lfs",
     sd_wfeFormat.nSamplesPerSec/1000,
     sd_wfeFormat.wBitsPerSample,
-    sd_wfeFormat.nChannels==1 ? "mono" : "stereo",
+    sd_wfeFormat.nChannels == 1 ? "mono" : "stereo",
     sd_dSecondsLength);
   return str;
 }
 
 
-/* ====================================================
+/* == == == == == == == == == == == == == == == == == == == == == == == == == == 
  *
  *  Class CLEAR method
  */
@@ -236,15 +236,15 @@ BOOL CSoundData::IsAutoFreed(void)
 SLONG CSoundData::GetUsedMemory(void)
 {
   SLONG slUsed = sizeof(*this);
-  if (sd_pswBuffer!=NULL) {
-    ASSERT( sd_wfeFormat.nChannels==1 || sd_wfeFormat.nChannels==2);
+  if (sd_pswBuffer != NULL) {
+    ASSERT( sd_wfeFormat.nChannels == 1 || sd_wfeFormat.nChannels == 2);
     slUsed += sd_slBufferSampleSize * sd_wfeFormat.nChannels *2; // all sounds are 16-bit
   }
   return slUsed;
 }
 
 
-/* ====================================================
+/* == == == == == == == == == == == == == == == == == == == == == == == == == == 
  *
  *  Reference counting functions
  */
@@ -252,7 +252,7 @@ SLONG CSoundData::GetUsedMemory(void)
 // Add one reference
 void CSoundData::AddReference(void)
 {
-  if (this!=NULL) {
+  if (this != NULL) {
     MarkUsed();
   }
 }
@@ -261,7 +261,7 @@ void CSoundData::AddReference(void)
 // Remove one reference
 void CSoundData::RemReference(void)
 {
-  if (this!=NULL) {
+  if (this != NULL) {
     _pSoundStock->Release(this);
   }
 }

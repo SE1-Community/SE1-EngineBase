@@ -172,13 +172,13 @@ extern void UpdateTextureSettings(void);
 class CTexParams {
 public:
   INDEX tp_iFilter;            // OpenGL texture mapping mode
-  INDEX tp_iAnisotropy;        // texture degree of anisotropy (>=1.0f; 1.0=isotropic, default)
+  INDEX tp_iAnisotropy;        // texture degree of anisotropy ( >= 1.0f; 1.0=isotropic, default)
   BOOL  tp_bSingleMipmap;      // texture has only one mipmap
   GfxWrap tp_eWrapU, tp_eWrapV;  // wrapping states
   inline CTexParams(void) { Clear(); tp_bSingleMipmap = FALSE; };
   inline void Clear(void) { tp_iFilter = 00; tp_iAnisotropy = 0; tp_eWrapU = tp_eWrapV = (GfxWrap)NONE; };
-  inline BOOL IsEqual( CTexParams tp) { return tp_iFilter==tp.tp_iFilter && tp_iAnisotropy==tp.tp_iAnisotropy && 
-                                               tp_eWrapU==tp.tp_eWrapU && tp_eWrapV==tp.tp_eWrapV; };
+  inline BOOL IsEqual( CTexParams tp) { return tp_iFilter == tp.tp_iFilter && tp_iAnisotropy == tp.tp_iAnisotropy && 
+                                               tp_eWrapU == tp.tp_eWrapU && tp_eWrapV == tp.tp_eWrapV; };
 };
 
 // get current texture filtering mode
@@ -301,7 +301,7 @@ extern void d3dSetVertexShader(DWORD dwHandle);
   INDEX ref; \
   do { \
     ref = (object)->Release(); \
-    if (check) ASSERT(ref==0); \
+    if (check) ASSERT(ref == 0); \
   } while (ref>0);  \
   object = NONE; \
 }

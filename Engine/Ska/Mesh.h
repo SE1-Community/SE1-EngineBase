@@ -28,8 +28,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Graphics/Texture.h>
 #include <Engine/Graphics/Shader.h>
 
-#define ML_HALF_FACE_FORWARD (1UL<<0)  // half face forward
-#define ML_FULL_FACE_FORWARD (1UL<<1)  // full face forward
+#define ML_HALF_FACE_FORWARD (1UL << 0)  // half face forward
+#define ML_FULL_FACE_FORWARD (1UL << 1)  // full face forward
 
 struct ENGINE_API MeshLOD
 {
@@ -41,7 +41,7 @@ struct ENGINE_API MeshLOD
   FLOAT mlod_fMaxDistance;
   ULONG mlod_ulFlags;
   CStaticArray<struct MeshVertex>    mlod_aVertices;   // vertices
-  CStaticArray<struct MeshNormal>    mlod_aNormals;	   // normals
+  CStaticArray<struct MeshNormal>    mlod_aNormals;     // normals
   CStaticArray<struct MeshUVMap>     mlod_aUVMaps;     // UV maps
   CStaticArray<struct MeshSurface>   mlod_aSurfaces;   // surfaces
   CStaticArray<struct MeshWeightMap> mlod_aWeightMaps; // weight maps
@@ -79,7 +79,7 @@ struct ENGINE_API MeshSurface
   INDEX msrf_iSurfaceID;
   CShader *msrf_pShader;
   ShaderParams msrf_ShadingParams;
-  CStaticArray<struct MeshTriangle> msrf_aTriangles;		// list of triangles
+  CStaticArray<struct MeshTriangle> msrf_aTriangles;    // list of triangles
 };
 
 struct ENGINE_API MeshTriangle

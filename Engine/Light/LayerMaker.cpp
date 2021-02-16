@@ -155,13 +155,13 @@ static void MakeMipmapsForMask(UBYTE *pubMask, PIX pixSizeU, PIX pixSizeV, SLONG
   }
 
   // must have passed exactly all mip-maps
-  ASSERT(pubNext==pubMask+slTotalSize);
+  ASSERT(pubNext == pubMask+slTotalSize);
 
   // for each pixel in all mip-maps after first
   UBYTE *pubEnd = pubNext;
   for (UBYTE *pub=pubSecond; pub<pubEnd; pub++) {
     // normalize the pixel to 0-255
-    if (*pub<=128) {
+    if (*pub <= 128) {
       *pub = 0;
     } else {
       *pub = 255;
@@ -217,31 +217,31 @@ void CLayerMaker::CalculateData(void)
   lm_mexOffsetU = lm_pbsmShadowMap->sm_mexOffsetX;
   lm_mexOffsetV = lm_pbsmShadowMap->sm_mexOffsetY;
   lm_iMipLevel  = lm_pbsmShadowMap->sm_iFirstMipLevel;
-  lm_pixSizeU   = lm_mexSizeU>>lm_iMipLevel;
-  lm_pixSizeV   = lm_mexSizeV>>lm_iMipLevel;
+  lm_pixSizeU   = lm_mexSizeU >> lm_iMipLevel;
+  lm_pixSizeV   = lm_mexSizeV >> lm_iMipLevel;
 
   // find mip-mapping information for the polygon mask
   MakeMipmapTable( lm_pixSizeU, lm_pixSizeV, lm_mmtPolygonMask);
 
   CEntity *penWithPolygon = lm_pbpoPolygon->bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
-  ASSERT(penWithPolygon!=NULL);
+  ASSERT(penWithPolygon != NULL);
   const FLOATmatrix3D &mPolygonRotation = penWithPolygon->en_mRotation;
   const FLOAT3D &vPolygonTranslation = penWithPolygon->GetPlacement().pl_PositionVector;
 
   // get first pixel in texture in 3D
   Vector<MEX, 2> vmex0;
-  vmex0(1) = -lm_mexOffsetU; //+(1<<(lm_iMipLevel-1));
-  vmex0(2) = -lm_mexOffsetV; //+(1<<(lm_iMipLevel-1));
+  vmex0(1) = -lm_mexOffsetU; //+(1 << (lm_iMipLevel-1));
+  vmex0(2) = -lm_mexOffsetV; //+(1 << (lm_iMipLevel-1));
   lm_pbpoPolygon->bpo_mdShadow.GetSpaceCoordinates(
       lm_pbpoPolygon->bpo_pbplPlane->bpl_pwplWorking->wpl_mvRelative,
       vmex0, lm_vO);
   lm_vO = lm_vO*mPolygonRotation+vPolygonTranslation;
   // get steps for walking in texture in 3D
   Vector<MEX, 2> vmexU, vmexV;
-  vmexU(1) = (1<<lm_iMipLevel)-lm_mexOffsetU; //+(1<<(lm_iMipLevel-1));
-  vmexU(2) = (0<<lm_iMipLevel)-lm_mexOffsetV; //+(1<<(lm_iMipLevel-1));
-  vmexV(1) = (0<<lm_iMipLevel)-lm_mexOffsetU; //+(1<<(lm_iMipLevel-1));
-  vmexV(2) = (1<<lm_iMipLevel)-lm_mexOffsetV; //+(1<<(lm_iMipLevel-1));
+  vmexU(1) = (1 << lm_iMipLevel)-lm_mexOffsetU; //+(1 << (lm_iMipLevel-1));
+  vmexU(2) = (0 << lm_iMipLevel)-lm_mexOffsetV; //+(1 << (lm_iMipLevel-1));
+  vmexV(1) = (0 << lm_iMipLevel)-lm_mexOffsetU; //+(1 << (lm_iMipLevel-1));
+  vmexV(2) = (1 << lm_iMipLevel)-lm_mexOffsetV; //+(1 << (lm_iMipLevel-1));
   lm_pbpoPolygon->bpo_mdShadow.GetSpaceCoordinates(
       lm_pbpoPolygon->bpo_pbplPlane->bpl_pwplWorking->wpl_mvRelative,
       vmexU, lm_vStepU);
@@ -325,12 +325,12 @@ void CLayerMaker::SpreadShadowMaskOutwards(void)
 {
   // for each mip map of the layer
   for (INDEX iMipmap=0; iMipmap<lm_mmtLayer.mmt_ctMipmaps; iMipmap++) {
-    PIX pixLayerMinU = lm_pixLayerMinU>>iMipmap;
-    PIX pixLayerMinV = lm_pixLayerMinV>>iMipmap;
-    PIX pixLayerSizeU = lm_pixLayerSizeU>>iMipmap;
-    PIX pixLayerSizeV = lm_pixLayerSizeV>>iMipmap;
-    PIX pixSizeU = lm_pixSizeU>>iMipmap;
-    PIX pixSizeV = lm_pixSizeV>>iMipmap;
+    PIX pixLayerMinU = lm_pixLayerMinU >> iMipmap;
+    PIX pixLayerMinV = lm_pixLayerMinV >> iMipmap;
+    PIX pixLayerSizeU = lm_pixLayerSizeU >> iMipmap;
+    PIX pixLayerSizeV = lm_pixLayerSizeV >> iMipmap;
+    PIX pixSizeU = lm_pixSizeU >> iMipmap;
+    PIX pixSizeV = lm_pixSizeV >> iMipmap;
     PIX pixSizeULog2 = FastLog2(lm_pixSizeU)-iMipmap;
     UBYTE *pubLayer = lm_pubLayer+lm_mmtLayer.mmt_aslOffsets[iMipmap];
     UBYTE *pubPolygonMask = lm_pubPolygonMask+lm_mmtPolygonMask.mmt_aslOffsets[iMipmap];
@@ -341,7 +341,7 @@ void CLayerMaker::SpreadShadowMaskOutwards(void)
       for (PIX pixLayerU=0; pixLayerU<pixLayerSizeU; pixLayerU++) {
         PIX pixMapU = pixLayerU+pixLayerMinU;
         PIX pixMapV = pixLayerV+pixLayerMinV;
-        PIX slOffsetMap = pixMapU+(pixMapV<<pixSizeULog2);
+        PIX slOffsetMap = pixMapU+(pixMapV << pixSizeULog2);
 
         // if the pixel is not inside the polygon
         if (!pubPolygonMask[slOffsetMap]) {
@@ -351,11 +351,11 @@ void CLayerMaker::SpreadShadowMaskOutwards(void)
           INDEX ctLighted = 0;
 
   #define ADDNEIGHBOUR(du, dv)                                              \
-    if ((pixLayerU+(du)>=0)                                                 \
+    if ((pixLayerU+(du) >= 0)                                                 \
       &&(pixLayerU+(du)<pixLayerSizeU)                                      \
-      &&(pixLayerV+(dv)>=0)                                                 \
+      &&(pixLayerV+(dv) >= 0)                                                 \
       &&(pixLayerV+(dv)<pixLayerSizeV)                                      \
-      &&(pubPolygonMask[slOffsetMap+(du)+((dv)<<pixSizeULog2)])) {          \
+      &&(pubPolygonMask[slOffsetMap+(du)+((dv) << pixSizeULog2)])) {          \
       ctInPolygon++;                                                        \
       ctLighted+=pubLayer[slOffsetLayer+(du)+(dv)*pixLayerSizeU]&0x01;   \
     }
@@ -415,12 +415,12 @@ void CLayerMaker::SpreadShadowMaskInwards(void)
 {
   // for each mip map of the layer
   for (INDEX iMipmap=0; iMipmap<lm_mmtLayer.mmt_ctMipmaps; iMipmap++) {
-    PIX pixLayerMinU = lm_pixLayerMinU>>iMipmap;
-    PIX pixLayerMinV = lm_pixLayerMinV>>iMipmap;
-    PIX pixLayerSizeU = lm_pixLayerSizeU>>iMipmap;
-    PIX pixLayerSizeV = lm_pixLayerSizeV>>iMipmap;
-    PIX pixSizeU = lm_pixSizeU>>iMipmap;
-    PIX pixSizeV = lm_pixSizeV>>iMipmap;
+    PIX pixLayerMinU = lm_pixLayerMinU >> iMipmap;
+    PIX pixLayerMinV = lm_pixLayerMinV >> iMipmap;
+    PIX pixLayerSizeU = lm_pixLayerSizeU >> iMipmap;
+    PIX pixLayerSizeV = lm_pixLayerSizeV >> iMipmap;
+    PIX pixSizeU = lm_pixSizeU >> iMipmap;
+    PIX pixSizeV = lm_pixSizeV >> iMipmap;
     PIX pixSizeULog2 = FastLog2(lm_pixSizeU)-iMipmap;
     UBYTE *pubLayer = lm_pubLayer+lm_mmtLayer.mmt_aslOffsets[iMipmap];
     UBYTE *pubPolygonMask = lm_pubPolygonMask+lm_mmtPolygonMask.mmt_aslOffsets[iMipmap];
@@ -431,7 +431,7 @@ void CLayerMaker::SpreadShadowMaskInwards(void)
       for (PIX pixLayerU=0; pixLayerU<pixLayerSizeU; pixLayerU++) {
         PIX pixMapU = pixLayerU+pixLayerMinU;
         PIX pixMapV = pixLayerV+pixLayerMinV;
-        PIX slOffsetMap = pixMapU+(pixMapV<<pixSizeULog2);
+        PIX slOffsetMap = pixMapU+(pixMapV << pixSizeULog2);
 
         // if the pixel is inside the polygon
         if (pubPolygonMask[slOffsetMap]) {
@@ -443,12 +443,12 @@ void CLayerMaker::SpreadShadowMaskInwards(void)
 #undef ADDNEIGHBOUR
 
   #define ADDNEIGHBOUR(du, dv)                                              \
-    if ((pixLayerU+(du)>=0)                                                 \
+    if ((pixLayerU+(du) >= 0)                                                 \
       &&(pixLayerU+(du)<pixLayerSizeU)                                      \
-      &&(pixLayerV+(dv)>=0)                                                 \
+      &&(pixLayerV+(dv) >= 0)                                                 \
       &&(pixLayerV+(dv)<pixLayerSizeV))                                      \
           {\
-      if (!pubPolygonMask[slOffsetMap+(du)+((dv)<<pixSizeULog2)]) {          \
+      if (!pubPolygonMask[slOffsetMap+(du)+((dv) << pixSizeULog2)]) {          \
       ctOutPolygon++;                                                        \
       ctLighted+=pubLayer[slOffsetLayer+(du)+(dv)*pixLayerSizeU]&0x01;   \
       }\
@@ -515,7 +515,7 @@ void CLayerMaker::MakePolygonMask(void)
   lm_pubPolygonMask = (UBYTE *)AllocMemory(lm_mmtPolygonMask.mmt_slTotalSize+8);
 
   // if there is packed polygon mask remembered in the shadow map
-  if (lm_pbsmShadowMap->bsm_pubPolygonMask!=NULL) {
+  if (lm_pbsmShadowMap->bsm_pubPolygonMask != NULL) {
     // convert it from bit-packed into byte-packed mask
     ConvertBitsToBytes(
       lm_pbsmShadowMap->bsm_pubPolygonMask,
@@ -528,11 +528,11 @@ void CLayerMaker::MakePolygonMask(void)
     for (INDEX iMipmap=0; iMipmap<lm_mmtPolygonMask.mmt_ctMipmaps; iMipmap++) {
       UBYTE *pubForSaving = pub;
       // start at the first pixel
-      FLOAT3D vRow = lm_vO+(lm_vStepU+lm_vStepV)*(FLOAT(1<<iMipmap)/2.0f);
+      FLOAT3D vRow = lm_vO+(lm_vStepU+lm_vStepV)*(FLOAT(1 << iMipmap)/2.0f);
       // for each pixel in the shadow map
-      for (PIX pixV=0; pixV<lm_pixSizeV>>iMipmap; pixV++) {
+      for (PIX pixV=0; pixV<lm_pixSizeV >> iMipmap; pixV++) {
         FLOAT3D vPoint = vRow;
-        for (PIX pixU=0; pixU<lm_pixSizeU>>iMipmap; pixU++) {
+        for (PIX pixU=0; pixU<lm_pixSizeU >> iMipmap; pixU++) {
           // if the point is in the polygon
           if (TestPointInPolygon(*lm_pbpoPolygon, vPoint)) {
             // set the pixel
@@ -544,9 +544,9 @@ void CLayerMaker::MakePolygonMask(void)
           }
           // go to the next pixel
           pub++;
-          vPoint+=lm_vStepU*FLOAT(1<<iMipmap);
+          vPoint+=lm_vStepU*FLOAT(1 << iMipmap);
         }
-        vRow+=lm_vStepV*FLOAT(1<<iMipmap);
+        vRow+=lm_vStepV*FLOAT(1 << iMipmap);
       }
     }
     // make mip maps of the polygon mask
@@ -565,10 +565,10 @@ void CLayerMaker::MakePolygonMask(void)
 // flip shadow mask around V axis (for parallel lights)
 void CLayerMaker::FlipShadowMask(INDEX iMip)
 {
-  PIX pixLayerMinU  = lm_pixLayerMinU>>iMip;
-  PIX pixLayerMinV  = lm_pixLayerMinV>>iMip;
-  PIX pixLayerSizeU = lm_pixLayerSizeU>>iMip;
-  PIX pixLayerSizeV = lm_pixLayerSizeV>>iMip;
+  PIX pixLayerMinU  = lm_pixLayerMinU >> iMip;
+  PIX pixLayerMinV  = lm_pixLayerMinV >> iMip;
+  PIX pixLayerSizeU = lm_pixLayerSizeU >> iMip;
+  PIX pixLayerSizeV = lm_pixLayerSizeV >> iMip;
   UBYTE *pubLayer = lm_pubLayer+lm_mmtLayer.mmt_aslOffsets[iMip];
 
   UBYTE *pubRow = pubLayer;
@@ -622,7 +622,7 @@ ULONG CLayerMaker::MakeShadowMask(CBrushShadowLayer *pbsl)
   ASSERT(lr.lr_pixSizeV <= lm_pixSizeV);
 
   // if there is no influence, do nothing
-  if ((lr.lr_pixSizeU==0) || (lr.lr_pixSizeV==0)) return BSLF_ALLDARK;
+  if ((lr.lr_pixSizeU == 0) || (lr.lr_pixSizeV == 0)) return BSLF_ALLDARK;
                              
   lm_pbslLayer->bsl_pixMinU  = lr.lr_pixMinU;
   lm_pbslLayer->bsl_pixMinV  = lr.lr_pixMinV;
@@ -632,7 +632,7 @@ ULONG CLayerMaker::MakeShadowMask(CBrushShadowLayer *pbsl)
 
   // allocate shadow mask for the light (+8 is safety wall for fast conversions)
   lm_pubLayer = (UBYTE *)AllocMemory(lm_mmtLayer.mmt_slTotalSize+8);
-  const FLOAT fEpsilon = (1<<lm_iMipLevel)/1024.0f;
+  const FLOAT fEpsilon = (1 << lm_iMipLevel)/1024.0f;
 
   ULONG ulLighted=BSLF_ALLLIGHT|BSLF_ALLDARK;
   // if this polygon requires exact shadows
@@ -673,16 +673,16 @@ ULONG CLayerMaker::MakeOneShadowMaskMip(INDEX iMip)
 {
   ULONG ulLighted=BSLF_ALLLIGHT|BSLF_ALLDARK;
 
-  PIX pixLayerMinU  = lm_pixLayerMinU>>iMip;
-  PIX pixLayerMinV  = lm_pixLayerMinV>>iMip;
-  PIX pixLayerSizeU = lm_pixLayerSizeU>>iMip;
-  PIX pixLayerSizeV = lm_pixLayerSizeV>>iMip;
+  PIX pixLayerMinU  = lm_pixLayerMinU >> iMip;
+  PIX pixLayerMinV  = lm_pixLayerMinV >> iMip;
+  PIX pixLayerSizeU = lm_pixLayerSizeU >> iMip;
+  PIX pixLayerSizeV = lm_pixLayerSizeV >> iMip;
   INDEX iMipLevel = lm_iMipLevel+iMip;
-  FLOAT3D vO = lm_vO+(lm_vStepU+lm_vStepV)*(FLOAT(1<<iMip)/2.0f);
-  FLOAT3D vStepU = lm_vStepU*FLOAT(1<<iMip);
-  FLOAT3D vStepV = lm_vStepV*FLOAT(1<<iMip);
-  FLOAT fpixHotU = lm_fpixHotU/FLOAT(1<<iMip);
-  FLOAT fpixHotV = lm_fpixHotV/FLOAT(1<<iMip);
+  FLOAT3D vO = lm_vO+(lm_vStepU+lm_vStepV)*(FLOAT(1 << iMip)/2.0f);
+  FLOAT3D vStepU = lm_vStepU*FLOAT(1 << iMip);
+  FLOAT3D vStepV = lm_vStepV*FLOAT(1 << iMip);
+  FLOAT fpixHotU = lm_fpixHotU/FLOAT(1 << iMip);
+  FLOAT fpixHotV = lm_fpixHotV/FLOAT(1 << iMip);
   UBYTE *pubLayer = lm_pubLayer+lm_mmtLayer.mmt_aslOffsets[iMip];
 
   // if the light is directional
@@ -698,7 +698,7 @@ ULONG CLayerMaker::MakeOneShadowMaskMip(INDEX iMip)
     prProjection.AspectRatioL() = 1.0f;
     prProjection.NearClipDistanceL() = 0.00f;
     prProjection.pr_vZoomFactors(1) =
-    prProjection.pr_vZoomFactors(2) = 1024.0f/(1<<iMipLevel);
+    prProjection.pr_vZoomFactors(2) = 1024.0f/(1 << iMipLevel);
 
     FLOAT3D vDirection;
     AnglesToDirectionVector(
@@ -764,7 +764,7 @@ ULONG CLayerMaker::MakeOneShadowMaskMip(INDEX iMip)
     prProjection.NearClipDistanceL() = lm_plsLight->ls_fNearClipDistance;
     prProjection.FarClipDistanceL()
       = lm_fLightPlaneDistance-lm_plsLight->ls_fFarClipDistance; //-fEpsilon/2; !!!! use minimal epsilon for polygon
-    prProjection.ppr_fMetersPerPixel = (1<<iMipLevel)/1024.0f;
+    prProjection.ppr_fMetersPerPixel = (1 << iMipLevel)/1024.0f;
     prProjection.ppr_fViewerDistance = lm_fLightPlaneDistance;
 
     CPlacement3D plLight;
@@ -778,7 +778,7 @@ ULONG CLayerMaker::MakeOneShadowMaskMip(INDEX iMip)
     ULONG ulFlagsBefore = lm_pbpoPolygon->bpo_ulFlags;
     lm_pbpoPolygon->bpo_ulFlags |= BPOF_INVISIBLE;
     // if light is not illumination light
-    if (lm_plsLight->ls_ubPolygonalMask==0) {
+    if (lm_plsLight->ls_ubPolygonalMask == 0) {
       // just render starting at the light entity position
       ulLighted&=RenderShadows(*lm_pwoWorld, *lm_plsLight->ls_penEntity,
         apr, FLOATaabbox3D(),
@@ -846,14 +846,14 @@ BOOL CLayerMaker::CreateLayers(CBrushPolygon &bpo, CWorld &woWorld, BOOL bDoDire
     bsl.bsl_ulFlags |= BSLF_CALCULATED;
     // make shadow mask for the light
     ULONG ulLighted=MakeShadowMask(itbsl);
-    ASSERT((ulLighted==0) || (ulLighted==BSLF_ALLLIGHT) || (ulLighted==BSLF_ALLDARK));
+    ASSERT((ulLighted == 0) || (ulLighted == BSLF_ALLLIGHT) || (ulLighted == BSLF_ALLDARK));
     bsl.bsl_ulFlags &= ~(BSLF_ALLLIGHT|BSLF_ALLDARK);
     bsl.bsl_ulFlags |= ulLighted;
 
     // if the layer is not needed
     if (ulLighted&(BSLF_ALLLIGHT|BSLF_ALLDARK)) {
       // free it
-      if (bsl.bsl_pubLayer!=NULL) FreeMemory( bsl.bsl_pubLayer);
+      if (bsl.bsl_pubLayer != NULL) FreeMemory( bsl.bsl_pubLayer);
       bsl.bsl_pubLayer = NULL;
     }
     bCalculatedSome = TRUE;

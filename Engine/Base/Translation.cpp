@@ -41,16 +41,16 @@ static int ReadOneChar_t(CTStream &strm)
   // skip line breaks and count them
   unsigned char c;
   do {
-    strm>>c;
-    if (c=='\n') {
+    strm >> c;
+    if (c == '\n') {
       _iLine++;
     }
-  } while (c=='\n' || c=='\r');
+  } while (c == '\n' || c == '\r');
 
   // if start of control token
-  if (c=='\\') {
+  if (c == '\\') {
     // read next char
-    strm>>c;
+    strm >> c;
     // decode token
     switch (c) {
     case '\\': return '\\';
@@ -85,7 +85,7 @@ static CTString ReadOneString_t(CTStream &strm)
   // read characters
   FOREVER{
     int i = ReadOneChar_t(strm);
-    if (i==0) {
+    if (i == 0) {
       return str;
     } else {
       char c[2];
@@ -127,8 +127,8 @@ ENGINE_API void ReadTranslationTable_t(
     // read one token
     int iToken = ReadOneChar_t(strm);
     // otherwise it must be source
-    if (iToken!=CHAR_SRC) {
-      if (iToken==CHAR_EOF) {
+    if (iToken != CHAR_SRC) {
+      if (iToken == CHAR_EOF) {
         ThrowF_t(TRANS("error in file <%s>, premature EOF in line #%d!"),
           (const char *)fnmTable, _iLine);
       } else {
@@ -139,8 +139,8 @@ ENGINE_API void ReadTranslationTable_t(
     // read source
     tp.tp_strSrc = ReadOneString_t(strm);
     // next token must be destination
-    if (ReadOneChar_t(strm)!=CHAR_DST) {
-      if (iToken==CHAR_EOF) {
+    if (ReadOneChar_t(strm) != CHAR_DST) {
+      if (iToken == CHAR_EOF) {
         ThrowF_t(TRANS("error in file <%s>, premature EOF in line #%d!"),
           (const char *)fnmTable, _iLine);
       } else {
@@ -152,7 +152,7 @@ ENGINE_API void ReadTranslationTable_t(
     tp.tp_strDst = ReadOneString_t(strm);
   };
   // last token must be eof
-  if (ReadOneChar_t(strm)!=CHAR_EOF) {
+  if (ReadOneChar_t(strm) != CHAR_EOF) {
     ThrowF_t(TRANS("error in file <%s>: end of file marker not found in line #%d!"), (const char *)fnmTable, _iLine);
   }
 }
@@ -199,7 +199,7 @@ ENGINE_API char *Translate(char *str, INDEX iOffset)
 ENGINE_API const char *TranslateConst(const char *str, INDEX iOffset)
 {
   // skip first bytes
-  if (strlen(str)>=iOffset) {
+  if (strlen(str) >= iOffset) {
     str+=iOffset;
   } else {
     ASSERT(FALSE);
@@ -210,7 +210,7 @@ ENGINE_API const char *TranslateConst(const char *str, INDEX iOffset)
     ptp = _nttpPairs.Find(str);
   }
   // if not found
-  if (ptp==NULL) {
+  if (ptp == NULL) {
     // return original string
     return str;
   // if found

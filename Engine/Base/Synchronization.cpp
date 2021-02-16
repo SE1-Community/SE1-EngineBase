@@ -32,7 +32,7 @@ NOTES:
   when lock fails. Dunno.
 
 - take care to center the lock tests around 0 (-1 means not locked). that is
-  neccessary because win95 returns only <0, ==0 and >0 results from interlocked 
+  neccessary because win95 returns only <0, == 0 and >0 results from interlocked 
   functions, so testing against any other number than 0 doesn't work.
 */
 
@@ -68,14 +68,14 @@ INDEX OPTEX_Enter (POPTEX poptex)
   
   // increment lock counter
   INDEX ctLocked = InterlockedIncrement(&poptex->lLockCount);
-  ASSERT(poptex->lLockCount>=0);
+  ASSERT(poptex->lLockCount >= 0);
 
   // if this is first thread that entered
   if (ctLocked == 0) {
     
     // mark that we own it, exactly once
-    ASSERT(poptex->dwThreadId==0);
-    ASSERT(poptex->lRecurseCount==0);
+    ASSERT(poptex->dwThreadId == 0);
+    ASSERT(poptex->lRecurseCount == 0);
     poptex->dwThreadId = dwThreadId;
     poptex->lRecurseCount = 1;
     
@@ -96,32 +96,32 @@ INDEX OPTEX_Enter (POPTEX poptex)
       ASSERT(dwRet == WAIT_OBJECT_0);
   
       // mark that we own it, exactly once
-      ASSERT(poptex->dwThreadId==0);
-      ASSERT(poptex->lRecurseCount==0);
+      ASSERT(poptex->dwThreadId == 0);
+      ASSERT(poptex->lRecurseCount == 0);
       poptex->dwThreadId = dwThreadId;
       poptex->lRecurseCount = 1;
     }
   }
-  ASSERT(poptex->lRecurseCount>=1);
-  ASSERT(poptex->lLockCount>=0);
+  ASSERT(poptex->lRecurseCount >= 1);
+  ASSERT(poptex->lLockCount >= 0);
   return poptex->lRecurseCount;
 }
 
 INDEX OPTEX_TryToEnter (POPTEX poptex) 
 {
-  ASSERT(poptex->lLockCount>=-1);
+  ASSERT(poptex->lLockCount >= -1);
   DWORD dwThreadId = GetCurrentThreadId();  // The calling thread's ID
   
   // increment lock counter
   INDEX ctLocked = InterlockedIncrement(&poptex->lLockCount);
-  ASSERT(poptex->lLockCount>=0);
+  ASSERT(poptex->lLockCount >= 0);
 
   // if this is first thread that entered
   if (ctLocked == 0) {
     
     // mark that we own it, exactly once
-    ASSERT(poptex->dwThreadId==0);
-    ASSERT(poptex->lRecurseCount==0);
+    ASSERT(poptex->dwThreadId == 0);
+    ASSERT(poptex->lRecurseCount == 0);
     poptex->dwThreadId = dwThreadId;
     poptex->lRecurseCount = 1;
     // lock succeeded
@@ -135,7 +135,7 @@ INDEX OPTEX_TryToEnter (POPTEX poptex)
       
       // just mark that we own it once more
       poptex->lRecurseCount++;
-      ASSERT(poptex->lRecurseCount>=1);
+      ASSERT(poptex->lRecurseCount >= 1);
 
       // lock succeeded
       return poptex->lRecurseCount;
@@ -145,7 +145,7 @@ INDEX OPTEX_TryToEnter (POPTEX poptex)
 
       // give up taking it
       INDEX ctLocked = InterlockedDecrement(&poptex->lLockCount);
-      ASSERT(poptex->lLockCount>=-1);
+      ASSERT(poptex->lLockCount >= -1);
 
       // if unlocked in the mean time
       if (ctLocked<0) {
@@ -163,11 +163,11 @@ INDEX OPTEX_TryToEnter (POPTEX poptex)
 INDEX OPTEX_Leave (POPTEX poptex) 
 {
 
-  ASSERT(poptex->dwThreadId==GetCurrentThreadId());
+  ASSERT(poptex->dwThreadId == GetCurrentThreadId());
   
   // we own in one time less
   poptex->lRecurseCount--;
-  ASSERT(poptex->lRecurseCount>=0);
+  ASSERT(poptex->lRecurseCount >= 0);
   INDEX ctResult = poptex->lRecurseCount;
 
   // if more multiple locks from this thread
@@ -175,7 +175,7 @@ INDEX OPTEX_Leave (POPTEX poptex)
     
     // just decrement the lock count
     InterlockedDecrement(&poptex->lLockCount);
-    ASSERT(poptex->lLockCount>=-1);
+    ASSERT(poptex->lLockCount >= -1);
     
   // if no more multiple locks from this thread
   } else {
@@ -184,16 +184,16 @@ INDEX OPTEX_Leave (POPTEX poptex)
     poptex->dwThreadId = 0;
     // decrement the lock count
     INDEX ctLocked = InterlockedDecrement(&poptex->lLockCount);
-    ASSERT(poptex->lLockCount>=-1);
+    ASSERT(poptex->lLockCount >= -1);
     // if some threads are waiting for it
-    if ( ctLocked >= 0) {
+    if (ctLocked >= 0) {
       // wake one of them
       SetEvent(poptex->hEvent);
     }
   }
   
-  ASSERT(poptex->lRecurseCount>=0);
-  ASSERT(poptex->lLockCount>=-1);
+  ASSERT(poptex->lRecurseCount >= 0);
+  ASSERT(poptex->lLockCount >= -1);
   return ctResult;
 }
 
@@ -230,7 +230,7 @@ CTSingleLock::CTSingleLock(CTCriticalSection *pcs, BOOL bLock) : sl_cs(*pcs)
   sl_bLocked = FALSE;
   sl_iLastLockedIndex = -2;
   // critical section must have index assigned
-  ASSERT(sl_cs.cs_iIndex>=1||sl_cs.cs_iIndex==-1);
+  ASSERT(sl_cs.cs_iIndex >= 1||sl_cs.cs_iIndex == -1);
   // if should lock immediately
   if (bLock) {
     Lock();
@@ -248,16 +248,16 @@ void CTSingleLock::Lock(void)
 {
   // must not be locked
   ASSERT(!sl_bLocked);
-  ASSERT(sl_iLastLockedIndex==-2);
+  ASSERT(sl_iLastLockedIndex == -2);
 
   // if not locked
   if (!sl_bLocked) {
     // lock
     INDEX ctLocks = sl_cs.Lock();
     // if this mutex was not locked already
-    if (ctLocks==1) {
+    if (ctLocks == 1) {
       // check that locking in given order
-      if (sl_cs.cs_iIndex!=-1) {
+      if (sl_cs.cs_iIndex != -1) {
         ASSERT(_iLastLockedMutex<sl_cs.cs_iIndex);
         sl_iLastLockedIndex = _iLastLockedMutex;
         _iLastLockedMutex = sl_cs.cs_iIndex;
@@ -275,13 +275,13 @@ BOOL CTSingleLock::TryToLock(void)
   if (!sl_bLocked) {
     // if can lock
     INDEX ctLocks = sl_cs.TryToLock();
-    if (ctLocks>=1) {
+    if (ctLocks >= 1) {
       sl_bLocked = TRUE;
 
       // if this mutex was not locked already
-      if (ctLocks==1) {
+      if (ctLocks == 1) {
         // check that locking in given order
-        if (sl_cs.cs_iIndex!=-1) {
+        if (sl_cs.cs_iIndex != -1) {
           ASSERT(_iLastLockedMutex<sl_cs.cs_iIndex);
           sl_iLastLockedIndex = _iLastLockedMutex;
           _iLastLockedMutex = sl_cs.cs_iIndex;
@@ -305,10 +305,10 @@ void CTSingleLock::Unlock(void)
     // unlock
     INDEX ctLocks = sl_cs.Unlock();
     // if unlocked completely
-    if (ctLocks==0) {
+    if (ctLocks == 0) {
       // check that unlocking in exact reverse order
-      if (sl_cs.cs_iIndex!=-1) {
-        ASSERT(_iLastLockedMutex==sl_cs.cs_iIndex);
+      if (sl_cs.cs_iIndex != -1) {
+        ASSERT(_iLastLockedMutex == sl_cs.cs_iIndex);
         _iLastLockedMutex = sl_iLastLockedIndex;
         sl_iLastLockedIndex = -2;
       }

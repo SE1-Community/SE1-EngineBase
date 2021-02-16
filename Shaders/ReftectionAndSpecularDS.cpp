@@ -44,7 +44,7 @@ SHADER_MAIN(ReflectionAndSpecularDS)
   shaCalculateLight();
 
   COLOR colModelColor = MulColors(shaGetModelColor(),shaGetCurrentColor());
-  BOOL bOpaque = (colModelColor&0xFF)==0xFF;
+  BOOL bOpaque = (colModelColor&0xFF) == 0xFF;
   // if fully opaque
   if (bOpaque) {
     shaEnableAlphaTest(FALSE);

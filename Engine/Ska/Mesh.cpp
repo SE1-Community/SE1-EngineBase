@@ -64,8 +64,8 @@ CMesh::~CMesh()
 void ChangeSurfaceShader_t(MeshSurface &msrf,CTString fnNewShader)
 {
   CShader *pShaderNew = _pShaderStock->Obtain_t(fnNewShader);
-  ASSERT(pShaderNew!=NULL);
-  if (msrf.msrf_pShader!=NULL) _pShaderStock->Release(msrf.msrf_pShader);
+  ASSERT(pShaderNew != NULL);
+  if (msrf.msrf_pShader != NULL) _pShaderStock->Release(msrf.msrf_pShader);
   msrf.msrf_pShader = pShaderNew;
   // get new shader description
   ShaderDesc shDesc;
@@ -155,7 +155,7 @@ void CMesh::OptimizeLod(MeshLOD &mLod)
   INDEX ctWeightMaps = mLod.mlod_aWeightMaps.Count();
   INDEX ctMorphMaps = mLod.mlod_aMorphMaps.Count();
 
-  if (ctVertices<=0) return;
+  if (ctVertices <= 0) return;
   
   // create array for sorting
   _aSortArray.New(ctVertices);
@@ -375,8 +375,8 @@ void CMesh::OptimizeLod(MeshLOD &mLod)
 
 INDEX AreVerticesDiferent(INDEX iCurentIndex, INDEX iLastIndex)
 {
-#define CHECK(x,y) if (((x)-(y))!=0) return ((x)-(y))
-#define CHECKF(x,y) if (((x)-(y))!=0) return Sgn((x)-(y))
+#define CHECK(x,y) if (((x)-(y)) != 0) return ((x)-(y))
+#define CHECKF(x,y) if (((x)-(y)) != 0) return Sgn((x)-(y))
   
   // check surfaces
   CHECK(_aSortArray[iCurentIndex].sa_iSurfaceIndex,_aSortArray[iLastIndex].sa_iSurfaceIndex);
@@ -524,9 +524,9 @@ void CMesh::Write_t(CTStream *ostrFile)
   // write id
   ostrFile->WriteID_t(CChunkID(MESH_ID));
   // write version
-  (*ostrFile)<<(INDEX)MESH_VERSION;
+  (*ostrFile) << (INDEX)MESH_VERSION;
   // write mlod count
-  (*ostrFile)<<ctmlods;
+  (*ostrFile) << ctmlods;
   // for each lod in mesh
   for (INDEX imlod=0;imlod<ctmlods;imlod++) {
     MeshLOD &mLod = msh_aMeshLODs[imlod];
@@ -537,26 +537,26 @@ void CMesh::Write_t(CTStream *ostrFile)
     INDEX ctWM = mLod.mlod_aWeightMaps.Count(); // weight maps count
     INDEX ctMM = mLod.mlod_aMorphMaps.Count();  // morph maps count
     // write source file name
-    (*ostrFile)<<mLod.mlod_fnSourceFile;
+    (*ostrFile) << mLod.mlod_fnSourceFile;
     // write max distance
-    (*ostrFile)<<mLod.mlod_fMaxDistance;
+    (*ostrFile) << mLod.mlod_fMaxDistance;
     // write flags
-    (*ostrFile)<<mLod.mlod_ulFlags;
+    (*ostrFile) << mLod.mlod_ulFlags;
 
     // write wertex count
-    (*ostrFile)<<ctVx;
+    (*ostrFile) << ctVx;
     // write wertices
     ostrFile->Write_t(&mLod.mlod_aVertices[0],sizeof(MeshVertex)*ctVx);
     // write normals
     ostrFile->Write_t(&mLod.mlod_aNormals[0],sizeof(MeshNormal)*ctVx);
 
     // write uvmaps count
-    (*ostrFile)<<ctUV;
+    (*ostrFile) << ctUV;
     // write uvmaps
     for (int iuv=0;iuv<ctUV;iuv++) {
       // write uvmap ID
       CTString strNameID = ska_GetStringFromTable(mLod.mlod_aUVMaps[iuv].muv_iID);
-      (*ostrFile)<<strNameID;
+      (*ostrFile) << strNameID;
       // write uvmaps texcordinates
       ostrFile->Write_t(&mLod.mlod_aUVMaps[iuv].muv_aTexCoords[0],sizeof(MeshTexCoord)*ctVx);
     }
@@ -569,19 +569,19 @@ void CMesh::Write_t(CTStream *ostrFile)
       INDEX ctTris = msrf.msrf_aTriangles.Count();
       CTString strSurfaceID = ska_GetStringFromTable(msrf.msrf_iSurfaceID);
       // write surface ID
-      (*ostrFile)<<strSurfaceID;
+      (*ostrFile) << strSurfaceID;
       // write first vertex
-      (*ostrFile)<<msrf.msrf_iFirstVertex;
+      (*ostrFile) << msrf.msrf_iFirstVertex;
       // write vertices count
-      (*ostrFile)<<msrf.msrf_ctVertices;
+      (*ostrFile) << msrf.msrf_ctVertices;
       // write tris count
-      (*ostrFile)<<ctTris;
+      (*ostrFile) << ctTris;
       // write triangles
       ostrFile->Write_t(&mLod.mlod_aSurfaces[isf].msrf_aTriangles[0],sizeof(MeshTriangle)*ctTris);
 
       // write bool that this surface has a shader
-      INDEX bShaderExists = (msrf.msrf_pShader!=NULL);
-      (*ostrFile)<<bShaderExists;
+      INDEX bShaderExists = (msrf.msrf_pShader != NULL);
+      (*ostrFile) << bShaderExists;
       if (bShaderExists) {
         // get shader decription
         ShaderDesc shDesc;
@@ -591,80 +591,80 @@ void CMesh::Write_t(CTStream *ostrFile)
         INDEX ctcol=shDesc.sd_astrColorNames.Count();
         INDEX ctfl=shDesc.sd_astrFloatNames.Count();
         // data count must be at same as size defined in shader or higher
-        ASSERT(cttx<=msrf.msrf_ShadingParams.sp_aiTextureIDs.Count());
-        ASSERT(cttc<=msrf.msrf_ShadingParams.sp_aiTexCoordsIndex.Count());
-        ASSERT(ctcol<=msrf.msrf_ShadingParams.sp_acolColors.Count());
-        ASSERT(ctfl<=msrf.msrf_ShadingParams.sp_afFloats.Count());
-        ASSERT(msrf.msrf_pShader->GetShaderDesc!=NULL);
+        ASSERT(cttx <= msrf.msrf_ShadingParams.sp_aiTextureIDs.Count());
+        ASSERT(cttc <= msrf.msrf_ShadingParams.sp_aiTexCoordsIndex.Count());
+        ASSERT(ctcol <= msrf.msrf_ShadingParams.sp_acolColors.Count());
+        ASSERT(ctfl <= msrf.msrf_ShadingParams.sp_afFloats.Count());
+        ASSERT(msrf.msrf_pShader->GetShaderDesc != NULL);
         // write texture count 
-        (*ostrFile)<<cttx;
+        (*ostrFile) << cttx;
         // write texture coords count 
-        (*ostrFile)<<cttc;
+        (*ostrFile) << cttc;
         // write color count 
-        (*ostrFile)<<ctcol;
+        (*ostrFile) << ctcol;
         // write float count 
-        (*ostrFile)<<ctfl;
+        (*ostrFile) << ctfl;
 
-        ASSERT(msrf.msrf_pShader!=NULL);
+        ASSERT(msrf.msrf_pShader != NULL);
         // write shader name
         CTString strShaderName;
         strShaderName = msrf.msrf_pShader->GetName();
-        (*ostrFile)<<strShaderName;
+        (*ostrFile) << strShaderName;
         // write shader texture IDs
         for (INDEX itx=0;itx<cttx;itx++)
         {
           INDEX iTexID = msrf.msrf_ShadingParams.sp_aiTextureIDs[itx];
-          (*ostrFile)<<ska_GetStringFromTable(iTexID);
+          (*ostrFile) << ska_GetStringFromTable(iTexID);
         }
         // write shader texture coords indices
         for (INDEX itc=0;itc<cttc;itc++)
         {
           INDEX iTexCoorsIndex = msrf.msrf_ShadingParams.sp_aiTexCoordsIndex[itc];
-          (*ostrFile)<<iTexCoorsIndex;
+          (*ostrFile) << iTexCoorsIndex;
         }
         // write shader colors
         for (INDEX icol=0;icol<ctcol;icol++)
         {
           COLOR colColor = msrf.msrf_ShadingParams.sp_acolColors[icol];
-          (*ostrFile)<<colColor;
+          (*ostrFile) << colColor;
         }
         // write shader floats
         for (INDEX ifl=0;ifl<ctfl;ifl++)
         {
           FLOAT fFloat = msrf.msrf_ShadingParams.sp_afFloats[ifl];
-          (*ostrFile)<<fFloat;
+          (*ostrFile) << fFloat;
         }
         // write shader flags
         ULONG ulFlags = msrf.msrf_ShadingParams.sp_ulFlags;
-        (*ostrFile)<<ulFlags;
+        (*ostrFile) << ulFlags;
       }
     }
 
     // write weightmaps count
-    (*ostrFile)<<ctWM;
+    (*ostrFile) << ctWM;
     // for each weightmap in array
     for (INDEX iwm=0;iwm<ctWM;iwm++)
     {
       INDEX ctWw = mLod.mlod_aWeightMaps[iwm].mwm_aVertexWeight.Count();
       // write wertex weight map ID
       CTString pstrNameID = ska_GetStringFromTable(mLod.mlod_aWeightMaps[iwm].mwm_iID);
-      (*ostrFile)<<pstrNameID;
+      (*ostrFile) << pstrNameID;
       // write wertex weights count
-      (*ostrFile)<<ctWw;
+      (*ostrFile) << ctWw;
       // write wertex weights
       ostrFile->Write_t(&mLod.mlod_aWeightMaps[iwm].mwm_aVertexWeight[0],sizeof(MeshVertexWeight)*ctWw);
     }
 
     // write morphmaps count
-    (*ostrFile)<<ctMM;
+    (*ostrFile) << ctMM;
     for (INDEX imm=0;imm<ctMM;imm++)
     {
       INDEX ctms = mLod.mlod_aMorphMaps[imm].mmp_aMorphMap.Count();
       // write ID
       CTString pstrNameID = ska_GetStringFromTable(mLod.mlod_aMorphMaps[imm].mmp_iID);
-      (*ostrFile)<<pstrNameID;
+      (*ostrFile) << pstrNameID;
       // write bRelative
-      (*ostrFile)<<mLod.mlod_aMorphMaps[imm].mmp_bRelative;
+      (*ostrFile) << mLod.mlod_aMorphMaps[imm].mmp_bRelative;
       //ostrFile->Write_t(&mLod.mlod_aMorphMaps[imm].mmp_bRelative,sizeof(BOOL));
       // write morph sets count
       ostrFile->Write_t(&ctms,sizeof(INDEX));
@@ -682,17 +682,17 @@ void CMesh::Read_t(CTStream *istrFile)
   // read chunk id
   istrFile->ExpectID_t(CChunkID(MESH_ID));
   // check file version
-  (*istrFile)>>iFileVersion;
+  (*istrFile) >> iFileVersion;
   
   // if file version is not 11 nor 12
-  if (iFileVersion != 11 && iFileVersion!=12) {
-		ThrowF_t(TRANS("File '%s'.\nInvalid Mesh file version.\nExpected Ver \"%d\" but found \"%d\"\n"),
+  if (iFileVersion != 11 && iFileVersion != 12) {
+    ThrowF_t(TRANS("File '%s'.\nInvalid Mesh file version.\nExpected Ver \"%d\" but found \"%d\"\n"),
       (const char*)istrFile->GetDescription(),MESH_VERSION,iFileVersion);
     return;
   }
 
   // read mlod count
-  (*istrFile)>>ctmlods;
+  (*istrFile) >> ctmlods;
   // for each lod in mesh
   for (INDEX imlod=0;imlod<ctmlods;imlod++) {
     // expand mlod count for one 
@@ -707,23 +707,23 @@ void CMesh::Read_t(CTStream *istrFile)
     INDEX ctMM;   // morph maps count
     
     // read source file name
-    (*istrFile)>>mLod.mlod_fnSourceFile;
+    (*istrFile) >> mLod.mlod_fnSourceFile;
     // read max distance
-    (*istrFile)>>mLod.mlod_fMaxDistance;
+    (*istrFile) >> mLod.mlod_fMaxDistance;
     // read flags
-    (*istrFile)>>mLod.mlod_ulFlags;
+    (*istrFile) >> mLod.mlod_ulFlags;
 
     // :)
-    if (iFileVersion<=11) {
+    if (iFileVersion <= 11) {
       mLod.mlod_ulFlags = 0;
     }
-    if (mLod.mlod_ulFlags==0xCDCDCDCD) {
+    if (mLod.mlod_ulFlags == 0xCDCDCDCD) {
       mLod.mlod_ulFlags = 0;
     }
 
 
     // read vertex count
-    (*istrFile)>>ctVx;
+    (*istrFile) >> ctVx;
     // create vertex and normal arrays
     mLod.mlod_aVertices.New(ctVx);
     mLod.mlod_aNormals.New(ctVx);
@@ -733,14 +733,14 @@ void CMesh::Read_t(CTStream *istrFile)
     istrFile->Read_t(&mLod.mlod_aNormals[0],sizeof(MeshNormal)*ctVx);
 
     // read uvmaps count
-    (*istrFile)>>ctUV;
+    (*istrFile) >> ctUV;
     // create array for uvmaps
     mLod.mlod_aUVMaps.New(ctUV);
     // read uvmaps
     for (int iuv=0;iuv<ctUV;iuv++) {
       // read uvmap ID
       CTString strNameID;
-      (*istrFile)>>strNameID;
+      (*istrFile) >> strNameID;
       mLod.mlod_aUVMaps[iuv].muv_iID = ska_GetIDFromStringTable(strNameID);
       // create array for uvmaps texcordinates
       mLod.mlod_aUVMaps[iuv].muv_aTexCoords.New(ctVx);
@@ -748,7 +748,7 @@ void CMesh::Read_t(CTStream *istrFile)
       istrFile->Read_t(&mLod.mlod_aUVMaps[iuv].muv_aTexCoords[0],sizeof(MeshTexCoord)*ctVx);
     }
     // read surfaces count
-    (*istrFile)>>ctSf;
+    (*istrFile) >> ctSf;
     // create array for surfaces
     mLod.mlod_aSurfaces.New(ctSf);
     // read surfaces
@@ -757,14 +757,14 @@ void CMesh::Read_t(CTStream *istrFile)
       MeshSurface &msrf = mLod.mlod_aSurfaces[isf];
       // read surface ID
       CTString strSurfaceID;
-      (*istrFile)>>strSurfaceID;
+      (*istrFile) >> strSurfaceID;
       msrf.msrf_iSurfaceID = ska_GetIDFromStringTable(strSurfaceID);
       // read first vertex
-      (*istrFile)>>msrf.msrf_iFirstVertex;
+      (*istrFile) >> msrf.msrf_iFirstVertex;
       // read vertices count
-      (*istrFile)>>msrf.msrf_ctVertices;
+      (*istrFile) >> msrf.msrf_ctVertices;
       // read tris count
-      (*istrFile)>>ctTris;
+      (*istrFile) >> ctTris;
       // create triangles array
       mLod.mlod_aSurfaces[isf].msrf_aTriangles.New(ctTris);
       // read triangles
@@ -772,18 +772,18 @@ void CMesh::Read_t(CTStream *istrFile)
 
       // read bool that this surface has a shader
       INDEX bShaderExists;
-      (*istrFile)>>bShaderExists;
+      (*istrFile) >> bShaderExists;
       // if shader exists read its params
       if (bShaderExists) {
         INDEX cttx,cttc,ctcol,ctfl;
         // read texture count
-        (*istrFile)>>cttx;
+        (*istrFile) >> cttx;
         // read texture coords count
-        (*istrFile)>>cttc;
+        (*istrFile) >> cttc;
         // read color count
-        (*istrFile)>>ctcol;
+        (*istrFile) >> ctcol;
         // read float count
-        (*istrFile)>>ctfl;
+        (*istrFile) >> ctfl;
 
         CShader *pshMeshShader = NULL;
         ShaderParams *pshpShaderParams = NULL;
@@ -791,7 +791,7 @@ void CMesh::Read_t(CTStream *istrFile)
         ShaderParams shpDummyShaderParams;// dummy shader params if shader is not found
         // read shader name
         CTString strShaderName;
-        (*istrFile)>>strShaderName;
+        (*istrFile) >> strShaderName;
         // try to load shader
         try{
           msrf.msrf_pShader = _pShaderStock->Obtain_t(strShaderName);
@@ -805,7 +805,7 @@ void CMesh::Read_t(CTStream *istrFile)
         }
 
         // if mesh shader exisits
-        if (msrf.msrf_pShader!=NULL) {
+        if (msrf.msrf_pShader != NULL) {
           // get shader description
           ShaderDesc shDesc;
           msrf.msrf_pShader->GetShaderDesc(shDesc);
@@ -825,32 +825,32 @@ void CMesh::Read_t(CTStream *istrFile)
         // read shader texture IDs
         for (INDEX itx=0;itx<cttx;itx++) {
           CTString strTexID;
-          (*istrFile)>>strTexID;
+          (*istrFile) >> strTexID;
           INDEX iTexID = ska_GetIDFromStringTable(strTexID);
            pshpShaderParams->sp_aiTextureIDs[itx] = iTexID;
         }
         // read shader texture coords indices
         for (INDEX itc=0;itc<cttc;itc++) {
           INDEX iTexCoorsIndex;
-          (*istrFile)>>iTexCoorsIndex;
+          (*istrFile) >> iTexCoorsIndex;
           pshpShaderParams->sp_aiTexCoordsIndex[itc] = iTexCoorsIndex;
         }
         // read shader colors
         for (INDEX icol=0;icol<ctcol;icol++) {
           COLOR colColor;
-          (*istrFile)>>colColor;
+          (*istrFile) >> colColor;
           pshpShaderParams->sp_acolColors[icol] = colColor;
         }
         // read shader floats
         for (INDEX ifl=0;ifl<ctfl;ifl++) {
           FLOAT fFloat;
-          (*istrFile)>>fFloat;
+          (*istrFile) >> fFloat;
           pshpShaderParams->sp_afFloats[ifl] = fFloat;
         }
         // there were no flags in shader before ver 12
         if (iFileVersion>11) {
           ULONG ulFlags;
-          (*istrFile)>>ulFlags;
+          (*istrFile) >> ulFlags;
           pshpShaderParams->sp_ulFlags = ulFlags;
         } else {
           pshpShaderParams->sp_ulFlags = 0;
@@ -862,18 +862,18 @@ void CMesh::Read_t(CTStream *istrFile)
     }
 
     // read weightmaps count
-    (*istrFile)>>ctWM;
+    (*istrFile) >> ctWM;
     // create weightmap array
      mLod.mlod_aWeightMaps.New(ctWM);
      // read each weightmap
     for (INDEX iwm=0;iwm<ctWM;iwm++) {
       // read weightmap ID
       CTString pstrNameID;
-      (*istrFile)>>pstrNameID;
+      (*istrFile) >> pstrNameID;
       mLod.mlod_aWeightMaps[iwm].mwm_iID = ska_GetIDFromStringTable(pstrNameID);
       // read wertex weight count
       INDEX ctWw;
-      (*istrFile)>>ctWw;
+      (*istrFile) >> ctWw;
       // create wertex weight array
       mLod.mlod_aWeightMaps[iwm].mwm_aVertexWeight.New(ctWw);
       // read wertex weights
@@ -881,20 +881,20 @@ void CMesh::Read_t(CTStream *istrFile)
     }
 
     // read morphmap count
-    (*istrFile)>>ctMM;
+    (*istrFile) >> ctMM;
     // create morphmaps array
     mLod.mlod_aMorphMaps.New(ctMM);
     // read morphmaps
     for (INDEX imm=0;imm<ctMM;imm++) {
       // read morphmap ID
       CTString pstrNameID;
-      (*istrFile)>>pstrNameID;
+      (*istrFile) >> pstrNameID;
       mLod.mlod_aMorphMaps[imm].mmp_iID = ska_GetIDFromStringTable(pstrNameID);
       // read bRelative
-      (*istrFile)>>mLod.mlod_aMorphMaps[imm].mmp_bRelative;
+      (*istrFile) >> mLod.mlod_aMorphMaps[imm].mmp_bRelative;
       // read morph sets count
       INDEX ctms;
-      (*istrFile)>>ctms;
+      (*istrFile) >> ctms;
       // create morps sets array
       mLod.mlod_aMorphMaps[imm].mmp_aMorphMap.New(ctms);
       // read morph sets
@@ -917,7 +917,7 @@ void CMesh::Clear(void)
       MeshSurface &msrf = mlod.mlod_aSurfaces[isrf];
       msrf.msrf_aTriangles.Clear();
       // release shader form stock
-      if (msrf.msrf_pShader!=NULL) _pShaderStock->Release(msrf.msrf_pShader);
+      if (msrf.msrf_pShader != NULL) _pShaderStock->Release(msrf.msrf_pShader);
       msrf.msrf_pShader = NULL;
     }
     // clear the surfaces array

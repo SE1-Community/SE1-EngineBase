@@ -86,7 +86,7 @@ template<class Type>
 inline INDEX CAllocationArray<Type>::Allocate(void)
 {
   // if there are no more free indices
-  if (aa_aiFreeElements.Count()==0) {
+  if (aa_aiFreeElements.Count() == 0) {
     // remember old size
     INDEX ctOldSize = CStaticArray<Type>::Count();
     // expand the array by the allocation step
@@ -107,7 +107,7 @@ inline void CAllocationArray<Type>::Free(INDEX iToFree)
 {
 #ifndef NDEBUG
   // must be within pool limits
-  ASSERT(iToFree>=0 && iToFree<CStaticArray<Type>::Count());
+  ASSERT(iToFree >= 0 && iToFree<CStaticArray<Type>::Count());
   // must not be free
   if (_bAllocationArrayParanoiaCheck) {
     ASSERT(IsAllocated(iToFree));
@@ -137,12 +137,12 @@ template<class Type>
 inline BOOL CAllocationArray<Type>::IsAllocated(INDEX i)
 {
   // must be within pool limits
-  ASSERT(i>=0 && i<CStaticArray<Type>::Count());
+  ASSERT(i >= 0 && i<CStaticArray<Type>::Count());
   // for each free index
   INDEX ctFree = aa_aiFreeElements.Count();
   for (INDEX iFree=0; iFree<ctFree; iFree++) {
     // if it is that one
-    if (aa_aiFreeElements[iFree]==i) {
+    if (aa_aiFreeElements[iFree] == i) {
       // it is not allocated
       return FALSE;
     }
@@ -156,9 +156,9 @@ template<class Type>
 inline Type &CAllocationArray<Type>::operator[](INDEX iObject)
 {
 #ifndef NDEBUG
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   // must be within pool limits
-  ASSERT(iObject>=0 && iObject<CStaticArray<Type>::Count());
+  ASSERT(iObject >= 0 && iObject<CStaticArray<Type>::Count());
   // must not be free
   if (_bAllocationArrayParanoiaCheck) {
     ASSERT(IsAllocated(iObject));
@@ -170,9 +170,9 @@ template<class Type>
 inline const Type &CAllocationArray<Type>::operator[](INDEX iObject) const
 {
 #ifndef NDEBUG
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   // must be within pool limits
-  ASSERT(iObject>=0 && iObject<CStaticArray<Type>::Count());
+  ASSERT(iObject >= 0 && iObject<CStaticArray<Type>::Count());
   // must not be free
   if (_bAllocationArrayParanoiaCheck) {
     ASSERT(IsAllocated(iObject));
@@ -184,7 +184,7 @@ inline const Type &CAllocationArray<Type>::operator[](INDEX iObject) const
 template<class Type>
 INDEX CAllocationArray<Type>::Count(void) const
 {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   // it is pool size without the count of free elements
   return CStaticArray<Type>::Count()-aa_aiFreeElements.Count();
 }
@@ -193,7 +193,7 @@ INDEX CAllocationArray<Type>::Count(void) const
 template<class Type>
 INDEX CAllocationArray<Type>::Index(Type *ptObject)
 {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   INDEX i = CStaticArray<Type>::Index(ptMember);
   ASSERT(IsAllocated(i));
   return i;
@@ -204,7 +204,7 @@ template<class Type>
 CAllocationArray<Type> &CAllocationArray<Type>::operator=(
   const CAllocationArray<Type> &aaOriginal)
 {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   (CStaticArray<Type>&)(*this) = (CStaticArray<Type>&)aaOriginal;
   aa_aiFreeElements = aaOriginal.aa_aiFreeElements;
   aa_ctAllocationStep = aaOriginal.aa_ctAllocationStep;

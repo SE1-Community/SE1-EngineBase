@@ -67,7 +67,7 @@ static void ConvertAny( ULONG *pulSrc, LPDIRECT3DTEXTURE8 ptexDst, PIX pixWidth,
 
 static void ConvARGB8( ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch)
 {
-  const ULONG slRowModulo = slPitch - (pixWidth<<2);
+  const ULONG slRowModulo = slPitch - (pixWidth << 2);
   __asm {
     mov     esi,D [pulSrc]
     mov     edi,D [pulDst]
@@ -93,7 +93,7 @@ pixLoop:
 
 static void ConvARGB5( ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch)
 {
-  const ULONG slRowModulo = slPitch - (pixWidth<<1);
+  const ULONG slRowModulo = slPitch - (pixWidth << 1);
   __asm {
     mov     esi,D [pulSrc]
     mov     edi,D [pulDst]
@@ -136,7 +136,7 @@ pixLoop:
 
 static void ConvARGB4( ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch)
 {
-  const ULONG slRowModulo = slPitch - (pixWidth<<1);
+  const ULONG slRowModulo = slPitch - (pixWidth << 1);
   __asm {
     mov     esi,D [pulSrc]
     mov     edi,D [pulDst]
@@ -179,7 +179,7 @@ pixLoop:
 
 static void ConvRGB5( ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch)
 {
-  const ULONG slRowModulo = slPitch - (pixWidth<<1);
+  const ULONG slRowModulo = slPitch - (pixWidth << 1);
   __asm {
     mov     esi,D [pulSrc]
     mov     edi,D [pulDst]
@@ -215,7 +215,7 @@ pixLoop:
 
 static void ConvAL8( ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch)
 {
-  const ULONG slRowModulo = slPitch - (pixWidth<<1);
+  const ULONG slRowModulo = slPitch - (pixWidth << 1);
   __asm {
     mov     esi,D [pulSrc]
     mov     edi,D [pulDst]
@@ -241,7 +241,7 @@ pixLoop:
 
 static void ConvL8( ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch)
 {
-  const ULONG slRowModulo = slPitch - (pixWidth<<0);
+  const ULONG slRowModulo = slPitch - (pixWidth << 0);
   __asm {
     mov     esi,D [pulSrc]
     mov     edi,D [pulDst]
@@ -292,7 +292,7 @@ extern void SetInternalFormat_D3D( D3DFORMAT d3dFormat)
 extern void UploadMipmap_D3D( ULONG *pulSrc, LPDIRECT3DTEXTURE8 ptexDst, PIX pixWidth, PIX pixHeight, INDEX iMip)
 {
   // general case thru D3DX approach
-  if (pConvertMipmap==NULL) {
+  if (pConvertMipmap == NULL) {
     ConvertAny( pulSrc, ptexDst, pixWidth, pixHeight, iMip);
     return;
   }
@@ -320,29 +320,29 @@ extern COLOR UnpackColor_D3D( UBYTE *pd3dColor, D3DFORMAT d3dFormat, SLONG &slCo
     ubG = pd3dColor[1];
     ubR = pd3dColor[2];
     slColorSize = 4;
-    if (d3dFormat==D3DFMT_R8G8B8) slColorSize = 3;
+    if (d3dFormat == D3DFMT_R8G8B8) slColorSize = 3;
     break; 
   case D3DFMT_R5G6B5:
     uw  = (UWORD&)*pd3dColor;
-    ubR = (uw&0xF800)>>8;  ubR |= ubR>>5;
-    ubG = (uw&0x07E0)>>3;  ubG |= ubG>>6;
-    ubB = (uw&0x001F)<<3;  ubB |= ubB>>5;
+    ubR = (uw&0xF800) >> 8;  ubR |= ubR >> 5;
+    ubG = (uw&0x07E0) >> 3;  ubG |= ubG >> 6;
+    ubB = (uw&0x001F) << 3;  ubB |= ubB >> 5;
     slColorSize = 2;
     break;
   case D3DFMT_X1R5G5B5:
   case D3DFMT_A1R5G5B5:
     uw  = (UWORD&)*pd3dColor;
-    ubR = (uw&0x7C00)>>7;  ubR |= ubR>>5;
-    ubG = (uw&0x03E0)>>2;  ubG |= ubG>>5;
-    ubB = (uw&0x001F)<<3;  ubB |= ubB>>5;
+    ubR = (uw&0x7C00) >> 7;  ubR |= ubR >> 5;
+    ubG = (uw&0x03E0) >> 2;  ubG |= ubG >> 5;
+    ubB = (uw&0x001F) << 3;  ubB |= ubB >> 5;
     slColorSize = 2;
     break;
   case D3DFMT_X4R4G4B4:
   case D3DFMT_A4R4G4B4:
     uw  = (UWORD&)*pd3dColor;
-    ubR = (uw&0x0F00)>>4;  ubR |= ubR>>4;
-    ubG = (uw&0x00F0)>>0;  ubG |= ubG>>4;
-    ubB = (uw&0x000F)<<4;  ubB |= ubB>>4;
+    ubR = (uw&0x0F00) >> 4;  ubR |= ubR >> 4;
+    ubG = (uw&0x00F0) >> 0;  ubG |= ubG >> 4;
+    ubB = (uw&0x000F) << 4;  ubB |= ubB >> 4;
     slColorSize = 2;
     break;
   default: // unsupported format

@@ -77,7 +77,7 @@ BOOL ShellPopBuffer(void)
 
   _ibsBufferStackTop--;
 
-  if (_ibsBufferStackTop>=0) {
+  if (_ibsBufferStackTop >= 0) {
     yy_switch_to_buffer(_abseBufferStack[_ibsBufferStackTop].bse_bs);
   }
   return bParserEnd;
@@ -125,7 +125,7 @@ void CShellSymbol::Clear(void)
 };
 BOOL CShellSymbol::IsDeclared(void)
 {
-  return ss_istType>=0 && ss_istType!=_shell_istUndeclared;
+  return ss_istType >= 0 && ss_istType != _shell_istUndeclared;
 }
 
 CTString CShellSymbol::GetCompletionString(void) const
@@ -134,9 +134,9 @@ CTString CShellSymbol::GetCompletionString(void) const
   ShellType &st = _shell_ast[ss_istType];
 
   // get its name
-  if (st.st_sttType==STT_FUNCTION) {
+  if (st.st_sttType == STT_FUNCTION) {
     return ss_strName + "()";
-  } else if (st.st_sttType==STT_ARRAY) {
+  } else if (st.st_sttType == STT_ARRAY) {
     return ss_strName + "[]";
   } else {
     return ss_strName;
@@ -166,7 +166,7 @@ CTString ScriptEsc(const CTString &str)
   char buf[2];
   buf[1] = 0;
 
-  while (*pchSrc!=0) {
+  while (*pchSrc != 0) {
     switch (*pchSrc) {
     case  10: strResult+="\\n"; break;
     case  13: strResult+="\\r"; break;
@@ -292,7 +292,7 @@ extern CTString GetShellSymbolHelp_t(const CTString &strSymbol)
 extern BOOL CheckShellSymbolHelp(const CTString &strSymbol)
 {
   try {
-    return GetShellSymbolHelp_t(strSymbol)!="";
+    return GetShellSymbolHelp_t(strSymbol) != "";
   } catch(char *strError) {
     (void)strError;
     return FALSE;
@@ -305,7 +305,7 @@ extern void PrintShellSymbolHelp(const CTString &strSymbol)
   // try to
   try {
     CTString strHelp = GetShellSymbolHelp_t(strSymbol);
-    if (strHelp!="") {
+    if (strHelp != "") {
       CPrintF("%s\n", strHelp);
     } else {
       CPrintF( TRANS("No help found for '%s'.\n"), strSymbol);
@@ -505,7 +505,7 @@ CTString RemoveSubstring(const CTString &strFull, const CTString &strSub)
   const char *pchFullL = strFullL;
   const char *pchSubL = strSubL;
   const char *pchFound = strstr(pchFullL, pchSubL);
-  if (pchFound==NULL || strlen(strSub)==0) {
+  if (pchFound == NULL || strlen(strSub) == 0) {
     return strFull;
   }
   INDEX iOffset = pchFound-pchFullL;
@@ -585,7 +585,7 @@ void CShell::DeclareSymbol(const CTString &strDeclaration, void *pvValue)
   _bExecNextBlock = old_bExecNextBlock;
 
   _iParsing--;
-  if (_iParsing<=0) {
+  if (_iParsing <= 0) {
     _shell_astrTempStrings.PopAll();
   }
 
@@ -599,7 +599,7 @@ void CShell::Execute(const CTString &strCommands)
   // synchronize access to shell
   CTSingleLock slShell(&sh_csShell, TRUE);
 
-//  ASSERT(_iParsing==0);
+//  ASSERT(_iParsing == 0);
   _iParsing++;
 
   // parse the string
@@ -613,7 +613,7 @@ void CShell::Execute(const CTString &strCommands)
   _bExecNextBlock = old_bExecNextBlock;
 
   _iParsing--;
-  if (_iParsing<=0) {
+  if (_iParsing <= 0) {
     _shell_astrTempStrings.PopAll();
   }
 };
@@ -627,7 +627,7 @@ CShellSymbol *CShell::GetSymbol(const CTString &strName, BOOL bDeclaredOnly)
   // for each of symbols in the shell
   FOREACHINDYNAMICARRAY(sh_assSymbols, CShellSymbol, itss) {
     // if it is the right one
-    if (itss->ss_strName==strName) {
+    if (itss->ss_strName == strName) {
       // return it
       return itss;
     }
@@ -659,7 +659,7 @@ FLOAT CShell::GetFLOAT(const CTString &strName)
   CShellSymbol *pss = GetSymbol(strName, TRUE);
 
   // if it doesn't exist or is not of given type
-  if (pss==NULL || _shell_ast[pss->ss_istType].st_sttType!=STT_FLOAT) {
+  if (pss == NULL || _shell_ast[pss->ss_istType].st_sttType != STT_FLOAT) {
     // error
     ASSERT(FALSE);
     return -666.0f;
@@ -673,7 +673,7 @@ void CShell::SetFLOAT(const CTString &strName, FLOAT fValue)
   CShellSymbol *pss = GetSymbol(strName, TRUE);
 
   // if it doesn't exist or is not of given type
-  if (pss==NULL || _shell_ast[pss->ss_istType].st_sttType!=STT_FLOAT) {
+  if (pss == NULL || _shell_ast[pss->ss_istType].st_sttType != STT_FLOAT) {
     // error
     ASSERT(FALSE);
     return;
@@ -688,7 +688,7 @@ INDEX CShell::GetINDEX(const CTString &strName)
   CShellSymbol *pss = GetSymbol(strName, TRUE);
 
   // if it doesn't exist or is not of given type
-  if (pss==NULL || _shell_ast[pss->ss_istType].st_sttType!=STT_INDEX) {
+  if (pss == NULL || _shell_ast[pss->ss_istType].st_sttType != STT_INDEX) {
     // error
     ASSERT(FALSE);
     return -666;
@@ -702,7 +702,7 @@ void CShell::SetINDEX(const CTString &strName, INDEX iValue)
   CShellSymbol *pss = GetSymbol(strName, TRUE);
 
   // if it doesn't exist or is not of given type
-  if (pss==NULL || _shell_ast[pss->ss_istType].st_sttType!=STT_INDEX) {
+  if (pss == NULL || _shell_ast[pss->ss_istType].st_sttType != STT_INDEX) {
     // error
     ASSERT(FALSE);
     return;
@@ -717,7 +717,7 @@ CTString CShell::GetString(const CTString &strName)
   CShellSymbol *pss = GetSymbol(strName, TRUE);
 
   // if it doesn't exist or is not of given type
-  if (pss==NULL || _shell_ast[pss->ss_istType].st_sttType!=STT_STRING) {
+  if (pss == NULL || _shell_ast[pss->ss_istType].st_sttType != STT_STRING) {
     // error
     ASSERT(FALSE);
     return "<invalid>";
@@ -731,7 +731,7 @@ void CShell::SetString(const CTString &strName, const CTString &strValue)
   CShellSymbol *pss = GetSymbol(strName, TRUE);
 
   // if it doesn't exist or is not of given type
-  if (pss==NULL || _shell_ast[pss->ss_istType].st_sttType!=STT_STRING) {
+  if (pss == NULL || _shell_ast[pss->ss_istType].st_sttType != STT_STRING) {
     // error
     ASSERT(FALSE);
     return;
@@ -747,7 +747,7 @@ CTString CShell::GetValue(const CTString &strName)
   CShellSymbol *pss = GetSymbol(strName, TRUE);
 
   // if it doesn't exist
-  if (pss==NULL) {
+  if (pss == NULL) {
     // error
     ASSERT(FALSE);
     return "<invalid>";
@@ -780,7 +780,7 @@ void CShell::SetValue(const CTString &strName, const CTString &strValue)
   CShellSymbol *pss = GetSymbol(strName, TRUE);
 
   // if it doesn't exist
-  if (pss==NULL) {
+  if (pss == NULL) {
     // error
     ASSERT(FALSE);
     return;
@@ -861,24 +861,24 @@ void CShell::StorePersistentSymbols(const CTFileName &fnScript)
       // get its type
       ShellType &st = _shell_ast[ss.ss_istType];
       // if array
-      if (st.st_sttType==STT_ARRAY) {
+      if (st.st_sttType == STT_ARRAY) {
         // get base type
         ShellType &stBase = _shell_ast[st.st_istBaseType];
         CTString strType;
         // if float
-        if (stBase.st_sttType==STT_FLOAT) {
+        if (stBase.st_sttType == STT_FLOAT) {
           // dump all members as floats
           for (INDEX i=0; i<st.st_ctArraySize; i++) {
             fScript.FPrintF_t("%s[%d]=(FLOAT)%g;\n", ss.ss_strName, i, ((FLOAT*)ss.ss_pvValue)[i]);
           }
         // if index
-        } else if (stBase.st_sttType==STT_INDEX) {
+        } else if (stBase.st_sttType == STT_INDEX) {
           // dump all members as indices
           for (INDEX i=0; i<st.st_ctArraySize; i++) {
             fScript.FPrintF_t("%s[%d]=(INDEX)%d;\n", ss.ss_strName, i, ((INDEX*)ss.ss_pvValue)[i]);
           }
         // if string
-        } else if (stBase.st_sttType==STT_STRING) {
+        } else if (stBase.st_sttType == STT_STRING) {
           // dump all members
           for (INDEX i=0; i<st.st_ctArraySize; i++) {
             fScript.FPrintF_t("%s[%d]=\"%s\";\n", ss.ss_strName, i, (const char*)(ScriptEsc(*(CTString*)ss.ss_pvValue)[i]) );
@@ -888,15 +888,15 @@ void CShell::StorePersistentSymbols(const CTFileName &fnScript)
           ThrowF_t("%s is an array of wrong type", ss.ss_strName);
         }
       // if float
-      } else if (st.st_sttType==STT_FLOAT) {
+      } else if (st.st_sttType == STT_FLOAT) {
         // dump as float
         fScript.FPrintF_t("persistent extern %sFLOAT %s=(FLOAT)%g;\n", strUser, ss.ss_strName, *(FLOAT*)ss.ss_pvValue);
       // if index
-      } else if (st.st_sttType==STT_INDEX) {
+      } else if (st.st_sttType == STT_INDEX) {
         // dump as index
         fScript.FPrintF_t("persistent extern %sINDEX %s=(INDEX)%d;\n", strUser, ss.ss_strName, *(INDEX*)ss.ss_pvValue);
       // if string
-      } else if (st.st_sttType==STT_STRING) {
+      } else if (st.st_sttType == STT_STRING) {
         // dump as index
         fScript.FPrintF_t("persistent extern %sCTString %s=\"%s\";\n", strUser, ss.ss_strName, (const char*)ScriptEsc(*(CTString*)ss.ss_pvValue) );
       // otherwise

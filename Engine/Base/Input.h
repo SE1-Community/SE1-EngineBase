@@ -73,7 +73,7 @@ public:
   struct ControlAxisInfo inp_caiAllAxisInfo[ MAX_OVERALL_AXES];// info for all available axis
   CTString inp_strButtonNames[ MAX_OVERALL_BUTTONS];// individual button names
   CTString inp_strButtonNamesTra[ MAX_OVERALL_BUTTONS];// individual button names (translated)
-  UBYTE inp_ubButtonsBuffer[ MAX_OVERALL_BUTTONS];  // statuses for all buttons (KEY & 128 !=0)
+  UBYTE inp_ubButtonsBuffer[ MAX_OVERALL_BUTTONS];  // statuses for all buttons (KEY & 128 != 0)
   BOOL inp_abJoystickOn[MAX_JOYSTICKS];  // set if a joystick is valid for reading
   BOOL inp_abJoystickHasPOV[MAX_JOYSTICKS];  // set if a joystick has a POV hat
 

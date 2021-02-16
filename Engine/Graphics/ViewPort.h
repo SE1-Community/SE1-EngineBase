@@ -47,8 +47,8 @@ public:
   HWND vp_hWndParent;           // window of the viewport
   CRaster vp_Raster;            // the used Raster
 #ifdef SE1_D3D
-	LPDIRECT3DSWAPCHAIN8 vp_pSwapChain;  // swap chain for D3D
-	LPDIRECT3DSURFACE8   vp_pSurfDepth;  // z-buffer for D3D
+  LPDIRECT3DSWAPCHAIN8 vp_pSwapChain;  // swap chain for D3D
+  LPDIRECT3DSURFACE8   vp_pSurfDepth;  // z-buffer for D3D
 #endif // SE1_D3D
   INDEX vp_ctDisplayChanges;    // number of display driver
 
@@ -59,10 +59,10 @@ public:
 // interface
   /* Constructor for given window. */
   CViewPort(PIX pixWidth, PIX pixHeight, HWND hWnd);
-	/* Destructor. */
+  /* Destructor. */
   ~CViewPort(void);
 
-	/* Display the back buffer on screen. */
+  /* Display the back buffer on screen. */
   void SwapBuffers(void);
   // change size of this viewport, it's raster and all it's drawports to fit it window
   void Resize(void);

@@ -39,18 +39,18 @@ CFontCharData::CFontCharData(void)
 // simple stream functions
 void CFontCharData::Read_t(  CTStream *inFile)
 {
-  *inFile>>fcd_pixXOffset;
-  *inFile>>fcd_pixYOffset;
-  *inFile>>fcd_pixStart;
-  *inFile>>fcd_pixEnd;
+  *inFile >> fcd_pixXOffset;
+  *inFile >> fcd_pixYOffset;
+  *inFile >> fcd_pixStart;
+  *inFile >> fcd_pixEnd;
 }
 
 void CFontCharData::Write_t( CTStream *outFile)
 {
-  *outFile<<fcd_pixXOffset;
-  *outFile<<fcd_pixYOffset;
-  *outFile<<fcd_pixStart;
-  *outFile<<fcd_pixEnd;
+  *outFile << fcd_pixXOffset;
+  *outFile << fcd_pixYOffset;
+  *outFile << fcd_pixStart;
+  *outFile << fcd_pixEnd;
 }
 
 CFontData::CFontData()
@@ -145,12 +145,12 @@ void CFontData::Make_t( const CTFileName &fnTexture, PIX pixCharWidth, PIX pixCh
   fd_pixCharHeight = pixCharHeight;
   // determine address in memory where font definition begins in its larger mip-map
   ULONG *pulFont = fd_ptdTextureData->td_pulFrames;
-  ASSERT( pulFont!=NULL);
+  ASSERT( pulFont != NULL);
 
   // find number of letters in line (assuming that the 1st line represents the width of every line)
   INDEX iLettersInLine=0;
-  while ((strLettersOrder[iLettersInLine]!='\n') && iLettersInLine<strlen(strLettersOrder)) iLettersInLine++;
-  if (iLettersInLine<=0) FatalError( "Invalid font definition ASCII file.");
+  while ((strLettersOrder[iLettersInLine] != '\n') && iLettersInLine<strlen(strLettersOrder)) iLettersInLine++;
+  if (iLettersInLine <= 0) FatalError( "Invalid font definition ASCII file.");
 
   // determine pixelcheck mast depending of alpha channel usage
   COLOR colPixMask = 0xFFFFFF00;  // FC is because of small tolerance for black 
@@ -166,7 +166,7 @@ void CFontData::Make_t( const CTFileName &fnTexture, PIX pixCharWidth, PIX pixCh
   { // for letters in one line
     for (INDEX iCurrentLetterColumn=0; iCurrentLetterColumn<iLettersInLine; iCurrentLetterColumn++)
     { // test if we at the end of whole array
-      if (iLetter>=strlen(strLettersOrder)) break;
+      if (iLetter >= strlen(strLettersOrder)) break;
       // get char params
       unsigned char chrLetter = strLettersOrder[iLetter++];
       // reset current letter's width

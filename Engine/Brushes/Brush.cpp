@@ -43,10 +43,10 @@ CBrush3D::~CBrush3D(void)
 /* Delete a brush mip with given factor. */
 void CBrush3D::DeleteBrushMip(CBrushMip *pbmToDelete)
 {
-  ASSERT(pbmToDelete!=NULL);
+  ASSERT(pbmToDelete != NULL);
   ASSERT(pbmToDelete->bm_pbrBrush == this);
   // if there is only one brush mip
-  if (br_lhBrushMips.Count()<=1) {
+  if (br_lhBrushMips.Count() <= 1) {
     // do nothing;
     return;
   }
@@ -59,7 +59,7 @@ void CBrush3D::DeleteBrushMip(CBrushMip *pbmToDelete)
 /* Create a new brush mip. */
 CBrushMip *CBrush3D::NewBrushMipAfter(CBrushMip *pbmOld, BOOL bCopy)
 {
-  ASSERT(pbmOld!=NULL);
+  ASSERT(pbmOld != NULL);
   ASSERT(pbmOld->bm_pbrBrush == this);
 
   // create one brush mip
@@ -78,7 +78,7 @@ CBrushMip *CBrush3D::NewBrushMipAfter(CBrushMip *pbmOld, BOOL bCopy)
 }
 CBrushMip *CBrush3D::NewBrushMipBefore(CBrushMip *pbmOld, BOOL bCopy)
 {
-  ASSERT(pbmOld!=NULL);
+  ASSERT(pbmOld != NULL);
   ASSERT(pbmOld->bm_pbrBrush == this);
 
   // create one brush mip
@@ -95,7 +95,7 @@ CBrushMip *CBrush3D::NewBrushMipBefore(CBrushMip *pbmOld, BOOL bCopy)
   // get factor of mip before the new one
   FLOAT fFactorBefore = 0.0f;
   CBrushMip *pbmBefore = pbmNew->GetPrev();
-  if (pbmBefore!=NULL) {
+  if (pbmBefore != NULL) {
     fFactorBefore = pbmBefore->bm_fMaxDistance;
   }
 
@@ -107,7 +107,7 @@ CBrushMip *CBrush3D::NewBrushMipBefore(CBrushMip *pbmOld, BOOL bCopy)
 
 // make 'for' construct for walking a list reversely
 #define FOREACHINLIST_R(baseclass, member, head, iter) \
-  for ( LISTITER(baseclass, member) iter(head.IterationTail()); \
+  for (LISTITER(baseclass, member) iter(head.IterationTail()); \
    !iter->member.IsHeadMarker(); iter.MoveToPrev() )
 
 /*
@@ -207,7 +207,7 @@ void CBrush3D::PrepareRelativeToAbsoluteProjection(
   CSimpleProjection3D_DOUBLE &prRelativeToAbsolute)
 {
   // brush that does not have an entity is initialized at origin
-  if (br_penEntity==NULL) {
+  if (br_penEntity == NULL) {
     prRelativeToAbsolute.ObjectPlacementL().pl_PositionVector = FLOAT3D(0.0f, 0.0f, 0.0f);
     prRelativeToAbsolute.ObjectPlacementL().pl_OrientationAngle = ANGLE3D(0.0f, 0.0f, 0.0f);
   } else {
@@ -236,13 +236,13 @@ void CBrush3D::CalculateBoundingBoxesForOneMip(CBrushMip *pbmOnly)  // for only 
   // for all brush mips
   FOREACHINLIST(CBrushMip, bm_lnInBrush, br_lhBrushMips, itbm) {
     CBrushMip *pbm = itbm;
-    if (pbmOnly==NULL || pbm==pbmOnly) {
+    if (pbmOnly == NULL || pbm == pbmOnly) {
       // calculate its boxes
       pbm->CalculateBoundingBoxes(prBrushToAbsolute);
     }
   }
   // if this brush is zoning
-  if (br_penEntity!=NULL && (br_penEntity->en_ulFlags&ENF_ZONING)) {
+  if (br_penEntity != NULL && (br_penEntity->en_ulFlags&ENF_ZONING)) {
     // portal links must be updated also
     extern BOOL _bPortalSectorLinksPreLoaded;
     extern BOOL _bDontDiscardLinks;

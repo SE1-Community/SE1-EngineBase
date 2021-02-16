@@ -42,7 +42,7 @@ inline CStaticStackArray<Type>::~CStaticStackArray(void) {
 /* Destroy all objects, and reset the array to initial (empty) state. */
 template<class Type>
 inline void CStaticStackArray<Type>::Clear(void) {
-  if (CStaticArray<Type>::Count()!=0) Delete(); 
+  if (CStaticArray<Type>::Count() != 0) Delete(); 
 }
 
   /*
@@ -125,13 +125,13 @@ inline void CStaticStackArray<Type>::PopAll(void) {
  */
 template<class Type>
 inline Type &CStaticStackArray<Type>::operator[](INDEX i) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   ASSERT(i<sa_UsedCount);     // check bounds
   return CStaticArray<Type>::operator[](i);
 }
 template<class Type>
 inline const Type &CStaticStackArray<Type>::operator[](INDEX i) const {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   ASSERT(i<sa_UsedCount);     // check bounds
   return CStaticArray<Type>::operator[](i);
 }
@@ -141,7 +141,7 @@ inline const Type &CStaticStackArray<Type>::operator[](INDEX i) const {
  */
 template<class Type>
 INDEX CStaticStackArray<Type>::Count(void) const {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   return sa_UsedCount;
 }
 
@@ -150,7 +150,7 @@ INDEX CStaticStackArray<Type>::Count(void) const {
  */
 template<class Type>
 INDEX CStaticStackArray<Type>::Index(Type *ptMember) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   INDEX i = CStaticArray<Type>::Index(ptMember);
   ASSERTMSG(i<sa_UsedCount, "CStaticStackArray<>::Index(): Not a member of this array!");
   return i;
@@ -162,9 +162,9 @@ INDEX CStaticStackArray<Type>::Index(Type *ptMember) {
 template<class Type>
 CStaticStackArray<Type> &CStaticStackArray<Type>::operator=(const CStaticStackArray<Type> &arOriginal)
 {
-  ASSERT(this!=NULL);
-  ASSERT(&arOriginal!=NULL);
-  ASSERT(this!=&arOriginal);
+  ASSERT(this != NULL);
+  ASSERT(&arOriginal != NULL);
+  ASSERT(this != &arOriginal);
 
   // copy stack arrays
   CStaticArray<Type>::operator=(arOriginal);
@@ -179,14 +179,14 @@ CStaticStackArray<Type> &CStaticStackArray<Type>::operator=(const CStaticStackAr
 template<class Type>
 void CStaticStackArray<Type>::MoveArray(CStaticStackArray<Type> &arOther)
 {
-  ASSERT(this!=NULL);
-  ASSERT(&arOther!=NULL);
-  ASSERT(this!=&arOther);
+  ASSERT(this != NULL);
+  ASSERT(&arOther != NULL);
+  ASSERT(this != &arOther);
 
   // clear previous contents
   Clear();
   // if the other array has no elements
-  if (arOther.Count()==0) {
+  if (arOther.Count() == 0) {
     // no assignment
     return;
   }

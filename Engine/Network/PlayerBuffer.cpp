@@ -65,7 +65,7 @@ void CPlayerBuffer::ReceiveActionPacket(CNetworkMessage *pnm, INDEX iMaxBuffer)
   ASSERT(plb_Active);
   // receive new action
   CPlayerAction pa;
-  (*pnm)>>pa;
+  (*pnm) >> pa;
   // buffer it
   plb_abReceived.AddAction(pa);
   // read sendbehind 
@@ -74,7 +74,7 @@ void CPlayerBuffer::ReceiveActionPacket(CNetworkMessage *pnm, INDEX iMaxBuffer)
   // foreach resent action
   for (INDEX i=0; i<iSendBehind; i++) {
     CPlayerAction paOld;
-    (*pnm)>>paOld;
+    (*pnm) >> paOld;
 
     // if not already sent out back to the client
     if (paOld.pa_llCreated>plb_paLastAction.pa_llCreated) {
@@ -123,7 +123,7 @@ void CPlayerBuffer::CreateActionPacket(CNetworkMessage *pnm, INDEX iClient)
     ((UBYTE*)&paDelta)[i] = ((UBYTE*)&paCurrent)[i] ^ ((UBYTE*)&plb_paLastAction)[i];
   }
   // if the client that message is sent to owns the player
-  if (iClient==plb_iClient) {
+  if (iClient == plb_iClient) {
     // send delta of the timetag
     paDelta.pa_llCreated = paCurrent.pa_llCreated-plb_paLastAction.pa_llCreated;
   // if the client doesn't own the player
@@ -132,7 +132,7 @@ void CPlayerBuffer::CreateActionPacket(CNetworkMessage *pnm, INDEX iClient)
     paDelta.pa_llCreated = 0;
   }
   // send the delta packet
-  (*pnm)<<paDelta;
+  (*pnm) << paDelta;
 }
 
 /* Advance action buffer by one tick by removing oldest action. */

@@ -27,7 +27,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  */
 void CListHead::Clear(void)
 {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   lh_Head = (CListNode *) &(lh_NULL);
   lh_NULL = (CListNode *) NULL;
   lh_Tail = (CListNode *) &(lh_Head);
@@ -38,7 +38,7 @@ void CListHead::Clear(void)
  */
 BOOL CListHead::IsValid(void) const
 {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   ASSERT(lh_NULL == NULL);
   ASSERT((lh_Head == (CListNode *) &lh_NULL) && (lh_Tail == (CListNode *) &lh_Head)
       ||  lh_Tail->IsValid() && lh_Head->IsValid() );
@@ -105,7 +105,7 @@ void CListHead::RemTail(void)
 void CListHead::RemAll(void)
 {
   // for each element
-  for ( CListIter<CListNode, 0> iter(*this), iternext;
+  for (CListIter<CListNode, 0> iter(*this), iternext;
     iternext=iter, iternext.IsPastEnd() || (iternext.MoveToNext(),1), !iter.IsPastEnd();
     iter = iternext) {
     // remove it
@@ -151,7 +151,7 @@ INDEX CListHead::Count(void) const
 {
   INDEX slCount = 0;
   // walk the list -- modification of FOREACHINLIST that works with base CListNode class
-  for ( CListIter<CListNode, 0> iter(*this); !iter.IsPastEnd(); iter.MoveToNext() ) {
+  for (CListIter<CListNode, 0> iter(*this); !iter.IsPastEnd(); iter.MoveToNext() ) {
     slCount++;
   }
   return slCount;
@@ -163,7 +163,7 @@ void CListHead::Sort(int (*pCompare)(const void *p0, const void *p1), int iNodeO
   // get number of elements
   INDEX ctCount = Count();
   // if none
-  if (ctCount==0) {
+  if (ctCount == 0) {
     // do not sort
   }
 
@@ -171,7 +171,7 @@ void CListHead::Sort(int (*pCompare)(const void *p0, const void *p1), int iNodeO
   ULONG *aulPointers = new ULONG[ctCount];
   // fill it
   INDEX i=0;
-  for ( CListIter<int, 0> iter(*this); !iter.IsPastEnd(); iter.MoveToNext() ) {
+  for (CListIter<int, 0> iter(*this); !iter.IsPastEnd(); iter.MoveToNext() ) {
     aulPointers[i] = ((ULONG)&*iter)-iNodeOffset;
     i++;
   }
@@ -207,10 +207,10 @@ void CListHead::Sort(int (*pCompare)(const void *p0, const void *p1), int iNodeO
  */
 BOOL CListNode::IsValid(void) const
 {
-  ASSERT(this!=NULL);
-  ASSERT((ln_Pred==NULL && ln_Succ==NULL) || (ln_Pred!=NULL && ln_Succ!=NULL));
+  ASSERT(this != NULL);
+  ASSERT((ln_Pred == NULL && ln_Succ == NULL) || (ln_Pred != NULL && ln_Succ != NULL));
   // it is valid if it is cleared or if it is linked
-  return (ln_Pred==NULL && ln_Succ==NULL)
+  return (ln_Pred == NULL && ln_Succ == NULL)
       || (ln_Pred->ln_Succ == this) && (ln_Succ->ln_Pred == this);
 }
 

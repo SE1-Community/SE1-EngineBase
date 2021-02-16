@@ -32,10 +32,10 @@ enum LayerType {
 #define TL_VISIBLE_SHIFT 7
 
 #define TL_TILE_INDEX 0x0F
-#define TL_VISIBLE    (1<<TL_VISIBLE_SHIFT)
-#define TL_FLIPX      (1<<TL_FLIPX_SHIFT)
-#define TL_FLIPY      (1<<TL_FLIPY_SHIFT)
-#define TL_SWAPXY     (1<<TL_SWAPXY_SHIFT)
+#define TL_VISIBLE    (1 << TL_VISIBLE_SHIFT)
+#define TL_FLIPX      (1 << TL_FLIPX_SHIFT)
+#define TL_FLIPY      (1 << TL_FLIPY_SHIFT)
+#define TL_SWAPXY     (1 << TL_SWAPXY_SHIFT)
 
 class ENGINE_API CTerrainLayer {
 public:

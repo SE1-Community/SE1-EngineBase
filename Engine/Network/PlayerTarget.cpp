@@ -52,13 +52,13 @@ void CPlayerTarget::Read_t(CTStream *pstr) // throw char *
   CTSingleLock slActions(&plt_csAction, TRUE);
 
   // read activity flag
-  (*pstr)>>bActive;
+  (*pstr) >> bActive;
   // if client is active
   if (bActive) {
     // set it up
     Activate();
     // read data
-    (*pstr)>>iEntity>>plt_paLastAction>>plt_paPreLastAction;
+    (*pstr) >> iEntity >> plt_paLastAction >> plt_paPreLastAction;
     CPlayerEntity *penPlayer = (CPlayerEntity *)&_pNetwork->ga_World.wo_cenAllEntities[iEntity];
     ASSERT(penPlayer != NULL);
     AttachEntity(penPlayer);
@@ -77,13 +77,13 @@ void CPlayerTarget::Write_t(CTStream *pstr) // throw char *
   CTSingleLock slActions(&plt_csAction, TRUE);
 
   // write activity flag
-  (*pstr)<<bActive;
+  (*pstr) << bActive;
   // if client is active
   if (bActive) {
     // prepare its data
     iEntity = _pNetwork->ga_World.wo_cenAllEntities.Index(plt_penPlayerEntity);
     // write data
-    (*pstr)<<iEntity<<plt_paLastAction<<plt_paPreLastAction;
+    (*pstr) << iEntity << plt_paLastAction << plt_paPreLastAction;
   }
 }
 
@@ -147,11 +147,11 @@ void CPlayerTarget::ApplyActionPacket(const CPlayerAction &paDelta)
     __int64 llmsNow = _pTimer->GetHighPrecisionTimer().GetMilliseconds();
     __int64 llmsCreated = plt_paLastAction.pa_llCreated;
     fLatency = FLOAT(DOUBLE(llmsNow-llmsCreated)/1000.0f);
-    if (plt_paLastAction.pa_llCreated==plt_paPreLastAction.pa_llCreated) {
+    if (plt_paLastAction.pa_llCreated == plt_paPreLastAction.pa_llCreated) {
       _pNetwork->AddNetGraphValue(NGET_REPLICATEDACTION, fLatency);
     } else {
       CPlayerAction *ppaOlder = plt_abPrediction.GetLastOlderThan(plt_paLastAction.pa_llCreated);
-      if (ppaOlder!=NULL && ppaOlder->pa_llCreated!=plt_paPreLastAction.pa_llCreated) {
+      if (ppaOlder != NULL && ppaOlder->pa_llCreated != plt_paPreLastAction.pa_llCreated) {
         _pNetwork->AddNetGraphValue(NGET_SKIPPEDACTION, 1.0f);
       }
       extern FLOAT net_tmLatency;
@@ -167,7 +167,7 @@ void CPlayerTarget::ApplyActionPacket(const CPlayerAction &paDelta)
   }
 
   extern INDEX cli_iPredictionFlushing;
-  if (cli_iPredictionFlushing==2 || cli_iPredictionFlushing==3) {
+  if (cli_iPredictionFlushing == 2 || cli_iPredictionFlushing == 3) {
     plt_abPrediction.RemoveOldest();
   }
 }
@@ -188,10 +188,10 @@ void CPlayerTarget::FlushProcessedPredictions(void)
 {
   CTSingleLock slActions(&plt_csAction, TRUE);
   extern INDEX cli_iPredictionFlushing;
-  if (cli_iPredictionFlushing==1) {
+  if (cli_iPredictionFlushing == 1) {
     // flush all actions that were already processed
     plt_abPrediction.FlushUntilTime(plt_paLastAction.pa_llCreated);
-  } else if (cli_iPredictionFlushing==3) {
+  } else if (cli_iPredictionFlushing == 3) {
     // flush older actions that were already processed
     plt_abPrediction.FlushUntilTime(plt_paPreLastAction.pa_llCreated);
   }
@@ -234,7 +234,7 @@ void CPlayerTarget::ApplyPredictedAction(INDEX iAction, FLOAT fFactor)
   }
 
   CEntity *penPredictor = plt_penPlayerEntity->GetPredictor();
-  if (penPredictor==NULL || penPredictor==plt_penPlayerEntity) {
+  if (penPredictor == NULL || penPredictor == plt_penPlayerEntity) {
     return;
   }
 

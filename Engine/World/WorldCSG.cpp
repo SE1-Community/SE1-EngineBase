@@ -35,7 +35,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // assure that floating point precision is 53 bits
 void AssureFPT_53(void)
 {
-  if (GetFPUPrecision()!=FPT_53BIT) {
+  if (GetFPUPrecision() != FPT_53BIT) {
     ASSERTALWAYS( "Floating precision must be set to 53 bits during CSG!");
     SetFPUPrecision(FPT_53BIT);
   }
@@ -73,7 +73,7 @@ void CWorld::CopySourceBrushSectorsToObject(
   DOUBLEaabbox3D &boxSourceAbsolute
   )
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   // get the brush mip from the entity
   CBrushMip &bmBrushMip = *GetBrushMip(enBrush);
 
@@ -112,7 +112,7 @@ void CWorld::MoveTargetBrushPartToObject(
   CObject3D &obObject
   )
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   // get the brush mip from the entity
   CBrushMip &bmBrushMip = *GetBrushMip(enBrush);
 
@@ -122,7 +122,7 @@ void CWorld::MoveTargetBrushPartToObject(
   bmBrushMip.ToObject3D(obObject, bscselSectors);
   bmBrushMip.DeleteSelectedSectors(bscselSectors);
   // if no sectors are moved this way
-  if (obObject.ob_aoscSectors.Count()==0) {
+  if (obObject.ob_aoscSectors.Count() == 0) {
     // move the open sector to object
     CBrushSectorSelectionForCSG bscselOpen;
     bmBrushMip.SelectOpenSector(bscselOpen);
@@ -174,7 +174,7 @@ void CWorld::DoCSGOperation(
   // get relevant brush mips in each brush
   CBrushMip &bmThis  = *GetBrushMip(enThis);
   CBrushMip &bmOther = *GetBrushMip(enOther);
-  if (&bmThis==NULL || &bmOther==NULL) {
+  if (&bmThis == NULL || &bmOther == NULL) {
     return;
   }
 
@@ -305,7 +305,7 @@ void CWorld::CSGRemove(CEntity &enThis, CWorld &woOther, CEntity &enOther,
 
   // get relevant brush mip in other brush
   CBrushMip &bmOther = *GetBrushMip(enOther);
-  if (&bmOther==NULL) {
+  if (&bmOther == NULL) {
     return;
   }
 
@@ -381,14 +381,14 @@ void CWorld::SplitSectors(CEntity &enThis, CBrushSectorSelection &selbscSectorsT
 
   // get relevant brush mip in this brush
   CBrushMip &bmThis = *GetBrushMip(enThis);
-  if (&bmThis==NULL) {
+  if (&bmThis == NULL) {
     _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_CSGTOTAL);
     return;
   }
 
   // get relevant brush mip in other brush
   CBrushMip &bmOther = *GetBrushMip(enOther);
-  if (&bmOther==NULL) {
+  if (&bmOther == NULL) {
     _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_CSGTOTAL);
     return;
   }
@@ -414,7 +414,7 @@ void CWorld::SplitSectors(CEntity &enThis, CBrushSectorSelection &selbscSectorsT
     obOther, enThis.en_plPlacement, boxOther);
 
   // if the selection is empty
-  if (selbscSectorsToSplit.Count()==0) {
+  if (selbscSectorsToSplit.Count() == 0) {
     // select all sectors near the splitting tool
     bmThis.SelectSectorsInRange(selbscSectorsToSplit, DOUBLEtoFLOAT(boxOther));
   }
@@ -574,7 +574,7 @@ void CWorld::SplitPolygons(CEntity &enThis, CBrushPolygonSelection &selbpoPolygo
 
   // get relevant brush mip in other brush
   CBrushMip &bmOther = *GetBrushMip(enOther);
-  if (&bmOther==NULL) {
+  if (&bmOther == NULL) {
     _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_CSGTOTAL);
     return;
   }
@@ -654,7 +654,7 @@ BOOL CWorld::CanJoinPolygons(CBrushPolygonSelection &selbpoPolygonsToJoin)
   // for each polyon in selection
   {FOREACHINDYNAMICCONTAINER(selbpoPolygonsToJoin, CBrushPolygon, itbpo) {
     // if it has different sector or plane
-    if (itbpo->bpo_pbscSector!=pbscSector || itbpo->bpo_pbplPlane!=pbplPlane) {
+    if (itbpo->bpo_pbscSector != pbscSector || itbpo->bpo_pbplPlane != pbplPlane) {
       // it cannot be joined
       return FALSE;
     }
@@ -703,12 +703,12 @@ void CWorld::JoinPolygons(CBrushPolygonSelection &selbpoPolygonsToJoin)
       {for (INDEX iselbpo1=iselbpo0+1; iselbpo1<ctSelectedPolygons; iselbpo1++) {
         CBrushPolygon &bpo1 = selbpoPolygonsToJoin[iselbpo1];
         // if it has no edges
-        if (bpo1.bpo_abpePolygonEdges.Count()==0) {
+        if (bpo1.bpo_abpePolygonEdges.Count() == 0) {
           // skip it
           continue;
         }
         // if the two polygons can be joined
-        if (bpo0.bpo_pbplPlane==bpo1.bpo_pbplPlane) {
+        if (bpo0.bpo_pbplPlane == bpo1.bpo_pbplPlane) {
           // move all edges of second polygon to the first one
           bpo0.MovePolygonEdges(bpo1);
           bpo1.bpo_abpePolygonEdges.Clear();
@@ -806,13 +806,13 @@ void CWorld::JoinAllPossiblePolygons(
       {for (INDEX iselbpo1=iselbpo0+1; iselbpo1<ctSelectedPolygons; iselbpo1++) {
         CBrushPolygon &bpo1 = selbpoPolygonsToJoin[iselbpo1];
         // if it has no edges
-        if (bpo1.bpo_abpePolygonEdges.Count()==0) {
+        if (bpo1.bpo_abpePolygonEdges.Count() == 0) {
           // skip it
           continue;
         }
         // if the two polygons can be joined
-        if (bpo0.bpo_pbplPlane==bpo1.bpo_pbplPlane
-          &&((bpo0.bpo_ulFlags&(OPOF_PORTAL|BPOF_PORTAL))==(bpo1.bpo_ulFlags&(OPOF_PORTAL|BPOF_PORTAL)))
+        if (bpo0.bpo_pbplPlane == bpo1.bpo_pbplPlane
+          &&((bpo0.bpo_ulFlags&(OPOF_PORTAL|BPOF_PORTAL)) == (bpo1.bpo_ulFlags&(OPOF_PORTAL|BPOF_PORTAL)))
           &&(!bPreserveTextures ||
           bpo0.bpo_abptTextures[iTexture].bpt_toTexture.GetData()
           == bpo1.bpo_abptTextures[iTexture].bpt_toTexture.GetData())
@@ -903,7 +903,7 @@ void CWorld::CopySectors(CBrushSectorSelection &selbscSectorsToCopy, CEntity *pe
 
   // get destination mip
   CBrushMip *pbmDestination = penTarget->en_pbrBrush->GetFirstMip();
-  if (pbmDestination==NULL) {
+  if (pbmDestination == NULL) {
     ASSERT(FALSE);
     return;
   }
@@ -985,7 +985,7 @@ void CWorld::DeleteSectors(CBrushSectorSelection &selbscSectorsToDelete, BOOL bC
   // clear the selection on the container level
   selbscSectorsToDelete.CDynamicContainer<CBrushSector>::Clear();
 
-  if (pbm==NULL) {
+  if (pbm == NULL) {
     return;
   }
 
@@ -1087,14 +1087,14 @@ void CWorld::CopyPolygonsToBrush(CBrushPolygonSelection &selPolygons, CEntity *p
   pbscDst->bsc_colAmbient=C_BLACK|CT_OPAQUE;
   pbscDst->bsc_pbmBrushMip=pbrmip;
 
-  ASSERT(pbscDst!=NULL);
-  ASSERT(pbscDst->bsc_abvxVertices.Count()==0);
-  ASSERT(pbscDst->bsc_abedEdges.Count()==0);
-  ASSERT(pbscDst->bsc_abplPlanes.Count()==0);
-  ASSERT(pbscDst->bsc_abpoPolygons.Count()==0);
+  ASSERT(pbscDst != NULL);
+  ASSERT(pbscDst->bsc_abvxVertices.Count() == 0);
+  ASSERT(pbscDst->bsc_abedEdges.Count() == 0);
+  ASSERT(pbscDst->bsc_abplPlanes.Count() == 0);
+  ASSERT(pbscDst->bsc_abpoPolygons.Count() == 0);
   
   INDEX ctPol=selPolygons.Count();
-  ASSERT(ctPol!=0);
+  ASSERT(ctPol != 0);
   
   // create polygons and planes
   pbscDst->bsc_abpoPolygons.New(ctPol);
@@ -1105,7 +1105,7 @@ void CWorld::CopyPolygonsToBrush(CBrushPolygonSelection &selPolygons, CEntity *p
   {
     ctEdges+=itbpo->bpo_abpePolygonEdges.Count();
   }}
-  ASSERT(ctEdges!=0);
+  ASSERT(ctEdges != 0);
   // create edges and vertices
   pbscDst->bsc_abedEdges.New(ctEdges);
   pbscDst->bsc_abvxVertices.New(ctEdges*2);
@@ -1202,13 +1202,13 @@ void CWorld::DeletePolygons(CDynamicContainer<CBrushPolygon> &dcPolygons)
 
 void CWorld::CreatePolygon(CBrushVertexSelection &selVtx)
 {
-  if (selVtx.Count()!=3) return;
+  if (selVtx.Count() != 3) return;
   
   CBrushSector *pbsc=NULL;
   {FOREACHINDYNAMICCONTAINER(selVtx, CBrushVertex, itvtx)
   {
     CBrushVertex &bvtx=*itvtx;
-    if (bvtx.bvx_pbscSector==NULL || (pbsc!=NULL && pbsc!=bvtx.bvx_pbscSector)) return;
+    if (bvtx.bvx_pbscSector == NULL || (pbsc != NULL && pbsc != bvtx.bvx_pbscSector)) return;
     pbsc=bvtx.bvx_pbscSector;
   }}
 

@@ -30,7 +30,7 @@ void CBrushMip::ToObject3D(
     CObject3D &ob,
     CBrushSectorSelection &selbscToCopy)
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   // get number of sectors in the selection
   INDEX ctSectors = selbscToCopy.Count();
   // create that much sectors in the object
@@ -168,7 +168,7 @@ void CBrushSector::ToObjectSector(CObjectSector &osc)
     // copy polygon properties
     const int sizeTextureProperties = sizeof(bpo.bpo_abptTextures[0].bpt_auProperties);
     const int sizePolygonProperties = sizeof(CBrushPolygonProperties);
-    ASSERT(sizeof(opo.opo_ubUserData)>=sizePolygonProperties+3*sizeTextureProperties);
+    ASSERT(sizeof(opo.opo_ubUserData) >= sizePolygonProperties+3*sizeTextureProperties);
     UBYTE *pubUserData = (UBYTE*)&opo.opo_ubUserData;
     memcpy(pubUserData, &bpo.bpo_bppProperties, sizePolygonProperties);
     memcpy(pubUserData+sizePolygonProperties+0*sizeTextureProperties,

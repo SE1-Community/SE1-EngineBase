@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Lists.h>
 #include <Engine/Base/Serial.h>
 
-#define SDF_ENCODED       (1UL<<0) // this is ogg or mpx compressed file
-#define SDF_STREAMING     (1UL<<1) // streaming from disk
+#define SDF_ENCODED       (1UL << 0) // this is ogg or mpx compressed file
+#define SDF_STREAMING     (1UL << 1) // streaming from disk
 
 class ENGINE_API CSoundData : public CSerial {
 public:
@@ -37,7 +37,7 @@ public:
   void ModeChanged(void);
 
   inline BOOL IsHooked(void) const { return sd_Node.IsLinked(); };
-  CListHead sd_ClhLinkList;			// list of objects linked to data
+  CListHead sd_ClhLinkList;      // list of objects linked to data
 
   void PausePlayingObjects(void);
   void ResumePlayingObjects(void);

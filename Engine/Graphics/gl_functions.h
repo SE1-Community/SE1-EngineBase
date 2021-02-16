@@ -26,16 +26,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 DLLFUNCTION( OGL, void , glClearIndex,( GLfloat c ),0,0);
 
 DLLFUNCTION( OGL, void , glClearColor,( GLclampf red,
-			  GLclampf green,
-			  GLclampf blue,
-			  GLclampf alpha ),0,0);
+        GLclampf green,
+        GLclampf blue,
+        GLclampf alpha ),0,0);
 
 DLLFUNCTION( OGL, void , glClear,( GLbitfield mask ),0,0);
 
 DLLFUNCTION( OGL, void , glIndexMask,( GLuint mask ),0,0);
 
 DLLFUNCTION( OGL, void , glColorMask,( GLboolean red, GLboolean green,
-			 GLboolean blue, GLboolean alpha ),0,0);
+       GLboolean blue, GLboolean alpha ),0,0);
 
 DLLFUNCTION( OGL, void , glAlphaFunc,( GLenum func, GLclampf ref ),0,0);
 
@@ -669,13 +669,13 @@ DLLFUNCTION( OGL, void , glMap1f,( GLenum target, GLfloat u1, GLfloat u2,
                                  GLint order, const GLfloat *points ),0,0);
 
 DLLFUNCTION( OGL, void , glMap2d,( GLenum target,
-		     GLdouble u1, GLdouble u2, GLint ustride, GLint uorder,
-		     GLdouble v1, GLdouble v2, GLint vstride, GLint vorder,
-		     const GLdouble *points ),0,0);
+         GLdouble u1, GLdouble u2, GLint ustride, GLint uorder,
+         GLdouble v1, GLdouble v2, GLint vstride, GLint vorder,
+         const GLdouble *points ),0,0);
 DLLFUNCTION( OGL, void , glMap2f,( GLenum target,
-		     GLfloat u1, GLfloat u2, GLint ustride, GLint uorder,
-		     GLfloat v1, GLfloat v2, GLint vstride, GLint vorder,
-		     const GLfloat *points ),0,0);
+         GLfloat u1, GLfloat u2, GLint ustride, GLint uorder,
+         GLfloat v1, GLfloat v2, GLint vstride, GLint vorder,
+         const GLfloat *points ),0,0);
 
 DLLFUNCTION( OGL, void , glGetMapdv,( GLenum target, GLenum query, GLdouble *v ),0,0);
 DLLFUNCTION( OGL, void , glGetMapfv,( GLenum target, GLenum query, GLfloat *v ),0,0);
@@ -963,7 +963,7 @@ DLLFUNCTION( OGL, void , glPointParameterfvEXT,( GLenum pname,
 
 /* 1.2 functions */
 DLLFUNCTION( OGL, void , glDrawRangeElements,( GLenum mode, GLuint start,
-	GLuint end, GLsizei count, GLenum type, const GLvoid *indices ),0,0);
+  GLuint end, GLsizei count, GLenum type, const GLvoid *indices ),0,0);
 
 DLLFUNCTION( OGL, void , glTexImage3D,( GLenum target, GLint level,
                                       GLenum internalFormat,

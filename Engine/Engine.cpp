@@ -100,13 +100,13 @@ extern BOOL _bAllocationArrayParanoiaCheck = FALSE;
 BOOL APIENTRY DllMain( HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
   switch (ul_reason_for_call)
-	{
-		case DLL_PROCESS_ATTACH:
+  {
+    case DLL_PROCESS_ATTACH:
       break;
-		case DLL_THREAD_ATTACH:
-		case DLL_THREAD_DETACH:
-		case DLL_PROCESS_DETACH:
-			break;
+    case DLL_THREAD_ATTACH:
+    case DLL_THREAD_DETACH:
+    case DLL_PROCESS_DETACH:
+      break;
     default:
       ASSERT(FALSE);
   }
@@ -133,18 +133,18 @@ static void DetectCPU(void)
     mov     dword ptr [ulFeatures], edx
   }
 
-  INDEX iType     = (ulTFMS>>12)&0x3;
-  INDEX iFamily   = (ulTFMS>> 8)&0xF;
-  INDEX iModel    = (ulTFMS>> 4)&0xF;
-  INDEX iStepping = (ulTFMS>> 0)&0xF;
+  INDEX iType     = (ulTFMS >> 12)&0x3;
+  INDEX iFamily   = (ulTFMS >> 8)&0xF;
+  INDEX iModel    = (ulTFMS >> 4)&0xF;
+  INDEX iStepping = (ulTFMS >> 0)&0xF;
 
 
   CPrintF(TRANS("  Vendor: %s\n"), strVendor);
   CPrintF(TRANS("  Type: %d, Family: %d, Model: %d, Stepping: %d\n"),
     iType, iFamily, iModel, iStepping);
 
-  BOOL bMMX  = ulFeatures & (1<<23);
-  BOOL bCMOV = ulFeatures & (1<<15);
+  BOOL bMMX  = ulFeatures & (1 << 23);
+  BOOL bCMOV = ulFeatures & (1 << 15);
 
   CTString strYes = TRANS("Yes");
   CTString strNo = TRANS("No");
@@ -158,8 +158,8 @@ static void DetectCPU(void)
   sys_iCPUFamily =  iFamily;
   sys_iCPUModel = iModel;
   sys_iCPUStepping = iStepping;
-  sys_bCPUHasMMX = bMMX!=0;
-  sys_bCPUHasCMOV = bCMOV!=0;
+  sys_bCPUHasMMX = bMMX != 0;
+  sys_bCPUHasCMOV = bCMOV != 0;
   sys_iCPUMHz = INDEX(_pTimer->tm_llCPUSpeedHZ/1E6);
 
   if (!bMMX) FatalError( TRANS("MMX support required but not present!"));
@@ -205,16 +205,16 @@ static void AnalyzeApplicationPath(void)
   StrRev(strTmpPath);  
   // find last backslash
   char *pstr = strchr( strTmpPath, '\\');
-  if (pstr==NULL) {
+  if (pstr == NULL) {
     // not found - path is just "\"
     strcpy( strTmpPath, "\\");
     pstr = strTmpPath;
   } 
   // remove 'debug' from app path if needed
-  if (strnicmp( pstr, "\\gubed", 6)==0) pstr += 6;
+  if (strnicmp( pstr, "\\gubed", 6) == 0) pstr += 6;
   if (pstr[0] = '\\') pstr++;
   char *pstrFin = strchr( pstr, '\\');
-  if (pstrFin==NULL) {
+  if (pstrFin == NULL) {
     strcpy( pstr, "\\");
     pstrFin = pstr;
   }
@@ -229,7 +229,7 @@ static void AnalyzeApplicationPath(void)
 ENGINE_API void SE_InitEngine(CTString strGameID)
 {
   #pragma message(">> Remove this from SE_InitEngine : _bWorldEditorApp")
-  if (strGameID=="SeriousEditor") {
+  if (strGameID == "SeriousEditor") {
     _bWorldEditorApp = TRUE;
   }
 
@@ -244,7 +244,7 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   }
 
   _pConsole = new CConsole;
-  if (_strLogFile=="") {
+  if (_strLogFile == "") {
     _strLogFile = CTFileName(CTString(strExePath)).FileName();
   }
   _pConsole->Initialize(_fnmApplicationPath+_strLogFile+".log", 90, 512);
@@ -414,7 +414,7 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
     CPrintF("%s\n", strError);
   }
   // if not same
-  if (ulCRCActual!=ulCRCExpected) {
+  if (ulCRCActual != ulCRCExpected) {
     // don't run
     //FatalError(TRANS("Engine CRC is invalid.\nExpected %08x, but found %08x.\n"), ulCRCExpected, ulCRCActual);
   }
@@ -425,7 +425,7 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   _pGfx->Init();
   _pSound->Init();
 
-  if (strGameID!="") {
+  if (strGameID != "") {
     _pNetwork->Init(strGameID);
     // just make classes declare their shell variables
     try {
@@ -463,10 +463,10 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
     // get project file name for this device
     CTString strIFeel = IFeel_GetProjectFileName();
     // if no file name is returned use default file
-    if (strIFeel.Length()==0) strIFeel = strDefaultProject;
+    if (strIFeel.Length() == 0) strIFeel = strDefaultProject;
     if (!IFeel_LoadFile(strIFeel))
     {
-      if (strIFeel!=strDefaultProject)
+      if (strIFeel != strDefaultProject)
       {
         IFeel_LoadFile(strDefaultProject);
       }
@@ -564,9 +564,9 @@ ENGINE_API void SE_LoadDefaultFonts(void)
 // updates main windows' handles for windowed mode and fullscreen
 ENGINE_API void SE_UpdateWindowHandle( HWND hwndMain)
 {
-  ASSERT( hwndMain!=NULL);
+  ASSERT( hwndMain != NULL);
   _hwndMain = hwndMain;
-  _bFullScreen = _pGfx!=NULL && (_pGfx->gl_ulFlags&GLF_FULLSCREEN);
+  _bFullScreen = _pGfx != NULL && (_pGfx->gl_ulFlags&GLF_FULLSCREEN);
 }
 
 
@@ -620,7 +620,7 @@ ENGINE_API extern void SE_PretouchIfNeeded(void)
   BOOL bPretouched = TRUE;
   INDEX ctFails, ctBytes, ctBlocks;
   INDEX ctPassBytes, ctTotalBlocks;
-  for (INDEX iPass=1; iPass<=2; iPass++)
+  for (INDEX iPass=1; iPass <= 2; iPass++)
   { 
     // flush variables
     ctFails=0; ctBytes=0; ctBlocks=0; ctTotalBlocks=0;
@@ -633,14 +633,14 @@ ENGINE_API extern void SE_PretouchIfNeeded(void)
       if (((ULONG)pvNextBlock)>0x7FFF0000UL || mbi.RegionSize<1) break;
 
       // if this region of memory belongs to our process
-      BOOL bCanAccess = (mbi.Protect==PAGE_READWRITE); // || (mbi.Protect==PAGE_EXECUTE_READWRITE);
-      if (mbi.State==MEM_COMMIT && bCanAccess && mbi.Type==MEM_PRIVATE) // && !IsBadReadPtr( mbi.BaseAddress, 1)
+      BOOL bCanAccess = (mbi.Protect == PAGE_READWRITE); // || (mbi.Protect == PAGE_EXECUTE_READWRITE);
+      if (mbi.State == MEM_COMMIT && bCanAccess && mbi.Type == MEM_PRIVATE) // && !IsBadReadPtr( mbi.BaseAddress, 1)
       { 
         // increase counters
         ctBlocks++;
         ctBytes += mbi.RegionSize;
         // in first pass we only count
-        if (iPass==1) goto nextRegion;
+        if (iPass == 1) goto nextRegion;
         // update progress bar
         CallProgressHook_t( (FLOAT)ctBytes/ctPassBytes);
         // pretouch

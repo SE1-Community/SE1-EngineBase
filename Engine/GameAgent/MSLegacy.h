@@ -6,7 +6,7 @@ web:    aluigi.org
 
 
 INTRODUCTION
-============
+ == == == == == == 
 With the name Gsmsalg I define the challenge-response algorithm needed
 to query the master servers that use the Gamespy "secure" protocol (like
 master.gamespy.com for example).
@@ -18,7 +18,7 @@ be included in the online servers list (UDP port 27900).
 
 
 HOW TO USE
-==========
+ == == == == == 
 The function needs 4 parameters:
 - dst:     the destination buffer that will contain the calculated
            response. Its length is 4/3 of the challenge size so if the
@@ -42,7 +42,7 @@ The return value is a pointer to the destination buffer.
 
 
 EXAMPLE
-=======
+ == == == =
   #include "MSLegacy.h"
 
   char  *dest;
@@ -54,7 +54,7 @@ EXAMPLE
 
 
 LICENSE
-=======
+ == == == =
     Copyright 2004,2005,2006,2007,2008 Luigi Auriemma
 
     This program is free software; you can redistribute it and/or modify

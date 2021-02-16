@@ -23,7 +23,7 @@ extern FLOAT ser_fOrientationTreshold;
 
 BOOL CEntityHashItem::ClientNeedsUpdate(INDEX iClient,CNetworkMessage &nmMessage)
 {
-  ASSERT (iClient>=0 && iClient<SERVER_CLIENTS);
+  ASSERT (iClient >= 0 && iClient<SERVER_CLIENTS);
 
   CClientEntry ceEntry = ehi_ceClientEntries[iClient];
 

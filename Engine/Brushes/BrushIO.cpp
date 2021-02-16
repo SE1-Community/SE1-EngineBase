@@ -48,13 +48,13 @@ static INDEX _ctPolygonsLoaded;
  */
 void CBrush3D::Write_t( CTStream *postrm) // throw char *
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   (*postrm).WriteID_t("BR3D");  // 'brush 3D'
   // write the brush version
-  (*postrm)<<_iSupportedVersion;
+  (*postrm) << _iSupportedVersion;
 
   // write number of brush mips
-  (*postrm)<<br_lhBrushMips.Count();
+  (*postrm) << br_lhBrushMips.Count();
   // for each mip
   FOREACHINLIST(CBrushMip, bm_lnInBrush, br_lhBrushMips, itbm) {
     // write the brush mip itself
@@ -69,21 +69,21 @@ void CBrush3D::Write_t( CTStream *postrm) // throw char *
  */
 void CBrush3D::Read_t( CTStream *pistrm) // throw char *
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   (*pistrm).ExpectID_t("BR3D");  // 'brush 3D'
   // read the version number
   INDEX iSavedVersion;
-  (*pistrm)>>iSavedVersion;
+  (*pistrm) >> iSavedVersion;
 
   // if the version number is the newest
-  if (iSavedVersion==_iSupportedVersion) {
+  if (iSavedVersion == _iSupportedVersion) {
     // read current version
     Read_new_t(pistrm);
 
   // if the version number is not the newest
   } else {
     // if the version can be converted
-    if (iSavedVersion==_iSupportedVersion-1) {
+    if (iSavedVersion == _iSupportedVersion-1) {
       // show warning
       WarningMessage(
         TRANS("The brush version was %d.\n"
@@ -109,7 +109,7 @@ void CBrush3D::Read_old_t( CTStream *pistrm) // throw char *
   _ctPolygonsLoaded = 0;
   // read number of brush mips
   INDEX ctMips;
-  (*pistrm)>>ctMips;
+  (*pistrm) >> ctMips;
   // for each mip
   for (INDEX iMip=0; iMip<ctMips; iMip++) {
     // create a new brush mip
@@ -133,7 +133,7 @@ void CBrush3D::Read_new_t( CTStream *pistrm) // throw char *
   _ctPolygonsLoaded = 0;
   // read number of brush mips
   INDEX ctMips;
-  (*pistrm)>>ctMips;
+  (*pistrm) >> ctMips;
   // for each mip
   for (INDEX iMip=0; iMip<ctMips; iMip++) {
     // create a new brush mip
@@ -156,9 +156,9 @@ void CBrushMip::Write_t( CTStream *postrm) // throw char *
 {
   // write the mip factor
   postrm->WriteID_t("BRMP");
-  (*postrm)<<bm_fMaxDistance;
+  (*postrm) << bm_fMaxDistance;
   // write number of sectors
-  (*postrm)<<bm_abscSectors.Count();
+  (*postrm) << bm_abscSectors.Count();
   // for each sector
   FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
     // write it to stream
@@ -173,7 +173,7 @@ void CBrushMip::Read_old_t( CTStream *pistrm) // throw char *
 {
   // read number of sectors
   INDEX ctSectors;
-  (*pistrm)>>ctSectors;
+  (*pistrm) >> ctSectors;
   // create that much sectors
   bm_abscSectors.New(ctSectors);
   bm_abscSectors.Lock();
@@ -194,15 +194,15 @@ void CBrushMip::Read_new_t( CTStream *pistrm) // throw char *
 {
   // read mip factor
   BOOL bWithMipDistance = FALSE;
-  if (pistrm->PeekID_t()==CChunkID("BRMP")) {
+  if (pistrm->PeekID_t() == CChunkID("BRMP")) {
     pistrm->ExpectID_t("BRMP");
     bWithMipDistance = TRUE;
   }
-  (*pistrm)>>bm_fMaxDistance;
+  (*pistrm) >> bm_fMaxDistance;
   // if old mip-factor instead max distance
   if (!bWithMipDistance) {
     // convert from factor to distance
-    if (bm_fMaxDistance==100.0f) {
+    if (bm_fMaxDistance == 100.0f) {
       bm_fMaxDistance = 1E6f;
     } else {
       FLOAT fPerspectiveRatio = 640/(2.0f*Tan(90.0f/2));
@@ -212,7 +212,7 @@ void CBrushMip::Read_new_t( CTStream *pistrm) // throw char *
 
   // read number of sectors
   INDEX ctSectors;
-  (*pistrm)>>ctSectors;
+  (*pistrm) >> ctSectors;
   // create that much sectors
   bm_abscSectors.New(ctSectors);
   bm_abscSectors.Lock();
@@ -230,28 +230,28 @@ void CBrushMip::Read_new_t( CTStream *pistrm) // throw char *
 void CBrushPolygonTexture::Read_t( CTStream &strm) // throw char *
 {
   CTFileName fnmTexture;
-  strm>>fnmTexture;
+  strm >> fnmTexture;
   SetTextureWithPossibleReplacing_t(bpt_toTexture, fnmTexture);
   // gather CRC of that texture
-  if (bpt_toTexture.GetData()!=NULL) {
+  if (bpt_toTexture.GetData() != NULL) {
     bpt_toTexture.GetData()->AddToCRCTable();
   }
   strm.Read_t(&bpt_mdMapping, sizeof(bpt_mdMapping));
-  strm>>s.bpt_ubScroll;
-  strm>>s.bpt_ubBlend;
-  strm>>s.bpt_ubFlags;
-  strm>>s.bpt_ubDummy;
-  strm>>s.bpt_colColor;
+  strm >> s.bpt_ubScroll;
+  strm >> s.bpt_ubBlend;
+  strm >> s.bpt_ubFlags;
+  strm >> s.bpt_ubDummy;
+  strm >> s.bpt_colColor;
 }
 void CBrushPolygonTexture::Write_t( CTStream &strm)  // throw char *
 {
-  strm<<bpt_toTexture.GetName();
+  strm << bpt_toTexture.GetName();
   strm.Write_t(&bpt_mdMapping, sizeof(bpt_mdMapping));
-  strm<<s.bpt_ubScroll;
-  strm<<s.bpt_ubBlend;
-  strm<<s.bpt_ubFlags;
-  strm<<s.bpt_ubDummy;
-  strm<<s.bpt_colColor;
+  strm << s.bpt_ubScroll;
+  strm << s.bpt_ubBlend;
+  strm << s.bpt_ubFlags;
+  strm << s.bpt_ubDummy;
+  strm << s.bpt_colColor;
 }
 
 /*
@@ -263,20 +263,20 @@ void CBrushSector::Write_t( CTStream *postrm) // throw char *
   LockAll();
 
   (*postrm).WriteID_t("BSC "); // 'brush sector'
-  (*postrm)<<INDEX(BSCV_CURRENT);
+  (*postrm) << INDEX(BSCV_CURRENT);
   // write sector name
-  (*postrm)<<bsc_strName;
+  (*postrm) << bsc_strName;
   // write sector color and ambient light
-  (*postrm)<<bsc_colColor;
-  (*postrm)<<bsc_colAmbient;
+  (*postrm) << bsc_colColor;
+  (*postrm) << bsc_colAmbient;
   // write sector flags
-  (*postrm)<<bsc_ulFlags;
-  (*postrm)<<bsc_ulFlags2;
-  (*postrm)<<bsc_ulVisFlags;
+  (*postrm) << bsc_ulFlags;
+  (*postrm) << bsc_ulFlags2;
+  (*postrm) << bsc_ulVisFlags;
 
   (*postrm).WriteID_t("VTXs");  // 'vertices'
   // write the number of vertices in brush
-  (*postrm)<<bsc_abvxVertices.Count();
+  (*postrm) << bsc_abvxVertices.Count();
   // for each vertex
   {FOREACHINSTATICARRAY(bsc_abvxVertices, CBrushVertex, itbvx) {
     // write precise vertex coordinates
@@ -285,7 +285,7 @@ void CBrushSector::Write_t( CTStream *postrm) // throw char *
 
   (*postrm).WriteID_t("PLNs");  // 'planes'
   // write the number of planes in brush
-  (*postrm)<<bsc_abplPlanes.Count();
+  (*postrm) << bsc_abplPlanes.Count();
   // for each plane
   {FOREACHINSTATICARRAY(bsc_abplPlanes, CBrushPlane, itbpl) {
     // write precise plane coordinates
@@ -294,27 +294,27 @@ void CBrushSector::Write_t( CTStream *postrm) // throw char *
 
   (*postrm).WriteID_t("EDGs");  // 'edges'
   // write the number of edges in brush
-  (*postrm)<<bsc_abedEdges.Count();
+  (*postrm) << bsc_abedEdges.Count();
   // for each edge
   {FOREACHINSTATICARRAY(bsc_abedEdges, CBrushEdge, itbed) {
     // write indices of edge vertices
-    (*postrm)<<bsc_abvxVertices.Index(itbed->bed_pbvxVertex0);
-    (*postrm)<<bsc_abvxVertices.Index(itbed->bed_pbvxVertex1);
+    (*postrm) << bsc_abvxVertices.Index(itbed->bed_pbvxVertex0);
+    (*postrm) << bsc_abvxVertices.Index(itbed->bed_pbvxVertex1);
   }}
 
   (*postrm).WriteID_t("BPOs");  // 'brush polygons'
-  (*postrm)<<INDEX(BPOV_CURRENT);
+  (*postrm) << INDEX(BPOV_CURRENT);
   // write the number of polygons in brush
-  (*postrm)<<bsc_abpoPolygons.Count();
+  (*postrm) << bsc_abpoPolygons.Count();
   // for each polygon
   {FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
     CBrushPolygon &bpo = *itbpo;
     // write index of the plane
-    (*postrm)<<bsc_abplPlanes.Index(bpo.bpo_pbplPlane);
+    (*postrm) << bsc_abplPlanes.Index(bpo.bpo_pbplPlane);
     // write polygon color
-    (*postrm)<<bpo.bpo_colColor;
+    (*postrm) << bpo.bpo_colColor;
     // write polygon flags
-    (*postrm)<<bpo.bpo_ulFlags;
+    (*postrm) << bpo.bpo_ulFlags;
     // write all textures
     bpo.bpo_abptTextures[0].Write_t(*postrm);
     bpo.bpo_abptTextures[1].Write_t(*postrm);
@@ -323,7 +323,7 @@ void CBrushSector::Write_t( CTStream *postrm) // throw char *
     (*postrm).Write_t(&bpo.bpo_bppProperties, sizeof(bpo.bpo_bppProperties));
 
     // write number of polygon edges
-    (*postrm)<<bpo.bpo_abpePolygonEdges.Count();
+    (*postrm) << bpo.bpo_abpePolygonEdges.Count();
     // for each polygon edge
     {FOREACHINSTATICARRAY(bpo.bpo_abpePolygonEdges, CBrushPolygonEdge, itbpe) {
       // get its edge index
@@ -334,20 +334,20 @@ void CBrushSector::Write_t( CTStream *postrm) // throw char *
         iEdge |= 0x80000000;
       }
       // write the index
-      (*postrm)<<iEdge;
+      (*postrm) << iEdge;
     }}
 
     // write number of triangle vertices
-    (*postrm)<<bpo.bpo_apbvxTriangleVertices.Count();
+    (*postrm) << bpo.bpo_apbvxTriangleVertices.Count();
     // for each triangle vertex
     {FOREACHINSTATICARRAY(bpo.bpo_apbvxTriangleVertices, CBrushVertex *, itpbvx) {
       // write its index
-      (*postrm)<<bsc_abvxVertices.Index(*itpbvx);
+      (*postrm) << bsc_abvxVertices.Index(*itpbvx);
     }}
 
     // write number of triangle elements
     INDEX ctElements = bpo.bpo_aiTriangleElements.Count();
-    (*postrm)<<ctElements;
+    (*postrm) << ctElements;
     // write all element indices
     if (ctElements>0) {
       (*postrm).Write_t(&bpo.bpo_aiTriangleElements[0], ctElements*sizeof(INDEX));
@@ -356,7 +356,7 @@ void CBrushSector::Write_t( CTStream *postrm) // throw char *
     // write the shadow-map (if it exists)
     bpo.bpo_smShadowMap.Write_t(postrm);
     // write shadow color
-    (*postrm)<<bpo.bpo_colShadow;
+    (*postrm) << bpo.bpo_colShadow;
   }}
 
   // unlock the brush elements
@@ -376,29 +376,29 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
   LockAll();
 
   INDEX iBSCVersion=BSCV_OLD;
-  if ((*pistrm).PeekID_t()==CChunkID("BSC ")) {
+  if ((*pistrm).PeekID_t() == CChunkID("BSC ")) {
     (*pistrm).ExpectID_t("BSC "); // 'brush sector'
-    (*pistrm)>>iBSCVersion;
+    (*pistrm) >> iBSCVersion;
     if (iBSCVersion<BSCV_OLD) {
       ThrowF_t(TRANS("Brush sector version too old (%d)."), iBSCVersion);
     }
   }
 
   // read sector name
-  if (iBSCVersion>=BSCV_WITHNAME) {
-    (*pistrm)>>bsc_strName;
+  if (iBSCVersion >= BSCV_WITHNAME) {
+    (*pistrm) >> bsc_strName;
   }
 
   // read sector color and ambient light
-  (*pistrm)>>bsc_colColor;
-  (*pistrm)>>bsc_colAmbient;
+  (*pistrm) >> bsc_colColor;
+  (*pistrm) >> bsc_colAmbient;
   // read sector flags
-  (*pistrm)>>bsc_ulFlags;
-  if (iBSCVersion>=BSCV_WITHFLAGS2) {
-    (*pistrm)>>bsc_ulFlags2;
+  (*pistrm) >> bsc_ulFlags;
+  if (iBSCVersion >= BSCV_WITHFLAGS2) {
+    (*pistrm) >> bsc_ulFlags2;
   }
-  if (iBSCVersion>=BSCV_WITHVISFLAGS) {
-    (*pistrm)>>bsc_ulVisFlags;
+  if (iBSCVersion >= BSCV_WITHVISFLAGS) {
+    (*pistrm) >> bsc_ulVisFlags;
   }
   // clear sector flags for selection
   bsc_ulFlags &= ~(BSCF_SELECTED | BSCF_SELECTEDFORCSG);
@@ -408,7 +408,7 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
   (*pistrm).ExpectID_t("VTXs");  // 'vertices'
   // read the number of vertices in brush
   INDEX ctVertices;
-  (*pistrm)>>ctVertices;
+  (*pistrm) >> ctVertices;
   // create that much vertices
   bsc_abvxVertices.New(ctVertices);
   bsc_awvxVertices.New(ctVertices);
@@ -423,7 +423,7 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
   (*pistrm).ExpectID_t("PLNs");  // 'planes'
   // read the number of planes in brush
   INDEX ctPlanes;
-  (*pistrm)>>ctPlanes;
+  (*pistrm) >> ctPlanes;
   // create that much planes
   bsc_abplPlanes.New(ctPlanes);
   bsc_awplPlanes.New(ctPlanes);
@@ -436,7 +436,7 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
   (*pistrm).ExpectID_t("EDGs");  // 'edges'
   // read the number of edges in brush
   INDEX ctEdges;
-  (*pistrm)>>ctEdges;
+  (*pistrm) >> ctEdges;
   // create that much edges
   bsc_abedEdges.New(ctEdges);
   bsc_awedEdges.New(ctEdges);
@@ -446,9 +446,9 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
     CWorkingEdge &wed = bsc_awedEdges[iEdge];
     // read indices of edge vertices
     INDEX iVertex0;
-    (*pistrm)>>iVertex0;
+    (*pistrm) >> iVertex0;
     INDEX iVertex1;
-    (*pistrm)>>iVertex1;
+    (*pistrm) >> iVertex1;
     // set vertex pointers
     bed.bed_pbvxVertex0 = &bsc_abvxVertices[iVertex0];
     bed.bed_pbvxVertex1 = &bsc_abvxVertices[iVertex1];
@@ -460,14 +460,14 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
 
   INDEX iBPOVersion;
   (*pistrm).ExpectID_t("BPOs");  // 'brush polygons'
-  (*pistrm)>>iBPOVersion;
+  (*pistrm) >> iBPOVersion;
   if (iBPOVersion<BPOV_WITHHYPERTEXTURES) {
     ThrowF_t(TRANS("Brush polygon version too old (%d)."), iBPOVersion);
   }
 
   // read the number of polygons in brush
   INDEX ctPolygons;
-  (*pistrm)>>ctPolygons;
+  (*pistrm) >> ctPolygons;
   _ctPolygonsLoaded += ctPolygons;
   // create that much polygons
   bsc_abpoPolygons.New(ctPolygons);
@@ -476,15 +476,15 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
     CBrushPolygon &bpo = *itbpo;
     // read index of the plane
     INDEX iPlane;
-    (*pistrm)>>iPlane;
+    (*pistrm) >> iPlane;
     // set plane pointer
     bpo.bpo_pbplPlane = &bsc_abplPlanes[iPlane];
 
-    if (iBPOVersion>=BPOV_MULTITEXTURING) {
+    if (iBPOVersion >= BPOV_MULTITEXTURING) {
       // read polygon color
-      (*pistrm)>>bpo.bpo_colColor;
+      (*pistrm) >> bpo.bpo_colColor;
       // read polygon flags
-      (*pistrm)>>bpo.bpo_ulFlags;
+      (*pistrm) >> bpo.bpo_ulFlags;
       // read all textures
       bpo.bpo_abptTextures[0].Read_t(*pistrm);
       bpo.bpo_abptTextures[1].Read_t(*pistrm);
@@ -496,15 +496,15 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
     } else {
       // read textures
       CTFileName fnmTexture;
-      (*pistrm)>>fnmTexture;
+      (*pistrm) >> fnmTexture;
       SetTextureWithPossibleReplacing_t(bpo.bpo_abptTextures[0].bpt_toTexture, fnmTexture);
       CTFileName fnmHyperTexture;
-      (*pistrm)>>fnmHyperTexture;
+      (*pistrm) >> fnmHyperTexture;
       SetTextureWithPossibleReplacing_t(bpo.bpo_abptTextures[1].bpt_toTexture, fnmHyperTexture);
       // read polygon color
-      (*pistrm)>>bpo.bpo_colColor;
+      (*pistrm) >> bpo.bpo_colColor;
       // read polygon flags
-      (*pistrm)>>bpo.bpo_ulFlags;
+      (*pistrm) >> bpo.bpo_ulFlags;
       // read texture mapping
       bpo.bpo_mdShadow.ReadOld_t(*pistrm);
       // read other polygon properties
@@ -548,14 +548,14 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
 
     // read number of polygon edges
     INDEX ctPolygonEdges;
-    (*pistrm)>>ctPolygonEdges;
+    (*pistrm) >> ctPolygonEdges;
     // create that much polygons edges
     bpo.bpo_abpePolygonEdges.New(ctPolygonEdges);
     // for each polygon edge
     {FOREACHINSTATICARRAY(bpo.bpo_abpePolygonEdges, CBrushPolygonEdge, itbpe) {
       // read its edge index
       INDEX iEdge;
-      (*pistrm)>>iEdge;
+      (*pistrm) >> iEdge;
       // if the highest bit is set
       if (iEdge & 0x80000000) {
         // mark that it is reverse edge
@@ -571,23 +571,23 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
     }}
 
     // if triangles are saved
-    if (iBPOVersion>=BPOV_TRIANGLES) {
+    if (iBPOVersion >= BPOV_TRIANGLES) {
       // read number of triangle vertices
       INDEX ctVertices;
-      (*pistrm)>>ctVertices;
+      (*pistrm) >> ctVertices;
       // allocate them
       bpo.bpo_apbvxTriangleVertices.New(ctVertices);
       // for each triangle vertex
       {FOREACHINSTATICARRAY(bpo.bpo_apbvxTriangleVertices, CBrushVertex *, itpbvx) {
         // read its index
         INDEX ivx;
-        (*pistrm)>>ivx;
+        (*pistrm) >> ivx;
         *itpbvx = &bsc_abvxVertices[ivx];
       }}
 
       // read number of triangle elements
       INDEX ctElements;
-      (*pistrm)>>ctElements;
+      (*pistrm) >> ctElements;
       // allocate them
       bpo.bpo_aiTriangleElements.New(ctElements);
       // read all element indices
@@ -598,13 +598,13 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
 
     // read the shadow-map (if it exists)
     bpo.bpo_smShadowMap.Read_t(pistrm);
-    if (iBPOVersion>=BPOV_MULTITEXTURING) {
+    if (iBPOVersion >= BPOV_MULTITEXTURING) {
       // read shadow color
-      (*pistrm)>>bpo.bpo_colShadow;
+      (*pistrm) >> bpo.bpo_colShadow;
     } else {
       // read shadow animation object index
       UBYTE ubDummy;
-      (*pistrm)>>ubDummy;
+      (*pistrm) >> ubDummy;
       bpo.bpo_colShadow = C_WHITE|CT_OPAQUE;
     }
   }}
@@ -617,7 +617,7 @@ void CBrushSector::Read_t( CTStream *pistrm) // throw char *
 
   bsc_ulTempFlags&=~BSCTF_PRELOADEDBSP;
   // if there is current version of bsp saved
-  if ((*pistrm).PeekID_t()==CChunkID("BSP0")) {
+  if ((*pistrm).PeekID_t() == CChunkID("BSP0")) {
     _pfWorldEditingProfile.StartTimer(CWorldEditingProfile::PTI_READBSP);
     (*pistrm).ExpectID_t("BSP0");
     // read it

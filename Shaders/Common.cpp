@@ -34,12 +34,12 @@ void DoSpecularLayer(INDEX iSpeculaTexture,INDEX iSpecularColor)
 
   // cache light intensities (-1 in case of overbrighting compensation)
   const INDEX iBright = bOverbright ?  0 : 1;
-  SLONG slLR = (colLight & CT_RMASK)>>(CT_RSHIFT-iBright);
-  SLONG slLG = (colLight & CT_GMASK)>>(CT_GSHIFT-iBright);
-  SLONG slLB = (colLight & CT_BMASK)>>(CT_BSHIFT-iBright);
-  SLONG slAR = (colAmbient & CT_RMASK)>>(CT_RSHIFT-iBright);
-  SLONG slAG = (colAmbient & CT_GMASK)>>(CT_GSHIFT-iBright);
-  SLONG slAB = (colAmbient & CT_BMASK)>>(CT_BSHIFT-iBright);
+  SLONG slLR = (colLight & CT_RMASK) >> (CT_RSHIFT-iBright);
+  SLONG slLG = (colLight & CT_GMASK) >> (CT_GSHIFT-iBright);
+  SLONG slLB = (colLight & CT_BMASK) >> (CT_BSHIFT-iBright);
+  SLONG slAR = (colAmbient & CT_RMASK) >> (CT_RSHIFT-iBright);
+  SLONG slAG = (colAmbient & CT_GMASK) >> (CT_GSHIFT-iBright);
+  SLONG slAB = (colAmbient & CT_BMASK) >> (CT_BSHIFT-iBright);
   if (bOverbright) {
     slAR = ClampUp( slAR, 127L);
     slAG = ClampUp( slAG, 127L);
@@ -55,7 +55,7 @@ void DoSpecularLayer(INDEX iSpeculaTexture,INDEX iSpecularColor)
     FLOAT3D vNot = FLOAT3D(nor.nx,nor.ny,nor.nz);
     // vNot.Normalize();
     //ASSERT(vNot.Normalize() == 1.0f);
-    const FLOAT fNL = nor.nx*vLightDir(1) + nor.ny*vLightDir(2) +	nor.nz*vLightDir(3);
+    const FLOAT fNL = nor.nx*vLightDir(1) + nor.ny*vLightDir(2) +  nor.nz*vLightDir(3);
     const FLOAT fRx = vLightDir(1) - 2*vNot(1)*fNL;
     const FLOAT fRy = vLightDir(2) - 2*vNot(2)*fNL;
     const FLOAT fRz = vLightDir(3) - 2*vNot(3)*fNL;
@@ -69,10 +69,10 @@ void DoSpecularLayer(INDEX iSpeculaTexture,INDEX iSpecularColor)
   }
 
   GFXColor colSrfSpec = shaGetColor(iSpecularColor);
-  colSrfSpec.AttenuateRGB( (shaGetModelColor()&CT_AMASK)>>CT_ASHIFT);
-  colSrfSpec.r = ClampUp( (colSrfSpec.r *slLR)>>8, 255L);
-  colSrfSpec.g = ClampUp( (colSrfSpec.g *slLG)>>8, 255L);
-  colSrfSpec.b = ClampUp( (colSrfSpec.b *slLB)>>8, 255L);
+  colSrfSpec.AttenuateRGB( (shaGetModelColor()&CT_AMASK) >> CT_ASHIFT);
+  colSrfSpec.r = ClampUp( (colSrfSpec.r *slLR) >> 8, 255L);
+  colSrfSpec.g = ClampUp( (colSrfSpec.g *slLG) >> 8, 255L);
+  colSrfSpec.b = ClampUp( (colSrfSpec.b *slLB) >> 8, 255L);
 
   GFXColor *pcolSpec = shaGetNewColorArray();
   GFXColor *pcolBase = shaGetColorArray();;
@@ -81,9 +81,9 @@ void DoSpecularLayer(INDEX iSpeculaTexture,INDEX iSpecularColor)
   for (ivx=0;ivx<ctVertices;ivx++) {
     // set specular color
     const SLONG slShade = pcolBase[ivx].a;
-    pcolSpec[ivx].abgr =    (((colSrfSpec.r)*slShade)>>8)
+    pcolSpec[ivx].abgr =    (((colSrfSpec.r)*slShade) >> 8)
                           | (((colSrfSpec.g)*slShade)&0x0000FF00)
-                          |((((colSrfSpec.b)*slShade)<<8)&0x00FF0000);
+                          |((((colSrfSpec.b)*slShade) << 8)&0x00FF0000);
   }
   
 
@@ -144,7 +144,7 @@ void DoReflectionLayer(INDEX iReflectionTexture,INDEX iReflectionColor,BOOL bFul
   // get model reflection color
   GFXColor colSrfRefl;
   colSrfRefl.abgr = ByteSwap(shaGetColor(iReflectionColor));
-  colSrfRefl.AttenuateA((shaGetModelColor()&CT_AMASK)>>CT_ASHIFT);
+  colSrfRefl.AttenuateA((shaGetModelColor()&CT_AMASK) >> CT_ASHIFT);
 
   if (bFullBright) {
     // just copy reflection color

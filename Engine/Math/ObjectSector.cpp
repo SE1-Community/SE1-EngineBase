@@ -79,7 +79,7 @@ inline int CompareVerticesAlongLine(const CObjectVertex &vx0, const CObjectVerte
 {
        if (vx0(sortvertices_iMaxAxis)-vx1(sortvertices_iMaxAxis) < -VTX_EPSILON) return -1;
   else if (vx0(sortvertices_iMaxAxis)-vx1(sortvertices_iMaxAxis) > +VTX_EPSILON) return +1;
-  else                                                                           return  0;
+  else                                                                           return 0;
 }
 /*
  * Compare two vertices along a line for quick-sort.
@@ -166,7 +166,7 @@ inline int CompareEdgeLines(const CEdgeEx &edx0, const CEdgeEx &edx1)
   else if (edx0.edx_vReferencePoint(2)-edx1.edx_vReferencePoint(2) > +EDX_EPSILON) return +1;
   else if (edx0.edx_vReferencePoint(3)-edx1.edx_vReferencePoint(3) < -EDX_EPSILON) return -1;
   else if (edx0.edx_vReferencePoint(3)-edx1.edx_vReferencePoint(3) > +EDX_EPSILON) return +1;
-  else                                     return  0;
+  else                                     return 0;
 }
 
 //#define EDX_EPSILON_LOOSE DOUBLE(0.00390625) // 1/2^8
@@ -188,7 +188,7 @@ inline int CompareEdgeLines_loosely(const CEdgeEx &edx0, const CEdgeEx &edx1)
   else if (edx0.edx_vReferencePoint(2)-edx1.edx_vReferencePoint(2) > +EDX_EPSILON_LOOSE) return +1;
   else if (edx0.edx_vReferencePoint(3)-edx1.edx_vReferencePoint(3) < -EDX_EPSILON_LOOSE) return -1;
   else if (edx0.edx_vReferencePoint(3)-edx1.edx_vReferencePoint(3) > +EDX_EPSILON_LOOSE) return +1;
-  else                                     return  0;
+  else                                     return 0;
 }*/
 
 /*
@@ -218,7 +218,7 @@ BOOL FindEdge( CStaticArray<CObjectEdge *> &apedSorted,
     qsort_CompareEdges);
 
   // if some edge was found
-  if (ppedFound!=NULL) {
+  if (ppedFound != NULL) {
     // return it
     *ppedResult= *ppedFound;
     return TRUE;
@@ -234,7 +234,7 @@ BOOL FindEdge( CStaticArray<CObjectEdge *> &apedSorted,
  */
 void CObjectPolygonEdge::GetVertices(CObjectVertex *&povxStart, CObjectVertex *&povxEnd)
 {
-  ASSERT(ope_Edge!=NULL);
+  ASSERT(ope_Edge != NULL);
   if (ope_Backward) {
     povxStart = ope_Edge->oed_Vertex1;
     povxEnd = ope_Edge->oed_Vertex0;
@@ -307,7 +307,7 @@ inline void CEdgeEx::Initialize(const DOUBLE3D *pvPoint0, const DOUBLE3D *pvPoin
 inline BOOL CEdgeEx::PointIsOnLine(const DOUBLE3D &vPointToTest) const
 {
   // if it is the reference point
-  if (CompareVertices(edx_vReferencePoint, vPointToTest)==0) {
+  if (CompareVertices(edx_vReferencePoint, vPointToTest) == 0) {
     // it is on the line
     return TRUE;
   }
@@ -316,17 +316,17 @@ inline BOOL CEdgeEx::PointIsOnLine(const DOUBLE3D &vPointToTest) const
   CEdgeEx edxPointToTest;
   edxPointToTest.Initialize(&edx_vReferencePoint, &vPointToTest);
   // test if it is same as this edge line
-  return CompareEdgeLines(*this, edxPointToTest)==0;
+  return CompareEdgeLines(*this, edxPointToTest) == 0;
 }
 
 
 void CObjectSector::Clear(void)
 {
   osc_aovxVertices.Clear();
-	osc_aoplPlanes.Clear();
-	osc_aoedEdges.Clear();
-	osc_aopoPolygons.Clear();
-	osc_aomtMaterials.Clear();
+  osc_aoplPlanes.Clear();
+  osc_aoedEdges.Clear();
+  osc_aopoPolygons.Clear();
+  osc_aomtMaterials.Clear();
 }
 
 /*
@@ -335,10 +335,10 @@ void CObjectSector::Clear(void)
 void CObjectSector::LockAll( void)
 {
   osc_aovxVertices.Lock();
-	osc_aoplPlanes.Lock();
-	osc_aoedEdges.Lock();
-	osc_aopoPolygons.Lock();
-	osc_aomtMaterials.Lock();
+  osc_aoplPlanes.Lock();
+  osc_aoedEdges.Lock();
+  osc_aopoPolygons.Lock();
+  osc_aomtMaterials.Lock();
 }
 
 /*
@@ -347,10 +347,10 @@ void CObjectSector::LockAll( void)
 void CObjectSector::UnlockAll( void)
 {
   osc_aovxVertices.Unlock();
-	osc_aoplPlanes.Unlock();
-	osc_aoedEdges.Unlock();
-	osc_aopoPolygons.Unlock();
-	osc_aomtMaterials.Unlock();
+  osc_aoplPlanes.Unlock();
+  osc_aoedEdges.Unlock();
+  osc_aopoPolygons.Unlock();
+  osc_aomtMaterials.Unlock();
 }
 
 /*
@@ -447,31 +447,31 @@ CObjectPolygon *CObjectSector::CreatePolygon(INDEX ctVertices, DOUBLE3D avVertic
   DOUBLE3D vNormal = DOUBLE3D(0.0f,0.0f,0.0f);
   // for all vertices in polygon
   {for (INDEX iEdge=0; iEdge<ctVertices; iEdge++) {
-		// get two neighbouring edges
+    // get two neighbouring edges
     CObjectEdge &oed0 = *popePolygonEdges[iEdge].ope_Edge;
     CObjectEdge &oed1 = *popePolygonEdges[(iEdge+1)%ctVertices].ope_Edge;
-		// make their vectors
-  	DOUBLE3D vVector1 = *oed0.oed_Vertex0 - *oed0.oed_Vertex1;
-		DOUBLE3D vVector2 = *oed1.oed_Vertex1 - *oed1.oed_Vertex0;
-  	// add vector product of edges to the plane normal
+    // make their vectors
+    DOUBLE3D vVector1 = *oed0.oed_Vertex0 - *oed0.oed_Vertex1;
+    DOUBLE3D vVector2 = *oed1.oed_Vertex1 - *oed1.oed_Vertex0;
+    // add vector product of edges to the plane normal
     vNormal += vVector2*vVector1;
   }}
   // add one plane to planes array
   CObjectPlane *pplPlane = osc_aoplPlanes.New();
   // construct this plane from normal vector and one point
   if (bReverse) {
-	  *pplPlane= DOUBLEplane3D( -vNormal, *popePolygonEdges[0].ope_Edge->oed_Vertex0);
+    *pplPlane= DOUBLEplane3D( -vNormal, *popePolygonEdges[0].ope_Edge->oed_Vertex0);
   } else {
-	  *pplPlane= DOUBLEplane3D( vNormal, *popePolygonEdges[0].ope_Edge->oed_Vertex0);
+    *pplPlane= DOUBLEplane3D( vNormal, *popePolygonEdges[0].ope_Edge->oed_Vertex0);
   }
 
   // set this polygon's plane pointer
-	opoPolygon.opo_Plane = pplPlane;
+  opoPolygon.opo_Plane = pplPlane;
   // set this polygon's material pointer and color
-	opoPolygon.opo_Material = &omaMaterial;
-	opoPolygon.opo_colorColor = omaMaterial.omt_Color;
+  opoPolygon.opo_Material = &omaMaterial;
+  opoPolygon.opo_colorColor = omaMaterial.omt_Color;
   // set flags
-	opoPolygon.opo_ulFlags = ulFlags;
+  opoPolygon.opo_ulFlags = ulFlags;
 
   return &opoPolygon;
 }
@@ -508,31 +508,31 @@ CObjectPolygon *CObjectSector::CreatePolygon(INDEX ctVertices, INDEX aivVertices
   DOUBLE3D vNormal = DOUBLE3D(0.0f,0.0f,0.0f);
   // for all vertices in polygon
   {for (INDEX iEdge=0; iEdge<ctVertices; iEdge++) {
-		// get two neighbouring edges
+    // get two neighbouring edges
     CObjectEdge &oed0 = *popePolygonEdges[iEdge].ope_Edge;
     CObjectEdge &oed1 = *popePolygonEdges[(iEdge+1)%ctVertices].ope_Edge;
-		// make their vectors
-  	DOUBLE3D vVector1 = *oed0.oed_Vertex0 - *oed0.oed_Vertex1;
-		DOUBLE3D vVector2 = *oed1.oed_Vertex1 - *oed1.oed_Vertex0;
-  	// add vector product of edges to the plane normal
+    // make their vectors
+    DOUBLE3D vVector1 = *oed0.oed_Vertex0 - *oed0.oed_Vertex1;
+    DOUBLE3D vVector2 = *oed1.oed_Vertex1 - *oed1.oed_Vertex0;
+    // add vector product of edges to the plane normal
     vNormal += vVector2*vVector1;
   }}
   // add one plane to planes array
   CObjectPlane *pplPlane = osc_aoplPlanes.New();
   // construct this plane from normal vector and one point
   if (bReverse) {
-	  *pplPlane= DOUBLEplane3D( -vNormal, *popePolygonEdges[0].ope_Edge->oed_Vertex0);
+    *pplPlane= DOUBLEplane3D( -vNormal, *popePolygonEdges[0].ope_Edge->oed_Vertex0);
   } else {
-	  *pplPlane= DOUBLEplane3D( vNormal, *popePolygonEdges[0].ope_Edge->oed_Vertex0);
+    *pplPlane= DOUBLEplane3D( vNormal, *popePolygonEdges[0].ope_Edge->oed_Vertex0);
   }
 
   // set this polygon's plane pointer
-	opoPolygon.opo_Plane = pplPlane;
+  opoPolygon.opo_Plane = pplPlane;
   // set this polygon's material pointer and color
-	opoPolygon.opo_Material = &omaMaterial;
-	opoPolygon.opo_colorColor = omaMaterial.omt_Color;
+  opoPolygon.opo_Material = &omaMaterial;
+  opoPolygon.opo_colorColor = omaMaterial.omt_Color;
   // set flags
-	opoPolygon.opo_ulFlags = ulFlags;
+  opoPolygon.opo_ulFlags = ulFlags;
 
   return &opoPolygon;
 }
@@ -546,7 +546,7 @@ void CObjectSector::CheckOptimizationAlgorithm(void)
     FOREACHINDYNAMICARRAY(osc_aovxVertices, CObjectVertex, itvx2) {
       CObjectVertex &vx1 = itvx1.Current();
       CObjectVertex &vx2 = itvx2.Current();
-      // !!!!why this fails sometimes ?(on spheres) ASSERT( (&vx1 == &vx2) || (CompareVertices(vx1, vx2)!=0) );
+      // !!!!why this fails sometimes ?(on spheres) ASSERT( (&vx1 == &vx2) || (CompareVertices(vx1, vx2) != 0) );
     }
   }
 
@@ -555,7 +555,7 @@ void CObjectSector::CheckOptimizationAlgorithm(void)
     FOREACHINDYNAMICARRAY(osc_aoplPlanes, CObjectPlane, itpl2) {
       CObjectPlane &pl1 = itpl1.Current();
       CObjectPlane &pl2 = itpl2.Current();
-      ASSERT( (&pl1 == &pl2) || (ComparePlanes(pl1, pl2)!=0));
+      ASSERT( (&pl1 == &pl2) || (ComparePlanes(pl1, pl2) != 0));
 
     }
   }
@@ -643,7 +643,7 @@ BOOL CObjectSector::ArePolygonsPlanar(void)
 void CObjectSector::RemapClonedPlanes(void)
 {
   // if there are no planes in the sector
-  if (osc_aoplPlanes.Count()==0) {
+  if (osc_aoplPlanes.Count() == 0) {
     // do nothing (optimization algorithms assume at least one plane present)
     return;
   }
@@ -673,7 +673,7 @@ void CObjectSector::RemapClonedPlanes(void)
     // for all planes in sorted array, except the last one
     for (INDEX iSortedPlane=0; iSortedPlane<ctPlanes-1; iSortedPlane++) {
       // if the next plane is same as this one
-      if ( ComparePlanes(*applSortedPlanes[iSortedPlane],
+      if (ComparePlanes(*applSortedPlanes[iSortedPlane],
                          *applSortedPlanes[iSortedPlane+1]) == 0 ) {
         // set its remap pointer to same as this remap pointer
         applSortedPlanes[iSortedPlane+1]->opl_Remap = applSortedPlanes[iSortedPlane]->opl_Remap;
@@ -689,7 +689,7 @@ void CObjectSector::RemapClonedPlanes(void)
       }
       for (INDEX iPlane2=iPlane1+1; iPlane2<ctPlanes; iPlane2++) {
         CObjectPlane &pl2 = osc_aoplPlanes[iPlane2];
-        if (ComparePlanes(pl1, pl2)==0) {
+        if (ComparePlanes(pl1, pl2) == 0) {
           pl2.opl_Remap = pl1.opl_Remap;
         }
       }
@@ -713,7 +713,7 @@ static BOOL bBug=FALSE;
 void CObjectSector::RemapClonedVertices(void)
 {
   // if there are no vertices in the sector
-  if (osc_aovxVertices.Count()==0) {
+  if (osc_aovxVertices.Count() == 0) {
     // do nothing (optimization algorithms assume at least one vertex present)
     return;
   }
@@ -743,7 +743,7 @@ void CObjectSector::RemapClonedVertices(void)
     // for all vertices in sorted array, except the last one
     for (INDEX iSortedVertex=0; iSortedVertex<ctVertices-1; iSortedVertex++) {
       // if the next vertex is same as this one
-      if ( CompareVertices(*apvxSortedVertices[iSortedVertex],
+      if (CompareVertices(*apvxSortedVertices[iSortedVertex],
                            *apvxSortedVertices[iSortedVertex+1]) == 0 ) {
         // set its remap pointer to same as this remap pointer
         apvxSortedVertices[iSortedVertex+1]->ovx_Remap = apvxSortedVertices[iSortedVertex]->ovx_Remap;
@@ -754,7 +754,7 @@ void CObjectSector::RemapClonedVertices(void)
         // check that it is really ok
         CObjectVertex &vx1 = *apvxSortedVertices[iSortedVertex];
         CObjectVertex &vx2 = *apvxSortedVertices[iSortedVertex+1];
-        ASSERT( (&vx1 == &vx2) || (CompareVertices(vx1, vx2)!=0));
+        ASSERT( (&vx1 == &vx2) || (CompareVertices(vx1, vx2) != 0));
         #endif
       }
     }
@@ -767,7 +767,7 @@ void CObjectSector::RemapClonedVertices(void)
       }
       for (INDEX iVertex2=iVertex1+1; iVertex2<ctVertices; iVertex2++) {
         CObjectVertex &vx2 = osc_aovxVertices[iVertex2];
-        if (CompareVertices(vx1, vx2)==0) {
+        if (CompareVertices(vx1, vx2) == 0) {
           vx2.ovx_Remap = vx1.ovx_Remap;
         }
       }
@@ -792,8 +792,8 @@ void CObjectSector::RemapClonedVertices(void)
     FOREACHINDYNAMICARRAY(osc_aovxVertices, CObjectVertex, itvx2) {
       CObjectVertex &vx1 = *(itvx1->ovx_Remap);
       CObjectVertex &vx2 = *(itvx2->ovx_Remap);
-      //ASSERT( (&vx1 == &vx2) || (CompareVertices(vx1, vx2)!=0));
-      if (!( (&vx1 == &vx2) || (CompareVertices(vx1, vx2)!=0))) {
+      //ASSERT( (&vx1 == &vx2) || (CompareVertices(vx1, vx2) != 0));
+      if (!( (&vx1 == &vx2) || (CompareVertices(vx1, vx2) != 0))) {
         goto bug;
       }
     }
@@ -828,7 +828,7 @@ skipbug:;
 void CObjectSector::RemoveUnusedVertices(void)
 {
   // if there are no vertices in the sector
-  if (osc_aovxVertices.Count()==0) {
+  if (osc_aovxVertices.Count() == 0) {
     // do nothing (optimization algorithms assume at least one vertex present)
     return;
   }
@@ -892,7 +892,7 @@ void CObjectSector::RemoveUnusedVertices(void)
 void CObjectSector::RemoveUnusedEdges(void)
 {
   // if there are no edges in the sector
-  if (osc_aoedEdges.Count()==0) {
+  if (osc_aoedEdges.Count() == 0) {
     // do nothing (optimization algorithms assume at least one edge present)
     return;
   }
@@ -957,7 +957,7 @@ void CObjectSector::RemoveUnusedEdges(void)
 void CObjectSector::RemoveUnusedPlanes(void)
 {
   // if there are no planes in the sector
-  if (osc_aoplPlanes.Count()==0) {
+  if (osc_aoplPlanes.Count() == 0) {
     // do nothing (optimization algorithms assume at least one plane present)
     return;
   }
@@ -1024,7 +1024,7 @@ void CObjectSector::SplitEdgeWithVertices(CObjectEdge &oedOriginal,
   BOOL bReversed;
 
   // edge must have length
-  ASSERT(CompareVertices(*pvx0, *pvx1)!=0);
+  ASSERT(CompareVertices(*pvx0, *pvx1) != 0);
 
   // if the edge is going in the direction of the run
   if (CompareVerticesAlongLine(*pvx0, *pvx1)<0) {
@@ -1044,14 +1044,14 @@ void CObjectSector::SplitEdgeWithVertices(CObjectEdge &oedOriginal,
 
   INDEX iVertex;  // current vertex in run
   // skip until start vertex is found
-  for (iVertex=0; apvxVertices[iVertex]!=pvx0; iVertex++) {
+  for (iVertex=0; apvxVertices[iVertex] != pvx0; iVertex++) {
     NOTHING;
   }
 
   // for all vertices after start vertex and stopping with end vertex
-  for (iVertex++; apvxVertices[iVertex-1]!=pvx1; iVertex++) {
+  for (iVertex++; apvxVertices[iVertex-1] != pvx1; iVertex++) {
     // if vertex is not same as last one
-    if (apvxVertices[iVertex]!=apvxVertices[iVertex-1]) {
+    if (apvxVertices[iVertex] != apvxVertices[iVertex-1]) {
       // create a new edge between the two vertices
       CObjectEdge *poedNewChild = osc_aoedEdges.New();
       if (bReversed) {
@@ -1059,7 +1059,7 @@ void CObjectSector::SplitEdgeWithVertices(CObjectEdge &oedOriginal,
       } else {
         *poedNewChild = CObjectEdge(*apvxVertices[iVertex-1], *apvxVertices[iVertex]);
       }
-      ASSERT(CompareVertices(*poedNewChild->oed_Vertex0, *poedNewChild->oed_Vertex1)!=0);
+      ASSERT(CompareVertices(*poedNewChild->oed_Vertex0, *poedNewChild->oed_Vertex1) != 0);
       // link it as a child of this edge
       poedNewChild->colinear1.oed_NextSibling = oedOriginal.colinear1.oed_FirstChild;
       oedOriginal.colinear1.oed_FirstChild = poedNewChild;
@@ -1128,13 +1128,13 @@ void CObjectPolygon::JoinContinuingEdges(CDynamicArray<CObjectEdge> &oedEdges)
           // if not already marked for removal
           if (&oedOther != NULL) {
             // if the two edges are collinear
-            if ( CompareEdgeLines(*oedThis.colinear2.oed_pedxLine, *oedOther.colinear2.oed_pedxLine)==0) {
+            if (CompareEdgeLines(*oedThis.colinear2.oed_pedxLine, *oedOther.colinear2.oed_pedxLine) == 0) {
               CObjectVertex *povxStartOther, *povxEndOther;
               // get start and end vertices
               itope2->GetVertices(povxStartOther, povxEndOther);
 
               // if the other edge is continuing to this one
-              if ( povxStartOther == povxEndThis ) {
+              if (povxStartOther == povxEndThis ) {
                 // extend the current edge by it
                 povxEndThis = povxEndOther;
                 // mark it for removal
@@ -1143,7 +1143,7 @@ void CObjectPolygon::JoinContinuingEdges(CDynamicArray<CObjectEdge> &oedEdges)
                 bChangeDone = TRUE;
 
               // if the other edge is continued by this one
-              } else if ( povxStartThis == povxEndOther) {
+              } else if (povxStartThis == povxEndOther) {
                 // extend the current edge by it
                 povxStartThis = povxStartOther;
                 // mark it for removal
@@ -1200,7 +1200,7 @@ void CObjectSector::SplitCollinearEdgesRun(CStaticArray<CEdgeEx *> &apedxSortedE
     }
   }}
   // for all edges in run
-  {for (INDEX iEdgeInRun=iFirstInRun; iEdgeInRun<=iLastInRun; iEdgeInRun++) {
+  {for (INDEX iEdgeInRun=iFirstInRun; iEdgeInRun <= iLastInRun; iEdgeInRun++) {
     CObjectEdge &oed = *apedxSortedEdgeLines[iEdgeInRun]->edx_poedEdge;
     // if first vertex is not marked
     if (!oed.oed_Vertex0->ovx_Tag) {
@@ -1217,7 +1217,7 @@ void CObjectSector::SplitCollinearEdgesRun(CStaticArray<CEdgeEx *> &apedxSortedE
   }}
 
   // if there are no vertices
-  if (ctVerticesOnLine==0) {
+  if (ctVerticesOnLine == 0) {
     // do nothing
     return;
   }
@@ -1241,14 +1241,14 @@ void CObjectSector::SplitCollinearEdgesRun(CStaticArray<CEdgeEx *> &apedxSortedE
   // create array of vertex pointers
   INDEX ctVerticesOnLine = (iLastInRun-iFirstInRun+1)*2;
   // if there are no vertices
-  if (ctVerticesOnLine==0) {
+  if (ctVerticesOnLine == 0) {
     // do nothing
     return;
   }
   CStaticArray<CObjectVertex *> apvxSortedVertices;
   apvxSortedVertices.New(ctVerticesOnLine);
   // for all edges in run
-  {for (INDEX iEdgeInRun=iFirstInRun; iEdgeInRun<=iLastInRun; iEdgeInRun++) {
+  {for (INDEX iEdgeInRun=iFirstInRun; iEdgeInRun <= iLastInRun; iEdgeInRun++) {
     CObjectEdge &oed = *apedxSortedEdgeLines[iEdgeInRun]->edx_poedEdge;
     // set vertex pointers
     apvxSortedVertices[(iEdgeInRun-iFirstInRun)*2]   = oed.oed_Vertex0;
@@ -1262,8 +1262,8 @@ void CObjectSector::SplitCollinearEdgesRun(CStaticArray<CEdgeEx *> &apedxSortedE
   // find largest axis of direction vector
   INDEX iMaxAxis = 0;
   DOUBLE fMaxAxis = 0.0f;
-  for (INDEX iAxis=1; iAxis<=3; iAxis++) {
-    if ( Abs(vDirection(iAxis)) > Abs(fMaxAxis) ) {
+  for (INDEX iAxis=1; iAxis <= 3; iAxis++) {
+    if (Abs(vDirection(iAxis)) > Abs(fMaxAxis) ) {
       fMaxAxis = vDirection(iAxis);
       iMaxAxis = iAxis;
     }
@@ -1295,7 +1295,7 @@ void CObjectSector::SplitCollinearEdgesRun(CStaticArray<CEdgeEx *> &apedxSortedE
   /* split each edge in turn */
 
   // for all edges in run
-  {for (INDEX iEdgeInRun=iFirstInRun; iEdgeInRun<=iLastInRun; iEdgeInRun++) {
+  {for (INDEX iEdgeInRun=iFirstInRun; iEdgeInRun <= iLastInRun; iEdgeInRun++) {
     CObjectEdge &oed = *apedxSortedEdgeLines[iEdgeInRun]->edx_poedEdge;
     // split the edge with the vertices
     SplitEdgeWithVertices(oed, apvxSortedVertices);
@@ -1348,7 +1348,7 @@ void CObjectSector::SplitCollinearEdges(void)
   INDEX iFirstInLine = 0;
   for (INDEX iSortedEdge=1; iSortedEdge<ctEdges; iSortedEdge++) {
     // if the previous edge is not collinear with this one
-    if ( CompareEdgeLines(*apedxSortedEdgeLines[iSortedEdge],
+    if (CompareEdgeLines(*apedxSortedEdgeLines[iSortedEdge],
                          *apedxSortedEdgeLines[iSortedEdge-1]) != 0 ) {
       // split the last run of collinear edges
       SplitCollinearEdgesRun(apedxSortedEdgeLines, iFirstInLine, iSortedEdge-1);
@@ -1371,7 +1371,7 @@ void CObjectSector::SplitCollinearEdges(void)
     {FOREACHINDYNAMICARRAY(itpo2->opo_PolygonEdges, CObjectPolygonEdge, itope) {
       // count all children
       for (CObjectEdge *poed = itope->ope_Edge->colinear1.oed_FirstChild;
-          poed!=NULL;
+          poed != NULL;
           poed = poed->colinear1.oed_NextSibling) {
         ctNewEdges++;
       }
@@ -1391,7 +1391,7 @@ void CObjectSector::SplitCollinearEdges(void)
 
       // for all of its children
       for (CObjectEdge *poed = itope->ope_Edge->colinear1.oed_FirstChild;
-          poed!=NULL;
+          poed != NULL;
           poed = poed->colinear1.oed_NextSibling) {
         // set the child polygon edge
         aopoNewPolygonEdges[iChildEdge] = CObjectPolygonEdge(poed, itope->ope_Backward);
@@ -1458,7 +1458,7 @@ void CObjectPolygon::RemoveRedundantEdges(void)
 }
 
 /*
- * Remove polygon edges that are marked as unused (oed_Edge==NULL) from polygon.
+ * Remove polygon edges that are marked as unused (oed_Edge == NULL) from polygon.
  */
 void CObjectPolygon::RemoveMarkedEdges(INDEX ctEdges)
 {
@@ -1496,12 +1496,12 @@ void CObjectPolygon::RemoveDummyEdgeReferences(void)
   {FOREACHINDYNAMICARRAY(opo_PolygonEdges, CObjectPolygonEdge, itope) {
     // if it has zero length
     if (itope->ope_Edge->oed_Vertex0 == itope->ope_Edge->oed_Vertex1) {
-      ASSERT(CompareVertices(*itope->ope_Edge->oed_Vertex0, *itope->ope_Edge->oed_Vertex1)==0);
+      ASSERT(CompareVertices(*itope->ope_Edge->oed_Vertex0, *itope->ope_Edge->oed_Vertex1) == 0);
       // mark it for removal
       itope->ope_Edge = NULL;
       ctUsedEdges--;
     } else {
-      // !!!! why this fails sometimes? ASSERT(CompareVertices(*itope->ope_Edge->oed_Vertex0, *itope->ope_Edge->oed_Vertex1)!=0);
+      // !!!! why this fails sometimes? ASSERT(CompareVertices(*itope->ope_Edge->oed_Vertex0, *itope->ope_Edge->oed_Vertex1) != 0);
     }
   }}
 
@@ -1527,7 +1527,7 @@ void CObjectSector::RemoveDummyEdgeReferences(void)
 void CObjectSector::RemapClonedEdges(void)
 {
   // if there are no edges in the sector
-  if (osc_aoedEdges.Count()==0) {
+  if (osc_aoedEdges.Count() == 0) {
     // do nothing
     return;
   }
@@ -1559,7 +1559,7 @@ void CObjectSector::RemapClonedEdges(void)
   // for all edges in normal sorted array, except the last one
   for (INDEX iSortedEdge=0; iSortedEdge<ctEdges-1; iSortedEdge++) {
     // if the next plane is same as this one
-    if ( CompareEdges(*apedSortedEdges[iSortedEdge],
+    if (CompareEdges(*apedSortedEdges[iSortedEdge],
                          *apedSortedEdges[iSortedEdge+1]) == 0 ) {
       // set its remap pointer to same as this remap pointer
       apedSortedEdges[iSortedEdge+1]->optimize.oed_Remap = apedSortedEdges[iSortedEdge]->optimize.oed_Remap;
@@ -1595,7 +1595,7 @@ void CObjectSector::RemapClonedEdges(void)
   {FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited) {
     CObjectEdge &edInverse = *ited->optimize.oed_InverseEdge;
     // check that no remapped edges have been marked as inverses
-    ASSERT( &edInverse==NULL || edInverse.optimize.oed_Remap == &edInverse );
+    ASSERT( &edInverse == NULL || edInverse.optimize.oed_Remap == &edInverse );
   }}
 #endif // NDEBUG
 
@@ -1609,7 +1609,7 @@ void CObjectSector::RemapClonedEdges(void)
       CObjectEdge *pedNew= itope->ope_Edge->optimize.oed_Remap;
 
       // if has an inverse edge
-      if (pedNew->optimize.oed_InverseEdge!=NULL) {
+      if (pedNew->optimize.oed_InverseEdge != NULL) {
         // use the inverse edge
         pedNew = pedNew->optimize.oed_InverseEdge;
         // mark that the direction has changed
@@ -1785,7 +1785,7 @@ CObjectSector &CObjectSector::operator=(CObjectSector &oscOriginal)
   FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
     // use plane and material in this sector with same indices
     itopo->opo_Plane = &osc_aoplPlanes[itopo->opo_Plane->opl_Index];
-    if (itopo->opo_Material!=NULL) {
+    if (itopo->opo_Material != NULL) {
       itopo->opo_Material = &osc_aomtMaterials[itopo->opo_Material->omt_Index];
     }
     // for all polygon-edges in this polygon
@@ -1906,7 +1906,7 @@ void CObjectSector::RecalculatePlanes(void)
     INDEX ctVertices = opo.opo_PolygonEdges.Count();
     opo.opo_PolygonEdges.Lock();
     {for (INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
-		  // get its vertices in counterclockwise order
+      // get its vertices in counterclockwise order
       CObjectPolygonEdge &ope = opo.opo_PolygonEdges[iVertex];
       CObjectVertex *povx0, *povx1;
       if (ope.ope_Backward) {
@@ -1918,7 +1918,7 @@ void CObjectSector::RecalculatePlanes(void)
       }
       DOUBLE3D vSum = *povx0+*povx1;
       DOUBLE3D vDif = *povx0-*povx1;
-		  // add the edge contribution to the normal vector
+      // add the edge contribution to the normal vector
       vNormal(1) += vDif (2)*vSum(3);
       vNormal(2) += vDif (3)*vSum(1);
       vNormal(3) += vDif (1)*vSum(2);
@@ -1933,7 +1933,7 @@ void CObjectSector::RecalculatePlanes(void)
       // add one plane to planes array
       CObjectPlane *pplPlane = osc_aoplPlanes.New();
       // construct this plane from normal vector and one point
-	    *pplPlane= DOUBLEplane3D(vNormal, *opo.opo_PolygonEdges[0].ope_Edge->oed_Vertex0);
+      *pplPlane= DOUBLEplane3D(vNormal, *opo.opo_PolygonEdges[0].ope_Edge->oed_Vertex0);
       opo.opo_Plane = pplPlane;
     }
 

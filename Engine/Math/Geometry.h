@@ -32,7 +32,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 ENGINE_API extern void MakeRotationMatrix(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles);
 ENGINE_API extern void MakeRotationMatrixFast(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles);
 /* Calculate inverse rotation matrix from angles in 3D. */
-//ENGINE_API extern void operator!=(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles);
+//ENGINE_API extern void operator != (FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles);
 ENGINE_API extern void MakeInverseRotationMatrix(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles);
 ENGINE_API extern void MakeInverseRotationMatrixFast(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles);
 /* Decompose rotation matrix into angles in 3D. */
@@ -58,7 +58,7 @@ ENGINE_API extern void UpVectorToAngles(const FLOAT3D &vUp,
 /* Calculate rotation matrix from angles in 3D. */
 ENGINE_API extern void operator^=(DOUBLEmatrix3D &t3dRotation, const ANGLE3D &a3dAngles);
 /* Calculate inverse rotation matrix from angles in 3D. */
-ENGINE_API extern void operator!=(DOUBLEmatrix3D &t3dRotation, const ANGLE3D &a3dAngles);
+ENGINE_API extern void operator != (DOUBLEmatrix3D &t3dRotation, const ANGLE3D &a3dAngles);
 /* Decompose rotation matrix into angles in 3D. */
 ENGINE_API extern void operator^=(ANGLE3D &a3dAngles, const DOUBLEmatrix3D &t3dRotation);
 

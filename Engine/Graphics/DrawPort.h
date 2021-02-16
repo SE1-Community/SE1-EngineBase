@@ -25,19 +25,19 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 class ENGINE_API CDrawPort {
 // implementation:
 public:
-  CListNode	dp_NodeInRaster;	   // for linking in list of clones
+  CListNode  dp_NodeInRaster;     // for linking in list of clones
 public:
-  class CRaster *dp_Raster;	     // pointer to the Raster this refers to
+  class CRaster *dp_Raster;       // pointer to the Raster this refers to
   class CFontData *dp_FontData;  // pointer to the current text font
-  PIX   dp_Width, dp_Height;		 // width, height in pixels
-  PIX   dp_MinI, dp_MinJ;		     // I,J coord of the upper left edge in the Raster
-  PIX   dp_MaxI, dp_MaxJ;		     // I,J coord of the lower right edge in the Raster
-  PIX   dp_ScissorMinI, dp_ScissorMinJ;	// I,J coord of the upper left edge in the Raster
-  PIX   dp_ScissorMaxI, dp_ScissorMaxJ;	// I,J coord of the lower right edge in the Raster
-  PIX	  dp_pixTextCharSpacing;	 // space between chars in text
-  PIX	  dp_pixTextLineSpacing;	 // space between lines in text
-  FLOAT dp_fTextScaling;				 // scaling factor for font size
-  FLOAT dp_fTextAspect;				   // aspect ratio for font (x/y)
+  PIX   dp_Width, dp_Height;     // width, height in pixels
+  PIX   dp_MinI, dp_MinJ;         // I,J coord of the upper left edge in the Raster
+  PIX   dp_MaxI, dp_MaxJ;         // I,J coord of the lower right edge in the Raster
+  PIX   dp_ScissorMinI, dp_ScissorMinJ;  // I,J coord of the upper left edge in the Raster
+  PIX   dp_ScissorMaxI, dp_ScissorMaxJ;  // I,J coord of the lower right edge in the Raster
+  PIX    dp_pixTextCharSpacing;   // space between chars in text
+  PIX    dp_pixTextLineSpacing;   // space between lines in text
+  FLOAT dp_fTextScaling;         // scaling factor for font size
+  FLOAT dp_fTextAspect;           // aspect ratio for font (x/y)
   INDEX dp_iTextMode;            // text output mode (-1 = print special codes, 0 = ignore special codes, 1 = parse special codes)
   FLOAT dp_fWideAdjustment;      // for wide (16:9 or 16:10) screen support (needed in some calculations) = 1.0f or >1 (10/12 perhaps)
   BOOL  dp_bRenderingOverlay;    // set when scene renderer requires overlay mode (don't clear z-buffer)

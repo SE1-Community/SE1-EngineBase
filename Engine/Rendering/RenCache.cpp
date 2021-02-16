@@ -58,7 +58,7 @@ __forceinline INDEX CRenderer::IsSectorVisible(CBrush3D &br, CBrushSector &bsc)
 
   // if the sector bounding sphere is inside view frustum
   INDEX iFrustumTest = ppr->TestSphereToFrustum( vCenter, fR);
-  if (iFrustumTest==0) { // if test was indeterminate
+  if (iFrustumTest == 0) { // if test was indeterminate
     // create oriented box and test it to frustum
     FLOATobbox3D boxEntity( bsc.bsc_boxBoundingBox, ppr->pr_TranslationVector, ppr->pr_ViewerRotationMatrix);
     iFrustumTest = ppr->TestBoxToFrustum(boxEntity);
@@ -262,18 +262,18 @@ void CRenderer::SetupFogAndHaze(void)
       // if viewer is not in haze
       if (!re_bViewerInHaze) {
         // if viewer is in this sector
-        if (bsc.bsc_bspBSPTree.TestSphere(re_vdViewSphere, 0.01)>=0) {
+        if (bsc.bsc_bspBSPTree.TestSphere(re_vdViewSphere, 0.01) >= 0) {
           // mark that viewer is in haze
           re_bViewerInHaze = TRUE;
         }
         // if there is a viewer
-        else if (re_penViewer!=NULL) { 
+        else if (re_penViewer != NULL) { 
           // check rest of sectors the viewer is in
           {FOREACHSRCOFDST( re_penViewer->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
             CHazeParameters hpDummy;
             if (pbsc->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->GetHaze( pbsc->GetHazeType(), hpDummy, vViewDir)) {
               // if viewer is in this sector
-              if (pbsc->bsc_bspBSPTree.TestSphere(re_vdViewSphere, 0.01)>=0) {
+              if (pbsc->bsc_bspBSPTree.TestSphere(re_vdViewSphere, 0.01) >= 0) {
                 // mark that viewer is in haze
                 re_bViewerInHaze = TRUE;
                 break;
@@ -321,7 +321,7 @@ void CRenderer::AddEdgeToAddAndRemoveLists(CScreenEdge &sed)
   ASSERT(sed.sed_xI < FIX16_16(re_fbbClipBox.Max()(1)+SENTINELEDGE_EPSILON));
 
   SLONG slIInList;
-  while (plnInList->ln_Succ!=NULL) {
+  while (plnInList->ln_Succ != NULL) {
     slIInList = 
       ((CAddEdge*)((UBYTE*)plnInList-offsetof(CAddEdge, ade_lnInAdd))) -> ade_xI.slHolder;
     // if the edge in list is right of the one to add
@@ -343,7 +343,7 @@ void CRenderer::AddEdgeToAddAndRemoveLists(CScreenEdge &sed)
   plnAfter->ln_Pred = plnThis;
   // mark that it is added
   sed.sed_bAdded = TRUE;
-  ASSERT(re_actAddCounts[iTopLine]==re_alhAddLists[iTopLine].Count());
+  ASSERT(re_actAddCounts[iTopLine] == re_alhAddLists[iTopLine].Count());
 
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDEDGETOADDLIST);
 }
@@ -400,12 +400,12 @@ inline void CRenderer::MakeScreenEdge(
     fDJ = -fDJ;
   }
 
-  ASSERT(fI0>=re_fbbClipBox.Min()(1));
-  ASSERT(fI1>=re_fbbClipBox.Min()(1));
-  ASSERT(fI0>=-0.5f);
-  ASSERT(fI1>=-0.5f);
-  ASSERT(fI0<=re_fbbClipBox.Max()(1));
-  ASSERT(fI1<=re_fbbClipBox.Max()(1));
+  ASSERT(fI0 >= re_fbbClipBox.Min()(1));
+  ASSERT(fI1 >= re_fbbClipBox.Min()(1));
+  ASSERT(fI0 >= -0.5f);
+  ASSERT(fI1 >= -0.5f);
+  ASSERT(fI0 <= re_fbbClipBox.Max()(1));
+  ASSERT(fI1 <= re_fbbClipBox.Max()(1));
 
   // set line direction
   sed.sed_ldtDirection = ldtDirection;
@@ -468,7 +468,7 @@ void CRenderer::AddScreenEdges(void)
     CScreenPolygon &spo = re_aspoScreenPolygons[ispo];
 
     // if polygon has no edges
-    if (spo.spo_ctEdgeVx==0) {
+    if (spo.spo_ctEdgeVx == 0) {
       // skip it
       continue;
     }
@@ -516,7 +516,7 @@ void CRenderer::SetOneTextureParameters(CBrushPolygon &bpo, ScenePolygon &spo, I
   CTextureData *ptd = (CTextureData *)bpo.bpo_abptTextures[iLayer].bpt_toTexture.GetData();
 
   // if there is no texture or it should not be shown
-  if (ptd==NULL || !_wrpWorldRenderPrefs.wrp_abTextureLayers[iLayer]) {
+  if (ptd == NULL || !_wrpWorldRenderPrefs.wrp_abTextureLayers[iLayer]) {
     // do nothing
     return;
   }
@@ -529,7 +529,7 @@ void CRenderer::SetOneTextureParameters(CBrushPolygon &bpo, ScenePolygon &spo, I
   CTextureBlending &tb = re_pwoWorld->wo_atbTextureBlendings[bpo.bpo_abptTextures[iLayer].s.bpt_ubBlend];
 
   // set texture blending flags
-  ASSERT( BPTF_CLAMPU==STXF_CLAMPU && BPTF_CLAMPV==STXF_CLAMPV && BPTF_AFTERSHADOW==STXF_AFTERSHADOW);
+  ASSERT( BPTF_CLAMPU == STXF_CLAMPU && BPTF_CLAMPV == STXF_CLAMPV && BPTF_AFTERSHADOW == STXF_AFTERSHADOW);
   spo.spo_aubTextureFlags[iLayer] = 
      (bpo.bpo_abptTextures[iLayer].s.bpt_ubFlags & (BPTF_CLAMPU|BPTF_CLAMPV|BPTF_AFTERSHADOW))
    | (tb.tb_ubBlendingType);
@@ -540,10 +540,10 @@ void CRenderer::SetOneTextureParameters(CBrushPolygon &bpo, ScenePolygon &spo, I
 
   // if texture should be not transformed
   INDEX iTransformation = bpo.bpo_abptTextures[iLayer].s.bpt_ubScroll;
-  if (iTransformation==0)
+  if (iTransformation == 0)
   {
     // if texture is wrapped on both axes
-    if ((bpo.bpo_abptTextures[iLayer].s.bpt_ubFlags&(BPTF_CLAMPU|BPTF_CLAMPV))==0)
+    if ((bpo.bpo_abptTextures[iLayer].s.bpt_ubFlags&(BPTF_CLAMPU|BPTF_CLAMPV)) == 0)
     { // make a mapping adjusted for texture wrapping
       const MEX mexMaskU = ptd->GetWidth()  -1;
       const MEX mexMaskV = ptd->GetHeight() -1;
@@ -602,7 +602,7 @@ CScreenPolygon *CRenderer::MakeScreenPolygon(CBrushPolygon &bpo)
   spo.spo_ubIllumination = bpo.bpo_bppProperties.bpp_ubIlluminationType;
 
   // if this is a field brush
-  if (br.br_pfsFieldSettings!=NULL) {
+  if (br.br_pfsFieldSettings != NULL) {
     // set the polygon up to render as a field brush
     bpo.bpo_abptTextures[0].bpt_toTexture.SetData(br.br_pfsFieldSettings->fs_toTexture.GetData());
     bpo.bpo_abptTextures[0].s.bpt_colColor = br.br_pfsFieldSettings->fs_colColor;
@@ -682,7 +682,7 @@ CScreenPolygon *CRenderer::MakeScreenPolygon(CBrushPolygon &bpo)
     (bpo.bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->en_ulFlags&ENF_BACKGROUND);
   // if this is a backfill polygon or illumination polygon for rendering lights
   if (bBackgroundPolygon
-    ||(re_ubLightIllumination!=0 && re_ubLightIllumination==bpo.bpo_bppProperties.bpp_ubIlluminationType)) {
+    ||(re_ubLightIllumination != 0 && re_ubLightIllumination == bpo.bpo_bppProperties.bpp_ubIlluminationType)) {
     // mark this polygon as backlight (for shadow rendering)
     sppo.spo_ulFlags |= SPOF_BACKLIGHT;
     // adjust gradients used for sorting to be just before the far sentinel
@@ -711,8 +711,8 @@ CScreenPolygon *CRenderer::MakeScreenPolygon(CBrushPolygon &bpo)
       // if texture is blended
       if (sppo.spo_aubTextureFlags[i] & STXF_BLEND_ALPHA) {
         // adjust it's alpha factor
-        SLONG slAlpha = (sppo.spo_acolColors[i] & CT_AMASK) >>CT_ASHIFT;
-        slAlpha = (slAlpha*slOpacity)>>8;
+        SLONG slAlpha = (sppo.spo_acolColors[i] & CT_AMASK) >> CT_ASHIFT;
+        slAlpha = (slAlpha*slOpacity) >> 8;
         sppo.spo_acolColors[i] &= ~CT_AMASK;
         sppo.spo_acolColors[i] |= slAlpha;
       }
@@ -743,7 +743,7 @@ CScreenPolygon *CRenderer::MakeScreenPolygon(CBrushPolygon &bpo)
       if (!(bpo.bpo_ulFlags & BPOF_TRANSLUCENT) && !bForceTraslucency) {
         // set its texture for selection
         CModelObject *pmoSelectedPortal = _wrpWorldRenderPrefs.wrp_pmoSelectedPortal;
-        if (pmoSelectedPortal!=NULL) {
+        if (pmoSelectedPortal != NULL) {
           sppo.spo_aptoTextures[0] = &pmoSelectedPortal->mo_toTexture;
           sppo.spo_acolColors[0] = C_WHITE|CT_OPAQUE;
           sppo.spo_aubTextureFlags[0] = STXF_BLEND_ALPHA;
@@ -780,8 +780,8 @@ void CRenderer::AddPolygonToScene( CScreenPolygon *pspo)
 {
   // if the polygon is not falid or occluder and not selected 
   CBrushPolygon &bpo = *pspo->spo_pbpoBrushPolygon;
-  if (&bpo==NULL || ((bpo.bpo_ulFlags&BPOF_OCCLUDER) && (!(bpo.bpo_ulFlags&BPOF_SELECTED) ||
-      _wrpWorldRenderPrefs.GetSelectionType()!=CWorldRenderPrefs::ST_POLYGONS))) {
+  if (&bpo == NULL || ((bpo.bpo_ulFlags&BPOF_OCCLUDER) && (!(bpo.bpo_ulFlags&BPOF_SELECTED) ||
+      _wrpWorldRenderPrefs.GetSelectionType() != CWorldRenderPrefs::ST_POLYGONS))) {
     // do not add it to rendering
     return;
   }
@@ -822,7 +822,7 @@ void CRenderer::MakeSpan(CScreenPolygon &spo, CScreenEdge *psed0, CScreenEdge *p
 {
   // the polygon must not be portal and not illuminating for rendering lights
   ASSERT(!(spo.IsPortal()
-       && (re_ubLightIllumination==0 || re_ubLightIllumination!=spo.spo_ubIllumination)));
+       && (re_ubLightIllumination == 0 || re_ubLightIllumination != spo.spo_ubIllumination)));
 
   // if rendering shadows
   if (re_bRenderingShadows) {
@@ -873,7 +873,7 @@ void CRenderer::AddSpansToScene(void)
   FLOAT fpixLastScanJOffseted = re_pixCurrentScanJ-1 +OFFSET_DN;
   // first, little safety check - quit if zero spans in line!
   INDEX ctSpans = re_aspSpans.Count();
-  if (ctSpans==0) {
+  if (ctSpans == 0) {
     return;
   }
 
@@ -889,11 +889,11 @@ void CRenderer::AddSpansToScene(void)
     // get its length
     PIX pixLen = pixI1-pixI0;
     // skip this span if zero pixels long
-    if (pixLen<=0) continue;
+    if (pixLen <= 0) continue;
 
     // if the span's polygon is background and of proper illumination
     if ((spSpan.sp_pspoPolygon->spo_spoScenePolygon.spo_ulFlags & SPOF_BACKLIGHT)
-      &&(spSpan.sp_pspoPolygon->spo_ubIllumination==re_ubLightIllumination)) {
+      &&(spSpan.sp_pspoPolygon->spo_ubIllumination == re_ubLightIllumination)) {
       // mark those pixels as lighted
       memset(pubShadow, 255, pixLen);
       pubShadow+=pixLen;
@@ -910,7 +910,7 @@ void CRenderer::AddSpansToScene(void)
     // add to pixel counter
     ctPixels+=pixLen;
   }
-  ASSERT(ctPixels<=re_pixSizeI);
+  ASSERT(ctPixels <= re_pixSizeI);
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDSPANSTOSCENE);
 }
 

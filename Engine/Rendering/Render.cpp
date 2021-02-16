@@ -110,7 +110,7 @@ static enum CStatForm::StatTimerIndex _stiLastStatsMode = (enum CStatForm::StatT
 void StopStatsMode(void)
 {
   ASSERT( (INDEX)_stiLastStatsMode != -1);
-  if (_stiLastStatsMode>=0) _sfStats.StopTimer(_stiLastStatsMode);
+  if (_stiLastStatsMode >= 0) _sfStats.StopTimer(_stiLastStatsMode);
   _stiLastStatsMode = (enum CStatForm::StatTimerIndex)-1;
 }
 
@@ -118,7 +118,7 @@ void StartStatsMode( enum CStatForm::StatTimerIndex sti)
 {
   ASSERT( (INDEX)sti != -1);
   ASSERT( (INDEX)_stiLastStatsMode == -1);
-  if (sti>=0) _sfStats.StartTimer(sti);
+  if (sti >= 0) _sfStats.StartTimer(sti);
   _stiLastStatsMode = sti;
 }
 
@@ -330,7 +330,7 @@ void CRenderer::AddInitialSectors(void)
   re_ulVisInclude = 0;
 
   // if showing vis tweaks
-  if (_wrpWorldRenderPrefs.wrp_bShowVisTweaksOn && _pselbscVisTweaks!=NULL) {
+  if (_wrpWorldRenderPrefs.wrp_bShowVisTweaksOn && _pselbscVisTweaks != NULL) {
     // add flags for selected flags
     if (_pselbscVisTweaks->Count()>0) {
       re_ulVisExclude = VISM_INCLUDEEXCLUDE;
@@ -348,7 +348,7 @@ void CRenderer::AddInitialSectors(void)
   re_bBackgroundEnabled = FALSE;
   if (!re_bRenderingShadows && _wrpWorldRenderPrefs.wrp_bBackgroundTextureOn) {
     CEntity *penBackgroundViewer = re_pwoWorld->GetBackgroundViewer();
-    if (penBackgroundViewer!=NULL) {
+    if (penBackgroundViewer != NULL) {
       re_bBackgroundEnabled = TRUE;
       re_penBackgroundViewer = penBackgroundViewer;
       re_prBackgroundProjection = re_prProjection;
@@ -370,16 +370,16 @@ void CRenderer::AddInitialSectors(void)
   }
 
   // if a viewer entity is given
-  if (re_penViewer!=NULL) {
+  if (re_penViewer != NULL) {
     // add all zoning sectors near the entity
     AddZoningSectorsAroundEntity(re_penViewer, re_prProjection->ViewerPlacementR().pl_PositionVector);
     // make sure the viewer is always added (if model)
-    if (re_penViewer->en_RenderType==CEntity::RT_MODEL ||
-       re_penViewer->en_RenderType==CEntity::RT_EDITORMODEL) {
+    if (re_penViewer->en_RenderType == CEntity::RT_MODEL ||
+       re_penViewer->en_RenderType == CEntity::RT_EDITORMODEL) {
       AddModelEntity(re_penViewer);
     }
   // if a viewer polygons are given
-  } else if (re_pcspoViewPolygons!=NULL) {
+  } else if (re_pcspoViewPolygons != NULL) {
     // for each polygon
     FOREACHINDYNAMICCONTAINER(*re_pcspoViewPolygons, CScreenPolygon, itspo) {
       CBrushPolygon *pbpo = itspo->spo_pbpoBrushPolygon;
@@ -387,7 +387,7 @@ void CRenderer::AddInitialSectors(void)
       CBrushSector *pbsc = pbpo->bpo_pbscSector;
       CBrushMip *pbmBrushMip = pbsc->bsc_pbmBrushMip;
       CBrush3D *pbrBrush = pbmBrushMip->bm_pbrBrush;
-      ASSERT(pbrBrush!=NULL);
+      ASSERT(pbrBrush != NULL);
       CEntity *penBrush = pbrBrush->br_penEntity;
       // if the brush is zoning
       if (penBrush->en_ulFlags&ENF_ZONING) {
@@ -702,7 +702,7 @@ void CRenderer::Render(void)
   Initialize();
   // init select-on-render functionality if not rendering shadows
   extern void InitSelectOnRender( PIX pixSizeI, PIX pixSizeJ);
-  if (re_pdpDrawPort!=NULL) InitSelectOnRender( re_pdpDrawPort->GetWidth(), re_pdpDrawPort->GetHeight());
+  if (re_pdpDrawPort != NULL) InitSelectOnRender( re_pdpDrawPort->GetWidth(), re_pdpDrawPort->GetHeight());
   // add initial sectors to active lists
   AddInitialSectors();
   // scan through portals for other sectors
@@ -712,18 +712,18 @@ void CRenderer::Render(void)
   ChangeStatsMode(CStatForm::STI_SWAPBUFFERS);
   extern INDEX ogl_iFinish;  ogl_iFinish = Clamp( ogl_iFinish, 0L, 3L);
   extern INDEX d3d_iFinish;  d3d_iFinish = Clamp( d3d_iFinish, 0L, 3L);
-  if ((ogl_iFinish==1 && _pGfx->gl_eCurrentAPI==GAT_OGL) 
+  if ((ogl_iFinish == 1 && _pGfx->gl_eCurrentAPI == GAT_OGL) 
 #ifdef SE1_D3D
-   || (d3d_iFinish==1 && _pGfx->gl_eCurrentAPI==GAT_D3D)
+   || (d3d_iFinish == 1 && _pGfx->gl_eCurrentAPI == GAT_D3D)
 #endif // SE1_D3D
    ) 
    gfxFinish();
 
   // check any eventual delayed depth points outside the mirror (if API and time allows)
-  if (!re_bRenderingShadows && re_iIndex==0) {
+  if (!re_bRenderingShadows && re_iIndex == 0) {
     // OpenGL allows us to check z-buffer from previous frame - cool deal!
     // Direct3D is, of course, totally different story. :(
-    if (_pGfx->gl_eCurrentAPI==GAT_OGL || d3d_bAlternateDepthReads) {
+    if (_pGfx->gl_eCurrentAPI == GAT_OGL || d3d_bAlternateDepthReads) {
       ChangeStatsMode(CStatForm::STI_FLARESRENDERING);
       extern void CheckDelayedDepthPoints( const CDrawPort *pdp, INDEX iMirrorLevel=0);
       CheckDelayedDepthPoints(re_pdpDrawPort);
@@ -734,7 +734,7 @@ void CRenderer::Render(void)
 
   // if may render one more mirror recursion
   ChangeStatsMode(CStatForm::STI_WORLDTRANSFORM);
-  if ( !re_bRenderingShadows
+  if (!re_bRenderingShadows
     &&  re_prProjection.IsPerspective()
     &&  re_iIndex<MAX_RENDERERS-1
     &&  re_amiMirrors.Count()>0
@@ -790,7 +790,7 @@ void CRenderer::Render(void)
       pixMirrorMaxJ  = dpMirror.dp_MaxJ - re_pdpDrawPort->dp_MinJ +1;
       pixMirrorSizeI = pixMirrorMaxI-pixMirrorMinI;
       pixMirrorSizeJ = pixMirrorMaxJ-pixMirrorMinJ;
-      ASSERT( pixMirrorSizeI==dpMirror.dp_Width && pixMirrorSizeJ==dpMirror.dp_Height);
+      ASSERT( pixMirrorSizeI == dpMirror.dp_Width && pixMirrorSizeJ == dpMirror.dp_Height);
 
       // set it up for rendering
       re.re_pwoWorld     = re_pwoWorld;
@@ -816,7 +816,7 @@ void CRenderer::Render(void)
         pl.AbsoluteToRelativeSmooth(mi.mi_mp.mp_plWarpIn);
         pl.RelativeToAbsoluteSmooth(mi.mi_mp.mp_plWarpOut);
         re.re_prProjection->ViewerPlacementL() = pl;
-        if (re.re_prProjection.IsPerspective() && mi.mi_mp.mp_fWarpFOV>=1 && mi.mi_mp.mp_fWarpFOV<=170) {
+        if (re.re_prProjection.IsPerspective() && mi.mi_mp.mp_fWarpFOV >= 1 && mi.mi_mp.mp_fWarpFOV <= 170) {
           ((CPerspectiveProjection3D&)*re.re_prProjection).FOVL() = mi.mi_mp.mp_fWarpFOV;
         }
       // mirror!
@@ -854,7 +854,7 @@ void CRenderer::Render(void)
     re_amiMirrors.PopAll();
 
     // fill z-buffer only if no mirrors have been drawn, not rendering second layer in world editor and not in wireframe mode
-    if ( !_bMirrorDrawn
+    if (!_bMirrorDrawn
       && !re_pdpDrawPort->IsOverlappedRendering()
       && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
       re_pdpDrawPort->FillZBuffer(ZBUF_BACK);
@@ -869,7 +869,7 @@ void CRenderer::Render(void)
     // if rendering a mirror
     // or not rendering second layer in world editor
     // and not in wireframe mode
-    if ( re_iIndex>0 
+    if (re_iIndex>0 
      || !re_bRenderingShadows
      && !re_pdpDrawPort->IsOverlappedRendering()
      && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
@@ -884,12 +884,12 @@ void CRenderer::Render(void)
   StopFog();
   StopHaze();
   // reset vertex arrays if this is the last renderer  
-  if (re_iIndex==0) _avtxScene.PopAll();
+  if (re_iIndex == 0) _avtxScene.PopAll();
 
   // for D3D (or mirror) we have to check depth points now, because we need back (not depth!) buffer for it,
   // and D3D can't guarantee that it won't be discarded upon swapbuffers (especially if multisampling is on!) :(
 #ifdef SE1_D3D
-  if (!re_bRenderingShadows && ((_pGfx->gl_eCurrentAPI==GAT_D3D && !d3d_bAlternateDepthReads) || re_iIndex>0)) {
+  if (!re_bRenderingShadows && ((_pGfx->gl_eCurrentAPI == GAT_D3D && !d3d_bAlternateDepthReads) || re_iIndex>0)) {
     extern void CheckDelayedDepthPoints( const CDrawPort *pdp, INDEX iMirrorLevel=0);
     CheckDelayedDepthPoints( re_pdpDrawPort, re_iIndex);
   }
@@ -900,7 +900,7 @@ void CRenderer::Render(void)
   EndSelectOnRender();
 
   // assure that FPU precision was low all the rendering time
-  ASSERT( GetFPUPrecision()==FPT_24BIT);
+  ASSERT( GetFPUPrecision() == FPT_24BIT);
   StopStatsMode();
 }
 
@@ -912,7 +912,7 @@ CRenderer::CRenderer(void)
 {
   // setup self index
   INDEX i = this-_areRenderers;
-  ASSERT(i>=0 && i<MAX_RENDERERS);
+  ASSERT(i >= 0 && i<MAX_RENDERERS);
   re_iIndex = i;
 }
 /*
@@ -949,9 +949,9 @@ void RenderView(CWorld &woWorld, CEntity &enViewer,
   CAnyProjection3D &prProjection, CDrawPort &dpDrawport)
 {
   // let the worldbase execute its render function
-  if (woWorld.wo_pecWorldBaseClass!=NULL
-    &&woWorld.wo_pecWorldBaseClass->ec_pdecDLLClass!=NULL
-    &&woWorld.wo_pecWorldBaseClass->ec_pdecDLLClass->dec_OnWorldRender!=NULL) {
+  if (woWorld.wo_pecWorldBaseClass != NULL
+    &&woWorld.wo_pecWorldBaseClass->ec_pdecDLLClass != NULL
+    &&woWorld.wo_pecWorldBaseClass->ec_pdecDLLClass->dec_OnWorldRender != NULL) {
     woWorld.wo_pecWorldBaseClass->ec_pdecDLLClass->dec_OnWorldRender(&woWorld);
   }
 

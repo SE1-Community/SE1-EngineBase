@@ -416,7 +416,7 @@ extern void GameAgent_ServerUpdate(void)
         CTString strPacket;
         CTString strLocation;
         strLocation = _pShell->GetString("net_strLocalHost");
-        if ( strLocation == "") {
+        if (strLocation == "") {
           strLocation = "Heartland";
         }
         strPacket.PrintF( PCKQUERY,
@@ -476,7 +476,7 @@ extern void GameAgent_ServerUpdate(void)
         CTString strPacket;
         CTString strLocation;
         strLocation = _pShell->GetString("net_strLocalHost");
-        if ( strLocation == "") {
+        if (strLocation == "") {
           strLocation = "Heartland";
         }
         strPacket.PrintF( PCKBASIC,
@@ -544,87 +544,87 @@ extern void GameAgent_ServerStateChanged(void)
 extern void GameAgent_EnumTrigger(BOOL bInternet)
 {
 
-  if ( _pNetwork->ga_bEnumerationChange ) {
+  if (_pNetwork->ga_bEnumerationChange ) {
     return;
   }
   
-  if ( !bInternet && ga_bMSLegacy) {
+  if (!bInternet && ga_bMSLegacy) {
     // make sure that there are no requests still stuck in buffer
     ga_asrRequests.Clear();
     // we're not a server
     _bServer = FALSE;
     _pNetwork->ga_strEnumerationStatus = ".";
-	
-	WORD     _wsaRequested;
-	WSADATA  wsaData;
-	PHOSTENT _phHostinfo;
-	ULONG    _uIP,*_pchIP = &_uIP;
-	USHORT   _uPort,*_pchPort = &_uPort;
-	INT      _iLen;
-	char     _cName[256],*_pch,_strFinal[8] = {0};
+  
+  WORD     _wsaRequested;
+  WSADATA  wsaData;
+  PHOSTENT _phHostinfo;
+  ULONG    _uIP,*_pchIP = &_uIP;
+  USHORT   _uPort,*_pchPort = &_uPort;
+  INT      _iLen;
+  char     _cName[256],*_pch,_strFinal[8] = {0};
 
-	struct in_addr addr;
+  struct in_addr addr;
 
     // make the buffer that we'll use for packet reading
     if (_szIPPortBufferLocal != NULL) {
        return;
     }
     _szIPPortBufferLocal = new char[1024];
-	
-	// start WSA
-	_wsaRequested = MAKEWORD( 2, 2 );
+  
+  // start WSA
+  _wsaRequested = MAKEWORD( 2, 2 );
     if (WSAStartup(_wsaRequested, &wsaData) != 0) {
-		CPrintF("Error initializing winsock!\n");
-		if (_szIPPortBufferLocal != NULL) {
-			delete[] _szIPPortBufferLocal;
-		}
-		_szIPPortBufferLocal = NULL;
-		_uninitWinsock();
-		_bInitialized = FALSE;
-		_pNetwork->ga_bEnumerationChange = FALSE;
-		_pNetwork->ga_strEnumerationStatus = "";
-		WSACleanup();
+    CPrintF("Error initializing winsock!\n");
+    if (_szIPPortBufferLocal != NULL) {
+      delete[] _szIPPortBufferLocal;
+    }
+    _szIPPortBufferLocal = NULL;
+    _uninitWinsock();
+    _bInitialized = FALSE;
+    _pNetwork->ga_bEnumerationChange = FALSE;
+    _pNetwork->ga_strEnumerationStatus = "";
+    WSACleanup();
         return;
     }
 
     _pch = _szIPPortBufferLocal;
-	_iLen = 0;
-	strcpy(_strFinal,"\\final\\");
-	
+  _iLen = 0;
+  strcpy(_strFinal,"\\final\\");
+  
     if (gethostname ( _cName, sizeof(_cName)) == 0)
-	{
-		if ((_phHostinfo = gethostbyname(_cName)) != NULL)
-		{
-			int _iCount = 0;
-			while (_phHostinfo->h_addr_list[_iCount])
-			{
-				addr.s_addr = *(u_long *) _phHostinfo->h_addr_list[_iCount];
-				_uIP = htonl(addr.s_addr);
-				
-				for (UINT uPort = 25601; uPort < 25622; ++uPort) {
-					_uPort = htons(uPort);
-					memcpy(_pch,_pchIP,4);
-					_pch  +=4;
-					_iLen +=4;
-					memcpy(_pch,_pchPort,2);
-					_pch  +=2;
-					_iLen +=2;
-				}
-				++_iCount;
-			}
-			memcpy(_pch,_strFinal, 7);
-			_pch  +=7;
-			_iLen +=7;
-			_pch[_iLen] = 0x00;
-		}
-	}
+  {
+    if ((_phHostinfo = gethostbyname(_cName)) != NULL)
+    {
+      int _iCount = 0;
+      while (_phHostinfo->h_addr_list[_iCount])
+      {
+        addr.s_addr = *(u_long *) _phHostinfo->h_addr_list[_iCount];
+        _uIP = htonl(addr.s_addr);
+        
+        for (UINT uPort = 25601; uPort < 25622; ++uPort) {
+          _uPort = htons(uPort);
+          memcpy(_pch,_pchIP,4);
+          _pch  +=4;
+          _iLen +=4;
+          memcpy(_pch,_pchPort,2);
+          _pch  +=2;
+          _iLen +=2;
+        }
+        ++_iCount;
+      }
+      memcpy(_pch,_strFinal, 7);
+      _pch  +=7;
+      _iLen +=7;
+      _pch[_iLen] = 0x00;
+    }
+  }
     _iIPPortBufferLocalLen = _iLen;
 
     _bActivatedLocal = TRUE;
     _bInitialized = TRUE;
-    _initializeWinsock();	
+    _initializeWinsock();  
     return;
-	
+  
   } else {
 
   if (!ga_bMSLegacy) {
@@ -987,7 +987,7 @@ extern void GameAgent_EnumUpdate(void)
         if (_hThread != NULL) {
             CloseHandle(_hThread);
         }
-        _bActivated = FALSE;		
+        _bActivated = FALSE;    
     }
     if (_bActivatedLocal) {
         HANDLE  _hThread;
@@ -997,8 +997,8 @@ extern void GameAgent_EnumUpdate(void)
         if (_hThread != NULL) {
             CloseHandle(_hThread);
         }
-        _bActivatedLocal = FALSE;		
-    }	
+        _bActivatedLocal = FALSE;    
+    }  
   }
 }
 
@@ -1157,7 +1157,7 @@ DWORD WINAPI _MS_Thread(LPVOID lpParam) {
                 if (strActiveMod != "") {
                     strGameName = strActiveMod;
                 }
-				
+        
                 long long tmPing = -1;
                 // find the request in the request array
                 for (INDEX i=0; i<ga_asrRequests.Count(); i++) {
@@ -1170,10 +1170,10 @@ DWORD WINAPI _MS_Thread(LPVOID lpParam) {
                 }
 
                 if (tmPing > 0 && tmPing < 2500000) {
-				    // insert the server into the serverlist
+            // insert the server into the serverlist
                     CNetworkSession &ns = *new CNetworkSession;
                     _pNetwork->ga_lhEnumeratedSessions.AddTail(ns.ns_lnNode);
-					
+          
                     // add the server to the serverlist
                     ns.ns_strSession = strSessionName;
                     ns.ns_strAddress = inet_ntoa(_sinClient.sin_addr) + CTString(":") + CTString(0, "%d", htons(_sinClient.sin_port) - 1);
@@ -1225,11 +1225,11 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
     if (_sockudp == INVALID_SOCKET) {
         WSACleanup();
         _pNetwork->ga_strEnumerationStatus = "";
-		if (_szIPPortBufferLocal != NULL) {
-			delete[] _szIPPortBufferLocal;
-		}
-		_szIPPortBufferLocal = NULL;		
-		return -1;
+    if (_szIPPortBufferLocal != NULL) {
+      delete[] _szIPPortBufferLocal;
+    }
+    _szIPPortBufferLocal = NULL;    
+    return -1;
     }
 
     _sIPPort* pServerIP = (_sIPPort*)(_szIPPortBufferLocal);
@@ -1281,12 +1281,12 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
             sPch = strstr(_szBuffer, "\\gamename\\serioussamse\\");
             if (!sPch) {
                 CPrintF("Unknown query server response!\n");
-				if (_szIPPortBufferLocal != NULL) {
-					delete[] _szIPPortBufferLocal;
-				}
-				_szIPPortBufferLocal = NULL;               
-				WSACleanup();
-				return -1;
+        if (_szIPPortBufferLocal != NULL) {
+          delete[] _szIPPortBufferLocal;
+        }
+        _szIPPortBufferLocal = NULL;               
+        WSACleanup();
+        return -1;
             } else {
 
                 CTString strPlayers;
@@ -1335,7 +1335,7 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
                         } else if (strKey == "maxplayers") {
                             strMaxPlayers = strValue;
                         } else {
-							//CPrintF("Unknown GameAgent parameter key '%s'!", strKey);
+              //CPrintF("Unknown GameAgent parameter key '%s'!", strKey);
                         }
                         // reset temporary holders
                         strKey = "";
@@ -1378,11 +1378,11 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
                 }
 
                 if (tmPing > 0 && tmPing < 2500000) {
-				    // insert the server into the serverlist
+            // insert the server into the serverlist
                     _pNetwork->ga_strEnumerationStatus = "";
-					CNetworkSession &ns = *new CNetworkSession;
+          CNetworkSession &ns = *new CNetworkSession;
                     _pNetwork->ga_lhEnumeratedSessions.AddTail(ns.ns_lnNode);
-					
+          
                     // add the server to the serverlist
                     ns.ns_strSession = strSessionName;
                     ns.ns_strAddress = inet_ntoa(_sinClient.sin_addr) + CTString(":") + CTString(0, "%d", htons(_sinClient.sin_port) - 1);
@@ -1409,16 +1409,16 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
         pServerIP++;
         _iIPPortBufferLocalLen -= 6;
     }
-	if (_szIPPortBufferLocal != NULL) {
+  if (_szIPPortBufferLocal != NULL) {
       delete[] _szIPPortBufferLocal;
     }
-	_szIPPortBufferLocal = NULL;
-	
+  _szIPPortBufferLocal = NULL;
+  
     closesocket(_sockudp);
     _uninitWinsock();
     _bInitialized = FALSE;
     _pNetwork->ga_bEnumerationChange = FALSE;
-	_pNetwork->ga_strEnumerationStatus = "";
+  _pNetwork->ga_strEnumerationStatus = "";
     WSACleanup();
     return 0;
 }

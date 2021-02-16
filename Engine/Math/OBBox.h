@@ -66,7 +66,7 @@ public:
  */
 template<class Type>
 inline void OBBox<Type>::SetToNormalizedEmpty(void) {
-  for ( int i=0; i<3; i++ ) {
+  for (int i=0; i<3; i++ ) {
     box_atSize[i] = LowerLimit(Type(0));
   }
 }
@@ -125,7 +125,7 @@ inline OBBox<Type>::OBBox(const Vector<Type, 3> &vO,
 template<class Type>
 inline BOOL OBBox<Type>::IsEmpty(void) const {
   // if any dimension is empty, it is empty
-  for ( int i=0; i<3; i++ ) {
+  for (int i=0; i<3; i++ ) {
     if (box_atSize[i] < Type(0)) {
       return TRUE;
     }

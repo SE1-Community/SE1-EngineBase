@@ -50,7 +50,7 @@ public:
   FLOAT fp_fGraduation;    // graduation parameter
 };
 
-#define HPF_VISIBLEFROMOUTSIDE  (1UL<<0)  // can be viewed from sectors that are not hazed
+#define HPF_VISIBLEFROMOUTSIDE  (1UL << 0)  // can be viewed from sectors that are not hazed
 class CHazeParameters {
 public:
   ULONG hp_ulFlags;

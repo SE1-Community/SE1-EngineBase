@@ -34,7 +34,7 @@ typedef char FILE_NAME[PATH_MAX];
 class CAnimInfo {
 public:
   NAME ai_AnimName;
-  TIME ai_SecsPerFrame;	    // speed of this animation
+  TIME ai_SecsPerFrame;      // speed of this animation
   INDEX ai_NumberOfFrames;
 };
 
@@ -44,9 +44,9 @@ public:
  */
 class ENGINE_API CFileNameNode {
 public:
-	FILE_NAME cfnn_FileName;
-	CListNode cfnn_Node;
-	CFileNameNode(const char *NewFileName, CListHead *LH);
+  FILE_NAME cfnn_FileName;
+  CListNode cfnn_Node;
+  CFileNameNode(const char *NewFileName, CListHead *LH);
 };
 
 /*
@@ -55,14 +55,14 @@ public:
 class CAnimData : public CSerial {
 public:
   INDEX ad_NumberOfAnims;
-  class COneAnim *ad_Anims;	    // array of animations
+  class COneAnim *ad_Anims;      // array of animations
 
 public:
 
   // fill member variables with invalid data
-	ENGINE_API CAnimData();
-	// Free allocated data (ad_Anims array), check invalid data
-	ENGINE_API ~CAnimData();
+  ENGINE_API CAnimData();
+  // Free allocated data (ad_Anims array), check invalid data
+  ENGINE_API ~CAnimData();
   // clears animation data object
   ENGINE_API void Clear();
   // check if this kind of objects is auto-freed
@@ -91,7 +91,7 @@ public:
   // sets frame index for given place in array representing given animation
   ENGINE_API void SetFrame( INDEX iAnimation, INDEX iFramePlace, INDEX iNewFrame);
   // fill animation data object vith valid data containing one animation, one frame
-	ENGINE_API void DefaultAnimation();
+  ENGINE_API void DefaultAnimation();
   /* Get animation's info. */
   ENGINE_API void GetAnimInfo(INDEX iAnimNo, CAnimInfo &aiInfo) const;
   /* Add animation */
@@ -100,27 +100,27 @@ public:
   ENGINE_API void DeleteAnimation(INDEX iAnim);
   /* Get number of animations. */
   ENGINE_API INDEX GetAnimsCt(void) const;
-	// load list of frames from script file
+  // load list of frames from script file
   ENGINE_API void LoadFromScript_t( CTStream *File, CListHead *FrameFileList); // throw char *
   // print #define <animation name> lines for all animations into given file
   void ExportAnimationNames_t( CTStream *ostrFile, CTString strAnimationPrefix);  // throw char *
-	void Read_t( CTStream *istrFile); // throw char *
-	void Write_t( CTStream *ostrFile); // throw char *
+  void Read_t( CTStream *istrFile); // throw char *
+  void Write_t( CTStream *ostrFile); // throw char *
 };
 
 
 /*
  * An instance of animateable object
  */
-#define AOF_PAUSED        (1L<<0)     // current animation is paused
-#define AOF_LOOPING       (1L<<1)     // anim object is playing a looping animation
-#define AOF_NORESTART     (1L<<2)     // don't restart anim (used for PlayAnim())
-#define AOF_SMOOTHCHANGE  (1L<<3)     // smoothly change between anims
+#define AOF_PAUSED        (1L << 0)     // current animation is paused
+#define AOF_LOOPING       (1L << 1)     // anim object is playing a looping animation
+#define AOF_NORESTART     (1L << 2)     // don't restart anim (used for PlayAnim())
+#define AOF_SMOOTHCHANGE  (1L << 3)     // smoothly change between anims
 
 class CAnimObject : public CChangeable {
 public:
   TICK ao_llAnimStart;      // time when current anim was started
-  INDEX ao_iCurrentAnim;	  // index of active animation
+  INDEX ao_iCurrentAnim;    // index of active animation
   ULONG ao_ulFlags;         // flags
   INDEX ao_iLastAnim;       // index of last animation (for smooth transition)
 
@@ -167,8 +167,8 @@ public:
   ENGINE_API void LastFrame(void);
   /* Test if some updateable object is up to date with this anim object. */
   ENGINE_API BOOL IsUpToDate(const CUpdateable &ud) const;
-	void Read_t( CTStream *istrFile); // throw char *
-	void Write_t( CTStream *ostrFile); // throw char *
+  void Read_t( CTStream *istrFile); // throw char *
+  void Write_t( CTStream *ostrFile); // throw char *
 
   /* Get animation's info. */
   ENGINE_API void GetAnimInfo(INDEX iAnimNo, CAnimInfo &aiInfo) const;
@@ -192,21 +192,21 @@ public:
   ENGINE_API TIME GetPassedTime(void) const;
 
   /* Start new animation -- obsolete. */
-	ENGINE_API void StartAnim(INDEX iNew);
+  ENGINE_API void StartAnim(INDEX iNew);
   /* Start playing an animation. */
-	ENGINE_API void PlayAnim(INDEX iNew, ULONG ulFlags);
+  ENGINE_API void PlayAnim(INDEX iNew, ULONG ulFlags);
   /* Seamlessly continue playing another animation from same point. */
-	ENGINE_API void SwitchToAnim(INDEX iNew);
+  ENGINE_API void SwitchToAnim(INDEX iNew);
   /* Set new animation but doesn't starts it. */
-	ENGINE_API void SetAnim(INDEX iNew);
+  ENGINE_API void SetAnim(INDEX iNew);
   /* Reset anim (restart) */
   ENGINE_API void ResetAnim();
   /* Pauses current animation. */
-	ENGINE_API void PauseAnim();
+  ENGINE_API void PauseAnim();
   /* Continues paused animation. */
-	ENGINE_API void ContinueAnim();
+  ENGINE_API void ContinueAnim();
   /* Offsets the animation phase */
-	ENGINE_API void OffsetPhase(TIME tm);
+  ENGINE_API void OffsetPhase(TIME tm);
   /* Retrieves paused flag */
   ENGINE_API BOOL IsPaused(void);
   /* Gets the number of current animation */

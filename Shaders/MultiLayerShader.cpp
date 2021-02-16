@@ -31,8 +31,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define LAYER1_COLOR   1
 #define LAYER1_TILING  1
 
-#define BASE_DOUBLE_SIDED (1UL<<0) // Double sided
-#define BASE_FULL_BRIGHT  (1UL<<1) // Full bright
+#define BASE_DOUBLE_SIDED (1UL << 0) // Double sided
+#define BASE_FULL_BRIGHT  (1UL << 1) // Full bright
 
 SHADER_MAIN(MultiLayer)
 {
@@ -49,7 +49,7 @@ SHADER_MAIN(MultiLayer)
 
   COLOR &colModelColor = shaGetModelColor();
   BOOL bDoubleSided = shaGetFlags()&BASE_DOUBLE_SIDED;
-  BOOL bOpaque = (colModelColor&0xFF)==0xFF;
+  BOOL bOpaque = (colModelColor&0xFF) == 0xFF;
 
   if (bDoubleSided) {
     shaCullFace(GFX_NONE);
@@ -76,11 +76,11 @@ SHADER_MAIN(MultiLayer)
   if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
 
   fLayerTiling = shaGetFloat(LAYER0_TILING);
-  if (fLayerTiling!=1.0f) {
+  if (fLayerTiling != 1.0f) {
     GFXTexCoord *ptxcOld = shaGetUVMap(LAYER0_UVMAP);
     GFXTexCoord *ptxcNew = shaGetNewTexCoordArray();
     INDEX ctTexCoords = shaGetVertexCount();
-    if (ctTexCoords>0 && ptxcOld!=NULL) {
+    if (ctTexCoords>0 && ptxcOld != NULL) {
       for (INDEX itxc=0;itxc<ctTexCoords;itxc++)
       {
         ptxcNew[itxc].u = ptxcOld[itxc].u * fLayerTiling;
@@ -105,11 +105,11 @@ SHADER_MAIN(MultiLayer)
   
   shaEnableBlend();
   
-  if (fLayerTiling!=1.0f) {
+  if (fLayerTiling != 1.0f) {
     GFXTexCoord *ptxcOld = shaGetUVMap(LAYER1_UVMAP);
     GFXTexCoord *ptxcNew = shaGetNewTexCoordArray();
     INDEX ctTexCoords = shaGetVertexCount();
-    if (ctTexCoords>0 && ptxcOld!=NULL) {
+    if (ctTexCoords>0 && ptxcOld != NULL) {
       for (INDEX itxc=0; itxc<ctTexCoords; itxc++)
       {
         ptxcNew[itxc].u = ptxcOld[itxc].u * fLayerTiling;

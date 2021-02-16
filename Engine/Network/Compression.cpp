@@ -27,8 +27,8 @@ void CCompressor::UnpackStream_t(CTMemoryStream &strmSrc, CTStream &strmDst) // 
 {
   // read the header
   SLONG slSizeDst, slSizeSrc;
-  strmSrc>>slSizeDst;
-  strmSrc>>slSizeSrc;
+  strmSrc >> slSizeDst;
+  strmSrc >> slSizeSrc;
   // get the buffer of source stream
   UBYTE *pubSrc = strmSrc.mstrm_pubBuffer + strmSrc.mstrm_slLocation;
   // allocate buffer for decompression
@@ -66,8 +66,8 @@ void CCompressor::PackStream_t(CTMemoryStream &strmSrc, CTStream &strmDst) // th
   }
 
   // write the header to destination
-  strmDst<<slSizeSrc;
-  strmDst<<slSizeDst;
+  strmDst << slSizeSrc;
+  strmDst << slSizeDst;
   // write the compressed data to destination
   strmDst.Write_t(pubDst, slSizeDst);
   FreeMemory(pubDst);
@@ -99,7 +99,7 @@ data following it. The data is interpreted differently, depending on the code.
    well with copying)
   (count = -code+1  =>  code = -count+1)
 
-  2) CODE>=0 => COPYING
+  2) CODE >= 0 => COPYING
   If the code is positive, following data is given number of bytes that are just copied:
   CODE DAT0 DAT1 ... DATn   -> DAT0 DAT1 ... DATn (n=CODE)
   (note that CODE=0 means copy next one byte)
@@ -127,7 +127,7 @@ SLONG CRLEBBCompressor::NeededDestinationSize(SLONG slSourceSize)
 BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize)
 {
   // cannot pack zero bytes
-  ASSERT(slSrcSize>=1);
+  ASSERT(slSrcSize >= 1);
 
   // calculate limits for source and destination buffers
   const SBYTE *pbSourceFirst = (const SBYTE *)pvSrc;            // start marker
@@ -149,10 +149,10 @@ BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLO
 
     // for all bytes from one before last to the first one
     for (const SBYTE *pbSource = pbSourceLimit-2;
-        pbSource>=pbSourceFirst;
+        pbSource >= pbSourceFirst;
         pbSource--, pbCount--) {
       // if the byte is same as its successor, and the count will fit in code
-      if (pbSource[0]==pbSource[1] && (SLONG)pbCount[1]+1<=-(SLONG)MIN_SBYTE) {
+      if (pbSource[0] == pbSource[1] && (SLONG)pbCount[1]+1 <= -(SLONG)MIN_SBYTE) {
         // set its count to the count of its successor plus one
         pbCount[0] = pbCount[1]+1;
       // if the byte is different than its successor
@@ -180,7 +180,7 @@ BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLO
       // write the replicate-packed data
       INDEX ctSameBytes = (INDEX)*pbCount;
       SLONG slCode = -ctSameBytes+1;
-      ASSERT((SLONG)MIN_SBYTE<=slCode && slCode<0);
+      ASSERT((SLONG)MIN_SBYTE <= slCode && slCode<0);
       *pbDestination++ = (SBYTE)slCode;
       *pbDestination++ = pbSource[0];
       pbSource+=ctSameBytes;
@@ -191,7 +191,7 @@ BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLO
       INDEX ctDiffBytes=1;
       while ((ctDiffBytes < (SLONG)MAX_SBYTE + 1)
           && (&pbSource[ctDiffBytes]<pbSourceLimit) ) {
-        if ((SLONG)pbCount[ctDiffBytes-1]<=3) {
+        if ((SLONG)pbCount[ctDiffBytes-1] <= 3) {
           ctDiffBytes++;
         } else {
           break;
@@ -199,7 +199,7 @@ BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLO
       }
       // write the copy-packed data
       SLONG slCode = ctDiffBytes-1;
-      ASSERT(0<=slCode && slCode<=(SLONG)MAX_SBYTE);
+      ASSERT(0 <= slCode && slCode <= (SLONG)MAX_SBYTE);
       *pbDestination++ = (SBYTE)slCode;
       memcpy(pbDestination, pbSource, ctDiffBytes);
       pbSource      += ctDiffBytes;
@@ -208,8 +208,8 @@ BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLO
     }
   }
   // packing must exactly be finished now
-  ASSERT(pbSource==pbSourceLimit);
-  ASSERT(pbCount ==pbCountLimit);
+  ASSERT(pbSource == pbSourceLimit);
+  ASSERT(pbCount == pbCountLimit);
 
   // calculate size of packed data
   slDstSize = pbDestination-pbDestinationFirst;
@@ -249,7 +249,7 @@ BOOL CRLEBBCompressor::Unpack(const void *pvSrc, SLONG slSrcSize, void *pvDst, S
   } while (pbSource<pbSourceLimit);
 
   // data must be unpacked correctly
-  ASSERT(pbSource==pbSourceLimit);
+  ASSERT(pbSource == pbSourceLimit);
 
   // calculate size of data that was unpacked
   slDstSize = pbDestination-pbDestinationFirst;
@@ -285,8 +285,8 @@ void lzrw1_compress(const UBYTE *p_src_first, ULONG src_len,UBYTE *p_dst_first, 
 /* Output : Length of output block written to *p_dst_len.               */
 /* Output : Output block in Mem[p_dst_first..p_dst_first+*p_dst_len-1]. */
 /* Output : May write in OZ=Mem[p_dst_first..p_dst_first+src_len+256-1].*/
-/* Output : Upon completion guaranteed *p_dst_len<=src_len+FLAG_BYTES.  */
-#define PS *p++!=*s++  /* Body of inner unrolled matching loop.         */
+/* Output : Upon completion guaranteed *p_dst_len <= src_len+FLAG_BYTES.  */
+#define PS *p++ != *s++  /* Body of inner unrolled matching loop.         */
 #define ITEMMAX 16     /* Maximum number of bytes in an expanded item.  */
 {const UBYTE *p_src=p_src_first;
  UBYTE *p_dst=p_dst_first;
@@ -302,27 +302,27 @@ void lzrw1_compress(const UBYTE *p_src_first, ULONG src_len,UBYTE *p_dst_first, 
     if (p_src>p_src_max16)
       {unroll=1;
        if (p_src>p_src_max1)
-         {if (p_src==p_src_post) break; goto literal;}}
+         {if (p_src == p_src_post) break; goto literal;}}
     begin_unrolled_loop:
-       index=((40543*((((p_src[0]<<4)^p_src[1])<<4)^p_src[2]))>>4) & 0xFFF;
+       index=((40543*((((p_src[0] << 4)^p_src[1]) << 4)^p_src[2])) >> 4) & 0xFFF;
        p=hash[index];
        hash[index]=s=p_src;
        offset=s-p;
-       if (offset>4095 || p<p_src_first || offset==0 || PS || PS || PS)
-         {literal: *p_dst++=*p_src++; control>>=1; control_bits++;}
+       if (offset>4095 || p<p_src_first || offset == 0 || PS || PS || PS)
+         {literal: *p_dst++=*p_src++; control >>= 1; control_bits++;}
        else
          {PS || PS || PS || PS || PS || PS || PS ||
           PS || PS || PS || PS || PS || PS || s++; len=s-p_src-1;
-          *p_dst++=(UBYTE)(((offset&0xF00)>>4)+(len-1)); *p_dst++=(UBYTE)(offset&0xFF);
-          p_src+=len; control=(control>>1)|0x8000; control_bits++;}
+          *p_dst++=(UBYTE)(((offset&0xF00) >> 4)+(len-1)); *p_dst++=(UBYTE)(offset&0xFF);
+          p_src+=len; control=(control >> 1)|0x8000; control_bits++;}
     /*end_unrolled_loop:*/ if (--unroll) goto begin_unrolled_loop;
-    if (control_bits==16)
-      {*p_control=control&0xFF; *(p_control+1)=control>>8;
+    if (control_bits == 16)
+      {*p_control=control&0xFF; *(p_control+1)=control >> 8;
        p_control=p_dst; p_dst+=2; control=control_bits=0;}
    }
- control>>=16-control_bits;
- *p_control++=control&0xFF; *p_control++=control>>8;
- if (p_control==p_dst) p_dst-=2;
+ control >>= 16-control_bits;
+ *p_control++=control&0xFF; *p_control++=control >> 8;
+ if (p_control == p_dst) p_dst-=2;
  *p_dst_len=(p_dst-p_dst_first);
  return;
  overrun: fast_copy(p_src_first,p_dst_first+FLAG_BYTES,src_len);
@@ -345,20 +345,20 @@ void lzrw1_decompress(const UBYTE *p_src_first, ULONG src_len, UBYTE *p_dst_firs
  const UBYTE *p_src=p_src_first+FLAG_BYTES;
  UBYTE *p_dst=p_dst_first;
  const UBYTE *p_src_post=p_src_first+src_len;
- if (*p_src_first==FLAG_COPY)
+ if (*p_src_first == FLAG_COPY)
    {fast_copy(p_src_first+FLAG_BYTES,p_dst_first,src_len-FLAG_BYTES);
     *p_dst_len=src_len-FLAG_BYTES; return;}
- while (p_src!=p_src_post)
-   {if (controlbits==0)
-      {control=*p_src++; control|=(*p_src++)<<8; controlbits=16;}
+ while (p_src != p_src_post)
+   {if (controlbits == 0)
+      {control=*p_src++; control|=(*p_src++) << 8; controlbits=16;}
     if (control&1)
       {UWORD offset,len; UBYTE *p;
-       offset=(*p_src&0xF0)<<4; len=1+(*p_src++&0xF);
+       offset=(*p_src&0xF0) << 4; len=1+(*p_src++&0xF);
        offset+=*p_src++&0xFF; p=p_dst-offset;
        while (len--) *p_dst++=*p++;}
     else
        *p_dst++=*p_src++;
-    control>>=1; controlbits--;
+    control >>= 1; controlbits--;
    }
  *p_dst_len=p_dst-p_dst_first;
 }
@@ -427,7 +427,7 @@ int ZEXPORT compress (dest, destLen, source, sourceLen)
   int iResult = compress(
     (UBYTE *)pvDst, (ULONG *)&slDstSize,
     (const UBYTE *)pvSrc, (ULONG)slSrcSize);
-  if (iResult==Z_OK) {
+  if (iResult == Z_OK) {
     return TRUE;
   } else {
     return FALSE;
@@ -452,7 +452,7 @@ int ZEXPORT uncompress (dest, destLen, source, sourceLen)
     (UBYTE *)pvDst, (ULONG *)&slDstSize,
     (const UBYTE *)pvSrc, (ULONG)slSrcSize);
 
-  if (iResult==Z_OK) {
+  if (iResult == Z_OK) {
     return TRUE;
   } else {
     return FALSE;

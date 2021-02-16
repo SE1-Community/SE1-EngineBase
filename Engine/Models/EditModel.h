@@ -27,7 +27,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticArray.h>
 #include <Engine/Models/RenderModel.h>
 
-#define MAX_MODELERTEXTURES		32
+#define MAX_MODELERTEXTURES    32
 #define MAPPING_VERSION_WITHOUT_POLYGONS_PER_SURFACE "0001"
 #define MAPPING_VERSION_WITHOUT_SOUNDS_AND_ATTACHMENTS "0002"
 #define MAPPING_VERSION_WITHOUT_COLLISION "0003"
@@ -104,17 +104,17 @@ public:
   BOOL ts_bSet;
   CPlacement3D ts_plLightPlacement;
   CPlacement3D ts_plModelPlacement;
-	FLOAT ts_fTargetDistance;
-	FLOAT3D ts_vTarget;
-	ANGLE3D ts_angViewerOrientation;
+  FLOAT ts_fTargetDistance;
+  FLOAT3D ts_vTarget;
+  ANGLE3D ts_angViewerOrientation;
   FLOAT ts_LightDistance;
   COLOR ts_LightColor;
   COLOR ts_colAmbientColor;
-	COLORREF ts_PaperColor;
-	COLORREF ts_InkColor;
-	BOOL ts_IsWinBcgTexture;
-	CTFileName ts_WinBcgTextureName;
-	CModelRenderPrefs ts_RenderPrefs;
+  COLORREF ts_PaperColor;
+  COLORREF ts_InkColor;
+  BOOL ts_IsWinBcgTexture;
+  CTFileName ts_WinBcgTextureName;
+  CModelRenderPrefs ts_RenderPrefs;
 
   CThumbnailSettings( void);
   void Read_t( CTStream *strFile); // throw char *
@@ -124,19 +124,19 @@ public:
 class ENGINE_API CEditModel : public CSerial
 {
 private:
- 	void NewModel(CObject3D *pO3D);									// creates new model, surface, vertice and polygon arrays
-	void AddMipModel(CObject3D *pO3D);							// adds one mip model
+   void NewModel(CObject3D *pO3D);                  // creates new model, surface, vertice and polygon arrays
+  void AddMipModel(CObject3D *pO3D);              // adds one mip model
   // loads and converts model's animation data from script file
-	void LoadModelAnimationData_t( CTStream *pFile, const FLOATmatrix3D &mStretch);	// throw char *
+  void LoadModelAnimationData_t( CTStream *pFile, const FLOATmatrix3D &mStretch);  // throw char *
   INDEX edm_iActiveCollisionBox;                  // collision box that is currently edited
 public:
-	CEditModel();																		// default contructor
-	~CEditModel();																	// default destructor
-  CModelData edm_md;															// edited model data
+  CEditModel();                                    // default contructor
+  ~CEditModel();                                  // default destructor
+  CModelData edm_md;                              // edited model data
   CDynamicArray<CAttachedModel> edm_aamAttachedModels;// array of attached models
   CStaticArray<CAttachedSound> edm_aasAttachedSounds;// array of attached sounds
   CThumbnailSettings edm_tsThumbnailSettings;     // remembered parameters for taking thumbnail
-  CListHead edm_WorkingSkins;	                // list of file names and texture data objects
+  CListHead edm_WorkingSkins;                  // list of file names and texture data objects
   CListHead edm_UndoList;                         // list containing structures used for undo operation
   CListHead edm_RedoList;                         // list containing structures used for redo operation
   INDEX edm_Action;                               // type of last mapping change action (used by undo/redo)
@@ -146,9 +146,9 @@ public:
   // create empty attaching sounds
   void CreateEmptyAttachingSounds(void);
   // creates default script file
-  void CreateScriptFile_t(CTFileName &fnFile);	  // throw char *
+  void CreateScriptFile_t(CTFileName &fnFile);    // throw char *
   // creates mip-model and mapping default constructios after it loads data from script
-	void LoadFromScript_t(CTFileName &fnFileName); // throw char *
+  void LoadFromScript_t(CTFileName &fnFileName); // throw char *
   // recalculate mapping for surface after some polygon has been added to surface
   void RecalculateSurfaceMapping( INDEX iMipModel, INDEX iSurface);
   // functions for extracting texture vertex links for given mip model
@@ -160,12 +160,12 @@ public:
   // calculates mapping for mip models (except for main mip)
   void CalculateMappingForMips(void);
   // updates animations
-  void UpdateAnimations_t(CTFileName &fnScriptName);	// throw char *
+  void UpdateAnimations_t(CTFileName &fnScriptName);  // throw char *
   // updates mip models configuration, looses their mapping !
-	void UpdateMipModels_t(CTFileName &fnScriptName); // throw char *
+  void UpdateMipModels_t(CTFileName &fnScriptName); // throw char *
   void CreateMipModels_t(CObject3D &objRestFrame, CObject3D &objMipSourceFrame,
     INDEX iVertexRemoveRate, INDEX iSurfacePreservingFactor);
-	void DefaultMapping( INDEX iCurrentMip, INDEX iSurface=-1);// sets default mapping for given mip-model and surface (or all surfaces -1)
+  void DefaultMapping( INDEX iCurrentMip, INDEX iSurface=-1);// sets default mapping for given mip-model and surface (or all surfaces -1)
   void CalculateMapping( INDEX iCurrentMip, INDEX iSurfaceNo); // calculate mapping coordinates
   void CalculateMappingAll( INDEX iCurrentMip);
   void DrawWireSurface( CDrawPort *pDP, INDEX iCurrentMip, INDEX iCurrentSurface,
@@ -199,7 +199,7 @@ public:
   const char *GetSurfaceName(INDEX iCurrentMip, INDEX iCurrentSurface); // Retrieves given surface's name
   void Undo(void); // Undoes last operation
   void Redo(void); // Redoes last operation
-	void RemoveTexture(char *pFileName);						// removes one of working textures in modeler app
+  void RemoveTexture(char *pFileName);            // removes one of working textures in modeler app
   void MovePatchRelative( INDEX iMaskBit, MEX2D mexOffset);
   void SetPatchStretch( INDEX iMaskBit, FLOAT fNewStretch);
   BOOL EditAddPatch( CTFileName fnPatchName, MEX2D mexPos, INDEX &iMaskBit); // Adds one patch
@@ -233,23 +233,23 @@ public:
   // set new collision box equality value
   void SetCollisionBoxDimensionEquality( INDEX iNewDimEqType);
   // overloaded load function
-	void Load_t( CTFileName fnFileName); // throw char *
+  void Load_t( CTFileName fnFileName); // throw char *
   // overloaded save function
-	void Save_t( CTFileName fnFileName); // throw char *
+  void Save_t( CTFileName fnFileName); // throw char *
   // exports .h file (#define ......)
   void SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePrefix);  // throw char *
 
   // know how to load
-	void Read_t( CTStream *istrFile); // throw char *
+  void Read_t( CTStream *istrFile); // throw char *
   // and save modeler data (i.e. vindow positions, view prefs, texture file names...)
-	void Write_t( CTStream *ostrFile); // throw char *
+  void Write_t( CTStream *ostrFile); // throw char *
 
   // load and save mapping data for whole model (iMip = -1) or just for one mip model
   void LoadMapping_t( CTFileName fnFileName, INDEX iMip = -1);
   void SaveMapping_t( CTFileName fnFileName, INDEX iMip = -1);
   // read and write settings for given mip
   void ReadMipSettings_t( CTStream *istrFile, INDEX iMip);  // throw char *
-	void WriteMipSettings_t( CTStream *ostrFile, INDEX iMip);
+  void WriteMipSettings_t( CTStream *ostrFile, INDEX iMip);
 };
 
 

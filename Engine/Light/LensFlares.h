@@ -25,9 +25,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 /*
  * Structure describing one flare in lens flare effect.
  */
-#define OLF_FADESIZE            (1L<<0)   // change size when fading
-#define OLF_FADEINTENSITY       (1L<<1)   // change intensity when fading
-#define OLF_FADEOFCENTER        (1L<<2)   // fade if away from screen center
+#define OLF_FADESIZE            (1L << 0)   // change size when fading
+#define OLF_FADEINTENSITY       (1L << 1)   // change intensity when fading
+#define OLF_FADEOFCENTER        (1L << 2)   // fade if away from screen center
 
 class ENGINE_API COneLensFlare {
 public:

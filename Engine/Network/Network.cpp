@@ -254,7 +254,7 @@ extern void CacheShadows(void)
   // mute all sounds
   _pSound->Mute();
   CWorld *pwo = (CWorld*)_pShell->GetINDEX("pwoCurrentWorld");
-  if (pwo!=NULL) {
+  if (pwo != NULL) {
     pwo->wo_baBrushes.CacheAllShadowmaps();
     CPrintF( TRANS("All shadows recached"));
     if (shd_bCacheAll) CPrintF(".\n");
@@ -270,7 +270,7 @@ extern BOOL MatchesBanMask(const CTString &strString, const CTString &strMask)
   CTString strRest = strMask;
   CTString strLine;
 
-  while (strRest!="") {
+  while (strRest != "") {
     strLine = strRest;
     strLine.OnlyFirstLine();
     strRest.RemovePrefix(strLine);
@@ -369,7 +369,7 @@ static void NetworkInfo(void)
     CPlayerTarget &plt = _pNetwork->ga_sesSessionState.ses_apltPlayers[iplt];
     if (plt.plt_bActive) {
       ULONG ulID = -1;
-      if (plt.plt_penPlayerEntity!=NULL) {
+      if (plt.plt_penPlayerEntity != NULL) {
         ulID = plt.plt_penPlayerEntity->en_ulID;
       }
       CPrintF("  player %2d (ID:%d): (%dact)\n", iplt, ulID, plt.plt_abPrediction.GetCount());
@@ -452,7 +452,7 @@ static void Admin(void* pArgs)
   CTString strCommand = *NEXTARGUMENT(CTString*);
 
   CNetworkMessage nm(MSG_ADMIN_COMMAND);
-  nm<<net_strAdminPassword<<strCommand;
+  nm << net_strAdminPassword << strCommand;
   _pNetwork->SendToServerReliable(nm);
 }
 
@@ -465,7 +465,7 @@ static void StockInfo(void)
   INDEX ct256=0, ct128=0, ct64=0, ct32=0, ct16=0;
   SLONG sl256Memory=0, sl128Memory=0, sl64Memory=0, sl32Memory=0, sl16Memory=0;
 
-  if (_pGfx!=NULL)
+  if (_pGfx != NULL)
   {
     FLOAT fSlackRatio;
     FOREACHINLIST( CShadowMap, sm_lnInGfx, _pGfx->gl_lhCachedShadows, itsm)
@@ -492,7 +492,7 @@ static void StockInfo(void)
       slSlackMemory   += slTotalSize*fSlackRatio;
 
       if (!bIsFlat) { // by size ...
-        if (     slStaticSize>128*1024) { ct256++; sl256Memory+=slTotalSize; }
+        if (slStaticSize>128*1024) { ct256++; sl256Memory+=slTotalSize; }
         else if (slStaticSize> 64*1024) { ct128++; sl128Memory+=slTotalSize; }
         else if (slStaticSize> 32*1024) { ct64++;  sl64Memory +=slTotalSize; }
         else if (slStaticSize> 16*1024) { ct32++;  sl32Memory +=slTotalSize; }
@@ -513,7 +513,7 @@ static void StockInfo(void)
       CPrintF( "  128-64K: %4d in %d KB\n", ct128, sl128Memory/1024);
       CPrintF( "   64-32K: %4d in %d KB\n", ct64,  sl64Memory /1024);
       CPrintF( "   32-16K: %4d in %d KB\n", ct32,  sl32Memory /1024);
-      CPrintF( "    <=16K: %4d in %d KB\n", ct16,  sl16Memory /1024);
+      CPrintF( "    <= 16K: %4d in %d KB\n", ct16,  sl16Memory /1024);
     }
   }
 
@@ -523,7 +523,7 @@ static void StockInfo(void)
   SLONG slCgrBytes=0;
   CWorld *pwo = (CWorld*)_pShell->GetINDEX("pwoCurrentWorld");
 
-  if (pwo!=NULL)
+  if (pwo != NULL)
   {
     // report count of and memory used by entities
     FOREACHINDYNAMICCONTAINER( pwo->wo_cenEntities, CEntity, iten) {
@@ -535,7 +535,7 @@ static void StockInfo(void)
     FOREACHINDYNAMICARRAY( pwo->wo_baBrushes.ba_abrBrushes, CBrush3D, itbr) // for all brush entities in the world
     {
       // skip brush without entity
-      if (itbr->br_penEntity==NULL) continue;
+      if (itbr->br_penEntity == NULL) continue;
 
       // for each mip
       FOREACHINLIST( CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm)
@@ -656,7 +656,7 @@ extern void FreeUnusedStock(void)
  */
 void CNetworkTimerHandler::HandleTimer(void)
 {
-  if (this==NULL || _bTempNetwork) {
+  if (this == NULL || _bTempNetwork) {
     return; // this can happen during NET_MakeDefaultState_t()!
   }
   // enable stream handling during timer
@@ -898,7 +898,7 @@ void CNetworkLibrary::Init(const CTString &strGameID)
  */
 void CNetworkLibrary::AddTimerHandler(void)
 {
-  if (this==NULL || _bTempNetwork) {
+  if (this == NULL || _bTempNetwork) {
     return; // this can happen during NET_MakeDefaultState_t()!
   }
   _pTimer->AddHandler(&ga_thTimerHandler);
@@ -908,7 +908,7 @@ void CNetworkLibrary::AddTimerHandler(void)
  */
 void CNetworkLibrary::RemoveTimerHandler(void)
 {
-  if (this==NULL || _bTempNetwork) {
+  if (this == NULL || _bTempNetwork) {
     return; // this can happen during NET_MakeDefaultState_t()!
   }
   _pTimer->RemHandler(&ga_thTimerHandler);
@@ -1266,9 +1266,9 @@ void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo)  // throw char *
   try {
     // read initial info to stream
     ga_strmDemoPlay.ExpectID_t("DEMO");
-    if (ga_strmDemoPlay.PeekID_t()==CChunkID("MVER")) {
+    if (ga_strmDemoPlay.PeekID_t() == CChunkID("MVER")) {
       ga_strmDemoPlay.ExpectID_t("MVER");
-      ga_strmDemoPlay>>ga_ulDemoMinorVersion;
+      ga_strmDemoPlay >> ga_ulDemoMinorVersion;
     } else {
       ga_ulDemoMinorVersion = 2;
     }
@@ -1333,7 +1333,7 @@ void CNetworkLibrary::TogglePause(void)
 // test if game is paused
 BOOL CNetworkLibrary::IsPaused(void)
 {
-  if (this==NULL || _bTempNetwork) {
+  if (this == NULL || _bTempNetwork) {
     return TRUE; // this can happen during NET_MakeDefaultState_t()!
   }
   return ga_sesSessionState.ses_bPause;
@@ -1354,7 +1354,7 @@ BOOL CNetworkLibrary::IsConnectionStable(void)
 // test if completely disconnected and why
 BOOL CNetworkLibrary::IsDisconnected(void)
 {
-  return ga_sesSessionState.ses_strDisconnected!="";
+  return ga_sesSessionState.ses_strDisconnected != "";
 }
 
 const CTString &CNetworkLibrary::WhyDisconnected(void)
@@ -1370,7 +1370,7 @@ void CNetworkLibrary::SetLocalPause(BOOL bPause)
 
 BOOL CNetworkLibrary::GetLocalPause(void)
 {
-  if (this==NULL || _bTempNetwork) {
+  if (this == NULL || _bTempNetwork) {
     return TRUE; // this can happen during NET_MakeDefaultState_t()!
   }
   return ga_bLocalPause;
@@ -1482,13 +1482,13 @@ void CNetworkLibrary::StopGame(void)
   ga_World.Clear();
 
   // free default state if existing
-  if (ga_pubDefaultState!=NULL) {
+  if (ga_pubDefaultState != NULL) {
     FreeMemory(ga_pubDefaultState);
     ga_pubDefaultState = NULL;
     ga_slDefaultStateSize = 0;
     memset(ga_aubDefaultProperties, 0, sizeof(ga_aubDefaultProperties));
   }
-  if (ga_pubCRCList!=NULL) {
+  if (ga_pubCRCList != NULL) {
     FreeMemory(ga_pubCRCList);
     ga_pubCRCList = NULL;
     ga_slCRCList = 0;
@@ -1513,7 +1513,7 @@ void CNetworkLibrary::ChangeLevel(
   ASSERT(!IsPredicting());
 
   // if not currently changing
-  if (_lphCurrent==LCP_NOCHANGE) {
+  if (_lphCurrent == LCP_NOCHANGE) {
     // initiate change
     ga_fnmNextLevel = fnmNextLevel;
     ga_bNextRemember = bRemember;
@@ -1587,7 +1587,7 @@ void CNetworkLibrary::ChangeLevel_internal(void)
   }
 
   // if the new level is not remembered
-  if (ga_sesSessionState.FindRememberedLevel(ga_fnmNextLevel)==NULL) {
+  if (ga_sesSessionState.FindRememberedLevel(ga_fnmNextLevel) == NULL) {
     // remember original world filename
     CTFileName fnmOldWorld = ga_fnmWorld;
 
@@ -1715,7 +1715,7 @@ void CNetworkLibrary::StartDemoRec_t(const CTFileName &fnDemo) // throw char *
   // write initial info to stream
   ga_strmDemoRec.WriteID_t("DEMO");
   ga_strmDemoRec.WriteID_t("MVER");
-  ga_strmDemoRec<<ULONG(_SE_BUILD_MINOR);
+  ga_strmDemoRec << ULONG(_SE_BUILD_MINOR);
   ga_sesSessionState.Write_t(&ga_strmDemoRec);
 
   // remember that recording demo
@@ -1747,14 +1747,14 @@ static void SendAdminResponse(ULONG ulAdr, UWORD uwPort, ULONG ulCode, const CTS
   CTString str = strResponse;
   INDEX iLineCt = 0;
 
-  while (str!="") {
+  while (str != "") {
     CTString strLine = str;
     strLine.OnlyFirstLine();
     str.RemovePrefix(strLine);
     str.DeleteChar(0);
     if (strLine.Length()>0) {
       CNetworkMessage nm(MSG_EXTRA);
-      nm<<CTString(0, "log %u %d %s\n", ulCode, iLineCt++, strLine);
+      nm << CTString(0, "log %u %d %s\n", ulCode, iLineCt++, strLine);
       _pNetwork->SendBroadcast(nm, ulAdr, uwPort);
     }
   }
@@ -1772,7 +1772,7 @@ void CNetworkLibrary::MainLoop(void)
   _bMultiPlayer = (_pNetwork->ga_sesSessionState.GetPlayersCount() > 1);
 
   // if should change world
-  if (_lphCurrent==LCP_SIGNALLED) {
+  if (_lphCurrent == LCP_SIGNALLED) {
     // really do the level change here
     ChangeLevel_internal();
     _lphCurrent=LCP_CHANGED;
@@ -1856,7 +1856,7 @@ void CNetworkLibrary::MainLoop(void)
   ga_sesSessionState.ses_llLastUpdated = _pTimer->GetTimeTick();
 
   TICK llAfter = _pTimer->GetTimeTick();
-  ga_sesSessionState.ses_bKeepingUpWithTime = (llAfter-llBefore)<=/*_pTimer->TickQuantum* */2;
+  ga_sesSessionState.ses_bKeepingUpWithTime = (llAfter-llBefore) <= /*_pTimer->TickQuantum* */2;
 
   CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
   // set the lerping factor for current frame
@@ -1869,7 +1869,7 @@ void CNetworkLibrary::MainLoop(void)
   // if playing a demo
   if (ga_bDemoPlay) {
     // if synchronizing by real time
-    if (ga_fDemoSyncRate==DEMOSYNC_REALTIME) {
+    if (ga_fDemoSyncRate == DEMOSYNC_REALTIME) {
       // if server is keeping up
       if (ga_sesSessionState.ses_bKeepingUpWithTime) {
         // add passed time with slow/fast factor
@@ -1877,7 +1877,7 @@ void CNetworkLibrary::MainLoop(void)
           *ga_fDemoRealTimeFactor*ga_sesSessionState.ses_fRealTimeFactor;
       }
     // if synchronizing is stopped
-    } else if (ga_fDemoSyncRate==DEMOSYNC_STOP) {
+    } else if (ga_fDemoSyncRate == DEMOSYNC_STOP) {
       // don't step
       NOTHING;
     // if synchronizing by given steps
@@ -1912,13 +1912,13 @@ void CNetworkLibrary::MainLoop(void)
       }
 
       // if this message is not valid rcon message
-      if (nmReceived.GetType()!=MSG_EXTRA) {
+      if (nmReceived.GetType() != MSG_EXTRA) {
         // skip it
         continue;
       }
       // get the string from the message
       CTString strMsg;
-      nmReceived>>strMsg;
+      nmReceived >> strMsg;
 
       // if this is server
       if (IsServer()) {
@@ -1932,7 +1932,7 @@ void CNetworkLibrary::MainLoop(void)
         strMsg.ScanF("%u \"%80[^\"]\"%256[^\n]", &ulCode, strPass, strCmd);
         CTString strAdr = AddressToString(ulFrom);
 
-        if (net_strAdminPassword=="" || net_strAdminPassword!=strPass) {
+        if (net_strAdminPassword == "" || net_strAdminPassword != strPass) {
           CPrintF(TRANS("Server: Client '%s', Wrong password for remote administration.\n"), (const char*)strAdr);
           continue;
         }
@@ -1976,13 +1976,13 @@ void CNetworkLibrary::SendActionsToServer(void)
  */
 void CNetworkLibrary::TimerLoop(void)
 {
-  if (this==NULL || _bTempNetwork) {
+  if (this == NULL || _bTempNetwork) {
     return; // this can happen during NET_MakeDefaultState_t()!
   }
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_TIMERLOOP);
 
   // count number of timer interrupts that happened
-  if (ga_ctTimersPending>=0) {
+  if (ga_ctTimersPending >= 0) {
     ga_ctTimersPending++;
   }
 
@@ -1991,20 +1991,20 @@ void CNetworkLibrary::TimerLoop(void)
   // initially, no timer functions needed
   INDEX ct = 0;
   // if timer exactness level is full
-  if (net_iExactTimer==2) {
+  if (net_iExactTimer == 2) {
     // lock network mutex
     slNetwork.Lock();
     // execute exactly one
     ct = 1;
   // if timer exactness level is partial
-  } else if (net_iExactTimer==1) {
+  } else if (net_iExactTimer == 1) {
     // if network mutex can be locked
     if (slNetwork.TryToLock()) {
       // execute all pending
       ct = ga_ctTimersPending;
     }
   // if timer exactness level is low
-  } else if (net_iExactTimer==0) {
+  } else if (net_iExactTimer == 0) {
     // if network mutex can be locked
     if (slNetwork.TryToLock()) {
       // execute exactly one
@@ -2067,7 +2067,7 @@ CEntity *CNetworkLibrary::GetPlayerEntityByName(const CTString &strName)
   for (INDEX iplt = 0; iplt<aplt.Count(); iplt++) {
     // if it is active and has that name
     if (aplt[iplt].IsActive()
-      &&aplt[iplt].plt_penPlayerEntity->en_pcCharacter.GetName()==strName) {
+      &&aplt[iplt].plt_penPlayerEntity->en_pcCharacter.GetName() == strName) {
       // return it
       return aplt[iplt].plt_penPlayerEntity;
     }
@@ -2081,7 +2081,7 @@ INDEX CNetworkLibrary::GetNumberOfEntitiesWithName(const CTString &strName)
 {
   INDEX ctEntities = 0;
   {FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
-    if (iten->GetName()==strName) {
+    if (iten->GetName() == strName) {
       ctEntities++;
     }
   }}
@@ -2094,9 +2094,9 @@ CEntity *CNetworkLibrary::GetEntityWithName(const CTString &strName, INDEX iEnti
   INDEX ctEntities = 0;
   CEntity *pen = NULL;
   {FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
-    if (iten->GetName()==strName) {
+    if (iten->GetName() == strName) {
       pen = iten;
-      if (ctEntities==iEntityWithThatName) {
+      if (ctEntities == iEntityWithThatName) {
         break;
       }
       ctEntities++;
@@ -2107,7 +2107,7 @@ CEntity *CNetworkLibrary::GetEntityWithName(const CTString &strName, INDEX iEnti
 /* Test if a given player is local to this computer. */
 BOOL CNetworkLibrary::IsPlayerLocal(CEntity *pen)
 {
-  return GetPlayerSource(pen)!=NULL;
+  return GetPlayerSource(pen) != NULL;
 }
 // get player source for a given player if it is local to this computer
 CPlayerSource *CNetworkLibrary::GetPlayerSource(CEntity *pen)
@@ -2120,7 +2120,7 @@ CPlayerSource *CNetworkLibrary::GetPlayerSource(CEntity *pen)
     // get the index of the player target in game state
     INDEX iPlayerTarget = itpls->pls_Index;
     // if player is added
-    if (iPlayerTarget>=0) {
+    if (iPlayerTarget >= 0) {
       // get the player target
       CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[iPlayerTarget];
       // if it is that one
@@ -2186,9 +2186,9 @@ void CNetworkLibrary::SendChat(ULONG ulFrom, ULONG ulTo, const CTString &strMess
 
   // just make the message and send it to server
   CNetworkMessage nm(MSG_CHAT_IN);
-  nm<<ulFrom;
-  nm<<ulTo;
-  nm<<strMessage;
+  nm << ulFrom;
+  nm << ulTo;
+  nm << strMessage;
   SendToServer(nm);
 }
 
@@ -2196,13 +2196,13 @@ void CNetworkLibrary::SendChat(ULONG ulFrom, ULONG ulTo, const CTString &strMess
 void CNetworkLibrary::WriteVersion_t(CTStream &strm)
 {
   strm.WriteID_t("BUIV"); // build version
-  strm<<INDEX(_SE_BUILD_MAJOR);
+  strm << INDEX(_SE_BUILD_MAJOR);
 }
 // load version of engine saved in file and check against current
 void CNetworkLibrary::CheckVersion_t(CTStream &strm, BOOL bAllowReinit, BOOL &bNeedsReinit)
 {
   // if not saved
-  if (strm.PeekID_t()!=CChunkID("BUIV")) { // build version
+  if (strm.PeekID_t() != CChunkID("BUIV")) { // build version
     // behave as if everything is ok (for old versions)
     bNeedsReinit = FALSE;
     return;
@@ -2210,11 +2210,11 @@ void CNetworkLibrary::CheckVersion_t(CTStream &strm, BOOL bAllowReinit, BOOL &bN
   strm.ExpectID_t("BUIV"); // build version
   // read the saved one
   INDEX iSaved;
-  strm>>iSaved;
+  strm >> iSaved;
   // get current one
   INDEX iCurrent = _SE_BUILD_MAJOR;
   // if current version is an internal build
-  if (iCurrent==0) {
+  if (iCurrent == 0) {
     // it is never forced to reinit
     bNeedsReinit = FALSE;
     return;
@@ -2229,7 +2229,7 @@ void CNetworkLibrary::CheckVersion_t(CTStream &strm, BOOL bAllowReinit, BOOL &bN
   }
 
   // if current version is same as the saved one
-  if (iCurrent==iSaved) {
+  if (iCurrent == iSaved) {
     // all ok
     bNeedsReinit = FALSE;
     return;
@@ -2259,7 +2259,7 @@ void CNetworkLibrary::AddNetGraphValue(enum NetGraphEntryType nget, FLOAT fLaten
   net_iGraphBuffer = Clamp(net_iGraphBuffer, INDEX(20), INDEX(1000));
 
   // make sure the netgraph has wanted number of values
-  if (ga_angeNetGraph.Count()!=net_iGraphBuffer) {
+  if (ga_angeNetGraph.Count() != net_iGraphBuffer) {
     ga_angeNetGraph.Clear();
     ga_angeNetGraph.New(net_iGraphBuffer);
     memset(&ga_angeNetGraph[0], 0, ga_angeNetGraph.Count()*sizeof(ga_angeNetGraph[0]));
@@ -2344,7 +2344,7 @@ extern void NET_MakeDefaultState_t(
     // restore original network pointer
     CNetworkLibrary *pnlTemp = _pNetwork;
     _pNetwork = pnlOld;
-    if (pnlTemp!=NULL) {
+    if (pnlTemp != NULL) {
       delete pnlTemp;
     }
     _bTempNetwork = FALSE;
@@ -2389,28 +2389,28 @@ void CNetworkLibrary::GameInactive(void)
     /* This is handled by GameAgent. 
 
     // if requesting enumeration and this is server and enumeration is allowed
-    if (nmReceived.GetType()==MSG_REQ_ENUMSERVERS
+    if (nmReceived.GetType() == MSG_REQ_ENUMSERVERS
       && IsServer()
       && (ser_bEnumeration && ga_sesSessionState.ses_ctMaxPlayers>1)) {
       // create response
       CNetworkMessage nmEnum(MSG_SERVERINFO);
-      nmEnum<<ga_strSessionName;
-      nmEnum<<ga_World.wo_strName;
-      nmEnum<<ga_srvServer.GetPlayersCount();
-      nmEnum<<ga_sesSessionState.ses_ctMaxPlayers;
+      nmEnum << ga_strSessionName;
+      nmEnum << ga_World.wo_strName;
+      nmEnum << ga_srvServer.GetPlayersCount();
+      nmEnum << ga_sesSessionState.ses_ctMaxPlayers;
 
       // send it
       SendBroadcast(nmEnum, ulFrom, uwPort);
     // if receiving enumeration
-    } else if (nmReceived.GetType()==MSG_SERVERINFO) {
+    } else if (nmReceived.GetType() == MSG_SERVERINFO) {
       // create a new session
       CNetworkSession &ns = *new CNetworkSession;
       ga_lhEnumeratedSessions.AddTail(ns.ns_lnNode);
       // read it
-      nmReceived>>ns.ns_strSession;
-      nmReceived>>ns.ns_strWorld;
-      nmReceived>>ns.ns_ctPlayers;
-      nmReceived>>ns.ns_ctMaxPlayers;
+      nmReceived >> ns.ns_strSession;
+      nmReceived >> ns.ns_strWorld;
+      nmReceived >> ns.ns_ctPlayers;
+      nmReceived >> ns.ns_ctMaxPlayers;
       ns.ns_strAddress = AddressToString(ulFrom);
     }*/
   }

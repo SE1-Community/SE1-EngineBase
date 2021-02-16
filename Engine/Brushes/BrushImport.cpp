@@ -31,7 +31,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  */
 void CBrush3D::AddMipBrushFromObject3D_t(CObject3D &ob, FLOAT fSwitchDistance) // throw char *
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   // create one brush mip
   CBrushMip *pbmBrushMip = new CBrushMip;
   // add it to the brush
@@ -48,7 +48,7 @@ void CBrush3D::AddMipBrushFromObject3D_t(CObject3D &ob, FLOAT fSwitchDistance) /
  */
 void CBrush3D::FromObject3D_t(CObject3D &ob) // throw char *
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   // clear this brush in case there is something in it
   Clear();
 
@@ -196,7 +196,7 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
     // copy polygon properties
     const int sizeTextureProperties = sizeof(bpo.bpo_abptTextures[0].bpt_auProperties);
     const int sizePolygonProperties = sizeof(CBrushPolygonProperties);
-    ASSERT(sizeof(opo.opo_ubUserData)>=sizePolygonProperties+3*sizeTextureProperties);
+    ASSERT(sizeof(opo.opo_ubUserData) >= sizePolygonProperties+3*sizeTextureProperties);
     UBYTE *pubUserData = (UBYTE*)&opo.opo_ubUserData;
     memcpy(&bpo.bpo_bppProperties, pubUserData, sizePolygonProperties);
     memcpy(&bpo.bpo_abptTextures[0].bpt_auProperties,
@@ -258,9 +258,9 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
 
     // get the brush of this sector
     CBrush3D *pbr = bsc_pbmBrushMip->bm_pbrBrush;
-    ASSERT(pbr!=NULL);
+    ASSERT(pbr != NULL);
     // if the brush is field
-    if (pbr->br_pfsFieldSettings!=NULL) {
+    if (pbr->br_pfsFieldSettings != NULL) {
       // set polygon flags for fields
       bpo.bpo_ulFlags|=BPOF_PORTAL|BPOF_PASSABLE;
     }

@@ -56,18 +56,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 /* From VisualC assert.h: Define _CRTIMP */
   #ifndef _CRTIMP
-  #ifdef	_NTSDK
+  #ifdef  _NTSDK
   /* definition compatible with NT SDK */
   #define _CRTIMP
-  #else	/* ndef _NTSDK */
+  #else  /* ndef _NTSDK */
   /* current definition */
-  #ifdef	_DLL
+  #ifdef  _DLL
   #define _CRTIMP __declspec(dllimport)
-  #else	/* ndef _DLL */
+  #else  /* ndef _DLL */
   #define _CRTIMP
-  #endif	/* _DLL */
-  #endif	/* _NTSDK */
-  #endif	/* _CRTIMP */
+  #endif  /* _DLL */
+  #endif  /* _NTSDK */
+  #endif  /* _CRTIMP */
 /* End: Define _CRTIMP */
 
   // this breakpoint doesn't cause exceptions if not in debugger
@@ -81,36 +81,36 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
   /* CT break point macro */
   #define BREAKPOINT                                                \
-    if (1) {					                                              \
+    if (1) {                                                        \
       SAFEBREAKPOINT;                                               \
       _assert("hard-coded breakpoint (CroTeam)",__FILE__,__LINE__); \
     } else NOTHING
 
   /* CT DEBUG macro -- the expression is executed only in debug version */
   #ifndef IFDEBUG
-    #define IFDEBUG(expr) 				\
+    #define IFDEBUG(expr)         \
       expr
   #endif
 
   /* CT assertion macros */
   #ifndef ASSERT
-    #define ASSERT(expr) 				            \
-      if (!(expr)) {				                  \
+    #define ASSERT(expr)                     \
+      if (!(expr)) {                          \
         /*SAFEBREAKPOINT;*/                     \
-        _assert(#expr,__FILE__,__LINE__);		\
+        _assert(#expr,__FILE__,__LINE__);    \
       } else NOTHING
   #endif
 
-  #define ASSERTALWAYS(msg)			                \
-    if (1) {					                          \
+  #define ASSERTALWAYS(msg)                      \
+    if (1) {                                    \
       /*SAFEBREAKPOINT;*/                           \
-      _assert(msg,__FILE__,__LINE__); 	      	\
+      _assert(msg,__FILE__,__LINE__);           \
     } else NOTHING
 
-  #define ASSERTMSG(expr, msg) 			            \
-    if (!(expr)) {				                        \
+  #define ASSERTMSG(expr, msg)                   \
+    if (!(expr)) {                                \
       /*SAFEBREAKPOINT;*/                           \
-      _assert(msg,__FILE__,__LINE__); 	        \
+      _assert(msg,__FILE__,__LINE__);           \
     } else NOTHING
   #define DEBUGSTRING(str) (str)
 #endif

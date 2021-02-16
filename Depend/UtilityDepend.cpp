@@ -62,7 +62,7 @@ void SubMain( int argc, char *argv[])
   // get application path from cmd line
   _fnmApplicationPath = CTString(ACHR_APP_DIR);
   // if not ending with backslash
-  if (_fnmApplicationPath[strlen(_fnmApplicationPath)-1]!='\\') {
+  if (_fnmApplicationPath[strlen(_fnmApplicationPath)-1] != '\\') {
     _fnmApplicationPath += "\\";
   }
 
@@ -110,7 +110,7 @@ void SubMain( int argc, char *argv[])
       CTFileStream strmDepIn;
 
       // read dependency list
-  	  strmDepIn.Open_t( afnFiles[0], CTStream::OM_READ);
+      strmDepIn.Open_t( afnFiles[0], CTStream::OM_READ);
       dl.Read_t( &strmDepIn);
       strmDepIn.Close();
       // export file suitable for archivers
@@ -122,7 +122,7 @@ void SubMain( int argc, char *argv[])
       CTFileStream strmDepIn, strmDepOut;
 
       // read dependency list
-  	  strmDepIn.Open_t( afnFiles[0], CTStream::OM_READ);
+      strmDepIn.Open_t( afnFiles[0], CTStream::OM_READ);
       dl.Read_t( &strmDepIn);
       strmDepIn.Close();
       // remove updated files from list
@@ -136,8 +136,8 @@ void SubMain( int argc, char *argv[])
       // load dependency lists
       CDependencyList dl1, dl2;
       CTFileStream strmDep1, strmDep2, strmDepDiff;
-  	  strmDep1.Open_t( afnFiles[0], CTStream::OM_READ);
-  	  strmDep2.Open_t( afnFiles[1], CTStream::OM_READ);
+      strmDep1.Open_t( afnFiles[0], CTStream::OM_READ);
+      strmDep2.Open_t( afnFiles[1], CTStream::OM_READ);
       dl1.Read_t( &strmDep1);
       dl2.Read_t( &strmDep2);
       strmDep1.Close();

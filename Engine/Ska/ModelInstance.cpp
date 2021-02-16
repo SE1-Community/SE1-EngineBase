@@ -55,9 +55,9 @@ CModelInstance *CreateModelInstance(CTString strName)
 }
 void DeleteModelInstance(CModelInstance *pmi)
 {
-  ASSERT(pmi!=NULL);
+  ASSERT(pmi != NULL);
   // if model instance is valid
-  if (pmi!=NULL) {
+  if (pmi != NULL) {
     // Clear model instance
     pmi->Clear();
     // Delete model instance
@@ -147,7 +147,7 @@ void CModelInstance::GetCurrentColisionBox(FLOATaabbox3D &aabbox)
 
 ColisionBox &CModelInstance::GetCurrentColisionBox()
 {
-  ASSERT(mi_iCurentBBox>=0);
+  ASSERT(mi_iCurentBBox >= 0);
   ASSERT(mi_iCurentBBox<mi_cbAABox.Count());
   ASSERT(mi_cbAABox.Count()>0);
 
@@ -174,7 +174,7 @@ INDEX CModelInstance::GetColisionBoxIndex(INDEX iBoxID)
 
 ColisionBox &CModelInstance::GetColisionBox(INDEX icb)
 {
-  ASSERT(icb>=0);
+  ASSERT(icb >= 0);
   ASSERT(icb<mi_cbAABox.Count());
   return mi_cbAABox[icb];
 }
@@ -197,7 +197,7 @@ FLOAT3D CModelInstance::GetCollisionBoxMax(INDEX iCollisionBox/*=0*/)
 INDEX CModelInstance::GetCollisionBoxDimensionEquality(INDEX iCollisionBox/*=0*/)
 {
   // if colision box does not exists
-  if (iCollisionBox>=mi_cbAABox.Count()) {
+  if (iCollisionBox >= mi_cbAABox.Count()) {
     // give last colision box
     iCollisionBox = mi_cbAABox.Count()-1;
   }
@@ -249,8 +249,8 @@ void CModelInstance::RemoveColisionBox(INDEX iIndex)
 // add child to modelinstance
 void CModelInstance::AddChild(CModelInstance *pmi, INDEX iParentBoneID /* = -1 */)
 {
-  SKAASSERT(pmi!=NULL);
-  if (pmi==NULL) return;
+  SKAASSERT(pmi != NULL);
+  if (pmi == NULL) return;
   mi_cmiChildren.Add(pmi);
   if (iParentBoneID>0) {
     pmi->SetParentBone(iParentBoneID);
@@ -260,11 +260,11 @@ void CModelInstance::AddChild(CModelInstance *pmi, INDEX iParentBoneID /* = -1 *
 // remove model instance child
 void CModelInstance::RemoveChild(CModelInstance *pmi)
 {
-  ASSERT(pmi!=this);
-  SKAASSERT(pmi!=NULL);
+  ASSERT(pmi != this);
+  SKAASSERT(pmi != NULL);
   // aditional check
-  if (pmi==NULL) return;
-  if (pmi==this) return;
+  if (pmi == NULL) return;
+  if (pmi == this) return;
 
   mi_cmiChildren.Remove(pmi);
 }
@@ -352,7 +352,7 @@ void CModelInstance::AddTexture_t(CTFileName fnTexture, CTString strTexID,MeshIn
 {
   if (pmshi == NULL) {
     INDEX ctMeshInst = mi_aMeshInst.Count();
-    if (ctMeshInst<=0) throw("Error adding texture\nMesh instance does not exists");
+    if (ctMeshInst <= 0) throw("Error adding texture\nMesh instance does not exists");
     pmshi = &mi_aMeshInst[ctMeshInst-1];
   }
 
@@ -365,7 +365,7 @@ void CModelInstance::AddTexture_t(CTFileName fnTexture, CTString strTexID,MeshIn
 // Remove one texture from model instance
 void CModelInstance::RemoveTexture(TextureInstance *ptiRemove,MeshInstance *pmshi)
 {
-  ASSERT(pmshi!=NULL);
+  ASSERT(pmshi != NULL);
   CStaticArray<struct TextureInstance> atiTextures;
   INDEX ctti=pmshi->mi_tiTextures.Count();
   atiTextures.New(ctti-1);
@@ -429,8 +429,8 @@ TextureInstance *CModelInstance::FindTexureInstance(INDEX iTexID, MeshInstance &
 // change parent of model instance
 void CModelInstance::ChangeParent(CModelInstance *pmiOldParent, CModelInstance *pmiNewParent)
 {
-  SKAASSERT(pmiOldParent!=NULL);
-  SKAASSERT(pmiNewParent!=NULL);
+  SKAASSERT(pmiOldParent != NULL);
+  SKAASSERT(pmiNewParent != NULL);
 
   if (pmiOldParent == NULL) {
     CPrintF("Model Instance doesn't have a parent\n");
@@ -448,9 +448,9 @@ void CModelInstance::ChangeParent(CModelInstance *pmiOldParent, CModelInstance *
 // must suply first model instance in hierarchy cos model instance does not have its parent remembered
 CModelInstance *CModelInstance::GetParent(CModelInstance *pmiStartFrom)
 {
-  ASSERT(pmiStartFrom!=NULL);
+  ASSERT(pmiStartFrom != NULL);
   // aditional check
-  if (pmiStartFrom==NULL) return NULL;
+  if (pmiStartFrom == NULL) return NULL;
   // if 'this' is member of pmiStartFrom return it
   if (pmiStartFrom->mi_cmiChildren.IsMember(this)) {
     return pmiStartFrom;
@@ -491,7 +491,7 @@ CModelInstance *CModelInstance::GetChild(INDEX iChildID, BOOL bRecursive/*=FALSE
     // if child has own children, go recursive
     if (bRecursive && pmi->mi_cmiChildren.Count()>0) {      
       pmi = pmi->GetChild(iChildID, TRUE);
-      if (pmi!=NULL) return pmi;
+      if (pmi != NULL) return pmi;
     }    
   }
   return NULL;
@@ -500,8 +500,8 @@ CModelInstance *CModelInstance::GetChild(INDEX iChildID, BOOL bRecursive/*=FALSE
 // returns parent that is not included in his parents smc file
 CModelInstance *CModelInstance::GetFirstNonReferencedParent(CModelInstance *pmiRoot)
 {
-  ASSERT(this!=NULL);
-  ASSERT(pmiRoot!=NULL);
+  ASSERT(this != NULL);
+  ASSERT(pmiRoot != NULL);
   CModelInstance *pmiParent = this->GetParent(pmiRoot);
   CModelInstance *pmiLast = this;
   while (pmiParent != NULL)
@@ -675,7 +675,7 @@ void CModelInstance::RemovePassedAnimsFromQueue()
   INDEX iFirstAnimList = -1;
   // for each anim list from last to first
   INDEX ial=ctal-1;
-  for (;ial>=0;ial--)
+  for (;ial >= 0;ial--)
   {
     AnimList &alList = mi_aqAnims.aq_Lists[ial];
     // calculate fade factor for this animlist
@@ -757,9 +757,9 @@ void CModelInstance::OffSetAnimationQueue(TIME fOffsetTime) {
 BOOL CModelInstance::FindAnimationByID(int iAnimID,INDEX *piAnimSetIndex,INDEX *piAnimIndex)
 {
   INDEX ctas = mi_aAnimSet.Count();
-  if (ctas<=0) return FALSE;
+  if (ctas <= 0) return FALSE;
   // for each animset
-  for (int ias=ctas-1;ias>=0;ias--) {
+  for (int ias=ctas-1;ias >= 0;ias--) {
     CAnimSet &asAnimSet = mi_aAnimSet[ias];
     INDEX ctan = asAnimSet.as_Anims.Count();
     // for each animation
@@ -896,7 +896,7 @@ void CModelInstance::SetModelColor(COLOR colNewColor)
 // test it the model has alpha blending
 BOOL CModelInstance::HasAlpha(void)
 {
-  return (GetModelColor()&0xFF)!=0xFF;
+  return (GetModelColor()&0xFF) != 0xFF;
 }
 
 BOOL CModelInstance::IsModelVisible( FLOAT fMipFactor)
@@ -919,8 +919,8 @@ void CModelInstance::AddSimpleShadow( const FLOAT fIntensity, const FLOATplane3D
   // intensitiy is too low or projection is not perspective - do nothing!
   //if (!HasShadow(1) || fIntensity<0.01f || !_aprProjection.IsPerspective()
   // || (rm.rm_pmdModelData->md_Flags&(MF_FACE_FORWARD|MF_HALF_FACE_FORWARD))) return;
-  // ASSERT( _iRenderingType==1);
-  ASSERT( fIntensity>0 && fIntensity<=1);
+  // ASSERT( _iRenderingType == 1);
+  ASSERT( fIntensity>0 && fIntensity <= 1);
   // do some rendering
   // _pfModelProfile.StartTimer( CModelProfile::PTI_RENDERSIMPLESHADOW);
   // _pfModelProfile.IncrementTimerAveragingCounter( CModelProfile::PTI_RENDERSIMPLESHADOW);
@@ -978,7 +978,7 @@ void CModelInstance::Copy(CModelInstance &miOther)
   CopyMeshInstance(miOther);
 
   // if skeleton exists 
-  if (miOther.mi_psklSkeleton!=NULL) {
+  if (miOther.mi_psklSkeleton != NULL) {
     // copy skeleton
     AddSkeleton_t(miOther.mi_psklSkeleton->GetName());
   }
@@ -1020,7 +1020,7 @@ void CModelInstance::Synchronize(CModelInstance &miOther)
     CModelInstance &chmi = mi_cmiChildren[ichmi];
     CModelInstance *pchmiOther = miOther.GetChild(chmi.GetID(),FALSE);
     // if both model instance have this child 
-    if (pchmiOther!=NULL) {
+    if (pchmiOther != NULL) {
       // sync child
       chmi.Synchronize(*pchmiOther);
     }

@@ -92,8 +92,8 @@ inline Type *CDynamicStackArray<Type>::Push(INDEX ct) {
 template<class Type>
 inline void CDynamicStackArray<Type>::PopAll(void) {
   // if there is only one block allocated
-  if ( da_BlocksList.IsEmpty() 
-    || &da_BlocksList.Head()==&da_BlocksList.Tail()) {
+  if (da_BlocksList.IsEmpty() 
+    || &da_BlocksList.Head() == &da_BlocksList.Tail()) {
     // just clear the counter
     da_ctUsed = 0;
 
@@ -114,13 +114,13 @@ inline void CDynamicStackArray<Type>::PopAll(void) {
  */
 template<class Type>
 inline Type &CDynamicStackArray<Type>::operator[](INDEX i) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   ASSERT(i<da_ctUsed);     // check bounds
   return CDynamicArray<Type>::operator[](i);
 }
 template<class Type>
 inline const Type &CDynamicStackArray<Type>::operator[](INDEX i) const {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   ASSERT(i<da_ctUsed);     // check bounds
   return CDynamicArray<Type>::operator[](i);
 }
@@ -130,7 +130,7 @@ inline const Type &CDynamicStackArray<Type>::operator[](INDEX i) const {
  */
 template<class Type>
 INDEX CDynamicStackArray<Type>::Count(void) const {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   return da_ctUsed;
 }
 
@@ -139,7 +139,7 @@ INDEX CDynamicStackArray<Type>::Count(void) const {
  */
 template<class Type>
 INDEX CDynamicStackArray<Type>::Index(Type *ptMember) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   INDEX i = CDynamicArray<Type>::Index(ptMember);
   ASSERTMSG(i<da_ctUsed, "CDynamicStackArray<>::Index(): Not a member of this array!");
   return i;
@@ -160,9 +160,9 @@ Type **CDynamicStackArray<Type>::GetArrayOfPointers(void)
 template<class Type>
 CDynamicStackArray<Type> &CDynamicStackArray<Type>::operator=(CDynamicStackArray<Type> &arOriginal)
 {
-  ASSERT(this!=NULL);
-  ASSERT(&arOriginal!=NULL);
-  ASSERT(this!=&arOriginal);
+  ASSERT(this != NULL);
+  ASSERT(&arOriginal != NULL);
+  ASSERT(this != &arOriginal);
 
   // copy stack arrays
   CDynamicArray<Type>::operator=(arOriginal);

@@ -35,10 +35,10 @@ COLOR HSVToColor( UBYTE const ubH, UBYTE const ubS, UBYTE const ubV)
   if (ubS>1) {
     SLONG xH   = (SLONG)ubH *1536; // ->FIXINT/(256/6)
     INDEX iHlo = xH & 0xFFFF; 
-    SLONG slP  = ((SLONG)ubV * (256-  (SLONG)ubS)) >>8;
-    SLONG slQ  = ((SLONG)ubV * (256-(((SLONG)ubS*iHlo)>>16))) >>8;
-    SLONG slT  = ((SLONG)ubV * (256-(((SLONG)ubS*(65536-iHlo))>>16))) >>8;
-    switch (xH>>16) {
+    SLONG slP  = ((SLONG)ubV * (256-  (SLONG)ubS)) >> 8;
+    SLONG slQ  = ((SLONG)ubV * (256-(((SLONG)ubS*iHlo) >> 16))) >> 8;
+    SLONG slT  = ((SLONG)ubV * (256-(((SLONG)ubS*(65536-iHlo)) >> 16))) >> 8;
+    switch (xH >> 16) {
       case 0:  return RGBToColor(ubV,slT,slP);
       case 1:  return RGBToColor(slQ,ubV,slP);
       case 2:  return RGBToColor(slP,ubV,slT);
@@ -63,8 +63,8 @@ void ColorToHSV( COLOR const colSrc, UBYTE &ubH, UBYTE &ubS, UBYTE &ubV)
     SLONG slD = ubV - Min( Min(ubR,ubG),ubB);
     if (slD<1) return;
     ubS = (slD*255) /ubV; 
-         if (ubR==ubV) ubH =   0+ (((SLONG)ubG-ubB)*85) / (slD*2);
-    else if (ubG==ubV) ubH =  85+ (((SLONG)ubB-ubR)*85) / (slD*2);
+         if (ubR == ubV) ubH =   0+ (((SLONG)ubG-ubB)*85) / (slD*2);
+    else if (ubG == ubV) ubH =  85+ (((SLONG)ubB-ubR)*85) / (slD*2);
     else               ubH = 170+ (((SLONG)ubR-ubG)*85) / (slD*2);
   }
 }
@@ -107,8 +107,8 @@ BOOL IsBigger( COLOR const col1, COLOR const col2)
   UBYTE ubR2,ubG2,ubB2;
   ColorToRGB( col1, ubR1,ubG1,ubB1);
   ColorToRGB( col2, ubR2,ubG2,ubB2);
-  SLONG slGray1 = (((SLONG)ubR1+ubG1+ubB1)*21846) >>16;
-  SLONG slGray2 = (((SLONG)ubR2+ubG2+ubB2)*21846) >>16;
+  SLONG slGray1 = (((SLONG)ubR1+ubG1+ubB1)*21846) >> 16;
+  SLONG slGray2 = (((SLONG)ubR2+ubG2+ubB2)*21846) >> 16;
   return (slGray1>slGray2);
 }
 
@@ -131,20 +131,20 @@ BOOL CompareChroma( COLOR col1, COLOR col2)
 
   // find expected color
   SLONG slR,slG,slB, slDiv;
-  if (slR1==slMax1) {
+  if (slR1 == slMax1) {
     slDiv = 65536 / slR1;
     slR =  slR2;
-    slG = (slR2*slG1*slDiv)>>16;
-    slB = (slR2*slB1*slDiv)>>16;
-  } else if (slG1==slMax1) {
+    slG = (slR2*slG1*slDiv) >> 16;
+    slB = (slR2*slB1*slDiv) >> 16;
+  } else if (slG1 == slMax1) {
     slDiv = 65536 / slG1;
-    slR = (slG2*slR1*slDiv)>>16;
+    slR = (slG2*slR1*slDiv) >> 16;
     slG =  slG2;
-    slB = (slG2*slB1*slDiv)>>16;
+    slB = (slG2*slB1*slDiv) >> 16;
   } else {
     slDiv = 65536 / slB1;
-    slR = (slB2*slR1*slDiv)>>16;
-    slG = (slB2*slG1*slDiv)>>16;
+    slR = (slB2*slR1*slDiv) >> 16;
+    slG = (slB2*slG1*slDiv) >> 16;
     slB =  slB2;
   }
 
@@ -170,24 +170,24 @@ COLOR DesaturateColor( COLOR const col)
 COLOR AdjustColor( COLOR const col, SLONG const slHueShift, SLONG const slSaturation)
 {
   // nothing?
-  if (slHueShift==0 && slSaturation==256) return col;
+  if (slHueShift == 0 && slSaturation == 256) return col;
   // saturation?
   COLOR colRes = col;
-  UBYTE ubA = (col&CT_AMASK)>>CT_ASHIFT;
-  if (slSaturation!=256)
+  UBYTE ubA = (col&CT_AMASK) >> CT_ASHIFT;
+  if (slSaturation != 256)
   { // calculate gray factor
     UBYTE ubR,ubG,ubB;
     ColorToRGB( col, ubR,ubG,ubB);
-    SLONG slGray = (ubR*72 + ubG*152 + ubB*32)>>8;
+    SLONG slGray = (ubR*72 + ubG*152 + ubB*32) >> 8;
     // saturate color components
-    SLONG slR = slGray + (((ubR-slGray)*slSaturation)>>8);
-    SLONG slG = slGray + (((ubG-slGray)*slSaturation)>>8);
-    SLONG slB = slGray + (((ubB-slGray)*slSaturation)>>8);
+    SLONG slR = slGray + (((ubR-slGray)*slSaturation) >> 8);
+    SLONG slG = slGray + (((ubG-slGray)*slSaturation) >> 8);
+    SLONG slB = slGray + (((ubB-slGray)*slSaturation) >> 8);
     // clamp color components
     colRes = RGBToColor( pubClipByte[slR], pubClipByte[slG], pubClipByte[slB]);
   }
   // hue?
-  if (slHueShift==0) return colRes|ubA;
+  if (slHueShift == 0) return colRes|ubA;
   UBYTE ubH,ubS,ubV;
   ColorToHSV( colRes, ubH,ubS,ubV);
   ubH += slHueShift;
@@ -198,7 +198,7 @@ COLOR AdjustColor( COLOR const col, SLONG const slHueShift, SLONG const slSatura
 // adjust color gamma correction
 COLOR AdjustGamma( COLOR const col, FLOAT const fGamma)
 {
-  if (fGamma==1.0f || fGamma<0.2f) return col;
+  if (fGamma == 1.0f || fGamma<0.2f) return col;
   const FLOAT f1oGamma = 1.0f / fGamma;
   const FLOAT f1o255   = 1.0f / 255.0f;
   UBYTE ubR,ubG,ubB,ubA;
@@ -243,9 +243,9 @@ COLOR LerpColor( COLOR col0, COLOR col1, FLOAT fRatio)
 // fast color multiply function - RES = 1ST * 2ND /255
 COLOR MulColors( COLOR col1, COLOR col2) 
 {
-  if (col1==0xFFFFFFFF)   return col2;
-  if (col2==0xFFFFFFFF)   return col1;
-  if (col1==0 || col2==0) return 0;
+  if (col1 == 0xFFFFFFFF)   return col2;
+  if (col2 == 0xFFFFFFFF)   return col1;
+  if (col1 == 0 || col2 == 0) return 0;
   COLOR colRet;
   __asm {
     xor     ebx,ebx
@@ -327,9 +327,9 @@ COLOR MulColors( COLOR col1, COLOR col2)
 // fast color additon function - RES = clamp (1ST + 2ND)
 COLOR AddColors( COLOR col1, COLOR col2) 
 {
-  if (col1==0) return col2;
-  if (col2==0) return col1;
-  if (col1==0xFFFFFFFF || col2==0xFFFFFFFF) return 0xFFFFFFFF;
+  if (col1 == 0) return col2;
+  if (col2 == 0) return col1;
+  if (col1 == 0xFFFFFFFF || col2 == 0xFFFFFFFF) return 0xFFFFFFFF;
   COLOR colRet;
   __asm {
     xor     ebx,ebx

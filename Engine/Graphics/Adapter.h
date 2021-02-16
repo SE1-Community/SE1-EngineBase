@@ -23,17 +23,17 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 // display adapter flags
-#define DAF_ONEWINDOW       (1L<<0)   // supports only one window
-#define DAF_FULLSCREENONLY  (1L<<1)   // don't add windowed modes
-#define DAF_USEGDIFUNCTIONS (1L<<2)   // don't use wgl functions instead gdi functions
-#define DAF_16BITONLY       (1L<<3)   // supports only 16-bit color depth
+#define DAF_ONEWINDOW       (1L << 0)   // supports only one window
+#define DAF_FULLSCREENONLY  (1L << 1)   // don't add windowed modes
+#define DAF_USEGDIFUNCTIONS (1L << 2)   // don't use wgl functions instead gdi functions
+#define DAF_16BITONLY       (1L << 3)   // supports only 16-bit color depth
 
 
 class CDisplayAdapter
 {
 public:
   CDisplayMode da_admDisplayModes[25]; // 25 should be just enough
-  INDEX da_ctDisplayModes;       // number of display modes with hardware acceleration (>=1)
+  INDEX da_ctDisplayModes;       // number of display modes with hardware acceleration ( >= 1)
   INDEX da_iCurrentDisplayMode;  // currently active display mode (-1 if none)
   ULONG da_ulFlags;              // various flags (DAF_ ...) 
   CTString da_strVendor;         // OpenGL will fill this upon initialization of adapter ...

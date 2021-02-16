@@ -116,17 +116,17 @@ void StartFog( CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix
   // calculate fog table size wanted
   extern INDEX tex_iFogSize;
   tex_iFogSize = Clamp( tex_iFogSize, 4L, 8L); 
-  PIX pixSizeH = ClampUp( _fog_fp.fp_iSizeH, 1L<<tex_iFogSize);
-  PIX pixSizeL = ClampUp( _fog_fp.fp_iSizeL, 1L<<tex_iFogSize);
+  PIX pixSizeH = ClampUp( _fog_fp.fp_iSizeH, 1L << tex_iFogSize);
+  PIX pixSizeL = ClampUp( _fog_fp.fp_iSizeL, 1L << tex_iFogSize);
   BOOL bNoDiscard = TRUE;
 
   // if fog table is not allocated in right size
-  if ((_fog_pixSizeH!=pixSizeH || _fog_pixSizeL!=pixSizeL) && _fog_pubTable!=NULL) {
+  if ((_fog_pixSizeH != pixSizeH || _fog_pixSizeL != pixSizeL) && _fog_pubTable != NULL) {
     FreeMemory( _fog_pubTable); // free it
     _fog_pubTable = NULL;
   }
   // allocate table if needed
-  if (_fog_pubTable==NULL) {
+  if (_fog_pubTable == NULL) {
     // allocate byte table (for intensity values) and ULONG table (color values for uploading) right behind!
     _fog_pubTable = (UBYTE*)AllocMemory( pixSizeH*pixSizeL * (sizeof(UBYTE)+sizeof(ULONG)));
     _fog_pixSizeH = pixSizeH;
@@ -136,7 +136,7 @@ void StartFog( CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix
   } 
 
   // update fog alpha value
-  _fog_ulAlpha = (_fog_fp.fp_colColor&CT_AMASK)>>CT_ASHIFT;
+  _fog_ulAlpha = (_fog_fp.fp_colColor&CT_AMASK) >> CT_ASHIFT;
 
   // get parameters
   const FLOAT fH0  = _fog_fp.fp_fH0;   // lowest point in LUT    ->texture t=1
@@ -183,7 +183,7 @@ void StartFog( CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix
     fA = Clamp(fA,0.0f,1.0f);
     
     // if not constant graduation
-    if (fgt!=FGT_CONSTANT) {
+    if (fgt != FGT_CONSTANT) {
       // calculate fog height for two points, limited to be inside fog
       FLOAT fFH0 = (fHFogSize-Clamp(fHA-fH1, 0.0f, fHFogSize));
       FLOAT fFH1 = (fHFogSize-Clamp(fHB-fH1, 0.0f, fHFogSize));
@@ -194,12 +194,12 @@ void StartFog( CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix
 
       FLOAT fDens;
       // if linear graduation
-      if (fgt==FGT_LINEAR) {
+      if (fgt == FGT_LINEAR) {
         // get linear integrated density factor
         fDens = (fFH0+fFH1)/2.0f;
       // if exponential graduation
       } else {
-        ASSERT(fgt==FGT_EXP);
+        ASSERT(fgt == FGT_EXP);
         // sort the two heights and make sure they are not same
         FLOAT fFA, fFB;
         if (fFH0<fFH1-fEpsilon) {
@@ -276,14 +276,14 @@ void StartFog( CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix
     // going from bottom
     INDEX pix=pixSizeH-1;
     for (; pix>0; pix--) {
-      if ((_fog_pubTable[(pix+1)*pixSizeL-1]*_fog_ulAlpha)>>8) break;
+      if ((_fog_pubTable[(pix+1)*pixSizeL-1]*_fog_ulAlpha) >> 8) break;
     }
     if (pix<(pixSizeH-1)) _fog_fEnd = (FLOAT)(pix+1) / (FLOAT)(pixSizeH-1);
   } else {
     // going from top
     INDEX pix=0;
     for (; pix<pixSizeH; pix++) {
-      if ((_fog_pubTable[(pix+1)*pixSizeL-1]*_fog_ulAlpha)>>8) break;
+      if ((_fog_pubTable[(pix+1)*pixSizeL-1]*_fog_ulAlpha) >> 8) break;
     }
     if (pix>0) _fog_fStart = (FLOAT)(pix-1) / (FLOAT)(pixSizeH-1);
   }
@@ -291,7 +291,7 @@ void StartFog( CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix
   // prepare and upload the fog table
   _fog_tpLocal.tp_bSingleMipmap = TRUE;
   const ULONG ulFormat = PrepareTexture( _fog_pubTable, _fog_pixSizeL, _fog_pixSizeH);
-  if (_fog_ulFormat!=ulFormat) {
+  if (_fog_ulFormat != ulFormat) {
     _fog_ulFormat = ulFormat;
     bNoDiscard = FALSE;
   } // set'n'upload
@@ -349,12 +349,12 @@ void StartHaze( CHazeParameters &hp,
   BOOL bNoDiscard = TRUE;
 
   // if haze table is not allocated in right size
-  if (_haze_pixSize!=pixSize && _haze_pubTable!=NULL) {
+  if (_haze_pixSize != pixSize && _haze_pubTable != NULL) {
     FreeMemory( _haze_pubTable);  // free it
     _haze_pubTable = NULL;
   }
   // allocate table if needed
-  if (_haze_pubTable==NULL) {
+  if (_haze_pubTable == NULL) {
     // allocate byte table (for intensity values) and ULONG table (color values for uploading) right behind!
     _haze_pubTable = (UBYTE*)AllocMemory(pixSize *(sizeof(UBYTE)+sizeof(ULONG)));
     _haze_pixSize  = pixSize;
@@ -363,7 +363,7 @@ void StartHaze( CHazeParameters &hp,
   }
 
   // update fog alpha value
-  _haze_ulAlpha = (_haze_hp.hp_colColor&CT_AMASK)>>CT_ASHIFT;
+  _haze_ulAlpha = (_haze_hp.hp_colColor&CT_AMASK) >> CT_ASHIFT;
 
   // get parameters
   FLOAT fNear = _haze_hp.hp_fNear;
@@ -386,13 +386,13 @@ void StartHaze( CHazeParameters &hp,
   }
 
   // determine where haze starts
-  for (pix=1; pix<pixSize; pix++) if ((_haze_pubTable[pix]*_haze_ulAlpha)>>8) break;
+  for (pix=1; pix<pixSize; pix++) if ((_haze_pubTable[pix]*_haze_ulAlpha) >> 8) break;
   _haze_fStart = (FLOAT)(pix-1) / (FLOAT)(pixSize-1);
 
   // prepare haze table
   _haze_tpLocal.tp_bSingleMipmap = TRUE;
   const ULONG ulFormat = PrepareTexture( _haze_pubTable, _haze_pixSize, 1);
-  if (_haze_ulFormat!=ulFormat) {
+  if (_haze_ulFormat != ulFormat) {
     _haze_ulFormat = ulFormat;
     bNoDiscard = FALSE;
   } // set'n'upload

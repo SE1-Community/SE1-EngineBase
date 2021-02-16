@@ -101,7 +101,7 @@ public:
   SLONG  sl_slMixerBufferSize;           // mixer buffer size
   SLONG  sl_slDecodeBufferSize;          // decoder buffer size
 
-  CListHead sl_ClhAwareList;	 					         // list of sound mode aware objects
+  CListHead sl_ClhAwareList;                      // list of sound mode aware objects
   CListHead sl_lhActiveListeners;                // active listeners for current frame of listening
 
 #else
@@ -110,7 +110,7 @@ public:
 
 #endif
 
-  /* Return library state (active <==> format <> NONE */
+  /* Return library state (active < == > format <> NONE */
   inline BOOL IsActive(void) {return sl_EsfFormat != SF_NONE;};
   /* Clear Library WaveOut */
   void ClearLibrary(void);

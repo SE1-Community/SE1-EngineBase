@@ -45,7 +45,7 @@ void CBrushMip::SelectSectorsInRange(
   // for all sectors in the brush
   {FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
     // if the sector is in the range
-    if ( itbsc->bsc_boxBoundingBox.HasContactWith(boxRange, CSG_RANGE_EPSILON) ) {
+    if (itbsc->bsc_boxBoundingBox.HasContactWith(boxRange, CSG_RANGE_EPSILON) ) {
       // select it
       selbscInRange.Select(itbsc.Current());
     }
@@ -59,7 +59,7 @@ void CBrushMip::SelectSectorsInRange(
   // for all sectors in the brush
   {FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
     // if the sector is in the range
-    if ( itbsc->bsc_boxBoundingBox.HasContactWith(boxRange, CSG_RANGE_EPSILON) ) {
+    if (itbsc->bsc_boxBoundingBox.HasContactWith(boxRange, CSG_RANGE_EPSILON) ) {
       // select it
       selbscInRange.Select(itbsc.Current());
     }
@@ -80,7 +80,7 @@ void CBrushMip::SelectOpenSector(CBrushSectorSelectionForCSG &selbscOpen)
     }
   }}
   // there must be at most one open sector in a brush mip
-  ASSERT(selbscOpen.Count()<=1);
+  ASSERT(selbscOpen.Count() <= 1);
 }
 
 /*
@@ -97,7 +97,7 @@ void CBrushMip::SelectClosedSectors(CBrushSectorSelectionForCSG &selbscClosed)
     }
   }}
   // there must be at most one open sector in a brush mip
-  ASSERT(bm_abscSectors.Count()-selbscClosed.Count()<=1);
+  ASSERT(bm_abscSectors.Count()-selbscClosed.Count() <= 1);
 }
 
 /*
@@ -160,7 +160,7 @@ void CBrushMip::Copy(CBrushMip &bmOther, FLOAT fStretch, BOOL bMirrorX)
   bmOther.ToObject3D(obOther, selbscAll);
 
   // if there is some mirror or stretch
-  if (fStretch!=1.0f || bMirrorX) {
+  if (fStretch != 1.0f || bMirrorX) {
     CSimpleProjection3D_DOUBLE prMirrorAndStretch;
     prMirrorAndStretch.ObjectPlacementL() = CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));
     prMirrorAndStretch.ViewerPlacementL() = CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));
@@ -217,7 +217,7 @@ void CBrushMip::UpdateBoundingBox(void)
   }}
 
   // if this brush is zoning
-  if (bm_pbrBrush->br_penEntity!=NULL && (bm_pbrBrush->br_penEntity->en_ulFlags&ENF_ZONING)) {
+  if (bm_pbrBrush->br_penEntity != NULL && (bm_pbrBrush->br_penEntity->en_ulFlags&ENF_ZONING)) {
     // portal links must be updated also
     bm_pbrBrush->br_penEntity->en_pwoWorld->wo_bPortalLinksUpToDate = FALSE;
   }
@@ -228,12 +228,12 @@ void CBrushMip::UpdateBoundingBox(void)
  */
 void CBrushMip::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prBrushToAbsolute)
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   // clear the bounding box of the mip
   bm_boxBoundingBox = FLOATaabbox3D();
   bm_boxRelative = FLOATaabbox3D();
   // if there are no sectors
-  if (bm_abscSectors.Count()==0) {
+  if (bm_abscSectors.Count() == 0) {
     // just make a small bounding box around brush center
     bm_boxBoundingBox = FLOATaabbox3D(
       prBrushToAbsolute.ObjectPlacementR().pl_PositionVector,
@@ -293,7 +293,7 @@ void CBrushMip::RemoveDummyPortals(BOOL bClearPortalFlags)
       BOOL bHasLink = FALSE;
       // for all entities in the sector
       {FOREACHDSTOFSRC(bpo.bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbsc)
-        if (pbsc->bsc_pbmBrushMip==this) {
+        if (pbsc->bsc_pbmBrushMip == this) {
           bHasLink = TRUE;
           break;
         }
@@ -339,7 +339,7 @@ void CBrushMip::SpreadFurtherMips(void)
       itbm->bm_fMaxDistance = fMipFactor;
     }
     // if it is this mip
-    if (this==&*itbm) {
+    if (this == &*itbm) {
       // stop skipping
       bSkip = FALSE;
     }
@@ -371,7 +371,7 @@ INDEX CBrushMip::GetMipIndex(void)
   FOREACHINLIST(CBrushMip, bm_lnInBrush, pbr->br_lhBrushMips, itbm) {
     iIndex++;
     // until this one
-    if (this==&*itbm) {
+    if (this == &*itbm) {
       return iIndex;
     }
   }

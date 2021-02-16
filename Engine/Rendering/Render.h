@@ -151,12 +151,12 @@ public:
 
   /* Test if texture layer is shown. */
   inline BOOL IsTextureLayerOn(INDEX iTexture) {
-    ASSERT(iTexture>=0 && iTexture<3);
+    ASSERT(iTexture >= 0 && iTexture<3);
     return wrp_abTextureLayers[iTexture];
   };
   /* Set texture layer shown/hidden. */
   inline void SetTextureLayerOn(BOOL bOn, INDEX iTexture) {
-    ASSERT(iTexture>=0 && iTexture<3);
+    ASSERT(iTexture >= 0 && iTexture<3);
     wrp_abTextureLayers[iTexture] = bOn;
   };
 

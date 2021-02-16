@@ -52,7 +52,7 @@ static _declspec(thread) CMessageBuffer mbReceivedMessage = { 0,0 };
 
 void CMessageBuffer::Allocate(void)
 {
-  if (mb_ulMessageBufferSize==0) {
+  if (mb_ulMessageBufferSize == 0) {
     ASSERT(mb_pvMessageBuffer == NULL);
     // allocate message buffer
     mb_ulMessageBufferSize = 16000;
@@ -195,9 +195,9 @@ void CMessageDispatcher::EnumNetworkProviders(CListHead &lh)
  */
 void CMessageDispatcher::StartProvider_t(const CNetworkProvider &npProvider)
 {
-  if (npProvider.np_Description=="Local") {
+  if (npProvider.np_Description == "Local") {
     _cmiComm.PrepareForUse(FALSE, FALSE);
-  } else if (npProvider.np_Description=="TCP/IP Server") {
+  } else if (npProvider.np_Description == "TCP/IP Server") {
     _cmiComm.PrepareForUse(TRUE, FALSE);
   } else {
     _cmiComm.PrepareForUse(TRUE, TRUE);
@@ -276,14 +276,14 @@ void CMessageDispatcher::SendToClient(INDEX iClient, const CNetworkMessage &nmMe
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_SENDMESSAGE);
   // send the message
   _cmiComm.Server_Send_Unreliable(iClient, (void*)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
-	
+  
   UpdateSentMessageStats(nmMessage);
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_SENDMESSAGE);
 }
 void CMessageDispatcher::SendToClientReliable(INDEX iClient, const CNetworkMessage &nmMessage)
 {
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_SENDMESSAGE);
-	
+  
   // send the message
   _cmiComm.Server_Send_Reliable(iClient, (void*)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
   UpdateSentMessageStats(nmMessage);
@@ -310,7 +310,7 @@ void CMessageDispatcher::SendToServer(const CNetworkMessage &nmMessage)
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_SENDMESSAGE);
   // send the message
   _cmiComm.Client_Send_Unreliable((void*)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
-	UpdateSentMessageStats(nmMessage);
+  UpdateSentMessageStats(nmMessage);
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_SENDMESSAGE);
 }
 
@@ -375,7 +375,7 @@ BOOL CMessageDispatcher::ReceiveFromServerReliable(CTMemoryStream &strmMessage)
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_RECEIVEMESSAGE);
   // receive message in stream
   BOOL bReceived = _cmiComm.Client_Receive_Reliable(strmMessage);
-	
+  
   // if there is message
   if (bReceived) {
     try {

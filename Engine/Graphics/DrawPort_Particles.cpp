@@ -164,7 +164,7 @@ void Particle_PrepareTexture( CTextureObject *pto, enum ParticleBlendType pbt)
   _fTextureCorrectionU = 1.0f/_mexTextureWidth;
   _fTextureCorrectionV = 1.0f/_mexTextureHeight;
   _atexFogHaze.Push(4); // temporary
-  _bTransFogHaze  = _colAttMask==0 && (_Particle_bHasFog || _Particle_bHasHaze);
+  _bTransFogHaze  = _colAttMask == 0 && (_Particle_bHasFog || _Particle_bHasHaze);
   _bNeedsClipping = FALSE;
 }
 
@@ -192,7 +192,7 @@ void Particle_SetTexturePart( MEX mexWidth, MEX mexHeight, INDEX iCol, INDEX iRo
 void Particle_RenderSquare( const FLOAT3D &vPos, FLOAT fSize, ANGLE aRotation, COLOR col, FLOAT fYRatio/*=1.0f*/)
 {
   // trivial rejection
-  if (fSize<0.0001f || ((col&CT_AMASK)>>CT_ASHIFT)<2) return;
+  if (fSize<0.0001f || ((col&CT_AMASK) >> CT_ASHIFT)<2) return;
 
   // project point to screen
   FLOAT3D vProjected;
@@ -204,7 +204,7 @@ void Particle_RenderSquare( const FLOAT3D &vPos, FLOAT fSize, ANGLE aRotation, C
   if (fPixSize<0.5f) return;
 
   // adjust the need for clipping
-  if (iTest==0) _bNeedsClipping = TRUE;
+  if (iTest == 0) _bNeedsClipping = TRUE;
 
   // eventual tex coords for fog or haze
   const INDEX ctTexFG = _atexFogHaze.Count();
@@ -252,7 +252,7 @@ void Particle_RenderSquare( const FLOAT3D &vPos, FLOAT fSize, ANGLE aRotation, C
   // prepare vertices
   const FLOAT fRX = fSize;
   const FLOAT fRY = fSize*fYRatio;
-  if (aRotation==0) {
+  if (aRotation == 0) {
     const FLOAT fIBeg = fI0-fRX;  const FLOAT fIEnd = fI0+fRX;
     const FLOAT fJBeg = fJ0-fRY;  const FLOAT fJEnd = fJ0+fRY;
     pvtx[0].x = fIBeg;  pvtx[0].y = fJBeg;  pvtx[0].z = fOoK;
@@ -289,7 +289,7 @@ void Particle_RenderSquare( const FLOAT3D &vPos, FLOAT fSize, ANGLE aRotation, C
 void Particle_RenderLine( const FLOAT3D &vPos0, const FLOAT3D &vPos1, FLOAT fWidth, COLOR col)
 {
   // trivial rejection
-  if (fWidth<0 || ((col&CT_AMASK)>>CT_ASHIFT)<2) return;
+  if (fWidth<0 || ((col&CT_AMASK) >> CT_ASHIFT)<2) return;
 
   // project point to screen
   FLOAT3D vProjected0, vProjected1;
@@ -391,7 +391,7 @@ void Particle_RenderQuad3D( const FLOAT3D &vPos0, const FLOAT3D &vPos1, const FL
                             const FLOAT3D &vPos3, COLOR col)
 {
   // trivial rejection
-  if (((col&CT_AMASK)>>CT_ASHIFT)<2) return;
+  if (((col&CT_AMASK) >> CT_ASHIFT)<2) return;
 
   // project point to screen
   FLOAT3D vProjected0, vProjected1, vProjected2, vProjected3;
@@ -420,7 +420,7 @@ void Particle_RenderQuad3D( const FLOAT3D &vPos0, const FLOAT3D &vPos1, const FL
   if (iTest<0) return;
 
   // adjust the need for clipping
-  if (iTest==0) _bNeedsClipping = TRUE;
+  if (iTest == 0) _bNeedsClipping = TRUE;
 
   // separate colors (for the sake of fog/haze)
   COLOR col0,col1,col2,col3;
@@ -537,7 +537,7 @@ void Particle_Flush(void)
     gfxDepthFunc( GFX_EQUAL); // adjust z-buffer compare
     // copy fog/haze texture array to main texture array and set color to fog/haze
     const INDEX ctVertices = _atexCommon.Count();
-    ASSERT( _atexFogHaze.Count()==ctVertices+4);
+    ASSERT( _atexFogHaze.Count() == ctVertices+4);
     memcpy( &_atexCommon[0], &_atexFogHaze[0], ctVertices*sizeof(GFXTexCoord)); 
     for (INDEX i=0; i<ctVertices; i++) _acolCommon[i] = glcolFH;
     // render it
@@ -567,7 +567,7 @@ static int qsort_CompareZ( const void *pI0, const void *pI1) {
   const FLOAT fZ1 = _avtxCommon[i1].z;
        if (fZ0<fZ1) return +1;
   else if (fZ0>fZ1) return -1;
-  else              return  0;
+  else              return 0;
 }
 
 static int qsort_CompareZ3D( const void *pI0, const void *pI1) {
@@ -577,7 +577,7 @@ static int qsort_CompareZ3D( const void *pI0, const void *pI1) {
   const FLOAT fZ1 = (_avtxCommon[i1].z + _avtxCommon[i1+1].z + _avtxCommon[i1+2].z + _avtxCommon[i1+3].z) / 4.0f;
        if (fZ0<fZ1) return +1;
   else if (fZ0>fZ1) return -1;
-  else              return  0;
+  else              return 0;
 }
 
 
@@ -586,7 +586,7 @@ void Particle_Sort( BOOL b3D/*=FALSE*/)
 {
   INDEX i;
   const INDEX ctParticles = _avtxCommon.Count()/4; 
-  if (ctParticles<=0) return; // nothing to do!
+  if (ctParticles <= 0) return; // nothing to do!
 
   // generate sort array
   CStaticArray<INDEX> aiIndices;
@@ -611,7 +611,7 @@ void Particle_Sort( BOOL b3D/*=FALSE*/)
     INDEX &iWhere = aiInverse[i];
     ASSERT( iWhere<ctParticles);
     // if current is already in place, advance to next index
-    if (iWhere==i) { i++; continue; }
+    if (iWhere == i) { i++; continue; }
     // swap vertices
     Swap( _avtxCommon[iWhere*4+0], _avtxCommon[i*4+0]);
     Swap( _avtxCommon[iWhere*4+1], _avtxCommon[i*4+1]);

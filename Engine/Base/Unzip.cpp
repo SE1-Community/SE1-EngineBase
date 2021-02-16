@@ -48,7 +48,7 @@ struct LocalFileHeader {
   SWORD lfh_swExtraFieldLen;
 
 // follows:
-//	filename (variable size)
+//  filename (variable size)
 //  extra field (variable size)
 };
   
@@ -56,9 +56,9 @@ struct LocalFileHeader {
 // this exists only if bit 3 in GPB flag is set
 #define SIGNATURE_DD 0x08074b50
 struct DataDescriptor {
-	SLONG dd_slCRC32;
-	SLONG dd_slCompressedSize;
-	SLONG dd_slUncompressedSize;
+  SLONG dd_slCRC32;
+  SLONG dd_slCompressedSize;
+  SLONG dd_slUncompressedSize;
 };
 
 // one file in central dir
@@ -180,12 +180,12 @@ void CZipHandle::Clear(void)
   memset(&zh_zstream, 0, sizeof(zh_zstream));
 
   // free buffers
-  if (zh_pubBufIn!=NULL) {
+  if (zh_pubBufIn != NULL) {
     FreeMemory(zh_pubBufIn);
     zh_pubBufIn = NULL;
   }
   // close the zip archive file
-  if (zh_fFile!=NULL) {
+  if (zh_fFile != NULL) {
     fclose(zh_fFile);
     zh_fFile = NULL;
   }
@@ -208,8 +208,8 @@ static CStaticStackArray<CTFileName> _afnmArchives;
 // convert slashes to backslashes in a file path
 void ConvertSlashes(char *p)
 {
-  while (*p!=0) {
-    if (*p=='/') {
+  while (*p != 0) {
+    if (*p == '/') {
       *p = '\\';
     }
     p++;
@@ -221,7 +221,7 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
 {
 
   FILE *f = fopen(*pfnmZip, "rb");
-  if (f==NULL) {
+  if (f == NULL) {
     ThrowF_t(TRANS("%s: Cannot open file (%s)"), (CTString&)*pfnmZip, strerror(errno));
   }
   // start at the end of file, minus expected minimum overhead
@@ -242,17 +242,17 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
     int slSig;
     fread(&slSig, sizeof(slSig), 1, f);
     // if this is the sig
-    if (slSig==SIGNATURE_EOD) {
+    if (slSig == SIGNATURE_EOD) {
       // read directory end
       fread(&eod, sizeof(eod), 1, f);
       // if multi-volume zip
-      if (eod.eod_swDiskNo!=0||eod.eod_swDirStartDiskNo!=0
-        ||eod.eod_swEntriesInDirOnThisDisk!=eod.eod_swEntriesInDir) {
+      if (eod.eod_swDiskNo != 0||eod.eod_swDirStartDiskNo != 0
+        ||eod.eod_swEntriesInDirOnThisDisk != eod.eod_swEntriesInDir) {
         // fail
         ThrowF_t(TRANS("%s: Multi-volume zips are not supported"), (CTString&)*pfnmZip);
       }                                                     
       // check against empty zips
-      if (eod.eod_swEntriesInDir<=0) {
+      if (eod.eod_swEntriesInDir <= 0) {
         // fail
         ThrowF_t(TRANS("%s: Empty zip"), (CTString&)*pfnmZip);
       }                                                     
@@ -281,7 +281,7 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
     int slSig;
     fread(&slSig, sizeof(slSig), 1, f);
     // if this is not the expected sig
-    if (slSig!=SIGNATURE_FH) {
+    if (slSig != SIGNATURE_FH) {
       // fail
       ThrowF_t(TRANS("%s: Wrong signature for 'file header' number %d'"), 
         (CTString&)*pfnmZip, iFile);
@@ -296,7 +296,7 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
     if (fh.fh_swFileNameLen>slMaxFileName) {
       ThrowF_t(TRANS("%s: Too long filepath in zip"), (CTString&)*pfnmZip);
     }
-    if (fh.fh_swFileNameLen<=0) {
+    if (fh.fh_swFileNameLen <= 0) {
       ThrowF_t(TRANS("%s: Invalid filepath length in zip"), (CTString&)*pfnmZip);
     }
     fread(strBuffer, fh.fh_swFileNameLen, 1, f);
@@ -307,10 +307,10 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
     }
 
     // if the file is directory
-    if (strBuffer[strlen(strBuffer)-1]=='/') {
+    if (strBuffer[strlen(strBuffer)-1] == '/') {
       // check size
-      if (fh.fh_slUncompressedSize!=0
-        ||fh.fh_slCompressedSize!=0) {
+      if (fh.fh_slUncompressedSize != 0
+        ||fh.fh_slCompressedSize != 0) {
         ThrowF_t(TRANS("%s/%s: Invalid directory"), 
           (CTString&)*pfnmZip, strBuffer);
       }
@@ -331,9 +331,9 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
       ze.ze_ulCRC = fh.fh_slCRC32;
       ze.ze_bMod = bMod;
       // check for compressopn
-      if (fh.fh_swCompressionMethod==0) {
+      if (fh.fh_swCompressionMethod == 0) {
         ze.ze_bStored = TRUE;
-      } else if (fh.fh_swCompressionMethod==8) {
+      } else if (fh.fh_swCompressionMethod == 8) {
         ze.ze_bStored = FALSE;
       } else {
         ThrowF_t(TRANS("%s/%s: Only 'deflate' compression is supported"),
@@ -375,7 +375,7 @@ void ReadOneArchiveDir_t(CTFileName &fnm)
     // if some files were added
     if (ctOrgFiles<_azeFiles.Count()) {
       // remove them
-      if (ctOrgFiles==0) {
+      if (ctOrgFiles == 0) {
         _azeFiles.PopAll();
       } else {
         _azeFiles.PopUntil(ctOrgFiles-1);
@@ -435,7 +435,7 @@ int qsort_ArchiveCTFileName_reverse(const void *elem1, const void *elem2 )
 void UNZIPReadDirectoriesReverse_t(void)
 {
   // if no archives
-  if (_afnmArchives.Count()==0) {
+  if (_afnmArchives.Count() == 0) {
     // do nothing
     return;
   }
@@ -460,7 +460,7 @@ void UNZIPReadDirectoriesReverse_t(void)
   }
 
   // if there were errors
-  if (strAllErrors!="") {
+  if (strAllErrors != "") {
     // report them
     ThrowF_t("%s", strAllErrors);
   }
@@ -513,7 +513,7 @@ void UNZIPGetFileInfo(INDEX iHandle, CTFileName &fnmZip,
   BOOL &bCompressed)
 {
   // check handle number
-  if (iHandle<0 || iHandle>=_azhHandles.Count()) {
+  if (iHandle<0 || iHandle >= _azhHandles.Count()) {
     ASSERT(FALSE);
     return;
   }
@@ -548,7 +548,7 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
   }
 
   // if not found
-  if (pze==NULL) {
+  if (pze == NULL) {
     // fail
     ThrowF_t(TRANS("File not found: %s"), (const CTString&)fnm);
   }
@@ -579,7 +579,7 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
   // open zip archive for reading
   zh.zh_fFile = fopen(*pze->ze_pfnmArchive, "rb");
   // if failed to open it
-  if (zh.zh_fFile==NULL) {
+  if (zh.zh_fFile == NULL) {
     // clear the handle
     zh.Clear();
     // fail
@@ -592,7 +592,7 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
   int slSig;
   fread(&slSig, sizeof(slSig), 1, zh.zh_fFile);
   // if this is not the expected sig
-  if (slSig!=SIGNATURE_LFH) {
+  if (slSig != SIGNATURE_LFH) {
     // fail
     ThrowF_t(TRANS("%s/%s: Wrong signature for 'local file header'"), 
       (CTString&)*zh.zh_zeEntry.ze_pfnmArchive, zh.zh_zeEntry.ze_fnm);
@@ -619,7 +619,7 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
   zh.zh_zstream.zfree = (free_func)Z_NULL;
   int err = inflateInit2(&zh.zh_zstream, -15);  // 32k windows
   // if failed
-  if (err!=Z_OK) {
+  if (err != Z_OK) {
     // clean up what is possible
     FreeMemory(zh.zh_pubBufIn );
     zh.zh_pubBufIn  = NULL;
@@ -638,7 +638,7 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
 SLONG UNZIPGetSize(INDEX iHandle)
 {
   // check handle number
-  if (iHandle<0 || iHandle>=_azhHandles.Count()) {
+  if (iHandle<0 || iHandle >= _azhHandles.Count()) {
     ASSERT(FALSE);
     return 0;
   }
@@ -657,7 +657,7 @@ SLONG UNZIPGetSize(INDEX iHandle)
 ULONG UNZIPGetCRC(INDEX iHandle)
 {
   // check handle number
-  if (iHandle<0 || iHandle>=_azhHandles.Count()) {
+  if (iHandle<0 || iHandle >= _azhHandles.Count()) {
     ASSERT(FALSE);
     return 0;
   }
@@ -676,7 +676,7 @@ ULONG UNZIPGetCRC(INDEX iHandle)
 void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
 {
   // check handle number
-  if (iHandle<0 || iHandle>=_azhHandles.Count()) {
+  if (iHandle<0 || iHandle >= _azhHandles.Count()) {
     ASSERT(FALSE);
     return;
   }
@@ -689,7 +689,7 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
   }
 
   // if behind the end of file
-  if (slStart>=zh.zh_zeEntry.ze_slUncompressedSize) {
+  if (slStart >= zh.zh_zeEntry.ze_slUncompressedSize) {
     // do nothing
     return;
   }
@@ -720,10 +720,10 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
   // while ahead of the current pointer
   while (slStart>zh.zh_zstream.total_out) {
     // if zlib has no more input
-    while (zh.zh_zstream.avail_in==0) {
+    while (zh.zh_zstream.avail_in == 0) {
       // read more to it
       SLONG slRead = fread(zh.zh_pubBufIn, 1, BUF_SIZE, zh.zh_fFile);
-      if (slRead<=0) {
+      if (slRead <= 0) {
         return; // !!!!
       }
       // tell zlib that there is more to read
@@ -737,13 +737,13 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
     zh.zh_zstream.avail_out = Min(SLONG(slStart-zh.zh_zstream.total_out), SLONG(DUMMY_SIZE));
     zh.zh_zstream.next_out = aubDummy;
     int ierr = inflate(&zh.zh_zstream, Z_SYNC_FLUSH);
-    if (ierr!=Z_OK && ierr!=Z_STREAM_END) {
+    if (ierr != Z_OK && ierr != Z_STREAM_END) {
       zh.ThrowZLIBError_t(ierr, TRANS("Error seeking in zip"));
     }
   }
 
   // if not streaming continuously
-  if (slStart!=zh.zh_zstream.total_out) {
+  if (slStart != zh.zh_zstream.total_out) {
     // this should not happen
     ASSERT(FALSE);
     // read empty
@@ -758,10 +758,10 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
   // while there is something to write to given block
   while (zh.zh_zstream.avail_out>0) {
     // if zlib has no more input
-    while (zh.zh_zstream.avail_in==0) {
+    while (zh.zh_zstream.avail_in == 0) {
       // read more to it
       SLONG slRead = fread(zh.zh_pubBufIn, 1, BUF_SIZE, zh.zh_fFile);
-      if (slRead<=0) {
+      if (slRead <= 0) {
         return; // !!!!
       }
       // tell zlib that there is more to read
@@ -770,7 +770,7 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
     }
     // decode to output
     int ierr = inflate(&zh.zh_zstream, Z_SYNC_FLUSH);
-    if (ierr!=Z_OK && ierr!=Z_STREAM_END) {
+    if (ierr != Z_OK && ierr != Z_STREAM_END) {
       zh.ThrowZLIBError_t(ierr, TRANS("Error reading from zip"));
     }
   }
@@ -780,7 +780,7 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
 void UNZIPClose(INDEX iHandle)
 {
   // check handle number
-  if (iHandle<0 || iHandle>=_azhHandles.Count()) {
+  if (iHandle<0 || iHandle >= _azhHandles.Count()) {
     ASSERT(FALSE);
     return;
   }

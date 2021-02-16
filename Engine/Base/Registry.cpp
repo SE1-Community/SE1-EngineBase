@@ -54,7 +54,7 @@ ENGINE_API BOOL REG_GetString(const CTString &strKey, CTString &strString)
   // open the key
   HKEY hkey;
   LONG lRes = RegOpenKeyExA(hKeyRoot, strKeyPath, 0, KEY_READ, &hkey);
-  if (lRes!=ERROR_SUCCESS) {
+  if (lRes != ERROR_SUCCESS) {
     return FALSE;
   }
 
@@ -83,7 +83,7 @@ ENGINE_API BOOL REG_GetLong(const CTString &strKey, ULONG &ulLong)
   // open the key
   HKEY hkey;
   LONG lRes = RegOpenKeyExA(hKeyRoot, strKeyPath, 0, KEY_READ, &hkey);
-  if (lRes!=ERROR_SUCCESS) {
+  if (lRes != ERROR_SUCCESS) {
     return FALSE;
   }
 
@@ -114,7 +114,7 @@ ENGINE_API BOOL REG_SetString(const CTString &strKey, const CTString &strString)
   DWORD dwDisposition;
   LONG lRes = RegCreateKeyExA(hKeyRoot, (const char*)strKeyPath, 0,
     "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &dwDisposition);
-  if (lRes!=ERROR_SUCCESS) {
+  if (lRes != ERROR_SUCCESS) {
     return FALSE;
   }
 
@@ -124,6 +124,6 @@ ENGINE_API BOOL REG_SetString(const CTString &strKey, const CTString &strString)
   // close the key
   RegCloseKey(hkey);
 
-  return lRes==ERROR_SUCCESS;
+  return lRes == ERROR_SUCCESS;
 }
 

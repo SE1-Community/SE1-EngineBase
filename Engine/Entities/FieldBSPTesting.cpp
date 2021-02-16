@@ -47,7 +47,7 @@ static BOOL EntityIsInside(CEntity *pen)
 
     // if the box touches the sector's BSP
     if (boxEntity.HasContactWith(FLOATobbox3D(_pbsc->bsc_boxBoundingBox)) &&
-      _pbsc->bsc_bspBSPTree.TestBox(boxdEntity)<=0) {
+      _pbsc->bsc_bspBSPTree.TestBox(boxdEntity) <= 0) {
 
       // for each collision sphere
       CStaticArray<CMovingSphere> &absSpheres = pen->en_pciCollisionInfo->ci_absSpheres;
@@ -56,7 +56,7 @@ static BOOL EntityIsInside(CEntity *pen)
         ms.ms_vRelativeCenter0 = ms.ms_vCenter*m+v;
         // if the sphere is in the sector
         if (_pbsc->bsc_bspBSPTree.TestSphere(
-          FLOATtoDOUBLE(ms.ms_vRelativeCenter0), ms.ms_fR)<=0) {
+          FLOATtoDOUBLE(ms.ms_vRelativeCenter0), ms.ms_fR) <= 0) {
           return TRUE;
         }
       }
@@ -71,7 +71,7 @@ static BOOL EntityIsInside(CEntity *pen)
 CEntity *CEntity::TouchingEntity(BOOL (*ConsiderEntity)(CEntity *), CEntity *penHintMaybeInside)
 {
   // if not a field brush
-  if (en_RenderType!=RT_FIELDBRUSH) {
+  if (en_RenderType != RT_FIELDBRUSH) {
     // error
     ASSERT(FALSE);
     return NULL;
@@ -86,14 +86,14 @@ CEntity *CEntity::TouchingEntity(BOOL (*ConsiderEntity)(CEntity *), CEntity *pen
     break;
   }}
   // if illegal number of sectors
-  if (_pbsc==NULL || pbm->bm_abscSectors.Count()>1) {
+  if (_pbsc == NULL || pbm->bm_abscSectors.Count()>1) {
     // error
     CPrintF("Field doesn't have exactly one sector - ignoring!\n");
     return NULL;
   }
 
   // if a specific entity to check is given
-  if (penHintMaybeInside!=NULL) {
+  if (penHintMaybeInside != NULL) {
     // if it is inside
     if (EntityIsInside(penHintMaybeInside)) {
       // return it
@@ -109,7 +109,7 @@ CEntity *CEntity::TouchingEntity(BOOL (*ConsiderEntity)(CEntity *), CEntity *pen
     // for all movable model entities that should be considered in the sector
     {FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
       if (!(pen->en_ulPhysicsFlags&EPF_MOVABLE)
-        || (pen->en_RenderType!=RT_MODEL&&pen->en_RenderType!=RT_EDITORMODEL)
+        || (pen->en_RenderType != RT_MODEL&&pen->en_RenderType != RT_EDITORMODEL)
         || (!ConsiderEntity(pen))) {
         continue;
       }

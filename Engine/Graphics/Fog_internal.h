@@ -78,12 +78,12 @@ __forceinline ULONG GetFogAlpha( const GFXTexCoord &tex)
       pixT = Clamp( pixT, 0L, _fog_pixSizeH-1L) * _fog_pixSizeL;
   // linear interpolation of depth
   const PIX pixSF = FloatToInt( tex.s*(FLOAT)_fog_pixSizeL*255.499f);
-  const PIX pixS1 = Clamp( (PIX)((pixSF>>8)+0), 0L, _fog_pixSizeL-1L);
-  const PIX pixS2 = Clamp( (PIX)((pixSF>>8)+1), 0L, _fog_pixSizeL-1L);
+  const PIX pixS1 = Clamp( (PIX)((pixSF >> 8)+0), 0L, _fog_pixSizeL-1L);
+  const PIX pixS2 = Clamp( (PIX)((pixSF >> 8)+1), 0L, _fog_pixSizeL-1L);
   const ULONG ulF  = pixSF & 255;
   const ULONG ulA1 = _fog_pubTable[pixT +pixS1];
   const ULONG ulA2 = _fog_pubTable[pixT +pixS2];
-  return ((ulA1*(ulF^255)+ulA2*ulF) * _fog_ulAlpha) >>16;
+  return ((ulA1*(ulF^255)+ulA2*ulF) * _fog_ulAlpha) >> 16;
 }
 
 
@@ -100,12 +100,12 @@ __forceinline ULONG GetHazeAlpha( const FLOAT fS)
 {
   // linear interpolation of depth
   const PIX pixSH = FloatToInt( fS*(FLOAT)_haze_pixSize*255.4999f);
-  const PIX pixS1 = Clamp( (PIX)((pixSH>>8)+0), 0L, _haze_pixSize-1L);
-  const PIX pixS2 = Clamp( (PIX)((pixSH>>8)+1), 0L, _haze_pixSize-1L);
+  const PIX pixS1 = Clamp( (PIX)((pixSH >> 8)+0), 0L, _haze_pixSize-1L);
+  const PIX pixS2 = Clamp( (PIX)((pixSH >> 8)+1), 0L, _haze_pixSize-1L);
   const ULONG ulH  = pixSH & 255;
   const ULONG ulA1 = _haze_pubTable[pixS1];
   const ULONG ulA2 = _haze_pubTable[pixS2];
-  return ((ulA1*(ulH^255)+ulA2*ulH) * _haze_ulAlpha) >>16;
+  return ((ulA1*(ulH^255)+ulA2*ulH) * _haze_ulAlpha) >> 16;
 }
 
 

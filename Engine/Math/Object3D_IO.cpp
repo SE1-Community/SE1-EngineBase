@@ -73,10 +73,10 @@ CStaticArray<INDEX> aiRemap;
 //--------------------------------------------------------------------------------------------
 class CObjectSectorLock {
 private:
-	CObjectSector *oscl_posc;						// ptr to object sector that will do lock/unlock
+  CObjectSector *oscl_posc;            // ptr to object sector that will do lock/unlock
 public:
-	CObjectSectorLock( CObjectSector *posc);		// lock all object sector arrays
-	~CObjectSectorLock();										// unlock all object sector arrays
+  CObjectSectorLock( CObjectSector *posc);    // lock all object sector arrays
+  ~CObjectSectorLock();                    // unlock all object sector arrays
 };
 
 //--------------------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ public:
  * Locking job is done inside class constructor
  */
 CObjectSectorLock::CObjectSectorLock( CObjectSector *posc) {
-	ASSERT( posc != NULL);
+  ASSERT( posc != NULL);
   oscl_posc = posc;
   posc->LockAll();
 }
@@ -120,7 +120,7 @@ inline INDEX ConvertWord( SBYTE *pfm)
   aret_word[ 0] = *(pfm+1);
   aret_word[ 1] = *(pfm+0);
   INDEX ret_word = (INDEX) *((SWORD *) aret_word);
-	return( ret_word);
+  return( ret_word);
 };
 
 //--------------------------------------------------------------------------------------------
@@ -152,7 +152,7 @@ void CObject3D::BatchLoading_t(BOOL bOn)
 {
 #if USE_E3D
   // check for dummy calls
-  if (!_bBatchLoading==!bOn) {
+  if (!_bBatchLoading == !bOn) {
     return;
   }
 
@@ -180,13 +180,13 @@ void CObject3D::BatchLoading_t(BOOL bOn)
       init.e_plugins  = (char*)(const char*)strPlugins;
       if (_Init3d) {
         _api=_Init3d(&init);
-      } else  {
-		    throw("Unable to initialize 3D object library");
+      } else {
+        throw("Unable to initialize 3D object library");
       }
     }
 
     // if 3dexp window not open yet
-    if (_hwnd==NULL) {
+    if (_hwnd == NULL) {
       // obtain window needed for 3D exploration library to work
       _hwnd=CreateWindow(EXPLORATION_WINDOW,"Object Loader",0,100,100,100,50,NULL,0,(HINSTANCE) GetModuleHandle( NULL),0);
       //ShowWindow(_hwnd, SW_HIDE);
@@ -195,7 +195,7 @@ void CObject3D::BatchLoading_t(BOOL bOn)
   // if turning off
   } else {
     // if 3dexp window is open
-    if (_hwnd!=NULL) {
+    if (_hwnd != NULL) {
       // close it
       DestroyWindow(_hwnd);
       _hwnd = NULL;
@@ -246,7 +246,7 @@ void CObject3D::LoadAny3DFormat_t(
         FillConversionArrays_t(mOne);
         if (avTextureVertices.Count() == 0)
         {
-    		  ThrowF_t("Unable to import mapping from 3D object because it doesn't contain mapping coordinates.");
+          ThrowF_t("Unable to import mapping from 3D object because it doesn't contain mapping coordinates.");
         }
 
         RemapVertices(FALSE);
@@ -257,7 +257,7 @@ void CObject3D::LoadAny3DFormat_t(
     }
     else 
     {
-		  ThrowF_t("Unable to load 3D object: %s", (const char *)fnmFileName);
+      ThrowF_t("Unable to load 3D object: %s", (const char *)fnmFileName);
     }
   
     if (!bWasOn) {
@@ -549,7 +549,7 @@ void CObject3D::ConvertArraysToO3D( void)
   // create one sector
   CObjectSector &osc = *ob_aoscSectors.New(1);
   // this will lock at the instancing and unlock while destructing all sector arrays
-	CObjectSectorLock OSectorLock(&osc);
+  CObjectSectorLock OSectorLock(&osc);
 
   // ------------ Vertices
   INDEX ctVertices = avVertices.Count();
@@ -558,7 +558,7 @@ void CObject3D::ConvertArraysToO3D( void)
   {
     pVtx[ iVtx] = FLOATtoDOUBLE( avVertices[iVtx]);
   }
-	
+  
   // ------------ Materials
   INDEX ctMaterials = acmMaterials.Count();
   osc.osc_aomtMaterials.New( ctMaterials);
@@ -570,8 +570,8 @@ void CObject3D::ConvertArraysToO3D( void)
 
   // ------------ Edges and polygons
   INDEX ctTriangles = actTriangles.Count();
-	CObjectPolygon *popo = osc.osc_aopoPolygons.New(ctTriangles);
-	CObjectPlane *popl = osc.osc_aoplPlanes.New(ctTriangles);
+  CObjectPolygon *popo = osc.osc_aopoPolygons.New(ctTriangles);
+  CObjectPlane *popl = osc.osc_aoplPlanes.New(ctTriangles);
   // we need 3 edges for each polygon
   CObjectEdge *poedg = osc.osc_aoedEdges.New(ctTriangles*3);
   for (INDEX iTri=0; iTri<ctTriangles; iTri++)

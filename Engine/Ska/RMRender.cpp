@@ -437,7 +437,7 @@ void RM_GetModelVertices( CModelInstance &mi, CStaticStackArray<FLOAT3D> &avVert
   _bTransformBonelessModelToViewSpace = TRUE;
 
   // only root model instances
-  ASSERT(mi.mi_iParentBoneID==-1);
+  ASSERT(mi.mi_iParentBoneID == -1);
   // remember parent bone ID
   INDEX iOldParentBoneID = mi.mi_iParentBoneID;
   // set parent bone ID as -1
@@ -484,145 +484,145 @@ void RM_GetModelVertices( CModelInstance &mi, CStaticStackArray<FLOAT3D> &avVert
 FLOAT RM_TestRayCastHit( CModelInstance &mi, FLOATmatrix3D &mRotation, FLOAT3D &vPosition,const FLOAT3D &vOrigin,
                         const FLOAT3D &vTarget,FLOAT fOldDistance,INDEX *piBoneID)
 {
-	FLOAT fDistance = 1E6f;
-	int i=0;
-	i++;
+  FLOAT fDistance = 1E6f;
+  int i=0;
+  i++;
 
-	BOOL bTemp = _bTransformBonelessModelToViewSpace;
-	_bTransformBonelessModelToViewSpace = TRUE;
+  BOOL bTemp = _bTransformBonelessModelToViewSpace;
+  _bTransformBonelessModelToViewSpace = TRUE;
 
-	// ASSERT((CProjection3D *)_aprProjection!=NULL);
-	RM_SetObjectPlacement(mRotation,vPosition);
-	// Reset abs to viewer matrix
-	MakeIdentityMatrix(_mAbsToViewer);
+  // ASSERT((CProjection3D *)_aprProjection != NULL);
+  RM_SetObjectPlacement(mRotation,vPosition);
+  // Reset abs to viewer matrix
+  MakeIdentityMatrix(_mAbsToViewer);
   // allways use the first LOD
   RM_SetCurrentDistance(0);
-	CalculateRenderingData(mi);
-	// for each ren model
-	INDEX ctrmsh = _aRenModels.Count();
-	for (int irmsh=1;irmsh<ctrmsh;irmsh++) {
-		RenModel &rm = _aRenModels[irmsh];
-		INDEX ctmsh = rm.rm_iFirstMesh + rm.rm_ctMeshes;
-		// for each mesh in renmodel
-		for (int imsh=rm.rm_iFirstMesh;imsh<ctmsh;imsh++) {
-			// prepare mesh for rendering
-			RenMesh &rmsh = _aRenMesh[imsh];
-			PrepareMeshForRendering(rmsh,rm.rm_iSkeletonLODIndex);
-			MeshLOD &mshlod = rmsh.rmsh_pMeshInst->mi_pMesh->msh_aMeshLODs[rmsh.rmsh_iMeshLODIndex];
-			INDEX ctsurf = mshlod.mlod_aSurfaces.Count();
-			for (int isurf=0;isurf<ctsurf;isurf++) {
-				MeshSurface &mshsurf = mshlod.mlod_aSurfaces[isurf];
-				INDEX cttri = mshsurf.msrf_aTriangles.Count();
-				for (int itri=0; itri<cttri;itri++) {
-					Vector<FLOAT,3> vVertex0(_pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[0]].x,
-  															   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[0]].y,
-																   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[0]].z);
+  CalculateRenderingData(mi);
+  // for each ren model
+  INDEX ctrmsh = _aRenModels.Count();
+  for (int irmsh=1;irmsh<ctrmsh;irmsh++) {
+    RenModel &rm = _aRenModels[irmsh];
+    INDEX ctmsh = rm.rm_iFirstMesh + rm.rm_ctMeshes;
+    // for each mesh in renmodel
+    for (int imsh=rm.rm_iFirstMesh;imsh<ctmsh;imsh++) {
+      // prepare mesh for rendering
+      RenMesh &rmsh = _aRenMesh[imsh];
+      PrepareMeshForRendering(rmsh,rm.rm_iSkeletonLODIndex);
+      MeshLOD &mshlod = rmsh.rmsh_pMeshInst->mi_pMesh->msh_aMeshLODs[rmsh.rmsh_iMeshLODIndex];
+      INDEX ctsurf = mshlod.mlod_aSurfaces.Count();
+      for (int isurf=0;isurf<ctsurf;isurf++) {
+        MeshSurface &mshsurf = mshlod.mlod_aSurfaces[isurf];
+        INDEX cttri = mshsurf.msrf_aTriangles.Count();
+        for (int itri=0; itri<cttri;itri++) {
+          Vector<FLOAT,3> vVertex0(_pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[0]].x,
+                                   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[0]].y,
+                                   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[0]].z);
 
-					Vector<FLOAT,3> vVertex1(_pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[1]].x,
-					 											   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[1]].y,
-																   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[1]].z);
+          Vector<FLOAT,3> vVertex1(_pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[1]].x,
+                                    _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[1]].y,
+                                   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[1]].z);
 
-					Vector<FLOAT,3> vVertex2(_pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[2]].x,
-																   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[2]].y,
-																   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[2]].z);
+          Vector<FLOAT,3> vVertex2(_pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[2]].x,
+                                   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[2]].y,
+                                   _pavFinalVertices[mshsurf.msrf_aTriangles[itri].iVertex[2]].z);
 
-					Plane <float,3> plTriPlane(vVertex0,vVertex1,vVertex2);
-					FLOAT fDistance0 = plTriPlane.PointDistance(vOrigin);
-					FLOAT fDistance1 = plTriPlane.PointDistance(vTarget);
+          Plane <float,3> plTriPlane(vVertex0,vVertex1,vVertex2);
+          FLOAT fDistance0 = plTriPlane.PointDistance(vOrigin);
+          FLOAT fDistance1 = plTriPlane.PointDistance(vTarget);
 
-					// if the ray hits the polygon plane
-					if (fDistance0>=0 && fDistance0>=fDistance1) {
-						// calculate fraction of line before intersection
-						FLOAT fFraction = fDistance0/(fDistance0-fDistance1);
-						// calculate intersection coordinate
-						FLOAT3D vHitPoint = vOrigin+(vTarget-vOrigin)*fFraction;
-						// calculate intersection distance
-						FLOAT fHitDistance = (vHitPoint-vOrigin).Length();
-						// if the hit point can not be new closest candidate
-						if (fHitDistance>fOldDistance) {
-							// skip this triangle
-							continue;
-						}
+          // if the ray hits the polygon plane
+          if (fDistance0 >= 0 && fDistance0 >= fDistance1) {
+            // calculate fraction of line before intersection
+            FLOAT fFraction = fDistance0/(fDistance0-fDistance1);
+            // calculate intersection coordinate
+            FLOAT3D vHitPoint = vOrigin+(vTarget-vOrigin)*fFraction;
+            // calculate intersection distance
+            FLOAT fHitDistance = (vHitPoint-vOrigin).Length();
+            // if the hit point can not be new closest candidate
+            if (fHitDistance>fOldDistance) {
+              // skip this triangle
+              continue;
+            }
 
-						// find major axes of the polygon plane
-						INDEX iMajorAxis1, iMajorAxis2;
-						GetMajorAxesForPlane(plTriPlane, iMajorAxis1, iMajorAxis2);
+            // find major axes of the polygon plane
+            INDEX iMajorAxis1, iMajorAxis2;
+            GetMajorAxesForPlane(plTriPlane, iMajorAxis1, iMajorAxis2);
 
-						// create an intersector
-						CIntersector isIntersector(vHitPoint(iMajorAxis1), vHitPoint(iMajorAxis2));
-
-
-						// check intersections for all three edges of the polygon
-						isIntersector.AddEdge(
-								vVertex0(iMajorAxis1), vVertex0(iMajorAxis2),
-								vVertex1(iMajorAxis1), vVertex1(iMajorAxis2));
-						isIntersector.AddEdge(
-								vVertex1(iMajorAxis1), vVertex1(iMajorAxis2),
-								vVertex2(iMajorAxis1), vVertex2(iMajorAxis2));
-						isIntersector.AddEdge(
-								vVertex2(iMajorAxis1), vVertex2(iMajorAxis2),
-								vVertex0(iMajorAxis1), vVertex0(iMajorAxis2));
+            // create an intersector
+            CIntersector isIntersector(vHitPoint(iMajorAxis1), vHitPoint(iMajorAxis2));
 
 
+            // check intersections for all three edges of the polygon
+            isIntersector.AddEdge(
+                vVertex0(iMajorAxis1), vVertex0(iMajorAxis2),
+                vVertex1(iMajorAxis1), vVertex1(iMajorAxis2));
+            isIntersector.AddEdge(
+                vVertex1(iMajorAxis1), vVertex1(iMajorAxis2),
+                vVertex2(iMajorAxis1), vVertex2(iMajorAxis2));
+            isIntersector.AddEdge(
+                vVertex2(iMajorAxis1), vVertex2(iMajorAxis2),
+                vVertex0(iMajorAxis1), vVertex0(iMajorAxis2));
 
-						
-						// if the polygon is intersected by the ray, and it is the closest intersection so far
-						if (isIntersector.IsIntersecting() && (fHitDistance < fDistance)) {
-							// remember hit coordinates
-							fDistance = fHitDistance;
 
-							
-							// do we neet to find the bone hit by the ray?
-							if (piBoneID != NULL) {
-								INDEX iClosestVertex;
-								// find the vertex closest to the intersection
-								FLOAT fDist0 = (vHitPoint - vVertex0).Length();
-								FLOAT fDist1 = (vHitPoint - vVertex1).Length();
-								FLOAT fDist2 = (vHitPoint - vVertex2).Length();
-								if (fDist0 < fDist1) {
-									if (fDist0 < fDist2) {
-										iClosestVertex = mshsurf.msrf_aTriangles[itri].iVertex[0];
-									} else {
-										iClosestVertex = mshsurf.msrf_aTriangles[itri].iVertex[2];
-									}
-								} else {
-									if (fDist1 < fDist2) {
-										iClosestVertex = mshsurf.msrf_aTriangles[itri].iVertex[1];
-									} else {
-										iClosestVertex = mshsurf.msrf_aTriangles[itri].iVertex[2];
-									}								
-								}
-							
-								// now find the weightmap with the largest weight for this vertex
-								INDEX ctwmaps = mshlod.mlod_aWeightMaps.Count();
-								FLOAT fMaxVertexWeight = 0.0f;
-								INDEX iMaxWeightMap = -1;
-								for (int iwmap=0;iwmap<ctwmaps;iwmap++) {
-									MeshWeightMap& wtmap = mshlod.mlod_aWeightMaps[iwmap];
-									INDEX ctvtx = wtmap.mwm_aVertexWeight.Count();
-									for (int ivtx=0;ivtx<ctvtx;ivtx++) {
-										if ((wtmap.mwm_aVertexWeight[ivtx].mww_iVertex == iClosestVertex) && (wtmap.mwm_aVertexWeight[ivtx].mww_fWeight > fMaxVertexWeight)) {
-											fMaxVertexWeight = wtmap.mwm_aVertexWeight[ivtx].mww_fWeight;
-											iMaxWeightMap = wtmap.mwm_iID;
-											break;
-										}	
-									}
-								}
 
-								*piBoneID = iMaxWeightMap;
-								
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+            
+            // if the polygon is intersected by the ray, and it is the closest intersection so far
+            if (isIntersector.IsIntersecting() && (fHitDistance < fDistance)) {
+              // remember hit coordinates
+              fDistance = fHitDistance;
 
-	ClearRenArrays();
-	_bTransformBonelessModelToViewSpace = bTemp;
+              
+              // do we neet to find the bone hit by the ray?
+              if (piBoneID != NULL) {
+                INDEX iClosestVertex;
+                // find the vertex closest to the intersection
+                FLOAT fDist0 = (vHitPoint - vVertex0).Length();
+                FLOAT fDist1 = (vHitPoint - vVertex1).Length();
+                FLOAT fDist2 = (vHitPoint - vVertex2).Length();
+                if (fDist0 < fDist1) {
+                  if (fDist0 < fDist2) {
+                    iClosestVertex = mshsurf.msrf_aTriangles[itri].iVertex[0];
+                  } else {
+                    iClosestVertex = mshsurf.msrf_aTriangles[itri].iVertex[2];
+                  }
+                } else {
+                  if (fDist1 < fDist2) {
+                    iClosestVertex = mshsurf.msrf_aTriangles[itri].iVertex[1];
+                  } else {
+                    iClosestVertex = mshsurf.msrf_aTriangles[itri].iVertex[2];
+                  }                
+                }
+              
+                // now find the weightmap with the largest weight for this vertex
+                INDEX ctwmaps = mshlod.mlod_aWeightMaps.Count();
+                FLOAT fMaxVertexWeight = 0.0f;
+                INDEX iMaxWeightMap = -1;
+                for (int iwmap=0;iwmap<ctwmaps;iwmap++) {
+                  MeshWeightMap& wtmap = mshlod.mlod_aWeightMaps[iwmap];
+                  INDEX ctvtx = wtmap.mwm_aVertexWeight.Count();
+                  for (int ivtx=0;ivtx<ctvtx;ivtx++) {
+                    if ((wtmap.mwm_aVertexWeight[ivtx].mww_iVertex == iClosestVertex) && (wtmap.mwm_aVertexWeight[ivtx].mww_fWeight > fMaxVertexWeight)) {
+                      fMaxVertexWeight = wtmap.mwm_aVertexWeight[ivtx].mww_fWeight;
+                      iMaxWeightMap = wtmap.mwm_iID;
+                      break;
+                    }  
+                  }
+                }
 
-	return fDistance;
+                *piBoneID = iMaxWeightMap;
+                
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  ClearRenArrays();
+  _bTransformBonelessModelToViewSpace = bTemp;
+
+  return fDistance;
 
 }
 
@@ -679,9 +679,9 @@ void RM_AddSimpleShadow_View(CModelInstance &mi, const FLOAT fIntensity, const F
   // _pfModelProfile.IncrementTimerAveragingCounter( CModelProfile::PTI_VIEW_SIMP_COPY);
 
   // prepare color
-  ASSERT( fIntensity>=0 && fIntensity<=1);
+  ASSERT( fIntensity >= 0 && fIntensity <= 1);
   ULONG ulAAAA = NormFloatToByte(fIntensity);
-  ulAAAA |= (ulAAAA<<8) | (ulAAAA<<16); // alpha isn't needed
+  ulAAAA |= (ulAAAA << 8) | (ulAAAA << 16); // alpha isn't needed
 
   // add to vertex arrays
   GFXVertex   *pvtx = _avtxCommon.Push(4);
@@ -931,7 +931,7 @@ static void RenderModelWireframe(RenModel &rm)
 static void RenderNormals()
 {
   // only if rendering to view
-  if (_iRenderingType!=1) return;
+  if (_iRenderingType != 1) return;
 
   gfxDisableTexture();
   INDEX ctNormals = _aFinalNormals.Count();
@@ -1022,7 +1022,7 @@ void RM_RenderBone(CModelInstance &mi,INDEX iBoneID)
   }
 
   // if weightmap is found
-  if (iWeightIndex>=0) {
+  if (iWeightIndex >= 0) {
     // show wertex weights for each mesh that uses this bones weightmap
     INDEX ctmshi=aiRenMeshIndices.Count();
     for (INDEX imshi=0;imshi<ctmshi;imshi++)
@@ -1088,7 +1088,7 @@ void RM_RenderBone(CModelInstance &mi,INDEX iBoneID)
   }
   
   // draw bone
-  if (iBoneIndex>=0) {
+  if (iBoneIndex >= 0) {
     gfxSetViewMatrix(NULL);
     gfxDisableDepthTest();
     // show bone in yellow color
@@ -1116,14 +1116,14 @@ static void RenderSkeleton(void)
 static void RenderActiveBones(RenModel &rm)
 {
   CModelInstance *pmi = rm.rm_pmiModel;
-  if (pmi==NULL) return;
+  if (pmi == NULL) return;
   // count animlists
   INDEX ctal = pmi->mi_aqAnims.aq_Lists.Count();
   // find newes animlist that has fully faded in
   INDEX iFirstAnimList = 0;
   // loop from newer to older
   INDEX ial=ctal-1;
-  for (;ial>=0;ial--) {
+  for (;ial >= 0;ial--) {
     AnimList &alList = pmi->mi_aqAnims.aq_Lists[ial];
     // calculate fade factor
     FLOAT fFadeFactor = CalculateFadeFactor(alList);
@@ -1387,10 +1387,10 @@ void RM_BeginRenderingView(CAnyProjection3D &apr, CDrawPort *pdp)
 // cleanup after batch model rendering
 void RM_EndRenderingView( BOOL bRestoreOrtho/*=TRUE*/)
 {
-  ASSERT( _iRenderingType==1 && _pdp!=NULL);
+  ASSERT( _iRenderingType == 1 && _pdp != NULL);
 
   // assure that FPU precision was low all the model rendering time, then revert to old FPU precision
-  ASSERT( GetFPUPrecision()==FPT_24BIT);
+  ASSERT( GetFPUPrecision() == FPT_24BIT);
   SetFPUPrecision(_fpuOldPrecision);
 
   // back to 2D projection?
@@ -1411,7 +1411,7 @@ extern SLONG _slMaskHeight;
 // begin/end model rendering to shadow mask
 void RM_BeginModelRenderingMask( CAnyProjection3D &prProjection, UBYTE *pubMask, SLONG slMaskWidth, SLONG slMaskHeight)
 {
-  ASSERT( _iRenderingType==0);
+  ASSERT( _iRenderingType == 0);
   _iRenderingType = 2;
   _aprProjection  = prProjection;
   _pubMask      = pubMask;
@@ -1436,7 +1436,7 @@ void RM_BeginModelRenderingMask( CAnyProjection3D &prProjection, UBYTE *pubMask,
 
 void RM_EndModelRenderingMask(void)
 {
-  ASSERT( _iRenderingType==2);
+  ASSERT( _iRenderingType == 2);
   _iRenderingType = 0;
 }
 
@@ -1468,17 +1468,17 @@ void RM_SetObjectMatrices(CModelInstance &mi)
   // adjust clipping to mirror-plane (if any)
   extern INDEX gap_iOptimizeClipping;
 
-	if ((CProjection3D *)_aprProjection != NULL) {
-		if (gap_iOptimizeClipping>0 && (_aprProjection->pr_bMirror || _aprProjection->pr_bWarp)) {
-			if (ulFlags & SRMF_INMIRROR) {
-				gfxDisableClipPlane();
-				gfxFrontFace( GFX_CCW);
-			} else {
-				gfxEnableClipPlane();
-				gfxFrontFace( GFX_CW);
-			}
-		}
-	}
+  if ((CProjection3D *)_aprProjection != NULL) {
+    if (gap_iOptimizeClipping>0 && (_aprProjection->pr_bMirror || _aprProjection->pr_bWarp)) {
+      if (ulFlags & SRMF_INMIRROR) {
+        gfxDisableClipPlane();
+        gfxFrontFace( GFX_CCW);
+      } else {
+        gfxEnableClipPlane();
+        gfxFrontFace( GFX_CW);
+      }
+    }
+  }
 
   MatrixMultiply(_mObjToView,_mAbsToViewer, _mObjectToAbs);
 
@@ -1519,7 +1519,7 @@ INDEX GetSkeletonLOD(CSkeleton &sk, FLOAT fDistance)
   INDEX iSkeletonLod = -1;
 
   // if custom lod distance is set
-  if (_fCustomSlodDistance!=-1) {
+  if (_fCustomSlodDistance != -1) {
     // set object distance as custom distance
     fDistance = _fCustomSlodDistance;
   }
@@ -1547,7 +1547,7 @@ INDEX GetMeshLOD(CMesh &msh, FLOAT fDistance)
   INDEX iMeshLod = -1;
 
   // if custom lod distance is set
-  if (_fCustomMlodDistance!=-1) {
+  if (_fCustomMlodDistance != -1) {
     // set object distance as custom distance
     fDistance = _fCustomMlodDistance;
   }
@@ -1609,7 +1609,7 @@ static INDEX BuildHierarchy(CModelInstance *pmiModel, INDEX irmParent)
   } else {
     INDEX iParentBoneIndex = -1;
     // does parent model insntance has a skeleton
-    if (rmParent.rm_pmiModel->mi_psklSkeleton != NULL && rmParent.rm_iSkeletonLODIndex>=0)  {
+    if (rmParent.rm_pmiModel->mi_psklSkeleton != NULL && rmParent.rm_iSkeletonLODIndex >= 0)  {
       // get index of parent bone
       iParentBoneIndex = rmParent.rm_pmiModel->mi_psklSkeleton->FindBoneInLOD(pmiModel->mi_iParentBoneID,rmParent.rm_iSkeletonLODIndex);
     // model instance does not have skeleton
@@ -1631,7 +1631,7 @@ static INDEX BuildHierarchy(CModelInstance *pmiModel, INDEX irmParent)
   }
  
   // if this model instance has skeleton
-  if (pmiModel->mi_psklSkeleton!=NULL) {
+  if (pmiModel->mi_psklSkeleton != NULL) {
     // adjust mip factor in case of dynamic stretch factor
     FLOAT fDistFactor = _fDistanceFactor;
     FLOAT3D &vStretch = pmiModel->mi_vStretch;
@@ -1757,7 +1757,7 @@ static void CalculateBoneTransforms()
   MatrixCopy(_aRenBones[0].rb_mStrTransform, _aRenBones[0].rb_mTransform);
 
   // if callback function was specified
-  if (_pAdjustBonesCallback!=NULL) {
+  if (_pAdjustBonesCallback != NULL) {
     // Call callback function
     _pAdjustBonesCallback(_pAdjustBonesData);
   }
@@ -1844,7 +1844,7 @@ static void MatchAnims(RenModel &rm)
   INDEX iFirstAnimList = 0;
   // loop from newer to older
   INDEX ial=ctal-1;
-  for (;ial>=0;ial--) {
+  for (;ial >= 0;ial--) {
     AnimList &alList = rm.rm_pmiModel->mi_aqAnims.aq_Lists[ial];
     // calculate fade factor
     FLOAT fFadeFactor = CalculateFadeFactor(alList);
@@ -1882,7 +1882,7 @@ static void MatchAnims(RenModel &rm)
         FLOAT fFadeInEndTime = CTimer::InSeconds(alList.al_llStartTime) + alList.al_fFadeTime;
 
         // if there is a newer anmimation list
-        if (palListNext!=NULL) {
+        if (palListNext != NULL) {
           // freeze time of this one to never overlap with the newer list
           ftTime.llTick = ClampUp(ftTime.llTick, palListNext->al_llStartTime);
         }
@@ -1982,7 +1982,7 @@ static void MatchAnims(RenModel &rm)
               pqRotNext = &qRotNext;
             }
 
-            if (iNextRotFrameNum<=iRotFrameNum) {
+            if (iNextRotFrameNum <= iRotFrameNum) {
               // calculate slerp factor for rotations
               fSlerpFactor = (f-iRotFrameNum) / (an.an_iFrames-iRotFrameNum);
             } else {
@@ -2011,7 +2011,7 @@ static void MatchAnims(RenModel &rm)
             INDEX iNextPosFrameNum = be.be_apPos[iNextPosFrameIndex].ap_iFrameNum;
 
             FLOAT fLerpFactor;
-            if (iNextPosFrameNum<=iPosFrameNum) fLerpFactor = (f-iPosFrameNum) / (an.an_iFrames-iPosFrameNum);
+            if (iNextPosFrameNum <= iPosFrameNum) fLerpFactor = (f-iPosFrameNum) / (an.an_iFrames-iPosFrameNum);
             else fLerpFactor = (f-iPosFrameNum) / (iNextPosFrameNum-iPosFrameNum);
             
             FLOAT3D vPos;
@@ -2058,8 +2058,8 @@ static CStaticStackArray<struct GFXTexCoord*> _paTexCoords;
 // draw mesh on screen
 static void RenderMesh(RenMesh &rmsh,RenModel &rm)
 {
-  ASSERT(_pavFinalVertices!=NULL);
-  ASSERT(_panFinalNormals!=NULL);
+  ASSERT(_pavFinalVertices != NULL);
+  ASSERT(_panFinalNormals != NULL);
 
   MeshLOD &mlod = rmsh.rmsh_pMeshInst->mi_pMesh->msh_aMeshLODs[rmsh.rmsh_iMeshLODIndex];
   // Count surfaces in mesh
@@ -2069,17 +2069,17 @@ static void RenderMesh(RenMesh &rmsh,RenModel &rm)
   {
     MeshSurface &msrf = mlod.mlod_aSurfaces[isrf];
     CShader  *pShader = msrf.msrf_pShader;
-    if (_iRenderingType==2) pShader = &_shMaskShader; // force mask shader for rendering to shadowmaps
+    if (_iRenderingType == 2) pShader = &_shMaskShader; // force mask shader for rendering to shadowmaps
 
     // if this surface has valid shader and show texure flag is set
-    if (pShader!=NULL && (RM_GetFlags() & RMF_SHOWTEXTURE))
+    if (pShader != NULL && (RM_GetFlags() & RMF_SHOWTEXTURE))
     {
       // Create copy of shading params
       ShaderParams *pShaderParams = &msrf.msrf_ShadingParams;
       ShaderParams spForAdjustment;
 
       // if callback function was specified
-      if (_pAdjustShaderParams!=NULL) {
+      if (_pAdjustShaderParams != NULL) {
         // Call callback function
         spForAdjustment = msrf.msrf_ShadingParams;
         _pAdjustShaderParams( _pAdjustShaderData, msrf.msrf_iSurfaceID, pShader, spForAdjustment);
@@ -2270,7 +2270,7 @@ static void PrepareMeshForRendering(RenMesh &rmsh, INDEX iSkeletonlod)
   INDEX ctbones = 0;
   CSkeleton *pskl = _aRenModels[rmsh.rmsh_iRenModelIndex].rm_pmiModel->mi_psklSkeleton;
   // if skeleton for this model exists and its currently visible
-  if ((pskl!=NULL) && (iSkeletonlod > -1)) {
+  if ((pskl != NULL) && (iSkeletonlod > -1)) {
     // count bones in skeleton
     ctbones = pskl->skl_aSkeletonLODs[iSkeletonlod].slod_aBones.Count();
   }
@@ -2392,7 +2392,7 @@ static void PrepareMeshForRendering(RenMesh &rmsh, INDEX iSkeletonlod)
 // render one ren model
 static void RenderModel_View(RenModel &rm)
 {
-  ASSERT( _iRenderingType==1);
+  ASSERT( _iRenderingType == 1);
   const BOOL bShowNormals = RM_GetFlags() & RMF_SHOWNORMALS;
 
   // for each mesh in renmodel
@@ -2411,7 +2411,7 @@ static void RenderModel_View(RenModel &rm)
 // render one ren model to shadowmap
 static void RenderModel_Mask(RenModel &rm)
 {
-  ASSERT( _iRenderingType==2);
+  ASSERT( _iRenderingType == 2);
   // flag to transform all vertices in view space
   const BOOL bTemp = _bTransformBonelessModelToViewSpace;
   _bTransformBonelessModelToViewSpace = TRUE;
@@ -2505,7 +2505,7 @@ static void CalculateRenderingData(CModelInstance &mi)
 void RM_RenderSKA(CModelInstance &mi)
 {
   // Calculate all rendering data for this model instance
-  //if (_iRenderingType==2) CalculateRenderingData( mi, 0);
+  //if (_iRenderingType == 2) CalculateRenderingData( mi, 0);
   //else 
   CalculateRenderingData(mi);
 
@@ -2516,18 +2516,18 @@ void RM_RenderSKA(CModelInstance &mi)
     // set object matrices
     RM_SetObjectMatrices(*rm.rm_pmiModel);
     // render this model
-    if (_iRenderingType==1) RenderModel_View(rm);
+    if (_iRenderingType == 1) RenderModel_View(rm);
     else RenderModel_Mask(rm);
   }
   // done if cluster shadows were rendered
-  if (_iRenderingType==2) {
+  if (_iRenderingType == 2) {
     // reset arrays
     ClearRenArrays();
     return;
   }
 
   // no cluster shadows - see if anything else needs to be rendered
-  ASSERT( _iRenderingType==1);
+  ASSERT( _iRenderingType == 1);
 
   // if render wireframe is requested
   if (RM_GetFlags() & RMF_WIREFRAME) {

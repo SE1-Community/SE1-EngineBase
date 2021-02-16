@@ -153,7 +153,7 @@ template<class Type, int iDimensions>
 inline void Plane<Type, iDimensions>::GetCoordinate(const int iIndex, Vector<Type, iDimensions> &point) const
 {
   Type sum = pl_distance;
-  for (INDEX i=1; i<=iDimensions; i++)
+  for (INDEX i=1; i <= iDimensions; i++)
   {
     if (i != iIndex)
       sum -= (*this)(i) * point(i);
@@ -233,7 +233,7 @@ inline INDEX Plane<Type, iDimensions>::GetMaxNormal(void) const
 {
   INDEX iMax = 1;
   Type tMax = Abs((*this)(1));
-  for (INDEX i=2; i<=iDimensions; i++) {
+  for (INDEX i=2; i <= iDimensions; i++) {
     if (Abs((*this)(i)) > tMax) {
       tMax = Abs((*this)(i));
       iMax = i;

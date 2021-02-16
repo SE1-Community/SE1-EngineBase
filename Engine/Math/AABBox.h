@@ -55,13 +55,13 @@ public:
   inline AABBox<Type, iDimensions> &operator+=(const Vector<Type, iDimensions> &vct);
   inline AABBox<Type, iDimensions> &operator-=(const Vector<Type, iDimensions> &vct);
   /* Function for testing equality of bounding boxes. */
-  inline BOOL operator==(const AABBox<Type, iDimensions> &box2) const;
+  inline BOOL operator == (const AABBox<Type, iDimensions> &box2) const;
   /* Function for testing difference between bounding boxes. */
-  inline BOOL operator!=(const AABBox<Type, iDimensions> &box2) const;
+  inline BOOL operator != (const AABBox<Type, iDimensions> &box2) const;
   /* Test if the bounding box contains another bounding box. */
-  inline BOOL operator>=(const AABBox<Type, iDimensions> &b) const;
+  inline BOOL operator >= (const AABBox<Type, iDimensions> &b) const;
   /* Test if the bounding box is contained in another bounding box. */
-  inline BOOL operator<=(const AABBox<Type, iDimensions> &b) const;
+  inline BOOL operator <= (const AABBox<Type, iDimensions> &b) const;
 
   /* Get diagonal vector (size of box). */
   inline const Vector<Type, iDimensions> Size(void) const;
@@ -96,7 +96,7 @@ public:
  */
 template<class Type, int iDimensions>
 inline void AABBox<Type, iDimensions>::SetToNormalizedEmpty(void) {
-  for ( int i=1; i<=iDimensions; i++ ) {
+  for (int i=1; i <= iDimensions; i++ ) {
     minvect(i) = UpperLimit(Type(0));
     maxvect(i) = LowerLimit(Type(0));
   }
@@ -115,7 +115,7 @@ inline AABBox<Type, iDimensions>::AABBox() {
  */
 template<class Type, int iDimensions>
 inline AABBox<Type, iDimensions>::AABBox(const Vector<Type, iDimensions> &vPoint) {
-  for ( int i=1; i<=iDimensions; i++ ) {
+  for (int i=1; i <= iDimensions; i++ ) {
     minvect(i) = maxvect(i) = vPoint(i);
   }
 }
@@ -125,7 +125,7 @@ inline AABBox<Type, iDimensions>::AABBox(const Vector<Type, iDimensions> &vPoint
  */
 template<class Type, int iDimensions>
 inline AABBox<Type, iDimensions>::AABBox(const Vector<Type, iDimensions> &vPoint, const Type radius) {
-  for ( int i=1; i<=iDimensions; i++ ) {
+  for (int i=1; i <= iDimensions; i++ ) {
     minvect(i) = vPoint(i)-radius;
     maxvect(i) = vPoint(i)+radius;
   }
@@ -136,7 +136,7 @@ inline AABBox<Type, iDimensions>::AABBox(const Vector<Type, iDimensions> &vPoint
  */
 template<class Type, int iDimensions>
 inline AABBox<Type, iDimensions>::AABBox(const Vector<Type, iDimensions> &vPoint1, const Vector<Type, iDimensions> &vPoint2) {
-  for ( int i=1; i<=iDimensions; i++ ) {
+  for (int i=1; i <= iDimensions; i++ ) {
     minvect(i) = ::Min(vPoint1(i), vPoint2(i));
     maxvect(i) = ::Max(vPoint1(i), vPoint2(i));
   }
@@ -146,15 +146,15 @@ inline AABBox<Type, iDimensions>::AABBox(const Vector<Type, iDimensions> &vPoint
  * Function for testing equality of bounding boxes.
  */
 template<class Type, int iDimensions>
-inline BOOL AABBox<Type, iDimensions>::operator==(const AABBox<Type, iDimensions> &box2) const {
-  return ( (minvect==box2.minvect) && (maxvect==box2.maxvect) );
+inline BOOL AABBox<Type, iDimensions>::operator == (const AABBox<Type, iDimensions> &box2) const {
+  return ( (minvect == box2.minvect) && (maxvect == box2.maxvect) );
 }
 
 /*
  * Function for testing diferences between bounding boxes.
  */
 template<class Type, int iDimensions>
-inline BOOL AABBox<Type, iDimensions>::operator!=(const AABBox<Type, iDimensions> &box2) const {
+inline BOOL AABBox<Type, iDimensions>::operator != (const AABBox<Type, iDimensions> &box2) const {
   return !(*this == box2);
 }
 
@@ -162,19 +162,19 @@ inline BOOL AABBox<Type, iDimensions>::operator!=(const AABBox<Type, iDimensions
  * Test if the bounding box contains another bounding box.
  */
 template<class Type, int iDimensions>
-inline BOOL AABBox<Type, iDimensions>::operator>=(const AABBox<Type, iDimensions> &b) const
+inline BOOL AABBox<Type, iDimensions>::operator >= (const AABBox<Type, iDimensions> &b) const
 {
-  return b<=*this;
+  return b <= *this;
 }
 
 /*
  * Test if the bounding box is contained in another bounding box.
  */
 template<class Type, int iDimensions>
-inline BOOL AABBox<Type, iDimensions>::operator<=(const AABBox<Type, iDimensions> &b) const
+inline BOOL AABBox<Type, iDimensions>::operator <= (const AABBox<Type, iDimensions> &b) const
 {
   // for each dimension
-  for (INDEX i=1; i<=iDimensions; i++ ) {
+  for (INDEX i=1; i <= iDimensions; i++ ) {
     // if that dimension's span is not contained
     if (minvect(i) < b.minvect(i) || maxvect(i) > b.maxvect(i)) {
       // the box is not contained
@@ -191,7 +191,7 @@ inline BOOL AABBox<Type, iDimensions>::operator<=(const AABBox<Type, iDimensions
 template<class Type, int iDimensions>
 inline BOOL AABBox<Type, iDimensions>::IsEmpty(void) const {
   // if any dimension is empty, it is empty
-  for ( int i=1; i<=iDimensions; i++ ) {
+  for (int i=1; i <= iDimensions; i++ ) {
     if (minvect(i) > maxvect(i)) {
       return TRUE;
     }
@@ -239,7 +239,7 @@ inline const Vector<Type, iDimensions> &AABBox<Type, iDimensions>::Max(void) con
  */
 template<class Type, int iDimensions>
 inline AABBox<Type, iDimensions> &AABBox<Type, iDimensions>::operator|=(const AABBox<Type, iDimensions> &b) {
-  for ( int i=1; i<=iDimensions; i++ ) {
+  for (int i=1; i <= iDimensions; i++ ) {
     minvect(i) = ::Min(minvect(i), b.minvect(i));
     maxvect(i) = ::Max(maxvect(i), b.maxvect(i));
   }
@@ -251,12 +251,12 @@ inline AABBox<Type, iDimensions> &AABBox<Type, iDimensions>::operator|=(const AA
  */
 template<class Type, int iDimensions>
 inline AABBox<Type, iDimensions> &AABBox<Type, iDimensions>::operator&=(const AABBox<Type, iDimensions> &b) {
-  for ( int i=1; i<=iDimensions; i++ ) {
+  for (int i=1; i <= iDimensions; i++ ) {
     minvect(i) = ::Max(minvect(i), b.minvect(i));
     maxvect(i) = ::Min(maxvect(i), b.maxvect(i));
   }
   // if the result is empty bounding box, normalize it
-  if ( IsEmpty() ) SetToNormalizedEmpty();
+  if (IsEmpty() ) SetToNormalizedEmpty();
   return *this;
 }
 
@@ -288,7 +288,7 @@ template<class Type, int iDimensions>
 inline BOOL AABBox<Type, iDimensions>::HasContactWith(const AABBox<Type, iDimensions> &b) const
 {
   // for all dimensions
-  for ( int i=1; i<=iDimensions; i++ ) {
+  for (int i=1; i <= iDimensions; i++ ) {
     // if spans in that dimension don't have contact
     if (maxvect(i)<b.minvect(i) || minvect(i)>b.maxvect(i) ) {
       // whole bounding boxes don't have contact
@@ -303,7 +303,7 @@ template<class Type, int iDimensions>
 inline BOOL AABBox<Type, iDimensions>::HasContactWith(const AABBox<Type, iDimensions> &b, Type tEpsilon) const
 {
   // for all dimensions
-  for ( int i=1; i<=iDimensions; i++ ) {
+  for (int i=1; i <= iDimensions; i++ ) {
     // if spans in that dimension don't have contact
     if ((maxvect(i)+tEpsilon<b.minvect(i))
       ||(minvect(i)-tEpsilon>b.maxvect(i)) ) {
@@ -319,7 +319,7 @@ inline BOOL AABBox<Type, iDimensions>::TouchesSphere(
   const Vector<Type, iDimensions> &vSphereCenter, Type fSphereRadius) const
 {
   // for all dimensions
-  for ( int i=1; i<=iDimensions; i++ ) {
+  for (int i=1; i <= iDimensions; i++ ) {
     // if spans in that dimension don't have contact
     if ((vSphereCenter(i)+fSphereRadius<minvect(i))
       ||(vSphereCenter(i)-fSphereRadius>maxvect(i)) ) {
@@ -335,7 +335,7 @@ template<class Type, int iDimensions>
 inline void AABBox<Type, iDimensions>::Expand(Type tEpsilon)
 {
   // for all dimensions
-  for ( int i=1; i<=iDimensions; i++ ) {
+  for (int i=1; i <= iDimensions; i++ ) {
     // expand in that dimension
     maxvect(i)+=tEpsilon;
     minvect(i)-=tEpsilon;
@@ -347,7 +347,7 @@ template<class Type, int iDimensions>
 inline void AABBox<Type, iDimensions>::ExpandByFactor(Type tFactor)
 {
   // for all dimensions
-  for ( int i=1; i<=iDimensions; i++ ) {
+  for (int i=1; i <= iDimensions; i++ ) {
     // expand in that dimension
     Type tEpsilon = (maxvect(i)-minvect(i))*tFactor;
     maxvect(i)+=tEpsilon;
@@ -361,7 +361,7 @@ inline void AABBox<Type, iDimensions>::StretchByFactor(Type tSizing)
 {
   tSizing = Abs(tSizing);
   // for each dimension
-  for ( int i=1; i<=iDimensions; i++ ) {
+  for (int i=1; i <= iDimensions; i++ ) {
     // stretch in that dimension
     maxvect(i)*=tSizing;
     minvect(i)*=tSizing;
@@ -373,7 +373,7 @@ template<class Type, int iDimensions>
 inline void AABBox<Type, iDimensions>::StretchByVector(Vector<Type, iDimensions> vSizing)
 {
   // for each dimension
-  for ( int i=1; i<=iDimensions; i++ ) {
+  for (int i=1; i <= iDimensions; i++ ) {
     // stretch in that dimension
     maxvect(i)*=Abs(vSizing(i));
     minvect(i)*=Abs(vSizing(i));

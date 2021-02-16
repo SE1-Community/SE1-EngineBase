@@ -55,7 +55,7 @@ void CActionBuffer::AddAction(const CPlayerAction &pa)
   FOREACHINLIST(CActionEntry, ae_ln, ab_lhActions, itae) {
     CActionEntry &ae = *itae;
     // if this is the one
-    if (ae.ae_pa.pa_llCreated==pa.pa_llCreated) {
+    if (ae.ae_pa.pa_llCreated == pa.pa_llCreated) {
       // skip adding it again
       return;
     }
@@ -80,7 +80,7 @@ void CActionBuffer::FlushUntilTime(__int64 llNewest)
     CActionEntry &ae = *itae;
 
     // if up to that time
-    if (ae.ae_pa.pa_llCreated<=llNewest) {
+    if (ae.ae_pa.pa_llCreated <= llNewest) {
       // delete it
       delete &*itae;
     }
@@ -112,7 +112,7 @@ void CActionBuffer::GetActionByIndex(INDEX i, CPlayerAction &pa)
   // for each buffered action
   INDEX iInList=0;
   FOREACHINLIST(CActionEntry, ae_ln, ab_lhActions, itae) {
-    if (iInList==i) {
+    if (iInList == i) {
       pa = itae->ae_pa;
       return;
     }
@@ -128,7 +128,7 @@ CPlayerAction *CActionBuffer::GetLastOlderThan(__int64 llTime)
   CPlayerAction *ppa = NULL;
   FOREACHINLIST(CActionEntry, ae_ln, ab_lhActions, itae) {
     CActionEntry &ae = *itae;
-    if (ae.ae_pa.pa_llCreated>=llTime) {
+    if (ae.ae_pa.pa_llCreated >= llTime) {
       return ppa;
     }
     ppa = &ae.ae_pa;

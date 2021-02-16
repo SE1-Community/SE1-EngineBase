@@ -79,7 +79,7 @@ void *AllocMemory( SLONG memsize )
   }
   pmem = malloc( memsize);
   // memory handler asures no null results here?!
-  if (pmem==NULL) {
+  if (pmem == NULL) {
     _CrtCheckMemory();
     FatalError(TRANS("Not enough memory (%d bytes needed)!"), memsize);
   }
@@ -97,7 +97,7 @@ void *_debug_AllocMemory( SLONG memsize, int iType, const char *strFile, int iLi
   }
   pmem = _malloc_dbg( memsize, iType, strFile, iLine);
   // memory handler asures no null results here?!
-  if (pmem==NULL) {
+  if (pmem == NULL) {
     _CrtCheckMemory();
     FatalError(TRANS("Not enough memory (%d bytes needed)!"), memsize);
   }
@@ -119,7 +119,7 @@ void FreeMemoryAligned( void *memory)
 
 void FreeMemory( void *memory )
 {
-  ASSERTMSG(memory!=NULL, "FreeMemory: NULL pointer input.");
+  ASSERTMSG(memory != NULL, "FreeMemory: NULL pointer input.");
   free( (char *)memory);
 }
 
@@ -130,7 +130,7 @@ void ResizeMemory( void **ppv, SLONG slSize )
   }
   void *pv = realloc(*ppv, slSize);
   // memory handler asures no null results here?!
-  if (pv==NULL) {
+  if (pv == NULL) {
     _CrtCheckMemory();
     FatalError(TRANS("Not enough memory (%d bytes needed)!"), slSize);
   }
@@ -167,6 +167,6 @@ char *StringDuplicate(const char *strOriginal) {
 // return position where we encounter zero byte or iBytes
 INDEX FindZero( UBYTE *pubMemory, INDEX iBytes)
 {
-  for (INDEX i=0; i<iBytes; i++) if (pubMemory[i]==0) return i;
+  for (INDEX i=0; i<iBytes; i++) if (pubMemory[i] == 0) return i;
   return iBytes;
 }

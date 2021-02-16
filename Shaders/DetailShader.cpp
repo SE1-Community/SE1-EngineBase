@@ -36,8 +36,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define DETAIL_COLOR   1
 #define DETAIL_TILING  0
 
-#define BASE_DOUBLE_SIDED (1UL<<0) // Double sided
-#define BASE_FULL_BRIGHT  (1UL<<1) // Full bright
+#define BASE_DOUBLE_SIDED (1UL << 0) // Double sided
+#define BASE_FULL_BRIGHT  (1UL << 1) // Full bright
 
 
 SHADER_MAIN(Detail)
@@ -51,7 +51,7 @@ SHADER_MAIN(Detail)
 
   COLOR &colModelColor = shaGetModelColor();
   BOOL bDoubleSided = shaGetFlags()&BASE_DOUBLE_SIDED;
-  BOOL bOpaque = (colModelColor&0xFF)==0xFF;
+  BOOL bOpaque = (colModelColor&0xFF) == 0xFF;
 
   if (bDoubleSided) {
     shaCullFace(GFX_NONE);

@@ -44,7 +44,7 @@ void CBrushArchive::CalculateBoundingBoxes(void)
   // for each of the brushes
   FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr) {
     // if the brush has no entity
-    if (itbr->br_penEntity==NULL) {
+    if (itbr->br_penEntity == NULL) {
       // skip it
       continue;
     }
@@ -105,11 +105,11 @@ void CBrushArchive::MakeIndices(void)
 void CBrushArchive::LinkPortalsAndSectors(void)
 {
   _pfWorldEditingProfile.StartTimer(CWorldEditingProfile::PTI_LINKPORTALSANDSECTORS);
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
 
   // for each of the zoning brushes
   FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr1) {
-    if (itbr1->br_penEntity==NULL || !(itbr1->br_penEntity->en_ulFlags&ENF_ZONING)) {
+    if (itbr1->br_penEntity == NULL || !(itbr1->br_penEntity->en_ulFlags&ENF_ZONING)) {
       continue;
     }
     // for each mip
@@ -119,7 +119,7 @@ void CBrushArchive::LinkPortalsAndSectors(void)
 
         // for each of the zoning brushes
         FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr2) {
-          if (itbr2->br_penEntity==NULL || !(itbr2->br_penEntity->en_ulFlags&ENF_ZONING)) {
+          if (itbr2->br_penEntity == NULL || !(itbr2->br_penEntity->en_ulFlags&ENF_ZONING)) {
             continue;
           }
           // for each mip that might have contact with the sector
@@ -129,7 +129,7 @@ void CBrushArchive::LinkPortalsAndSectors(void)
             }
             // for each sector in the brush mip that might have contact, except current one
             FOREACHINDYNAMICARRAY(itbm2->bm_abscSectors, CBrushSector, itbsc2) {
-              if (&*itbsc1==&*itbsc2) {
+              if (&*itbsc1 == &*itbsc2) {
                 continue;
               }
               if (!itbsc2->bsc_boxBoundingBox.HasContactWith(itbsc1->bsc_boxBoundingBox, DISTANCE_EPSILON)) {
@@ -174,7 +174,7 @@ void CBrushArchive::RemoveDummyLayers(void)
 {
   // for each brush
   FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr) { // for each mip
-    if (itbr->br_penEntity==NULL) continue; // skip brush without entity
+    if (itbr->br_penEntity == NULL) continue; // skip brush without entity
     FOREACHINLIST(CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) { // for each sector in the brush mip
       FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) { // for each polygon in the sector
         FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
@@ -193,7 +193,7 @@ void CBrushArchive::CacheAllShadowmaps(void)
   // count all shadowmaps
   INDEX ctShadowMaps=0;
   {FOREACHINDYNAMICARRAY( ba_abrBrushes, CBrush3D, itbr) { // for each mip
-    if (itbr->br_penEntity==NULL) continue; // skip brush without entity
+    if (itbr->br_penEntity == NULL) continue; // skip brush without entity
     FOREACHINLIST( CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) { // for each sector in the brush mip
       FOREACHINDYNAMICARRAY( itbm->bm_abscSectors, CBrushSector, itbsc) { // for each polygon in the sector
         FOREACHINSTATICARRAY( itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
@@ -209,7 +209,7 @@ void CBrushArchive::CacheAllShadowmaps(void)
     // for each brush
     INDEX iCurrentShadowMap=0;
     {FOREACHINDYNAMICARRAY( ba_abrBrushes, CBrush3D, itbr) { // for each mip
-      if (itbr->br_penEntity==NULL) continue; // skip brush without entity
+      if (itbr->br_penEntity == NULL) continue; // skip brush without entity
       FOREACHINLIST( CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) { // for each sector in the brush mip
         FOREACHINDYNAMICARRAY( itbm->bm_abscSectors, CBrushSector, itbsc) { // for each polygon in the sector
           FOREACHINSTATICARRAY( itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
@@ -242,7 +242,7 @@ void CBrushArchive::ReadPortalSectorLinks_t( CTStream &strm)  // throw char *
   MakeIndices();
 
   // if the chunk is not there
-  if (!(strm.PeekID_t()==CChunkID("PSLS"))) {   // portal-sector links
+  if (!(strm.PeekID_t() == CChunkID("PSLS"))) {   // portal-sector links
     // do nothing;
     _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_READPORTALSECTORLINKS);
     return;
@@ -251,36 +251,36 @@ void CBrushArchive::ReadPortalSectorLinks_t( CTStream &strm)  // throw char *
   // read the version
   strm.ExpectID_t("PSLS");   // portal-sector links
   INDEX iVersion;
-  strm>>iVersion;
-  ASSERT(iVersion==1);
+  strm >> iVersion;
+  ASSERT(iVersion == 1);
   // read chunk size
   SLONG slChunkSizePos = strm.GetPos_t();
   SLONG slChunkSize;
-  strm>>slChunkSize;
+  strm >> slChunkSize;
 
   // repeat
   FOREVER {
     // read sector index
     INDEX iSector;
-    strm>>iSector;
+    strm >> iSector;
     // if end marker
-    if (iSector==-1) {
+    if (iSector == -1) {
       // stop loading
       break;
     }
     // get the sector
     CBrushSector *pbsc = ba_apbsc[iSector];
-    ASSERT(pbsc->bsc_iInWorld==iSector);
+    ASSERT(pbsc->bsc_iInWorld == iSector);
     // read number of links
     INDEX ctLinks;
-    strm>>ctLinks;
+    strm >> ctLinks;
     // for each link
     for (INDEX iLink=0; iLink<ctLinks; iLink++) {
       // read polygon index
       INDEX iPolygon;
-      strm>>iPolygon;
+      strm >> iPolygon;
       CBrushPolygon *pbpo = ba_apbpo[iPolygon];
-      ASSERT(pbpo->bpo_iInWorld==iPolygon);
+      ASSERT(pbpo->bpo_iInWorld == iPolygon);
       // relate the sector to the portal
       AddRelationPair(
         pbpo->bpo_rsOtherSideSectors,
@@ -290,7 +290,7 @@ void CBrushArchive::ReadPortalSectorLinks_t( CTStream &strm)  // throw char *
   }
 
   // check chunk size
-  ASSERT(strm.GetPos_t()-slChunkSizePos-sizeof(INDEX)==slChunkSize);
+  ASSERT(strm.GetPos_t()-slChunkSizePos-sizeof(INDEX) == slChunkSize);
   // check end id
   strm.ExpectID_t("PSLE");   // portal-sector links end
   // mark that links are ok
@@ -308,7 +308,7 @@ void CBrushArchive::ReadEntitySectorLinks_t( CTStream &strm)  // throw char *
   MakeIndices();
 
   // if the chunk is not there
-  if (!(strm.PeekID_t()==CChunkID("ESL2"))) {   // entity-sector links v2
+  if (!(strm.PeekID_t() == CChunkID("ESL2"))) {   // entity-sector links v2
     // do nothing;
     _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_READPORTALSECTORLINKS);
     return;
@@ -317,34 +317,34 @@ void CBrushArchive::ReadEntitySectorLinks_t( CTStream &strm)  // throw char *
   // read the version
   strm.ExpectID_t("ESL2");   // entity-sector links v2
   INDEX iVersion;
-  strm>>iVersion;
-  ASSERT(iVersion==1);
+  strm >> iVersion;
+  ASSERT(iVersion == 1);
   // read chunk size
   SLONG slChunkSizePos = strm.GetPos_t();
   SLONG slChunkSize;
-  strm>>slChunkSize;
+  strm >> slChunkSize;
 
   // repeat
   FOREVER {
     // read sector index
     INDEX iSector;
-    strm>>iSector;
+    strm >> iSector;
     // if end marker
-    if (iSector==-1) {
+    if (iSector == -1) {
       // stop loading
       break;
     }
     // get the sector
     CBrushSector *pbsc = ba_apbsc[iSector];
-    ASSERT(pbsc->bsc_iInWorld==iSector);
+    ASSERT(pbsc->bsc_iInWorld == iSector);
     // read number of links
     INDEX ctLinks;
-    strm>>ctLinks;
+    strm >> ctLinks;
     // for each link
     for (INDEX iLink=0; iLink<ctLinks; iLink++) {
       // read entity index
       INDEX iEntity;
-      strm>>iEntity;
+      strm >> iEntity;
       CEntity *pen = ba_pwoWorld->EntityFromID(iEntity);
       // relate the sector to the entity
       AddRelationPair(pbsc->bsc_rsEntities, pen->en_rdSectors);
@@ -352,7 +352,7 @@ void CBrushArchive::ReadEntitySectorLinks_t( CTStream &strm)  // throw char *
   }
 
   // check chunk size
-  ASSERT(strm.GetPos_t()-slChunkSizePos-sizeof(INDEX)==slChunkSize);
+  ASSERT(strm.GetPos_t()-slChunkSizePos-sizeof(INDEX) == slChunkSize);
   // check end id
   strm.ExpectID_t("ESLE");   // entity-sector links end
 
@@ -368,10 +368,10 @@ void CBrushArchive::WritePortalSectorLinks_t( CTStream &strm) // throw char *
 
   // write chunk id and current version
   strm.WriteID_t("PSLS");   // portal-sector links
-  strm<<INDEX(1);
+  strm << INDEX(1);
   // leave room for chunk size
   SLONG slChunkSizePos = strm.GetPos_t();
-  strm<<SLONG(0);
+  strm << SLONG(0);
 
   // for each sector
   {FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr) {
@@ -381,27 +381,27 @@ void CBrushArchive::WritePortalSectorLinks_t( CTStream &strm) // throw char *
         // get number of portal links that it has
         INDEX ctLinks = pbsc->bsc_rdOtherSidePortals.Count();
         // if it has no links
-        if (ctLinks==0) {
+        if (ctLinks == 0) {
           // skip it
           continue;
         }
         // write sector index and number of links
-        strm<<pbsc->bsc_iInWorld<<ctLinks;
+        strm << pbsc->bsc_iInWorld << ctLinks;
         // for each link
         {FOREACHSRCOFDST(pbsc->bsc_rdOtherSidePortals, CBrushPolygon, bpo_rsOtherSideSectors, pbpo)
           // write the polygon index
-          strm<<pbpo->bpo_iInWorld;
+          strm << pbpo->bpo_iInWorld;
         ENDFOR}
       }
     }
   }}
   // write sector index -1 as end marker
-  strm<<INDEX(-1);
+  strm << INDEX(-1);
 
   // write back the chunk size
   SLONG slEndPos = strm.GetPos_t();
   strm.SetPos_t(slChunkSizePos);
-  strm<<SLONG(slEndPos-slChunkSizePos-sizeof(INDEX));
+  strm << SLONG(slEndPos-slChunkSizePos-sizeof(INDEX));
   strm.SetPos_t(slEndPos);
 
   // write end id for checking
@@ -415,10 +415,10 @@ void CBrushArchive::WriteEntitySectorLinks_t( CTStream &strm) // throw char *
 
   // write chunk id and current version
   strm.WriteID_t("ESL2");   // entity-sector links v2
-  strm<<INDEX(1);
+  strm << INDEX(1);
   // leave room for chunk size
   SLONG slChunkSizePos = strm.GetPos_t();
-  strm<<SLONG(0);
+  strm << SLONG(0);
 
   // for each sector
   {FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr) {
@@ -428,27 +428,27 @@ void CBrushArchive::WriteEntitySectorLinks_t( CTStream &strm) // throw char *
         // get number of entity links that it has
         INDEX ctLinks = pbsc->bsc_rsEntities.Count();
         // if it has no links
-        if (ctLinks==0) {
+        if (ctLinks == 0) {
           // skip it
           continue;
         }
         // write sector index and number of links
-        strm<<pbsc->bsc_iInWorld<<ctLinks;
+        strm << pbsc->bsc_iInWorld << ctLinks;
         // for each link
         {FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
           // write the entity index
-          strm<<pen->en_ulID;
+          strm << pen->en_ulID;
         ENDFOR}
       }
     }
   }}
   // write sector index -1 as end marker
-  strm<<INDEX(-1);
+  strm << INDEX(-1);
 
   // write back the chunk size
   SLONG slEndPos = strm.GetPos_t();
   strm.SetPos_t(slChunkSizePos);
-  strm<<SLONG(slEndPos-slChunkSizePos-sizeof(INDEX));
+  strm << SLONG(slEndPos-slChunkSizePos-sizeof(INDEX));
   strm.SetPos_t(slEndPos);
   // write end id for checking
   strm.WriteID_t("ESLE");   // entity-sector links end
@@ -463,10 +463,10 @@ void CBrushArchive::Read_t( CTStream *istrFile) // throw char *
 
   INDEX ctBrushes;
   // read number of brushes
-  (*istrFile)>>ctBrushes;
+  (*istrFile) >> ctBrushes;
 
   // if there are some brushes
-  if (ctBrushes!=0) {
+  if (ctBrushes != 0) {
     // create that much brushes
     CBrush3D *abrBrushes = ba_abrBrushes.New(ctBrushes);
     // for each of the new brushes
@@ -491,7 +491,7 @@ void CBrushArchive::Write_t( CTStream *ostrFile) // throw char *
   ostrFile->WriteID_t("BRAR");   // brush archive
 
   // write the number of brushes
-  (*ostrFile)<<ba_abrBrushes.Count();
+  (*ostrFile) << ba_abrBrushes.Count();
   // for each of the brushes
   FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr) {
     // write it to stream

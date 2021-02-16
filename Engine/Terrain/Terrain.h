@@ -29,15 +29,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Terrain/ArrayHolder.h>
 #include <Engine/Templates/StaticArray.cpp>
 
-#define TR_REGENERATE              (1UL<<0) // terrain needs to be regenerated
-#define TR_REGENERATE_TOP_MAP      (1UL<<1) // regenerate terrain top map
-#define TR_ALLOW_TOP_MAP_REGEN     (1UL<<2) // allow top map regen (top map is not regenerate if this flag is not set)
-#define TR_REBUILD_QUADTREE        (1UL<<3) // rebuild higher levels of quad tree nodes (last levels are rebuild by tile flags)
-#define TR_UPDATE_SHADOWMAP        (1UL<<4) // update terrain shadow map       (NOT USED!)
-#define TR_ALLOW_SHADOW_MAP_UPDATE (1UL<<5) // allow terrain shadow map update (NOT USED!)
-#define TR_SHOW_SELECTION          (1UL<<6) // show selection
-#define TR_HAS_FOG                 (1UL<<7) // terrain has fog
-#define TR_HAS_HAZE                (1UL<<8) // terrain has haze
+#define TR_REGENERATE              (1UL << 0) // terrain needs to be regenerated
+#define TR_REGENERATE_TOP_MAP      (1UL << 1) // regenerate terrain top map
+#define TR_ALLOW_TOP_MAP_REGEN     (1UL << 2) // allow top map regen (top map is not regenerate if this flag is not set)
+#define TR_REBUILD_QUADTREE        (1UL << 3) // rebuild higher levels of quad tree nodes (last levels are rebuild by tile flags)
+#define TR_UPDATE_SHADOWMAP        (1UL << 4) // update terrain shadow map       (NOT USED!)
+#define TR_ALLOW_SHADOW_MAP_UPDATE (1UL << 5) // allow terrain shadow map update (NOT USED!)
+#define TR_SHOW_SELECTION          (1UL << 6) // show selection
+#define TR_HAS_FOG                 (1UL << 7) // terrain has fog
+#define TR_HAS_HAZE                (1UL << 8) // terrain has haze
 
 struct QuadTreeNode
 {

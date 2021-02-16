@@ -45,7 +45,7 @@ void FindInMapFile(const CTFileName &fnSymbols, const CTString &strImage, ULONG 
       // read the line
       CTString strLine;
       strmMap.GetLine_t(strLine);
-      if (strncmp(strLine, "  Address", 9)==0) {
+      if (strncmp(strLine, "  Address", 9) == 0) {
         break;
       }
     }
@@ -62,7 +62,7 @@ void FindInMapFile(const CTFileName &fnSymbols, const CTString &strImage, ULONG 
       ULONG ulSegLine=-1;
       ULONG ulOfsLine=-1;
       strLine.ScanF("%x:%x %s", &ulSegLine, &ulOfsLine, strFunctionLine);
-      if (ulSegLine!=ulSeg) {
+      if (ulSegLine != ulSeg) {
         continue;
       }
       if (ulOfsLine>ulOff) {
@@ -83,7 +83,7 @@ void SubMain( int argc, char *argv[])
   printf("\nDecodeReport - '.RPT' file decoder V1.0\n");
   printf(  "           (C)1999 CROTEAM Ltd\n\n");
 
-  if (argc!=3+1)
+  if (argc != 3+1)
   {
     printf( "USAGE:\nDecodeReport <infilename> <outfilename> <symbolsdir>\n");
     exit( EXIT_FAILURE);
@@ -100,7 +100,7 @@ void SubMain( int argc, char *argv[])
 
   try
   {
-    if (fnSrc==fnDst) {
+    if (fnSrc == fnDst) {
       throw "Use different files!";
     }
 
@@ -118,7 +118,7 @@ void SubMain( int argc, char *argv[])
       // try to find address marker in it
       const char *strAdr = strstr(strLine, "$adr:");
       // if there is no marker
-      if (strAdr==NULL) {
+      if (strAdr == NULL) {
         // just copy the line
         strmDst.PutLine_t(strLine);
 

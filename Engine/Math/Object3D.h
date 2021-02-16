@@ -155,8 +155,8 @@ public:
 // a polygon in 3d object
 // Flags
 // flags 0-2 are used by CObjectPolygon, flags 3-31 are reserved for custom formats
-#define OPOF_PORTAL       (1L<<0)         // set if the polygon is portal
-#define OPOF_IGNOREDBYCSG (1L<<1)         // set if the polygon is ignored when doing CSG
+#define OPOF_PORTAL       (1L << 0)         // set if the polygon is portal
+#define OPOF_IGNOREDBYCSG (1L << 1)         // set if the polygon is ignored when doing CSG
 
 class ENGINE_API CObjectPolygon {
 public:
@@ -183,7 +183,7 @@ public:
   void JoinContinuingEdges(CDynamicArray<CObjectEdge> &oedEdges);
   /* Remove polygon edges that are used twice from a polygon. */
   void RemoveRedundantEdges(void);
-  /* Remove polygon edges that are marked as unused (oed_Edge==NULL) from polygon. */
+  /* Remove polygon edges that are marked as unused (oed_Edge == NULL) from polygon. */
   void RemoveMarkedEdges(INDEX ctNonMarkedEdges);
   /* Remove polygon edges that have zero length from a polygon. */
   void RemoveDummyEdgeReferences(void);
@@ -361,16 +361,16 @@ public:
   void Clear(void);
 
   /* Recognize and load any of supported 3D file formats. */
-	void LoadAny3DFormat_t( const CTFileName &FileName, const FLOATmatrix3D &mTransform, enum LoadType ltLoadType=LT_NORMAL); // throw (char *)
+  void LoadAny3DFormat_t( const CTFileName &FileName, const FLOATmatrix3D &mTransform, enum LoadType ltLoadType=LT_NORMAL); // throw (char *)
   // start/end batch loading of 3d objects
   static void BatchLoading_t(BOOL bOn);
   /* Convert from intermediate structures into O3D */
   void ConvertArraysToO3D( void);
 
   /* Save in LightWave format. */
-	void SaveLWO_t( const CTFileName &FileName); // throw (char *)
+  void SaveLWO_t( const CTFileName &FileName); // throw (char *)
   /* Save in 3DStudio format. */
-	void SaveDXF_t( const CTFileName &FileName); // throw (char *)
+  void SaveDXF_t( const CTFileName &FileName); // throw (char *)
 
   /* Remove unused and replicated elements. */
   void Optimize(void);

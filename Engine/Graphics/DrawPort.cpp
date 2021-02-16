@@ -55,8 +55,8 @@ static BOOL ClipToDrawPort( const CDrawPort *pdp, PIX &pixI, PIX &pixJ, PIX &pix
   if ((pixI+pixW) > pdp->dp_Width)  pixW = pdp->dp_Width  - pixI;
   if ((pixJ+pixH) > pdp->dp_Height) pixH = pdp->dp_Height - pixJ;
 
-  ASSERT( pixI>=0 && pixI<pdp->dp_Width);
-  ASSERT( pixJ>=0 && pixJ<pdp->dp_Height);
+  ASSERT( pixI >= 0 && pixI<pdp->dp_Width);
+  ASSERT( pixJ >= 0 && pixJ<pdp->dp_Height);
   ASSERT( pixW>0  && pixH>0);
   return TRUE;
 }
@@ -65,8 +65,8 @@ static BOOL ClipToDrawPort( const CDrawPort *pdp, PIX &pixI, PIX &pixJ, PIX &pix
 // set scissor (clipping) to window inside drawport
 static void SetScissor( const CDrawPort *pdp, PIX pixI, PIX pixJ, PIX pixW, PIX pixH)
 {
-  ASSERT( pixI>=0 && pixI<pdp->dp_Width);
-  ASSERT( pixJ>=0 && pixJ<pdp->dp_Height);
+  ASSERT( pixI >= 0 && pixI<pdp->dp_Width);
+  ASSERT( pixJ >= 0 && pixJ<pdp->dp_Height);
   ASSERT( pixW>0  && pixH>0);
 
   const PIX pixInvMinJ = pdp->dp_Raster->ra_Height - (pdp->dp_MinJ+pixJ+pixH);
@@ -104,16 +104,16 @@ void CDrawPort::InitCloned( CDrawPort *pdpBase, DOUBLE rMinI,DOUBLE rMinJ, DOUBL
     +pdpBase->dp_MinJOverRasterSizeJ;
   dp_SizeIOverRasterSizeI = rSizeI * pdpBase->dp_SizeIOverRasterSizeI;
   dp_SizeJOverRasterSizeJ = rSizeJ * pdpBase->dp_SizeJOverRasterSizeJ;
-	// calculate pixel dimensions from relative dimensions
+  // calculate pixel dimensions from relative dimensions
   RecalculateDimensions();
   // clip scissor to origin drawport
   dp_ScissorMinI = Max( dp_MinI, pdpBase->dp_MinI);
-	dp_ScissorMinJ = Max( dp_MinJ, pdpBase->dp_MinJ);
+  dp_ScissorMinJ = Max( dp_MinJ, pdpBase->dp_MinJ);
   dp_ScissorMaxI = Min( dp_MaxI, pdpBase->dp_MaxI);
-	dp_ScissorMaxJ = Min( dp_MaxJ, pdpBase->dp_MaxJ);
+  dp_ScissorMaxJ = Min( dp_MaxJ, pdpBase->dp_MaxJ);
   if (dp_ScissorMinI>dp_ScissorMaxI) dp_ScissorMinI = dp_ScissorMaxI = 0;
   if (dp_ScissorMinJ>dp_ScissorMaxJ) dp_ScissorMinJ = dp_ScissorMaxJ = 0;
-	// clone some vars
+  // clone some vars
   dp_FontData = pdpBase->dp_FontData;
   dp_pixTextCharSpacing = pdpBase->dp_pixTextCharSpacing;
   dp_pixTextLineSpacing = pdpBase->dp_pixTextLineSpacing;
@@ -141,7 +141,7 @@ CDrawPort::CDrawPort( CRaster *praBase)
   dp_MinJOverRasterSizeJ  = 0.0;
   dp_SizeIOverRasterSizeI = 1.0;
   dp_SizeJOverRasterSizeJ = 1.0;
-	// clear unknown values
+  // clear unknown values
   dp_FontData = NULL;
   dp_pixTextCharSpacing = 1;
   dp_pixTextLineSpacing = 0;
@@ -165,16 +165,16 @@ CDrawPort::CDrawPort( CDrawPort *pdpBase, const PIXaabbox2D &box)
 {
   // force dimensions
   dp_MinI   = box.Min()(1) +pdpBase->dp_MinI;
-	dp_MinJ   = box.Min()(2) +pdpBase->dp_MinJ;
+  dp_MinJ   = box.Min()(2) +pdpBase->dp_MinJ;
   dp_Width  = box.Size()(1);
-	dp_Height = box.Size()(2);
+  dp_Height = box.Size()(2);
   dp_MaxI   = dp_MinI+dp_Width  -1;
-	dp_MaxJ   = dp_MinJ+dp_Height -1;
+  dp_MaxJ   = dp_MinJ+dp_Height -1;
   // clip scissor to origin drawport
   dp_ScissorMinI = Max( dp_MinI, pdpBase->dp_MinI);
-	dp_ScissorMinJ = Max( dp_MinJ, pdpBase->dp_MinJ);
+  dp_ScissorMinJ = Max( dp_MinJ, pdpBase->dp_MinJ);
   dp_ScissorMaxI = Min( dp_MaxI, pdpBase->dp_MaxI);
-	dp_ScissorMaxJ = Min( dp_MaxJ, pdpBase->dp_MaxJ);
+  dp_ScissorMaxJ = Min( dp_MaxJ, pdpBase->dp_MaxJ);
   if (dp_ScissorMinI>dp_ScissorMaxI) dp_ScissorMinI = dp_ScissorMaxI = 0;
   if (dp_ScissorMinJ>dp_ScissorMaxJ) dp_ScissorMinJ = dp_ScissorMaxJ = 0;
   // remember the raster structures
@@ -184,7 +184,7 @@ CDrawPort::CDrawPort( CDrawPort *pdpBase, const PIXaabbox2D &box)
   dp_MinJOverRasterSizeJ  = (DOUBLE)dp_MinJ   / dp_Raster->ra_Height;
   dp_SizeIOverRasterSizeI = (DOUBLE)dp_Width  / dp_Raster->ra_Width;
   dp_SizeJOverRasterSizeJ = (DOUBLE)dp_Height / dp_Raster->ra_Height;
-	// clone some vars
+  // clone some vars
   dp_FontData = pdpBase->dp_FontData;
   dp_pixTextCharSpacing = pdpBase->dp_pixTextCharSpacing;
   dp_pixTextLineSpacing = pdpBase->dp_pixTextLineSpacing;
@@ -291,14 +291,14 @@ void CDrawPort::MakeWideScreen(CDrawPort *pdp)
 
 void CDrawPort::RecalculateDimensions(void)
 {
-	const PIX pixRasterSizeI = dp_Raster->ra_Width;
-	const PIX pixRasterSizeJ = dp_Raster->ra_Height;
+  const PIX pixRasterSizeI = dp_Raster->ra_Width;
+  const PIX pixRasterSizeJ = dp_Raster->ra_Height;
   dp_Width  = (PIX)(dp_SizeIOverRasterSizeI*pixRasterSizeI);
-	dp_Height = (PIX)(dp_SizeJOverRasterSizeJ*pixRasterSizeJ);
+  dp_Height = (PIX)(dp_SizeJOverRasterSizeJ*pixRasterSizeJ);
   dp_ScissorMinI = dp_MinI = (PIX)(dp_MinIOverRasterSizeI*pixRasterSizeI);
-	dp_ScissorMinJ = dp_MinJ = (PIX)(dp_MinJOverRasterSizeJ*pixRasterSizeJ);
+  dp_ScissorMinJ = dp_MinJ = (PIX)(dp_MinJOverRasterSizeJ*pixRasterSizeJ);
   dp_ScissorMaxI = dp_MaxI = dp_MinI+dp_Width  -1;
-	dp_ScissorMaxJ = dp_MaxJ = dp_MinJ+dp_Height -1;
+  dp_ScissorMaxJ = dp_MaxJ = dp_MinJ+dp_Height -1;
 }
 
 
@@ -308,9 +308,9 @@ void CDrawPort::SetOrtho(void) const
   // finish all pending render-operations (if required)
   ogl_iFinish = Clamp( ogl_iFinish, 0L, 3L);
   d3d_iFinish = Clamp( d3d_iFinish, 0L, 3L);
-  if ((ogl_iFinish==3 && _pGfx->gl_eCurrentAPI==GAT_OGL) 
+  if ((ogl_iFinish == 3 && _pGfx->gl_eCurrentAPI == GAT_OGL) 
 #ifdef SE1_D3D
-   || (d3d_iFinish==3 && _pGfx->gl_eCurrentAPI==GAT_D3D)
+   || (d3d_iFinish == 3 && _pGfx->gl_eCurrentAPI == GAT_D3D)
 #endif // SE1_D3D
    ) gfxFinish();
 
@@ -339,9 +339,9 @@ void CDrawPort::SetProjection(CAnyProjection3D &apr) const
   // finish all pending render-operations (if required)
   ogl_iFinish = Clamp( ogl_iFinish, 0L, 3L);
   d3d_iFinish = Clamp( d3d_iFinish, 0L, 3L);
-  if ((ogl_iFinish==3 && _pGfx->gl_eCurrentAPI==GAT_OGL) 
+  if ((ogl_iFinish == 3 && _pGfx->gl_eCurrentAPI == GAT_OGL) 
 #ifdef SE1_D3D
-   || (d3d_iFinish==3 && _pGfx->gl_eCurrentAPI==GAT_D3D)
+   || (d3d_iFinish == 3 && _pGfx->gl_eCurrentAPI == GAT_D3D)
 #endif // SE1_D3D
    ) gfxFinish();
 
@@ -439,12 +439,12 @@ void CDrawPort::DrawPoint( PIX pixI, PIX pixJ, COLOR col, PIX pixRadius/*=1*/) c
   // check API and radius
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
 #ifdef SE1_D3D
-  ASSERT( eAPI==GAT_OGL || eAPI==GAT_D3D || eAPI==GAT_NONE);
+  ASSERT( eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
 #else // SE1_D3D
-  ASSERT( eAPI==GAT_OGL || eAPI==GAT_NONE);
+  ASSERT( eAPI == GAT_OGL || eAPI == GAT_NONE);
 #endif // SE1_D3D
-  ASSERT( pixRadius>=0);
-  if (pixRadius==0) return; // do nothing if radius is 0
+  ASSERT( pixRadius >= 0);
+  if (pixRadius == 0) return; // do nothing if radius is 0
 
   // setup rendering mode
   gfxDisableTexture(); 
@@ -459,7 +459,7 @@ void CDrawPort::DrawPoint( PIX pixI, PIX pixJ, COLOR col, PIX pixRadius/*=1*/) c
   const FLOAT fR = pixRadius;
 
   // OpenGL
-  if (eAPI==GAT_OGL) {
+  if (eAPI == GAT_OGL) {
     const FLOAT fI = pixI+0.5f;
     const FLOAT fJ = pixJ+0.5f;
     glCOLOR(col);
@@ -470,7 +470,7 @@ void CDrawPort::DrawPoint( PIX pixI, PIX pixJ, COLOR col, PIX pixRadius/*=1*/) c
     OGL_CHECKERROR;
   } // Direct3D
 #ifdef SE1_D3D
-  else if (eAPI==GAT_D3D) {
+  else if (eAPI == GAT_D3D) {
     HRESULT hr;
     const FLOAT fI = pixI+0.75f;
     const FLOAT fJ = pixJ+0.75f;
@@ -497,8 +497,8 @@ void CDrawPort::DrawPoint3D( FLOAT3D v, COLOR col, FLOAT fRadius/*=1.0f*/) const
 #else // SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
 #endif // SE1_D3D
-  ASSERT( fRadius>=0);
-  if (fRadius==0) return; // do nothing if radius is 0
+  ASSERT( fRadius >= 0);
+  if (fRadius == 0) return; // do nothing if radius is 0
 
   // setup rendering mode
   gfxDisableTexture(); 
@@ -511,7 +511,7 @@ void CDrawPort::DrawPoint3D( FLOAT3D v, COLOR col, FLOAT fRadius/*=1.0f*/) const
   col = AdjustColor( col, _slTexHueShift, _slTexSaturation);
 
   // OpenGL
-  if (eAPI==GAT_OGL) {
+  if (eAPI == GAT_OGL) {
     glCOLOR(col);
     pglPointSize(fRadius);
     pglBegin(GL_POINTS);
@@ -520,7 +520,7 @@ void CDrawPort::DrawPoint3D( FLOAT3D v, COLOR col, FLOAT fRadius/*=1.0f*/) const
     OGL_CHECKERROR;
   } // Direct3D
 #ifdef SE1_D3D
-  else if (eAPI==GAT_D3D) {
+  else if (eAPI == GAT_D3D) {
     HRESULT hr;
     const ULONG d3dColor = rgba2argb(col);
     CTVERTEX avtx = {v(1),v(2),v(3), d3dColor, 0,0};
@@ -556,7 +556,7 @@ void CDrawPort::DrawLine( PIX pixI0, PIX pixJ0, PIX pixI1, PIX pixJ1, COLOR col,
 
   FLOAT fD;
   INDEX iTexFilter, iTexAnisotropy;
-  if (typ==_FULL_) {
+  if (typ == _FULL_) {
     // no pattern - just disable texturing
     gfxDisableTexture(); 
     fD = 0;
@@ -574,7 +574,7 @@ void CDrawPort::DrawLine( PIX pixI0, PIX pixJ0, PIX pixI1, PIX pixJ1, COLOR col,
   // set line color/alpha and go go go 
   col = AdjustColor( col, _slTexHueShift, _slTexSaturation);
   // OpenGL
-  if (eAPI==GAT_OGL) {
+  if (eAPI == GAT_OGL) {
     const FLOAT fI0 = pixI0+0.5f;  const FLOAT fJ0 = pixJ0+0.5f;
     const FLOAT fI1 = pixI1+0.5f;  const FLOAT fJ1 = pixJ1+0.5f;
     glCOLOR(col);
@@ -585,7 +585,7 @@ void CDrawPort::DrawLine( PIX pixI0, PIX pixJ0, PIX pixI1, PIX pixJ1, COLOR col,
     OGL_CHECKERROR;
   } // Direct3D
 #ifdef SE1_D3D
-  else if (eAPI==GAT_D3D) {
+  else if (eAPI == GAT_D3D) {
     HRESULT hr;
     const FLOAT fI0 = pixI0+0.75f;  const FLOAT fJ0 = pixJ0+0.75f;
     const FLOAT fI1 = pixI1+0.75f;  const FLOAT fJ1 = pixJ1+0.75f;
@@ -600,7 +600,7 @@ void CDrawPort::DrawLine( PIX pixI0, PIX pixJ0, PIX pixI1, PIX pixJ1, COLOR col,
   }
 #endif // SE1_D3D
   // revert to old filtering
-  if (typ!=_FULL_) gfxSetTextureFiltering( iTexFilter, iTexAnisotropy);
+  if (typ != _FULL_) gfxSetTextureFiltering( iTexFilter, iTexAnisotropy);
 }
 
 
@@ -626,7 +626,7 @@ void CDrawPort::DrawLine3D( FLOAT3D v0, FLOAT3D v1, COLOR col) const
   // set line color/alpha and go go go 
   col = AdjustColor( col, _slTexHueShift, _slTexSaturation);
   // OpenGL
-  if (eAPI==GAT_OGL) {
+  if (eAPI == GAT_OGL) {
     glCOLOR(col);
     pglBegin( GL_LINES);
       pglVertex3f( v0(1),v0(2),v0(3));
@@ -635,7 +635,7 @@ void CDrawPort::DrawLine3D( FLOAT3D v0, FLOAT3D v1, COLOR col) const
     OGL_CHECKERROR;
   } // Direct3D
 #ifdef SE1_D3D
-  else if (eAPI==GAT_D3D) {
+  else if (eAPI == GAT_D3D) {
     HRESULT hr;
     const ULONG d3dColor = rgba2argb(col);
     CTVERTEX avtxLine[2] = {
@@ -672,7 +672,7 @@ void CDrawPort::DrawBorder( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COL
   // for non-full lines, must have 
   FLOAT fD;
   INDEX iTexFilter, iTexAnisotropy;
-  if (typ==_FULL_) {
+  if (typ == _FULL_) {
     // no pattern - just disable texturing
     gfxDisableTexture(); 
     fD = 0;
@@ -695,7 +695,7 @@ void CDrawPort::DrawBorder( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COL
   const FLOAT fJ1 = pixJ-0.5f +pixHeight;
 
   // OpenGL
-  if (eAPI==GAT_OGL) {
+  if (eAPI == GAT_OGL) {
     glCOLOR(col);
     pglBegin( GL_LINES);
       pglTexCoord2f(0,0); pglVertex2f(fI0,fJ0);   pglTexCoord2f(fD,0);  pglVertex2f(fI1,  fJ0);  // up
@@ -707,7 +707,7 @@ void CDrawPort::DrawBorder( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COL
   }
   // Direct3D
 #ifdef SE1_D3D
-  else if (eAPI==GAT_D3D) {
+  else if (eAPI == GAT_D3D) {
     HRESULT hr;
     const ULONG d3dColor = rgba2argb(col);
     CTVERTEX avtxLines[8] = { // setup lines
@@ -722,7 +722,7 @@ void CDrawPort::DrawBorder( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COL
   }
 #endif // SE1_D3D
   // revert to old filtering
-  if (typ!=_FULL_) gfxSetTextureFiltering( iTexFilter, iTexAnisotropy);
+  if (typ != _FULL_) gfxSetTextureFiltering( iTexFilter, iTexAnisotropy);
 }
  
 
@@ -731,7 +731,7 @@ void CDrawPort::DrawBorder( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COL
 void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COLOR col) const
 {
   // if color is tranlucent
-  if (((col&CT_AMASK)>>CT_ASHIFT) != CT_OPAQUE)
+  if (((col&CT_AMASK) >> CT_ASHIFT) != CT_OPAQUE)
   { // draw thru polygon
     Fill( pixI,pixJ, pixWidth,pixHeight, col,col,col,col);
     return;
@@ -753,7 +753,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COLOR col
 #endif // SE1_D3D
 
   // OpenGL
-  if (eAPI==GAT_OGL)
+  if (eAPI == GAT_OGL)
   { 
     // do fast filling
     SetScissor( this, pixI, pixJ, pixWidth, pixHeight);
@@ -765,7 +765,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COLOR col
   }
   // Direct3D
 #ifdef SE1_D3D
-  else if (eAPI==GAT_D3D)
+  else if (eAPI == GAT_D3D)
   {
     HRESULT hr;
     // must convert coordinates to raster (i.e. surface)
@@ -775,7 +775,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COLOR col
     const PIX pixRasterH = dp_Raster->ra_Height;
     const ULONG d3dColor = rgba2argb(col);
     // do fast filling
-    if (pixI==0 && pixJ==0 && pixWidth==pixRasterW && pixHeight==pixRasterH) {
+    if (pixI == 0 && pixJ == 0 && pixWidth == pixRasterW && pixHeight == pixRasterH) {
       hr = _pGfx->gl_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET, d3dColor,0,0);
     } else {
       D3DRECT d3dRect = { pixI, pixJ, pixI+pixWidth, pixJ+pixHeight };
@@ -819,7 +819,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight,
   const FLOAT fJ0 = pixJ;  const FLOAT fJ1 = pixJ +pixHeight;
 
   // render rectangle
-  if (eAPI==GAT_OGL) {
+  if (eAPI == GAT_OGL) {
     // thru OpenGL
     gfxResetArrays();
     GFXVertex   *pvtx = _avtxCommon.Push(4);
@@ -835,7 +835,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight,
     gfxFlushQuads();
   }
 #ifdef SE1_D3D
-  else if (eAPI==GAT_D3D) { 
+  else if (eAPI == GAT_D3D) { 
     // thru Direct3D
     HRESULT hr;
     const ULONG d3dColUL = rgba2argb(colUL);  const ULONG d3dColUR = rgba2argb(colUR);
@@ -856,7 +856,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight,
 void CDrawPort::Fill( COLOR col) const
 {
   // if color is tranlucent
-  if (((col&CT_AMASK)>>CT_ASHIFT) != CT_OPAQUE)
+  if (((col&CT_AMASK) >> CT_ASHIFT) != CT_OPAQUE)
   { // draw thru polygon
     Fill( 0,0, dp_Width,dp_Height, col,col,col,col);
     return;
@@ -874,7 +874,7 @@ void CDrawPort::Fill( COLOR col) const
 #endif // SE1_D3D
 
   // OpenGL
-  if (eAPI==GAT_OGL)
+  if (eAPI == GAT_OGL)
   { 
     // do fast filling
     UBYTE ubR, ubG, ubB;
@@ -884,7 +884,7 @@ void CDrawPort::Fill( COLOR col) const
   }
   // Direct3D
 #ifdef SE1_D3D
-  else if (eAPI==GAT_D3D)
+  else if (eAPI == GAT_D3D)
   {
     const ULONG d3dColor = rgba2argb(col);
     HRESULT hr = _pGfx->gl_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET, d3dColor,0,0);
@@ -912,7 +912,7 @@ void CDrawPort::FillZBuffer( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, FL
   gfxEnableDepthWrite();
 
   // OpenGL
-  if (eAPI==GAT_OGL)
+  if (eAPI == GAT_OGL)
   {
     // fast clearing thru scissor
     SetScissor( this, pixI, pixJ, pixWidth, pixHeight);
@@ -925,7 +925,7 @@ void CDrawPort::FillZBuffer( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, FL
   }
   // Direct3D
 #ifdef SE1_D3D
-  else if (eAPI==GAT_D3D)
+  else if (eAPI == GAT_D3D)
   {
     D3DRECT d3dRect = { pixI, pixJ, pixI+pixWidth, pixJ+pixHeight };
     HRESULT hr = _pGfx->gl_pd3dDevice->Clear( 1, &d3dRect, D3DCLEAR_ZBUFFER, 0,zval,0);
@@ -948,7 +948,7 @@ void CDrawPort::FillZBuffer( FLOAT zval) const
   gfxEnableDepthWrite();
 
   // OpenGL
-  if (eAPI==GAT_OGL)
+  if (eAPI == GAT_OGL)
   {
     // fill whole z-buffer
     pglClearDepth(zval);
@@ -957,7 +957,7 @@ void CDrawPort::FillZBuffer( FLOAT zval) const
   }
   // Direct3D
 #ifdef SE1_D3D
-  else if (eAPI==GAT_D3D)
+  else if (eAPI == GAT_D3D)
   {
     HRESULT hr = _pGfx->gl_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER, 0,zval,0);
     D3D_CHECKERROR(hr);
@@ -977,7 +977,7 @@ void CDrawPort::GrabScreen( class CImageInfo &iiGrabbedImage, INDEX iGrabZBuffer
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
 #endif // SE1_D3D
   extern INDEX ogl_bGrabDepthBuffer;
-  const BOOL bGrabDepth = eAPI==GAT_OGL && ((iGrabZBuffer==1 && ogl_bGrabDepthBuffer) || iGrabZBuffer==2);
+  const BOOL bGrabDepth = eAPI == GAT_OGL && ((iGrabZBuffer == 1 && ogl_bGrabDepthBuffer) || iGrabZBuffer == 2);
 
   // prepare image info's dimensions
   iiGrabbedImage.Clear();
@@ -992,7 +992,7 @@ void CDrawPort::GrabScreen( class CImageInfo &iiGrabbedImage, INDEX iGrabZBuffer
   memset( iiGrabbedImage.ii_Picture, 128, slBytes);
   
   // OpenGL
-  if (eAPI==GAT_OGL)
+  if (eAPI == GAT_OGL)
   {
     // determine drawport starting location inside raster
     const PIX pixStartI = dp_MinI;
@@ -1015,12 +1015,12 @@ void CDrawPort::GrabScreen( class CImageInfo &iiGrabbedImage, INDEX iGrabZBuffer
     }
     // flip image vertically  
     FlipBitmap( iiGrabbedImage.ii_Picture, iiGrabbedImage.ii_Picture,
-                iiGrabbedImage.ii_Width, iiGrabbedImage.ii_Height, 1, iiGrabbedImage.ii_BitsPerPixel==32);
+                iiGrabbedImage.ii_Width, iiGrabbedImage.ii_Height, 1, iiGrabbedImage.ii_BitsPerPixel == 32);
   }
 
   // Direct3D
 #ifdef SE1_D3D
-  else if (eAPI==GAT_D3D)
+  else if (eAPI == GAT_D3D)
   {
     // get back buffer
     HRESULT hr;
@@ -1032,7 +1032,7 @@ void CDrawPort::GrabScreen( class CImageInfo &iiGrabbedImage, INDEX iGrabZBuffer
     else hr = dp_Raster->ra_pvpViewPort->vp_pSwapChain->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
     D3D_CHECKERROR(hr);
     pBackBuffer->GetDesc(&surfDesc);
-    ASSERT( surfDesc.Width==dp_Raster->ra_Width && surfDesc.Height==dp_Raster->ra_Height);
+    ASSERT( surfDesc.Width == dp_Raster->ra_Width && surfDesc.Height == dp_Raster->ra_Height);
     const RECT rectToLock = { dp_MinI, dp_MinJ, dp_MaxI+1, dp_MaxJ+1 };
     hr = pBackBuffer->LockRect( &rectLocked, &rectToLock, D3DLOCK_READONLY);
     D3D_CHECKERROR(hr);
@@ -1066,7 +1066,7 @@ void CDrawPort::GrabScreen( class CImageInfo &iiGrabbedImage, INDEX iGrabZBuffer
 BOOL CDrawPort::IsPointVisible( PIX pixI, PIX pixJ, FLOAT fOoK, INDEX iID, INDEX iMirrorLevel/*=0*/) const
 {
   // must have raster!
-  if (dp_Raster==NULL) { ASSERT(FALSE);  return FALSE; }
+  if (dp_Raster == NULL) { ASSERT(FALSE);  return FALSE; }
 
   // if the point is out or at the edge of drawport, it is not visible by default
   if (pixI<1 || pixI>dp_Width-2 || pixJ<1 || pixJ>dp_Height-2) return FALSE;
@@ -1154,7 +1154,7 @@ void CDrawPort::RenderLensFlare( CTextureObject *pto, FLOAT fI, FLOAT fJ,
 void CDrawPort::SetFont( CFontData *pfd)
 {
   // check if we're using font that's not even loaded yet
-  ASSERT( pfd!=NULL); 
+  ASSERT( pfd != NULL); 
   dp_FontData = pfd;
   dp_pixTextCharSpacing = pfd->fd_pixCharSpacing; 
   dp_pixTextLineSpacing = pfd->fd_pixLineSpacing;
@@ -1185,7 +1185,7 @@ ULONG CDrawPort::GetTextWidth( const CTString &strText) const
       continue;
     }
     // special char encountered and allowed?
-    else if (chrCurrent=='^' && dp_iTextMode!=-1) {
+    else if (chrCurrent == '^' && dp_iTextMode != -1) {
       // get next char
       chrCurrent = strText[++i];
       switch (chrCurrent) {
@@ -1207,7 +1207,7 @@ ULONG CDrawPort::GetTextWidth( const CTString &strText) const
       pixCharStart = dp_FontData->fd_fcdFontCharData[chrCurrent].fcd_pixStart;
       pixCharEnd   = dp_FontData->fd_fcdFontCharData[chrCurrent].fcd_pixEnd;
     }
-    pixStringWidth += (((pixCharEnd-pixCharStart)*fixTextScalingX)>>16) +dp_pixTextCharSpacing;
+    pixStringWidth += (((pixCharEnd-pixCharStart)*fixTextScalingX) >> 16) +dp_pixTextCharSpacing;
     ctCharsPrinted++;
   }
   // determine largest width
@@ -1240,8 +1240,8 @@ void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const CO
   SLONG fixTextScalingY = FloatToInt(dp_fTextScaling*65536.0f);
   PIX pixCellWidth  = dp_FontData->fd_pixCharWidth;
   PIX pixCharHeight = dp_FontData->fd_pixCharHeight-1;
-  PIX pixScaledWidth  = (pixCellWidth *fixTextScalingX)>>16;
-  PIX pixScaledHeight = (pixCharHeight*fixTextScalingY)>>16;
+  PIX pixScaledWidth  = (pixCellWidth *fixTextScalingX) >> 16;
+  PIX pixScaledHeight = (pixCharHeight*fixTextScalingY) >> 16;
 
   // prepare font texture
   gfxSetTextureWrapping( GFX_REPEAT, GFX_REPEAT);
@@ -1261,8 +1261,8 @@ void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const CO
   // determine text color
   GFXColor glcolDefault( AdjustColor( colBlend, _slTexHueShift, _slTexSaturation));
   GFXColor glcol = glcolDefault;
-  ULONG ulAlphaDefault = (colBlend&CT_AMASK)>>CT_ASHIFT;;  // for flasher
-  ASSERT( dp_iTextMode==-1 || dp_iTextMode==0 || dp_iTextMode==+1);
+  ULONG ulAlphaDefault = (colBlend&CT_AMASK) >> CT_ASHIFT;;  // for flasher
+  ASSERT( dp_iTextMode == -1 || dp_iTextMode == 0 || dp_iTextMode == +1);
 
   // prepare some text control and output vars
   INDEX ctCharsPrinted=0, ctBoldsPrinted=0;
@@ -1271,7 +1271,7 @@ void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const CO
   INDEX iFlash  = 0;
   ULONG ulAlpha = ulAlphaDefault;
   TIME tmFrame  = _pGfx->gl_tvFrameTime.GetSeconds();
-  BOOL bParse = dp_iTextMode==1;
+  BOOL bParse = dp_iTextMode == 1;
 
   // prepare arrays
   gfxResetArrays();
@@ -1280,14 +1280,14 @@ void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const CO
   GFXColor    *pcol = _acolCommon.Push( 2*ctMaxChars*4);
 
   // loop thru chars
-  PIX pixAdvancer = ((pixCellWidth*fixTextScalingX)>>16) +dp_pixTextCharSpacing;
+  PIX pixAdvancer = ((pixCellWidth*fixTextScalingX) >> 16) +dp_pixTextCharSpacing;
   PIX pixStartX = pixX0;
   for (INDEX iChar=0; iChar<ctMaxChars; iChar++)
   {
     // get current char
     unsigned char chrCurrent = strText[iChar];
     // if at end of current line
-    if (chrCurrent=='\n') {
+    if (chrCurrent == '\n') {
       // advance to next line
       pixX0  = pixStartX;
       pixY0 += pixScaledHeight+dp_pixTextLineSpacing;
@@ -1296,7 +1296,7 @@ void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const CO
       continue;
     }
     // special char encountered and allowed?
-    else if (chrCurrent=='^' && dp_iTextMode!=-1) {
+    else if (chrCurrent == '^' && dp_iTextMode != -1) {
       // get next char
       chrCurrent = strText[++iChar];
       COLOR col;
@@ -1309,7 +1309,7 @@ void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const CO
         iChar+=iRet;
         if (!bParse || iRet<6) continue;
         acTmp[6] = '\0'; // terminate string
-        col = strtoul( acTmp, &pcDummy, 16) <<8;
+        col = strtoul( acTmp, &pcDummy, 16) << 8;
         col = AdjustColor( col, _slTexHueShift, _slTexSaturation);
         glcol.Set( col|glcol.a); // do color change but keep original alpha
         continue;
@@ -1346,10 +1346,10 @@ void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const CO
       case 'F':  iFlash  = 0;                 continue;  // no flash?
       default:   break;
       } // unrecognized special code or just plain ^
-      if (chrCurrent!='^') { iChar--; break; }
+      if (chrCurrent != '^') { iChar--; break; }
     }
     // ignore tab
-    else if (chrCurrent=='\t') continue;
+    else if (chrCurrent == '\t') continue;
 
     // get current location and dimensions
     CFontCharData &fcdCurrent = dp_FontData->fd_fcdFontCharData[chrCurrent];
@@ -1362,12 +1362,12 @@ void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const CO
     // determine corresponding char width and position adjustments
     if (dp_FontData->fd_bFixedWidth) {
       // for fixed font
-      pixXA = pixX0 - ((pixCharStart*fixTextScalingX)>>16)
-            + (((pixScaledWidth<<16) - ((pixCharEnd-pixCharStart)*fixTextScalingX) +0x10000) >>17);
+      pixXA = pixX0 - ((pixCharStart*fixTextScalingX) >> 16)
+            + (((pixScaledWidth << 16) - ((pixCharEnd-pixCharStart)*fixTextScalingX) +0x10000) >> 17);
     } else {
       // for proportional font
-      pixXA = pixX0 - ((pixCharStart*fixTextScalingX)>>16);
-      pixAdvancer = (((pixCharEnd-pixCharStart)*fixTextScalingX)>>16) +dp_pixTextCharSpacing;
+      pixXA = pixX0 - ((pixCharStart*fixTextScalingX) >> 16);
+      pixAdvancer = (((pixCharEnd-pixCharStart)*fixTextScalingX) >> 16) +dp_pixTextCharSpacing;
     }
     // out of screen (left) ?
     if (pixXA>dp_Width || (pixXA+pixCharEnd)<0) {
@@ -1541,12 +1541,12 @@ void CDrawPort::PutTexture( class CTextureObject *pTO,
   const PIX pixWidth  = ptd->GetPixWidth();
   const PIX pixHeight = ptd->GetPixHeight();
   FLOAT fCorrectionU, fCorrectionV;
-  (SLONG&)fCorrectionU = (127-FastLog2(pixWidth))  <<23; // fCorrectionU = 1.0f / ptd->GetPixWidth() 
-  (SLONG&)fCorrectionV = (127-FastLog2(pixHeight)) <<23; // fCorrectionV = 1.0f / ptd->GetPixHeight() 
-  FLOAT fU0 = (boxTexture.Min()(1)>>ptd->td_iFirstMipLevel) *fCorrectionU;
-  FLOAT fU1 = (boxTexture.Max()(1)>>ptd->td_iFirstMipLevel) *fCorrectionU;
-  FLOAT fV0 = (boxTexture.Min()(2)>>ptd->td_iFirstMipLevel) *fCorrectionV;
-  FLOAT fV1 = (boxTexture.Max()(2)>>ptd->td_iFirstMipLevel) *fCorrectionV;
+  (SLONG&)fCorrectionU = (127-FastLog2(pixWidth)) << 23; // fCorrectionU = 1.0f / ptd->GetPixWidth() 
+  (SLONG&)fCorrectionV = (127-FastLog2(pixHeight)) << 23; // fCorrectionV = 1.0f / ptd->GetPixHeight() 
+  FLOAT fU0 = (boxTexture.Min()(1) >> ptd->td_iFirstMipLevel) *fCorrectionU;
+  FLOAT fU1 = (boxTexture.Max()(1) >> ptd->td_iFirstMipLevel) *fCorrectionU;
+  FLOAT fV0 = (boxTexture.Min()(2) >> ptd->td_iFirstMipLevel) *fCorrectionV;
+  FLOAT fV1 = (boxTexture.Max()(2) >> ptd->td_iFirstMipLevel) *fCorrectionV;
 
   // if not tiled
   const BOOL bTiled = Abs(fU0-fU1)>1 || Abs(fV0-fV1)>1;
@@ -1586,7 +1586,7 @@ void CDrawPort::PutTexture( class CTextureObject *pTO,
 void CDrawPort::InitTexture( class CTextureObject *pTO, const BOOL bClamp/*=FALSE*/) const
 {
   // prepare
-  if (pTO!=NULL) {
+  if (pTO != NULL) {
     // has texture
     CTextureData *ptd = (CTextureData*)pTO->GetData();
     GfxWrap eWrap = GFX_REPEAT;
@@ -1726,12 +1726,12 @@ void CDrawPort::FlushRenderingQueue(void) const
 // blends screen with accumulation color
 void CDrawPort::BlendScreen(void)
 {
-  if (dp_ulBlendingA==0) return;
+  if (dp_ulBlendingA == 0) return;
 
   ULONG fix1oA = 65536 / dp_ulBlendingA;
-  ULONG ulRA = (dp_ulBlendingRA*fix1oA)>>16;
-  ULONG ulGA = (dp_ulBlendingGA*fix1oA)>>16;
-  ULONG ulBA = (dp_ulBlendingBA*fix1oA)>>16;
+  ULONG ulRA = (dp_ulBlendingRA*fix1oA) >> 16;
+  ULONG ulGA = (dp_ulBlendingGA*fix1oA) >> 16;
+  ULONG ulBA = (dp_ulBlendingBA*fix1oA) >> 16;
   ULONG ulA  = ClampUp( dp_ulBlendingA, 255UL);
   COLOR colBlending = RGBAToColor( ulRA, ulGA, ulBA, ulA);
                                     

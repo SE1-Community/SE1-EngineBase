@@ -99,7 +99,7 @@ void CTimer_TimerFunc_internal(void)
 
     _sfStats.StartTimer(CStatForm::STI_TIMER);
     // if we are keeping up to time (more or less)
-//    if (tmTimeDelay>=_pTimer->TickQuantum*0.9f) {
+//    if (tmTimeDelay >= _pTimer->TickQuantum*0.9f) {
 
       // for all hooked handlers
       FOREACHINLIST(CTimerHandler, th_Node, _pTimer->tm_lhHooks, itth) {
@@ -157,7 +157,7 @@ static __int64 GetCPUSpeedHz(void)
       do {
         llTimeLast = llTimeNow;
         QueryPerformanceCounter((LARGE_INTEGER*)&llTimeNow);
-      } while (llTimeLast==llTimeNow);
+      } while (llTimeLast == llTimeNow);
       // wait for some time, and count the CPU clocks passed
       llCPUBefore  = ReadTSC();
       llTimeBefore = llTimeNow;
@@ -178,12 +178,12 @@ static __int64 GetCPUSpeedHz(void)
       if (abs(iSpeed-_aiTries[iTry]) > iTolerance) ctFaults++;
     }
     // done if no faults
-    if (ctFaults==0) break;
+    if (ctFaults == 0) break;
     Sleep(1000);
   }
 
   // fail if couldn't readout CPU speed
-  if (iSet==10) {
+  if (iSet == 10) {
     CPrintF( TRANS("PerformanceTimer is not vaild!\n"));
     //return 1; 
     // NOTE: this function must never fail, or the engine will crash! 
@@ -248,18 +248,18 @@ CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
   if (tm_bInterrupt)
   {
     tm_TimerID = timeSetEvent(
-      ULONG(TickQuantum*1000.0f),	  // period value [ms]
-      0,	                          // resolution (0==max. possible)
-      &CTimer_TimerFunc,	          // callback
+      ULONG(TickQuantum*1000.0f),    // period value [ms]
+      0,                            // resolution (0 == max. possible)
+      &CTimer_TimerFunc,            // callback
       0,                            // user
       TIME_PERIODIC);               // event type
 
     // check that interrupt was properly started
-    if (tm_TimerID==NULL) FatalError(TRANS("Cannot initialize multimedia timer!"));
+    if (tm_TimerID == NULL) FatalError(TRANS("Cannot initialize multimedia timer!"));
 
     // make sure that timer interrupt is ticking
     INDEX iTry=1;
-    for (; iTry<=3; iTry++) {
+    for (; iTry <= 3; iTry++) {
       const TICK llTickBefore = GetTimeTick();
       Sleep(1000* iTry*3 *TickQuantum);
       const TICK llTickAfter = GetTimeTick();
@@ -280,7 +280,7 @@ CTimer::~CTimer(void)
 
   // destroy timer
   if (tm_bInterrupt) {
-    ASSERT(tm_TimerID!=NULL);
+    ASSERT(tm_TimerID != NULL);
     ULONG rval = timeKillEvent(tm_TimerID);
     ASSERT(rval == TIMERR_NOERROR);
   }
@@ -299,7 +299,7 @@ void CTimer::AddHandler(CTimerHandler *pthNew)
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&tm_csHooks, TRUE);
 
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   tm_lhHooks.AddTail(pthNew->th_Node);
 }
 
@@ -311,7 +311,7 @@ void CTimer::RemHandler(CTimerHandler *pthOld)
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&tm_csHooks, TRUE);
 
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   pthOld->th_Node.Remove();
 }
 
@@ -329,7 +329,7 @@ void CTimer::HandleTimerHandlers(void)
  */
 TICK CTimer::GetTimeTick(void) const
 {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   return tm_llRealTime;
 }
 
@@ -337,7 +337,7 @@ TICK CTimer::GetTimeTick(void) const
  * Set the current game tick used for time dependent tasks (animations etc.).
  */
 void CTimer::SetGameTick(TICK llTick) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   _llCurrentTickTimer = llTick;
 }
 
@@ -345,29 +345,29 @@ void CTimer::SetGameTick(TICK llTick) {
  * Get current game time, always valid for the currently active task.
  */
 TICK CTimer::GetGameTick(void) const {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   return _llCurrentTickTimer;
 }
 FTICK CTimer::LerpedGameTick(void) const {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   return FTICK(_llCurrentTickTimer, tm_fLerpFactor*TickQuantum);
 }
 // Set factor for lerping between ticks.
 void CTimer::SetLerp(FLOAT fFactor) // sets both primary and secondary
 {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   tm_fLerpFactor = fFactor;
   tm_fLerpFactor2 = fFactor;
 }
 void CTimer::SetLerp2(FLOAT fFactor)  // sets only secondary
 {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   tm_fLerpFactor2 = fFactor;
 }
 // Disable lerping factor (set both factors to 1)
 void CTimer::DisableLerp(void)
 {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   tm_fLerpFactor =1.0f;
   tm_fLerpFactor2=1.0f;
 }

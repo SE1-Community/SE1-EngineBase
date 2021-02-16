@@ -135,25 +135,25 @@ extern SLONG _slShdHueShift;
 
 // convert separate R,G and B color components to CroTeam COLOR format (ULONG type)
 __forceinline COLOR RGBToColor( UBYTE const ubR, UBYTE const ubG, UBYTE const ubB) {
-  return ((ULONG)ubR<<CT_RSHIFT) | ((ULONG)ubG<<CT_GSHIFT) | ((ULONG)ubB<<CT_BSHIFT);
+  return ((ULONG)ubR << CT_RSHIFT) | ((ULONG)ubG << CT_GSHIFT) | ((ULONG)ubB << CT_BSHIFT);
 }
 // convert CroTeam COLOR format to separate R,G and B color components
 __forceinline void ColorToRGB( COLOR const col, UBYTE &ubR, UBYTE &ubG, UBYTE &ubB) {
-  ubR = (col&CT_RMASK)>>CT_RSHIFT;
-  ubG = (col&CT_GMASK)>>CT_GSHIFT;
-  ubB = (col&CT_BMASK)>>CT_BSHIFT;
+  ubR = (col&CT_RMASK) >> CT_RSHIFT;
+  ubG = (col&CT_GMASK) >> CT_GSHIFT;
+  ubB = (col&CT_BMASK) >> CT_BSHIFT;
 }
 // combine CroTeam COLOR format from separate R,G and B color components
 __forceinline COLOR RGBAToColor( UBYTE const ubR, UBYTE const ubG, UBYTE const ubB, UBYTE const ubA) {
-  return ((ULONG)ubR<<CT_RSHIFT) | ((ULONG)ubG<<CT_GSHIFT)
-       | ((ULONG)ubB<<CT_BSHIFT) | ((ULONG)ubA<<CT_ASHIFT);
+  return ((ULONG)ubR << CT_RSHIFT) | ((ULONG)ubG << CT_GSHIFT)
+       | ((ULONG)ubB << CT_BSHIFT) | ((ULONG)ubA << CT_ASHIFT);
 }
 // separate CroTeam COLOR format to R,G and B color components
 __forceinline void ColorToRGBA( COLOR const col, UBYTE &ubR, UBYTE &ubG, UBYTE &ubB, UBYTE &ubA) {
-  ubR = (col&CT_RMASK)>>CT_RSHIFT;
-  ubG = (col&CT_GMASK)>>CT_GSHIFT;
-  ubB = (col&CT_BMASK)>>CT_BSHIFT;
-  ubA = (col&CT_AMASK)>>CT_ASHIFT;
+  ubR = (col&CT_RMASK) >> CT_RSHIFT;
+  ubG = (col&CT_GMASK) >> CT_GSHIFT;
+  ubB = (col&CT_BMASK) >> CT_BSHIFT;
+  ubA = (col&CT_AMASK) >> CT_ASHIFT;
 }
 
 // convert HSV components to CroTeam COLOR format
@@ -163,12 +163,12 @@ ENGINE_API extern void  ColorToHSV( COLOR const colSrc, UBYTE &ubH, UBYTE &ubS, 
 
 // convert HSVA components to CroTeam COLOR format
 __forceinline COLOR HSVAToColor( UBYTE const ubH, UBYTE const ubS, UBYTE const ubV, UBYTE const ubA) {
-  return HSVToColor( ubH,ubS,ubV) | ((ULONG)ubA<<CT_ASHIFT);
+  return HSVToColor( ubH,ubS,ubV) | ((ULONG)ubA << CT_ASHIFT);
 }
 // convert CroTeam COLOR format to HSVA components
 __forceinline void ColorToHSVA( COLOR const colSrc, UBYTE &ubH, UBYTE &ubS, UBYTE &ubV, UBYTE &ubA) {
   ColorToHSV( colSrc, ubH,ubS,ubV);
-  ubA = (colSrc&CT_AMASK)>>CT_ASHIFT;
+  ubA = (colSrc&CT_AMASK) >> CT_ASHIFT;
 }
 
 // is color gray, black or white?
@@ -203,7 +203,7 @@ __forceinline ULONG ByteSwap( ULONG ul)
 {
 /* rcg10052001 Platform-wrappers. */
 #if (defined USE_PORTABLE_C)
-	return( ((ul << 24)            ) |
+  return( ((ul << 24)            ) |
             ((ul << 8) & 0x00FF0000) |
             ((ul >> 8) & 0x0000FF00) |
             ((ul >> 24)            ) );
@@ -232,7 +232,7 @@ __forceinline ULONG ByteSwap( ULONG ul)
 __forceinline ULONG rgba2argb( COLOR col)
 {
 #if (defined USE_PORTABLE_C)
-	return( (col << 24) | (col >> 8) );
+  return( (col << 24) | (col >> 8) );
 
 #elif (defined _MSC_VER)
   ULONG ulRet;
@@ -251,12 +251,12 @@ __forceinline ULONG rgba2argb( COLOR col)
 __forceinline ULONG abgr2argb( ULONG ul)
 {
 #if (defined USE_PORTABLE_C)
-	// this could be simplified, this is just a safe conversion from asm code
-	ul = ( ((ul << 24)            ) |
+  // this could be simplified, this is just a safe conversion from asm code
+  ul = ( ((ul << 24)            ) |
          ((ul << 8) & 0x00FF0000) |
          ((ul >> 8) & 0x0000FF00) |
          ((ul >> 24)            ) );
-	return( (ul << 24) | (ul >> 8) );
+  return( (ul << 24) | (ul >> 8) );
 
 #elif (defined _MSC_VER)
   ULONG ulRet;

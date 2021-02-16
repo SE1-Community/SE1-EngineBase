@@ -33,22 +33,22 @@ void InitSelectOnRender(PIX pixSizeI, PIX pixSizeJ)
   _pixSizeJ = pixSizeJ;
 
   // if entity selecting not required
-  if (_pselenSelectOnRender==NULL)
+  if (_pselenSelectOnRender == NULL)
   {
     // if vertex selecting not requred
-    if (_pselbvxtSelectOnRender==NULL) {
+    if (_pselbvxtSelectOnRender == NULL) {
       // do nothing
       return;
     }
     // if not lasso and not alternative
-    else if (_pavpixSelectLasso==NULL && !_bSelectAlternative) {
+    else if (_pavpixSelectLasso == NULL && !_bSelectAlternative) {
       // deselect all vertices
       _pselbvxtSelectOnRender->Clear();
     }
   }
 
   // if lasso selection is not on, or is invalid
-  if (_pavpixSelectLasso==NULL || _pavpixSelectLasso->Count()<3
+  if (_pavpixSelectLasso == NULL || _pavpixSelectLasso->Count()<3
     || pixSizeI<2 || pixSizeJ<2) {
     // do nothing
     return;
@@ -73,14 +73,14 @@ void InitSelectOnRender(PIX pixSizeI, PIX pixSizeJ)
     PIX pixI1 = (*_pavpixSelectLasso)[ipt1](1);
     PIX pixJ1 = (*_pavpixSelectLasso)[ipt1](2);
     // if any of the coordinates is outside of window
-    if (pixI0<0 || pixI0>=_pixSizeI || pixI1<0 || pixI1>=_pixSizeI ||
-      pixJ0<0 || pixJ0>=_pixSizeJ || pixJ1<0 || pixJ1>=_pixSizeJ) {
+    if (pixI0<0 || pixI0 >= _pixSizeI || pixI1<0 || pixI1 >= _pixSizeI ||
+      pixJ0<0 || pixJ0 >= _pixSizeJ || pixJ1<0 || pixJ1 >= _pixSizeJ) {
       // skip this line
       continue;
     }
 
     // if line is horizontal
-    if (pixJ0==pixJ1) {
+    if (pixJ0 == pixJ1) {
       // skip it
       continue;
     // if line goes upwards
@@ -100,7 +100,7 @@ void InitSelectOnRender(PIX pixSizeI, PIX pixSizeJ)
       // get offset
       SLONG slOffset = pixJ*_pixSizeI+PIX(xI);
       // if offset is valid
-      if (slOffset>=0 && slOffset<=slMaxOffset) {
+      if (slOffset >= 0 && slOffset <= slMaxOffset) {
         // invert the pixel in that row
         _pubLassoBuffer[slOffset] ^= 0xFF;
       }
@@ -125,7 +125,7 @@ void InitSelectOnRender(PIX pixSizeI, PIX pixSizeJ)
 void EndSelectOnRender(void)
 {
   // free lasso buffer
-  if (_pubLassoBuffer!=NULL) {
+  if (_pubLassoBuffer != NULL) {
     FreeMemory(_pubLassoBuffer);
     _pubLassoBuffer = NULL;
   }
@@ -135,20 +135,20 @@ void EndSelectOnRender(void)
 void SelectVertexOnRender(CBrushVertex &bvx, const PIX2D &vpix)
 {
   // if not selecting
-  if (_pselbvxtSelectOnRender==NULL) {
+  if (_pselbvxtSelectOnRender == NULL) {
     // do nothing
     return;
   }
 
   // if the vertex is out of screen
-  if (vpix(1)<0 || vpix(1)>=_pixSizeI
-     || vpix(2)<0 || vpix(2)>=_pixSizeJ) {
+  if (vpix(1)<0 || vpix(1) >= _pixSizeI
+     || vpix(2)<0 || vpix(2) >= _pixSizeJ) {
     // do nothing
     return;
   }
 
   // if selecting without lasso
-  if (_pubLassoBuffer==NULL) {
+  if (_pubLassoBuffer == NULL) {
     // if vertex is near point
     if ((vpix-_vpixSelectNearPoint).Length()<_pixDeltaAroundVertex) {
 
@@ -165,7 +165,7 @@ void SelectVertexOnRender(CBrushVertex &bvx, const PIX2D &vpix)
   // if selecting with lasso
   } else {
     // if the vertex is set in lasso buffer
-    if (_pubLassoBuffer!=NULL
+    if (_pubLassoBuffer != NULL
       &&_pubLassoBuffer[vpix(2)*_pixSizeI+vpix(1)]) {
 
       // if alternative
@@ -200,14 +200,14 @@ BOOL IsVertexInLasso( CProjection3D &prProjection, const FLOAT3D &vtx, FLOATmatr
   vpix(2) = _pixSizeJ-vtxProjected(2);
 
   // if the vertex is out of screen
-  if (vpix(1)<0 || vpix(1)>=_pixSizeI
-     || vpix(2)<0 || vpix(2)>=_pixSizeJ) {
+  if (vpix(1)<0 || vpix(1) >= _pixSizeI
+     || vpix(2)<0 || vpix(2) >= _pixSizeJ) {
     // no selecting
     return FALSE;
   }
 
   // if the vertex is set in lasso buffer
-  if (_pubLassoBuffer!=NULL
+  if (_pubLassoBuffer != NULL
     &&_pubLassoBuffer[vpix(2)*_pixSizeI+vpix(1)])
   {
     return TRUE;
@@ -248,7 +248,7 @@ void SelectEntityOnRender(CProjection3D &prProjection, CEntity &en)
   FLOAT3D vOffset;
 
   // if this entity is model
-  if (en.en_RenderType==CEntity::RT_MODEL || en.en_RenderType==CEntity::RT_EDITORMODEL)
+  if (en.en_RenderType == CEntity::RT_MODEL || en.en_RenderType == CEntity::RT_EDITORMODEL)
   {
     // get bbox of current frame
     CModelObject *pmo = en.GetModelObject();
@@ -257,7 +257,7 @@ void SelectEntityOnRender(CProjection3D &prProjection, CEntity &en)
     vOffset = en.GetPlacement().pl_PositionVector;
   }
   // if it is ska model
-  else if (en.en_RenderType==CEntity::RT_SKAMODEL || en.en_RenderType==CEntity::RT_SKAEDITORMODEL)
+  else if (en.en_RenderType == CEntity::RT_SKAMODEL || en.en_RenderType == CEntity::RT_SKAEDITORMODEL)
   {
     en.GetModelInstance()->GetCurrentColisionBox( bbox);
     pmR = &en.en_mRotation;

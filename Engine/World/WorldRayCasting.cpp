@@ -85,8 +85,8 @@ void CCastRay::Init(CEntity *penOrigin, const FLOAT3D &vOrigin, const FLOAT3D &v
   cr_bHitTerrainInvisibleTris = FALSE;
   cr_fTestR = 0;
 
-	cr_bFindBone = TRUE;
-	cr_iBoneHit	 = -1;
+  cr_bFindBone = TRUE;
+  cr_iBoneHit   = -1;
 
   cl_plRay.pl_PositionVector = vOrigin;
   DirectionVectorToAngles((vTarget-vOrigin).Normalize(), cl_plRay.pl_OrientationAngle);
@@ -196,7 +196,7 @@ void CCastRay::TestModelCollisionBox(CEntity *penModel)
 {
   // if no collision box
   CCollisionInfo *pci = penModel->en_pciCollisionInfo;
-  if (pci==NULL) {
+  if (pci == NULL) {
     // don't test
     return;
   }
@@ -265,7 +265,7 @@ void CCastRay::TestModelFull(CEntity *penModel, CModelObject &mo)
   FLOAT fHitDistance;
   // if the ray hits the model closer than closest found hit point yet
   if (mo.PolygonHit(cl_plRay, penModel->en_plPlacement, 0/*iCurrentMip*/,
-    fHitDistance)!=NULL
+    fHitDistance) != NULL
     && fHitDistance<cr_fHitDistance) {
     // set the current entity as new hit target
     cr_fHitDistance=fHitDistance;
@@ -281,7 +281,7 @@ void CCastRay::TestModelFull(CEntity *penModel, CModelObject &mo)
 void CCastRay::TestModel(CEntity *penModel)
 {
   // if origin is predictor, and the model is predicted
-  if (cr_penOrigin!=NULL && cr_penOrigin->IsPredictor() && penModel->IsPredicted()) {
+  if (cr_penOrigin != NULL && cr_penOrigin->IsPredictor() && penModel->IsPredicted()) {
     // don't test it
     return;
   }
@@ -295,7 +295,7 @@ void CCastRay::TestModel(CEntity *penModel)
 
   // get its model
   CModelObject *pmoModel;
-  if (penModel->en_RenderType!=CEntity::RT_BRUSH
+  if (penModel->en_RenderType != CEntity::RT_BRUSH
    && penModel->en_RenderType != CEntity::RT_FIELDBRUSH) {
     pmoModel=penModel->en_pmoModelObject;
   } else {
@@ -303,20 +303,20 @@ void CCastRay::TestModel(CEntity *penModel)
     pmoModel=_wrpWorldRenderPrefs.GetEmptyBrushModel();
   }
   // if there is no valid model
-  if (pmoModel==NULL) {
+  if (pmoModel == NULL) {
     // don't test it
     return;
   }
   CModelObject &mo = *pmoModel;
 
   // if simple testing, or no testing (used when testing empty brushes)
-  if (cr_ttHitModels==TT_SIMPLE || cr_ttHitModels==TT_NONE) {
+  if (cr_ttHitModels == TT_SIMPLE || cr_ttHitModels == TT_NONE) {
     TestModelSimple(penModel, mo);
   // if collision box testing
-  } else if (cr_ttHitModels==TT_COLLISIONBOX) {
+  } else if (cr_ttHitModels == TT_COLLISIONBOX) {
     TestModelCollisionBox(penModel);
   // if full testing
-  } else if (cr_ttHitModels==TT_FULL || cr_ttHitModels==TT_FULLSEETHROUGH) {
+  } else if (cr_ttHitModels == TT_FULL || cr_ttHitModels == TT_FULLSEETHROUGH) {
     TestModelFull(penModel, mo);
   // must be no other testing
   } else {
@@ -330,7 +330,7 @@ void CCastRay::TestModel(CEntity *penModel)
 void CCastRay::TestSkaModel(CEntity *penModel)
 {
   // if origin is predictor, and the model is predicted
-  if (cr_penOrigin!=NULL && cr_penOrigin->IsPredictor() && penModel->IsPredicted()) {
+  if (cr_penOrigin != NULL && cr_penOrigin->IsPredictor() && penModel->IsPredicted()) {
     // don't test it
     return;
   }
@@ -344,13 +344,13 @@ void CCastRay::TestSkaModel(CEntity *penModel)
 
   CModelInstance &mi = *penModel->GetModelInstance();
   // if simple testing, or no testing (used when testing empty brushes)
-  if (cr_ttHitModels==TT_SIMPLE || cr_ttHitModels==TT_NONE) {
+  if (cr_ttHitModels == TT_SIMPLE || cr_ttHitModels == TT_NONE) {
     TestSkaModelSimple(penModel, mi);
   // if collision box testing
-  } else if (cr_ttHitModels==TT_COLLISIONBOX) {
+  } else if (cr_ttHitModels == TT_COLLISIONBOX) {
     TestModelCollisionBox(penModel);
   // if full testing
-  } else if (cr_ttHitModels==TT_FULL || cr_ttHitModels==TT_FULLSEETHROUGH) {
+  } else if (cr_ttHitModels == TT_FULL || cr_ttHitModels == TT_FULLSEETHROUGH) {
      TestSkaModelFull(penModel, mi);
   // must be no other testing
   } else {
@@ -408,34 +408,34 @@ void CCastRay::TestSkaModelFull(CEntity *penModel, CModelInstance &mi)
 
   // if the ray hits the sphere closer than closest found hit point yet
   if (fSphereHitDistance<cr_fHitDistance && fSphereHitDistance>0.0f) {
-		FLOAT fTriangleHitDistance;
+    FLOAT fTriangleHitDistance;
     // set the current entity as new hit target
 //    cr_fHitDistance=fSphereHitDistance;
 //    cr_penHit = penModel;
 //    cr_pbscBrushSector = NULL;
 //    cr_pbpoBrushPolygon = NULL;
 
-		INDEX iBoneID = -1;
-		if (cr_bFindBone) {
-			fTriangleHitDistance = RM_TestRayCastHit(mi,penModel->en_mRotation,penModel->en_plPlacement.pl_PositionVector,cr_vOrigin,cr_vTarget,cr_fHitDistance,&iBoneID);
-		}	else {
-			fTriangleHitDistance = RM_TestRayCastHit(mi,penModel->en_mRotation,penModel->en_plPlacement.pl_PositionVector,cr_vOrigin,cr_vTarget,cr_fHitDistance,NULL);
-		}
+    INDEX iBoneID = -1;
+    if (cr_bFindBone) {
+      fTriangleHitDistance = RM_TestRayCastHit(mi,penModel->en_mRotation,penModel->en_plPlacement.pl_PositionVector,cr_vOrigin,cr_vTarget,cr_fHitDistance,&iBoneID);
+    }  else {
+      fTriangleHitDistance = RM_TestRayCastHit(mi,penModel->en_mRotation,penModel->en_plPlacement.pl_PositionVector,cr_vOrigin,cr_vTarget,cr_fHitDistance,NULL);
+    }
 
-		if (fTriangleHitDistance<cr_fHitDistance && fTriangleHitDistance>0.0f) {
-			// set the current entity as new hit target
-			cr_fHitDistance=fTriangleHitDistance;
-			cr_penHit = penModel;
-			cr_pbscBrushSector = NULL;
-			cr_pbpoBrushPolygon = NULL;
-			
-			if (cr_bFindBone) {
-				cr_iBoneHit = iBoneID;
-			}
-		}
+    if (fTriangleHitDistance<cr_fHitDistance && fTriangleHitDistance>0.0f) {
+      // set the current entity as new hit target
+      cr_fHitDistance=fTriangleHitDistance;
+      cr_penHit = penModel;
+      cr_pbscBrushSector = NULL;
+      cr_pbpoBrushPolygon = NULL;
+      
+      if (cr_bFindBone) {
+        cr_iBoneHit = iBoneID;
+      }
+    }
 
   }
-	return;
+  return;
 }
 
 void CCastRay::TestTerrain(CEntity *penTerrain)
@@ -450,13 +450,13 @@ void CCastRay::TestTerrain(CEntity *penTerrain)
   FLOAT fHitDistance = TestRayCastHit(ptrTerrain,penTerrain->en_mRotation, penTerrain->en_plPlacement.pl_PositionVector,
                                       cr_vOrigin,cr_vTarget,cr_fHitDistance,cr_bHitTerrainInvisibleTris);
 
-	if (fHitDistance<cr_fHitDistance && fHitDistance>0.0f) {
-		// set the current entity as new hit target
-		cr_fHitDistance=fHitDistance;
-		cr_penHit = penTerrain;
-		cr_pbscBrushSector = NULL;
-		cr_pbpoBrushPolygon = NULL;
-	}
+  if (fHitDistance<cr_fHitDistance && fHitDistance>0.0f) {
+    // set the current entity as new hit target
+    cr_fHitDistance=fHitDistance;
+    cr_penHit = penTerrain;
+    cr_pbscBrushSector = NULL;
+    cr_pbpoBrushPolygon = NULL;
+  }
 }
 
 /*
@@ -474,13 +474,13 @@ void CCastRay::TestBrushSector(CBrushSector *pbscSector)
   FOREACHINSTATICARRAY(pbscSector->bsc_abpoPolygons, CBrushPolygon, itpoPolygon) {
     CBrushPolygon &bpoPolygon = itpoPolygon.Current();
 
-    if (&bpoPolygon==cr_pbpoIgnore) {
+    if (&bpoPolygon == cr_pbpoIgnore) {
       continue;
     }
 
     ULONG ulFlags = bpoPolygon.bpo_ulFlags;
     // if not testing recursively
-    if (cr_penOrigin==NULL) {
+    if (cr_penOrigin == NULL) {
       // if the polygon is portal
       if (ulFlags&BPOF_PORTAL) {
         // if it is translucent or selected
@@ -511,7 +511,7 @@ void CCastRay::TestBrushSector(CBrushSector *pbscSector)
     FLOAT fDistance1 = bpoPolygon.bpo_pbplPlane->bpl_plAbsolute.PointDistance(cr_vTarget);
 
     // if the ray hits the polygon plane
-    if (fDistance0>=0 && fDistance0>=fDistance1) {
+    if (fDistance0 >= 0 && fDistance0 >= fDistance1) {
       // calculate fraction of line before intersection
       FLOAT fFraction = fDistance0/((fDistance0-fDistance1) + 0.0000001f/*correction*/);
       // calculate intersection coordinate
@@ -544,7 +544,7 @@ void CCastRay::TestBrushSector(CBrushSector *pbscSector)
       // if the polygon is intersected by the ray
       if (isIntersector.IsIntersecting()) {
         // if it is portal and testing recusively
-        if ((ulFlags&cr_ulPassablePolygons) && (cr_penOrigin!=NULL)) {
+        if ((ulFlags&cr_ulPassablePolygons) && (cr_penOrigin != NULL)) {
           // for each sector on the other side
           {FOREACHDSTOFSRC(bpoPolygon.bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbsc)
             // add the sector
@@ -576,7 +576,7 @@ void CCastRay::TestBrushSector(CBrushSector *pbscSector)
 inline void CCastRay::AddSector(CBrushSector *pbsc)
 {
   // if not already active and in first mip of its brush
-  if ( pbsc->bsc_pbmBrushMip->IsFirstMip()
+  if (pbsc->bsc_pbmBrushMip->IsFirstMip()
     &&!(pbsc->bsc_ulFlags&BSCF_RAYTESTED)) {
     // add it to active sectors
     _aas.Push().as_pbsc = pbsc;
@@ -591,7 +591,7 @@ void CCastRay::AddAllSectorsOfBrush(CBrush3D *pbr)
     _wrpWorldRenderPrefs.GetManualMipBrushingFactor());
 
   // if it has no brush mip for that mip factor
-  if (pbmMip==NULL) {
+  if (pbmMip == NULL) {
     // skip it
     return;
   }
@@ -608,7 +608,7 @@ void CCastRay::AddSectorsAroundEntity(CEntity *pen)
   // for each zoning sector that this entity is in
   {FOREACHSRCOFDST(pen->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     // if part of zoning brush
-    if (pbsc->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->GetRenderType()!=CEntity::RT_BRUSH) {
+    if (pbsc->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->GetRenderType() != CEntity::RT_BRUSH) {
       // skip it
       continue;
     }
@@ -623,7 +623,7 @@ void CCastRay::TestWholeWorld(CWorld *pwoWorld)
   // for each entity in the world
   {FOREACHINDYNAMICCONTAINER(pwoWorld->wo_cenEntities, CEntity, itenInWorld) {
     // if it is the origin of the ray
-    if (itenInWorld==cr_penOrigin || itenInWorld==cr_penIgnore) {
+    if (itenInWorld == cr_penOrigin || itenInWorld == cr_penIgnore) {
       // skip it
       continue;
     }
@@ -671,13 +671,13 @@ void CCastRay::TestWholeWorld(CWorld *pwoWorld)
         _wrpWorldRenderPrefs.GetManualMipBrushingFactor());
 
       // if it has no brush mip for that mip factor
-      if (pbmMip==NULL) {
+      if (pbmMip == NULL) {
         // skip it
         continue;
       }
 
       // if it has zero sectors
-      if (pbmMip->bm_abscSectors.Count()==0) {
+      if (pbmMip->bm_abscSectors.Count() == 0) {
         // test it against the model entity
         TestModel(itenInWorld);
 
@@ -707,7 +707,7 @@ void CCastRay::TestThroughSectors(void)
     // for each entity in the sector
     {FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
       // if it is the origin of the ray
-      if (pen==cr_penOrigin || pen==cr_penIgnore) {
+      if (pen == cr_penOrigin || pen == cr_penIgnore) {
         // skip it
         continue;
       }
@@ -736,7 +736,7 @@ void CCastRay::TestThroughSectors(void)
       // if it is a terrain
       } else if (pen->en_RenderType == CEntity::RT_TERRAIN) {
         CTerrain *ptrTerrain = pen->GetTerrain();
-        ASSERT(ptrTerrain!=NULL);
+        ASSERT(ptrTerrain != NULL);
         // if terrain hasn't allready been tested
         if (!ptrTerrain->tr_lnInActiveTerrains.IsLinked()) {
           // test it now and add it to list of tested terrains
@@ -744,7 +744,7 @@ void CCastRay::TestThroughSectors(void)
           _lhTestedTerrains.AddTail(ptrTerrain->tr_lnInActiveTerrains);
         }
       // if it is a non-hidden brush
-      } else if ( (pen->en_RenderType == CEntity::RT_BRUSH) &&
+      } else if ((pen->en_RenderType == CEntity::RT_BRUSH) &&
                   !(pen->en_ulFlags&ENF_HIDDEN) ) {
         // get its brush
         CBrush3D &brBrush = *pen->en_pbrBrush;
@@ -783,9 +783,9 @@ void CCastRay::Cast(CWorld *pwoWorld)
   }
 
   // if origin entity is given
-  if (cr_penOrigin!=NULL) {
+  if (cr_penOrigin != NULL) {
     // if not continuing
-    if (_aas.Count()==0) {
+    if (_aas.Count() == 0) {
       // add all sectors around it
       AddSectorsAroundEntity(cr_penOrigin);
     }
@@ -797,7 +797,7 @@ void CCastRay::Cast(CWorld *pwoWorld)
     TestWholeWorld(pwoWorld);
   }
 
-	// calculate the hit point from the hit distance
+  // calculate the hit point from the hit distance
   cr_vHit = cr_vOrigin + (cr_vTarget-cr_vOrigin).Normalize()*cr_fHitDistance;
 
   // done with timing
@@ -812,7 +812,7 @@ void CCastRay::Cast(CWorld *pwoWorld)
 void CCastRay::ContinueCast(CWorld *pwoWorld)
 {
   cr_pbpoIgnore = cr_pbpoBrushPolygon;
-  if (cr_penHit->GetRenderType()==CEntity::RT_MODEL) {
+  if (cr_penHit->GetRenderType() == CEntity::RT_MODEL) {
     cr_penIgnore = cr_penHit;
   }
 

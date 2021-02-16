@@ -46,7 +46,7 @@ TYPE *CStock_TYPE::Obtain_t(const CTFileName &fnmFileName)
   TYPE *pExisting = st_ntObjects.Find(fnmFileName);
   
   // if found
-  if (pExisting!=NULL) {
+  if (pExisting != NULL) {
     // mark that it is used once again
     pExisting->MarkUsed();
     // return its pointer

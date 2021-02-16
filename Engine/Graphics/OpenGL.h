@@ -84,7 +84,7 @@ inline void glCOLOR( COLOR col)
 {
 /* rcg10052001 Platform-wrappers. */
 #if (defined USE_PORTABLE_C)
-	col = ( ((col << 24)            ) |
+  col = ( ((col << 24)            ) |
             ((col << 8) & 0x00FF0000) |
             ((col >> 8) & 0x0000FF00) |
             ((col >> 24)            ) );
@@ -126,9 +126,9 @@ extern GLuint _uiPatternTextureNo; // binding for pattern texture
 // internal!
 inline void pglActiveTexture(INDEX texunit)
 {
-  ASSERT( texunit>=0 && texunit<4);
-  ASSERT( pglActiveTextureARB!=NULL);
-  ASSERT( pglClientActiveTextureARB!=NULL);
+  ASSERT( texunit >= 0 && texunit<4);
+  ASSERT( pglActiveTextureARB != NULL);
+  ASSERT( pglClientActiveTextureARB != NULL);
   pglActiveTextureARB(      GLenum(GL_TEXTURE0_ARB+texunit));
   pglClientActiveTextureARB(GLenum(GL_TEXTURE0_ARB+texunit));
 }

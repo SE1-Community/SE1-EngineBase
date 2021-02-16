@@ -43,7 +43,7 @@ static CStaticStackArray<CActiveSector> _aas;
 static void AddSector(CBrushSector *pbsc)
 {
   // if not already active and in first mip of its brush
-  if ( pbsc->bsc_pbmBrushMip->IsFirstMip()
+  if (pbsc->bsc_pbmBrushMip->IsFirstMip()
     &&!(pbsc->bsc_ulFlags&BSCF_NEARTESTED)) {
     // add it to active sectors
     _aas.Push().as_pbsc = pbsc;
@@ -56,7 +56,7 @@ static void AddAllSectorsOfBrush(CBrush3D *pbr)
   // get first mip
   CBrushMip *pbmMip = pbr->GetFirstMip();
   // if it has no brush mip for that mip factor
-  if (pbmMip==NULL) {
+  if (pbmMip == NULL) {
     // skip it
     return;
   }
@@ -178,7 +178,7 @@ CBrushPolygon *CEntity::GetNearestPolygon(
   _aas.PopAll();
 
   // if there is some polygon found
-  if (_pbpoNear!=NULL) {
+  if (_pbpoNear != NULL) {
     // return info
     plPlane = _pbpoNear->bpo_pbplPlane->bpl_plAbsolute;
     vPoint = _vNearPoint;

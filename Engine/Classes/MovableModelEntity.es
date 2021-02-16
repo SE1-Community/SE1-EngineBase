@@ -111,7 +111,7 @@ functions:
 
     // if this is ska model
     if (en_RenderType == CEntity::RT_SKAMODEL || en_RenderType == CEntity::RT_SKAEDITORMODEL) {
-      if (GetModelInstance()!=NULL) {
+      if (GetModelInstance() != NULL) {
         // change his colision box index
         GetModelInstance()->mi_iCurentBBox = iNewCollisionBox;
       }
@@ -139,7 +139,7 @@ functions:
   {
     // if this is ska model
     if (en_RenderType == CEntity::RT_SKAMODEL || en_RenderType == CEntity::RT_SKAEDITORMODEL) {
-      if (GetModelInstance()!=NULL) {
+      if (GetModelInstance() != NULL) {
         // change his colision box index
         GetModelInstance()->mi_iCurentBBox = iNewCollisionBox;
       }

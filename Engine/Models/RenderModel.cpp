@@ -52,7 +52,7 @@ static enum FPUPrecisionType _fpuOldPrecision;
 // begin/end model rendering to screen
 void BeginModelRenderingView( CAnyProjection3D &prProjection, CDrawPort *pdp)
 {
-  ASSERT( _iRenderingType==0 && _pdp==NULL);
+  ASSERT( _iRenderingType == 0 && _pdp == NULL);
 
   // set 3D projection
   _iRenderingType = 1;
@@ -86,9 +86,9 @@ void BeginModelRenderingView( CAnyProjection3D &prProjection, CDrawPort *pdp)
 
 void EndModelRenderingView( BOOL bRestoreOrtho/*=TRUE*/)
 {
-  ASSERT( _iRenderingType==1 && _pdp!=NULL);
+  ASSERT( _iRenderingType == 1 && _pdp != NULL);
   // assure that FPU precision was low all the model rendering time, then revert to old FPU precision
-  ASSERT( GetFPUPrecision()==FPT_24BIT);
+  ASSERT( GetFPUPrecision() == FPT_24BIT);
   SetFPUPrecision(_fpuOldPrecision);
   // restore front face direction
   gfxFrontFace(GFX_CCW);
@@ -109,7 +109,7 @@ void EndModelRenderingView( BOOL bRestoreOrtho/*=TRUE*/)
 // begin/end model rendering to shadow mask
 void BeginModelRenderingMask( CAnyProjection3D &prProjection, UBYTE *pubMask, SLONG slMaskWidth, SLONG slMaskHeight)
 {
-  ASSERT( _iRenderingType==0);
+  ASSERT( _iRenderingType == 0);
   _iRenderingType = 2;
   _aprProjection  = prProjection;
   _pubMask      = pubMask;
@@ -119,7 +119,7 @@ void BeginModelRenderingMask( CAnyProjection3D &prProjection, UBYTE *pubMask, SL
 
 void EndModelRenderingMask(void)
 {
-  ASSERT( _iRenderingType==2);
+  ASSERT( _iRenderingType == 2);
   _iRenderingType = 0;
 }
 
@@ -316,7 +316,7 @@ BOOL CModelObject::CreateAttachment( CRenderModel &rmMain, CAttachmentModelObjec
   if (gap_iOptimizeClipping>1) {
     // test sphere against frustrum
     INDEX iFrustumTest = _aprProjection->TestSphereToFrustum(vHandle,fR);
-    if (iFrustumTest==0) {
+    if (iFrustumTest == 0) {
       // test box if sphere cut one of frustum planes
       iFrustumTest = _aprProjection->TestBoxToFrustum(boxEntity);
     }
@@ -413,7 +413,7 @@ static void PrepareView( CRenderModel &rm)
 static void RenderWireframeBox( FLOAT3D vMinVtx, FLOAT3D vMaxVtx, COLOR col)
 {
   // only for OpenGL (for now)
-  if (_pGfx->gl_eCurrentAPI!=GAT_OGL) return;
+  if (_pGfx->gl_eCurrentAPI != GAT_OGL) return;
 
   // prepare wireframe OpenGL settings
   gfxDisableDepthTest();
@@ -502,7 +502,7 @@ void CModelObject::SetupModelRendering( CRenderModel &rm)
   _pfModelProfile.StopTimer( CModelProfile::PTI_INITPROJECTION);
 
   // get mip factor from projection (if needed)
-  if ((INDEX&)rm.rm_fDistanceFactor==12345678) {
+  if ((INDEX&)rm.rm_fDistanceFactor == 12345678) {
     FLOAT3D vObjectAbs;
     _aprProjection->PreClip( rm.rm_vObjectPosition, vObjectAbs);
     rm.rm_fDistanceFactor = _aprProjection->MipFactor( Min(vObjectAbs(3), 0.0f));
@@ -584,12 +584,12 @@ void CModelObject::RenderModel( CRenderModel &rm)
   _pfModelProfile.IncrementTimerAveragingCounter( CModelProfile::PTI_RENDERMODEL);
 
   // cluster shadows rendering?
-  if (_iRenderingType==2) {
+  if (_iRenderingType == 2) {
     RenderModel_Mask(rm);
     _pfModelProfile.StopTimer( CModelProfile::PTI_RENDERMODEL);
     return;
   }
-  ASSERT( _iRenderingType==1);
+  ASSERT( _iRenderingType == 1);
 
   // if we should draw polygons and model 
   if (!(rm.rm_ulFlags&RMF_SPECTATOR)   && (!(rm.rm_rtRenderType&RT_NO_POLYGON_FILL)
@@ -626,7 +626,7 @@ void CModelObject::RenderModel( CRenderModel &rm)
   { 
     // calculate bounding box of an attachment    
     CAttachmentModelObject *pamo = itamo;
-    if (pamo->amo_prm==NULL) continue; // skip view-rejected attachments
+    if (pamo->amo_prm == NULL) continue; // skip view-rejected attachments
     _pfModelProfile.StopTimer( CModelProfile::PTI_RENDERMODEL);
     pamo->amo_moModelObject.RenderModel( *pamo->amo_prm);
     _pfModelProfile.StartTimer( CModelProfile::PTI_RENDERMODEL);
@@ -648,8 +648,8 @@ void CModelObject::RenderShadow( CRenderModel &rm, const CPlacement3D &plLight,
   // if shadows are not rendered for current mip or model is half/full face-forward, do nothing
   if (!HasShadow(rm.rm_iMipLevel)
    || (rm.rm_pmdModelData->md_Flags&(MF_FACE_FORWARD|MF_HALF_FACE_FORWARD))) return;
-  ASSERT( _iRenderingType==1);
-  ASSERT( fIntensity>=0 && fIntensity<=1);
+  ASSERT( _iRenderingType == 1);
+  ASSERT( fIntensity >= 0 && fIntensity <= 1);
 
   _pfModelProfile.StartTimer( CModelProfile::PTI_RENDERSHADOW);
   _pfModelProfile.IncrementTimerAveragingCounter( CModelProfile::PTI_RENDERSHADOW);
@@ -662,7 +662,7 @@ void CModelObject::RenderShadow( CRenderModel &rm, const CPlacement3D &plLight,
   // render shadow or each attachment on this model object
   FOREACHINLIST( CAttachmentModelObject, amo_lnInMain, mo_lhAttachments, itamo) {
     CAttachmentModelObject *pamo = itamo;
-    if (pamo->amo_prm==NULL) continue; // skip view-rejected attachments
+    if (pamo->amo_prm == NULL) continue; // skip view-rejected attachments
     _pfModelProfile.StopTimer( CModelProfile::PTI_RENDERSHADOW);
     pamo->amo_moModelObject.RenderShadow( *pamo->amo_prm, plLight, fFallOff, fHotSpot, fIntensity, plShadowPlane);
     _pfModelProfile.StartTimer( CModelProfile::PTI_RENDERSHADOW);
@@ -678,8 +678,8 @@ void CModelObject::AddSimpleShadow( CRenderModel &rm, const FLOAT fIntensity, co
   // intensitiy is too low or projection is not perspective - do nothing!
   if (!HasShadow(rm.rm_iMipLevel) || fIntensity<0.01f || !_aprProjection.IsPerspective()
    || (rm.rm_pmdModelData->md_Flags&(MF_FACE_FORWARD|MF_HALF_FACE_FORWARD))) return;
-  ASSERT( _iRenderingType==1);
-  ASSERT( fIntensity>0 && fIntensity<=1);
+  ASSERT( _iRenderingType == 1);
+  ASSERT( fIntensity>0 && fIntensity <= 1);
   // do some rendering
   _pfModelProfile.StartTimer( CModelProfile::PTI_RENDERSIMPLESHADOW);
   _pfModelProfile.IncrementTimerAveragingCounter( CModelProfile::PTI_RENDERSIMPLESHADOW);

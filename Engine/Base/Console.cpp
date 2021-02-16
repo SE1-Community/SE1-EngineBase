@@ -44,20 +44,20 @@ CConsole::CConsole(void)
 // Destructor.
 CConsole::~CConsole(void)
 {
-  if (this==NULL) {
+  if (this == NULL) {
     return;
   }
-  if (con_fLog!=NULL) {
+  if (con_fLog != NULL) {
     fclose(con_fLog);
     con_fLog = NULL;
   }
-  if (con_strBuffer!=NULL) {
+  if (con_strBuffer != NULL) {
     FreeMemory(con_strBuffer);
   }
-  if (con_strLineBuffer!=NULL) {
+  if (con_strLineBuffer != NULL) {
     FreeMemory(con_strLineBuffer);
   }
-  if (con_allLines!=NULL) {
+  if (con_allLines != NULL) {
     FreeMemory(con_allLines);
   }
 }
@@ -91,7 +91,7 @@ void CConsole::Initialize(const CTFileName &fnmLog, INDEX ctCharsPerLine, INDEX 
   // open console file
   con_fLog = fopen(fnmLog, "wt");
 
-  if (con_fLog==NULL) {
+  if (con_fLog == NULL) {
     FatalError("%s", strerror(errno));
   }
 
@@ -102,14 +102,14 @@ void CConsole::Initialize(const CTFileName &fnmLog, INDEX ctCharsPerLine, INDEX 
 // Get current console buffer.
 const char *CConsole::GetBuffer(void)
 {
-  if (this==NULL) {
+  if (this == NULL) {
     return "";
   }
   return con_strBuffer+(con_ctLines-con_ctLinesPrinted)*(con_ctCharsPerLine+1);
 }
 INDEX CConsole::GetBufferSize(void)
 {
-  if (this==NULL) {
+  if (this == NULL) {
     return 1;
   }
   return (con_ctCharsPerLine+1)*con_ctLines+1;
@@ -118,7 +118,7 @@ INDEX CConsole::GetBufferSize(void)
 // Discard timing info for last lines
 void CConsole::DiscardLastLineTimes(void)
 {
-  if (this==NULL) {
+  if (this == NULL) {
     return;
   }
   for (INDEX i=0; i<con_ctLines; i++) {
@@ -129,7 +129,7 @@ void CConsole::DiscardLastLineTimes(void)
 // Get number of lines newer than given time
 INDEX CConsole::NumberOfLinesAfter(TICK llLast)
 {
-  if (this==NULL) {
+  if (this == NULL) {
     return 0;
   }
   // clamp console variable
@@ -146,13 +146,13 @@ INDEX CConsole::NumberOfLinesAfter(TICK llLast)
 // Get one of last lines
 CTString CConsole::GetLastLine(INDEX iLine)
 {
-  if (this==NULL) {
+  if (this == NULL) {
     return "";
   }
-  if (iLine>=con_ctLinesPrinted) {
+  if (iLine >= con_ctLinesPrinted) {
     return "";
   }
-  ASSERT(iLine>=0 && iLine<con_ctLines);
+  ASSERT(iLine >= 0 && iLine<con_ctLines);
   // get line number from the start of buffer
   iLine = con_ctLines-1-iLine;
   // copy line
@@ -166,11 +166,11 @@ CTString CConsole::GetLastLine(INDEX iLine)
 // clear one given line in buffer
 void CConsole::ClearLine(INDEX iLine)
 {
-  if (this==NULL) {
+  if (this == NULL) {
     return;
   }
   // line must be valid
-  ASSERT(iLine>=0 && iLine<con_ctLines);
+  ASSERT(iLine >= 0 && iLine<con_ctLines);
   // get start of line
   char *pchLine = con_strBuffer+iLine*(con_ctCharsPerLine+1);
   // fill it with spaces
@@ -183,7 +183,7 @@ void CConsole::ClearLine(INDEX iLine)
 // scroll buffer up, discarding lines at the start
 void CConsole::ScrollBufferUp(INDEX ctLines)
 {
-  if (this==NULL) {
+  if (this == NULL) {
     return;
   }
   ASSERT(ctLines>0 && ctLines<con_ctLines);
@@ -207,7 +207,7 @@ void CConsole::ScrollBufferUp(INDEX ctLines)
 // Add a line of text to console
 void CConsole::PutString(const char *strString)
 {
-  if (this==NULL) {
+  if (this == NULL) {
     return;
   }
   // synchronize access to console
@@ -216,7 +216,7 @@ void CConsole::PutString(const char *strString)
   // if in debug version, report it to output window
   _RPT1(_CRT_WARN, "%s", strString);
   // first append that string to the console output file
-  if (con_fLog!=NULL) {
+  if (con_fLog != NULL) {
     fprintf(con_fLog, "%s", strString);
     fflush(con_fLog);
   }
@@ -235,9 +235,9 @@ void CConsole::PutString(const char *strString)
   // start at the beginning of the string
   const char *pch=strString;
   // while not end of string
-  while (*pch!=0) {
+  while (*pch != 0) {
     // if line buffer full
-    if (con_strCurrent==con_strLastLine+con_ctCharsPerLine) {
+    if (con_strCurrent == con_strLastLine+con_ctCharsPerLine) {
       // move buffer up
       ScrollBufferUp(1);
       // restart new line
@@ -246,11 +246,11 @@ void CConsole::PutString(const char *strString)
     // get char
     char c = *pch++;
     // skip cr
-    if (c=='\r') {
+    if (c == '\r') {
       continue;
     }
     // if it is end of line
-    if (c=='\n') {
+    if (c == '\n') {
       // move buffer up
       ScrollBufferUp(1);
       // restart new line
@@ -265,10 +265,10 @@ void CConsole::PutString(const char *strString)
 // Close console log file buffers (call only when force-exiting!)
 void CConsole::CloseLog(void)
 {
-  if (this==NULL) {
+  if (this == NULL) {
     return;
   }
-  if (con_fLog!=NULL) {
+  if (con_fLog != NULL) {
     fclose(con_fLog);
   }
   con_fLog = NULL;
@@ -277,7 +277,7 @@ void CConsole::CloseLog(void)
 // Print formated text to the main console.
 extern void CPrintF(const char *strFormat, ...)
 {
-  if (_pConsole==NULL) {
+  if (_pConsole == NULL) {
     return;
   }
   // format the message in buffer
@@ -293,7 +293,7 @@ extern void CPrintF(const char *strFormat, ...)
 // Add a string of text to console
 void CPutString(const char *strString)
 {
-  if (_pConsole==NULL) {
+  if (_pConsole == NULL) {
     return;
   }
   _pConsole->PutString(strString);
@@ -302,7 +302,7 @@ void CPutString(const char *strString)
 // Get number of lines newer than given time
 INDEX CON_NumberOfLinesAfter(TICK llLast)
 {
-  if (_pConsole==NULL) {
+  if (_pConsole == NULL) {
     return 0;
   }
   return _pConsole->NumberOfLinesAfter(llLast);
@@ -310,7 +310,7 @@ INDEX CON_NumberOfLinesAfter(TICK llLast)
 // Get one of last lines
 CTString CON_GetLastLine(INDEX iLine)
 {
-  if (_pConsole==NULL) {
+  if (_pConsole == NULL) {
     return "";
   }
   return _pConsole->GetLastLine(iLine);
@@ -318,7 +318,7 @@ CTString CON_GetLastLine(INDEX iLine)
 // Discard timing info for last lines
 void CON_DiscardLastLineTimes(void)
 {
-  if (_pConsole==NULL) {
+  if (_pConsole == NULL) {
     return;
   }
   _pConsole->DiscardLastLineTimes();
@@ -326,14 +326,14 @@ void CON_DiscardLastLineTimes(void)
 // Get current console buffer.
 const char *CON_GetBuffer(void)
 {
-  if (_pConsole==NULL) {
+  if (_pConsole == NULL) {
     return "";
   }
   return _pConsole->GetBuffer();
 }
 INDEX CON_GetBufferSize(void)
 {
-  if (_pConsole==NULL) {
+  if (_pConsole == NULL) {
     return 1;
   }
   return _pConsole->GetBufferSize();

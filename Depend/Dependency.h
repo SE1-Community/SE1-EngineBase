@@ -41,14 +41,14 @@ public:
   inline BOOL IsOlder(const CDependInfo &diOther) {
     return( di_tTime < diOther.di_tTime);};
   // Comparison operator.
-  inline BOOL operator==(const CDependInfo &diOther) const {
+  inline BOOL operator == (const CDependInfo &diOther) const {
     return( diOther.di_fnFileName == di_fnFileName);};
   // read and write opertaions
   inline void Read_t( CTStream *istrFile) {
     *istrFile >> di_fnFileName;
     istrFile->Read_t( &di_tTime, sizeof( time_t));
   };
-	inline void Write_t( CTStream *ostrFile) const {
+  inline void Write_t( CTStream *ostrFile) const {
     *ostrFile << di_fnFileName;
     ostrFile->Write_t( &di_tTime, sizeof( time_t));
   };
@@ -74,8 +74,8 @@ public:
   // if given file allready has its own DependInfo object linked in list
   BOOL ExistsInList(CListHead &lh, CTFileName fnTestName) const;
   // read and write opertaions
-	void Read_t( CTStream *istrFile); // throw char *
-	void Write_t( CTStream *ostrFile); // throw char *
+  void Read_t( CTStream *istrFile); // throw char *
+  void Write_t( CTStream *ostrFile); // throw char *
 };
 
 

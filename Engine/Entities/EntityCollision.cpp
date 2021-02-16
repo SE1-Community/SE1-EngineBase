@@ -209,13 +209,13 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox)
 {
   // can be used only for models
   ASSERT(
-    pen->en_RenderType==CEntity::RT_MODEL ||
-    pen->en_RenderType==CEntity::RT_EDITORMODEL ||
-    pen->en_RenderType==CEntity::RT_SKAMODEL ||
-    pen->en_RenderType==CEntity::RT_SKAEDITORMODEL);
+    pen->en_RenderType == CEntity::RT_MODEL ||
+    pen->en_RenderType == CEntity::RT_EDITORMODEL ||
+    pen->en_RenderType == CEntity::RT_SKAMODEL ||
+    pen->en_RenderType == CEntity::RT_SKAEDITORMODEL);
 
   // safety check
-  if (pen->en_pciCollisionInfo==NULL) {
+  if (pen->en_pciCollisionInfo == NULL) {
     return FALSE;
   }
 
@@ -232,7 +232,7 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox)
 
   // get total bounding box encompassing both old and new collision boxes
   FLOATaabbox3D boxOld, boxNew;
-  ASSERT(ct_penEntity->en_pciCollisionInfo!=NULL);
+  ASSERT(ct_penEntity->en_pciCollisionInfo != NULL);
   CCollisionInfo &ciOld = *ct_penEntity->en_pciCollisionInfo;
   ciOld.MakeBoxAtPlacement(ct_penEntity->en_plPlacement.pl_PositionVector,
     ct_penEntity->en_mRotation, boxOld);
@@ -252,15 +252,15 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox)
   FOREACHINLIST(CBrushSector, bsc_lnInActiveSectors, ct_lhActiveSectors, itbsc) {
     // for non-zoning brush entities in the sector
     {FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
-      if (pen->en_RenderType!=CEntity::RT_BRUSH&&
-          (_pNetwork->ga_ulDemoMinorVersion<=4 || pen->en_RenderType!=CEntity::RT_FIELDBRUSH)) {
+      if (pen->en_RenderType != CEntity::RT_BRUSH&&
+          (_pNetwork->ga_ulDemoMinorVersion <= 4 || pen->en_RenderType != CEntity::RT_FIELDBRUSH)) {
         break;  // brushes are sorted first in list
       }
 
       // get first mip
       CBrushMip *pbm = pen->en_pbrBrush->GetFirstMip();
       // if brush mip exists for that mip factor
-      if (pbm!=NULL) {
+      if (pbm != NULL) {
         // for each sector in the mip
         {FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbscNonZoning) {
           CBrushSector &bscNonZoning = *itbscNonZoning;
@@ -274,8 +274,8 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox)
 
     // if the sector's brush doesn't have collision
     CEntity *penSectorBrush = itbsc->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
-    if (penSectorBrush->en_ulCollisionFlags==0 || 
-      (_pNetwork->ga_ulDemoMinorVersion>2 && penSectorBrush->en_RenderType!=CEntity::RT_BRUSH) ) {
+    if (penSectorBrush->en_ulCollisionFlags == 0 || 
+      (_pNetwork->ga_ulDemoMinorVersion>2 && penSectorBrush->en_RenderType != CEntity::RT_BRUSH) ) {
       // skip it
       continue;
     }

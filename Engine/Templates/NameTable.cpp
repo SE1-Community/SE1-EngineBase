@@ -16,10 +16,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Templates/StaticArray.cpp>
 
-#if NAMETABLE_CASESENSITIVE==1
-  #define COMPARENAMES(a, b) (strcmp(a, b)==0)
-#elif NAMETABLE_CASESENSITIVE==0
-  #define COMPARENAMES(a, b) (a==b)
+#if NAMETABLE_CASESENSITIVE == 1
+  #define COMPARENAMES(a, b) (strcmp(a, b) == 0)
+#elif NAMETABLE_CASESENSITIVE == 0
+  #define COMPARENAMES(a, b) (a == b)
 #else
   #error "NAMETABLE_CASESENSITIVE not defined"
 #endif
@@ -59,12 +59,12 @@ CNameTableSlot_TYPE *CNameTable_TYPE::FindSlot(ULONG ulKey, const CTString &strN
   for (INDEX iSlotInComp=0; iSlotInComp<nt_ctSlotsPerComp; iSlotInComp++, iSlot++) {
     CNameTableSlot_TYPE *pnts = &nt_antsSlots[iSlot];
     // if empty
-    if (pnts->nts_ptElement==NULL) {
+    if (pnts->nts_ptElement == NULL) {
       // skip it
       continue;
     }
     // if it has same key
-    if (pnts->nts_ulKey==ulKey) {
+    if (pnts->nts_ulKey == ulKey) {
       // if it is same element
       if (COMPARENAMES(pnts->nts_ptElement->GetName(), strName)) {
         // return it
@@ -81,7 +81,7 @@ CNameTableSlot_TYPE *CNameTable_TYPE::FindSlot(ULONG ulKey, const CTString &strN
 void CNameTable_TYPE::SetAllocationParameters(
   INDEX ctCompartments, INDEX ctSlotsPerComp, INDEX ctSlotsPerCompStep)
 {
-  ASSERT(nt_ctCompartments==0 && nt_ctSlotsPerComp==0 && nt_ctSlotsPerCompStep==0);
+  ASSERT(nt_ctCompartments == 0 && nt_ctSlotsPerComp == 0 && nt_ctSlotsPerCompStep == 0);
   ASSERT(ctCompartments>0     && ctSlotsPerComp>0     && ctSlotsPerCompStep>0    );
 
   nt_ctCompartments = ctCompartments;
@@ -97,7 +97,7 @@ TYPE *CNameTable_TYPE::Find(const CTString &strName)
   ASSERT(nt_ctCompartments>0 && nt_ctSlotsPerComp>0);
 
   CNameTableSlot_TYPE *pnts = FindSlot(strName.GetHash(), strName);
-  if (pnts==NULL) return NULL;
+  if (pnts == NULL) return NULL;
   return pnts->nts_ptElement;
 }
 
@@ -125,7 +125,7 @@ void CNameTable_TYPE::Expand(void)
       CNameTableSlot_TYPE &ntsOld = antsSlotsOld[iSlotInComp+iComp*ctOldSlotsPerComp];
       CNameTableSlot_TYPE &ntsNew = nt_antsSlots[iSlotInComp+iComp*nt_ctSlotsPerComp];
       // if it is used
-      if (ntsOld.nts_ptElement!=NULL) {
+      if (ntsOld.nts_ptElement != NULL) {
         // copy it to new array
         ntsNew.nts_ptElement = ntsOld.nts_ptElement;
         ntsNew.nts_ulKey     = ntsOld.nts_ulKey;
@@ -151,14 +151,14 @@ void CNameTable_TYPE::Add(TYPE *ptNew)
   for (INDEX iSlotInComp=0; iSlotInComp<nt_ctSlotsPerComp; iSlotInComp++, iSlot++) {
     CNameTableSlot_TYPE *pnts = &nt_antsSlots[iSlot];
     // if it is empty
-    if (pnts->nts_ptElement==NULL) {
+    if (pnts->nts_ptElement == NULL) {
       // put it here
       pnts->nts_ulKey = ulKey;
       pnts->nts_ptElement = ptNew;
       return;
     }
     // must not already exist
-    //ASSERT(pnts->nts_ptElement->GetName()!=ptNew->GetName());
+    //ASSERT(pnts->nts_ptElement->GetName() != ptNew->GetName());
   }
 
   // if we are here -> the compartment has overflowed
@@ -180,9 +180,9 @@ void CNameTable_TYPE::Remove(TYPE *ptOld)
   // find its slot
   const CTString &strName = ptOld->GetName();
   CNameTableSlot_TYPE *pnts = FindSlot(strName.GetHash(), strName);
-  if (pnts!=NULL) {
+  if (pnts != NULL) {
     // mark slot as unused
-    ASSERT( pnts->nts_ptElement==ptOld);
+    ASSERT( pnts->nts_ptElement == ptOld);
     pnts->nts_ptElement = NULL;
   }
 }

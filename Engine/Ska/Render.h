@@ -26,21 +26,21 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/World/WorldRayCasting.h>
 
 
-#define RMF_WIREFRAME           (1UL<<0) // set wireframe on
-#define RMF_SHOWTEXTURE         (1UL<<1) // show texture
-#define RMF_SHOWNORMALS         (1UL<<2) // show normalas  
-#define RMF_SHOWSKELETON        (1UL<<3) // show skeleton
-#define RMF_SHOWACTIVEBONES     (1UL<<4) // show active bones
+#define RMF_WIREFRAME           (1UL << 0) // set wireframe on
+#define RMF_SHOWTEXTURE         (1UL << 1) // show texture
+#define RMF_SHOWNORMALS         (1UL << 2) // show normalas  
+#define RMF_SHOWSKELETON        (1UL << 3) // show skeleton
+#define RMF_SHOWACTIVEBONES     (1UL << 4) // show active bones
 
-#define SRMF_ATTACHMENT         (1UL<<0) // set for attachment render models
-#define SRMF_FOG                (1UL<<1) // render in fog
-#define SRMF_HAZE               (1UL<<2) // render in haze
-#define SRMF_SPECTATOR          (1UL<<3) // model will not be rendered but shadows might
-#define SRMF_INVERTED           (1UL<<4) // stretch is inverted
-#define SRMF_BBOXSET            (1UL<<5) // bounding box has been calculated
-#define SRMF_INSIDE             (1UL<<6) // doesn't need clipping to frustum
-#define SRMF_INMIRROR           (1UL<<7) // doesn't need clipping to mirror/warp plane
-#define SRMF_WEAPON             (1UL<<8) // TEMP: weapon model is rendering so don't use ATI's Truform!
+#define SRMF_ATTACHMENT         (1UL << 0) // set for attachment render models
+#define SRMF_FOG                (1UL << 1) // render in fog
+#define SRMF_HAZE               (1UL << 2) // render in haze
+#define SRMF_SPECTATOR          (1UL << 3) // model will not be rendered but shadows might
+#define SRMF_INVERTED           (1UL << 4) // stretch is inverted
+#define SRMF_BBOXSET            (1UL << 5) // bounding box has been calculated
+#define SRMF_INSIDE             (1UL << 6) // doesn't need clipping to frustum
+#define SRMF_INMIRROR           (1UL << 7) // doesn't need clipping to mirror/warp plane
+#define SRMF_WEAPON             (1UL << 8) // TEMP: weapon model is rendering so don't use ATI's Truform!
 
 typedef FLOAT FLOAT3[3];
 // Rendering structures

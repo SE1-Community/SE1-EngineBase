@@ -35,7 +35,7 @@ void CBrushVertex::SetAbsolutePosition(const DOUBLE3D &vAbsolute)
 {
   // get its brush entity
   CEntity *pen = bvx_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
-  if (pen==NULL) {
+  if (pen == NULL) {
     ASSERT(FALSE);
     return;
   }
@@ -47,7 +47,7 @@ void CBrushVertex::SetAbsolutePosition(const DOUBLE3D &vAbsolute)
   bvx_vdPreciseRelative = vRelative;
   bvx_vAbsolute = DOUBLEtoFLOAT(vAbsolute);
   bvx_vRelative = DOUBLEtoFLOAT(vRelative);
-  if (bvx_pwvxWorking!=NULL)
+  if (bvx_pwvxWorking != NULL)
   {
     bvx_pwvxWorking->wvx_vRelative = bvx_vRelative;
   }
@@ -79,7 +79,7 @@ void CBrushPolygon::CalculateBoundingBox(void)
 /* Create a BSP polygon from this polygon. */
 void CBrushPolygon::CreateBSPPolygon(BSPPolygon<DOUBLE, 3> &bspo)
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   CBrushPolygon &brpo = *this;
 
   // set the plane of the bsp polygon
@@ -298,7 +298,7 @@ CBrushPolygon &CBrushPolygon::CopyTextures(CBrushPolygon &bpoOther) {
  */
 DOUBLE CBrushPolygon::CalculateArea(void)
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   DOUBLE3D vArea = DOUBLE3D(0.0, 0.0, 0.0);
   // for each polygon edge
   {FOREACHINSTATICARRAY(bpo_abpePolygonEdges, CBrushPolygonEdge, itbpe) {
@@ -313,7 +313,7 @@ DOUBLE CBrushPolygon::CalculateArea(void)
 // move edges from another polygon into this one
 void CBrushPolygon::MovePolygonEdges(CBrushPolygon &bpoSource)
 {
-  ASSERT(bpo_pbplPlane==bpoSource.bpo_pbplPlane);
+  ASSERT(bpo_pbplPlane == bpoSource.bpo_pbplPlane);
   INDEX ctEdgesThis = bpo_abpePolygonEdges.Count();
   INDEX ctEdgesSource = bpoSource.bpo_abpePolygonEdges.Count();
   // create an array to hold all edges
@@ -342,10 +342,10 @@ BOOL CBrushEdge::TouchesInSameSector(CBrushEdge &bedOther)
 {
   // if they have some common vertices
   if (
-    bed_pbvxVertex0==bedOther.bed_pbvxVertex0 ||
-    bed_pbvxVertex0==bedOther.bed_pbvxVertex1 ||
-    bed_pbvxVertex1==bedOther.bed_pbvxVertex0 ||
-    bed_pbvxVertex1==bedOther.bed_pbvxVertex1) {
+    bed_pbvxVertex0 == bedOther.bed_pbvxVertex0 ||
+    bed_pbvxVertex0 == bedOther.bed_pbvxVertex1 ||
+    bed_pbvxVertex1 == bedOther.bed_pbvxVertex0 ||
+    bed_pbvxVertex1 == bedOther.bed_pbvxVertex1) {
     // they touch
     return TRUE;
   // if they have no common vertices
@@ -375,10 +375,10 @@ BOOL CBrushEdge::TouchesInAnySector(CBrushEdge &bedOther)
   // if they have some common vertices
   if (
     // they touch
-    bed_pbvxVertex0->bvx_vRelative==bedOther.bed_pbvxVertex0->bvx_vRelative ||
-    bed_pbvxVertex0->bvx_vRelative==bedOther.bed_pbvxVertex1->bvx_vRelative ||
-    bed_pbvxVertex1->bvx_vRelative==bedOther.bed_pbvxVertex0->bvx_vRelative ||
-    bed_pbvxVertex1->bvx_vRelative==bedOther.bed_pbvxVertex1->bvx_vRelative) {
+    bed_pbvxVertex0->bvx_vRelative == bedOther.bed_pbvxVertex0->bvx_vRelative ||
+    bed_pbvxVertex0->bvx_vRelative == bedOther.bed_pbvxVertex1->bvx_vRelative ||
+    bed_pbvxVertex1->bvx_vRelative == bedOther.bed_pbvxVertex0->bvx_vRelative ||
+    bed_pbvxVertex1->bvx_vRelative == bedOther.bed_pbvxVertex1->bvx_vRelative) {
     return TRUE;
   // if they have no common vertices
   } else if (!wed_bIgnoreTJunctions) {

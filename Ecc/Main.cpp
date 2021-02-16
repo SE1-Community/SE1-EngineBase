@@ -89,7 +89,7 @@ char *ChangeFileNameExtension(char *strFileName, char *strNewExtension)
   char *strChanged = (char*)malloc(strlen(strFileName)+strlen(strNewExtension)+2);
   strcpy(strChanged, strFileName);
   char *pchDot = strrchr(strChanged, '.');
-  if (pchDot==NULL) {
+  if (pchDot == NULL) {
     pchDot = strChanged+strlen(strChanged);
   }
   strcpy(pchDot, strNewExtension);
@@ -104,7 +104,7 @@ FILE *FOpen(const char *strFileName, char *strMode)
   // open the input file
   FILE *f = fopen(strFileName, strMode);
   // if not successful
-  if (f==NULL) {
+  if (f == NULL) {
     // report error
     fprintf(stderr, "Can't open file '%s': %s\n", strFileName, strerror(errno));
     //quit
@@ -127,7 +127,7 @@ static void PrintHeader(FILE *f)
 void TranslateBackSlashes(char *str)
 {
   char *strNextSlash = str;
-  while ((strNextSlash = strchr(strNextSlash, '\\'))!=NULL) {
+  while ((strNextSlash = strchr(strNextSlash, '\\')) != NULL) {
     *strNextSlash = '/';
   }
 }
@@ -169,8 +169,8 @@ void ReplaceFileRL(const char *strOld, const char *strNew)
     int ctch = strlen(strNewBuff);
     int iSeek = -iRead+ctch;
     // seek file for extra characters read
-    if (iSeek!=0) fseek(pfNew,iSeek ,SEEK_CUR);
-    if (strncmp(strNewBuff,"#line",5)==0)
+    if (iSeek != 0) fseek(pfNew,iSeek ,SEEK_CUR);
+    if (strncmp(strNewBuff,"#line",5) == 0)
     {
       continue;
     }
@@ -194,7 +194,7 @@ void ReplaceFileRL(const char *strOld, const char *strNew)
       if (*pchNew == '"')
       {
         // if this is quote
-        if ((ich>0) && (*(pchNew-1)=='\\')) { }
+        if ((ich>0) && (*(pchNew-1) == '\\')) { }
         else bQuotes = !bQuotes;
       }
       else if ((*pchNew == '/') && (*(pchNew+1) == '/'))
@@ -235,7 +235,7 @@ void ReplaceIfChanged(const char *strOld, const char *strNew)
 {
   int iChanged = 1;
   FILE *fOld = fopen(strOld, "r");
-  if (fOld!=NULL) {
+  if (fOld != NULL) {
     iChanged = 0;
     FILE *fNew = FOpen(strNew, "r");
     while (!feof(fOld)) {
@@ -243,13 +243,13 @@ void ReplaceIfChanged(const char *strOld, const char *strNew)
       char strNewLine[4096] = "#l";
 
       // skip #line directives
-      while (strNewLine[0]=='#' && strNewLine[1]=='l' && !feof(fNew)) {
+      while (strNewLine[0] == '#' && strNewLine[1] == 'l' && !feof(fNew)) {
         fgets(strNewLine, sizeof(strNewLine)-1, fNew);
       }
-      while (strOldLine[0]=='#' && strOldLine[1]=='l' && !feof(fOld)) {
+      while (strOldLine[0] == '#' && strOldLine[1] == 'l' && !feof(fOld)) {
         fgets(strOldLine, sizeof(strOldLine)-1, fOld);
       }
-      if (strcmp(strNewLine, strOldLine)!=0) {
+      if (strcmp(strNewLine, strOldLine) != 0) {
         iChanged = 1;
         break;
       }
@@ -277,7 +277,7 @@ int main(int argc, char *argv[])
   }
   if (argc>2)
   {
-    if (strcmp(argv[2],"-line")==0)
+    if (strcmp(argv[2],"-line") == 0)
     {
       _bRemoveLineDirective=1;
     }
@@ -301,11 +301,11 @@ int main(int argc, char *argv[])
   _strFileNameBase = ChangeFileNameExtension(argv[1], "");
   _strFileNameBaseIdentifier = strdup(_strFileNameBase);
   {char *strNextSlash = _strFileNameBaseIdentifier;
-  while ((strNextSlash = strchr(strNextSlash, '/'))!=NULL) {
+  while ((strNextSlash = strchr(strNextSlash, '/')) != NULL) {
     *strNextSlash = '_';
   }}
   {char *strNextSlash = _strFileNameBaseIdentifier;
-  while ((strNextSlash = strchr(strNextSlash, '\\'))!=NULL) {
+  while ((strNextSlash = strchr(strNextSlash, '\\')) != NULL) {
     *strNextSlash = '_';
   }}
   // print their headers
@@ -330,7 +330,7 @@ int main(int argc, char *argv[])
   fclose(_fTables);
 
   // if there were no errors
-  if (ctErrors==0) {
+  if (ctErrors == 0) {
     // update the files that have changed
     ReplaceFile(strImplementationOld, strImplementation);
     ReplaceIfChanged(strDeclarationOld, strDeclaration);

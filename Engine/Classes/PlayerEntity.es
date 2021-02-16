@@ -55,7 +55,7 @@ functions:
     }
     for (INDEX iPlayer=0; iPlayer<GetMaxPlayers(); iPlayer++) {
       // if this is ME (this)
-      if (GetPlayerEntity(iPlayer)==penMe) {
+      if (GetPlayerEntity(iPlayer) == penMe) {
         return iPlayer;
       }
     }
@@ -92,14 +92,14 @@ functions:
   export void Read_t( CTStream *istr) // throw char *
   {
     CMovableModelEntity::Read_t(istr);
-    (*istr)>>en_pcCharacter>>en_plViewpoint;
+    (*istr) >> en_pcCharacter >> en_plViewpoint;
     en_plLastViewpoint = en_plViewpoint;
   }
   /* Write to stream. */
   export void Write_t( CTStream *ostr) // throw char *
   {
     CMovableModelEntity::Write_t(ostr);
-    (*ostr)<<en_pcCharacter<<en_plViewpoint;
+    (*ostr) << en_pcCharacter << en_plViewpoint;
   }
 
   // Apply the action packet to the entity movement.

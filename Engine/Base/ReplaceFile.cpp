@@ -61,14 +61,14 @@ static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, cha
     char *pchrDefaultFileSelected);
 
   HMODULE hGUI = GetModuleHandleA(ENGINEGUI_DLL_NAME);
-  if (hGUI==NULL) {
+  if (hGUI == NULL) {
     WarningMessage(TRANS("Cannot load %s:\n%s\nCannot replace files!"), 
       ENGINEGUI_DLL_NAME, GetWindowsError(GetLastError()));
     return CTString("");
   }
   FileRequester_t *pFileRequester = (FileRequester_t*)GetProcAddress(hGUI, 
     "?FileRequester@@YA?AVCTFileName@@PAD000@Z");
-  if (pFileRequester==NULL) {
+  if (pFileRequester == NULL) {
     WarningMessage(TRANS("Error in %s:\nFileRequester() function not found\nCannot replace files!"),
       ENGINEGUI_DLL_NAME);
     return CTString("");
@@ -89,9 +89,9 @@ BOOL GetReplacingFile(CTFileName fnSourceFile, CTFileName &fnReplacingFile,
   // try to find replacing texture in base
   try
   {
-  	char achrLine[ 256];
-  	char achrSource[ 256];
-  	char achrRemap[ 256];
+    char achrLine[ 256];
+    char achrSource[ 256];
+    char achrRemap[ 256];
         
     // open file containing file names for replacing textures
     CTFileStream fsBase;
@@ -187,7 +187,7 @@ void ReadTextureObject_t(CTStream &strm, CTextureObject &to)
 {
   // read model texture data filename
   CTFileName fnTexture;
-  strm>>fnTexture;
+  strm >> fnTexture;
   // try to load texture
   for (;;) {
     try {
@@ -213,7 +213,7 @@ void SkipTextureObject_t(CTStream &strm)
 {
   // skip texture filename
   CTFileName fnDummy;
-  strm>>fnDummy;
+  strm >> fnDummy;
   // skip texture object
   CTextureObject toDummy;
   toDummy.Read_t(&strm);
@@ -222,10 +222,10 @@ void WriteTextureObject_t(CTStream &strm, CTextureObject &to)
 {
   // write model texture filename
   CTextureData *ptd = (CTextureData *)to.GetData();
-  if (ptd!=NULL) {
-    strm<<ptd->GetName();
+  if (ptd != NULL) {
+    strm << ptd->GetName();
   } else {
-    strm<<CTFileName(CTString(""));
+    strm << CTFileName(CTString(""));
   }
   // write texture anim object
   to.Write_t(&strm);
@@ -236,7 +236,7 @@ void ReadModelObject_t(CTStream &strm, CModelObject &mo)
 {
   // read model data filename
   CTFileName fnModel;
-  strm>>fnModel;
+  strm >> fnModel;
   // try to load model
   for (;;) {
     try {
@@ -278,21 +278,21 @@ void ReadModelObject_t(CTStream &strm, CModelObject &mo)
     // read attachments header
     strm.ExpectID_t("ATCH");  // 'attachments'
     INDEX ctAttachments;
-    strm>>ctAttachments;
+    strm >> ctAttachments;
     // for each attachment
     for (INDEX iAttachment=0; iAttachment<ctAttachments; iAttachment++) {
       // read its position and create the attachment
       INDEX iPosition;
-      strm>>iPosition;
+      strm >> iPosition;
       CAttachmentModelObject *pamo = mo.AddAttachmentModel(iPosition);
-      if (pamo!=NULL) {
+      if (pamo != NULL) {
         // read its placement and model
-        strm>>pamo->amo_plRelative;
+        strm >> pamo->amo_plRelative;
         ReadModelObject_t(strm, pamo->amo_moModelObject);
       } else {
         // skip its placement and model
         CPlacement3D plDummy;
-        strm>>plDummy;
+        strm >> plDummy;
         SkipModelObject_t(strm);
       }
     }
@@ -304,7 +304,7 @@ void SkipModelObject_t(CTStream &strm)
   CTFileName fnDummy;
   CModelObject moDummy;
   // skip model data filename
-  strm>>fnDummy;
+  strm >> fnDummy;
   // skip model object
   moDummy.Read_t(&strm);
 
@@ -328,14 +328,14 @@ void SkipModelObject_t(CTStream &strm)
     // read attachments header
     strm.ExpectID_t("ATCH");  // 'attachments'
     INDEX ctAttachments;
-    strm>>ctAttachments;
+    strm >> ctAttachments;
     // for each attachment
     for (INDEX iAttachment=0; iAttachment<ctAttachments; iAttachment++) {
       // skip its position, placement and model
       INDEX iPosition;
-      strm>>iPosition;
+      strm >> iPosition;
       CPlacement3D plDummy;
-      strm>>plDummy;
+      strm >> plDummy;
       SkipModelObject_t(strm);
     }
   }
@@ -345,10 +345,10 @@ void WriteModelObject_t(CTStream &strm, CModelObject &mo)
 {
   // write model data filename
   CAnimData *pad = (CAnimData *)mo.GetData();
-  if (pad!=NULL) {
-    strm<<pad->GetName();
+  if (pad != NULL) {
+    strm << pad->GetName();
   } else {
-    strm<<CTFileName(CTString(""));
+    strm << CTFileName(CTString(""));
   }
   // write model anim object
   mo.Write_t(&strm);
@@ -364,13 +364,13 @@ void WriteModelObject_t(CTStream &strm, CModelObject &mo)
   if (!mo.mo_lhAttachments.IsEmpty()) {
     // write attachments header
     strm.WriteID_t("ATCH");  // 'attachments'
-    strm<<mo.mo_lhAttachments.Count();
+    strm << mo.mo_lhAttachments.Count();
     // for each attachment
     FOREACHINLIST( CAttachmentModelObject, amo_lnInMain, mo.mo_lhAttachments, itamo) {
       CAttachmentModelObject *pamo = itamo;
       // write its position, placement and model
-      strm<<pamo->amo_iAttachedPosition;
-      strm<<pamo->amo_plRelative;
+      strm << pamo->amo_iAttachedPosition;
+      strm << pamo->amo_plRelative;
       WriteModelObject_t(strm, pamo->amo_moModelObject);
     }
   }
@@ -382,19 +382,19 @@ void WriteMeshInstances_t(CTStream &strm, CModelInstance &mi)
   strm.WriteID_t("MSHI");
   // write all mesh instances for this model instance
   INDEX ctmshi=mi.mi_aMeshInst.Count();
-  strm<<ctmshi;
+  strm << ctmshi;
   // for each mesh
   for (INDEX imshi=0;imshi<ctmshi;imshi++) {
     MeshInstance &mshi = mi.mi_aMeshInst[imshi];
     CTFileName fnMesh = mshi.mi_pMesh->GetName();
     strm.WriteID_t("MESH");
     // write binary mesh file name
-    strm<<fnMesh;
+    strm << fnMesh;
 
     strm.WriteID_t("MITS");
     // write texture instances for this mesh instance
     INDEX ctti = mshi.mi_tiTextures.Count();
-    strm<<ctti;
+    strm << ctti;
     // for each texture instance
     for (INDEX iti=0;iti<ctti;iti++) {
       // write texture file name and texture ID
@@ -403,8 +403,8 @@ void WriteMeshInstances_t(CTStream &strm, CModelInstance &mi)
       CTFileName fnTex = ptd->GetName();
       CTString strTexID = ska_GetStringFromTable(ti.GetID());
       strm.WriteID_t("TITX");
-      strm<<fnTex;
-      strm<<strTexID;
+      strm << fnTex;
+      strm << strTexID;
     }
   }
 }
@@ -413,12 +413,12 @@ void WriteSkeleton_t(CTStream &strm, CModelInstance &mi)
 {
   // write this model instance skeleton binary file name
   CSkeleton *pSkeleton = mi.mi_psklSkeleton;
-  BOOL bHasSkeleton = (pSkeleton!=NULL);
+  BOOL bHasSkeleton = (pSkeleton != NULL);
   strm.WriteID_t("SKEL");
-  strm<<bHasSkeleton;
+  strm << bHasSkeleton;
   if (bHasSkeleton) {
     CTFileName fnSkeleton = pSkeleton->GetName();
-    strm<<fnSkeleton;
+    strm << fnSkeleton;
   }
 }
 
@@ -427,13 +427,13 @@ void WriteAnimSets(CTStream &strm, CModelInstance &mi)
   strm.WriteID_t("ANAS");
   // write animsets file names
   INDEX ctas = mi.mi_aAnimSet.Count();
-  strm<<ctas;
+  strm << ctas;
   // for each animset in model instance
   for (INDEX ias=0;ias<ctas;ias++) {
     CAnimSet &as = mi.mi_aAnimSet[ias];
     CTFileName fnAnimSet = as.GetName();
     // write animset binary file name
-    strm<<fnAnimSet;
+    strm << fnAnimSet;
   }
 }
 void WriteColisionBoxes(CTStream &strm, CModelInstance &mi)
@@ -441,19 +441,19 @@ void WriteColisionBoxes(CTStream &strm, CModelInstance &mi)
   strm.WriteID_t("MICB");
   // write colision boxes and index of current colision box
   INDEX ctcb = mi.mi_cbAABox.Count();
-  strm<<ctcb;
+  strm << ctcb;
   // for each colision box
   for (INDEX icb=0;icb<ctcb;icb++) {
     ColisionBox &cb = mi.mi_cbAABox[icb];
     // write colision box
-    strm<<cb.Min();
-    strm<<cb.Max();
-    strm<<cb.GetName();
+    strm << cb.Min();
+    strm << cb.Max();
+    strm << cb.GetName();
   }
   // write all frames bounding box
   strm.WriteID_t("AFBB");
-  strm<<mi.mi_cbAllFramesBBox.Min();
-  strm<<mi.mi_cbAllFramesBBox.Max();
+  strm << mi.mi_cbAllFramesBBox.Min();
+  strm << mi.mi_cbAllFramesBBox.Max();
 }
 
 void WriteAnimQueue_t(CTStream &strm, CModelInstance &mi)
@@ -462,32 +462,32 @@ void WriteAnimQueue_t(CTStream &strm, CModelInstance &mi)
   // write animation queue
   AnimQueue &aq = mi.mi_aqAnims;
   INDEX ctal = aq.aq_Lists.Count();
-  strm<<ctal;
+  strm << ctal;
   // for each anim list
   for (INDEX ial=0;ial<ctal;ial++) {
     AnimList &al = aq.aq_Lists[ial];
 
     // [Cecil] New timer: 'Anim Queue anim List 2'
     strm.WriteID_t("AQL2");
-    strm<<al.al_llStartTime;
-    strm<<al.al_fFadeTime;
+    strm << al.al_llStartTime;
+    strm << al.al_fFadeTime;
     INDEX ctpa = al.al_PlayedAnims.Count();
-    strm<<ctpa;
+    strm << ctpa;
     // for each played anim
     for (INDEX ipa=0;ipa<ctpa;ipa++) {
       // save played anim
       PlayedAnim &pa = al.al_PlayedAnims[ipa];
       // [Cecil] New timer: 'Anim List Played anim 2'
       strm.WriteID_t("ALP2");
-      strm<<pa.pa_llStartTime;
-      strm<<pa.pa_ulFlags;
-      strm<<pa.pa_Strength;
-      strm<<pa.pa_GroupID;
+      strm << pa.pa_llStartTime;
+      strm << pa.pa_ulFlags;
+      strm << pa.pa_Strength;
+      strm << pa.pa_GroupID;
       CTString strPlayedAnimID = ska_GetStringFromTable(pa.pa_iAnimID);
-      strm<<strPlayedAnimID;
+      strm << strPlayedAnimID;
       // write anim speed mul
       strm.WriteID_t("PASP"); // played animation speed
-      strm<<pa.pa_fSpeedMul;
+      strm << pa.pa_fSpeedMul;
     }
   }
 }
@@ -498,12 +498,12 @@ void WriteOffsetAndChildren(CTStream &strm, CModelInstance &mi)
   // write model instance offset and parent bone
   strm.Write_t(&mi.mi_qvOffset,sizeof(QVect));
   CTString strParenBoneID = ska_GetStringFromTable(mi.mi_iParentBoneID);
-  strm<<strParenBoneID;
+  strm << strParenBoneID;
 
   strm.WriteID_t("MICH");  // model instance child
   // write model instance children
   INDEX ctcmi = mi.mi_cmiChildren.Count();
-  strm<<ctcmi;
+  strm << ctcmi;
   // for each child model instance
   for (INDEX icmi=0;icmi<ctcmi;icmi++) {
     CModelInstance &cmi = mi.mi_cmiChildren[icmi];
@@ -516,13 +516,13 @@ void WriteModelInstance_t(CTStream &strm, CModelInstance &mi)
 {
   strm.WriteID_t("MI03"); // model instance 03
   // write model instance name
-  strm<<mi.GetName();
+  strm << mi.GetName();
   // write index of current colision box
-  strm<<mi.mi_iCurentBBox;
+  strm << mi.mi_iCurentBBox;
   // write stretch
-  strm<<mi.mi_vStretch;
+  strm << mi.mi_vStretch;
   // write color
-  strm<<mi.mi_colModelColor;
+  strm << mi.mi_colModelColor;
 
   WriteMeshInstances_t(strm,mi);
   WriteSkeleton_t(strm, mi);
@@ -539,7 +539,7 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
   strm.ExpectID_t("SKMI");
   // read model instance name
   CTString strModelInstanceName;
-  strm>>strModelInstanceName;
+  strm >> strModelInstanceName;
   mi.SetName(strModelInstanceName);
 
   // read all mesh instances for this model instance
@@ -551,7 +551,7 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
   INDEX ctpa = 0;   // played anims count
   INDEX ctcmi = 0;  // child model instance count
 
-  strm>>ctmshi;
+  strm >> ctmshi;
   mi.mi_aMeshInst.New(ctmshi);
   
   // for each mesh
@@ -559,11 +559,11 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
     MeshInstance &mshi = mi.mi_aMeshInst[imshi];
     CTFileName fnMesh;
     // read binary mesh file name
-    strm>>fnMesh;
+    strm >> fnMesh;
     mshi.mi_pMesh = _pMeshStock->Obtain_t(fnMesh);
 
     // read texture instances for this mesh instance
-    strm>>ctti;
+    strm >> ctti;
     mshi.mi_tiTextures.New(ctti);
     // for each texture instance
     for (INDEX iti=0;iti<ctti;iti++) {
@@ -572,8 +572,8 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
 
       CTFileName fnTex;
       CTString strTexID;
-      strm>>fnTex;
-      strm>>strTexID;
+      strm >> fnTex;
+      strm >> strTexID;
 
       ti.SetName(strTexID);
       ti.ti_toTexture.SetData_t(fnTex);
@@ -584,46 +584,46 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
   BOOL bHasSkeleton;
   mi.mi_psklSkeleton = NULL;
 
-  strm>>bHasSkeleton;
+  strm >> bHasSkeleton;
   if (bHasSkeleton) {
     CTFileName fnSkeleton;
-    strm>>fnSkeleton;
+    strm >> fnSkeleton;
     mi.mi_psklSkeleton = _pSkeletonStock->Obtain_t(fnSkeleton);
   }
 
   // read animsets file names
-  strm>>ctas;
+  strm >> ctas;
   // for each animset in model instance
   for (INDEX ias=0;ias<ctas;ias++) {
     // read animset binary file name
     CTFileName fnAnimSet;
-    strm>>fnAnimSet;
+    strm >> fnAnimSet;
     CAnimSet *pas = _pAnimSetStock->Obtain_t(fnAnimSet);
     mi.mi_aAnimSet.Add(pas);
   }
 
   // read colision boxes
-  strm>>ctcb;
+  strm >> ctcb;
   mi.mi_cbAABox.New(ctcb);
   // for each colision box
   for (INDEX icb=0;icb<ctcb;icb++) {
     ColisionBox &cb = mi.mi_cbAABox[icb];
     // read colision box
-    strm>>cb.Min();
-    strm>>cb.Max();
+    strm >> cb.Min();
+    strm >> cb.Max();
   }
 
   // read index of current colision box
-  strm>>mi.mi_iCurentBBox;
+  strm >> mi.mi_iCurentBBox;
 
   // read stretch
-  strm>>mi.mi_vStretch;
+  strm >> mi.mi_vStretch;
   // read color
-  strm>>mi.mi_colModelColor;
+  strm >> mi.mi_colModelColor;
 
   // read animation queue
   AnimQueue &aq = mi.mi_aqAnims;
-  strm>>ctal;
+  strm >> ctal;
   if (ctal>0) aq.aq_Lists.Push(ctal);
   // for each anim list
   for (INDEX ial=0;ial<ctal;ial++) {
@@ -631,11 +631,11 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
 
     // read anim list and get all played anims
     FLOAT fStartTime;
-    strm>>fStartTime;
+    strm >> fStartTime;
     al.al_llStartTime = CTimer::InTicks(fStartTime);
 
-    strm>>al.al_fFadeTime;
-    strm>>ctpa;
+    strm >> al.al_fFadeTime;
+    strm >> ctpa;
     if (ctpa>0) al.al_PlayedAnims.Push(ctpa);
 
     // for each played anim
@@ -643,14 +643,14 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
       // save played anim
       PlayedAnim &pa = al.al_PlayedAnims[ipa];
       FLOAT fStartTime;
-      strm>>fStartTime;
+      strm >> fStartTime;
       pa.pa_llStartTime = CTimer::InTicks(fStartTime);
 
-      strm>>pa.pa_ulFlags;
-      strm>>pa.pa_Strength;
-      strm>>pa.pa_GroupID;
+      strm >> pa.pa_ulFlags;
+      strm >> pa.pa_Strength;
+      strm >> pa.pa_GroupID;
       CTString strPlayedAnimID;
-      strm>>strPlayedAnimID;
+      strm >> strPlayedAnimID;
       pa.pa_iAnimID = ska_GetIDFromStringTable(strPlayedAnimID);
     }
   }
@@ -658,11 +658,11 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
   // read model instance offset and parent bone
   strm.Read_t(&mi.mi_qvOffset,sizeof(QVect));
   CTString strParenBoneID;
-  strm>>strParenBoneID;
+  strm >> strParenBoneID;
   mi.mi_iParentBoneID = ska_GetIDFromStringTable(strParenBoneID);
 
   // read model instance children
-  strm>>ctcmi;
+  strm >> ctcmi;
   // for each child model instance
   for (INDEX icmi=0;icmi<ctcmi;icmi++) {
     // create empty model instance
@@ -681,7 +681,7 @@ void ReadMeshInstances_t(CTStream &strm, CModelInstance &mi)
 
   strm.ExpectID_t("MSHI");
   // Read mesh instance
-  strm>>ctmshi;
+  strm >> ctmshi;
   mi.mi_aMeshInst.New(ctmshi);
   // for each mesh
   for (INDEX imshi=0;imshi<ctmshi;imshi++) {
@@ -690,12 +690,12 @@ void ReadMeshInstances_t(CTStream &strm, CModelInstance &mi)
 
     strm.ExpectID_t("MESH");
     // read binary mesh file name
-    strm>>fnMesh;
+    strm >> fnMesh;
     mshi.mi_pMesh = _pMeshStock->Obtain_t(fnMesh);
 
     // read texture instances for this mesh instance
     strm.ExpectID_t("MITS");  // mesh instance texture instance
-    strm>>ctti;
+    strm >> ctti;
     mshi.mi_tiTextures.New(ctti);
     // for each texture instance
     for (INDEX iti=0;iti<ctti;iti++) {
@@ -704,8 +704,8 @@ void ReadMeshInstances_t(CTStream &strm, CModelInstance &mi)
       strm.ExpectID_t("TITX");  // texture instance texture
       CTFileName fnTex;
       CTString strTexID;
-      strm>>fnTex;
-      strm>>strTexID;
+      strm >> fnTex;
+      strm >> strTexID;
 
       ti.SetName(strTexID);
       ti.ti_toTexture.SetData_t(fnTex);
@@ -720,10 +720,10 @@ void ReadSkeleton_t(CTStream &strm, CModelInstance &mi)
   mi.mi_psklSkeleton = NULL;
 
   strm.ExpectID_t("SKEL");
-  strm>>bHasSkeleton;
+  strm >> bHasSkeleton;
   if (bHasSkeleton) {
     CTFileName fnSkeleton;
-    strm>>fnSkeleton;
+    strm >> fnSkeleton;
     mi.mi_psklSkeleton = _pSkeletonStock->Obtain_t(fnSkeleton);
   }
 }
@@ -733,12 +733,12 @@ void ReadAnimSets_t(CTStream &strm, CModelInstance &mi)
   INDEX ctas = 0;
   strm.ExpectID_t("ANAS");
   // read animsets file names
-  strm>>ctas;
+  strm >> ctas;
   // for each animset in model instance
   for (INDEX ias=0;ias<ctas;ias++) {
     // read animset binary file name
     CTFileName fnAnimSet;
-    strm>>fnAnimSet;
+    strm >> fnAnimSet;
     CAnimSet *pas = _pAnimSetStock->Obtain_t(fnAnimSet);
     mi.mi_aAnimSet.Add(pas);
   }
@@ -751,7 +751,7 @@ void ReadAnimQueue_t(CTStream &strm, CModelInstance &mi)
   strm.ExpectID_t("MIAQ");  // model instance animation queue
   // read animation queue
   AnimQueue &aq = mi.mi_aqAnims;
-  strm>>ctal;
+  strm >> ctal;
   if (ctal>0) aq.aq_Lists.Push(ctal);
   // for each anim list
   for (INDEX ial=0;ial<ctal;ial++) {
@@ -759,15 +759,15 @@ void ReadAnimQueue_t(CTStream &strm, CModelInstance &mi)
     // [Cecil] New timer: 'Anim List Played anim 2'
     if (strm.PeekID_t() == CChunkID("AQL2")) {
       strm.ExpectID_t("AQL2");
-      strm>>al.al_llStartTime;
+      strm >> al.al_llStartTime;
     } else {
       strm.ExpectID_t("AQAL"); // animation queue animation list
       FLOAT fStartTime;
-      strm>>fStartTime;
+      strm >> fStartTime;
       al.al_llStartTime = CTimer::InTicks(fStartTime);
     }
-    strm>>al.al_fFadeTime;
-    strm>>ctpa;
+    strm >> al.al_fFadeTime;
+    strm >> ctpa;
     if (ctpa>0) al.al_PlayedAnims.Push(ctpa);
     // for each played anim
     for (INDEX ipa=0;ipa<ctpa;ipa++) {
@@ -777,24 +777,24 @@ void ReadAnimQueue_t(CTStream &strm, CModelInstance &mi)
       // [Cecil] New timer: 'Anim List Played anim 2'
       if (strm.PeekID_t() == CChunkID("ALP2")) {
         strm.ExpectID_t("ALP2");
-        strm>>pa.pa_llStartTime;
+        strm >> pa.pa_llStartTime;
 
       } else {
         strm.ExpectID_t("ALPA"); // animation list played anim
         FLOAT fStartTime;
-        strm>>fStartTime;
+        strm >> fStartTime;
         pa.pa_llStartTime = CTimer::InTicks(fStartTime);
       }
 
-      strm>>pa.pa_ulFlags;
-      strm>>pa.pa_Strength;
-      strm>>pa.pa_GroupID;
+      strm >> pa.pa_ulFlags;
+      strm >> pa.pa_Strength;
+      strm >> pa.pa_GroupID;
       CTString strPlayedAnimID;
-      strm>>strPlayedAnimID;
+      strm >> strPlayedAnimID;
       pa.pa_iAnimID = ska_GetIDFromStringTable(strPlayedAnimID);
-      if (strm.PeekID_t()==CChunkID("PASP")) {
+      if (strm.PeekID_t() == CChunkID("PASP")) {
         strm.ExpectID_t("PASP");  // played animation speed
-        strm>>pa.pa_fSpeedMul;
+        strm >> pa.pa_fSpeedMul;
       }
     }
   }
@@ -805,22 +805,22 @@ void ReadColisionBoxes_t(CTStream &strm, CModelInstance &mi)
   INDEX ctcb = 0;
   strm.ExpectID_t("MICB");  // model instance colision boxes
   // read colision boxes
-  strm>>ctcb;
+  strm >> ctcb;
   mi.mi_cbAABox.New(ctcb);
   // for each colision box
   for (INDEX icb=0;icb<ctcb;icb++) {
     ColisionBox &cb = mi.mi_cbAABox[icb];
     CTString strName;
     // read colision box
-    strm>>cb.Min();
-    strm>>cb.Max();
-    strm>>strName;
+    strm >> cb.Min();
+    strm >> cb.Max();
+    strm >> strName;
     cb.SetName(strName);
   }
   strm.ExpectID_t("AFBB");  // all frames bounding box
   // read all frames bounding box
-  strm>>mi.mi_cbAllFramesBBox.Min();
-  strm>>mi.mi_cbAllFramesBBox.Max();
+  strm >> mi.mi_cbAllFramesBBox.Min();
+  strm >> mi.mi_cbAllFramesBBox.Max();
 }
 
 void ReadOffsetAndChildren_t(CTStream &strm, CModelInstance &mi)
@@ -830,12 +830,12 @@ void ReadOffsetAndChildren_t(CTStream &strm, CModelInstance &mi)
   // read model instance offset and parent bone
   strm.Read_t(&mi.mi_qvOffset,sizeof(QVect));
   CTString strParenBoneID;
-  strm>>strParenBoneID;
+  strm >> strParenBoneID;
   mi.mi_iParentBoneID = ska_GetIDFromStringTable(strParenBoneID);
 
   strm.ExpectID_t("MICH");  // model instance child
   // read model instance children
-  strm>>ctcmi;
+  strm >> ctcmi;
   // for each child model instance
   for (INDEX icmi=0;icmi<ctcmi;icmi++) {
     // create empty model instance
@@ -852,15 +852,15 @@ void ReadModelInstanceNew_t(CTStream &strm, CModelInstance &mi)
   strm.ExpectID_t("MI03");  // model instance 02
   // Read model instance name
   CTString strModelInstanceName;
-  strm>>strModelInstanceName;
+  strm >> strModelInstanceName;
   mi.SetName(strModelInstanceName);
 
   // read index of current colision box
-  strm>>mi.mi_iCurentBBox;
+  strm >> mi.mi_iCurentBBox;
   // read stretch
-  strm>>mi.mi_vStretch;
+  strm >> mi.mi_vStretch;
   // read color
-  strm>>mi.mi_colModelColor;
+  strm >> mi.mi_colModelColor;
 
   ReadMeshInstances_t(strm,mi);
   ReadSkeleton_t(strm, mi);
@@ -897,7 +897,7 @@ void ReadAnimObject_t(CTStream &strm, CAnimObject &ao)
 {
   // read anim data filename
   CTFileName fnAnim;
-  strm>>fnAnim;
+  strm >> fnAnim;
   // try to load anim
   for (;;) {
     try {
@@ -925,7 +925,7 @@ void SkipAnimObject_t(CTStream &strm)
   CTFileName fnDummy;
   CAnimObject aoDummy;
   // skip anim data filename
-  strm>>fnDummy;
+  strm >> fnDummy;
   // skip anim object
   aoDummy.Read_t(&strm);
 }
@@ -934,10 +934,10 @@ void WriteAnimObject_t(CTStream &strm, CAnimObject &ao)
 {
   // write anim data filename
   CAnimData *pad = (CAnimData *)ao.GetData();
-  if (pad!=NULL) {
-    strm<<pad->GetName();
+  if (pad != NULL) {
+    strm << pad->GetName();
   } else {
-    strm<<CTFileName(CTString(""));
+    strm << CTFileName(CTString(""));
   }
   // write anim object
   ao.Write_t(&strm);

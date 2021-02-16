@@ -85,7 +85,7 @@ CTextureData *CTerrainLayer::GetThumbnail(INDEX iWidth, INDEX iHeight)
 void CTerrainLayer::SetLayerSize(INDEX iTerrainWidth, INDEX iTerrainHeight)
 {
   // if array of vertex colors was initialized
-  if (tl_aubColors!=NULL) {
+  if (tl_aubColors != NULL) {
     // free array
     FreeMemory(tl_aubColors);
     tl_aubColors = NULL;
@@ -107,7 +107,7 @@ void CTerrainLayer::SetLayerSize(INDEX iTerrainWidth, INDEX iTerrainHeight)
 void CTerrainLayer::SetLayerTexture_t(CTFileName fnTexture)
 {
   // if layer has valid texture 
-  if (tl_ptdTexture!=NULL) {
+  if (tl_ptdTexture != NULL) {
     // release texture from stock
     _pTextureStock->Release(tl_ptdTexture);
     tl_ptdTexture = NULL;
@@ -173,7 +173,7 @@ void CTerrainLayer::ImportLayerMask_t(CTFileName fnLayerMask)
 // Export layer mask to targa file
 void CTerrainLayer::ExportLayerMask_t(CTFileName fnLayerMask)
 {
-  ASSERT(tl_aubColors!=NULL);
+  ASSERT(tl_aubColors != NULL);
   INDEX iSize = tl_iMaskWidth*tl_iMaskHeight;
 
   CImageInfo iiHeightMap;
@@ -270,7 +270,7 @@ void CTerrainLayer::Copy(const CTerrainLayer &tlOther)
   Clear();
 
   // if texture exists
-  if (tlOther.tl_ptdTexture!=NULL) {
+  if (tlOther.tl_ptdTexture != NULL) {
     // Copy texture
     SetLayerTexture_t(tlOther.tl_ptdTexture->GetName());
   }
@@ -342,99 +342,99 @@ void CTerrainLayer::Read_t(CTStream *istrFile,INDEX iSavedVersion)
 
   // Read terrain layer texture
   (*istrFile).ExpectID_t("TLTX");  // 'Terrain layer texture'
-  (*istrFile)>>fn;
+  (*istrFile) >> fn;
   // Add texture to layer
   SetLayerTexture_t(fn);  
   // Read terrain layer mask
   (*istrFile).ExpectID_t("TLMA"); // 'Terrain layer mask'
-  (*istrFile)>>iMaskWidth;
-  (*istrFile)>>iMaskHeight;
+  (*istrFile) >> iMaskWidth;
+  (*istrFile) >> iMaskHeight;
   // Set layer size
   SetLayerSize(iMaskWidth,iMaskHeight);
   (*istrFile).Read_t(&tl_aubColors[0],sizeof(UBYTE) * tl_iMaskWidth * tl_iMaskHeight);
   
-  if (istrFile->PeekID_t()==CChunkID("TLPA")) { // 'Terrain edge map'
+  if (istrFile->PeekID_t() == CChunkID("TLPA")) { // 'Terrain edge map'
     // Read terrain layer params
     (*istrFile).ExpectID_t("TLPA"); // 'Terrain layer params'
 
-    (*istrFile)>>tl_strName;
-    (*istrFile)>>tl_bVisible;
+    (*istrFile) >> tl_strName;
+    (*istrFile) >> tl_bVisible;
     FLOAT fDummy;
-    (*istrFile)>>tl_fRotateX;
-    (*istrFile)>>tl_fRotateY;
-    (*istrFile)>>tl_fStretchX;
-    (*istrFile)>>tl_fStretchY;
-    (*istrFile)>>tl_fOffsetX;
-    (*istrFile)>>tl_fOffsetY;
-    (*istrFile)>>tl_bAutoRegenerated;
-    (*istrFile)>>tl_fCoverage;
-    (*istrFile)>>tl_fCoverageNoise;
-    (*istrFile)>>fDummy;
-    (*istrFile)>>fDummy;
-    (*istrFile)>>fDummy;
-    (*istrFile)>>fDummy;
-    (*istrFile)>>tl_fMinSlope;
-    (*istrFile)>>tl_fMaxSlope;
-    (*istrFile)>>fDummy;
-    (*istrFile)>>fDummy;
+    (*istrFile) >> tl_fRotateX;
+    (*istrFile) >> tl_fRotateY;
+    (*istrFile) >> tl_fStretchX;
+    (*istrFile) >> tl_fStretchY;
+    (*istrFile) >> tl_fOffsetX;
+    (*istrFile) >> tl_fOffsetY;
+    (*istrFile) >> tl_bAutoRegenerated;
+    (*istrFile) >> tl_fCoverage;
+    (*istrFile) >> tl_fCoverageNoise;
+    (*istrFile) >> fDummy;
+    (*istrFile) >> fDummy;
+    (*istrFile) >> fDummy;
+    (*istrFile) >> fDummy;
+    (*istrFile) >> tl_fMinSlope;
+    (*istrFile) >> tl_fMaxSlope;
+    (*istrFile) >> fDummy;
+    (*istrFile) >> fDummy;
   } else {
     // Read terrain layer params
     (*istrFile).ExpectID_t("TLPR"); // 'Terrain layer params'
 
-    (*istrFile)>>tl_strName;
-    (*istrFile)>>tl_bVisible;
+    (*istrFile) >> tl_strName;
+    (*istrFile) >> tl_bVisible;
 
-    (*istrFile)>>tl_fRotateX;
-    (*istrFile)>>tl_fRotateY;
-    (*istrFile)>>tl_fStretchX;
-    (*istrFile)>>tl_fStretchY;
-    (*istrFile)>>tl_fOffsetX;
-    (*istrFile)>>tl_fOffsetY;
+    (*istrFile) >> tl_fRotateX;
+    (*istrFile) >> tl_fRotateY;
+    (*istrFile) >> tl_fStretchX;
+    (*istrFile) >> tl_fStretchY;
+    (*istrFile) >> tl_fOffsetX;
+    (*istrFile) >> tl_fOffsetY;
 
-    (*istrFile)>>tl_bAutoRegenerated;
-    (*istrFile)>>tl_fCoverage;
-    (*istrFile)>>tl_fCoverageNoise;
-    (*istrFile)>>tl_fCoverageRandom;
+    (*istrFile) >> tl_bAutoRegenerated;
+    (*istrFile) >> tl_fCoverage;
+    (*istrFile) >> tl_fCoverageNoise;
+    (*istrFile) >> tl_fCoverageRandom;
 
-    (*istrFile)>>tl_bApplyMinAltitude;
-    (*istrFile)>>tl_fMinAltitude;
-    (*istrFile)>>tl_fMinAltitudeFade;
-    (*istrFile)>>tl_fMinAltitudeNoise;
-    (*istrFile)>>tl_fMinAltitudeRandom;
+    (*istrFile) >> tl_bApplyMinAltitude;
+    (*istrFile) >> tl_fMinAltitude;
+    (*istrFile) >> tl_fMinAltitudeFade;
+    (*istrFile) >> tl_fMinAltitudeNoise;
+    (*istrFile) >> tl_fMinAltitudeRandom;
 
-    (*istrFile)>>tl_bApplyMaxAltitude;
-    (*istrFile)>>tl_fMaxAltitude;
-    (*istrFile)>>tl_fMaxAltitudeFade;
-    (*istrFile)>>tl_fMaxAltitudeNoise;
-    (*istrFile)>>tl_fMaxAltitudeRandom;
+    (*istrFile) >> tl_bApplyMaxAltitude;
+    (*istrFile) >> tl_fMaxAltitude;
+    (*istrFile) >> tl_fMaxAltitudeFade;
+    (*istrFile) >> tl_fMaxAltitudeNoise;
+    (*istrFile) >> tl_fMaxAltitudeRandom;
 
-    (*istrFile)>>tl_bApplyMinSlope;
-    (*istrFile)>>tl_fMinSlope;
-    (*istrFile)>>tl_fMinSlopeFade;
-    (*istrFile)>>tl_fMinSlopeNoise;
-    (*istrFile)>>tl_fMinSlopeRandom;
+    (*istrFile) >> tl_bApplyMinSlope;
+    (*istrFile) >> tl_fMinSlope;
+    (*istrFile) >> tl_fMinSlopeFade;
+    (*istrFile) >> tl_fMinSlopeNoise;
+    (*istrFile) >> tl_fMinSlopeRandom;
 
-    (*istrFile)>>tl_bApplyMaxSlope;
-    (*istrFile)>>tl_fMaxSlope;
-    (*istrFile)>>tl_fMaxSlopeFade;
-    (*istrFile)>>tl_fMaxSlopeNoise;
-    (*istrFile)>>tl_fMaxSlopeRandom;
+    (*istrFile) >> tl_bApplyMaxSlope;
+    (*istrFile) >> tl_fMaxSlope;
+    (*istrFile) >> tl_fMaxSlopeFade;
+    (*istrFile) >> tl_fMaxSlopeNoise;
+    (*istrFile) >> tl_fMaxSlopeRandom;
     
-    if (iSavedVersion>=9) {
+    if (iSavedVersion >= 9) {
       INDEX iType;
-      (*istrFile)>>tl_colMultiply;
-      (*istrFile)>>tl_fSmoothness;
-      (*istrFile)>>iType;
+      (*istrFile) >> tl_colMultiply;
+      (*istrFile) >> tl_fSmoothness;
+      (*istrFile) >> iType;
       tl_ltType = (LayerType)iType;
 
       // Tile layer properties
-      (*istrFile)>>tl_ctTilesInRow;
-      (*istrFile)>>tl_ctTilesInCol;
-      (*istrFile)>>tl_iSelectedTile;
-      (*istrFile)>>tl_pixTileWidth;
-      (*istrFile)>>tl_pixTileHeight;
-      (*istrFile)>>tl_fTileU;
-      (*istrFile)>>tl_fTileV;
+      (*istrFile) >> tl_ctTilesInRow;
+      (*istrFile) >> tl_ctTilesInCol;
+      (*istrFile) >> tl_iSelectedTile;
+      (*istrFile) >> tl_pixTileWidth;
+      (*istrFile) >> tl_pixTileHeight;
+      (*istrFile) >> tl_fTileU;
+      (*istrFile) >> tl_fTileV;
     }
   }
 }
@@ -444,79 +444,79 @@ void CTerrainLayer::Write_t( CTStream *ostrFile)
 {
   (*ostrFile).WriteID_t("TLTX"); // 'Terrain layer texture'
   const CTFileName &fn = tl_ptdTexture->GetName();
-  (*ostrFile)<<fn;
+  (*ostrFile) << fn;
   // write terrain layer mask
   (*ostrFile).WriteID_t("TLMA"); // 'Terrain layer mask'
-  (*ostrFile)<<tl_iMaskWidth;
-  (*ostrFile)<<tl_iMaskHeight;
+  (*ostrFile) << tl_iMaskWidth;
+  (*ostrFile) << tl_iMaskHeight;
   (*ostrFile).Write_t(&tl_aubColors[0],sizeof(UBYTE) * tl_iMaskWidth * tl_iMaskHeight);
 
   // Write terrain layer params
   (*ostrFile).WriteID_t("TLPR"); // 'Terrain layer params'
-  (*ostrFile)<<tl_strName;
-  (*ostrFile)<<tl_bVisible;
+  (*ostrFile) << tl_strName;
+  (*ostrFile) << tl_bVisible;
   
-  (*ostrFile)<<tl_fRotateX;
-  (*ostrFile)<<tl_fRotateY;
-  (*ostrFile)<<tl_fStretchX;
-  (*ostrFile)<<tl_fStretchY;
-  (*ostrFile)<<tl_fOffsetX;
-  (*ostrFile)<<tl_fOffsetY;
+  (*ostrFile) << tl_fRotateX;
+  (*ostrFile) << tl_fRotateY;
+  (*ostrFile) << tl_fStretchX;
+  (*ostrFile) << tl_fStretchY;
+  (*ostrFile) << tl_fOffsetX;
+  (*ostrFile) << tl_fOffsetY;
 
-  (*ostrFile)<<tl_bAutoRegenerated;
-  (*ostrFile)<<tl_fCoverage;
-  (*ostrFile)<<tl_fCoverageNoise;
-  (*ostrFile)<<tl_fCoverageRandom;
+  (*ostrFile) << tl_bAutoRegenerated;
+  (*ostrFile) << tl_fCoverage;
+  (*ostrFile) << tl_fCoverageNoise;
+  (*ostrFile) << tl_fCoverageRandom;
 
-  (*ostrFile)<<tl_bApplyMinAltitude;
-  (*ostrFile)<<tl_fMinAltitude;
-  (*ostrFile)<<tl_fMinAltitudeFade;
-  (*ostrFile)<<tl_fMinAltitudeNoise;
-  (*ostrFile)<<tl_fMinAltitudeRandom;
+  (*ostrFile) << tl_bApplyMinAltitude;
+  (*ostrFile) << tl_fMinAltitude;
+  (*ostrFile) << tl_fMinAltitudeFade;
+  (*ostrFile) << tl_fMinAltitudeNoise;
+  (*ostrFile) << tl_fMinAltitudeRandom;
 
-  (*ostrFile)<<tl_bApplyMaxAltitude;
-  (*ostrFile)<<tl_fMaxAltitude;
-  (*ostrFile)<<tl_fMaxAltitudeFade;
-  (*ostrFile)<<tl_fMaxAltitudeNoise;
-  (*ostrFile)<<tl_fMaxAltitudeRandom;
+  (*ostrFile) << tl_bApplyMaxAltitude;
+  (*ostrFile) << tl_fMaxAltitude;
+  (*ostrFile) << tl_fMaxAltitudeFade;
+  (*ostrFile) << tl_fMaxAltitudeNoise;
+  (*ostrFile) << tl_fMaxAltitudeRandom;
 
-  (*ostrFile)<<tl_bApplyMinSlope;
-  (*ostrFile)<<tl_fMinSlope;
-  (*ostrFile)<<tl_fMinSlopeFade;
-  (*ostrFile)<<tl_fMinSlopeNoise;
-  (*ostrFile)<<tl_fMinSlopeRandom;
+  (*ostrFile) << tl_bApplyMinSlope;
+  (*ostrFile) << tl_fMinSlope;
+  (*ostrFile) << tl_fMinSlopeFade;
+  (*ostrFile) << tl_fMinSlopeNoise;
+  (*ostrFile) << tl_fMinSlopeRandom;
 
-  (*ostrFile)<<tl_bApplyMaxSlope;
-  (*ostrFile)<<tl_fMaxSlope;
-  (*ostrFile)<<tl_fMaxSlopeFade;
-  (*ostrFile)<<tl_fMaxSlopeNoise;
-  (*ostrFile)<<tl_fMaxSlopeRandom;
+  (*ostrFile) << tl_bApplyMaxSlope;
+  (*ostrFile) << tl_fMaxSlope;
+  (*ostrFile) << tl_fMaxSlopeFade;
+  (*ostrFile) << tl_fMaxSlopeNoise;
+  (*ostrFile) << tl_fMaxSlopeRandom;
 
-  (*ostrFile)<<tl_colMultiply;
-  (*ostrFile)<<tl_fSmoothness;
-  (*ostrFile)<<(INDEX)tl_ltType;
+  (*ostrFile) << tl_colMultiply;
+  (*ostrFile) << tl_fSmoothness;
+  (*ostrFile) << (INDEX)tl_ltType;
 
   // Tile layer properties
-  (*ostrFile)<<tl_ctTilesInRow;
-  (*ostrFile)<<tl_ctTilesInCol;
-  (*ostrFile)<<tl_iSelectedTile;
-  (*ostrFile)<<tl_pixTileWidth;
-  (*ostrFile)<<tl_pixTileHeight;
-  (*ostrFile)<<tl_fTileU;
-  (*ostrFile)<<tl_fTileV;
+  (*ostrFile) << tl_ctTilesInRow;
+  (*ostrFile) << tl_ctTilesInCol;
+  (*ostrFile) << tl_iSelectedTile;
+  (*ostrFile) << tl_pixTileWidth;
+  (*ostrFile) << tl_pixTileHeight;
+  (*ostrFile) << tl_fTileU;
+  (*ostrFile) << tl_fTileV;
 }
 
 // Clear terrain layer
 void CTerrainLayer::Clear()
 {
   // if array of vertex colors was initialized
-  if (tl_aubColors!=NULL) {
+  if (tl_aubColors != NULL) {
     // free array
     FreeMemory(tl_aubColors);
     tl_aubColors = NULL;
   }
   // if layer has valid texture 
-  if (tl_ptdTexture!=NULL) {
+  if (tl_ptdTexture != NULL) {
     // release texture from stock
     _pTextureStock->Release(tl_ptdTexture);
     tl_ptdTexture = NULL;

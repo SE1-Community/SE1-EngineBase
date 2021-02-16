@@ -75,7 +75,7 @@ extern void UnpackFilter_D3D( INDEX iFilter, _D3DTEXTUREFILTERTYPE &eMagFilter,
 // change texture filtering mode if needed
 extern void MimicTexParams_D3D( CTexParams &tpLocal)
 {
-  ASSERT( &tpLocal!=NULL);
+  ASSERT( &tpLocal != NULL);
   _pfGfxProfile.StartTimer( CGfxProfile::PTI_TEXTUREPARAMS);
 
   // update texture filtering mode if required
@@ -83,7 +83,7 @@ extern void MimicTexParams_D3D( CTexParams &tpLocal)
 
   // eventually adjust filtering for textures w/o mipmaps
   const INDEX iMipFilter = _tpGlobal[0].tp_iFilter % 10;
-  if ((!tpLocal.tp_bSingleMipmap != !_tpGlobal[GFX_iActiveTexUnit].tp_bSingleMipmap) && iMipFilter!=0)
+  if ((!tpLocal.tp_bSingleMipmap != !_tpGlobal[GFX_iActiveTexUnit].tp_bSingleMipmap) && iMipFilter != 0)
   { 
     HRESULT hr;
     _D3DTEXTUREFILTERTYPE eMipFilter;
@@ -95,7 +95,7 @@ extern void MimicTexParams_D3D( CTexParams &tpLocal)
       // paranoid!
       hr = _pGfx->gl_pd3dDevice->GetTextureStageState( GFX_iActiveTexUnit, D3DTSS_MIPFILTER, (ULONG*)&eMipFilter);
       D3D_CHECKERROR(hr);
-      ASSERT( eMipFilter==D3DTEXF_POINT || eMipFilter==D3DTEXF_LINEAR);
+      ASSERT( eMipFilter == D3DTEXF_POINT || eMipFilter == D3DTEXF_LINEAR);
 #endif // set it
       hr = _pGfx->gl_pd3dDevice->SetTextureStageState( GFX_iActiveTexUnit, D3DTSS_MIPFILTER, D3DTEXF_NONE);
     }
@@ -118,7 +118,7 @@ extern void MimicTexParams_D3D( CTexParams &tpLocal)
   if (tpLocal.tp_iAnisotropy != _tpGlobal[0].tp_iAnisotropy) tpLocal.tp_iAnisotropy = _tpGlobal[0].tp_iAnisotropy;
 
   // update texture clamping modes if changed
-  if (tpLocal.tp_eWrapU!=_tpGlobal[GFX_iActiveTexUnit].tp_eWrapU || tpLocal.tp_eWrapV!=_tpGlobal[GFX_iActiveTexUnit].tp_eWrapV) { 
+  if (tpLocal.tp_eWrapU != _tpGlobal[GFX_iActiveTexUnit].tp_eWrapU || tpLocal.tp_eWrapV != _tpGlobal[GFX_iActiveTexUnit].tp_eWrapV) { 
     tpLocal.tp_eWrapU = _tpGlobal[GFX_iActiveTexUnit].tp_eWrapU;
     tpLocal.tp_eWrapV = _tpGlobal[GFX_iActiveTexUnit].tp_eWrapV;
   }
@@ -137,7 +137,7 @@ extern void UploadTexture_D3D( LPDIRECT3DTEXTURE8 *ppd3dTexture, ULONG *pulTextu
                                PIX pixSizeU, PIX pixSizeV, D3DFORMAT eInternalFormat, BOOL bDiscard)
 {
   // safeties
-  ASSERT( pulTexture!=NULL);
+  ASSERT( pulTexture != NULL);
   ASSERT( pixSizeU>0 && pixSizeV>0);
   _sfStats.StartTimer( CStatForm::STI_BINDTEXTURE);
   _pfGfxProfile.StartTimer( CGfxProfile::PTI_TEXTUREUPLOADING);
@@ -145,13 +145,13 @@ extern void UploadTexture_D3D( LPDIRECT3DTEXTURE8 *ppd3dTexture, ULONG *pulTextu
   // recreate texture if needed
   HRESULT hr;
   if (bDiscard) {
-    if ((*ppd3dTexture)!=NULL) D3DRELEASE( (*ppd3dTexture), TRUE);
+    if ((*ppd3dTexture) != NULL) D3DRELEASE( (*ppd3dTexture), TRUE);
     hr = _pGfx->gl_pd3dDevice->CreateTexture( pixSizeU, pixSizeV, 0, 0, eInternalFormat, D3DPOOL_MANAGED, ppd3dTexture);
     D3D_CHECKERROR(hr);
   }
   // D3D texture must be valid now
   LPDIRECT3DTEXTURE8 pd3dTex = (*ppd3dTexture);
-  ASSERT( pd3dTex!=NULL);
+  ASSERT( pd3dTex != NULL);
 
   // prepare routine for conversion
   SetInternalFormat_D3D(eInternalFormat);
@@ -166,25 +166,25 @@ extern void UploadTexture_D3D( LPDIRECT3DTEXTURE8 *ppd3dTexture, ULONG *pulTextu
     UploadMipmap_D3D( pulTexture+pixOffset, pd3dTex, pixSizeU, pixSizeV, iMip);
     // advance to next mip-map
     pixOffset += pixSizeU*pixSizeV;
-    pixSizeU >>=1;
-    pixSizeV >>=1;
+    pixSizeU >>= 1;
+    pixSizeV >>= 1;
     iMip++;
     // end here if there is only one mip-map to upload
     if (_tpCurrent->tp_bSingleMipmap) break;
   }
 
   // see if we need to generate and upload additional mipmaps (those under 1*N or N*1)
-  if (!_tpCurrent->tp_bSingleMipmap && pixSizeU!=pixSizeV)
+  if (!_tpCurrent->tp_bSingleMipmap && pixSizeU != pixSizeV)
   { // prepare variables
     PIX pixSize = Max(pixSizeU,pixSizeV);
-    ASSERT( pixSize<=2048);
+    ASSERT( pixSize <= 2048);
     ULONG *pulSrc = pulTexture+pixOffset-pixSize*2;
     ULONG *pulDst = _aulLastMipmaps;
     // loop thru mipmaps
     while (pixSizeU>0 || pixSizeV>0)
     { // make next mipmap
-      if (pixSizeU==0) pixSizeU=1;
-      if (pixSizeV==0) pixSizeV=1;
+      if (pixSizeU == 0) pixSizeU=1;
+      if (pixSizeV == 0) pixSizeV=1;
       pixSize = pixSizeU*pixSizeV;
       __asm {   
         pxor    mm0,mm0
@@ -211,8 +211,8 @@ extern void UploadTexture_D3D( LPDIRECT3DTEXTURE8 *ppd3dTexture, ULONG *pulTextu
       pulSrc     = pulDst;
       pulDst    += pixSize;
       pixOffset += pixSize;
-      pixSizeU >>=1;
-      pixSizeV >>=1;
+      pixSizeU >>= 1;
+      pixSizeV >>= 1;
       iMip++;
     }
   }

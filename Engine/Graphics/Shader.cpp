@@ -71,9 +71,9 @@ static CStaticStackArray<GFXTexCoord> _uvUVMapForModify;
 void shaBegin(CAnyProjection3D &aprProjection,CShader *pShader)
 {
   // Chech that last shading ended with shaEnd
-  ASSERT(_pShader==NULL);
+  ASSERT(_pShader == NULL);
   // Chech if shader exists
-  ASSERT(pShader!=NULL);
+  ASSERT(pShader != NULL);
   // Set current projection
   _paprProjection = &aprProjection;
   // Set pointer to shader
@@ -84,7 +84,7 @@ void shaBegin(CAnyProjection3D &aprProjection,CShader *pShader)
 void shaEnd(void)
 {
   // Chech if shader exists
-  ASSERT(_pShader!=NULL);
+  ASSERT(_pShader != NULL);
   // Call shader function
   _pShader->ShaderFunc();
   // Clean used values
@@ -98,20 +98,20 @@ void shaRender(void)
 {
   ASSERT(_ctVertices>0);
   ASSERT(_ctIndices>0);
-  ASSERT(_paVertices!=NULL);
-  ASSERT(_paIndices!=NULL);
+  ASSERT(_paVertices != NULL);
+  ASSERT(_paIndices != NULL);
 
   // Set vertices
   gfxSetVertexArray(_paVertices,_ctVertices);
   gfxLockArrays();
 
   // if there is valid UVMap
-  if (_pCurrentUVMap!=NULL) {
+  if (_pCurrentUVMap != NULL) {
     gfxSetTexCoordArray(_pCurrentUVMap, FALSE);
   }
 
   // if there is valid vertex color array
-  if (_pcolVtxColors!=NULL) {
+  if (_pcolVtxColors != NULL) {
     gfxSetColorArray(_pcolVtxColors);
   }
 
@@ -129,13 +129,13 @@ void shaDoFogPass(void)
     return;
   }
 
-  ASSERT(_paFogUVMap==NULL);
-  ASSERT(_paHazeUVMap==NULL);
+  ASSERT(_paFogUVMap == NULL);
+  ASSERT(_paHazeUVMap == NULL);
 
   // Calculate fog and haze uvmap for this opaque surface
   RM_DoFogAndHaze(TRUE);
   // if fog uvmap has been given
-  if (_paFogUVMap!=NULL) {
+  if (_paFogUVMap != NULL) {
     // setup texture/color arrays and rendering mode
     gfxSetTextureWrapping( GFX_CLAMP, GFX_CLAMP);
     gfxSetTexture( _fog_ulTexture, _fog_tpLocal);
@@ -147,14 +147,14 @@ void shaDoFogPass(void)
     gfxDrawElements( _ctIndices, _paIndices);
   }
   // if haze uvmap has been given
-  if (_paHazeUVMap!=NULL) {
+  if (_paHazeUVMap != NULL) {
     gfxSetTextureWrapping( GFX_CLAMP, GFX_CLAMP);
     gfxSetTexture( _haze_ulTexture, _haze_tpLocal);
     gfxSetTexCoordArray(_paHazeUVMap, TRUE);
     gfxBlendFunc( GFX_SRC_ALPHA, GFX_INV_SRC_ALPHA);
     gfxEnableBlend();
     // set vertex color array for haze
-    if (_pacolVtxHaze !=NULL ) {
+    if (_pacolVtxHaze != NULL ) {
       gfxSetColorArray( _pacolVtxHaze);
     }
 
@@ -196,7 +196,7 @@ void shaCalculateLight(void)
     return;
   }
 
-  ASSERT(_paNormals!=NULL);
+  ASSERT(_paNormals != NULL);
   _acolVtxColors.PopAll();
   _acolVtxColors.Push(_ctVertices);
 
@@ -232,9 +232,9 @@ void shaCalculateLight(void)
     fDot = Clamp(fDot,0.0f,1.0f);
     SLONG slDot = NormFloatToByte(fDot);
 
-    _acolVtxColors[ivx].r = ClampUp(colModel.r * (slar + ((colLight.r * slDot)>>ubColShift))>>8,255L);
-    _acolVtxColors[ivx].g = ClampUp(colModel.g * (slag + ((colLight.g * slDot)>>ubColShift))>>8,255L);
-    _acolVtxColors[ivx].b = ClampUp(colModel.b * (slab + ((colLight.b * slDot)>>ubColShift))>>8,255L);
+    _acolVtxColors[ivx].r = ClampUp(colModel.r * (slar + ((colLight.r * slDot) >> ubColShift)) >> 8,255L);
+    _acolVtxColors[ivx].g = ClampUp(colModel.g * (slag + ((colLight.g * slDot) >> ubColShift)) >> 8,255L);
+    _acolVtxColors[ivx].b = ClampUp(colModel.b * (slab + ((colLight.b * slDot) >> ubColShift)) >> 8,255L);
     _acolVtxColors[ivx].a = colModel.a;//slDot;
   }
   // Set current vertex color array 
@@ -244,7 +244,7 @@ void shaCalculateLight(void)
 // Calculate lightning for given model
 void shaCalculateLightForSpecular(void)
 {
-  ASSERT(_paNormals!=NULL);
+  ASSERT(_paNormals != NULL);
   _acolVtxColors.PopAll();
   _acolVtxColors.Push(_ctVertices);
 
@@ -281,9 +281,9 @@ void shaCalculateLightForSpecular(void)
     fDot = Clamp(fDot,0.0f,1.0f);
     SLONG slDot = NormFloatToByte(fDot);
 
-    _acolVtxColors[ivx].r = ClampUp(colModel.r * (slar + ((colLight.r * slDot)>>ubColShift))>>8,255L);
-    _acolVtxColors[ivx].g = ClampUp(colModel.g * (slag + ((colLight.g * slDot)>>ubColShift))>>8,255L);
-    _acolVtxColors[ivx].b = ClampUp(colModel.b * (slab + ((colLight.b * slDot)>>ubColShift))>>8,255L);
+    _acolVtxColors[ivx].r = ClampUp(colModel.r * (slar + ((colLight.r * slDot) >> ubColShift)) >> 8,255L);
+    _acolVtxColors[ivx].g = ClampUp(colModel.g * (slag + ((colLight.g * slDot) >> ubColShift)) >> 8,255L);
+    _acolVtxColors[ivx].b = ClampUp(colModel.b * (slab + ((colLight.b * slDot) >> ubColShift)) >> 8,255L);
     _acolVtxColors[ivx].a = slDot;//colModel.a;//slDot;
   }
   // Set current wertex array 
@@ -336,7 +336,7 @@ void shaClean(void)
 // Set array of vertices
 void shaSetVertexArray(GFXVertex4 *paVertices,INDEX ctVertices)
 {
-  ASSERT(paVertices!=NULL);
+  ASSERT(paVertices != NULL);
   ASSERT(ctVertices>0);
   // set pointer to new vertex array
   _paVertices = paVertices;
@@ -346,7 +346,7 @@ void shaSetVertexArray(GFXVertex4 *paVertices,INDEX ctVertices)
 // Set array of normals
 void shaSetNormalArray(GFXNormal *paNormals)
 {
-  ASSERT(paNormals!=NULL);
+  ASSERT(paNormals != NULL);
 
   _paNormals = paNormals;
 }
@@ -354,7 +354,7 @@ void shaSetNormalArray(GFXNormal *paNormals)
 // Set array of indices
 void shaSetIndices(INDEX *paIndices,INDEX ctIndices)
 {
-  ASSERT(paIndices!=NULL);
+  ASSERT(paIndices != NULL);
   ASSERT(ctIndices>0);
 
   _paIndices = paIndices;
@@ -371,7 +371,7 @@ void shaSetTextureArray(CTextureObject **paTextureObject, INDEX ctTextures)
 // Set array of uv maps
 void shaSetUVMapsArray(GFXTexCoord **paUVMaps, INDEX ctUVMaps)
 {
-  ASSERT(paUVMaps!=NULL);
+  ASSERT(paUVMaps != NULL);
   ASSERT(ctUVMaps>0);
 
   _paUVMaps = paUVMaps;
@@ -381,7 +381,7 @@ void shaSetUVMapsArray(GFXTexCoord **paUVMaps, INDEX ctUVMaps)
 // Set array of shader colors
 void shaSetColorArray(COLOR *paColors, INDEX ctColors)
 {
-  ASSERT(paColors!=NULL);
+  ASSERT(paColors != NULL);
   ASSERT(ctColors>0);
 
   _paColors = paColors;
@@ -391,7 +391,7 @@ void shaSetColorArray(COLOR *paColors, INDEX ctColors)
 // Set array of floats for shader
 void shaSetFloatArray(FLOAT *paFloats, INDEX ctFloats)
 {
-  ASSERT(paFloats!=NULL);
+  ASSERT(paFloats != NULL);
   _paFloats = paFloats;
   _ctFloats = ctFloats;
 }
@@ -438,14 +438,14 @@ void shaSetObjToAbsMatrix(Matrix12 &mat)
 // Set current texture index
 void shaSetTexture(INDEX iTextureIndex)
 {
-  if (_paTextures==NULL || iTextureIndex<0 || iTextureIndex>=_ctTextures ||  _paTextures[iTextureIndex] == NULL) {
+  if (_paTextures == NULL || iTextureIndex<0 || iTextureIndex >= _ctTextures ||  _paTextures[iTextureIndex] == NULL) {
     gfxDisableTexture();
     return;
   }
   ASSERT(iTextureIndex<_ctTextures);
 
   CTextureObject *pto = _paTextures[iTextureIndex];
-  ASSERT(pto!=NULL);
+  ASSERT(pto != NULL);
 
   CTextureData *pTextureData = (CTextureData*)pto->GetData();
   const INDEX iFrameNo = pto->GetFrame();
@@ -455,8 +455,8 @@ void shaSetTexture(INDEX iTextureIndex)
 // Set current uvmap index
 void shaSetUVMap(INDEX iUVMapIndex)
 {
-  ASSERT(iUVMapIndex>=0);
-  if (iUVMapIndex<=_ctUVMaps) {
+  ASSERT(iUVMapIndex >= 0);
+  if (iUVMapIndex <= _ctUVMaps) {
     _pCurrentUVMap = _paUVMaps[iUVMapIndex];
   }
 }
@@ -464,9 +464,9 @@ void shaSetUVMap(INDEX iUVMapIndex)
 // Set current color index
 void shaSetColor(INDEX icolIndex)
 {
-  ASSERT(icolIndex>=0);
+  ASSERT(icolIndex >= 0);
 
-  if (icolIndex>=_ctColors) {
+  if (icolIndex >= _ctColors) {
     _colConstant = C_WHITE|CT_OPAQUE;
   } else {
     _colConstant = _paColors[icolIndex];
@@ -513,7 +513,7 @@ INDEX shaGetIndexCount(void)
 // Get float from array of floats
 FLOAT shaGetFloat(INDEX iFloatIndex)
 {
-  ASSERT(iFloatIndex>=0);
+  ASSERT(iFloatIndex >= 0);
   ASSERT(iFloatIndex<_ctFloats);
   return _paFloats[iFloatIndex];
 }
@@ -521,8 +521,8 @@ FLOAT shaGetFloat(INDEX iFloatIndex)
 // Get texture from array of textures
 CTextureObject *shaGetTexture( INDEX iTextureIndex)
 {
-  ASSERT( iTextureIndex>=0);
-  if (_paTextures==NULL || iTextureIndex>=_ctTextures || _paTextures[iTextureIndex]==NULL) return NULL;
+  ASSERT( iTextureIndex >= 0);
+  if (_paTextures == NULL || iTextureIndex >= _ctTextures || _paTextures[iTextureIndex] == NULL) return NULL;
   else return _paTextures[iTextureIndex];
 }
 
@@ -590,8 +590,8 @@ GFXNormal *shaGetNormalArray(void)
 // Get uvmap array from array of uvmaps
 GFXTexCoord *shaGetUVMap(INDEX iUVMapIndex)
 {
-  ASSERT( iUVMapIndex>=0);
-  if (iUVMapIndex>=_ctUVMaps) return NULL;
+  ASSERT( iUVMapIndex >= 0);
+  if (iUVMapIndex >= _ctUVMaps) return NULL;
   else return _paUVMaps[iUVMapIndex];
 }
 
@@ -605,7 +605,7 @@ GFXColor *shaGetColorArray(void)
 // Get empty color array for modifying
 GFXColor *shaGetNewColorArray(void)
 {
-  ASSERT(_ctVertices!=0);
+  ASSERT(_ctVertices != 0);
   _acolVtxModifyColors.PopAll();
   _acolVtxModifyColors.Push(_ctVertices);
   return &_acolVtxModifyColors[0];
@@ -614,7 +614,7 @@ GFXColor *shaGetNewColorArray(void)
 // Get empty texcoords array for modifying
 GFXTexCoord *shaGetNewTexCoordArray(void)
 {
-  ASSERT(_ctVertices!=0);
+  ASSERT(_ctVertices != 0);
   _uvUVMapForModify.PopAll();
   _uvUVMapForModify.Push(_ctVertices);
   return &_uvUVMapForModify[0];
@@ -623,7 +623,7 @@ GFXTexCoord *shaGetNewTexCoordArray(void)
 // Get empty vertex array for modifying
 GFXVertex *shaGetNewVertexArray(void)
 {
-  ASSERT(_ctVertices!=0);
+  ASSERT(_ctVertices != 0);
   _vModifyVertices.PopAll();
   _vModifyVertices.Push(_ctVertices);
   return &_vModifyVertices[0];
@@ -638,14 +638,14 @@ CAnyProjection3D *shaGetProjection()
 // Get object to view matrix
 Matrix12 *shaGetObjToViewMatrix(void)
 {
-  ASSERT(_pmObjToView!=NULL);
+  ASSERT(_pmObjToView != NULL);
   return _pmObjToView;
 }
 
 // Get object to abs matrix
 Matrix12 *shaGetObjToAbsMatrix(void)
 {
-  ASSERT(_pmObjToAbs!=NULL);
+  ASSERT(_pmObjToAbs != NULL);
   return _pmObjToAbs;
 }
 
@@ -658,7 +658,7 @@ Matrix12 *shaGetObjToAbsMatrix(void)
 // Set face culling
 void shaCullFace(GfxFace eFace)
 {
-  if (_paprProjection !=NULL && (*_paprProjection)->pr_bMirror) {
+  if (_paprProjection != NULL && (*_paprProjection)->pr_bMirror) {
     gfxFrontFace( GFX_CW);
   } else {
     gfxFrontFace( GFX_CCW);
@@ -782,7 +782,7 @@ void CShader::Clear(void)
   ShaderFunc = NULL;
   GetShaderDesc = NULL;
   // release dll
-  if (hLibrary!=NULL) FreeLibrary(hLibrary);
+  if (hLibrary != NULL) FreeLibrary(hLibrary);
 }
 
 // Count used memory
@@ -824,7 +824,7 @@ void CShader::Read_t(CTStream *istrFile)
   // return last error mode
   SetErrorMode(iOldErrorMode);
   // check if library has loaded
-  if (hLibrary==NULL)
+  if (hLibrary == NULL)
   {
     // report error
     istrFile->Throw_t("Error loading '%s' library",(const char*)fnmExpanded);
@@ -833,7 +833,7 @@ void CShader::Read_t(CTStream *istrFile)
   // get pointer to shader render function
   ShaderFunc = (void(*)(void))GetProcAddress(hLibrary,(const char*)strShaderFunc);
   // if error accured
-  if (ShaderFunc==NULL)
+  if (ShaderFunc == NULL)
   {
     // report error
     istrFile->Throw_t("GetProcAddress 'ShaderFunc' Error");
@@ -841,7 +841,7 @@ void CShader::Read_t(CTStream *istrFile)
   // get pointer to shader info function
   GetShaderDesc = (void(*)(ShaderDesc&))GetProcAddress(hLibrary,(const char*)strShaderInfo);
   // if error accured
-  if (GetShaderDesc==NULL) {
+  if (GetShaderDesc == NULL) {
     // report error
     istrFile->Throw_t("GetProcAddress 'ShaderDesc' Error");
   }

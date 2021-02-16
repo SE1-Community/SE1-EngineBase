@@ -116,7 +116,7 @@ void CRenderer::DrawBrushPolygonVerticesAndEdges(CBrushPolygon &bpo)
 
       extern void SelectVertexOnRender(CBrushVertex &bvx, const PIX2D &vpix);
 
-      if (_wrpWorldRenderPrefs.wrp_stSelection== CWorldRenderPrefs::ST_VERTICES) {
+      if (_wrpWorldRenderPrefs.wrp_stSelection == CWorldRenderPrefs::ST_VERTICES) {
         // draw them
         if (bDrawVertex0) {
           SelectVertexOnRender(bvx0, PIX2D((PIX)fI0, (PIX)fJ0));
@@ -233,7 +233,7 @@ void CRenderer::DrawFieldBrushSectorEdges(CBrushSector &bscSector)
 void CRenderer::PrepareBrush(CEntity *penBrush)
 {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_PREPAREBRUSH);
-  ASSERT(penBrush!=NULL);
+  ASSERT(penBrush != NULL);
   // get its brush
   CBrush3D &brBrush = *penBrush->en_pbrBrush;
   // if the brush is already active in rendering
@@ -246,7 +246,7 @@ void CRenderer::PrepareBrush(CEntity *penBrush)
   brBrush.br_ulFlags&=~BRF_DRAWFIRSTMIP;
 
   // if it has zero sectors and rendering of editor models is enabled
-  if (brBrush.GetFirstMip()->bm_abscSectors.Count()==0
+  if (brBrush.GetFirstMip()->bm_abscSectors.Count() == 0
    && _wrpWorldRenderPrefs.IsEditorModelsOn() && wld_bRenderEmptyBrushes) {
     // add it for delayed rendering as a model (will use empty brush model)
     AddModelEntity(penBrush);
@@ -303,7 +303,7 @@ void CRenderer::RenderWireFrameBrushes(void)
   BOOL bRenderNonField =
      _wrpWorldRenderPrefs.   wrp_ftEdges != CWorldRenderPrefs::FT_NONE
    ||_wrpWorldRenderPrefs.wrp_ftVertices != CWorldRenderPrefs::FT_NONE
-   ||_wrpWorldRenderPrefs.wrp_stSelection== CWorldRenderPrefs::ST_VERTICES;
+   ||_wrpWorldRenderPrefs.wrp_stSelection == CWorldRenderPrefs::ST_VERTICES;
 
   // for all active sectors
   {FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, re_lhActiveSectors, itbsc) {
@@ -315,7 +315,7 @@ void CRenderer::RenderWireFrameBrushes(void)
     }
 
     // if it is field brush
-    if (bsc.bsc_pbmBrushMip->bm_pbrBrush->br_pfsFieldSettings!=NULL) {
+    if (bsc.bsc_pbmBrushMip->bm_pbrBrush->br_pfsFieldSettings != NULL) {
       // if fields should be drawn
       if (_wrpWorldRenderPrefs.IsFieldBrushesOn()) {
         // draw it (all brush sectors in the list are already prepared and transformed)
@@ -338,7 +338,7 @@ static inline int CompareTranslucentPolygons(
 {
        if (tp0.tp_fViewerDistance<tp1.tp_fViewerDistance) return -1;
   else if (tp0.tp_fViewerDistance>tp1.tp_fViewerDistance) return +1;
-  else                                                    return  0;
+  else                                                    return 0;
 }
 static int qsort_CompareTranslucentPolygons( const void *pptp0, const void *pptp1)
 {
@@ -353,13 +353,13 @@ static int qsort_CompareTranslucentPolygons( const void *pptp0, const void *pptp
 ScenePolygon *CRenderer::SortTranslucentPolygons(ScenePolygon *pspoFirst)
 {
   // if there are no polygons in list
-  if (pspoFirst==NULL) {
+  if (pspoFirst == NULL) {
     // do nothing
     return NULL;
   }
 
   // for each polygon in list
-  for (ScenePolygon *pspo = pspoFirst; pspo!=NULL; pspo = pspo->spo_pspoSucc) {
+  for (ScenePolygon *pspo = pspoFirst; pspo != NULL; pspo = pspo->spo_pspoSucc) {
     // add it to container for sorting
     CTranslucentPolygon &tp = re_atcTranslucentPolygons.Push();
     tp.tp_pspoPolygon = pspo;

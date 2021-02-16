@@ -34,8 +34,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/Selection.h>
 
 // a vertex in brush
-#define BVXF_DRAWNINWIREFRAME     (1L<<0)  // vertex is already drawn in wireframe
-#define BVXF_SELECTED             (1L<<1)  // vertex is selected
+#define BVXF_DRAWNINWIREFRAME     (1L << 0)  // vertex is already drawn in wireframe
+#define BVXF_SELECTED             (1L << 1)  // vertex is selected
 class ENGINE_API CBrushVertex {
 public:
   class CWorkingVertex *bvx_pwvxWorking;  // used for rendering and ray casting
@@ -166,10 +166,10 @@ public:
 
 
 // one layer on brush shadow map (cross link between brush shadow map and light source)
-#define BSLF_CALCULATED (1L<<0)
-#define BSLF_RECTANGLE  (1L<<1)   // new version of layer with only influenced rectangle
-#define BSLF_ALLDARK    (1L<<2)   // polygon is not lighted by the light at all
-#define BSLF_ALLLIGHT   (1L<<3)   // whole polygon is lighted by the light (there are no shadows)
+#define BSLF_CALCULATED (1L << 0)
+#define BSLF_RECTANGLE  (1L << 1)   // new version of layer with only influenced rectangle
+#define BSLF_ALLDARK    (1L << 2)   // polygon is not lighted by the light at all
+#define BSLF_ALLLIGHT   (1L << 3)   // whole polygon is lighted by the light (there are no shadows)
 class ENGINE_API CBrushShadowLayer {
 public:
 // implementation:
@@ -249,11 +249,11 @@ public:
 
 
 // one texture on a brush polygon
-#define BPTF_CLAMPU         (1U<<0)    // clamp u coordinate in texture
-#define BPTF_CLAMPV         (1U<<1)    // clamp v coordinate in texture
-#define BPTF_DISCARDABLE    (1U<<2)    // texture doesn't have to be drawn
-#define BPTF_AFTERSHADOW    (1U<<3)    // texture is to be applied after shadow
-#define BPTF_REFLECTION     (1U<<4)    // texture will be reflection-mapped
+#define BPTF_CLAMPU         (1U << 0)    // clamp u coordinate in texture
+#define BPTF_CLAMPV         (1U << 1)    // clamp v coordinate in texture
+#define BPTF_DISCARDABLE    (1U << 2)    // texture doesn't have to be drawn
+#define BPTF_AFTERSHADOW    (1U << 3)    // texture is to be applied after shadow
+#define BPTF_REFLECTION     (1U << 4)    // texture will be reflection-mapped
 
 // first few blending type must be these:
 #define BPT_BLEND_OPAQUE  0
@@ -313,35 +313,35 @@ public:
 // Flags
 // flags 0-2 are used by CObjectPolygon, flags 3-31 are used by CBrushPolygon
 // OPOF_PORTAL  // set if the polygon is a portal - used for CSG in CObject3D
-#define BPOF_DOUBLESIDED            (1UL<< 3)    // polygon is renderable from both sides
-#define BPOF_SHOOTTHRU              (1UL<< 4)    // physical ray-casts can pass through the polygon, even if it is not passable
-#define BPOF_TRANSPARENT            (1UL<< 5)    // render with alpha-testing and write z-buffer
-#define BPOF_RENDERASPORTAL         (1UL<< 6)    // internal used in rendering
-#define BPOF_STAIRS                 (1UL<< 7)    // polygon is part of a staircase
-#define BPOF_SELECTED               (1UL<< 8)    // set if the polygon is selected
-#define BPOF_SELECTEDFORCSG         (1UL<< 9)    // set if the polygon is selected for CSG
-#define BPOF_WASPORTAL              (1UL<<10)    // set if it was portal before CSG
-#define BPOF_PASSABLE               (1UL<<11)    // set if not a physical barrier
-#define BPOF_DOESNOTCASTSHADOW      (1UL<<12)    // set to make a wall passable for light beams
-#define BPOF_WASBRUSHPOLYGON        (1UL<<13)    // this polygon was brush polygon before (not just created)
-#define BPOF_FULLBRIGHT             (1UL<<14)    // set to make a wall full-bright
-#define BPOF_TRANSLUCENT            (1UL<<15)    // set for translucent portals
-#define BPOF_HASDIRECTIONALLIGHT    (1UL<<16)    // set if polygon accepts directional lights
-#define BPOF_INVISIBLE              (1UL<<17)    // set if the polygon is ignored during rendering
-#define BPOF_DARKCORNERS            (1UL<<18)    // polygons will have dark corners (here was gouraud!!!!)
-#define BPOF_RENDERTRANSLUCENT      (1UL<<19)    // internal used in rendering
-#define BPOF_NOPLANEDIFFUSION       (1UL<<20)    // plane normal is ignored when shading
-#define BPOF_DETAILPOLYGON          (1UL<<21)    // not used for visibility determination
-#define BPOF_PORTAL                 (1UL<<22)    // should behave like a portal (not same as OPOF_PORTAL)
-#define BPOF_ACCURATESHADOWS        (1UL<<23)    // shadows are calculated for each mip-map independently
-#define BPOF_HASDIRECTIONALAMBIENT  (1UL<<24)    // set if polygon accepts directional ambient
-#define BPOF_MARKEDLAYER            (1UL<<25)    // used in FindShadowLayers()
-#define BPOF_DYNAMICLIGHTSONLY      (1UL<<26)    // only dynamic lights used in shadow map
-#define BPOF_DOESNOTRECEIVESHADOW   (1UL<<27)    // has lightmap, but no shadows on it
-#define BPOF_NODYNAMICLIGHTS        (1UL<<28)    // dynamic lights do not influence it
-#define BPOF_INVALIDTRIANGLES       (1UL<<29)    // polygons could not be triangulated well
-#define BPOF_OCCLUDER               (1UL<<30)    // occluder polygon
-#define BPOF_MARKED_FOR_USE         (1UL<<31)    // used in triangularization when polygon vertex is moved
+#define BPOF_DOUBLESIDED            (1UL << 3)    // polygon is renderable from both sides
+#define BPOF_SHOOTTHRU              (1UL << 4)    // physical ray-casts can pass through the polygon, even if it is not passable
+#define BPOF_TRANSPARENT            (1UL << 5)    // render with alpha-testing and write z-buffer
+#define BPOF_RENDERASPORTAL         (1UL << 6)    // internal used in rendering
+#define BPOF_STAIRS                 (1UL << 7)    // polygon is part of a staircase
+#define BPOF_SELECTED               (1UL << 8)    // set if the polygon is selected
+#define BPOF_SELECTEDFORCSG         (1UL << 9)    // set if the polygon is selected for CSG
+#define BPOF_WASPORTAL              (1UL << 10)    // set if it was portal before CSG
+#define BPOF_PASSABLE               (1UL << 11)    // set if not a physical barrier
+#define BPOF_DOESNOTCASTSHADOW      (1UL << 12)    // set to make a wall passable for light beams
+#define BPOF_WASBRUSHPOLYGON        (1UL << 13)    // this polygon was brush polygon before (not just created)
+#define BPOF_FULLBRIGHT             (1UL << 14)    // set to make a wall full-bright
+#define BPOF_TRANSLUCENT            (1UL << 15)    // set for translucent portals
+#define BPOF_HASDIRECTIONALLIGHT    (1UL << 16)    // set if polygon accepts directional lights
+#define BPOF_INVISIBLE              (1UL << 17)    // set if the polygon is ignored during rendering
+#define BPOF_DARKCORNERS            (1UL << 18)    // polygons will have dark corners (here was gouraud!!!!)
+#define BPOF_RENDERTRANSLUCENT      (1UL << 19)    // internal used in rendering
+#define BPOF_NOPLANEDIFFUSION       (1UL << 20)    // plane normal is ignored when shading
+#define BPOF_DETAILPOLYGON          (1UL << 21)    // not used for visibility determination
+#define BPOF_PORTAL                 (1UL << 22)    // should behave like a portal (not same as OPOF_PORTAL)
+#define BPOF_ACCURATESHADOWS        (1UL << 23)    // shadows are calculated for each mip-map independently
+#define BPOF_HASDIRECTIONALAMBIENT  (1UL << 24)    // set if polygon accepts directional ambient
+#define BPOF_MARKEDLAYER            (1UL << 25)    // used in FindShadowLayers()
+#define BPOF_DYNAMICLIGHTSONLY      (1UL << 26)    // only dynamic lights used in shadow map
+#define BPOF_DOESNOTRECEIVESHADOW   (1UL << 27)    // has lightmap, but no shadows on it
+#define BPOF_NODYNAMICLIGHTS        (1UL << 28)    // dynamic lights do not influence it
+#define BPOF_INVALIDTRIANGLES       (1UL << 29)    // polygons could not be triangulated well
+#define BPOF_OCCLUDER               (1UL << 30)    // occluder polygon
+#define BPOF_MARKED_FOR_USE         (1UL << 31)    // used in triangularization when polygon vertex is moved
 
 #define BPOF_MASK_FOR_COPYING \
   (BPOF_PASSABLE|BPOF_DOESNOTCASTSHADOW|BPOF_FULLBRIGHT|BPOF_TRANSLUCENT|BPOF_TRANSPARENT|\
@@ -459,14 +459,14 @@ typedef CSelection<CBrushPolygon, BPOF_SELECTED>       CBrushPolygonSelection;
 typedef CSelection<CBrushPolygon, BPOF_SELECTEDFORCSG> CBrushPolygonSelectionForCSG;
 
 // sector flags
-#define BSCF_SELECTED           (1L<<0)   // set if the sector is selected
-#define BSCF_HIDDEN             (1L<<1)   // set if the sector is hidden (for editing)
-#define BSCF_SELECTEDFORCSG     (1L<<2)   // set if the sector is selected for CSG
-#define BSCF_OPENSECTOR         (1L<<3)   // set if the sector polygons are facing outwards
-#define BSCF_NEARTESTED         (1L<<4)   // already tested for near polygon
-#define BSCF_INVISIBLE          (1L<<5)   // active, but not visible
-#define BSCF_RAYTESTED          (1L<<6)   // already tested by ray
-#define BSCF_NEEDSCLIPPING      (1L<<7)   // set if its polygons needs clipping
+#define BSCF_SELECTED           (1L << 0)   // set if the sector is selected
+#define BSCF_HIDDEN             (1L << 1)   // set if the sector is hidden (for editing)
+#define BSCF_SELECTEDFORCSG     (1L << 2)   // set if the sector is selected for CSG
+#define BSCF_OPENSECTOR         (1L << 3)   // set if the sector polygons are facing outwards
+#define BSCF_NEARTESTED         (1L << 4)   // already tested for near polygon
+#define BSCF_INVISIBLE          (1L << 5)   // active, but not visible
+#define BSCF_RAYTESTED          (1L << 6)   // already tested by ray
+#define BSCF_NEEDSCLIPPING      (1L << 7)   // set if its polygons needs clipping
 #define BSCB_CONTENTTYPE  24      // upper 8 bits are used for sector content type
 #define BSCB_FORCETYPE    16      // next 8 bits are used for sector gravity type
 #define BSCB_FOGTYPE      12      // 4 bits for fog
@@ -487,8 +487,8 @@ typedef CSelection<CBrushPolygon, BPOF_SELECTEDFORCSG> CBrushPolygonSelectionFor
 //   if EntityVisTweaks&SectorVisFlags&VISM_DONTCLASSIFY, entity is treated as if not classified to that sector
 
 // temporary flags
-#define BSCTF_PRELOADEDBSP       (1L<<0)   // bsp is loaded, no need to calculate it
-#define BSCTF_PRELOADEDLINKS     (1L<<1)   // portallinks are loaded, no need to calculate them
+#define BSCTF_PRELOADEDBSP       (1L << 0)   // bsp is loaded, no need to calculate it
+#define BSCTF_PRELOADEDLINKS     (1L << 1)   // portallinks are loaded, no need to calculate them
 
 // a sector in brush
 class ENGINE_API CBrushSector {
@@ -585,46 +585,46 @@ public:
 
   /* Get/set properties. */
   inline INDEX GetContentType(void) {
-    return (bsc_ulFlags>>BSCB_CONTENTTYPE)&0xff;
+    return (bsc_ulFlags >> BSCB_CONTENTTYPE)&0xff;
   }
   void SetContentType(INDEX iNewContent)
   {
     iNewContent&=0xff;
-    bsc_ulFlags &= ~(0xff<<BSCB_CONTENTTYPE);
-    bsc_ulFlags |= (iNewContent<<BSCB_CONTENTTYPE);
+    bsc_ulFlags &= ~(0xff << BSCB_CONTENTTYPE);
+    bsc_ulFlags |= (iNewContent << BSCB_CONTENTTYPE);
   }
   INDEX GetForceType(void) {
-    return (bsc_ulFlags>>BSCB_FORCETYPE)&0xff;
+    return (bsc_ulFlags >> BSCB_FORCETYPE)&0xff;
   }
   void SetForceType(INDEX iNewForce) {
     iNewForce&=0xff;
-    bsc_ulFlags &= ~(0xff<<BSCB_FORCETYPE);
-    bsc_ulFlags |= (iNewForce<<BSCB_FORCETYPE);
+    bsc_ulFlags &= ~(0xff << BSCB_FORCETYPE);
+    bsc_ulFlags |= (iNewForce << BSCB_FORCETYPE);
   }
   INDEX GetFogType(void) {
-    return (bsc_ulFlags>>BSCB_FOGTYPE)&0xf;
+    return (bsc_ulFlags >> BSCB_FOGTYPE)&0xf;
   }
   void SetFogType(INDEX iNewForce) {
     iNewForce&=0xf;
-    bsc_ulFlags &= ~(0xf<<BSCB_FOGTYPE);
-    bsc_ulFlags |= (iNewForce<<BSCB_FOGTYPE);
+    bsc_ulFlags &= ~(0xf << BSCB_FOGTYPE);
+    bsc_ulFlags |= (iNewForce << BSCB_FOGTYPE);
   }
   INDEX GetHazeType(void) {
-    return (bsc_ulFlags>>BSCB_HAZETYPE)&0xf;
+    return (bsc_ulFlags >> BSCB_HAZETYPE)&0xf;
   }
   void SetHazeType(INDEX iNewForce) {
     iNewForce&=0xf;
-    bsc_ulFlags &= ~(0xf<<BSCB_HAZETYPE);
-    bsc_ulFlags |= (iNewForce<<BSCB_HAZETYPE);
+    bsc_ulFlags &= ~(0xf << BSCB_HAZETYPE);
+    bsc_ulFlags |= (iNewForce << BSCB_HAZETYPE);
   }
   inline INDEX GetEnvironmentType(void) {
-    return (bsc_ulFlags2>>BSCB2_ENVIRONMENTTYPE)&0xFF;
+    return (bsc_ulFlags2 >> BSCB2_ENVIRONMENTTYPE)&0xFF;
   }
   void SetEnvironmentType(INDEX iNewEnvironment)
   {
     iNewEnvironment&=0xFF;
-    bsc_ulFlags2 &= ~(0xFF<<BSCB2_ENVIRONMENTTYPE);
-    bsc_ulFlags2 |= (iNewEnvironment<<BSCB2_ENVIRONMENTTYPE);
+    bsc_ulFlags2 &= ~(0xFF << BSCB2_ENVIRONMENTTYPE);
+    bsc_ulFlags2 |= (iNewEnvironment << BSCB2_ENVIRONMENTTYPE);
   }
 
   // get amount of memory used by this object
@@ -714,8 +714,8 @@ public:
 /*
  * Brush class -- a piece of level that can be moved independently
  */
-#define BRF_DRAWSELECTED    (1L<<0)   // internal marker for rendering selected brushes
-#define BRF_DRAWFIRSTMIP    (1L<<1)   // viewer is inside this brush
+#define BRF_DRAWSELECTED    (1L << 0)   // internal marker for rendering selected brushes
+#define BRF_DRAWFIRSTMIP    (1L << 1)   // viewer is inside this brush
 
 class ENGINE_API CBrush3D : public CBrushBase {
 public:

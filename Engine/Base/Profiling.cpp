@@ -192,7 +192,7 @@ void CProfileForm::StartTimer_internal(INDEX iTimer)
   CTimerValue tvNow = CTimerValue(ReadTSC_profile())-_tvCurrentProfilingEpsilon;
   pt.pt_tvStarted = tvNow;
   pf_ctRunningTimers++;
-  if (pf_ctRunningTimers==1) {
+  if (pf_ctRunningTimers == 1) {
     pf_tvOverAllStarted = tvNow;
   }
   _tvCurrentProfilingEpsilon += _tvStartEpsilon;
@@ -207,7 +207,7 @@ void CProfileForm::StopTimer_internal(INDEX iTimer)
   pt.pt_tvElapsed +=
     tvNow - pf_aptTimers[iTimer].pt_tvStarted - _tvStartStopEpsilon + _tvStartEpsilon;
   pf_ctRunningTimers--;
-  if (pf_ctRunningTimers==0) {
+  if (pf_ctRunningTimers == 0) {
     pf_tvOverAllElapsed += tvNow-pf_tvOverAllStarted;
   }
   IFDEBUG(pt.pt_tvStarted.tv_llValue = -__int64(1));
@@ -228,12 +228,12 @@ INDEX CProfileForm::GetAveragingCounter(void)
 /* Get current value of a timer in seconds or in percentage of module time. */
 double CProfileForm::GetTimerAverageTime(INDEX iTimer) {
   // must not report while some timers are active!
-  ASSERT(pf_ctRunningTimers==0);
+  ASSERT(pf_ctRunningTimers == 0);
   return pf_aptTimers[iTimer].pt_tvElapsed.GetSeconds()/GetAveragingCounter();
 }
 double CProfileForm::GetTimerPercentageOfModule(INDEX iTimer) {
   // must not report while some timers are active!
-  ASSERT(pf_ctRunningTimers==0);
+  ASSERT(pf_ctRunningTimers == 0);
   return pf_aptTimers[iTimer].pt_tvElapsed.GetSeconds()
     /pf_tvOverAllElapsed.GetSeconds()*100;
 }
@@ -241,7 +241,7 @@ double CProfileForm::GetTimerPercentageOfModule(INDEX iTimer) {
 /* Get percentage of module time in application time. */
 double CProfileForm::GetModulePercentage(void) {
   // must not report while some timers are active!
-  ASSERT(pf_ctRunningTimers==0);
+  ASSERT(pf_ctRunningTimers == 0);
   // calculate total application time since profile form was reset
   CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
   CTimerValue tvApplicationElapsed = tvNow-pf_tvLastReset;
@@ -254,7 +254,7 @@ double CProfileForm::GetModulePercentage(void) {
 void CProfileForm::Reset(void)
 {
   // must not reset profiling form while some timers are active!
-  //ASSERT(pf_ctRunningTimers==0);
+  //ASSERT(pf_ctRunningTimers == 0);
 
   // remember time when form was reset
   pf_tvLastReset = _pTimer->GetHighPrecisionTimer();
@@ -280,7 +280,7 @@ void CProfileForm::Reset(void)
 /* Print one counter in report. */
 void CProfileCounter::Report(char *&strBuffer, INDEX ctAveragingCount)
 {
-  if (ctAveragingCount==0) {
+  if (ctAveragingCount == 0) {
     ctAveragingCount = 1;
   }
   strBuffer += sprintf(strBuffer, "%-45s: %7d %7.2f\n",
@@ -292,11 +292,11 @@ void CProfileTimer::Report(char *&strBuffer,
                            INDEX ctAveragingCount,
                            CTimerValue tvAppElapsed, CTimerValue tvModElapsed)
 {
-  if (ctAveragingCount==0) {
+  if (ctAveragingCount == 0) {
     ctAveragingCount = 1;
   }
 
-  if (pt_strAveragingName=="") {
+  if (pt_strAveragingName == "") {
     strBuffer += sprintf(strBuffer, "%-45s: %6.2f%% %6.2f%% %6.2f ms\n",
       pt_strName,
       pt_tvElapsed.GetSeconds()/tvAppElapsed.GetSeconds()*100,
@@ -305,7 +305,7 @@ void CProfileTimer::Report(char *&strBuffer,
       );
   } else {
     INDEX ctLocalAveraging = pt_ctAveraging;
-    if (ctLocalAveraging==0) {
+    if (ctLocalAveraging == 0) {
       ctLocalAveraging = 1;
     }
     strBuffer += sprintf(strBuffer, "%-45s: %6.2f%% %6.2f%% %6.2f ms (%4.0fc/%s x%d)\n",
@@ -328,11 +328,11 @@ void CProfileForm::Report(CTString &strReport)
   char *strBuffer = aBuffer;
 
   // must not report profiling form while some timers are active!
-  if (pf_ctRunningTimers!=0) {
+  if (pf_ctRunningTimers != 0) {
     strBuffer += sprintf(strBuffer,
       "WARNING: Some timers are still active - the results are wrong!\n");
   }
-  //ASSERT(pf_ctRunningTimers==0);
+  //ASSERT(pf_ctRunningTimers == 0);
 
   // calculate total application time since profile form was reset
   CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();

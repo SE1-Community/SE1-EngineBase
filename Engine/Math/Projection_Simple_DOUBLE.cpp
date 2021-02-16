@@ -175,7 +175,7 @@ void CSimpleProjection3D_DOUBLE::Project(const DOUBLEplane3D &p3dObjectPlane,
   // rotate the plane
   p3dTransformedPlane = p3dObjectPlane*pr_RotationMatrix;
   // renormalize it in case of stretch
-  if (pr_ObjectStretch(1)!=1.0f || pr_ObjectStretch(2)!=1.0f || pr_ObjectStretch(3)!=1.0f) {
+  if (pr_ObjectStretch(1) != 1.0f || pr_ObjectStretch(2) != 1.0f || pr_ObjectStretch(3) != 1.0f) {
     FLOAT fLen = ((DOUBLE3D&)p3dTransformedPlane).Length();
     p3dTransformedPlane = DOUBLEplane3D(
       ((DOUBLE3D&)p3dTransformedPlane)/fLen,

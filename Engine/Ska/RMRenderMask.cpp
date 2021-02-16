@@ -39,7 +39,7 @@ extern void InternalShader_Mask(void)
   // need arrays and texture
   INDEX ctIdx = shaGetIndexCount();
   INDEX ctVtx = shaGetVertexCount();
-  if (ctIdx==0 || ctVtx==0) return;
+  if (ctIdx == 0 || ctVtx == 0) return;
   INDEX *pidx = shaGetIndexArray();
   GFXVertex4  *pvtx = shaGetVertexArray();
   GFXTexCoord *ptex = shaGetUVMap(0);
@@ -50,9 +50,9 @@ extern void InternalShader_Mask(void)
   ULONG *pulTexFrame = NULL;
   PIX pixMipWidth=0, pixMipHeight=0;
 
-  if (pto!=NULL && ptex!=NULL) {
+  if (pto != NULL && ptex != NULL) {
     CTextureData *ptd = (CTextureData*)pto->GetData();
-    if (ptd!=NULL && ptd->td_ptegEffect==NULL) {
+    if (ptd != NULL && ptd->td_ptegEffect == NULL) {
       // fetch some texture params
       pulTexFrame  = ptd->td_pulFrames + (pto->GetFrame()*ptd->td_slFrameSize)/BYTES_PER_TEXEL;
       pixMipWidth  = ptd->GetPixWidth();
@@ -120,7 +120,7 @@ extern void InternalShader_Mask(void)
     }
 
     // adjust texture coords (if any!)
-    if (ptex!=NULL) {
+    if (ptex != NULL) {
       tvd.tvd_fU = ptex[iVtx].s;
       tvd.tvd_fV = ptex[iVtx].t;
       tvd.tvd_pv2.pv2_fUoK = tvd.tvd_fU * tvd.tvd_pv2.pv2_f1oK *pixMipWidth;
@@ -128,7 +128,7 @@ extern void InternalShader_Mask(void)
     } else tvd.tvd_fU = tvd.tvd_fV = 0;
 
     // check clipping against horizontal screen boundaries and near clip plane
-    if (tvd.tvd_pv2.pv2_fI<0 || tvd.tvd_pv2.pv2_fI>=_slMaskWidth
+    if (tvd.tvd_pv2.pv2_fI<0 || tvd.tvd_pv2.pv2_fI >= _slMaskWidth
      || tvd.tvd_fZ>fFrontClipDistance || (fBackClipDistance<0 && tvd.tvd_fZ<fBackClipDistance)) {
       tvd.tvd_bClipped = TRUE;
     }
@@ -157,7 +157,7 @@ extern void InternalShader_Mask(void)
         FLOAT fd0 = fFrontClipDistance-tvd0.tvd_fZ;
         FLOAT fd1 = fFrontClipDistance-tvd1.tvd_fZ;
         // if first vertex is in
-        if (fd0>=0) {
+        if (fd0 >= 0) {
           // add it to clip array
           ptvdDst[ctvxDst] = tvd0;
           ctvxDst++;
@@ -179,7 +179,7 @@ extern void InternalShader_Mask(void)
         // if first vertex is out (don't add it into clip array)
         } else {
           // if second vertex is in
-          if (fd1>=0) {
+          if (fd1 >= 0) {
             // add clipped vertex at entry
             TransformedVertexData &tvdClipped = ptvdDst[ctvxDst];
             ctvxDst++;
@@ -214,7 +214,7 @@ extern void InternalShader_Mask(void)
           FLOAT fd0 = tvd0.tvd_fZ-fBackClipDistance;
           FLOAT fd1 = tvd1.tvd_fZ-fBackClipDistance;
           // if first vertex is in
-          if (fd0>=0) {
+          if (fd0 >= 0) {
             // add it to clip array
             ptvdDst[ctvxDst] = tvd0;
             ctvxDst++;
@@ -236,7 +236,7 @@ extern void InternalShader_Mask(void)
           // if first vertex is out (don't add it into clip array)
           } else {
             // if second vertex is in
-            if (fd1>=0) {
+            if (fd1 >= 0) {
               // add clipped vertex at entry
               TransformedVertexData &tvdClipped = ptvdDst[ctvxDst];
               ctvxDst++;
@@ -286,7 +286,7 @@ extern void InternalShader_Mask(void)
         FLOAT fd0 = pv20.pv2_fI-0;
         FLOAT fd1 = pv21.pv2_fI-0;
         // if first vertex is in
-        if (fd0>=0) {
+        if (fd0 >= 0) {
           // add it to clip array
           ptvdDst[ctvxDst].tvd_pv2 = pv20;
           ctvxDst++;
@@ -304,7 +304,7 @@ extern void InternalShader_Mask(void)
         // if first vertex is out (don't add it into clip array)
         } else {
           // if second vertex is in
-          if (fd1>=0) {
+          if (fd1 >= 0) {
             // add clipped vertex at entry
             PolyVertex2D &pv2Clipped = ptvdDst[ctvxDst].tvd_pv2;
             ctvxDst++;
@@ -335,7 +335,7 @@ extern void InternalShader_Mask(void)
         FLOAT fd0 = _slMaskWidth - pv20.pv2_fI;
         FLOAT fd1 = _slMaskWidth - pv21.pv2_fI;
         // if first vertex is in
-        if (fd0>=0) {
+        if (fd0 >= 0) {
           // add it to clip array
           ptvdDst[ctvxDst].tvd_pv2 = pv20;
           ctvxDst++;
@@ -353,7 +353,7 @@ extern void InternalShader_Mask(void)
         // if first vertex is out (don't add it into clip array)
         } else {
           // if second vertex is in
-          if (fd1>=0) {
+          if (fd1 >= 0) {
             // add clipped vertex at entry
             PolyVertex2D &pv2Clipped = ptvdDst[ctvxDst].tvd_pv2;
             ctvxDst++;

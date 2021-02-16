@@ -76,7 +76,7 @@ void MakeRotationMatrixFast(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles
 /*
  * Calculate inverse rotation matrix from angles in 3D.
  */
-/*void operator!=(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles)
+/*void operator != (FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles)
 {
   MakeInverseRotationMatrix(t3dRotation, a3dAngles);
 }
@@ -266,7 +266,7 @@ void operator^=(DOUBLEmatrix3D &t3dRotation, const ANGLE3D &a3dAngles) {
 /*
  * Calculate inverse rotation matrix from angles in 3D.
  */
-void operator!=(DOUBLEmatrix3D &t3dRotation, const ANGLE3D &a3dAngles) {
+void operator != (DOUBLEmatrix3D &t3dRotation, const ANGLE3D &a3dAngles) {
   const ANGLE &h=a3dAngles(1);  // heading
   const ANGLE &p=a3dAngles(2);  // pitch
   const ANGLE &b=a3dAngles(3);  // banking

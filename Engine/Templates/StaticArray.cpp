@@ -40,7 +40,7 @@ inline CStaticArray<Type>::CStaticArray(void) {
 template<class Type>
 inline CStaticArray<Type>::~CStaticArray(void) {
   // if some objects were allocated
-  if (sa_Count!=0) {
+  if (sa_Count != 0) {
     // destroy them
     Delete();
   }
@@ -55,7 +55,7 @@ inline void CStaticArray<Type>::operator=(const CStaticArray<Type> &arOriginal) 
 template<class Type>
 /* Destroy all objects, and reset the array to initial (empty) state. */
 inline void CStaticArray<Type>::Clear(void) {
-  if (sa_Count!=0) Delete(); 
+  if (sa_Count != 0) Delete(); 
 }
 
 /*
@@ -63,15 +63,15 @@ inline void CStaticArray<Type>::Clear(void) {
  */
 template<class Type>
 inline void CStaticArray<Type>::New(INDEX iCount) {
-  ASSERT(this!=NULL && iCount>=0);
+  ASSERT(this != NULL && iCount >= 0);
   // if no new members are needed in fact
-  if (iCount==0) {
+  if (iCount == 0) {
     // do nothing
     return;
   }
-  //ASSERT(sa_Count==0 && sa_Array==NULL);
+  //ASSERT(sa_Count == 0 && sa_Array == NULL);
 #ifndef NDEBUG
-  if (!(sa_Count==0 && sa_Array==NULL)) {
+  if (!(sa_Count == 0 && sa_Array == NULL)) {
     if (sa_Array == NULL) {
       CPrintF("CStaticArray array not set!\n");
     } else {
@@ -86,15 +86,15 @@ inline void CStaticArray<Type>::New(INDEX iCount) {
 template<class Type>
 inline void CStaticArray<Type>::Expand(INDEX iNewCount)
 {
-  ASSERT(this!=NULL && iNewCount>sa_Count);
+  ASSERT(this != NULL && iNewCount>sa_Count);
   // if not already allocated
-  if (sa_Count==0) {
+  if (sa_Count == 0) {
     // just allocate
     New(iNewCount);
     return;
   // if already allocated
   } else {
-    ASSERT(sa_Count!=0 && sa_Array!=NULL);
+    ASSERT(sa_Count != 0 && sa_Array != NULL);
     // allocate new array with more space
     Type *ptNewArray = new Type[iNewCount+1]; //(+1 for cache-prefetch opt)
     // copy old objects
@@ -114,8 +114,8 @@ inline void CStaticArray<Type>::Expand(INDEX iNewCount)
  */
 template<class Type>
 inline void CStaticArray<Type>::Delete(void) {
-  ASSERT(this!=NULL);
-  ASSERT(sa_Count!=0 && sa_Array!=NULL);
+  ASSERT(this != NULL);
+  ASSERT(sa_Count != 0 && sa_Array != NULL);
   delete[] sa_Array;
   sa_Count = 0;
   sa_Array = NULL;
@@ -126,14 +126,14 @@ inline void CStaticArray<Type>::Delete(void) {
  */
 template<class Type>
 inline Type &CStaticArray<Type>::operator[](INDEX i) {
-  ASSERT(this!=NULL);
-  ASSERT(i>=0 && i<sa_Count);     // check bounds
+  ASSERT(this != NULL);
+  ASSERT(i >= 0 && i<sa_Count);     // check bounds
   return sa_Array[i];
 }
 template<class Type>
 inline const Type &CStaticArray<Type>::operator[](INDEX i) const {
-  ASSERT(this!=NULL);
-  ASSERT(i>=0 && i<sa_Count);     // check bounds
+  ASSERT(this != NULL);
+  ASSERT(i >= 0 && i<sa_Count);     // check bounds
   return sa_Array[i];
 }
 
@@ -142,7 +142,7 @@ inline const Type &CStaticArray<Type>::operator[](INDEX i) const {
  */
 template<class Type>
 INDEX CStaticArray<Type>::Count(void) const {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   return sa_Count;
 }
 
@@ -151,9 +151,9 @@ INDEX CStaticArray<Type>::Count(void) const {
  */
 template<class Type>
 INDEX CStaticArray<Type>::Index(Type *ptMember) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   INDEX i = ptMember-sa_Array;
-  ASSERT(i>=0 && i<sa_Count);
+  ASSERT(i >= 0 && i<sa_Count);
   return i;
 }
 
@@ -164,16 +164,16 @@ template<class Type>
 /* Copy all elements of another array into this one. */
 void CStaticArray<Type>::CopyArray(const CStaticArray<Type> &arOriginal)
 {
-  ASSERT(this!=NULL);
-  ASSERT(&arOriginal!=NULL);
-  ASSERT(this!=&arOriginal);
+  ASSERT(this != NULL);
+  ASSERT(&arOriginal != NULL);
+  ASSERT(this != &arOriginal);
 
   // clear previous contents
   Clear();
   // get count of elements in original array
   INDEX ctOriginal = arOriginal.Count();
   // if the other array has no elements
-  if (ctOriginal ==0) {
+  if (ctOriginal == 0) {
     return;
   }
   // create that much elements
@@ -188,14 +188,14 @@ void CStaticArray<Type>::CopyArray(const CStaticArray<Type> &arOriginal)
 template<class Type>
 void CStaticArray<Type>::MoveArray(CStaticArray<Type> &arOther)
 {
-  ASSERT(this!=NULL);
-  ASSERT(&arOther!=NULL);
-  ASSERT(this!=&arOther);
+  ASSERT(this != NULL);
+  ASSERT(&arOther != NULL);
+  ASSERT(this != &arOther);
 
   // clear previous contents
   Clear();
   // if the other array has no elements
-  if (arOther.Count()==0) {
+  if (arOther.Count() == 0) {
     // no assignment
     return;
   }
@@ -255,7 +255,7 @@ inline CStaticArrayIterator<Type>::~CStaticArrayIterator(void) {
  */
 template<class Type>
 inline void CStaticArrayIterator<Type>::MoveToNext(void) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   sai_Index++;
 }
 
@@ -264,8 +264,8 @@ inline void CStaticArrayIterator<Type>::MoveToNext(void) {
  */
 template<class Type>
 inline BOOL CStaticArrayIterator<Type>::IsPastEnd(void) {
-  ASSERT(this!=NULL);
-  return sai_Index>=sai_Array.sa_Count;
+  ASSERT(this != NULL);
+  return sai_Index >= sai_Array.sa_Count;
 }
 
 

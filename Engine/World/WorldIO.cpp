@@ -196,7 +196,7 @@ void CWorld::ReadBrushes_t( CTStream *istrm)// throw char *
   CallProgressHook_t(1.0f);
 
   // if there are some terrais in world
-  if (istrm->PeekID_t()==CChunkID("TRAR")) { // 'terrain archive'
+  if (istrm->PeekID_t() == CChunkID("TRAR")) { // 'terrain archive'
     SetProgressDescription(TRANS("loading terrains"));
     CallProgressHook_t(0.0f);
     wo_taTerrains.Read_t(istrm);
@@ -243,9 +243,9 @@ void CWorld::ReadState_t( CTStream *istr) // throw char *
 
   // read the version number
   INDEX iSavedVersion;
-  (*istr)>>iSavedVersion;
+  (*istr) >> iSavedVersion;
   // if the version number is the newest
-  if (iSavedVersion==WORLDSTATEVERSION_CURRENT) {
+  if (iSavedVersion == WORLDSTATEVERSION_CURRENT) {
     // read current version
     ReadState_new_t(istr);
 
@@ -253,7 +253,7 @@ void CWorld::ReadState_t( CTStream *istr) // throw char *
   } else {
 
     // if the version can be converted
-    if (iSavedVersion==WORLDSTATEVERSION_CURRENT-1) {
+    if (iSavedVersion == WORLDSTATEVERSION_CURRENT-1) {
       // show warning
 //      WarningMessage(
 //        "World state version was %d (old).\n"
@@ -262,7 +262,7 @@ void CWorld::ReadState_t( CTStream *istr) // throw char *
       // read previous version
       ReadState_old_t(istr);
     // if the version can be converted
-    } else if (iSavedVersion==WORLDSTATEVERSION_CURRENT-2) {
+    } else if (iSavedVersion == WORLDSTATEVERSION_CURRENT-2) {
       // show warning
       WarningMessage(
         TRANS("World state version was %d (very old).\n"
@@ -283,7 +283,7 @@ void CWorld::ReadState_t( CTStream *istr) // throw char *
   SetProgressDescription(TRANS("precaching"));
   CallProgressHook_t(0.0f);
   // precache data needed by entities
-  if (gam_iPrecachePolicy==PRECACHE_SMART) {
+  if (gam_iPrecachePolicy == PRECACHE_SMART) {
     PrecacheEntities_t();
   }
   CallProgressHook_t(1.0f);
@@ -297,53 +297,53 @@ void CWorld::ReadState_t( CTStream *istr) // throw char *
 void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
 {
   // read the world description
-  (*istr)>>wo_strDescription;
+  (*istr) >> wo_strDescription;
   // read the world background color
-  (*istr)>>wo_colBackground;
+  (*istr) >> wo_colBackground;
 
   INDEX ienBackgroundViewer = -1;
   // if background viewer entity is saved here
   if (istr->PeekID_t() == CChunkID("BGVW")) {
     // read background viewer entity index
     istr->ExpectID_t("BGVW"); // background viewer
-    (*istr)>>ienBackgroundViewer;
+    (*istr) >> ienBackgroundViewer;
   } else {
     BOOL bUseBackgroundTexture;
-    (*istr)>>(SLONG &)bUseBackgroundTexture;
+    (*istr) >> (SLONG &)bUseBackgroundTexture;
 
     // read the world background texture name
     CTString strBackgroundTexture;
-    (*istr)>>strBackgroundTexture;   // saved as string to bypass dependency catcher
+    (*istr) >> strBackgroundTexture;   // saved as string to bypass dependency catcher
     // skip the 6 dummy texture names used for dependencies
     CTFileName fnmDummy;
-    (*istr)>>fnmDummy>>fnmDummy>>fnmDummy
-           >>fnmDummy>>fnmDummy>>fnmDummy;
+    (*istr) >> fnmDummy >> fnmDummy >> fnmDummy
+            >> fnmDummy >> fnmDummy >> fnmDummy;
   }
 
   // if backdrop image data is saved here
   if (istr->PeekID_t() == CChunkID("BRDP")) {
     // read backdrop image data
     istr->ExpectID_t("BRDP"); // backdrop
-    (*istr)>>wo_strBackdropUp;
-    (*istr)>>wo_strBackdropFt;
-    (*istr)>>wo_strBackdropRt;
-    (*istr)>>wo_fUpW>>wo_fUpL>>wo_fUpCX>>wo_fUpCZ;
-    (*istr)>>wo_fFtW>>wo_fFtH>>wo_fFtCX>>wo_fFtCY;
-    (*istr)>>wo_fRtL>>wo_fRtH>>wo_fRtCZ>>wo_fRtCY;
+    (*istr) >> wo_strBackdropUp;
+    (*istr) >> wo_strBackdropFt;
+    (*istr) >> wo_strBackdropRt;
+    (*istr) >> wo_fUpW >> wo_fUpL >> wo_fUpCX >> wo_fUpCZ;
+    (*istr) >> wo_fFtW >> wo_fFtH >> wo_fFtCX >> wo_fFtCY;
+    (*istr) >> wo_fRtL >> wo_fRtH >> wo_fRtCZ >> wo_fRtCY;
   }
 
   // if backdrop object name is saved here
   if (istr->PeekID_t() == CChunkID("BDRO")) {
     // read backdrop object name
     istr->ExpectID_t("BDRO"); // backdrop object
-    (*istr)>>wo_strBackdropObject;
+    (*istr) >> wo_strBackdropObject;
   }
 
   // if viewer position should be loaded
   if (istr->PeekID_t() == CChunkID("VWPS")) {
     istr->ExpectID_t("VWPS"); // viewer position
-    (*istr)>>wo_plFocus;
-    (*istr)>>wo_fTargetDistance;
+    (*istr) >> wo_plFocus;
+    (*istr) >> wo_fTargetDistance;
   }
 
   istr->ExpectID_t("SHAN"); // shadow animations
@@ -357,14 +357,14 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
   istr->ExpectID_t("ECLs"); // entity classes
   // read number of entity classes
   INDEX ctEntityClasses;
-  (*istr)>>ctEntityClasses;
+  (*istr) >> ctEntityClasses;
 
   CStaticArray<CTFileName> cecClasses;
   cecClasses.New(ctEntityClasses);
   // for each entity class
   {for (INDEX iEntityClass=0; iEntityClass<ctEntityClasses; iEntityClass++) {
     // load filename
-    (*istr)>>cecClasses[iEntityClass];
+    (*istr) >> cecClasses[iEntityClass];
   }}
 
   /* NOTE: Entities must be loaded in two passes, since all entities must be created
@@ -373,14 +373,14 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
   istr->ExpectID_t("ENTs"); // entities
   // read number of entities
   INDEX ctEntities;
-  (*istr)>>ctEntities;
+  (*istr) >> ctEntities;
 
   // for each entity
   {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
     INDEX iEntityClass;
     CPlacement3D plPlacement;
     // read entity class index and entity placement
-    (*istr)>>iEntityClass>>plPlacement;
+    (*istr) >> iEntityClass >> plPlacement;
     // create an entity of that class
     CEntity *penNew = CreateEntity_t(plPlacement, cecClasses[iEntityClass]);
   }}
@@ -392,7 +392,7 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
   }}
 
   // after all entities have been read, set the background viewer entity
-  if (ienBackgroundViewer==-1) {
+  if (ienBackgroundViewer == -1) {
     SetBackgroundViewer(NULL);
   } else {
     SetBackgroundViewer(wo_cenAllEntities.Pointer(ienBackgroundViewer));
@@ -427,37 +427,37 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
 void CWorld::ReadState_old_t( CTStream *istr) // throw char *
 {
   // read the world description
-  (*istr)>>wo_strDescription;
+  (*istr) >> wo_strDescription;
   // read the world background color
-  (*istr)>>wo_colBackground;
+  (*istr) >> wo_colBackground;
 
   INDEX ienBackgroundViewer = -1;
   // read background viewer entity index
   istr->ExpectID_t("BGVW"); // background viewer
-  (*istr)>>ienBackgroundViewer;
+  (*istr) >> ienBackgroundViewer;
 
   // read backdrop image data
   istr->ExpectID_t("BRDP"); // backdrop
-  (*istr)>>wo_strBackdropUp;
-  (*istr)>>wo_strBackdropFt;
-  (*istr)>>wo_strBackdropRt;
-  (*istr)>>wo_fUpW>>wo_fUpL>>wo_fUpCX>>wo_fUpCZ;
-  (*istr)>>wo_fFtW>>wo_fFtH>>wo_fFtCX>>wo_fFtCY;
-  (*istr)>>wo_fRtL>>wo_fRtH>>wo_fRtCZ>>wo_fRtCY;
+  (*istr) >> wo_strBackdropUp;
+  (*istr) >> wo_strBackdropFt;
+  (*istr) >> wo_strBackdropRt;
+  (*istr) >> wo_fUpW >> wo_fUpL >> wo_fUpCX >> wo_fUpCZ;
+  (*istr) >> wo_fFtW >> wo_fFtH >> wo_fFtCX >> wo_fFtCY;
+  (*istr) >> wo_fRtL >> wo_fRtH >> wo_fRtCZ >> wo_fRtCY;
 
   // read backdrop object name
   istr->ExpectID_t("BDRO"); // backdrop object
-  (*istr)>>wo_strBackdropObject;
+  (*istr) >> wo_strBackdropObject;
 
   istr->ExpectID_t("VWPS"); // viewer position
-  (*istr)>>wo_plFocus;
-  (*istr)>>wo_fTargetDistance;
+  (*istr) >> wo_plFocus;
+  (*istr) >> wo_fTargetDistance;
 
   // if thumbnail saving position should be loaded
   if (istr->PeekID_t() == CChunkID("TBPS")) {
     istr->ExpectID_t("TBPS"); // thumbnail position
-    (*istr)>>wo_plThumbnailFocus;
-    (*istr)>>wo_fThumbnailTargetDistance;
+    (*istr) >> wo_plThumbnailFocus;
+    (*istr) >> wo_fThumbnailTargetDistance;
   }
 
   istr->ExpectID_t("SHAN"); // shadow animations
@@ -471,14 +471,14 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
   istr->ExpectID_t("ECLs"); // entity classes
   // read number of entity classes
   INDEX ctEntityClasses;
-  (*istr)>>ctEntityClasses;
+  (*istr) >> ctEntityClasses;
 
   CStaticArray<CTFileName> cecClasses;
   cecClasses.New(ctEntityClasses);
   // for each entity class
   {for (INDEX iEntityClass=0; iEntityClass<ctEntityClasses; iEntityClass++) {
     // load filename
-    (*istr)>>cecClasses[iEntityClass];
+    (*istr) >> cecClasses[iEntityClass];
   }}
 
   /* NOTE: Entities must be loaded in two passes, since all entities must be created
@@ -487,14 +487,14 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
   istr->ExpectID_t("ENTs"); // entities
   // read number of entities
   INDEX ctEntities;
-  (*istr)>>ctEntities;
+  (*istr) >> ctEntities;
 
   // for each entity
   {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
     INDEX iEntityClass;
     CPlacement3D plPlacement;
     // read entity class index and entity placement
-    (*istr)>>iEntityClass>>plPlacement;
+    (*istr) >> iEntityClass >> plPlacement;
     // create an entity of that class
     CEntity *penNew = CreateEntity_t(plPlacement, cecClasses[iEntityClass]);
   }}
@@ -506,7 +506,7 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
   }}
 
   // after all entities have been read, set the background viewer entity
-  if (ienBackgroundViewer==-1) {
+  if (ienBackgroundViewer == -1) {
     SetBackgroundViewer(NULL);
   } else {
     SetBackgroundViewer(wo_cenAllEntities.Pointer(ienBackgroundViewer));
@@ -547,12 +547,12 @@ void CWorld::ReadState_new_t( CTStream *istr) // throw char *
   ReadInfo_t(istr, TRUE);
 
   // read the world background color
-  (*istr)>>wo_colBackground;
+  (*istr) >> wo_colBackground;
 
   // read entity ID counter
-  if (istr->PeekID_t()==CChunkID("NFID")) {
+  if (istr->PeekID_t() == CChunkID("NFID")) {
     istr->ExpectID_t("NFID");
-    (*istr)>>wo_ulNextEntityID;
+    (*istr) >> wo_ulNextEntityID;
   } else {
     wo_ulNextEntityID = 1;
   }
@@ -560,36 +560,36 @@ void CWorld::ReadState_new_t( CTStream *istr) // throw char *
   INDEX ienBackgroundViewer = -1;
   // read background viewer entity index
   istr->ExpectID_t("BGVW"); // background viewer
-  (*istr)>>ienBackgroundViewer;
+  (*istr) >> ienBackgroundViewer;
 
   // read backdrop image data
   istr->ExpectID_t("BRDP"); // backdrop
-  (*istr)>>wo_strBackdropUp;
-  (*istr)>>wo_strBackdropFt;
-  (*istr)>>wo_strBackdropRt;
-  (*istr)>>wo_fUpW>>wo_fUpL>>wo_fUpCX>>wo_fUpCZ;
-  (*istr)>>wo_fFtW>>wo_fFtH>>wo_fFtCX>>wo_fFtCY;
-  (*istr)>>wo_fRtL>>wo_fRtH>>wo_fRtCZ>>wo_fRtCY;
+  (*istr) >> wo_strBackdropUp;
+  (*istr) >> wo_strBackdropFt;
+  (*istr) >> wo_strBackdropRt;
+  (*istr) >> wo_fUpW >> wo_fUpL >> wo_fUpCX >> wo_fUpCZ;
+  (*istr) >> wo_fFtW >> wo_fFtH >> wo_fFtCX >> wo_fFtCY;
+  (*istr) >> wo_fRtL >> wo_fRtH >> wo_fRtCZ >> wo_fRtCY;
 
   // read backdrop object name
   istr->ExpectID_t("BDRO"); // backdrop object
-  (*istr)>>wo_strBackdropObject;
+  (*istr) >> wo_strBackdropObject;
 
   istr->ExpectID_t("VWPS"); // viewer position
-  (*istr)>>wo_plFocus;
-  (*istr)>>wo_fTargetDistance;
+  (*istr) >> wo_plFocus;
+  (*istr) >> wo_fTargetDistance;
 
   // if thumbnail saving position should be loaded
   if (istr->PeekID_t() == CChunkID("TBPS")) {
     istr->ExpectID_t("TBPS"); // thumbnail position
-    (*istr)>>wo_plThumbnailFocus;
-    (*istr)>>wo_fThumbnailTargetDistance;
+    (*istr) >> wo_plThumbnailFocus;
+    (*istr) >> wo_fThumbnailTargetDistance;
   }
 
   /* NOTE: Entities must be loaded in two passes, since all entities must be created
    * before any entity pointer properties can be loaded.
    */
-  if (istr->PeekID_t()== CChunkID("ENTs")) {
+  if (istr->PeekID_t() == CChunkID("ENTs")) {
     istr->ExpectID_t("ENTs"); // entities
   } else {
     istr->ExpectID_t("ENs2"); // entities v2
@@ -597,7 +597,7 @@ void CWorld::ReadState_new_t( CTStream *istr) // throw char *
   }
   // read number of entities
   INDEX ctEntities;
-  (*istr)>>ctEntities;
+  (*istr) >> ctEntities;
 
   SetProgressDescription(TRANS("creating entities"));
   CallProgressHook_t(0.0f);
@@ -606,12 +606,12 @@ void CWorld::ReadState_new_t( CTStream *istr) // throw char *
     // read entity id if needed
     ULONG ulID = 0;
     if (_bReadEntitiesByID) {
-      (*istr)>>ulID;
+      (*istr) >> ulID;
     }
     // read entity class and entity placement
     CTFileName fnmClass;
     CPlacement3D plPlacement;
-    (*istr)>>fnmClass>>plPlacement;
+    (*istr) >> fnmClass >> plPlacement;
     // create an entity of that class
     CEntity *penNew = CreateEntity_t(plPlacement, fnmClass);
     // adjust id if needed
@@ -634,7 +634,7 @@ void CWorld::ReadState_new_t( CTStream *istr) // throw char *
   CallProgressHook_t(1.0f);
 
   // after all entities have been read, set the background viewer entity
-  if (ienBackgroundViewer==-1) {
+  if (ienBackgroundViewer == -1) {
     SetBackgroundViewer(NULL);
   } else {
     CEntity *penBcg;
@@ -661,15 +661,15 @@ void CWorld::ReadState_new_t( CTStream *istr) // throw char *
   wo_cenEntities.Lock();
 
   // if version with entity order
-  if (istr->PeekID_t()==CChunkID("ENOR")) { // entity order
+  if (istr->PeekID_t() == CChunkID("ENOR")) { // entity order
     istr->ExpectID_t(CChunkID("ENOR")); // entity order
     INDEX ctEntities;
-    *istr>>ctEntities;
+    *istr >> ctEntities;
     wo_cenEntities.Clear();
     // for each non-deleted entity
     for (INDEX i=0; i<ctEntities; i++) {
       ULONG ulID;
-      *istr>>ulID;
+      *istr >> ulID;
       wo_cenEntities.Add(EntityFromID(ulID));
     }
   }
@@ -708,9 +708,9 @@ void CWorld::WriteState_t( CTStream *ostr, BOOL bImportDictionary /* = FALSE */)
 
   // all predictors must be deleted
   ASSERT(
-    wo_cenPredicted.Count()==0 && 
-    wo_cenPredictor.Count()==0 && 
-    wo_cenWillBePredicted.Count()==0);
+    wo_cenPredicted.Count() == 0 && 
+    wo_cenPredictor.Count() == 0 && 
+    wo_cenWillBePredicted.Count() == 0);
 
   if (bImportDictionary) {
     ostr->DictionaryWriteBegin_t(wo_fnmFileName, wo_slStateDictionaryOffset);
@@ -719,60 +719,60 @@ void CWorld::WriteState_t( CTStream *ostr, BOOL bImportDictionary /* = FALSE */)
   }
   (*ostr).WriteID_t("WSTA"); // world state
   // write the world version
-  (*ostr)<<INDEX(WORLDSTATEVERSION_CURRENT);
+  (*ostr) << INDEX(WORLDSTATEVERSION_CURRENT);
 
   // write the world description
   WriteInfo_t(ostr);
 
   // write the world background color
-  (*ostr)<<wo_colBackground;
+  (*ostr) << wo_colBackground;
 
   // write entity ID counter
   ostr->WriteID_t("NFID");
-  (*ostr)<<wo_ulNextEntityID;
+  (*ostr) << wo_ulNextEntityID;
 
   // write background viewer entity if any
   ostr->WriteID_t("BGVW"); // background viewer
   CEntity *penBackgroundViewer = GetBackgroundViewer();
-  if (penBackgroundViewer==NULL) {
-    (*ostr)<<INDEX(-1);
+  if (penBackgroundViewer == NULL) {
+    (*ostr) << INDEX(-1);
   } else {
-    (*ostr)<<penBackgroundViewer->en_ulID;
+    (*ostr) << penBackgroundViewer->en_ulID;
   }
 
   // write backdrop image data
   ostr->WriteID_t("BRDP"); // backdrop
-  (*ostr)<<wo_strBackdropUp;
-  (*ostr)<<wo_strBackdropFt;
-  (*ostr)<<wo_strBackdropRt;
-  (*ostr)<<wo_fUpW<<wo_fUpL<<wo_fUpCX<<wo_fUpCZ;
-  (*ostr)<<wo_fFtW<<wo_fFtH<<wo_fFtCX<<wo_fFtCY;
-  (*ostr)<<wo_fRtL<<wo_fRtH<<wo_fRtCZ<<wo_fRtCY;
+  (*ostr) << wo_strBackdropUp;
+  (*ostr) << wo_strBackdropFt;
+  (*ostr) << wo_strBackdropRt;
+  (*ostr) << wo_fUpW << wo_fUpL << wo_fUpCX << wo_fUpCZ;
+  (*ostr) << wo_fFtW << wo_fFtH << wo_fFtCX << wo_fFtCY;
+  (*ostr) << wo_fRtL << wo_fRtH << wo_fRtCZ << wo_fRtCY;
 
   // write backdrop object name
   ostr->WriteID_t("BDRO"); // backdrop object
-  (*ostr)<<wo_strBackdropObject;
+  (*ostr) << wo_strBackdropObject;
 
   // write viewer position
   ostr->WriteID_t("VWPS"); // viewer placement
-  (*ostr)<<wo_plFocus;
-  (*ostr)<<wo_fTargetDistance;
+  (*ostr) << wo_plFocus;
+  (*ostr) << wo_fTargetDistance;
   // write thumbnail position
   ostr->WriteID_t("TBPS"); // thumbnail placement
-  (*ostr)<<wo_plThumbnailFocus;
-  (*ostr)<<wo_fThumbnailTargetDistance;
+  (*ostr) << wo_plThumbnailFocus;
+  (*ostr) << wo_fThumbnailTargetDistance;
 
   /* NOTE: Entities must be saved in two passes, so that they can be loaded in two passes,
    * since all entities must be created before any entity pointer properties can be loaded.
    */
   ostr->WriteID_t("ENs2"); // entities
   // write number of entities
-  (*ostr)<<wo_cenAllEntities.Count();
+  (*ostr) << wo_cenAllEntities.Count();
   // for each entity
   {FOREACHINDYNAMICCONTAINER(wo_cenAllEntities, CEntity, iten) {
     CEntity &en = *iten;
     // write the id, class and its placement
-    (*ostr)<<en.en_ulID<<en.en_pecClass->GetName()<<en.en_plPlacement;
+    (*ostr) << en.en_ulID << en.en_pecClass->GetName() << en.en_plPlacement;
   }}
   // for each entity
   {FOREACHINDYNAMICCONTAINER(wo_cenAllEntities, CEntity, iten) {
@@ -783,16 +783,16 @@ void CWorld::WriteState_t( CTStream *ostr, BOOL bImportDictionary /* = FALSE */)
     // save the size of data in start chunk, after chunkid and entity id
     SLONG slOffsetAfter = ostr->GetPos_t();
     ostr->SetPos_t(slOffset+2*sizeof(SLONG));
-    *ostr<<SLONG(slOffsetAfter-slOffset-3*sizeof(SLONG));
+    *ostr << SLONG(slOffsetAfter-slOffset-3*sizeof(SLONG));
     ostr->SetPos_t(slOffsetAfter);
   }}
 
   ostr->WriteID_t(CChunkID("ENOR")); // entity order
-  *ostr<<wo_cenEntities.Count();
+  *ostr << wo_cenEntities.Count();
   // for each non-deleted entity
   {FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     // write its id
-    *ostr<<iten->en_ulID;
+    *ostr << iten->en_ulID;
   }}
 
   wo_baBrushes.WriteEntitySectorLinks_t(*ostr);
@@ -804,24 +804,24 @@ void CWorld::WriteState_t( CTStream *ostr, BOOL bImportDictionary /* = FALSE */)
 void CWorld::ReadInfo_t(CTStream *strm, BOOL bMaybeDescription) // throw char *
 {
   // if version with world info
-  if (strm->PeekID_t()==CChunkID("WLIF")) { // world info
+  if (strm->PeekID_t() == CChunkID("WLIF")) { // world info
     strm->ExpectID_t(CChunkID("WLIF")); // world info
 
     // skip eventual translation chunk
-    if (strm->PeekID_t()==CChunkID("DTRS")) {
+    if (strm->PeekID_t() == CChunkID("DTRS")) {
       strm->ExpectID_t("DTRS");
     }
     // read the name
-    (*strm)>>wo_strName;
+    (*strm) >> wo_strName;
     // read the flags
-    (*strm)>>wo_ulSpawnFlags;
+    (*strm) >> wo_ulSpawnFlags;
     // read the world description
-    (*strm)>>wo_strDescription;
+    (*strm) >> wo_strDescription;
 
   // if version with description only
   } else if (bMaybeDescription) {
     // read the world description
-    (*strm)>>wo_strDescription;
+    (*strm) >> wo_strDescription;
   }
 }
 
@@ -830,9 +830,9 @@ void CWorld::WriteInfo_t(CTStream *strm) // throw char *
   strm->WriteID_t(CChunkID("WLIF"));  // world info
   // write the name
   strm->WriteID_t(CChunkID("DTRS"));
-  (*strm)<<wo_strName;
+  (*strm) << wo_strName;
   // write the flags
-  (*strm)<<wo_ulSpawnFlags;
+  (*strm) << wo_ulSpawnFlags;
   // write the world description
-  (*strm)<<wo_strDescription;
+  (*strm) << wo_strDescription;
 }

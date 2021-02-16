@@ -39,10 +39,10 @@ void CTerrainArchive::Read_t( CTStream *istrFile) // throw char *
 
   INDEX ctTerrains;
   // read number of terrains
-  (*istrFile)>>ctTerrains;
+  (*istrFile) >> ctTerrains;
 
   // if there are some terrains
-  if (ctTerrains!=0) {
+  if (ctTerrains != 0) {
     // create that much terrains
     CTerrain *atrBrushes = ta_atrTerrains.New(ctTerrains);
     // for each of the new terrains
@@ -64,7 +64,7 @@ void CTerrainArchive::Write_t( CTStream *ostrFile) // throw char *
   ostrFile->WriteID_t("TRAR");   // terrain archive
 
   // write the number of terrains
-  (*ostrFile)<<ta_atrTerrains.Count();
+  (*ostrFile) << ta_atrTerrains.Count();
   // for each of the terrains
   FOREACHINDYNAMICARRAY(ta_atrTerrains, CTerrain, ittr) {
     // write it to stream

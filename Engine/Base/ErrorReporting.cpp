@@ -60,7 +60,7 @@ void FatalError(const char *strFormat, ...)
   CTString strBuffer;
   strBuffer.VPrintF(strFormat, arg);
 
-  if (_pConsole!=NULL) {
+  if (_pConsole != NULL) {
     // print the buffer to the console
     CPutString(TRANS("FatalError:\n"));
     CPutString(strBuffer);
@@ -126,7 +126,7 @@ BOOL YesNoMessage(const char *strFormat, ...)
   // print it to console
   CPrintF("%s\n", strBuffer);
   // create message box
-  return MessageBoxA(NULL, strBuffer, TRANS("Question"), MB_YESNO|MB_ICONQUESTION|MB_SETFOREGROUND|MB_TASKMODAL)==IDYES;
+  return MessageBoxA(NULL, strBuffer, TRANS("Question"), MB_YESNO|MB_ICONQUESTION|MB_SETFOREGROUND|MB_TASKMODAL) == IDYES;
 }
 
 /*

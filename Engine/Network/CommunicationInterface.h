@@ -28,17 +28,17 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Communication class
 class ENGINE_API CCommunicationInterface {
 public:
-	BOOL cci_bSocketOpen;		// set if socket is open and working
-  BOOL cci_bBound;				// set for udp sockets that have been explicitly or implicitly bound
-	BOOL cci_bInitialized;	// is the communication interface initialized or not
-	BOOL cci_bWinSockOpen;	// is the winsock API initialized
-	BOOL cci_bServerInitialized;
-	BOOL cci_bClientInitialized;
-		
-  CPacketBuffer cci_pbMasterOutput;					// master output buffer				 
-  CPacketBuffer cci_pbMasterInput;					// master input buffer
+  BOOL cci_bSocketOpen;    // set if socket is open and working
+  BOOL cci_bBound;        // set for udp sockets that have been explicitly or implicitly bound
+  BOOL cci_bInitialized;  // is the communication interface initialized or not
+  BOOL cci_bWinSockOpen;  // is the winsock API initialized
+  BOOL cci_bServerInitialized;
+  BOOL cci_bClientInitialized;
+    
+  CPacketBuffer cci_pbMasterOutput;          // master output buffer         
+  CPacketBuffer cci_pbMasterInput;          // master input buffer
 
-  SOCKET cci_hSocket;						// the socket handle itself
+  SOCKET cci_hSocket;            // the socket handle itself
 
 public:
   // client
@@ -71,10 +71,10 @@ public:
   void SetNonBlocking_t(void);
   // get generic socket error info string and last error
   CTString GetSocketError(INDEX iError);
-	// open an UDP socket at given port 
+  // open an UDP socket at given port 
   void OpenSocket_t(ULONG ulLocalHost, ULONG ulLocalPort);
 
-	// get address of this host
+  // get address of this host
   void GetLocalAddress_t(ULONG &ulHost, ULONG &ulPort);
   // get address of the peer host connected to this socket
   void GetRemoteAddress_t(ULONG &ulHost, ULONG &ulPort);
@@ -82,8 +82,8 @@ public:
   // broadcast communication
   void Broadcast_Send(const void *pvSend, SLONG slSendSize,CAddress &adrDestination);
   BOOL Broadcast_Receive(void *pvReceive, SLONG &slReceiveSize,CAddress &adrAddress);
-	// here we receive connect requests
-	void Broadcast_Update_t(void);
+  // here we receive connect requests
+  void Broadcast_Update_t(void);
 
   // Server
   void Server_Init_t(void);

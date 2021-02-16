@@ -40,7 +40,7 @@ SHADER_MAIN(Base_Transparent)
   COLOR colModelColor = MulColors(shaGetModelColor(),shaGetCurrentColor());
   BOOL bDoubleSided = shaGetFlags()&BASE_DOUBLE_SIDED;
   BOOL bFullBright  = shaGetFlags()&BASE_FULL_BRIGHT;
-  BOOL bOpaque = (colModelColor&0xFF)==0xFF;
+  BOOL bOpaque = (colModelColor&0xFF) == 0xFF;
 
   if (bDoubleSided) {
     shaCullFace(GFX_NONE);

@@ -27,13 +27,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define NB_BOTTOM 2
 #define NB_RIGHT  3
 
-#define TT_REGENERATE         (1UL<<0) // tile needs to be regenerated
-#define TT_NO_TOPMAP_REGEN    (1UL<<1) // when regenerating tile do not regenerate top map
-#define TT_NO_GEOMETRY_REGEN  (1UL<<2) // when regenerating tile do not regenerate geometry
-#define TT_QUADTREENODE_REGEN (1UL<<3) // when regenerating tile also regenerate it quad tree node box
-#define TT_NO_LODING          (1UL<<4) // when regenerating tile do not use lod
-#define TT_FORCE_TOPMAP_REGEN (1UL<<5) // force top map regen
-#define TT_IN_LOWEST_LOD      (1UL<<6) // tile in lowest lod and has no additional vertices inserted
+#define TT_REGENERATE         (1UL << 0) // tile needs to be regenerated
+#define TT_NO_TOPMAP_REGEN    (1UL << 1) // when regenerating tile do not regenerate top map
+#define TT_NO_GEOMETRY_REGEN  (1UL << 2) // when regenerating tile do not regenerate geometry
+#define TT_QUADTREENODE_REGEN (1UL << 3) // when regenerating tile also regenerate it quad tree node box
+#define TT_NO_LODING          (1UL << 4) // when regenerating tile do not use lod
+#define TT_FORCE_TOPMAP_REGEN (1UL << 5) // force top map regen
+#define TT_IN_LOWEST_LOD      (1UL << 6) // tile in lowest lod and has no additional vertices inserted
 
 class ENGINE_API CTerrainTile
 {

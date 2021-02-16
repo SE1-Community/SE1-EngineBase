@@ -94,8 +94,8 @@ static HINSTANCE _hOV = NULL;
 class CDecodeData_OGG {
 public:
   FILE *ogg_fFile;      // the stdio file that ogg is in
-  SLONG ogg_slOffset;   // offset where the ogg starts in the file (!=0 for oggs in zip)
-  SLONG ogg_slSize;     // size of ogg in the file (!=filesize for oggs in zip)
+  SLONG ogg_slOffset;   // offset where the ogg starts in the file ( != 0 for oggs in zip)
+  SLONG ogg_slSize;     // size of ogg in the file ( != filesize for oggs in zip)
   OggVorbis_File *ogg_vfVorbisFile;  // the decoder file
   WAVEFORMATEX ogg_wfeFormat; // format of sound
 };
@@ -139,7 +139,7 @@ static size_t ogg_read_func  (void *ptr, size_t size, size_t nmemb, void *dataso
   slToRead/=size;
   slToRead*=size;
   // if there is nothing to read
-  if (slToRead<=0) {
+  if (slToRead <= 0) {
     return 0;
   }
   return fread(ptr, size, slToRead/size, pogg->ogg_fFile);
@@ -151,12 +151,12 @@ static int ogg_seek_func  (void *datasource, ogg_int64_t offset, int whence)
 /*  !!!! seeking is evil with vorbisfile 1.0RC2
   CDecodeData_OGG *pogg = (CDecodeData_OGG *)datasource;
   SLONG slCurrentPos = ftell(pogg->ogg_fFile)-pogg->ogg_slOffset;
-  if (whence==SEEK_CUR) {
+  if (whence == SEEK_CUR) {
     return fseek(pogg->ogg_fFile, offset, SEEK_CUR);
-  } else if (whence==SEEK_END) {
+  } else if (whence == SEEK_END) {
     return fseek(pogg->ogg_fFile, pogg->ogg_slOffset+pogg->ogg_slSize-offset, SEEK_SET);
   } else {
-    ASSERT(whence==SEEK_SET);
+    ASSERT(whence == SEEK_SET);
     return fseek(pogg->ogg_fFile, pogg->ogg_slOffset+offset, SEEK_SET);
   }
 */
@@ -192,7 +192,7 @@ void CSoundDecoder::InitPlugins(void)
 {
   try {
     // load vorbis
-    if (_hOV==NULL) {
+    if (_hOV == NULL) {
 #ifndef NDEBUG
   #define VORBISLIB "libvorbisfile.dll"
 #else
@@ -216,7 +216,7 @@ void CSoundDecoder::InitPlugins(void)
 
   try {
     // load amp11lib
-    if (_hAmp11lib==NULL) {
+    if (_hAmp11lib == NULL) {
       _hAmp11lib = ::LoadLibraryA( "amp11lib.dll");
     }
     if (_hAmp11lib == NULL) {
@@ -267,7 +267,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
   INDEX iFileType = ExpandFilePath(EFP_READ, fnm, fnmExpanded);
 
   // if ogg
-  if (fnmExpanded.FileExt()==".ogg") {
+  if (fnmExpanded.FileExt() == ".ogg") {
     if (!_bOVEnabled) {
       return;
     }
@@ -281,7 +281,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
 
     try {
       // if in zip
-      if (iFileType==EFP_BASEZIP || iFileType==EFP_MODZIP) {
+      if (iFileType == EFP_BASEZIP || iFileType == EFP_MODZIP) {
         // open it
         iZipHandle = UNZIPOpen_t(fnmExpanded);
 
@@ -299,7 +299,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
         // open ogg file
         sdc_pogg->ogg_fFile = fopen(fnmZip, "rb");
         // if error
-        if (sdc_pogg->ogg_fFile==0) {
+        if (sdc_pogg->ogg_fFile == 0) {
           ThrowF_t(TRANS("cannot open archive '%s'"), (const char*)fnmZip);
         }
         // remember offset and size
@@ -308,11 +308,11 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
         fseek(sdc_pogg->ogg_fFile, slOffset, SEEK_SET);
 
       // if not in zip
-      } else if (iFileType==EFP_FILE) {
+      } else if (iFileType == EFP_FILE) {
         // open ogg file
         sdc_pogg->ogg_fFile = fopen(fnmExpanded, "rb");
         // if error
-        if (sdc_pogg->ogg_fFile==0) {
+        if (sdc_pogg->ogg_fFile == 0) {
           ThrowF_t(TRANS("cannot open encoded audio file"));
         }
         // remember offset and size
@@ -331,7 +331,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
       int iRes = pov_open_callbacks(sdc_pogg, sdc_pogg->ogg_vfVorbisFile, NULL, 0, ovcCallbacks);
 
       // if error
-      if (iRes!=0) {
+      if (iRes != 0) {
         ThrowF_t(TRANS("cannot open ogg decoder"));
       }
 
@@ -349,7 +349,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
       form.cbSize=0;
 
       // check for stereo
-      if (pvi->channels!=2) {
+      if (pvi->channels != 2) {
         ThrowF_t(TRANS("not stereo"));
       }
     
@@ -357,26 +357,26 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
 
     } catch (char*strError) {
       CPrintF(TRANS("Cannot open encoded audio '%s' for streaming: %s\n"), (const char*)fnm, (const char*)strError);
-      if (sdc_pogg->ogg_vfVorbisFile!=NULL) {
+      if (sdc_pogg->ogg_vfVorbisFile != NULL) {
         delete sdc_pogg->ogg_vfVorbisFile;
         sdc_pogg->ogg_vfVorbisFile = NULL;
       }
-      if (sdc_pogg->ogg_fFile!=NULL) {
+      if (sdc_pogg->ogg_fFile != NULL) {
         fclose(sdc_pogg->ogg_fFile);
         sdc_pogg->ogg_fFile = NULL;
       }
-      if (iZipHandle!=0) {
+      if (iZipHandle != 0) {
         UNZIPClose(iZipHandle);
       }
       Clear();
       return;
     }
-    if (iZipHandle!=0) {
+    if (iZipHandle != 0) {
       UNZIPClose(iZipHandle);
     }
 
   // if mp3
-  } else if (fnmExpanded.FileExt()==".mp3") {
+  } else if (fnmExpanded.FileExt() == ".mp3") {
 
     if (!_bAMP11Enabled) {
       return;
@@ -390,7 +390,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
 
     try {
       // if in zip
-      if (iFileType==EFP_BASEZIP || iFileType==EFP_MODZIP) {
+      if (iFileType == EFP_BASEZIP || iFileType == EFP_MODZIP) {
         // open it
         iZipHandle = UNZIPOpen_t(fnmExpanded);
 
@@ -408,22 +408,22 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
         // open the zip file
         sdc_pmpeg->mpeg_hMainFile = palOpenInputFile(fnmZip);
         // if error
-        if (sdc_pmpeg->mpeg_hMainFile==0) {
+        if (sdc_pmpeg->mpeg_hMainFile == 0) {
           ThrowF_t(TRANS("cannot open archive '%s'"), (const char*)fnmZip);
         }
         // open the subfile
         sdc_pmpeg->mpeg_hFile = palOpenSubFile(sdc_pmpeg->mpeg_hMainFile, slOffset, slSizeUncompressed);
         // if error
-        if (sdc_pmpeg->mpeg_hFile==0) {
+        if (sdc_pmpeg->mpeg_hFile == 0) {
           ThrowF_t(TRANS("cannot open encoded audio file"));
         }
 
       // if not in zip
-      } else if (iFileType==EFP_FILE) {
+      } else if (iFileType == EFP_FILE) {
         // open mpx file
         sdc_pmpeg->mpeg_hFile = palOpenInputFile(fnmExpanded);
         // if error
-        if (sdc_pmpeg->mpeg_hFile==0) {
+        if (sdc_pmpeg->mpeg_hFile == 0) {
           ThrowF_t(TRANS("cannot open mpx file"));
         }
       // if not found
@@ -458,19 +458,19 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
       sdc_pmpeg->mpeg_hDecoder = palOpenDecoder(sdc_pmpeg->mpeg_hFile);
 
       // if error
-      if (sdc_pmpeg->mpeg_hDecoder==0) {
+      if (sdc_pmpeg->mpeg_hDecoder == 0) {
         ThrowF_t(TRANS("cannot open mpx decoder"));
       }
     } catch (char*strError) {
       CPrintF(TRANS("Cannot open mpx '%s' for streaming: %s\n"), (const char*)fnm, (const char*)strError);
-      if (iZipHandle!=0) {
+      if (iZipHandle != 0) {
         UNZIPClose(iZipHandle);
       }
       Clear();
       return;
     }
 
-    if (iZipHandle!=0) {
+    if (iZipHandle != 0) {
       UNZIPClose(iZipHandle);
     }
     sdc_pmpeg->mpeg_fSecondsLen = palDecGetLen(sdc_pmpeg->mpeg_hDecoder);
@@ -484,10 +484,10 @@ CSoundDecoder::~CSoundDecoder(void)
 
 void CSoundDecoder::Clear(void)
 {
-  if (sdc_pmpeg!=NULL) {
-    if (sdc_pmpeg->mpeg_hDecoder!=0)  palClose(sdc_pmpeg->mpeg_hDecoder);
-    if (sdc_pmpeg->mpeg_hFile!=0)     palClose(sdc_pmpeg->mpeg_hFile);
-    if (sdc_pmpeg->mpeg_hMainFile!=0) palClose(sdc_pmpeg->mpeg_hMainFile);
+  if (sdc_pmpeg != NULL) {
+    if (sdc_pmpeg->mpeg_hDecoder != 0)  palClose(sdc_pmpeg->mpeg_hDecoder);
+    if (sdc_pmpeg->mpeg_hFile != 0)     palClose(sdc_pmpeg->mpeg_hFile);
+    if (sdc_pmpeg->mpeg_hMainFile != 0) palClose(sdc_pmpeg->mpeg_hMainFile);
 
     sdc_pmpeg->mpeg_hMainFile = 0;
     sdc_pmpeg->mpeg_hFile = 0;
@@ -495,14 +495,14 @@ void CSoundDecoder::Clear(void)
     delete sdc_pmpeg;
     sdc_pmpeg = NULL;
 
-  } else if (sdc_pogg!=NULL) {
+  } else if (sdc_pogg != NULL) {
 
-    if (sdc_pogg->ogg_vfVorbisFile!=NULL) {
+    if (sdc_pogg->ogg_vfVorbisFile != NULL) {
       pov_clear(sdc_pogg->ogg_vfVorbisFile);
       delete sdc_pogg->ogg_vfVorbisFile;
       sdc_pogg->ogg_vfVorbisFile = NULL;
     }
-    if (sdc_pogg->ogg_fFile!=NULL) {
+    if (sdc_pogg->ogg_fFile != NULL) {
       fclose(sdc_pogg->ogg_fFile);
       sdc_pogg->ogg_fFile = NULL;
     }
@@ -514,9 +514,9 @@ void CSoundDecoder::Clear(void)
 // reset decoder to start of sample
 void CSoundDecoder::Reset(void)
 {
-  if (sdc_pmpeg!=NULL) {
+  if (sdc_pmpeg != NULL) {
     palDecSeekAbs(sdc_pmpeg->mpeg_hDecoder, 0.0f);
-  } else if (sdc_pogg!=NULL) {
+  } else if (sdc_pogg != NULL) {
     // so instead, we reinit
     pov_clear(sdc_pogg->ogg_vfVorbisFile);
     fseek(sdc_pogg->ogg_fFile, sdc_pogg->ogg_slOffset, SEEK_SET);
@@ -526,9 +526,9 @@ void CSoundDecoder::Reset(void)
 
 BOOL CSoundDecoder::IsOpen(void) 
 {
-  if (sdc_pmpeg!=NULL && sdc_pmpeg->mpeg_hDecoder!=0) {
+  if (sdc_pmpeg != NULL && sdc_pmpeg->mpeg_hDecoder != 0) {
     return TRUE;
-  } else if (sdc_pogg!=NULL && sdc_pogg->ogg_vfVorbisFile!=0) {
+  } else if (sdc_pogg != NULL && sdc_pogg->ogg_vfVorbisFile != 0) {
     return TRUE;
   } else {
     return FALSE;
@@ -537,10 +537,10 @@ BOOL CSoundDecoder::IsOpen(void)
 
 void CSoundDecoder::GetFormat(WAVEFORMATEX &wfe)
 {
-  if (sdc_pmpeg!=NULL) {
+  if (sdc_pmpeg != NULL) {
     wfe = sdc_pmpeg->mpeg_wfeFormat;
 
-  } else if (sdc_pogg!=NULL) {
+  } else if (sdc_pogg != NULL) {
     wfe = sdc_pogg->ogg_wfeFormat;
 
   } else {
@@ -552,7 +552,7 @@ void CSoundDecoder::GetFormat(WAVEFORMATEX &wfe)
 INDEX CSoundDecoder::Decode(void *pvDestBuffer, INDEX ctBytesToDecode)
 {
   // if ogg
-  if (sdc_pogg!=NULL && sdc_pogg->ogg_vfVorbisFile!=0) {
+  if (sdc_pogg != NULL && sdc_pogg->ogg_vfVorbisFile != 0) {
     // decode ogg
     static int iCurrrentSection = -1; // we don't care about this
     char *pch = (char *)pvDestBuffer;
@@ -560,7 +560,7 @@ INDEX CSoundDecoder::Decode(void *pvDestBuffer, INDEX ctBytesToDecode)
     while (ctDecoded<ctBytesToDecode) {
       long iRes = pov_read(sdc_pogg->ogg_vfVorbisFile, pch, ctBytesToDecode-ctDecoded, 
         0, 2, 1, &iCurrrentSection);
-      if (iRes<=0) {
+      if (iRes <= 0) {
         return ctDecoded;
       }
       ctDecoded+=iRes;
@@ -569,7 +569,7 @@ INDEX CSoundDecoder::Decode(void *pvDestBuffer, INDEX ctBytesToDecode)
     return ctDecoded;
 
   // if mpeg
-  } else if (sdc_pmpeg!=NULL && sdc_pmpeg->mpeg_hDecoder!=0) {
+  } else if (sdc_pmpeg != NULL && sdc_pmpeg->mpeg_hDecoder != 0) {
     // decode mpeg
     return palRead(sdc_pmpeg->mpeg_hDecoder, pvDestBuffer, ctBytesToDecode);
 

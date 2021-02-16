@@ -57,7 +57,7 @@ void CEntity::ReadEntityPointer_t(CTStream *istrm, CEntityPointer &pen)
   CEntity *penPointed;
   // read index
   INDEX iPointedEntity;
-  *istrm>>iPointedEntity;
+  *istrm >> iPointedEntity;
   // if there is no entity pointed to
   if (iPointedEntity == -1) {
     // set NULL pointer
@@ -78,15 +78,15 @@ void CEntity::ReadEntityPointer_t(CTStream *istrm, CEntityPointer &pen)
 void CEntity::WriteEntityPointer_t(CTStream *ostrm, CEntityPointer pen)
 {
   // if there is no entity pointed to
-  if (pen==NULL) {
+  if (pen == NULL) {
     // write -1 index
-    *ostrm<<(INDEX)-1;
+    *ostrm << (INDEX)-1;
   // if there is some entity
   } else {
     // the entity must be in the same world as this one
     ASSERT(pen->en_pwoWorld == en_pwoWorld);
     // write index of the entity in this world
-    *ostrm<<(pen->en_ulID);
+    *ostrm << (pen->en_ulID);
   }
 }
 
@@ -100,24 +100,24 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
   INDEX ctProperties;
   // read number of properties (note that this doesn't have to be same as number
   // of properties in the class (class might have changed))
-  istrm>>ctProperties;
+  istrm >> ctProperties;
 
   // for all saved properties
   for (INDEX iProperty=0; iProperty<ctProperties; iProperty++) {
     pdecDLLClass->dec_ctProperties;
     // read packed identifier
     ULONG ulIDAndType;
-    istrm>>ulIDAndType;
+    istrm >> ulIDAndType;
     // unpack property ID and property type from the identifier
     ULONG ulID;
     CEntityProperty::PropertyType eptType;
-    ulID = ulIDAndType>>8;
+    ulID = ulIDAndType >> 8;
     eptType = (CEntityProperty::PropertyType )(ulIDAndType&0x000000FFUL);
 
     // get the property with that ID and type
     CEntityProperty *pepProperty = PropertyForTypeAndID(eptType, ulID);
     // if not found, but it is a string
-    if (pepProperty == NULL && eptType==CEntityProperty::EPT_STRING) {
+    if (pepProperty == NULL && eptType == CEntityProperty::EPT_STRING) {
       // maybe that became translatable string try that
       pepProperty = PropertyForTypeAndID(CEntityProperty::EPT_STRINGTRANS, ulID);
       // NOTE: it is still loaded as string, without translation chunk,
@@ -132,7 +132,7 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
       case CEntityProperty::EPT_BOOL: {
         // skip BOOL
         BOOL bDummy;
-        istrm>>(INDEX &)bDummy;
+        istrm >> (INDEX &)bDummy;
         break;
                                       }
       // if it is INDEX
@@ -145,7 +145,7 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
       case CEntityProperty::EPT_ANGLE: {
         // skip INDEX
         INDEX iDummy;
-        istrm>>iDummy;
+        istrm >> iDummy;
 
       } break;
 
@@ -153,7 +153,7 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
       case CEntityProperty::EPT_TICK: {
         // skip TICK
         TICK llDummy;
-        istrm>>llDummy;
+        istrm >> llDummy;
       } break;
 
       // if it is FLOAT
@@ -161,14 +161,14 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
       case CEntityProperty::EPT_RANGE: {
         // skip FLOAT
         FLOAT fDummy;
-        istrm>>fDummy;
+        istrm >> fDummy;
                                        }
         break;
       // if it is STRING
       case CEntityProperty::EPT_STRING: {
         // skip STRING
         CTString strDummy;
-        istrm>>strDummy;
+        istrm >> strDummy;
         break;
                                         }
       // if it is STRINGTRANS
@@ -176,28 +176,28 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
         // skip STRINGTRANS
         istrm.ExpectID_t("DTRS");
         CTString strDummy;
-        istrm>>strDummy;
+        istrm >> strDummy;
         break;
                                         }
       // if it is FILENAME
       case CEntityProperty::EPT_FILENAME: {
         // skip FILENAME
         CTFileName fnmDummy;
-        istrm>>fnmDummy;
+        istrm >> fnmDummy;
         break;
                                           }
       // if it is FILENAMENODEP
       case CEntityProperty::EPT_FILENAMENODEP: {
         // skip FILENAMENODEP
         CTFileNameNoDep fnmDummy;
-        istrm>>fnmDummy;
+        istrm >> fnmDummy;
         break;
                                         }
       // if it is ENTITYPTR
       case CEntityProperty::EPT_ENTITYPTR: {
         // skip index
         INDEX iDummy;
-        istrm>>iDummy;
+        istrm >> iDummy;
                                            }
         break;
       // if it is FLOATAABBOX3D
@@ -225,14 +225,14 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
       case CEntityProperty::EPT_FLOAT3D: {
         // skip FLOAT3D
         FLOAT3D vDummy;
-        istrm>>vDummy;
+        istrm >> vDummy;
                                          }
         break;
       // if it is ANGLE3D
       case CEntityProperty::EPT_ANGLE3D: {
         // skip ANGLE3D
         ANGLE3D vDummy;
-        istrm>>vDummy;
+        istrm >> vDummy;
                                          }
         break;
       // if it is FLOATplane3D
@@ -270,8 +270,8 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
 
       // fixup for loading old strings as translatable strings
       CEntityProperty::PropertyType eptLoad = pepProperty->ep_eptType;
-      if (eptType==CEntityProperty::EPT_STRING &&
-          eptLoad==CEntityProperty::EPT_STRINGTRANS) {
+      if (eptType == CEntityProperty::EPT_STRING &&
+          eptLoad == CEntityProperty::EPT_STRINGTRANS) {
         eptLoad = CEntityProperty::EPT_STRING;
       }
 
@@ -280,7 +280,7 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
       // if it is BOOL
       case CEntityProperty::EPT_BOOL:
         // read BOOL
-        istrm>>(INDEX &)PROPERTY(pepProperty->ep_slOffset, BOOL);
+        istrm >> (INDEX &)PROPERTY(pepProperty->ep_slOffset, BOOL);
         break;
       // if it is INDEX
       case CEntityProperty::EPT_INDEX:
@@ -291,37 +291,37 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
       case CEntityProperty::EPT_COLOR:
       case CEntityProperty::EPT_ANGLE:
         // read INDEX
-        istrm>>PROPERTY(pepProperty->ep_slOffset, INDEX);
+        istrm >> PROPERTY(pepProperty->ep_slOffset, INDEX);
         break;
         
       // [Cecil] New timer: 64-bit integer
       case CEntityProperty::EPT_TICK:
         // read TICK
-        istrm>>PROPERTY(pepProperty->ep_slOffset, TICK);
+        istrm >> PROPERTY(pepProperty->ep_slOffset, TICK);
         break;
 
       // if it is FLOAT
       case CEntityProperty::EPT_FLOAT:
       case CEntityProperty::EPT_RANGE:
         // read FLOAT
-        istrm>>PROPERTY(pepProperty->ep_slOffset, FLOAT);
+        istrm >> PROPERTY(pepProperty->ep_slOffset, FLOAT);
         break;
       // if it is STRING
       case CEntityProperty::EPT_STRING:
         // read STRING
-        istrm>>PROPERTY(pepProperty->ep_slOffset, CTString);
+        istrm >> PROPERTY(pepProperty->ep_slOffset, CTString);
         break;
       // if it is STRINGTRANS
       case CEntityProperty::EPT_STRINGTRANS:
         // read STRINGTRANS
         istrm.ExpectID_t("DTRS");
-        istrm>>PROPERTY(pepProperty->ep_slOffset, CTString);
+        istrm >> PROPERTY(pepProperty->ep_slOffset, CTString);
         break;
       // if it is FILENAME
       case CEntityProperty::EPT_FILENAME:
         // read FILENAME
-        istrm>>PROPERTY(pepProperty->ep_slOffset, CTFileName);
-        if (PROPERTY(pepProperty->ep_slOffset, CTFileName)=="") {
+        istrm >> PROPERTY(pepProperty->ep_slOffset, CTFileName);
+        if (PROPERTY(pepProperty->ep_slOffset, CTFileName) == "") {
           break;
         }
         // try to replace file name if it doesn't exist
@@ -349,7 +349,7 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
       // if it is FILENAMENODEP
       case CEntityProperty::EPT_FILENAMENODEP:
         // read FILENAMENODEP
-        istrm>>PROPERTY(pepProperty->ep_slOffset, CTFileNameNoDep);
+        istrm >> PROPERTY(pepProperty->ep_slOffset, CTFileNameNoDep);
         break;
       // if it is ENTITYPTR
       case CEntityProperty::EPT_ENTITYPTR:
@@ -430,7 +430,7 @@ void CEntity::WriteProperties_t(CTStream &ostrm) // throw char *
   INDEX ctProperties = 0;
   // for all classes in hierarchy of this entity
   {for (CDLLEntityClass *pdecDLLClass = en_pecClass->ec_pdecDLLClass;
-      pdecDLLClass!=NULL;
+      pdecDLLClass != NULL;
       pdecDLLClass = pdecDLLClass->dec_pdecBase) {
     // count the properties
     ctProperties+=pdecDLLClass->dec_ctProperties;
@@ -442,7 +442,7 @@ void CEntity::WriteProperties_t(CTStream &ostrm) // throw char *
 
   // for all classes in hierarchy of this entity
   {for (CDLLEntityClass *pdecDLLClass = en_pecClass->ec_pdecDLLClass;
-      pdecDLLClass!=NULL;
+      pdecDLLClass != NULL;
       pdecDLLClass = pdecDLLClass->dec_pdecBase) {
     // for all properties
     for (INDEX iProperty=0; iProperty<pdecDLLClass->dec_ctProperties; iProperty++) {
@@ -451,16 +451,16 @@ void CEntity::WriteProperties_t(CTStream &ostrm) // throw char *
       // pack property ID and property type together
       ULONG ulID = epProperty.ep_ulID;
       ULONG ulType = (ULONG)epProperty.ep_eptType;
-      ULONG ulIDAndType = (ulID<<8)|ulType;
+      ULONG ulIDAndType = (ulID << 8)|ulType;
       // write the packed identifier
-      ostrm<<ulIDAndType;
+      ostrm << ulIDAndType;
 
       // depending on the property type
       switch (epProperty.ep_eptType) {
       // if it is BOOL
       case CEntityProperty::EPT_BOOL:
         // write BOOL
-        ostrm<<(INDEX &)PROPERTY(epProperty.ep_slOffset, BOOL);
+        ostrm << (INDEX &)PROPERTY(epProperty.ep_slOffset, BOOL);
         break;
       // if it is INDEX
       case CEntityProperty::EPT_INDEX:
@@ -471,41 +471,41 @@ void CEntity::WriteProperties_t(CTStream &ostrm) // throw char *
       case CEntityProperty::EPT_COLOR:
       case CEntityProperty::EPT_ANGLE:
         // write INDEX
-        ostrm<<PROPERTY(epProperty.ep_slOffset, INDEX);
+        ostrm << PROPERTY(epProperty.ep_slOffset, INDEX);
         break;
         
       // [Cecil] New timer: 64-bit integer
       case CEntityProperty::EPT_TICK:
         // write TICK
-        ostrm<<PROPERTY(epProperty.ep_slOffset, TICK);
+        ostrm << PROPERTY(epProperty.ep_slOffset, TICK);
         break;
 
       // if it is FLOAT
       case CEntityProperty::EPT_FLOAT:
       case CEntityProperty::EPT_RANGE:
         // write FLOAT
-        ostrm<<PROPERTY(epProperty.ep_slOffset, FLOAT);
+        ostrm << PROPERTY(epProperty.ep_slOffset, FLOAT);
         break;
       // if it is STRING
       case CEntityProperty::EPT_STRING:
         // write STRING
-        ostrm<<PROPERTY(epProperty.ep_slOffset, CTString);
+        ostrm << PROPERTY(epProperty.ep_slOffset, CTString);
         break;
       // if it is STRINGTRANS
       case CEntityProperty::EPT_STRINGTRANS:
         // write STRINGTRANS
         ostrm.WriteID_t("DTRS");
-        ostrm<<PROPERTY(epProperty.ep_slOffset, CTString);
+        ostrm << PROPERTY(epProperty.ep_slOffset, CTString);
         break;
       // if it is FILENAME
       case CEntityProperty::EPT_FILENAME:
         // write FILENAME
-        ostrm<<PROPERTY(epProperty.ep_slOffset, CTFileName);
+        ostrm << PROPERTY(epProperty.ep_slOffset, CTFileName);
         break;
       // if it is FILENAMENODEP
       case CEntityProperty::EPT_FILENAMENODEP:
         // write FILENAMENODEP
-        ostrm<<PROPERTY(epProperty.ep_slOffset, CTFileNameNoDep);
+        ostrm << PROPERTY(epProperty.ep_slOffset, CTFileNameNoDep);
         break;
       // if it is FLOATAABBOX3D
       case CEntityProperty::EPT_FLOATAABBOX3D:
@@ -583,7 +583,7 @@ void CEntity::WriteProperties_t(CTStream &ostrm) // throw char *
 void CEntityComponent::Obtain_t(void)  // throw char *
 {
   // if obtained
-  if (ec_pvPointer!=NULL) {
+  if (ec_pvPointer != NULL) {
     // just add to CRC
     AddToCRCTable();
     // do not obtain again
@@ -624,7 +624,7 @@ void CEntityComponent::Obtain_t(void)  // throw char *
   }
 
   // if not already loaded and should not be precaching now
-  if (ctUsed<=1 && !_precache_bNowPrecaching) {
+  if (ctUsed <= 1 && !_precache_bNowPrecaching) {
     // report warning
     CPrintF(TRANS("Not precached: (0x%08X)'%s'\n"), this->ec_slID, ec_fnmComponent);
   }
@@ -646,7 +646,7 @@ void CEntityComponent::ObtainWithCheck(void)
 void CEntityComponent::AddToCRCTable(void)
 {
   // if not obtained
-  if (ec_pvPointer==NULL) {
+  if (ec_pvPointer == NULL) {
     // do nothing
     return;
   }
@@ -666,7 +666,7 @@ void CEntityComponent::AddToCRCTable(void)
 void CEntityComponent::Release(void)
 {
   // if the component is not obtained
-  if (ec_pvPointer==NULL) {
+  if (ec_pvPointer == NULL) {
     // don't release it
     return;
   }

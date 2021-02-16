@@ -43,7 +43,7 @@ void CParallelProjection3D::Prepare(void)
   BOOL bYInverted = pr_ObjectStretch(2)<0;
   BOOL bZInverted = pr_ObjectStretch(3)<0;
 
-  pr_bInverted = bXInverted!=bYInverted!=bZInverted;
+  pr_bInverted = bXInverted != bYInverted != bZInverted;
 
   // if the projection is mirrored
   if (pr_bMirror) {
@@ -208,7 +208,7 @@ INDEX CParallelProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
   iTest = box.TestAgainstPlane(FLOATplane3D(FLOAT3D(0,0,-1), pr_NearClipDistance));
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // check to far
@@ -216,7 +216,7 @@ INDEX CParallelProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
     iTest = box.TestAgainstPlane(FLOATplane3D(FLOAT3D(0.0f, 0.0f, 1.0f), -pr_FarClipDistance));
     if (iTest<0) {
       return -1;
-    } else if (iTest==0) {
+    } else if (iTest == 0) {
       iPass = 0;
     }
   }
@@ -224,28 +224,28 @@ INDEX CParallelProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
   iTest = box.TestAgainstPlane(pr_plClipL);
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // check to right
   iTest = box.TestAgainstPlane(pr_plClipR);
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // check to up
   iTest = box.TestAgainstPlane(pr_plClipU);
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // check to down
   iTest = box.TestAgainstPlane(pr_plClipD);
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // all done

@@ -240,10 +240,10 @@ static void MakeConversionTables(void)
     INDEX iVirt = kc.kc_iVirtKey;
 
     // update the tables
-    if (iScan>=0) {
+    if (iScan >= 0) {
       _aiScanToKid[iScan] = iKID;
     }
-    if (iVirt>=0) {
+    if (iVirt >= 0) {
       _aiVirtToKid[iVirt] = iKID;
     }
   }
@@ -266,13 +266,13 @@ static void SetKeyFromMsg(MSG *pMsg, BOOL bDown)
 {
   INDEX iKID = -1;
   // if capturing scan codes
-  if (inp_iKeyboardReadingMethod==2) {
+  if (inp_iKeyboardReadingMethod == 2) {
     // get scan code
-    INDEX iScan = (pMsg->lParam>>16)&0x1FF; // (we use the extended bit too!)
+    INDEX iScan = (pMsg->lParam >> 16)&0x1FF; // (we use the extended bit too!)
     // convert scan code to kid
     iKID = _aiScanToKid[iScan];
   // if capturing virtual key codes
-  } else if (inp_iKeyboardReadingMethod==1) {
+  } else if (inp_iKeyboardReadingMethod == 1) {
     // get virtualkey
     INDEX iVirt = (pMsg->wParam)&0xFF;
 
@@ -292,7 +292,7 @@ static void SetKeyFromMsg(MSG *pMsg, BOOL bDown)
     // do nothing
     return;
   }
-  if (iKID>=0 && iKID<ARRAYCOUNT(_abKeysPressed)) {
+  if (iKID >= 0 && iKID<ARRAYCOUNT(_abKeysPressed)) {
 //    CPrintF("%s: %d\n", _pInput->inp_strButtonNames[iKID], bDown);
     _abKeysPressed[iKID] = bDown;
   }
@@ -300,32 +300,32 @@ static void SetKeyFromMsg(MSG *pMsg, BOOL bDown)
 
 static void CheckMessage(MSG *pMsg)
 {
-  if ( pMsg->message == WM_LBUTTONUP) {
+  if (pMsg->message == WM_LBUTTONUP) {
     _abKeysPressed[KID_MOUSE1] = FALSE;
-  } else if ( pMsg->message == WM_LBUTTONDOWN || pMsg->message == WM_LBUTTONDBLCLK) {
+  } else if (pMsg->message == WM_LBUTTONDOWN || pMsg->message == WM_LBUTTONDBLCLK) {
     _abKeysPressed[KID_MOUSE1] = TRUE;
-  } else if ( pMsg->message == WM_RBUTTONUP) {
+  } else if (pMsg->message == WM_RBUTTONUP) {
     _abKeysPressed[KID_MOUSE2] = FALSE;
-  } else if ( pMsg->message == WM_RBUTTONDOWN || pMsg->message == WM_RBUTTONDBLCLK) {
+  } else if (pMsg->message == WM_RBUTTONDOWN || pMsg->message == WM_RBUTTONDBLCLK) {
     _abKeysPressed[KID_MOUSE2] = TRUE;
-  } else if ( pMsg->message == WM_MBUTTONUP) {
+  } else if (pMsg->message == WM_MBUTTONUP) {
     _abKeysPressed[KID_MOUSE3] = FALSE;
-  } else if ( pMsg->message == WM_MBUTTONDOWN || pMsg->message == WM_MBUTTONDBLCLK) {
+  } else if (pMsg->message == WM_MBUTTONDOWN || pMsg->message == WM_MBUTTONDBLCLK) {
     _abKeysPressed[KID_MOUSE3] = TRUE;
 
-  } else if ( pMsg->message == inp_iMButton4Dn) {
+  } else if (pMsg->message == inp_iMButton4Dn) {
     _abKeysPressed[KID_MOUSE4] = TRUE;
-  } else if ( pMsg->message == inp_iMButton4Up) {
+  } else if (pMsg->message == inp_iMButton4Up) {
     _abKeysPressed[KID_MOUSE4] = FALSE;
 
-  } else if ( pMsg->message == inp_iMButton5Dn) {
+  } else if (pMsg->message == inp_iMButton5Dn) {
     _abKeysPressed[KID_MOUSE5] = TRUE;
-  } else if ( pMsg->message == inp_iMButton5Up) {
+  } else if (pMsg->message == inp_iMButton5Up) {
     _abKeysPressed[KID_MOUSE5] = FALSE;
 
-  } else if (pMsg->message==WM_KEYUP || pMsg->message==WM_SYSKEYUP) {
+  } else if (pMsg->message == WM_KEYUP || pMsg->message == WM_SYSKEYUP) {
     SetKeyFromMsg(pMsg, FALSE);
-  } else if (pMsg->message==WM_KEYDOWN || pMsg->message==WM_SYSKEYDOWN) {
+  } else if (pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN) {
     SetKeyFromMsg(pMsg, TRUE);
   } else if (inp_bMsgDebugger && pMsg->message >= 0x10000) {
     CPrintF("%08x(%d)\n", pMsg->message, pMsg->message);
@@ -353,7 +353,7 @@ LRESULT CALLBACK GetMsgProc(
     return retValue;
   }
 
-  if ( pMsg->message == WM_MOUSEWHEEL) {
+  if (pMsg->message == WM_MOUSEWHEEL) {
     _iMouseZ += SWORD(UWORD(HIWORD(pMsg->wParam)));
   }
 
@@ -395,20 +395,20 @@ static void Poll2ndMouse(void)
   // reset (mouse reading is relative)
   _i2ndMouseX = 0;
   _i2ndMouseY = 0;
-  if (_h2ndMouse==NONE) return;
+  if (_h2ndMouse == NONE) return;
 
   // check
   COMSTAT csComStat;
   DWORD dwErrorFlags;
   ClearCommError( _h2ndMouse, &dwErrorFlags, &csComStat);
   DWORD dwLength = Min( MOUSECOMBUFFERSIZE, (INDEX)csComStat.cbInQue);
-  if (dwLength<=0) return;
+  if (dwLength <= 0) return;
 
   // readout
   UBYTE aubMouseBuffer[MOUSECOMBUFFERSIZE];
   INDEX iRetries = 999;
   while (iRetries>0 && !ReadFile( _h2ndMouse, aubMouseBuffer, dwLength, &dwLength, NULL)) iRetries--;
-  if (iRetries<=0) return; // what, didn't make it?
+  if (iRetries <= 0) return; // what, didn't make it?
 
   // parse the mouse packets
   for (INDEX i=0; i<dwLength; i++)
@@ -419,19 +419,19 @@ static void Poll2ndMouse(void)
     _iByteNum++;
 
     // buttons ?
-    if (_iByteNum==1) {
+    if (_iByteNum == 1) {
       _i2ndMouseButtons &= ~3;
-      _i2ndMouseButtons |= (_aubComBytes[0] & (32+16)) >>4;
+      _i2ndMouseButtons |= (_aubComBytes[0] & (32+16)) >> 4;
     }
     // axes ?
-    else if (_iByteNum==3) {
-      char iDX = ((_aubComBytes[0] &  3) <<6) + _aubComBytes[1];
-      char iDY = ((_aubComBytes[0] & 12) <<4) + _aubComBytes[2];
+    else if (_iByteNum == 3) {
+      char iDX = ((_aubComBytes[0] &  3) << 6) + _aubComBytes[1];
+      char iDY = ((_aubComBytes[0] & 12) << 4) + _aubComBytes[2];
       _i2ndMouseX += iDX;
       _i2ndMouseY += iDY;
     }
     // 3rd button?
-    else if (_iByteNum==4) {
+    else if (_iByteNum == 4) {
       _i2ndMouseButtons &= ~4;
       if (aubMouseBuffer[i]&32) _i2ndMouseButtons |= 4;
     }
@@ -439,7 +439,7 @@ static void Poll2ndMouse(void)
 
   // ignore pooling?
   if (_bIgnoreMouse2) {
-    if (_i2ndMouseX!=0 || _i2ndMouseY!=0) _bIgnoreMouse2 = FALSE;
+    if (_i2ndMouseX != 0 || _i2ndMouseY != 0) _bIgnoreMouse2 = FALSE;
     _i2ndMouseX = 0;
     _i2ndMouseY = 0;
     _i2ndMouseButtons = 0;
@@ -451,20 +451,20 @@ static void Poll2ndMouse(void)
 static void Startup2ndMouse(INDEX iPort)
 {
   // skip if disabled
-  ASSERT( iPort>=0 && iPort<=4);
-  if (iPort==0) return; 
+  ASSERT( iPort >= 0 && iPort <= 4);
+  if (iPort == 0) return; 
   // determine port string
   CTString str2ndMousePort( 0, "COM%d", iPort);
     
   // create COM handle if needed
-  if (_h2ndMouse==NONE) {
+  if (_h2ndMouse == NONE) {
     _h2ndMouse = CreateFileA( str2ndMousePort, GENERIC_READ|GENERIC_WRITE, 0, NULL,           
                              OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (_h2ndMouse==INVALID_HANDLE_VALUE) {
+    if (_h2ndMouse == INVALID_HANDLE_VALUE) {
       // failed! :(
       INDEX iError = GetLastError();
 /*
-      if (iError==5) CPrintF( "Cannot open %s (access denied).\n"
+      if (iError == 5) CPrintF( "Cannot open %s (access denied).\n"
                               "The port is probably already used by another device (mouse, modem...)\n",
                               str2ndMousePort);
       else CPrintF( "Cannot open %s (error %d).\n", str2ndMousePort, iError);
@@ -503,7 +503,7 @@ static void Startup2ndMouse(INDEX iPort)
 static void Shutdown2ndMouse(void)
 {
   // skip if already disabled
-  if (_h2ndMouse==NONE) return;
+  if (_h2ndMouse == NONE) return;
 
   // disable!
   SetCommMask( _h2ndMouse, 0);
@@ -550,7 +550,7 @@ CInput::CInput(void)
 // destructor
 CInput::~CInput()
 {
-  if (_h2ndMouse!=NONE) CloseHandle( _h2ndMouse);
+  if (_h2ndMouse != NONE) CloseHandle( _h2ndMouse);
   _h2ndMouse = NONE;
 }
 
@@ -575,9 +575,9 @@ void CInput::SetKeyNames( void)
   {for (INDEX iKey=0; iKey<ARRAYCOUNT(_akcKeys); iKey++) {
     struct KeyConversion &kc = _akcKeys[iKey];
     // set the name
-    if (kc.kc_strName!=NULL) {
+    if (kc.kc_strName != NULL) {
       inp_strButtonNames[kc.kc_iKID] = kc.kc_strName;
-      if (strlen(kc.kc_strNameTrans)==0) {
+      if (strlen(kc.kc_strNameTrans) == 0) {
         inp_strButtonNamesTra[kc.kc_iKID] = kc.kc_strName;
       } else {
         inp_strButtonNamesTra[kc.kc_iKID] = TranslateConst(kc.kc_strNameTrans, 4);
@@ -626,7 +626,7 @@ BOOL CInput::CheckJoystick(INDEX iJoy)
 
   JOYCAPS jc;
   // seek for capabilities of requested joystick
-  MMRESULT mmResult = joyGetDevCaps( JOYSTICKID1+iJoy,	&jc, sizeof(JOYCAPS));
+  MMRESULT mmResult = joyGetDevCaps( JOYSTICKID1+iJoy,  &jc, sizeof(JOYCAPS));
   // report possible errors
   if (mmResult == MMSYSERR_NODRIVER) {
     CPrintF(TRANS(" joystick driver is not present\n"));
@@ -829,7 +829,7 @@ void CInput::EnableInput(HWND hwnd)
     INDEX iVirt = kc.kc_iVirtKey;
 
     // if there is a valid virtkey
-    if (iVirt>=0) {
+    if (iVirt >= 0) {
       // transcribe if modifier
       if (iVirt == VK_LSHIFT) {
         iVirt = VK_SHIFT;
@@ -914,9 +914,9 @@ void CInput::GetInput(BOOL bPreScan)
       INDEX iVirt = kc.kc_iVirtKey;
 
       // if reading async keystate
-      if (inp_iKeyboardReadingMethod==0) {
+      if (inp_iKeyboardReadingMethod == 0) {
         // if there is a valid virtkey
-        if (iVirt>=0) {
+        if (iVirt >= 0) {
           // transcribe if modifier
           if (iVirt == VK_LSHIFT) {
             iVirt = VK_SHIFT;
@@ -1024,12 +1024,12 @@ void CInput::GetInput(BOOL bPreScan)
   inp_bLastPrescan = bPreScan;
 
   // set cursor position to screen center
-  if (pntMouse.x!=inp_slScreenCenterX || pntMouse.y!=inp_slScreenCenterY) {
+  if (pntMouse.x != inp_slScreenCenterX || pntMouse.y != inp_slScreenCenterY) {
     SetCursorPos(inp_slScreenCenterX, inp_slScreenCenterY);
   }
 
   // readout 2nd mouse if enabled
-  if (_h2ndMouse!=NONE)
+  if (_h2ndMouse != NONE)
   {
     Poll2ndMouse();
     //CPrintF( "m2X: %4d, m2Y: %4d, m2B: 0x%02X\n", _i2ndMouseX, _i2ndMouseY, _i2ndMouseButtons);
@@ -1168,7 +1168,7 @@ BOOL CInput::ScanJoystick(INDEX iJoy, BOOL bPreScan)
     // for each available button
     for (INDEX iButton=0; iButton<32; iButton++) {
       // test if the button is pressed
-      if (ji.dwButtons & (1L<<iButton)) {
+      if (ji.dwButtons & (1L << iButton)) {
         inp_ubButtonsBuffer[ iButtonTotal++] = 128;
       } else {
         inp_ubButtonsBuffer[ iButtonTotal++] = 0;
@@ -1186,25 +1186,25 @@ BOOL CInput::ScanJoystick(INDEX iJoy, BOOL bPreScan)
     // if we have POV
     if (inp_abJoystickHasPOV[iJoy]) {
       // check the four pov directions
-      if (ji.dwPOV==JOY_POVFORWARD) {
+      if (ji.dwPOV == JOY_POVFORWARD) {
         inp_ubButtonsBuffer[ iStartPOV+0] = 128;
-      } else if (ji.dwPOV==JOY_POVRIGHT) {
+      } else if (ji.dwPOV == JOY_POVRIGHT) {
         inp_ubButtonsBuffer[ iStartPOV+1] = 128;
-      } else if (ji.dwPOV==JOY_POVBACKWARD) {
+      } else if (ji.dwPOV == JOY_POVBACKWARD) {
         inp_ubButtonsBuffer[ iStartPOV+2] = 128;
-      } else if (ji.dwPOV==JOY_POVLEFT) {
+      } else if (ji.dwPOV == JOY_POVLEFT) {
         inp_ubButtonsBuffer[ iStartPOV+3] = 128;
       // and four mid-positions
-      } else if (ji.dwPOV==JOY_POVFORWARD+4500) {
+      } else if (ji.dwPOV == JOY_POVFORWARD+4500) {
         inp_ubButtonsBuffer[ iStartPOV+0] = 128;
         inp_ubButtonsBuffer[ iStartPOV+1] = 128;
-      } else if (ji.dwPOV==JOY_POVRIGHT+4500) {
+      } else if (ji.dwPOV == JOY_POVRIGHT+4500) {
         inp_ubButtonsBuffer[ iStartPOV+1] = 128;
         inp_ubButtonsBuffer[ iStartPOV+2] = 128;
-      } else if (ji.dwPOV==JOY_POVBACKWARD+4500) {
+      } else if (ji.dwPOV == JOY_POVBACKWARD+4500) {
         inp_ubButtonsBuffer[ iStartPOV+2] = 128;
         inp_ubButtonsBuffer[ iStartPOV+3] = 128;
-      } else if (ji.dwPOV==JOY_POVLEFT+4500) {
+      } else if (ji.dwPOV == JOY_POVLEFT+4500) {
         inp_ubButtonsBuffer[ iStartPOV+3] = 128;
         inp_ubButtonsBuffer[ iStartPOV+0] = 128;
       }

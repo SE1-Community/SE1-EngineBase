@@ -64,7 +64,7 @@ public:
   CPlayerCharacter &operator=(const CPlayerCharacter &pcOther);
 
   /* Comparison operator. */
-  BOOL operator==(const CPlayerCharacter &pcOther) const;
+  BOOL operator == (const CPlayerCharacter &pcOther) const;
 
   // stream operations
   ENGINE_API friend CTStream &operator<<(CTStream &strm, CPlayerCharacter &pc);

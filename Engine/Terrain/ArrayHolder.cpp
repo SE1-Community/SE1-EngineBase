@@ -57,10 +57,10 @@ INDEX CArrayHolder::GetNewArrays()
       ta.ta_ptdTopMap = ptdTopMap;
       
       // Setup tile topmap
-      INDEX iTopMapWidth  = ah_ptrTerrain->tr_pixFirstMipTopMapWidth>>(ah_iLod-1);
-      INDEX iTopMapHeight = ah_ptrTerrain->tr_pixFirstMipTopMapHeight>>(ah_iLod-1);
+      INDEX iTopMapWidth  = ah_ptrTerrain->tr_pixFirstMipTopMapWidth >> (ah_iLod-1);
+      INDEX iTopMapHeight = ah_ptrTerrain->tr_pixFirstMipTopMapHeight >> (ah_iLod-1);
       CreateTopMap(*ta.ta_ptdTopMap,iTopMapWidth,iTopMapHeight);
-      ASSERT(ta.ta_ptdTopMap->td_pulFrames==NULL);
+      ASSERT(ta.ta_ptdTopMap->td_pulFrames == NULL);
     }
     // return index of new arrays
     return ah_ataTileArrays.Count()-1;
@@ -71,7 +71,7 @@ INDEX CArrayHolder::GetNewArrays()
 void CArrayHolder::FreeArrays(INT iOldArraysIndex)
 {
   // if arrays are valid
-  if (iOldArraysIndex!=-1) {
+  if (iOldArraysIndex != -1) {
     // remember this arrays as unused
     INDEX &iFreeIndex = ah_aiFreeArrays.Push();
     iFreeIndex = iOldArraysIndex;

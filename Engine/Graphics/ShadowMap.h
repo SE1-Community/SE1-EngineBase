@@ -21,12 +21,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Graphics/GfxLibrary.h>
 
-#define SMF_DYNAMICINVALID  (1UL<<0)    // dynamic shadows are not up to date
-#define SMF_DYNAMICBLACK    (1UL<<1)    // there was no need to mix dynamic shadow layer(s) (they were all black)
-#define SMF_DYNAMICUPLOADED (1UL<<2)    // dynamic shadowmap was uploaded last
-#define SMF_ANIMATINGLIGHTS (1UL<<3)    // set when shadowmap has at least one animating light
-#define SMF_WANTSPROBE      (1UL<<20)   // set if wants to be probed
-#define SMF_PROBED          (1UL<<21)   // set if last binding was as probe-texture
+#define SMF_DYNAMICINVALID  (1UL << 0)    // dynamic shadows are not up to date
+#define SMF_DYNAMICBLACK    (1UL << 1)    // there was no need to mix dynamic shadow layer(s) (they were all black)
+#define SMF_DYNAMICUPLOADED (1UL << 2)    // dynamic shadowmap was uploaded last
+#define SMF_ANIMATINGLIGHTS (1UL << 3)    // set when shadowmap has at least one animating light
+#define SMF_WANTSPROBE      (1UL << 20)   // set if wants to be probed
+#define SMF_PROBED          (1UL << 21)   // set if last binding was as probe-texture
 
 
 // class that holds information about shadow cluster map of each scene polygon
@@ -110,8 +110,8 @@ public:
 
   // returns whether the shadowmap is flat or not
   inline BOOL IsFlat(void) {
-    return( (sm_pulCachedShadowMap==&sm_colFlat)
-         && (sm_pulDynamicShadowMap==NULL || (sm_ulFlags&SMF_DYNAMICBLACK)));
+    return( (sm_pulCachedShadowMap == &sm_colFlat)
+         && (sm_pulDynamicShadowMap == NULL || (sm_ulFlags&SMF_DYNAMICBLACK)));
   };
 };
 

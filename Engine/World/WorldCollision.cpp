@@ -111,17 +111,17 @@ CClipMove::CClipMove(CMovableEntity *penEntity)
   // if the entity is deleted, or couldn't possible collide with anything
   if ((cm_penMoving->en_ulFlags&ENF_DELETED)
     ||!(cm_penMoving->en_ulCollisionFlags&ECF_TESTMASK)
-    ||cm_penMoving->en_pciCollisionInfo==NULL) {
+    ||cm_penMoving->en_pciCollisionInfo == NULL) {
     // do nothing
     _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_PREPARECLIPMOVE);
     return;
   }
 
   // if entity is model
-  if (penEntity->en_RenderType==CEntity::RT_MODEL ||
-      penEntity->en_RenderType==CEntity::RT_EDITORMODEL || 
-      penEntity->en_RenderType==CEntity::RT_SKAMODEL ||
-      penEntity->en_RenderType==CEntity::RT_SKAEDITORMODEL ) {
+  if (penEntity->en_RenderType == CEntity::RT_MODEL ||
+      penEntity->en_RenderType == CEntity::RT_EDITORMODEL || 
+      penEntity->en_RenderType == CEntity::RT_SKAMODEL ||
+      penEntity->en_RenderType == CEntity::RT_SKAEDITORMODEL ) {
     cm_bMovingBrush = FALSE;
 
     // remember entity and placements
@@ -129,7 +129,7 @@ CClipMove::CClipMove(CMovableEntity *penEntity)
     GetPositionsOfEntity(cm_penA, cm_vA0, cm_mA0, cm_vA1, cm_mA1);
 
     // create spheres for the entity
-    ASSERT(penEntity->en_pciCollisionInfo!=NULL);
+    ASSERT(penEntity->en_pciCollisionInfo != NULL);
     cm_pamsA = &penEntity->en_pciCollisionInfo->ci_absSpheres;
 
     // create aabbox for entire movement path
@@ -140,7 +140,7 @@ CClipMove::CClipMove(CMovableEntity *penEntity)
     cm_boxMovementPath |= box1;
 
   // if entity is brush
-  } else if (penEntity->en_RenderType==CEntity::RT_BRUSH) {
+  } else if (penEntity->en_RenderType == CEntity::RT_BRUSH) {
     cm_bMovingBrush = TRUE;
 
     // remember entity and placements
@@ -148,7 +148,7 @@ CClipMove::CClipMove(CMovableEntity *penEntity)
     GetPositionsOfEntity(cm_penB, cm_vB0, cm_mB0, cm_vB1, cm_mB1);
 
     // create spheres for the entity
-    ASSERT(penEntity->en_pciCollisionInfo!=NULL);
+    ASSERT(penEntity->en_pciCollisionInfo != NULL);
     // create aabbox for entire movement path
     FLOATaabbox3D box0, box1;
     penEntity->en_pciCollisionInfo->MakeBoxAtPlacement(cm_vB0, cm_mB0, box0);
@@ -216,7 +216,7 @@ inline void CClipMove::ClipMovingPointToSphere(
   // use lower one
   const FLOAT fMinLambda = Min(fLambda1, fLambda2);
   // if it is betwen zero and last collision found
-  if (0.0f<=fMinLambda && fMinLambda<cm_fMovementFraction) {
+  if (0.0f <= fMinLambda && fMinLambda<cm_fMovementFraction) {
     _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_SPHERETOSPHEREHITS);
 
     // if cannot pass
@@ -274,7 +274,7 @@ inline void CClipMove::ClipMovingPointToCylinder(
   // use lower one
   const FLOAT fMinLambda = Min(fLambda1, fLambda2);
   // if it is betwen zero and last collision found
-  if (0.0f<=fMinLambda && fMinLambda<cm_fMovementFraction) {
+  if (0.0f <= fMinLambda && fMinLambda<cm_fMovementFraction) {
     // calculate the collision point
     FLOAT3D vCollisionPoint = vStartToEnd*fMinLambda + vStart;
     // create plane at cylinder bottom
@@ -282,7 +282,7 @@ inline void CClipMove::ClipMovingPointToCylinder(
     // find distance of the collision point from the bottom plane
     FLOAT fCollisionToBottomPlaneDistance = plCylinderBottom.PointDistance(vCollisionPoint);
     // if the point is between bottom and top of cylinder
-    if (0<=fCollisionToBottomPlaneDistance
+    if (0 <= fCollisionToBottomPlaneDistance
       &&fCollisionToBottomPlaneDistance<fCylinderBottomToTopLength) {
 
       // if cannot pass
@@ -333,10 +333,10 @@ void CClipMove::ClipMovingSphereToBrushPolygon(const CMovingSphere &msMoving,
   FLOAT fDistance1 = plPolygon.PointDistance(msMoving.ms_vRelativeCenter1)-msMoving.ms_fR;
 
   // if first point is in front and second point is behind
-  if (fDistance0>=0 && fDistance1<0) {
+  if (fDistance0 >= 0 && fDistance1<0) {
     // calculate fraction of line before intersection
     FLOAT fFraction = fDistance0/(fDistance0-fDistance1);
-    ASSERT(fFraction>=0.0f && fFraction<=1.0f);
+    ASSERT(fFraction >= 0.0f && fFraction <= 1.0f);
 
     // if fraction is less than minimum found fraction
     if (fFraction<cm_fMovementFraction) {
@@ -418,10 +418,10 @@ void CClipMove::ClipMovingSphereToTerrainPolygon(
   FLOAT fDistance1 = plPolygon.PointDistance(msMoving.ms_vRelativeCenter1)-msMoving.ms_fR;
 
   // if first point is in front and second point is behind
-  if (fDistance0>=0 && fDistance1<0) {
+  if (fDistance0 >= 0 && fDistance1<0) {
     // calculate fraction of line before intersection
     FLOAT fFraction = fDistance0/(fDistance0-fDistance1);
-    ASSERT(fFraction>=0.0f && fFraction<=1.0f);
+    ASSERT(fFraction >= 0.0f && fFraction <= 1.0f);
 
     // if fraction is less than minimum found fraction
     if (fFraction<cm_fMovementFraction) {
@@ -650,7 +650,7 @@ void CClipMove::ClipBrushMoveToModel(void)
   // for each sector in the brush mip
   FOREACHINDYNAMICARRAY(pbmMip->bm_abscSectors, CBrushSector, itbsc) {
     // if the sector's bbox has no contact with bbox of movement path
-    if ( !itbsc->bsc_boxBoundingBox.HasContactWith(cm_boxMovementPathAbsoluteA, 0.01f) ) {
+    if (!itbsc->bsc_boxBoundingBox.HasContactWith(cm_boxMovementPathAbsoluteA, 0.01f) ) {
       // skip it
       continue;
     }
@@ -701,7 +701,7 @@ void CClipMove::ClipMoveToModel(CEntity *penModel)
   _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_MODELXTESTS);
 
   // if not possibly colliding
-  ASSERT(penModel->en_pciCollisionInfo!=NULL);
+  ASSERT(penModel->en_pciCollisionInfo != NULL);
   const FLOATaabbox3D &boxModel = penModel->en_pciCollisionInfo->ci_boxCurrent;
   if (
     (cm_boxMovementPath.Min()(1)>boxModel.Max()(1)) ||
@@ -725,7 +725,7 @@ void CClipMove::ClipMoveToModel(CEntity *penModel)
     cm_penB = penModel;
     GetPositionsOfEntity(cm_penB, cm_vB0, cm_mB0, cm_vB1, cm_mB1);
     // create bounding spheres for the model
-    ASSERT(penModel->en_pciCollisionInfo!=NULL);
+    ASSERT(penModel->en_pciCollisionInfo != NULL);
     cm_pamsB = &penModel->en_pciCollisionInfo->ci_absSpheres;
 
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_CLIPMOVETOMODELNONTRIVIAL);
@@ -741,7 +741,7 @@ void CClipMove::ClipMoveToModel(CEntity *penModel)
     cm_penA = penModel;
     GetPositionsOfEntity(cm_penA, cm_vA0, cm_mA0, cm_vA1, cm_mA1);
     // create bounding spheres for the model
-    ASSERT(penModel->en_pciCollisionInfo!=NULL);
+    ASSERT(penModel->en_pciCollisionInfo != NULL);
     cm_pamsA = &penModel->en_pciCollisionInfo->ci_absSpheres;
 
     // prepare new projections and spheres
@@ -757,7 +757,7 @@ void CClipMove::ClipMoveToModel(CEntity *penModel)
 void CClipMove::CacheNearPolygons(void)
 {
   // if movement box is still inside cached box
-  if (cm_boxMovementPath<=cm_penMoving->en_boxNearCached) {
+  if (cm_boxMovementPath <= cm_penMoving->en_boxNearCached) {
     // do nothing
     return;
   }
@@ -817,11 +817,11 @@ void CClipMove::CacheNearPolygons(void)
 
     // for non-zoning non-movable brush entities in the sector
     {FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
-      if (pen->en_RenderType==CEntity::RT_TERRAIN) {
+      if (pen->en_RenderType == CEntity::RT_TERRAIN) {
         continue;
       }
-      if (pen->en_RenderType!=CEntity::RT_BRUSH&&
-          pen->en_RenderType!=CEntity::RT_FIELDBRUSH) {
+      if (pen->en_RenderType != CEntity::RT_BRUSH&&
+          pen->en_RenderType != CEntity::RT_FIELDBRUSH) {
         break;  // brushes are sorted first in list
       }
       if (pen->en_ulPhysicsFlags&EPF_MOVABLE) {
@@ -835,7 +835,7 @@ void CClipMove::CacheNearPolygons(void)
       // get first mip
       CBrushMip *pbm = pen->en_pbrBrush->GetFirstMip();
       // if brush mip exists for that mip factor
-      if (pbm!=NULL) {
+      if (pbm != NULL) {
         // for each sector in the mip
         {FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbscNonZoning) {
           CBrushSector &bscNonZoning = *itbscNonZoning;
@@ -992,7 +992,7 @@ void CClipMove::ClipMoveToBrushes(void)
       CPhysicsProfile::PTI_CLIPMOVETOBRUSHES_ADDINITIAL, 1);
     // if it collides with this one
     if (pbsc->bsc_pbmBrushMip->IsFirstMip() &&
-      pbsc->bsc_pbmBrushMip->bm_pbrBrush->br_pfsFieldSettings==NULL &&
+      pbsc->bsc_pbmBrushMip->bm_pbrBrush->br_pfsFieldSettings == NULL &&
       MustTest(pbsc->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity)) {
       // add it to list of active sectors
       cm_lhActiveSectors.AddTail(pbsc->bsc_lnInActiveSectors);
@@ -1009,16 +1009,16 @@ void CClipMove::ClipMoveToBrushes(void)
     _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES_FINDNONZONING);
     // for non-zoning brush entities in the sector
     {FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
-      if (pen->en_RenderType!=CEntity::RT_BRUSH&&
-          pen->en_RenderType!=CEntity::RT_FIELDBRUSH&&
-          pen->en_RenderType!=CEntity::RT_TERRAIN) {
+      if (pen->en_RenderType != CEntity::RT_BRUSH&&
+          pen->en_RenderType != CEntity::RT_FIELDBRUSH&&
+          pen->en_RenderType != CEntity::RT_TERRAIN) {
         break;  // brushes are sorted first in list
       }
       if (!MustTest(pen)) {
         continue;
       }
 
-      if (pen->en_RenderType==CEntity::RT_TERRAIN) {
+      if (pen->en_RenderType == CEntity::RT_TERRAIN) {
         // remember currently tested entity
         cm_penTested = pen;
         // moving model is A and still terrain is B
@@ -1039,7 +1039,7 @@ void CClipMove::ClipMoveToBrushes(void)
       // get first mip
       CBrushMip *pbm = pen->en_pbrBrush->GetFirstMip();
       // if brush mip exists for that mip factor
-      if (pbm!=NULL) {
+      if (pbm != NULL) {
         // for each sector in the mip
         {FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbscNonZoning) {
           CBrushSector &bscNonZoning = *itbscNonZoning;
@@ -1056,9 +1056,9 @@ void CClipMove::ClipMoveToBrushes(void)
     // get the sector's brush mip, brush and entity
     CBrushMip *pbmBrushMip = itbsc->bsc_pbmBrushMip;
     CBrush3D *pbrBrush = pbmBrushMip->bm_pbrBrush;
-    ASSERT(pbrBrush!=NULL);
+    ASSERT(pbrBrush != NULL);
     CEntity *penBrush = pbrBrush->br_penEntity;
-    ASSERT(penBrush!=NULL);
+    ASSERT(penBrush != NULL);
 
     // remember currently tested entity
     cm_penTested = penBrush;
@@ -1159,11 +1159,11 @@ void CClipMove::ClipMoveToWorld(class CWorld *pwoWorld)
   cm_pwoWorld = pwoWorld;
 
   // prepare flags masks for testing which entities collide with this
-  cm_ulTestMask1 = ((cm_penMoving->en_ulCollisionFlags&ECF_TESTMASK)>>ECB_TEST)<<ECB_IS;
-  cm_ulTestMask2 = ((cm_penMoving->en_ulCollisionFlags&ECF_ISMASK  )>>ECB_IS  )<<ECB_TEST;
+  cm_ulTestMask1 = ((cm_penMoving->en_ulCollisionFlags&ECF_TESTMASK) >> ECB_TEST) << ECB_IS;
+  cm_ulTestMask2 = ((cm_penMoving->en_ulCollisionFlags&ECF_ISMASK  ) >> ECB_IS  ) << ECB_TEST;
 
-  cm_ulPassMaskA = ((cm_penMoving->en_ulCollisionFlags&ECF_PASSMASK)>>ECB_PASS)<<ECB_IS;
-  cm_ulPassMaskB = ((cm_penMoving->en_ulCollisionFlags&ECF_ISMASK  )>>ECB_IS  )<<ECB_PASS;
+  cm_ulPassMaskA = ((cm_penMoving->en_ulCollisionFlags&ECF_PASSMASK) >> ECB_PASS) << ECB_IS;
+  cm_ulPassMaskB = ((cm_penMoving->en_ulCollisionFlags&ECF_ISMASK  ) >> ECB_IS  ) << ECB_PASS;
 
   // cache near polygons of zoning brushes
   CacheNearPolygons();

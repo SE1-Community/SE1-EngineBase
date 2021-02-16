@@ -37,7 +37,7 @@ typedef enum NetworkMessageType {
 
   // disconnection explanation from server
   MSG_INF_DISCONNECTED,
-	
+  
   // info message with pings of all players
   MSG_INF_PINGS,
 
@@ -100,7 +100,7 @@ typedef enum NetworkMessageType {
 
   // added to the end so that it would not mess up old numbering - that would corrupt demo playing
   // disconnection confirmation from the client
-	MSG_REP_DISCONNECTED,
+  MSG_REP_DISCONNECTED,
 
 
 } MESSAGETYPE;
@@ -140,7 +140,7 @@ public:
   void Dump(void);
 
   /* Get the type of this message. */
-  inline MESSAGETYPE GetType(void) const { ASSERT(this!=NULL); return MESSAGETYPE(nm_mtType&0x3F); };
+  inline MESSAGETYPE GetType(void) const { ASSERT(this != NULL); return MESSAGETYPE(nm_mtType&0x3F); };
   /* Check if end of message. */
   BOOL EndOfMessage(void);
   // rewind message to start, so that written message can be read again

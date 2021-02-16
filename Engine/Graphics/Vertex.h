@@ -71,33 +71,33 @@ struct GFXColor
   }
 
   void MultiplyRGBA( const GFXColor &col1, const GFXColor &col2) {
-    r = (ULONG(col1.r)*col2.r)>>8;
-    g = (ULONG(col1.g)*col2.g)>>8;
-    b = (ULONG(col1.b)*col2.b)>>8;
-    a = (ULONG(col1.a)*col2.a)>>8;
+    r = (ULONG(col1.r)*col2.r) >> 8;
+    g = (ULONG(col1.g)*col2.g) >> 8;
+    b = (ULONG(col1.b)*col2.b) >> 8;
+    a = (ULONG(col1.a)*col2.a) >> 8;
   }
 
   void MultiplyRGB( const GFXColor &col1, const GFXColor &col2) {
-    r = (ULONG(col1.r)*col2.r)>>8;
-    g = (ULONG(col1.g)*col2.g)>>8;
-    b = (ULONG(col1.b)*col2.b)>>8;
+    r = (ULONG(col1.r)*col2.r) >> 8;
+    g = (ULONG(col1.g)*col2.g) >> 8;
+    b = (ULONG(col1.b)*col2.b) >> 8;
   }
 
   void MultiplyRGBCopyA1( const GFXColor &col1, const GFXColor &col2) {
-    r = (ULONG(col1.r)*col2.r)>>8;
-    g = (ULONG(col1.g)*col2.g)>>8;
-    b = (ULONG(col1.b)*col2.b)>>8;
+    r = (ULONG(col1.r)*col2.r) >> 8;
+    g = (ULONG(col1.g)*col2.g) >> 8;
+    b = (ULONG(col1.b)*col2.b) >> 8;
     a = col1.a;
   }
 
   void AttenuateRGB( ULONG ulA) {
-    r = (ULONG(r)*ulA)>>8;
-    g = (ULONG(g)*ulA)>>8;
-    b = (ULONG(b)*ulA)>>8;
+    r = (ULONG(r)*ulA) >> 8;
+    g = (ULONG(g)*ulA) >> 8;
+    b = (ULONG(b)*ulA) >> 8;
   }
 
   void AttenuateA( ULONG ulA) {
-    a = (ULONG(a)*ulA)>>8;
+    a = (ULONG(a)*ulA) >> 8;
   }
 };
 

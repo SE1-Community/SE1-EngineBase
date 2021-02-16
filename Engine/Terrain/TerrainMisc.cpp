@@ -48,21 +48,21 @@ extern INDEX  _ctShadowMapUpdates;
 FLOATaabbox3D _bboxDrawOne;
 FLOATaabbox3D _bboxDrawTwo;
 
-#define NUMDIM	3
-#define RIGHT	  0
-#define LEFT	  1
-#define MIDDLE	2
+#define NUMDIM  3
+#define RIGHT    0
+#define LEFT    1
+#define MIDDLE  2
 
 // Test AABBox agains ray
 static BOOL HitBoundingBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOATaabbox3D &bbox)
 {
-	BOOL bInside = TRUE;
-	BOOL quadrant[NUMDIM];
-	register int i;
-	int whichPlane;
+  BOOL bInside = TRUE;
+  BOOL quadrant[NUMDIM];
+  register int i;
+  int whichPlane;
 
   double maxT[NUMDIM];
-	double candidatePlane[NUMDIM];
+  double candidatePlane[NUMDIM];
   double minB[NUMDIM], maxB[NUMDIM];  /*box */
   double origin[NUMDIM], dir[NUMDIM]; /*ray */
   double coord[NUMDIM]; /* hit point */
@@ -72,55 +72,55 @@ static BOOL HitBoundingBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOAT
   origin[0] = vOrigin(1); origin[1] = vOrigin(2); origin[2] = vOrigin(3);
   dir[0]    = vDir(1);    dir[1]    = vDir(2);    dir[2]    = vDir(3);
 
-	/* Find candidate planes; this loop can be avoided if
-   	rays cast all from the eye(assume perpsective view) */
+  /* Find candidate planes; this loop can be avoided if
+     rays cast all from the eye(assume perpsective view) */
   for (i=0; i<NUMDIM; i++) {
-		if (origin[i] < minB[i]) {
-			quadrant[i] = LEFT;
-			candidatePlane[i] = minB[i];
-			bInside = FALSE;
+    if (origin[i] < minB[i]) {
+      quadrant[i] = LEFT;
+      candidatePlane[i] = minB[i];
+      bInside = FALSE;
     } else if (origin[i] > maxB[i]) {
-			quadrant[i] = RIGHT;
-			candidatePlane[i] = maxB[i];
-			bInside = FALSE;
+      quadrant[i] = RIGHT;
+      candidatePlane[i] = maxB[i];
+      bInside = FALSE;
     } else {
-			quadrant[i] = MIDDLE;
-		}
+      quadrant[i] = MIDDLE;
+    }
   }
 
-	/* Ray origin inside bounding box */
-	if (bInside)	{
+  /* Ray origin inside bounding box */
+  if (bInside)  {
     vHit = FLOAT3D(origin[0],origin[1],origin[2]);
-		return (TRUE);
-	}
+    return (TRUE);
+  }
 
 
-	/* Calculate T distances to candidate planes */
-	for (i = 0; i < NUMDIM; i++)
-		if (quadrant[i] != MIDDLE && dir[i] !=0.)
-			maxT[i] = (candidatePlane[i]-origin[i]) / dir[i];
-		else
-			maxT[i] = -1.;
+  /* Calculate T distances to candidate planes */
+  for (i = 0; i < NUMDIM; i++)
+    if (quadrant[i] != MIDDLE && dir[i] != 0.)
+      maxT[i] = (candidatePlane[i]-origin[i]) / dir[i];
+    else
+      maxT[i] = -1.;
 
-	/* Get largest of the maxT's for final choice of intersection */
-	whichPlane = 0;
-	for (i = 1; i < NUMDIM; i++)
-		if (maxT[whichPlane] < maxT[i])
-			whichPlane = i;
+  /* Get largest of the maxT's for final choice of intersection */
+  whichPlane = 0;
+  for (i = 1; i < NUMDIM; i++)
+    if (maxT[whichPlane] < maxT[i])
+      whichPlane = i;
 
-	/* Check final candidate actually inside box */
-	if (maxT[whichPlane] < 0.) return (FALSE);
+  /* Check final candidate actually inside box */
+  if (maxT[whichPlane] < 0.) return (FALSE);
   for (i = 0; i < NUMDIM; i++) {
-		if (whichPlane != i) {
-			coord[i] = origin[i] + maxT[whichPlane] *dir[i];
+    if (whichPlane != i) {
+      coord[i] = origin[i] + maxT[whichPlane] *dir[i];
       if (coord[i] < minB[i] || coord[i] > maxB[i]) {
         return (FALSE);
       }
-		} else {
-			coord[i] = candidatePlane[i];
-		}
+    } else {
+      coord[i] = candidatePlane[i];
+    }
   }
-	return (TRUE);				/* ray hits box */
+  return (TRUE);        /* ray hits box */
 }
 
 
@@ -139,67 +139,67 @@ static BOOL RayHitsAABBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOATa
   origin[0] = vOrigin(1); origin[1] = vOrigin(2); origin[2] = vOrigin(3);
   dir[0]    = vDir(1);    dir[1]    = vDir(2);    dir[2]    = vDir(3);
 
-	char inside = TRUE;
-	char quadrant[3];
-	register int i;
-	int whichPlane;
-	FLOAT maxT[3];
-	FLOAT candidatePlane[3];
+  char inside = TRUE;
+  char quadrant[3];
+  register int i;
+  int whichPlane;
+  FLOAT maxT[3];
+  FLOAT candidatePlane[3];
 
-	/* Find candidate planes; this loop can be avoided if
-   	rays cast all from the eye(assume perpsective view) */
-	for (i=0; i<3; i++)
-		if (origin[i] < minB[i]) {
-			quadrant[i] = LEFT;
-			candidatePlane[i] = minB[i];
-			inside = FALSE;
-		} else if (origin[i] > maxB[i]) {
-			quadrant[i] = RIGHT;
-			candidatePlane[i] = maxB[i];
-			inside = FALSE;
-		} else	{
-			quadrant[i] = MIDDLE;
-		}
+  /* Find candidate planes; this loop can be avoided if
+     rays cast all from the eye(assume perpsective view) */
+  for (i=0; i<3; i++)
+    if (origin[i] < minB[i]) {
+      quadrant[i] = LEFT;
+      candidatePlane[i] = minB[i];
+      inside = FALSE;
+    } else if (origin[i] > maxB[i]) {
+      quadrant[i] = RIGHT;
+      candidatePlane[i] = maxB[i];
+      inside = FALSE;
+    } else  {
+      quadrant[i] = MIDDLE;
+    }
 
-	/* Ray origin inside bounding box */
-	if (inside)	{
+  /* Ray origin inside bounding box */
+  if (inside)  {
     vHit = FLOAT3D(origin[0],origin[1],origin[2]);
     return TRUE;
-	}
+  }
 
 
-	/* Calculate T distances to candidate planes */
+  /* Calculate T distances to candidate planes */
   for (i = 0; i < 3; i++) {
-    if (quadrant[i] != MIDDLE && dir[i] !=0.) {
-			maxT[i] = (candidatePlane[i]-origin[i]) / dir[i];
+    if (quadrant[i] != MIDDLE && dir[i] != 0.) {
+      maxT[i] = (candidatePlane[i]-origin[i]) / dir[i];
     } else {
-			maxT[i] = -1.;
+      maxT[i] = -1.;
     }
   }
 
-	/* Get largest of the maxT's for final choice of intersection */
-	whichPlane = 0;
-	for (i = 1; i < 3; i++)
-		if (maxT[whichPlane] < maxT[i])
-			whichPlane = i;
+  /* Get largest of the maxT's for final choice of intersection */
+  whichPlane = 0;
+  for (i = 1; i < 3; i++)
+    if (maxT[whichPlane] < maxT[i])
+      whichPlane = i;
 
-	/* Check final candidate actually inside box */
+  /* Check final candidate actually inside box */
     if (maxT[whichPlane] < 0.) {
       return FALSE;
     }
-	for (i = 0; i < 3; i++)
-		if (whichPlane != i) {
-			coord[i] = origin[i] + maxT[whichPlane] *dir[i];
+  for (i = 0; i < 3; i++)
+    if (whichPlane != i) {
+      coord[i] = origin[i] + maxT[whichPlane] *dir[i];
       if (coord[i] < minB[i] || coord[i] > maxB[i]) {
-				return FALSE;
+        return FALSE;
       }
-		} else {
-			coord[i] = candidatePlane[i];
-		}
+    } else {
+      coord[i] = candidatePlane[i];
+    }
 
   // ray hits box
   vHit = FLOAT3D(coord[0],coord[1],coord[2]);
-	return TRUE;
+  return TRUE;
 }
 
 // Get exact hit location in tile
@@ -232,49 +232,49 @@ FLOAT GetExactHitLocation(INDEX iTileIndex, FLOAT3D &vOrigin, FLOAT3D &vTarget, 
 
     FLOATplane3D plTriPlane(vx0,vx1,vx2);
     FLOAT fDistance0 = plTriPlane.PointDistance(vOrigin);
-	  FLOAT fDistance1 = plTriPlane.PointDistance(vTarget);
+    FLOAT fDistance1 = plTriPlane.PointDistance(vTarget);
 
     // if the ray hits the polygon plane
-	  if (fDistance0>=0 && fDistance0>=fDistance1) {
-		  // calculate fraction of line before intersection
-		  FLOAT fFraction = fDistance0/(fDistance0-fDistance1);
-		  // calculate intersection coordinate
-		  FLOAT3D vHitPoint = vOrigin+(vTarget-vOrigin)*fFraction;
-		  // calculate intersection distance
-		  FLOAT fHitDistance = (vHitPoint-vOrigin).Length();
-		  // if the hit point can not be new closest candidate
-		  if (fHitDistance>fDistance) {
-			  // skip this triangle
-			  continue;
-		  }
+    if (fDistance0 >= 0 && fDistance0 >= fDistance1) {
+      // calculate fraction of line before intersection
+      FLOAT fFraction = fDistance0/(fDistance0-fDistance1);
+      // calculate intersection coordinate
+      FLOAT3D vHitPoint = vOrigin+(vTarget-vOrigin)*fFraction;
+      // calculate intersection distance
+      FLOAT fHitDistance = (vHitPoint-vOrigin).Length();
+      // if the hit point can not be new closest candidate
+      if (fHitDistance>fDistance) {
+        // skip this triangle
+        continue;
+      }
 
       // find major axes of the polygon plane
-			INDEX iMajorAxis1, iMajorAxis2;
-			GetMajorAxesForPlane(plTriPlane, iMajorAxis1, iMajorAxis2);
+      INDEX iMajorAxis1, iMajorAxis2;
+      GetMajorAxesForPlane(plTriPlane, iMajorAxis1, iMajorAxis2);
 
       // create an intersector
-			CIntersector isIntersector(vHitPoint(iMajorAxis1), vHitPoint(iMajorAxis2));
+      CIntersector isIntersector(vHitPoint(iMajorAxis1), vHitPoint(iMajorAxis2));
 
-			// check intersections for all three edges of the polygon
-			isIntersector.AddEdge(
-					vx0(iMajorAxis1), vx0(iMajorAxis2),
-					vx1(iMajorAxis1), vx1(iMajorAxis2));
-			isIntersector.AddEdge(
-					vx1(iMajorAxis1), vx1(iMajorAxis2),
-					vx2(iMajorAxis1), vx2(iMajorAxis2));
-			isIntersector.AddEdge(
-					vx2(iMajorAxis1), vx2(iMajorAxis2),
-					vx0(iMajorAxis1), vx0(iMajorAxis2));
+      // check intersections for all three edges of the polygon
+      isIntersector.AddEdge(
+          vx0(iMajorAxis1), vx0(iMajorAxis2),
+          vx1(iMajorAxis1), vx1(iMajorAxis2));
+      isIntersector.AddEdge(
+          vx1(iMajorAxis1), vx1(iMajorAxis2),
+          vx2(iMajorAxis1), vx2(iMajorAxis2));
+      isIntersector.AddEdge(
+          vx2(iMajorAxis1), vx2(iMajorAxis2),
+          vx0(iMajorAxis1), vx0(iMajorAxis2));
 
       // if the polygon is intersected by the ray, and it is the closest intersection so far
-			if (isIntersector.IsIntersecting() && (fHitDistance < fDistance)) {
-				// remember hit coordinates
-				fDistance = fHitDistance;
+      if (isIntersector.IsIntersecting() && (fHitDistance < fDistance)) {
+        // remember hit coordinates
+        fDistance = fHitDistance;
         vHitLocation = vHitPoint;
-  		}
+      }
     }
   }
-  if (fDistance!=fDummyDist) {
+  if (fDistance != fDummyDist) {
     _vHitLocation = vHitLocation;
     return fDistance;
   } else {
@@ -292,7 +292,7 @@ FLOAT3D _vHitExact; // TEMP
 Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bboxExtract, GFXVertex4 **pavVtx, 
                           INDEX **paiInd, INDEX &ctVtx,INDEX &ctInd,BOOL bFixSize/*=FALSE*/)
 {
-  ASSERT(ptrTerrain!=NULL);
+  ASSERT(ptrTerrain != NULL);
 
   FLOATaabbox3D bbox = bboxExtract;
   
@@ -337,7 +337,7 @@ Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bboxExtract
   INDEX ctIndices = (iWidth-1)*(iHeight-1)*6;
   
 //  ASSERT(ctVertices>0 && ctIndices>0);
-  if (ctVertices==0 || ctIndices==0) {
+  if (ctVertices == 0 || ctIndices == 0) {
     ctVtx = 0;
     ctInd = 0;
     return Rect(0,0,0,0);
@@ -448,7 +448,7 @@ void ExtractVerticesInRect(CTerrain *ptrTerrain, Rect &rc, GFXVertex4 **pavVtx,
   ctVtx = iWidth*iHeight;
   ctInd  = (iWidth-1)*(iHeight-1)*6;
 
-  if (ctVtx==0 || ctInd==0) {
+  if (ctVtx == 0 || ctInd == 0) {
     return;
   }
   _avExtVertices.Push(ctVtx);
@@ -505,7 +505,7 @@ void ExtractVerticesInRect(CTerrain *ptrTerrain, Rect &rc, GFXVertex4 **pavVtx,
 // Extract all tiles that intersect with given box
 void FindTilesInBox(CTerrain *ptrTerrain, FLOATaabbox3D &bbox)
 {
-  ASSERT(ptrTerrain!=NULL);
+  ASSERT(ptrTerrain != NULL);
   _aiHitTiles.PopAll();
   // for each terrain tile
   for (INDEX itt=0;itt<_ptrTerrain->tr_ctTiles;itt++) {
@@ -522,7 +522,7 @@ void FindTilesInBox(CTerrain *ptrTerrain, FLOATaabbox3D &bbox)
 // Add these flags to all tiles that have been extracted
 void AddFlagsToExtractedTiles(ULONG ulFlags)
 {
-  ASSERT(_ptrTerrain!=NULL);
+  ASSERT(_ptrTerrain != NULL);
   // for each tile that has contact with extraction box
   INDEX ctht = _aiHitTiles.Count();
   for (INDEX iht=0;iht<ctht;iht++) {
@@ -537,8 +537,8 @@ void AddFlagsToExtractedTiles(ULONG ulFlags)
 // Get value from layer at given point
 UBYTE GetValueFromMask(CTerrain *ptrTerrain, INDEX iLayer, FLOAT3D vHitPoint)
 {
-  ASSERT(ptrTerrain!=NULL);
-  ASSERT(ptrTerrain->tr_penEntity!=NULL);
+  ASSERT(ptrTerrain != NULL);
+  ASSERT(ptrTerrain->tr_penEntity != NULL);
   
   CEntity *penEntity = ptrTerrain->tr_penEntity;
   // convert hit point to terrain space and remove terrain stretch from terrain
@@ -548,7 +548,7 @@ UBYTE GetValueFromMask(CTerrain *ptrTerrain, INDEX iLayer, FLOAT3D vHitPoint)
 
   CTerrainLayer &tl = ptrTerrain->GetLayer(iLayer);
   INDEX iVtx = vHit(1) + tl.tl_iMaskWidth*vHit(3);
-  if (iVtx<0 || iVtx>=tl.tl_iMaskWidth*tl.tl_iMaskHeight) {
+  if (iVtx<0 || iVtx >= tl.tl_iMaskWidth*tl.tl_iMaskHeight) {
     ASSERTALWAYS("Invalid hit point");
     return 0;
   }
@@ -560,7 +560,7 @@ UBYTE GetValueFromMask(CTerrain *ptrTerrain, INDEX iLayer, FLOAT3D vHitPoint)
 void CreateTexture(CTextureData &tdTopMap, PIX pixWidth, PIX pixHeight,ULONG ulFlags)
 {
   // clear current top map
-  if (tdTopMap.td_pulFrames!=NULL) {
+  if (tdTopMap.td_pulFrames != NULL) {
     FreeMemory( tdTopMap.td_pulFrames);
     tdTopMap.td_pulFrames = NULL;
   }
@@ -584,7 +584,7 @@ void CreateTexture(CTextureData &tdTopMap, PIX pixWidth, PIX pixHeight,ULONG ulF
 // Create one topmap
 void CreateTopMap(CTextureData &tdTopMap, PIX pixWidth , PIX pixHeight)
 {
-  ASSERT(tdTopMap.td_pulFrames==NULL);
+  ASSERT(tdTopMap.td_pulFrames == NULL);
   // Prepare new top map
   INDEX ctMipMaps = GetNoOfMipmaps(pixWidth,pixHeight);
   SLONG slSize = GetMipmapOffset(ctMipMaps,pixWidth,pixHeight)*BYTES_PER_TEXEL;
@@ -605,9 +605,9 @@ void PrepareSharedTopMapMemory(CTextureData *ptdTopMap, INDEX iTileIndex)
 {
   SLONG slSize = ptdTopMap->td_slFrameSize;
   // if this is global top map
-  if (iTileIndex==(-1)) {
+  if (iTileIndex == (-1)) {
     // if shared memory is larger then global top map
-    if (slSize<=_slSharedTopMapSize && _pulSharedTopMap!=NULL) {
+    if (slSize <= _slSharedTopMapSize && _pulSharedTopMap != NULL) {
       // assign pointer of global top map to shared memory
       ptdTopMap->td_pulFrames = _pulSharedTopMap;
       return;
@@ -621,7 +621,7 @@ void PrepareSharedTopMapMemory(CTextureData *ptdTopMap, INDEX iTileIndex)
     // if required memory is larger than currently allocated one
     if (slSize>_slSharedTopMapSize) {
       // if shared memory exists
-      if (_pulSharedTopMap!=NULL) {
+      if (_pulSharedTopMap != NULL) {
         // free current shared memory
         FreeMemory(_pulSharedTopMap);
         _pulSharedTopMap = NULL;
@@ -639,9 +639,9 @@ void PrepareSharedTopMapMemory(CTextureData *ptdTopMap, INDEX iTileIndex)
 void FreeSharedTopMapMemory(CTextureData *ptdTopMap, INDEX iTileIndex)
 {
   // if this is global top map
-  if (iTileIndex==(-1)) {
+  if (iTileIndex == (-1)) {
     // if global top map isn't using shared memory
-    if (ptdTopMap->td_pulFrames!=_pulSharedTopMap) {
+    if (ptdTopMap->td_pulFrames != _pulSharedTopMap) {
       // free memory global top map is using
       FreeMemory(ptdTopMap->td_pulFrames);
     }
@@ -693,7 +693,7 @@ static FLOAT3D CalculateNormalFromPoint(FLOAT fPosX, FLOAT fPosZ, FLOAT3D *pvStr
   }
   ASSERT(Abs(vNormal.Length()-1)<0.01);
 
-  if (pvStrPos!=NULL) {
+  if (pvStrPos != NULL) {
     FLOAT fResX1 = Lerp(avVtx[0](2),avVtx[1](2),fLerpX);
     FLOAT fResX2 = Lerp(avVtx[2](2),avVtx[3](2),fLerpX);
     FLOAT fPosY  = Lerp(fResX1,fResX2,fLerpZ);
@@ -748,7 +748,7 @@ static void CalcPointLight(CPlacement3D &plLight, CLightSource *plsLight, Rect &
         fIntensity = CalculateRatio(fDistance, fHotSpot, fFallOff, 0.0f, 1.0f);
       }
       ULONG ulIntensity = NormFloatToByte(fIntensity);
-      ulIntensity = (ulIntensity<<CT_RSHIFT)|(ulIntensity<<CT_GSHIFT)|(ulIntensity<<CT_BSHIFT);
+      ulIntensity = (ulIntensity << CT_RSHIFT)|(ulIntensity << CT_GSHIFT)|(ulIntensity << CT_BSHIFT);
       colLight = MulColors(ByteSwap(colLight.abgr), ulIntensity);
 
 
@@ -756,9 +756,9 @@ static void CalcPointLight(CPlacement3D &plLight, CLightSource *plsLight, Rect &
       fDot = Clamp(fDot,0.0f,1.0f);
       SLONG slDot = NormFloatToByte(fDot);
 
-      pacolData->r = ClampUp(pacolData->r + ((colLight.r*slDot)>>8),255L);
-      pacolData->g = ClampUp(pacolData->g + ((colLight.g*slDot)>>8),255L);
-      pacolData->b = ClampUp(pacolData->b + ((colLight.b*slDot)>>8),255L);
+      pacolData->r = ClampUp(pacolData->r + ((colLight.r*slDot) >> 8),255L);
+      pacolData->g = ClampUp(pacolData->g + ((colLight.g*slDot) >> 8),255L);
+      pacolData->b = ClampUp(pacolData->b + ((colLight.b*slDot) >> 8),255L);
       pacolData->a = 255;
       pacolData++;
     }
@@ -824,9 +824,9 @@ static void CalcDirectionalLight(CPlacement3D &plLight, CLightSource *plsLight, 
       fDot = Clamp(fDot,0.0f,1.0f);
       SLONG slDot = NormFloatToByte(fDot);
 
-      pacolData->r = ClampUp(pacolData->r + slar + ((colLight.r*slDot)>>ubColShift),255L);
-      pacolData->g = ClampUp(pacolData->g + slag + ((colLight.g*slDot)>>ubColShift),255L);
-      pacolData->b = ClampUp(pacolData->b + slab + ((colLight.b*slDot)>>ubColShift),255L);
+      pacolData->r = ClampUp(pacolData->r + slar + ((colLight.r*slDot) >> ubColShift),255L);
+      pacolData->g = ClampUp(pacolData->g + slag + ((colLight.g*slDot) >> ubColShift),255L);
+      pacolData->b = ClampUp(pacolData->b + slab + ((colLight.b*slDot) >> ubColShift),255L);
       pacolData->a = 255;
       pacolData++;
     }
@@ -872,8 +872,8 @@ static Rect GetUpdateRectFromBox(CTerrain *ptrTerrain, FLOATaabbox3D &boxUpdate)
 
 static FLOATaabbox3D AbsoluteToRelative(const CTerrain *ptrTerrain, const FLOATaabbox3D &bbox)
 {
-  ASSERT(ptrTerrain!=NULL);
-  ASSERT(ptrTerrain->tr_penEntity!=NULL);
+  ASSERT(ptrTerrain != NULL);
+  ASSERT(ptrTerrain->tr_penEntity != NULL);
   FLOATaabbox3D bboxRelative;
   CEntity *pen = ptrTerrain->tr_penEntity;
   
@@ -901,9 +901,9 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
     return;
   }
 
-  ASSERT(ptrTerrain!=NULL);
-  ASSERT(ptrTerrain->tr_penEntity!=NULL);
-  ASSERT(ptrTerrain->tr_penEntity->en_pwoWorld!=NULL);
+  ASSERT(ptrTerrain != NULL);
+  ASSERT(ptrTerrain->tr_penEntity != NULL);
+  ASSERT(ptrTerrain->tr_penEntity->en_pwoWorld != NULL);
   
   FLOATaabbox3D boxUpdate;
   FLOATaabbox3D boxAllTerrain;
@@ -911,7 +911,7 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
 
   ptrTerrain->GetAllTerrainBBox(boxAllTerrain);
   // if request to update whole terrain is given
-  if (pboxUpdate==NULL) {
+  if (pboxUpdate == NULL) {
     // take all terrain bbox as update box
     boxUpdate = boxAllTerrain;
   } else {
@@ -942,7 +942,7 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
   PIX pixHeight = ptrTerrain->GetShadowMapHeight();
 
   CTextureData &tdShadowMap = ptrTerrain->tr_tdShadowMap;
-  ASSERT(tdShadowMap.td_pulFrames!=NULL);
+  ASSERT(tdShadowMap.td_pulFrames != NULL);
 
   Rect rcUpdate = GetUpdateRectFromBox(ptrTerrain, boxUpdate);
   // Clear part of shadow map that will be updated
@@ -958,7 +958,7 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
     plLight.pl_PositionVector = 
      (plLight.pl_PositionVector - penEntity->en_plPlacement.pl_PositionVector) * !penEntity->en_mRotation;
 
-    if (pls!=NULL) {
+    if (pls != NULL) {
       // Get light bounding box
       FLOATaabbox3D boxLight(plLight.pl_PositionVector, pls->ls_rFallOff);
       // if light is directional
@@ -974,8 +974,8 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
           _ctShadowMapUpdates++;
 
           // if light box is inside update box
-          if (boxLight.minvect(1)>=boxUpdate.minvect(1) && boxLight.minvect(3)>boxUpdate.minvect(3) && 
-            boxLight.maxvect(1)<=boxUpdate.maxvect(1) && boxLight.maxvect(3)<=boxUpdate.maxvect(3)) {
+          if (boxLight.minvect(1) >= boxUpdate.minvect(1) && boxLight.minvect(3)>boxUpdate.minvect(3) && 
+            boxLight.maxvect(1) <= boxUpdate.maxvect(1) && boxLight.maxvect(3) <= boxUpdate.maxvect(3)) {
             // Recalculate only light box
             Rect rcLightUpdate = GetUpdateRectFromBox(ptrTerrain,boxLight);
             CalcPointLight(plLight,pls,rcLightUpdate);
@@ -1003,9 +1003,9 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
   for (PIX ipix=0;ipix<ctpixs;ipix++) {
     ULONG ulPixel = ByteSwap(*ppixShadowMip);
     // ULONG ulPixel = ulTemp;
-    *puwShade = (((ulPixel>>27)&0x001F)<<10) | 
-                (((ulPixel>>19)&0x001F)<< 5) | 
-                (((ulPixel>>11)&0x001F)<< 0);
+    *puwShade = (((ulPixel >> 27)&0x001F) << 10) | 
+                (((ulPixel >> 19)&0x001F) << 5) | 
+                (((ulPixel >> 11)&0x001F) << 0);
     puwShade++;
     ppixShadowMip++;
   }
@@ -1020,8 +1020,8 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
 // Calculate 2d relative point in terrain from absolute 3d point in world
 Point Calculate2dHitPoint(CTerrain *ptrTerrain, FLOAT3D &vHitPoint)
 {
-  ASSERT(ptrTerrain!=NULL);
-  ASSERT(ptrTerrain->tr_penEntity!=NULL);
+  ASSERT(ptrTerrain != NULL);
+  ASSERT(ptrTerrain->tr_penEntity != NULL);
 
   // Get entity that holds this terrain
   CEntity *penEntity = ptrTerrain->tr_penEntity;
@@ -1039,8 +1039,8 @@ Point Calculate2dHitPoint(CTerrain *ptrTerrain, FLOAT3D &vHitPoint)
 // Calculate tex coords on shading map from absolute 3d point in world
 FLOAT2D CalculateShadingTexCoords(CTerrain *ptrTerrain, FLOAT3D &vPoint)
 {
-  ASSERT(ptrTerrain!=NULL);
-  ASSERT(ptrTerrain->tr_penEntity!=NULL);
+  ASSERT(ptrTerrain != NULL);
+  ASSERT(ptrTerrain->tr_penEntity != NULL);
   // Get entity that holds this terrain
   CEntity *penEntity = ptrTerrain->tr_penEntity;
   // Get relative hit point

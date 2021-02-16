@@ -75,13 +75,13 @@ BOOL CObject3D::ArePolygonsPlanar(void)
  */
 void CObject3D::Project(CSimpleProjection3D_DOUBLE &pr)
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   // check if projection is mirrored
   const FLOAT3D &vObjectStretch = pr.ObjectStretchR();
   BOOL bXInverted = vObjectStretch(1)<0;
   BOOL bYInverted = vObjectStretch(2)<0;
   BOOL bZInverted = vObjectStretch(3)<0;
-  BOOL bInverted = bXInverted!=bYInverted!=bZInverted;
+  BOOL bInverted = bXInverted != bYInverted != bZInverted;
 
   // for all sectors
   FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itsc) {
@@ -134,7 +134,7 @@ CObject3D &CObject3D::operator=(CObject3D &obOriginal)
  */
 void CObject3D::CreateSectorBSPs(void)
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   // for each sector in object
   FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
     // create its BSP tree
@@ -171,7 +171,7 @@ void CObject3D::RemoveEmptySectors(void)
  */
 void CObject3D::Optimize(void)
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
 
   // for all sectors in the object
   {FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
@@ -188,7 +188,7 @@ void CObject3D::Optimize(void)
  */
 void CObject3D::Inverse(void)
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   // for all sectors in object
   {FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
     // inverse the sector
@@ -199,7 +199,7 @@ void CObject3D::Inverse(void)
 /* Recalculate all planes from vertices. (used when stretching vertices) */
 void CObject3D::RecalculatePlanes(void)
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   // for all sectors in object
   {FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
     // recalculate all planes in sector
@@ -227,7 +227,7 @@ void CObject3D::TurnPortalsToWalls(void)
  */
 void CObject3D::GetBoundingBox(DOUBLEaabbox3D &boxObject)
 {
-  ASSERT(GetFPUPrecision()==FPT_53BIT);
+  ASSERT(GetFPUPrecision() == FPT_53BIT);
   // clear the bounding box
   boxObject = DOUBLEaabbox3D();
   // for each sector in the object

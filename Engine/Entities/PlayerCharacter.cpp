@@ -37,7 +37,7 @@ static void GetGUID(UBYTE aub[16])
 
     // find GUID function
     pCoCreateGuid = (CoCreateGuid_t*)GetProcAddress(hOle32Lib, "CoCreateGuid");
-    if (pCoCreateGuid==NULL) {
+    if (pCoCreateGuid == NULL) {
       ThrowF_t(TRANS("Cannot find CoCreateGuid()."));
     }
 
@@ -45,7 +45,7 @@ static void GetGUID(UBYTE aub[16])
     HRESULT hres = pCoCreateGuid(&aub[0]);
 
     // check for success
-    if (hres!=S_OK) {
+    if (hres != S_OK) {
       ThrowF_t(TRANS("CoCreateGuid(): Error 0x%08x"), hres);
     }
 
@@ -74,7 +74,7 @@ CPlayerCharacter::CPlayerCharacter(const CTString &strName)
   : pc_strName(strName), pc_strTeam("")
 {
   // if the name passed to constructor is empty string
-  if (strName=="") {
+  if (strName == "") {
     // make this an unnamed player
     pc_strName = "<unnamed player>";
   }
@@ -105,7 +105,7 @@ void CPlayerCharacter::Save_t( const CTFileName &fnFile) // throw char *
 void CPlayerCharacter::Read_t(CTStream *pstr) // throw char *
 {
   pstr->ExpectID_t("PLC4");
-  (*pstr)>>pc_strName>>pc_strTeam;
+  (*pstr) >> pc_strName >> pc_strTeam;
   pstr->Read_t(pc_aubGUID, sizeof(pc_aubGUID));
   pstr->Read_t(pc_aubAppearance, sizeof(pc_aubAppearance));
 }
@@ -116,7 +116,7 @@ void CPlayerCharacter::Read_t(CTStream *pstr) // throw char *
 void CPlayerCharacter::Write_t(CTStream *pstr) // throw char *
 {
   pstr->WriteID_t("PLC4");
-  (*pstr)<<pc_strName<<pc_strTeam;
+  (*pstr) << pc_strName << pc_strTeam;
   pstr->Write_t(pc_aubGUID, sizeof(pc_aubGUID));
   pstr->Write_t(pc_aubAppearance, sizeof(pc_aubAppearance));
 }
@@ -164,7 +164,7 @@ void CPlayerCharacter::SetTeam(CTString strTeam)
 /* Assignment operator. */
 CPlayerCharacter &CPlayerCharacter::operator=(const CPlayerCharacter &pcOther)
 {
-  ASSERT(this!=NULL && &pcOther!=NULL);
+  ASSERT(this != NULL && &pcOther != NULL);
   pc_strName = pcOther.pc_strName;
   pc_strTeam = pcOther.pc_strTeam;
   memcpy(pc_aubGUID, pcOther.pc_aubGUID, PLAYERGUIDSIZE);
@@ -173,7 +173,7 @@ CPlayerCharacter &CPlayerCharacter::operator=(const CPlayerCharacter &pcOther)
 };
 
 /* Comparison operator. */
-BOOL CPlayerCharacter::operator==(const CPlayerCharacter &pcOther) const
+BOOL CPlayerCharacter::operator == (const CPlayerCharacter &pcOther) const
 {
   for (INDEX i=0;i<PLAYERGUIDSIZE; i++) {
     if (pc_aubGUID[i] != pcOther.pc_aubGUID[i]) {
@@ -197,14 +197,14 @@ CTStream &operator>>(CTStream &strm, CPlayerCharacter &pc)
 // message operations
 CNetworkMessage &operator<<(CNetworkMessage &nm, CPlayerCharacter &pc)
 {
-  nm<<pc.pc_strName<<pc.pc_strTeam;
+  nm << pc.pc_strName << pc.pc_strTeam;
   nm.Write(pc.pc_aubGUID, PLAYERGUIDSIZE);
   nm.Write(pc.pc_aubAppearance, MAX_PLAYERAPPEARANCE);
   return nm;
 };
 CNetworkMessage &operator>>(CNetworkMessage &nm, CPlayerCharacter &pc)
 {
-  nm>>pc.pc_strName>>pc.pc_strTeam;
+  nm >> pc.pc_strName >> pc.pc_strTeam;
   nm.Read(pc.pc_aubGUID, PLAYERGUIDSIZE);
   nm.Read(pc.pc_aubAppearance, MAX_PLAYERAPPEARANCE);
   return nm;

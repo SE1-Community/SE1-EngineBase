@@ -67,7 +67,7 @@ static CTString GetPred(CEntity*pen)
   str.PrintF("%08x-%s", pen, str1);
   return str;
 }
-/* ====================================================
+/* == == == == == == == == == == == == == == == == == == == == == == == == == == 
  *
  *  Class global methods
  */
@@ -141,12 +141,12 @@ void CSoundObject::Set3DParameters( FLOAT fFalloff, FLOAT fHotSpot,
 
   CSoundObject *pso = this;
   // if the sound's entity is a predictor
-  if (_bPredictionActive && so_penEntity!=NULL) {
+  if (_bPredictionActive && so_penEntity != NULL) {
     if (so_penEntity->IsPredictionHead()) {
       // get your prediction tail
       //CPrintF("SET3D: ");
       CEntity *pen = so_penEntity->GetPredictionTail();
-      if (pen!=so_penEntity) {
+      if (pen != so_penEntity) {
         pso = (CSoundObject *)( ((UBYTE*)pen) + (int(this)-int(so_penEntity)) );
       }
     }
@@ -159,7 +159,7 @@ void CSoundObject::Set3DParameters( FLOAT fFalloff, FLOAT fHotSpot,
 };
 
 
-/* ====================================================
+/* == == == == == == == == == == == == == == == == == == == == == == == == == == 
  * Sound control methods
  */
 
@@ -167,7 +167,7 @@ void CSoundObject::Set3DParameters( FLOAT fFalloff, FLOAT fHotSpot,
 CSoundObject *CSoundObject::GetPredictionTail(ULONG ulTypeID, ULONG ulEventID)
 {
   // if the sound has an entity
-  if (so_penEntity!=NULL) {
+  if (so_penEntity != NULL) {
     //CPrintF(" {%s}", GetPred(so_penEntity));
     // if the entity is temporary predictor
     if (so_penEntity->GetFlags()&ENF_TEMPPREDICTOR) {
@@ -193,7 +193,7 @@ CSoundObject *CSoundObject::GetPredictionTail(ULONG ulTypeID, ULONG ulEventID)
     // find eventual prediction tail sound object
     if (pen->IsPredictor()) {
       pen = pen->GetPredictionTail();
-      if (pen!=so_penEntity) {
+      if (pen != so_penEntity) {
         //CPrintF(" ROUTED\n");
         return (CSoundObject *)( ((UBYTE*)pen) + slOffset );
       }
@@ -215,7 +215,7 @@ void CSoundObject::Play(CSoundData *pCsdLink, SLONG slFlags)
   // get prediction tail
   CSoundObject *psoTail = GetPredictionTail(EVENT_SOUNDPLAY, (ULONG)pCsdLink);
   // if the event is predicted
-  if (psoTail==NULL) {
+  if (psoTail == NULL) {
     // do nothing;
     return;
   }
@@ -227,7 +227,7 @@ void CSoundObject::Play(CSoundData *pCsdLink, SLONG slFlags)
 // play sound - internal function - doesn't account for prediction
 void CSoundObject::Play_internal( CSoundData *pCsdLink, SLONG slFlags)
 {
-  ASSERT(so_penEntity==NULL || !so_penEntity->IsPredictor());
+  ASSERT(so_penEntity == NULL || !so_penEntity->IsPredictor());
 
   // check if should continue with new sound
   BOOL bContinue = 
@@ -307,19 +307,19 @@ void CSoundObject::SetOffset( FLOAT fOffset)
   //CPrintF("SETOFF: ");
   CSoundObject *psoTail = GetPredictionTail(EVENT_SOUNDSETOFFSET, 0);
   // if the event is predicted
-  if (psoTail==NULL) {
+  if (psoTail == NULL) {
     // do nothing;
     return;
   }
 
   // if sound not playing
-  if (psoTail->so_pCsdLink==NULL) {
+  if (psoTail->so_pCsdLink == NULL) {
     // do nothing
     return;
   }
 
   // safety check
-  ASSERT( fOffset>=0);
+  ASSERT( fOffset >= 0);
   if (fOffset<0) {
     CPrintF( "BUG: Trying to set negative offset (%.2g) in sound '%s' !\n", fOffset, (CTString&)psoTail->so_pCsdLink->GetName());
     fOffset = 0.0f;
@@ -343,7 +343,7 @@ void CSoundObject::Stop(void)
   CTSingleLock slSounds( &_pSound->sl_csSound, TRUE);
 
   //CPrintF("STOP");
-  if (so_pCsdLink!=NULL) {
+  if (so_pCsdLink != NULL) {
     //CPrintF(" '%s'", (const char*)so_pCsdLink->GetName().FileName());
   }
 
@@ -351,7 +351,7 @@ void CSoundObject::Stop(void)
   // get prediction tail
   psoTail = GetPredictionTail(EVENT_SOUNDSTOP, (ULONG)so_pCsdLink);
   // if the event is predicted
-  if (psoTail==NULL) {
+  if (psoTail == NULL) {
     // do nothing;
     return;
   }
@@ -364,7 +364,7 @@ void CSoundObject::Stop_internal(void)
   so_slFlags &= ~(SOF_PLAY|SOF_PREPARE|SOF_PAUSED);
 
   // destroy decoder if exists
-  if (so_psdcDecoder!=NULL) {
+  if (so_psdcDecoder != NULL) {
     delete so_psdcDecoder;
     so_psdcDecoder = NULL;
   }
@@ -392,7 +392,7 @@ void CSoundObject::Update3DEffects(void)
 
 //  if (!(so_slFlags&SOF_PREPARE)) {
     // if the sound's entity is a predictor
-/*    if (so_penEntity!=NULL && so_penEntity->IsPredictor()) {
+/*    if (so_penEntity != NULL && so_penEntity->IsPredictor()) {
       // kill the sound
       so_slFlags&=~SOF_PLAY;
       //CPrintF("Update canceled %s (%s)\n", (const char*)so_pCsdLink->GetName(), GetPred(so_penEntity));
@@ -412,7 +412,7 @@ void CSoundObject::Update3DEffects(void)
   // get your position parameters
   FLOAT3D vPosition(0,0,0);
   FLOAT3D vSpeed(0,0,0);
-  if (so_penEntity!=NULL) {
+  if (so_penEntity != NULL) {
     vPosition = so_penEntity->en_plPlacement.pl_PositionVector;
     if (so_penEntity->en_ulPhysicsFlags&EPF_MOVABLE) {
       CMovableEntity *penMovable = (CMovableEntity *)so_penEntity;
@@ -427,7 +427,7 @@ void CSoundObject::Update3DEffects(void)
     CSoundListener &sli = *itsli;
 
     // if local, but not of this listener
-    if ((so_slFlags&SOF_LOCAL) && so_penEntity!=sli.sli_penEntity) {
+    if ((so_slFlags&SOF_LOCAL) && so_penEntity != sli.sli_penEntity) {
       // don't add this listener
       continue;
     }
@@ -456,17 +456,17 @@ void CSoundObject::Update3DEffects(void)
       fDistanceFactor = (so_sp3.sp3_fFalloff - fAbsDelta) /
                         (so_sp3.sp3_fFalloff - so_sp3.sp3_fHotSpot);
     }
-    ASSERT(fDistanceFactor>=0 && fDistanceFactor<=+1);
+    ASSERT(fDistanceFactor >= 0 && fDistanceFactor <= +1);
 
     // calculate volumetric influence
     // NOTE: decoded sounds must be threated as volumetric
     FLOAT fNonVolumetric = 1.0f;
     FLOAT fNonVolumetricAdvanced = 1.0f;
-    if ((so_slFlags & SOF_VOLUMETRIC) || so_psdcDecoder!=NULL) {
+    if ((so_slFlags & SOF_VOLUMETRIC) || so_psdcDecoder != NULL) {
       fNonVolumetric = 1.0f-fDistanceFactor;
       fNonVolumetricAdvanced = 0.0f;
     }
-    ASSERT(fNonVolumetric>=0 && fNonVolumetric<=+1);
+    ASSERT(fNonVolumetric >= 0 && fNonVolumetric <= +1);
 
     // find doppler effect pitch shift
     fPitchShift = 1.0f;
@@ -499,14 +499,14 @@ void CSoundObject::Update3DEffects(void)
       fFBFactor = -vDir(3);
       fUDFactor = +vDir(2);
     }
-    ASSERT(fLRFactor>=-1.1 && fLRFactor<=+1.1);
-    ASSERT(fFBFactor>=-1.1 && fFBFactor<=+1.1);
-    ASSERT(fUDFactor>=-1.1 && fUDFactor<=+1.1);
+    ASSERT(fLRFactor >= -1.1 && fLRFactor <= +1.1);
+    ASSERT(fFBFactor >= -1.1 && fFBFactor <= +1.1);
+    ASSERT(fUDFactor >= -1.1 && fUDFactor <= +1.1);
 
 
     // calculate panning influence factor
     FLOAT fPanningFactor= fNonVolumetric*snd_fPanStrength;
-    ASSERT(fPanningFactor>=0 && fPanningFactor<=+1);
+    ASSERT(fPanningFactor >= 0 && fPanningFactor <= +1);
 
     // calc volume for left and right channel
     FLOAT fVolume = so_sp3.sp3_fMaxVolume * fDistanceFactor;
@@ -593,7 +593,7 @@ void CSoundObject::Update3DEffects(void)
 // Prepare sound
 void CSoundObject::PrepareSound(void)
 {
-  ASSERT(so_penEntity==NULL || !so_penEntity->IsPredictor());
+  ASSERT(so_penEntity == NULL || !so_penEntity->IsPredictor());
 
   so_fLastLeftVolume = so_spNew.sp_fLeftVolume;
   so_fLastRightVolume = so_spNew.sp_fRightVolume;
@@ -663,7 +663,7 @@ void CSoundObject::Read_t(CTStream *pistr)  // throw char *
   so_sp = so_spNew;
 
   // Obtain and play object (sound)
-  if ( fnmSound != "" && (so_slFlags&SOF_PLAY)) {
+  if (fnmSound != "" && (so_slFlags&SOF_PLAY)) {
     Play_t( fnmSound, so_slFlags|SOF_LOADED);
   }
 };
@@ -673,7 +673,7 @@ void CSoundObject::Write_t(CTStream *pistr) // throw char *
   int iDroppedOut=0;
 
   // save file name
-  if (so_pCsdLink!=NULL) {
+  if (so_pCsdLink != NULL) {
     *pistr << (so_pCsdLink->GetName());
   } else {
     *pistr << CTFILENAME("");

@@ -81,9 +81,9 @@ CDynamicArray<Type>::~CDynamicArray(void) {
  */
 template<class Type>
 void CDynamicArray<Type>::Clear(void) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   // if any pointers are allocated
-  if (da_Count!=0) {
+  if (da_Count != 0) {
     /* NOTE: We must explicitly clear objects here, because array deleting
      * does not call object destructors!
      */
@@ -101,7 +101,7 @@ void CDynamicArray<Type>::Clear(void) {
   // otherwise
   } else {
     // check that the pointers are really not allocated
-    ASSERT(da_Pointers==NULL);
+    ASSERT(da_Pointers == NULL);
     // nothing to free
   }
   // for all memory blocks
@@ -128,11 +128,11 @@ const Type &CDynamicArray<Type>::operator[](INDEX iObject) const {
  */
 template<class Type>
 void CDynamicArray<Type>::GrowPointers(INDEX iCount) {
-  ASSERT(this!=NULL && iCount>0);
+  ASSERT(this != NULL && iCount>0);
   // if not yet allocated
-  if (da_Count==0) {
+  if (da_Count == 0) {
     // check that the pointers are really not allocated
-    ASSERT(da_Pointers==NULL);
+    ASSERT(da_Pointers == NULL);
     // allocate
     da_Count=iCount;
     da_Pointers = (Type **)AllocMemory(da_Count*sizeof(Type*));
@@ -149,16 +149,16 @@ void CDynamicArray<Type>::GrowPointers(INDEX iCount) {
  */
 template<class Type>
 void CDynamicArray<Type>::ShrinkPointers(INDEX iCount) {
-  ASSERT(this!=NULL && iCount>0);
+  ASSERT(this != NULL && iCount>0);
   // check that the pointers are allocated
-  ASSERT(da_Pointers!=NULL);
+  ASSERT(da_Pointers != NULL);
 
   // decrement count
   da_Count-=iCount;
   // checked that it has not dropped below zero
-  ASSERT(da_Count>=0);
+  ASSERT(da_Count >= 0);
   // if all pointers are freed by this
-  if (da_Count==0) {
+  if (da_Count == 0) {
     // free the array
     FreeMemory(da_Pointers);
     da_Pointers = NULL;
@@ -174,7 +174,7 @@ void CDynamicArray<Type>::ShrinkPointers(INDEX iCount) {
  */
 template<class Type>
 Type *CDynamicArray<Type>::AllocBlock(INDEX iCount) {
-  ASSERT(this!=NULL && iCount>0);
+  ASSERT(this != NULL && iCount>0);
   Type *ptBlock;
   CDABlockInfo *pbi;
 
@@ -194,9 +194,9 @@ Type *CDynamicArray<Type>::AllocBlock(INDEX iCount) {
  */
 template<class Type>
 Type *CDynamicArray<Type>::New(INDEX iCount /*= 1*/) {
-  ASSERT(this!=NULL && iCount>=0);
+  ASSERT(this != NULL && iCount >= 0);
   // if no new members are needed in fact
-  if (iCount==0) {
+  if (iCount == 0) {
     // do nothing
     return NULL;
   }
@@ -219,7 +219,7 @@ Type *CDynamicArray<Type>::New(INDEX iCount /*= 1*/) {
  */
 template<class Type>
 void CDynamicArray<Type>::Delete(Type *ptMember) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
 #if CHECKARRAYLOCKING
   // check that not locked for indices
   ASSERT(da_LockCt == 0);
@@ -242,9 +242,9 @@ void CDynamicArray<Type>::Delete(Type *ptMember) {
  */
 template<class Type>
 Type *CDynamicArray<Type>::Pointer(INDEX iMember) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   // check that index is currently valid
-  ASSERT(iMember>=0 && iMember<da_Count);
+  ASSERT(iMember >= 0 && iMember<da_Count);
 #if CHECKARRAYLOCKING
   // check that locked for indices
   ASSERT(da_LockCt>0);
@@ -253,9 +253,9 @@ Type *CDynamicArray<Type>::Pointer(INDEX iMember) {
 }
 template<class Type>
 const Type *CDynamicArray<Type>::Pointer(INDEX iMember) const {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   // check that index is currently valid
-  ASSERT(iMember>=0 && iMember<da_Count);
+  ASSERT(iMember >= 0 && iMember<da_Count);
 #if CHECKARRAYLOCKING
   // check that locked for indices
   ASSERT(da_LockCt>0);
@@ -268,9 +268,9 @@ const Type *CDynamicArray<Type>::Pointer(INDEX iMember) const {
  */
 template<class Type>
 void CDynamicArray<Type>::Lock(void) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
 #if CHECKARRAYLOCKING
-  ASSERT(da_LockCt>=0);
+  ASSERT(da_LockCt >= 0);
   // increment lock counter
   da_LockCt++;
 #endif
@@ -281,10 +281,10 @@ void CDynamicArray<Type>::Lock(void) {
  */
 template<class Type>
 void CDynamicArray<Type>::Unlock(void) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
 #if CHECKARRAYLOCKING
   da_LockCt--;
-  ASSERT(da_LockCt>=0);
+  ASSERT(da_LockCt >= 0);
 #endif
 }
 
@@ -293,7 +293,7 @@ void CDynamicArray<Type>::Unlock(void) {
  */
 template<class Type>
 INDEX CDynamicArray<Type>::Index(Type *ptMember) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
 #if CHECKARRAYLOCKING
   // check that locked for indices
   ASSERT(da_LockCt>0);
@@ -306,11 +306,11 @@ INDEX CDynamicArray<Type>::Index(Type *ptMember) {
  */
 template<class Type>
 INDEX CDynamicArray<Type>::GetIndex(Type *ptMember) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   // slow !!!!
   // check all members
   for (INDEX iMember=0; iMember<da_Count; iMember++) {
-    if (da_Pointers[iMember]==ptMember) {
+    if (da_Pointers[iMember] == ptMember) {
       return iMember;
     }
   }
@@ -323,7 +323,7 @@ INDEX CDynamicArray<Type>::GetIndex(Type *ptMember) {
  */
 template<class Type>
 INDEX CDynamicArray<Type>::Count(void) const {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   return da_Count;
 }
 
@@ -333,15 +333,15 @@ INDEX CDynamicArray<Type>::Count(void) const {
 template<class Type>
 CDynamicArray<Type> &CDynamicArray<Type>::operator=(CDynamicArray<Type> &arOriginal)
 {
-  ASSERT(this!=NULL);
-  ASSERT(&arOriginal!=NULL);
-  ASSERT(this!=&arOriginal);
+  ASSERT(this != NULL);
+  ASSERT(&arOriginal != NULL);
+  ASSERT(this != &arOriginal);
   // clear previous contents
   Clear();
   // get count of elements in original array
   INDEX ctOriginal = arOriginal.Count();
   // if the other array has no elements
-  if (ctOriginal ==0) {
+  if (ctOriginal == 0) {
     // no assignment
     return*this;
   }
@@ -364,14 +364,14 @@ CDynamicArray<Type> &CDynamicArray<Type>::operator=(CDynamicArray<Type> &arOrigi
 template<class Type>
 void CDynamicArray<Type>::MoveArray(CDynamicArray<Type> &arOther)
 {
-  ASSERT(this!=NULL && &arOther!=NULL);
+  ASSERT(this != NULL && &arOther != NULL);
 #if CHECKARRAYLOCKING
   // check that not locked for indices
-  ASSERT(da_LockCt==0 && arOther.da_LockCt==0);
+  ASSERT(da_LockCt == 0 && arOther.da_LockCt == 0);
 #endif
 
   // if the other array has no elements
-  if (arOther.da_Count==0) {
+  if (arOther.da_Count == 0) {
     // no moving
     return;
   }
@@ -445,7 +445,7 @@ inline CDynamicArrayIterator<Type>::~CDynamicArrayIterator(void) {
  */
 template<class Type>
 inline void CDynamicArrayIterator<Type>::MoveToNext(void) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   dai_Index++;
 }
 
@@ -454,8 +454,8 @@ inline void CDynamicArrayIterator<Type>::MoveToNext(void) {
  */
 template<class Type>
 inline BOOL CDynamicArrayIterator<Type>::IsPastEnd(void) {
-  ASSERT(this!=NULL);
-  return dai_Index>=dai_Array.Count();
+  ASSERT(this != NULL);
+  return dai_Index >= dai_Array.Count();
 }
 
 

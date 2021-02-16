@@ -30,11 +30,11 @@ static inline int CompareDelayedModels( const CDelayedModel &dm0, const CDelayed
   BOOL bHasAlpha0 = dm0.dm_ulFlags&DMF_HASALPHA;
   BOOL bHasAlpha1 = dm1.dm_ulFlags&DMF_HASALPHA;
        if (! bHasAlpha0 &&  bHasAlpha1) return -1;
-  else if (  bHasAlpha0 && !bHasAlpha1) return +1;
+  else if (bHasAlpha0 && !bHasAlpha1) return +1;
 
        if (dm0.dm_fDistance<dm1.dm_fDistance) return -1;
   else if (dm0.dm_fDistance>dm1.dm_fDistance) return +1;
-  else                                        return  0;
+  else                                        return 0;
 }
 
 static int qsort_CompareDelayedModels( const void *ppdm0, const void *ppdm1)
@@ -62,7 +62,7 @@ BOOL CRenderer::FindModelLights( CEntity &en, const CPlacement3D &plModel,
                                  FLOAT3D &vTotalLightDirection, FLOATplane3D &plFloorPlane)
 {
   // find shading info if not already cached
-  if (en.en_psiShadingInfo!=NULL && !(en.en_ulFlags&ENF_VALIDSHADINGINFO)) {
+  if (en.en_psiShadingInfo != NULL && !(en.en_ulFlags&ENF_VALIDSHADINGINFO)) {
     _pfRenderProfile.StartTimer(CRenderProfile::PTI_FINDSHADINGINFO);
     _pfRenderProfile.IncrementTimerAveragingCounter(CRenderProfile::PTI_FINDSHADINGINFO, 1);
     if (en.en_ulFlags&ENF_NOSHADINGINFO) {
@@ -79,7 +79,7 @@ BOOL CRenderer::FindModelLights( CEntity &en, const CPlacement3D &plModel,
   _amlLights.PopAll();
 
   // if there is no valid shading info
-  if (en.en_psiShadingInfo==NULL/* || en.en_psiShadingInfo->si_pbpoPolygon==NULL*/)
+  if (en.en_psiShadingInfo == NULL/* || en.en_psiShadingInfo->si_pbpoPolygon == NULL*/)
   { // no shadow
     _pfRenderProfile.StopTimer(CRenderProfile::PTI_FINDLIGHTS);
     return FALSE;
@@ -88,10 +88,10 @@ BOOL CRenderer::FindModelLights( CEntity &en, const CPlacement3D &plModel,
   else
   {
     // if model is above terrain
-    if (en.en_psiShadingInfo->si_ptrTerrain!=NULL) {
+    if (en.en_psiShadingInfo->si_ptrTerrain != NULL) {
       CTerrain *ptrTerrain = en.en_psiShadingInfo->si_ptrTerrain;
       // if full bright rendering
-      if (_wrpWorldRenderPrefs.wrp_shtShadows==CWorldRenderPrefs::SHT_NONE) {
+      if (_wrpWorldRenderPrefs.wrp_shtShadows == CWorldRenderPrefs::SHT_NONE) {
         // no model shading
         colLight = C_BLACK;
         colAmbient = C_GRAY;
@@ -111,9 +111,9 @@ BOOL CRenderer::FindModelLights( CEntity &en, const CPlacement3D &plModel,
       plFloorPlane = ptrTerrain->GetPlaneFromPoint(en.en_psiShadingInfo->si_vNearPoint);
     
     // else if model is above polygon
-    } else if (en.en_psiShadingInfo->si_pbpoPolygon!=NULL) {
+    } else if (en.en_psiShadingInfo->si_pbpoPolygon != NULL) {
       // if full bright rendering
-      if (_wrpWorldRenderPrefs.wrp_shtShadows==CWorldRenderPrefs::SHT_NONE) {
+      if (_wrpWorldRenderPrefs.wrp_shtShadows == CWorldRenderPrefs::SHT_NONE) {
         // no model shading
         colLight = C_BLACK;
         colAmbient = C_GRAY;
@@ -132,7 +132,7 @@ BOOL CRenderer::FindModelLights( CEntity &en, const CPlacement3D &plModel,
         COLOR col  = en.en_psiShadingInfo->si_pbpoPolygon->bpo_colShadow;
         colLight   = LerpColor( C_BLACK, col, 0.25f);
         colAmbient = LerpColor( C_BLACK, col, 0.33f);
-        fTotalShadowIntensity = NormByteToFloat((en.en_psiShadingInfo->si_pbpoPolygon->bpo_colShadow&CT_AMASK)>>CT_ASHIFT);
+        fTotalShadowIntensity = NormByteToFloat((en.en_psiShadingInfo->si_pbpoPolygon->bpo_colShadow&CT_AMASK) >> CT_ASHIFT);
         vTotalLightDirection  = FLOAT3D(1.0f, -1.0f, 1.0f);
         _pfRenderProfile.StopTimer(CRenderProfile::PTI_FINDLIGHTS);
         return TRUE;
@@ -273,7 +273,7 @@ BOOL CRenderer::FindModelLights( CEntity &en, const CPlacement3D &plModel,
         CGradientParameters gp;
         COLOR colGradientPoint;
         CEntity *pen = en.en_psiShadingInfo->si_pbpoPolygon->bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
-        if (pen!=NULL && pen->GetGradient( ulGradientType, gp)) {
+        if (pen != NULL && pen->GetGradient( ulGradientType, gp)) {
           FLOAT fGrPt = (en.en_psiShadingInfo->si_vNearPoint % gp.gp_vGradientDir - gp.gp_fH0) / (gp.gp_fH1-gp.gp_fH0);
           fGrPt = Clamp( fGrPt, 0.0f, 1.0f);
           colGradientPoint = LerpColor( gp.gp_col0, gp.gp_col1, fGrPt);
@@ -369,7 +369,7 @@ void CRenderer::RenderOneModel( CEntity &en, CModelObject &moModel, const CPlace
   if (ulDMFlags & DMF_INMIRROR) rm.rm_ulFlags |= RMF_INMIRROR;
 
   // mark that we don't actualy need entire model
-  if (re_penViewer==&en) {
+  if (re_penViewer == &en) {
     rm.rm_ulFlags |= RMF_SPECTATOR;
     bRenderModelShadow = FALSE;
   }
@@ -385,19 +385,19 @@ void CRenderer::RenderOneModel( CEntity &en, CModelObject &moModel, const CPlace
 
   // determine shadow intensity
   
-  fTotalShadowIntensity *= NormByteToFloat( (moModel.mo_colBlendColor&CT_AMASK)>>CT_ASHIFT);
+  fTotalShadowIntensity *= NormByteToFloat( (moModel.mo_colBlendColor&CT_AMASK) >> CT_ASHIFT);
   fTotalShadowIntensity  = Clamp( fTotalShadowIntensity, 0.0f, 1.0f);
 
   // if should render shadow for this model
   if (bRenderModelShadow && !(en.en_ulFlags&ENF_CLUSTERSHADOWS) && moModel.HasShadow(rm.rm_iMipLevel)) {
     // if only simple shadow
-    if (mdl_iShadowQuality==1) {
+    if (mdl_iShadowQuality == 1) {
       // render simple shadow
       fTotalShadowIntensity = 0.1f + fTotalShadowIntensity*0.9f;
       moModel.AddSimpleShadow( rm, fTotalShadowIntensity, plFloorPlane);
     }
     // if only one shadow
-    else if (mdl_iShadowQuality==2) {
+    else if (mdl_iShadowQuality == 2) {
       // render one shadow of model from shading light direction
       const FLOAT fHotSpot = 1E10f;
       const FLOAT fFallOff = 1E11f;
@@ -406,7 +406,7 @@ void CRenderer::RenderOneModel( CEntity &en, CModelObject &moModel, const CPlace
       moModel.RenderShadow( rm, plLight, fFallOff, fHotSpot, fTotalShadowIntensity, plFloorPlane);
     }
     // if full shadows
-    else if (mdl_iShadowQuality==3) {
+    else if (mdl_iShadowQuality == 3) {
       // for each active light
       for (INDEX iLight=0; iLight<_amlLights.Count(); iLight++) {
         struct ModelLight &ml = _amlLights[iLight];
@@ -431,7 +431,7 @@ void CRenderer::RenderOneModel( CEntity &en, CModelObject &moModel, const CPlace
   }
 
   // if the entity is not the viewer, or this is not primary renderer
-  if (re_penViewer!=&en) {
+  if (re_penViewer != &en) {
     // render model
     moModel.RenderModel(rm);
   // if the entity is viewer
@@ -491,7 +491,7 @@ void CRenderer::RenderOneSkaModel( CEntity &en, const CPlacement3D &plModel,
   if (ulDMFlags & DMF_INMIRROR) ulRenFlags |= RMF_INMIRROR;
   
   // mark that we don't actualy need entire model
-  if (re_penViewer==&en) {
+  if (re_penViewer == &en) {
     ulRenFlags |= RMF_SPECTATOR;
     bRenderModelShadow = FALSE;
   }
@@ -501,19 +501,19 @@ void CRenderer::RenderOneSkaModel( CEntity &en, const CPlacement3D &plModel,
   RM_SetLightDirection(vTotalLightDirection);
 
   // determine shadow intensity
-  fTotalShadowIntensity *= NormByteToFloat( (en.GetModelInstance()->GetModelColor()&CT_AMASK)>>CT_ASHIFT);
+  fTotalShadowIntensity *= NormByteToFloat( (en.GetModelInstance()->GetModelColor()&CT_AMASK) >> CT_ASHIFT);
   fTotalShadowIntensity  = Clamp( fTotalShadowIntensity, 0.0f, 1.0f);
 
   // if should render shadow for this model
   if (bRenderModelShadow && !(en.en_ulFlags&ENF_CLUSTERSHADOWS) && en.GetModelInstance()->HasShadow(1/*rm.rm_iMipLevel*/)) {
     // if only simple shadow
-    if (mdl_iShadowQuality==1) {
+    if (mdl_iShadowQuality == 1) {
       // render simple shadow
       fTotalShadowIntensity = 0.1f + fTotalShadowIntensity*0.9f;
         en.GetModelInstance()->AddSimpleShadow(fTotalShadowIntensity, plFloorPlane);
     }
     // if only one shadow
-    else if (mdl_iShadowQuality==2) {
+    else if (mdl_iShadowQuality == 2) {
       /*
       // render one shadow of model from shading light direction
       const FLOAT fHotSpot = 1E10f;
@@ -526,7 +526,7 @@ void CRenderer::RenderOneSkaModel( CEntity &en, const CPlacement3D &plModel,
       en.GetModelInstance()->AddSimpleShadow(fTotalShadowIntensity, plFloorPlane);
     }
     // if full shadows
-    else if (mdl_iShadowQuality==3) {
+    else if (mdl_iShadowQuality == 3) {
       /*
       // for each active light
       for (INDEX iLight=0; iLight<_amlLights.Count(); iLight++) {
@@ -555,7 +555,7 @@ void CRenderer::RenderOneSkaModel( CEntity &en, const CPlacement3D &plModel,
   }
 
   // if the entity is not the viewer, or this is not primary renderer
-  if (re_penViewer!=&en) {
+  if (re_penViewer != &en) {
     // render model
     RM_SetBoneAdjustCallback(&EntityAdjustBonesCallback,&en);
     RM_SetShaderParamsAdjustCallback(&EntityAdjustShaderParamsCallback,&en);
@@ -611,7 +611,7 @@ void CRenderer::RenderModels( BOOL bBackground)
     BOOL bIsBackground = re_bBackgroundEnabled && (en.en_ulFlags&ENF_BACKGROUND);
 
     // skip if not rendered in this pass or not visible
-    if ( (bBackground && !bIsBackground)
+    if ((bBackground && !bIsBackground)
      || (!bBackground &&  bIsBackground)
      || !(dm.dm_ulFlags&DMF_VISIBLE)) continue;
 
@@ -620,13 +620,13 @@ void CRenderer::RenderModels( BOOL bBackground)
       RenderOneSkaModel(en, en.GetLerpedPlacement(), dm.dm_fMipFactor, TRUE, dm.dm_ulFlags);
 
       // if selected entities should be drawn and this one is selected
-      if (!re_bRenderingShadows && _wrpWorldRenderPrefs.wrp_stSelection==CWorldRenderPrefs::ST_ENTITIES
-       && _wrpWorldRenderPrefs.wrp_pmoSelectedEntity!=NULL && en.IsSelected(ENF_SELECTED))
+      if (!re_bRenderingShadows && _wrpWorldRenderPrefs.wrp_stSelection == CWorldRenderPrefs::ST_ENTITIES
+       && _wrpWorldRenderPrefs.wrp_pmoSelectedEntity != NULL && en.IsSelected(ENF_SELECTED))
       { // get bounding box of current frame
         FLOATaabbox3D boxModel;
         en.GetModelInstance()->GetCurrentColisionBox(boxModel);
         // if model has collision
-        if (en.en_pciCollisionInfo!=NULL ) {
+        if (en.en_pciCollisionInfo != NULL ) {
           // get its collision box
           INDEX iCollision = en.GetCollisionBoxIndex();
           FLOAT3D vMin = en.GetModelInstance()->GetCollisionBoxMin(iCollision);
@@ -652,14 +652,14 @@ void CRenderer::RenderModels( BOOL bBackground)
       RenderOneModel( en, moModelObject, en.GetLerpedPlacement(), dm.dm_fMipFactor, TRUE, dm.dm_ulFlags);
 
       // if selected entities should be drawn and this one is selected
-      if (!re_bRenderingShadows && _wrpWorldRenderPrefs.wrp_stSelection==CWorldRenderPrefs::ST_ENTITIES
-       && _wrpWorldRenderPrefs.wrp_pmoSelectedEntity!=NULL && en.IsSelected(ENF_SELECTED))
+      if (!re_bRenderingShadows && _wrpWorldRenderPrefs.wrp_stSelection == CWorldRenderPrefs::ST_ENTITIES
+       && _wrpWorldRenderPrefs.wrp_pmoSelectedEntity != NULL && en.IsSelected(ENF_SELECTED))
       { // get bounding box of current frame
         FLOATaabbox3D boxModel;
         moModelObject.GetCurrentFrameBBox(boxModel);
         // if model has collision
-        if (en.en_pciCollisionInfo!=NULL && 
-          (en.GetRenderType()==CEntity::RT_MODEL || en.GetRenderType()==CEntity::RT_EDITORMODEL)) {
+        if (en.en_pciCollisionInfo != NULL && 
+          (en.GetRenderType() == CEntity::RT_MODEL || en.GetRenderType() == CEntity::RT_EDITORMODEL)) {
           // get its collision box
           INDEX iCollision = en.GetCollisionBoxIndex();
           FLOAT3D vMin = moModelObject.GetCollisionBoxMin(iCollision);
@@ -768,17 +768,17 @@ void CRenderer::RenderLensFlares(void)
 
   // if there are no flares of flares are off, do nothing
   gfx_iLensFlareQuality = Clamp( gfx_iLensFlareQuality, 0L, 3L);
-  if (gfx_iLensFlareQuality==0 || re_alfiLensFlares.Count()==0) return;
+  if (gfx_iLensFlareQuality == 0 || re_alfiLensFlares.Count() == 0) return;
 
   // get drawport ID
-  ASSERT( re_pdpDrawPort!=NULL);
+  ASSERT( re_pdpDrawPort != NULL);
   const ULONG ulDrawPortID = re_pdpDrawPort->GetID();
   
   // for each lens flare of this drawport
   {for (INDEX iFlare=0; iFlare<re_alfiLensFlares.Count(); iFlare++) {
     CLensFlareInfo &lfi = re_alfiLensFlares[iFlare];
     // skip if not in this drawport
-    if (lfi.lfi_ulDrawPortID!=ulDrawPortID && lfi.lfi_iMirrorLevel==0) continue;
+    if (lfi.lfi_ulDrawPortID != ulDrawPortID && lfi.lfi_iMirrorLevel == 0) continue;
     // test if it is still visible
     lfi.lfi_ulFlags &= ~LFF_VISIBLE;
     if (re_pdpDrawPort->IsPointVisible( lfi.lfi_fI, lfi.lfi_fJ, lfi.lfi_fOoK, lfi.lfi_iID, lfi.lfi_iMirrorLevel)) {
@@ -795,10 +795,10 @@ void CRenderer::RenderLensFlares(void)
   while (iFlare<ctFlares) {
     CLensFlareInfo &lfi = re_alfiLensFlares[iFlare];
     // if the flare is not active any more, or its drawport was not refreshed long
-    if (lfi.lfi_plsLightSource==NULL || // marked when entity is deleted
-       (lfi.lfi_ulDrawPortID==ulDrawPortID && 
-     (!(lfi.lfi_ulFlags&LFF_ACTIVE) || lfi.lfi_plsLightSource->ls_plftLensFlare==NULL)) ||
-       (lfi.lfi_ulDrawPortID!=ulDrawPortID && lfi.lfi_llLastFrame < llNow - CTimer::InTicks(5.0f))) {
+    if (lfi.lfi_plsLightSource == NULL || // marked when entity is deleted
+       (lfi.lfi_ulDrawPortID == ulDrawPortID && 
+     (!(lfi.lfi_ulFlags&LFF_ACTIVE) || lfi.lfi_plsLightSource->ls_plftLensFlare == NULL)) ||
+       (lfi.lfi_ulDrawPortID != ulDrawPortID && lfi.lfi_llLastFrame < llNow - CTimer::InTicks(5.0f))) {
       // delete it by moving the last one on its place
       lfi = re_alfiLensFlares[ctFlares-1];
       re_alfiLensFlares[ctFlares-1].Clear();
@@ -811,13 +811,13 @@ void CRenderer::RenderLensFlares(void)
   }
 
   // remove unused flares at the end
-  if (ctFlares==0) re_alfiLensFlares.PopAll();
+  if (ctFlares == 0) re_alfiLensFlares.PopAll();
   else re_alfiLensFlares.PopUntil(ctFlares-1);
 
   // for each lens flare of this drawport
   {for (INDEX iFlare=0; iFlare<re_alfiLensFlares.Count(); iFlare++) {
     CLensFlareInfo &lfi = re_alfiLensFlares[iFlare];
-    if (lfi.lfi_ulDrawPortID!=ulDrawPortID || lfi.lfi_plsLightSource->ls_plftLensFlare==NULL) {
+    if (lfi.lfi_ulDrawPortID != ulDrawPortID || lfi.lfi_plsLightSource->ls_plftLensFlare == NULL) {
       continue;
     }
     // clear active flag for next frame
@@ -879,7 +879,7 @@ void CRenderer::RenderLensFlares(void)
     CStaticArray<COneLensFlare> &aolf = lfi.lfi_plsLightSource->ls_plftLensFlare->lft_aolfFlares;
     INDEX ctReflections = aolf.Count();
     // clamp number reflections if required
-    if (gfx_iLensFlareQuality<2 || _wrpWorldRenderPrefs.wrp_lftLensFlares==CWorldRenderPrefs::LFT_SINGLE_FLARE) {
+    if (gfx_iLensFlareQuality<2 || _wrpWorldRenderPrefs.wrp_lftLensFlares == CWorldRenderPrefs::LFT_SINGLE_FLARE) {
       ctReflections = 1;
     }
 

@@ -26,8 +26,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Graphics/GfxLibrary.h>
 
 // Shader flags
-#define BASE_DOUBLE_SIDED (1UL<<0) // Double sided
-#define BASE_FULL_BRIGHT  (1UL<<1) // Full bright
+#define BASE_DOUBLE_SIDED (1UL << 0) // Double sided
+#define BASE_FULL_BRIGHT  (1UL << 1) // Full bright
 
 
 struct ShaderDesc

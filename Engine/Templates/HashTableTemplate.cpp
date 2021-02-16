@@ -55,12 +55,12 @@ CHashTableSlot_TYPE *CHashTable_TYPE::FindSlot(ULONG ulKey, VALUE_TYPE &Value)
   for (INDEX iSlotInComp=0; iSlotInComp<ht_ctSlotsPerComp; iSlotInComp++, iSlot++) {
     CHashTableSlot_TYPE *phts = &ht_ahtsSlots[iSlot];
     // if empty
-    if (phts->hts_ptElement==NULL) {
+    if (phts->hts_ptElement == NULL) {
       // skip it
       continue;
     }
     // if it has same key
-    if (phts->hts_ulKey==ulKey) {
+    if (phts->hts_ulKey == ulKey) {
       // if it is same element
       if (ht_GetItemValue(phts->hts_ptElement) == Value) {
         // return it
@@ -87,12 +87,12 @@ INDEX CHashTable_TYPE::FindSlotIndex(ULONG ulKey, VALUE_TYPE &Value)
   for (INDEX iSlotInComp=0; iSlotInComp<ht_ctSlotsPerComp; iSlotInComp++, iSlot++) {
     CHashTableSlot_TYPE *phts = &ht_ahtsSlots[iSlot];
     // if empty
-    if (phts->hts_ptElement==NULL) {
+    if (phts->hts_ptElement == NULL) {
       // skip it
       continue;
     }
     // if it has same key
-    if (phts->hts_ulKey==ulKey) {
+    if (phts->hts_ulKey == ulKey) {
       // if it is same element
       if (ht_GetItemValue(phts->hts_ptElement) == Value) {
         // return it
@@ -108,7 +108,7 @@ INDEX CHashTable_TYPE::FindSlotIndex(ULONG ulKey, VALUE_TYPE &Value)
 TYPE* CHashTable_TYPE::GetItemFromIndex(INDEX iIndex)
 {
   ASSERT(ht_ctCompartments>0 && ht_ctSlotsPerComp>0);
-  ASSERT(iIndex>=0 && iIndex<ht_ctCompartments*ht_ctSlotsPerComp);
+  ASSERT(iIndex >= 0 && iIndex<ht_ctCompartments*ht_ctSlotsPerComp);
 
   return ht_ahtsSlots[iIndex].hts_ptElement;
 }
@@ -116,7 +116,7 @@ TYPE* CHashTable_TYPE::GetItemFromIndex(INDEX iIndex)
 VALUE_TYPE CHashTable_TYPE::GetValueFromIndex(INDEX iIndex)
 {
   ASSERT(ht_ctCompartments>0 && ht_ctSlotsPerComp>0);
-  ASSERT(iIndex>=0 && iIndex<ht_ctCompartments*ht_ctSlotsPerComp);
+  ASSERT(iIndex >= 0 && iIndex<ht_ctCompartments*ht_ctSlotsPerComp);
 
   return ht_GetItemValue(ht_ahtsSlots[iIndex].hts_ptElement);
 }
@@ -124,7 +124,7 @@ VALUE_TYPE CHashTable_TYPE::GetValueFromIndex(INDEX iIndex)
 /* Set allocation parameters. */
 void CHashTable_TYPE::SetAllocationParameters(INDEX ctCompartments, INDEX ctSlotsPerComp, INDEX ctSlotsPerCompStep)
 {
-  ASSERT(ht_ctCompartments==0 && ht_ctSlotsPerComp==0 && ht_ctSlotsPerCompStep==0);
+  ASSERT(ht_ctCompartments == 0 && ht_ctSlotsPerComp == 0 && ht_ctSlotsPerCompStep == 0);
   ASSERT(ctCompartments>0     && ctSlotsPerComp>0     && ctSlotsPerCompStep>0    );
 
   ht_ctCompartments = ctCompartments;
@@ -137,8 +137,8 @@ void CHashTable_TYPE::SetAllocationParameters(INDEX ctCompartments, INDEX ctSlot
 
 void CHashTable_TYPE::SetCallbacks(ULONG (*GetItemKey)(VALUE_TYPE &Item), ULONG (*GetItemValue)(TYPE* Item))
 {
-  ASSERT(GetItemKey!=NULL);
-  ASSERT(GetItemValue!=NULL);
+  ASSERT(GetItemKey != NULL);
+  ASSERT(GetItemValue != NULL);
 
   ht_GetItemKey = GetItemKey;
   ht_GetItemValue = GetItemValue;
@@ -149,7 +149,7 @@ TYPE *CHashTable_TYPE::Find(VALUE_TYPE &Value)
   ASSERT(ht_ctCompartments>0 && ht_ctSlotsPerComp>0);
 
   CHashTableSlot_TYPE *phts = FindSlot(ht_GetItemKey(Value), Value);
-  if (phts==NULL) return NULL;
+  if (phts == NULL) return NULL;
   return phts->hts_ptElement;
 }
 
@@ -187,7 +187,7 @@ void CHashTable_TYPE::Expand(void)
       CHashTableSlot_TYPE &htsOld = ahtsSlotsOld[iSlotInComp+iComp*ctOldSlotsPerComp];
       CHashTableSlot_TYPE &htsNew = ht_ahtsSlots[iSlotInComp+iComp*ht_ctSlotsPerComp];
       // if it is used
-      if (htsOld.hts_ptElement!=NULL) {
+      if (htsOld.hts_ptElement != NULL) {
         // copy it to new array
         htsNew.hts_ptElement = htsOld.hts_ptElement;
         htsNew.hts_ulKey     = htsOld.hts_ulKey;
@@ -214,14 +214,14 @@ void CHashTable_TYPE::Add(TYPE *ptNew)
   for (INDEX iSlotInComp=0; iSlotInComp<ht_ctSlotsPerComp; iSlotInComp++, iSlot++) {
     CHashTableSlot_TYPE *phts = &ht_ahtsSlots[iSlot];
     // if it is empty
-    if (phts->hts_ptElement==NULL) {
+    if (phts->hts_ptElement == NULL) {
       // put it here
       phts->hts_ulKey = ulKey;
       phts->hts_ptElement = ptNew;
       return;
     }
     // must not already exist
-    //ASSERT(phts->hts_ptElement->GetName()!=ptNew->GetName());
+    //ASSERT(phts->hts_ptElement->GetName() != ptNew->GetName());
   }
 
   // if we are here -> the compartment has overflowed
@@ -243,9 +243,9 @@ void CHashTable_TYPE::Remove(TYPE *ptOld)
   // find its slot
   VALUE_TYPE Value = ht_GetItemValue(ptOld);
   CHashTableSlot_TYPE *phts = FindSlot(ht_GetItemKey(Value), Value);
-  if (phts!=NULL) {
+  if (phts != NULL) {
     // mark slot as unused
-    ASSERT( phts->hts_ptElement==ptOld);
+    ASSERT( phts->hts_ptElement == ptOld);
     phts->hts_ptElement = NULL;
   }
 }
@@ -263,7 +263,7 @@ void CHashTable_TYPE::RemoveAll()
     for (INDEX iSlotInComp=0; iSlotInComp<ht_ctSlotsPerComp; iSlotInComp++, iSlot++) {
       // if it is not empty
       CHashTableSlot_TYPE &hts = ht_ahtsSlots[iSlot];
-      if (ht_ahtsSlots[iSlot].hts_ptElement!=NULL) {
+      if (ht_ahtsSlots[iSlot].hts_ptElement != NULL) {
         ht_ahtsSlots[iSlot].hts_ptElement = NULL;
       }
     }

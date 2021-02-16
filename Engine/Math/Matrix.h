@@ -38,7 +38,7 @@ public:
 
   /* Make a transposed matrix. */
   __forceinline Matrix<Type, iRows, iColumns> operator!(void) const;
-  __forceinline Matrix<Type, iRows, iColumns> &operator!=(const Matrix<Type, iRows, iColumns> &matrix2);
+  __forceinline Matrix<Type, iRows, iColumns> &operator != (const Matrix<Type, iRows, iColumns> &matrix2);
 
   /* Mathematical operators. */
   // between matrices
@@ -87,8 +87,8 @@ __forceinline Matrix<Type, iRows, iColumns>::Matrix(void)
 #ifndef NDEBUG
   // set whole matrix to trash
   ULONG ulTrash = 0xCDCDCDCDul;
-  for (int iRow=1; iRow<=iRows; iRow++) {
-    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iRow=1; iRow <= iRows; iRow++) {
+    for (int iColumn=1; iColumn <= iColumns; iColumn++) {
       (*this)(iRow, iColumn) = *reinterpret_cast<Type *>(&ulTrash);
     }
   }
@@ -121,10 +121,10 @@ Matrix<DOUBLE,3,3>::Matrix(const DOUBLE x /*= Type(0)*/)
 template<class Type, int iRows, int iColumns>
 Matrix<Type, iRows, iColumns>::Matrix(const Type x /*= Type(0)*/)
 {
-  ASSERT( iRows!=3 && iColumns!=3);  // 3 is optimized special case 
+  ASSERT( iRows != 3 && iColumns != 3);  // 3 is optimized special case 
   // set whole matrix to constant
-  for (int iRow=1; iRow<=iRows; iRow++) {
-    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iRow=1; iRow <= iRows; iRow++) {
+    for (int iColumn=1; iColumn <= iColumns; iColumn++) {
       (*this)(iRow, iColumn) = x;
     }
   }
@@ -138,7 +138,7 @@ template<class Type, int iRows, int iColumns>
 __forceinline Type &Matrix<Type, iRows, iColumns>::operator()(int iRow, int iColumn)
 {
   // check boundaries (indices start at 1, not at 0)
-  ASSERT(iRow>=1 && iRow<=iRows && iColumn>=1 && iColumn<=iColumns);
+  ASSERT(iRow >= 1 && iRow <= iRows && iColumn >= 1 && iColumn <= iColumns);
   // return member reference
   return matrix[iRow-1][iColumn-1];
 }
@@ -147,7 +147,7 @@ template<class Type, int iRows, int iColumns>
 __forceinline const Type &Matrix<Type, iRows, iColumns>::operator()(int iRow, int iColumn) const
 {
   // check boundaries (indices start at 1, not at 0)
-  ASSERT(iRow>=1 && iRow<=iRows && iColumn>=1 && iColumn<=iColumns);
+  ASSERT(iRow >= 1 && iRow <= iRows && iColumn >= 1 && iColumn <= iColumns);
   // return member reference
   return matrix[iRow-1][iColumn-1];
 }
@@ -157,7 +157,7 @@ __forceinline const Type &Matrix<Type, iRows, iColumns>::operator()(int iRow, in
 
 
 // transposed FLOAT 3x3
-__forceinline Matrix<FLOAT,3,3> &Matrix<FLOAT,3,3>::operator!=(const Matrix<FLOAT,3,3> &matrix2)
+__forceinline Matrix<FLOAT,3,3> &Matrix<FLOAT,3,3>::operator != (const Matrix<FLOAT,3,3> &matrix2)
 {
   (*this)(1,1)=matrix2(1,1);  (*this)(1,2)=matrix2(2,1);  (*this)(1,3)=matrix2(3,1);
   (*this)(2,1)=matrix2(1,2);  (*this)(2,2)=matrix2(2,2);  (*this)(2,3)=matrix2(3,2);
@@ -166,7 +166,7 @@ __forceinline Matrix<FLOAT,3,3> &Matrix<FLOAT,3,3>::operator!=(const Matrix<FLOA
 }
 
 // transposed DOUBLE 3x3
-__forceinline Matrix<DOUBLE,3,3> &Matrix<DOUBLE,3,3>::operator!=(const Matrix<DOUBLE,3,3> &matrix2)
+__forceinline Matrix<DOUBLE,3,3> &Matrix<DOUBLE,3,3>::operator != (const Matrix<DOUBLE,3,3> &matrix2)
 {
   (*this)(1,1)=matrix2(1,1);  (*this)(1,2)=matrix2(2,1);  (*this)(1,3)=matrix2(3,1);
   (*this)(2,1)=matrix2(1,2);  (*this)(2,2)=matrix2(2,2);  (*this)(2,3)=matrix2(3,2);
@@ -183,12 +183,12 @@ __forceinline Matrix<Type, iRows, iColumns> Matrix<Type, iRows, iColumns>::opera
 }
 
 template<class Type, int iRows, int iColumns>
-__forceinline Matrix<Type, iRows, iColumns> &Matrix<Type, iRows, iColumns>::operator!=(const Matrix<Type, iRows, iColumns> &matrix2)
+__forceinline Matrix<Type, iRows, iColumns> &Matrix<Type, iRows, iColumns>::operator != (const Matrix<Type, iRows, iColumns> &matrix2)
 {
   // transpose member by member
-  ASSERT( iRows!=3 && iColumns!=3);  // 3 is optimized special case 
-  for (int iRow=1; iRow<=iRows; iRow++) {
-    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
+  ASSERT( iRows != 3 && iColumns != 3);  // 3 is optimized special case 
+  for (int iRow=1; iRow <= iRows; iRow++) {
+    for (int iColumn=1; iColumn <= iColumns; iColumn++) {
       (*this)(iColumn, iRow) = matrix2(iRow, iColumn);
     }
   }
@@ -219,9 +219,9 @@ template<class Type, int iRows, int iColumns>
 __forceinline Matrix<Type, iRows, iColumns> &Matrix<Type, iRows, iColumns>::operator+=(const Matrix<Type, iRows, iColumns> &matrix2)
 {
   // add member by member
-  ASSERT( iRows!=3 && iColumns!=3);  // 3 is optimized special case 
-  for (int iRow=1; iRow<=iRows; iRow++) {
-    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
+  ASSERT( iRows != 3 && iColumns != 3);  // 3 is optimized special case 
+  for (int iRow=1; iRow <= iRows; iRow++) {
+    for (int iColumn=1; iColumn <= iColumns; iColumn++) {
       (*this)(iRow, iColumn) += matrix2(iRow, iColumn);
     }
   }
@@ -258,9 +258,9 @@ template<class Type, int iRows, int iColumns>
 __forceinline Matrix<Type, iRows, iColumns> &Matrix<Type, iRows, iColumns>::operator-=(const Matrix<Type, iRows, iColumns> &matrix2)
 {
   // sub member by member
-  ASSERT( iRows!=3 && iColumns!=3);  // 3 is optimized special case 
-  for (int iRow=1; iRow<=iRows; iRow++) {
-    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
+  ASSERT( iRows != 3 && iColumns != 3);  // 3 is optimized special case 
+  for (int iRow=1; iRow <= iRows; iRow++) {
+    for (int iColumn=1; iColumn <= iColumns; iColumn++) {
       (*this)(iRow, iColumn) -= matrix2(iRow, iColumn);
     }
   }
@@ -321,13 +321,13 @@ __forceinline Matrix<Type, iRows, iColumns> Matrix<Type, iRows, iColumns>::opera
 {
   Matrix<Type, iRows, iColumns> result;
   // check that the matrices have square dimensions
-  ASSERT(iRows==iColumns);
-  ASSERT( iRows!=3 && iColumns!=3);  // 3 is optimized special case 
+  ASSERT(iRows == iColumns);
+  ASSERT( iRows != 3 && iColumns != 3);  // 3 is optimized special case 
   // multiply
-  for (int iRow=1; iRow<=iRows; iRow++) {
-    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iRow=1; iRow <= iRows; iRow++) {
+    for (int iColumn=1; iColumn <= iColumns; iColumn++) {
       result(iRow, iColumn) = (Type)0;
-      for (int s=1; s<=iRows; s++) {
+      for (int s=1; s <= iRows; s++) {
         result(iRow, iColumn) += (*this)(iRow, s) * matrix2(s, iColumn);
       }
     }
@@ -369,9 +369,9 @@ template<class Type, int iRows, int iColumns>
 __forceinline Matrix<Type, iRows, iColumns> &Matrix<Type, iRows, iColumns>::operator*=(const Type tMul)
 {
   // multiply member by member
-  ASSERT( iRows!=3 && iColumns!=3);  // 3 is optimized special case 
-  for (int iRow=1; iRow<=iRows; iRow++) {
-    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
+  ASSERT( iRows != 3 && iColumns != 3);  // 3 is optimized special case 
+  for (int iRow=1; iRow <= iRows; iRow++) {
+    for (int iColumn=1; iColumn <= iColumns; iColumn++) {
       (*this)(iRow, iColumn) *= tMul;
     }
   }
@@ -412,11 +412,11 @@ template<class Type, int iRows, int iColumns>
 void Matrix<Type, iRows, iColumns>::Diagonal(Type x)
 {
   // check that the matrix is symetric
-  ASSERT(iRows==iColumns);
+  ASSERT(iRows == iColumns);
 
   // clear whole matrix to zeroes
-  for (int iRow=1; iRow<=iRows; iRow++) {
-    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iRow=1; iRow <= iRows; iRow++) {
+    for (int iColumn=1; iColumn <= iColumns; iColumn++) {
       (*this)(iRow, iColumn) = Type(0);
     }
   }
@@ -430,16 +430,16 @@ template<class Type, int iRows, int iColumns>
 void Matrix<Type, iRows, iColumns>::Diagonal(const Vector<Type, iRows> &v)
 {
   // check that the matrix is symetric
-  ASSERT(iRows==iColumns);
+  ASSERT(iRows == iColumns);
 
   // clear whole matrix to zeroes
-  for (int iRow=1; iRow<=iRows; iRow++) {
-    for (int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iRow=1; iRow <= iRows; iRow++) {
+    for (int iColumn=1; iColumn <= iColumns; iColumn++) {
       (*this)(iRow, iColumn) = Type(0);
     }
   }
   // set the main diagonal
-  {for (int iRow=1; iRow<=iRows; iRow++) {
+  {for (int iRow=1; iRow <= iRows; iRow++) {
     operator()(iRow, iRow) = v(iRow);
   }}
 }
@@ -450,7 +450,7 @@ template<class Type, int iRows, int iColumns>
 Vector<Type, iColumns> Matrix<Type, iRows, iColumns>::GetRow(Type iRow) const
 {
   Vector<Type, iColumns> v;
-  for (int iColumn=1; iColumn<=iColumns; iColumn++) {
+  for (int iColumn=1; iColumn <= iColumns; iColumn++) {
     v(iColumn) = (*this)(iRow, iColumn);
   }
   return v;
@@ -460,7 +460,7 @@ template<class Type, int iRows, int iColumns>
 Vector<Type, iRows> Matrix<Type, iRows, iColumns>::GetColumn(Type iColumn) const
 {
   Vector<Type, iRows> v;
-  for (int iRow=1; iRow<=iRows; iRow++) {
+  for (int iRow=1; iRow <= iRows; iRow++) {
     v(iRow) = (*this)(iRow, iColumn);
   }
   return v;

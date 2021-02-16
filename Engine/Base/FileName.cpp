@@ -184,7 +184,7 @@ BOOL CTFileName::RemoveApplicationPath_t(void) // throws char *
   fnmApp.SetAbsolutePath();
   // remove the path string from beginning of the string
   BOOL bIsRelative = RemovePrefix(fnmApp);
-  if (_fnmMod!="") {
+  if (_fnmMod != "") {
     RemovePrefix(_fnmApplicationPath+_fnmMod);
   }
   return bIsRelative;
@@ -199,7 +199,7 @@ BOOL CTFileName::RemoveApplicationPath_t(void) // throws char *
   if (strmStream.strm_dmDictionaryMode == CTStream::DM_ENABLED) {
     // read the index in dictionary
     INDEX iFileName;
-    strmStream>>iFileName;
+    strmStream >> iFileName;
     // get that file from the dictionary
     fnmFileName = strmStream.strm_afnmDictionary[iFileName];
 
@@ -209,7 +209,7 @@ BOOL CTFileName::RemoveApplicationPath_t(void) // throws char *
     // skip dependency catcher header
     strmStream.ExpectID_t(strTag);    // data filename
     // read the string
-    strmStream>>(CTString &)fnmFileName;
+    strmStream >> (CTString &)fnmFileName;
     fnmFileName.fnm_pserPreloaded = NULL;
   }
 
@@ -226,14 +226,14 @@ BOOL CTFileName::RemoveApplicationPath_t(void) // throws char *
     // try to find the filename in dictionary
     CTFileName *pfnmExisting = strmStream.strm_ntDictionary.Find(fnmFileName);
     // if not existing
-    if (pfnmExisting==NULL) {
+    if (pfnmExisting == NULL) {
       // add it
       pfnmExisting = &strmStream.strm_afnmDictionary.Push();
       *pfnmExisting = fnmFileName;
       strmStream.strm_ntDictionary.Add(pfnmExisting);
     }
     // write its index
-    strmStream<<strmStream.strm_afnmDictionary.Index(pfnmExisting);
+    strmStream << strmStream.strm_afnmDictionary.Index(pfnmExisting);
 
   // if dictionary is processing or not active
   } else {
@@ -241,7 +241,7 @@ BOOL CTFileName::RemoveApplicationPath_t(void) // throws char *
     // write dependency catcher header
     strmStream.WriteID_t(strTag);     // data filename
     // write the string
-    strmStream<<(CTString &)fnmFileName;
+    strmStream << (CTString &)fnmFileName;
   }
 
   return strmStream;

@@ -309,7 +309,7 @@ DOUBLE CTriangularizer::TriangleQuality(void) const
   // calculate area as half the length of the normal
   DOUBLE fArea = vNormal.Length()/ DOUBLE(2.0);
   // area must be initially positive
-  ASSERT(fArea>=0);
+  ASSERT(fArea >= 0);
   // if triangle normal is opposite to the polygon normal
   if (vNormal%tr_vPolygonNormal<0) {
     // make area negative
@@ -445,7 +445,7 @@ void CTriangularizer::RemoveBestTriangleFromPolygon(void)
   tr_pbvxTopVertexBest  = tr_pbvxTopVertex;
 
   // if left edge was found
-  if (tr_pbedLeftBest!=NULL) {
+  if (tr_pbedLeftBest != NULL) {
     // remove the left edge from the edges
     tr_abedEdges.Delete(tr_pbedLeftBest);
   // if left edge was not found
@@ -455,7 +455,7 @@ void CTriangularizer::RemoveBestTriangleFromPolygon(void)
   }
 
   // if right edge was found
-  if (tr_pbedRightBest!=NULL) {
+  if (tr_pbedRightBest != NULL) {
     // remove the right edge from the edges
     tr_abedEdges.Delete(tr_pbedRightBest);
   // if right edge was not found
@@ -496,14 +496,14 @@ void CTriangularizer::FindExistingTriangleEdges(void)
       if (itbed->bed_pbvxVertex1 == tr_pbedBottom->bed_pbvxVertex0
         &&itbed->bed_pbvxVertex0 == tr_pbvxTopVertex) {
         // remember it as the left edge
-        ASSERT(tr_pbedLeft==NULL);
+        ASSERT(tr_pbedLeft == NULL);
         tr_pbedLeft = itbed;
 
       // if it is the right edge of the triangle
       } else if (itbed->bed_pbvxVertex0 == tr_pbedBottom->bed_pbvxVertex1
         &&itbed->bed_pbvxVertex1 == tr_pbvxTopVertex) {
         // remember it as the right edge
-        ASSERT(tr_pbedRight==NULL);
+        ASSERT(tr_pbedRight == NULL);
         tr_pbedRight = itbed;
       }
     }
@@ -676,7 +676,7 @@ void CTriangularizer::FindBestTriangle(void)
       tr_pbvxTopVertex = tr_abedEdges[(ibedTop+ibedBottom+iTopEdgeOffset)%ctEdges].bed_pbvxVertex0;
 
       // if the top vertex is one of the vertices of bottom edge
-      if ( tr_pbvxTopVertex == tr_pbedBottom->bed_pbvxVertex0
+      if (tr_pbvxTopVertex == tr_pbedBottom->bed_pbvxVertex0
         || tr_pbvxTopVertex == tr_pbedBottom->bed_pbvxVertex1) {
         // skip this triangle
         continue;
@@ -706,7 +706,7 @@ void CTriangularizer::FindBestTriangle(void)
 
       // if the current triangle is better than the best triangle yet
       if ((tr_bIntersectedBest && !bCurrentIntersected)
-        ||(tr_bIntersectedBest==bCurrentIntersected && fCurrentQuality>tr_fQualityBest)) {
+        ||(tr_bIntersectedBest == bCurrentIntersected && fCurrentQuality>tr_fQualityBest)) {
 
         // find if left/right triangle edges already exist.
         FindExistingTriangleEdges();
@@ -718,7 +718,7 @@ void CTriangularizer::FindBestTriangle(void)
         tr_pbedBottomBest     = tr_pbedBottom;
         tr_pbvxTopVertexBest  = tr_pbvxTopVertex;
         // if the triangle is trivially acceptable
-        if (!bCurrentIntersected && fCurrentQuality>=QUALITY_ACCEPTTRIVIALLY) {
+        if (!bCurrentIntersected && fCurrentQuality >= QUALITY_ACCEPTTRIVIALLY) {
           // finish searching
           tr_abedEdges.Unlock();
           return;
@@ -773,7 +773,7 @@ void CTriangularizer::FindVerticesUsed(void)
     BOOL bFound=FALSE;
     for (INDEX ipbvxAdded=0; ipbvxAdded<tr_apbvxVertices.Count(); ipbvxAdded++) {
       // if it is the same one, stop searching
-      if (tr_apbvxVertices[ipbvxAdded]==pbvx) {
+      if (tr_apbvxVertices[ipbvxAdded] == pbvx) {
         bFound = TRUE;
         break;
       }
@@ -801,7 +801,7 @@ void CTriangularizer::MakeElements(void)
     BOOL bFound=FALSE;
     for (INDEX ipbvx=0; ipbvx<tr_apbvxVertices.Count(); ipbvx++) {
       // if it is the same one, stop searching
-      if (tr_apbvxVertices[ipbvx]==pbvx) {
+      if (tr_apbvxVertices[ipbvx] == pbvx) {
         tr_aiElements[i] = ipbvx;
         bFound = TRUE;
         break;
@@ -823,24 +823,24 @@ CTriangularizer::CTriangularizer(CBrushPolygon &bpoOriginalPolygon)
 #ifdef OPERATEIN2D
   INDEX iMaxNormal = bpoOriginalPolygon.bpo_pbplPlane->bpl_pldPreciseRelative.GetMaxNormal();
   INDEX iMaxSign = Sgn(bpoOriginalPolygon.bpo_pbplPlane->bpl_pldPreciseRelative(iMaxNormal));
-  ASSERT(iMaxSign!=0);
+  ASSERT(iMaxSign != 0);
   switch (iMaxNormal) {
   case 1: 
-    if (iMaxSign==-1) {
+    if (iMaxSign == -1) {
       tr_iAxis0 = 3; tr_iAxis1 = 2; tr_vPolygonNormal = DOUBLE3D(-1,0,0);
     } else {
       tr_iAxis0 = 2; tr_iAxis1 = 3; tr_vPolygonNormal = DOUBLE3D(1,0,0);
     }
     break;
   case 2: 
-    if (iMaxSign==-1) {
+    if (iMaxSign == -1) {
       tr_iAxis0 = 1; tr_iAxis1 = 3; tr_vPolygonNormal = DOUBLE3D(0,-1,0);
     } else {
       tr_iAxis0 = 3; tr_iAxis1 = 1; tr_vPolygonNormal = DOUBLE3D(0,1,0);
     }
     break;
   case 3: 
-    if (iMaxSign==-1) {
+    if (iMaxSign == -1) {
       tr_iAxis0 = 2; tr_iAxis1 = 1; tr_vPolygonNormal = DOUBLE3D(0,0,-1);
     } else {
       tr_iAxis0 = 1; tr_iAxis1 = 2; tr_vPolygonNormal = DOUBLE3D(0,0,1);
@@ -871,7 +871,7 @@ CTriangularizer::CTriangularizer(CBrushPolygon &bpoOriginalPolygon)
   DPrintF("PolygonBegin\n");
   #endif
 
-//  ASSERT(tr_abedEdges.Count()!=8);
+//  ASSERT(tr_abedEdges.Count() != 8);
   // while the array of edges is not empty
 //*
   INDEX iPasses = 0;
@@ -944,7 +944,7 @@ void CBrushPolygon::Triangulate(void)
   tr.MakeElements();
 
   // if there was an error
-  if (tr.tr_iError!=0) {
+  if (tr.tr_iError != 0) {
     // report it
     // CPrintF( TRANS("Cannot properly triangulate a polygon: error %d!\n"), tr.tr_iError);
     // mark the polygon

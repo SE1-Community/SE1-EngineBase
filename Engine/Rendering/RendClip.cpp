@@ -27,9 +27,9 @@ __forceinline ULONG CRenderer::GetPolygonVisibility(const CBrushPolygon &bpo)
   // if the polygon should be inverted or double sided
   if ((re_bRenderingShadows
    &&!re_bDirectionalShadows
-   &&re_ubLightIllumination!=0 
-   &&bpo.bpo_bppProperties.bpp_ubIlluminationType==re_ubLightIllumination)
-   || (re_pbrCurrent->br_pfsFieldSettings!=NULL && !pwplPolygonPlane->wpl_bVisible)
+   &&re_ubLightIllumination != 0 
+   &&bpo.bpo_bppProperties.bpp_ubIlluminationType == re_ubLightIllumination)
+   || (re_pbrCurrent->br_pfsFieldSettings != NULL && !pwplPolygonPlane->wpl_bVisible)
    ) {
     bInvertPolygon = TRUE;
   }
@@ -112,7 +112,7 @@ void CRenderer::FindPretenders(void)
       bpo.bpo_ulFlags|=BPOF_RENDERASPORTAL;
 
       // if could be a pretender
-      if (bpo.bpo_bppProperties.bpp_uwPretenderDistance!=0) {
+      if (bpo.bpo_bppProperties.bpp_uwPretenderDistance != 0) {
         // get distance at which it is a pretender
         FLOAT fPretenderDistance = bpo.bpo_bppProperties.bpp_uwPretenderDistance;
 
@@ -155,7 +155,7 @@ void CRenderer::MakeNonDetailScreenPolygons(void)
     CBrushPolygon &bpo = *itpo;
 
     // if polygon does not contribute to the visibility determination
-    if ( (bpo.bpo_ulFlags&ulDetailMask)
+    if ((bpo.bpo_ulFlags&ulDetailMask)
       &&!(bpo.bpo_ulFlags&BPOF_RENDERASPORTAL)) {
       // skip it
       continue;
@@ -167,7 +167,7 @@ void CRenderer::MakeNonDetailScreenPolygons(void)
     // skip if the polygon is not visible
     ASSERT( !IsPolygonCulled(bpo));  // cannot be culled yet!
     const ULONG ulVisible = GetPolygonVisibility(bpo);
-    if (ulVisible==0) continue;
+    if (ulVisible == 0) continue;
 
     _sfStats.IncrementCounter(CStatForm::SCI_POLYGONS);
     _pfRenderProfile.IncrementCounter(CRenderProfile::PCI_NONDETAILPOLYGONS);
@@ -212,7 +212,7 @@ void CRenderer::MakeDetailScreenPolygons(void)
     bpo.bpo_pspoScreenPolygon = NULL;
 
     // skip if the polygon is not visible
-    if (GetPolygonVisibility(bpo)==0) continue;
+    if (GetPolygonVisibility(bpo) == 0) continue;
     // skip if outside the frustum
     if ((re_pbscCurrent->bsc_ulFlags&BSCF_NEEDSCLIPPING) && IsPolygonCulled(bpo)) continue;
 
@@ -240,7 +240,7 @@ void CRenderer::MakeInitialPolygonEdges(CBrushPolygon &bpo, CScreenPolygon &spo,
   // get number of edges
   INDEX ctEdges = bpo.bpo_abpePolygonEdges.Count();
   spo.spo_ubDirectionFlags = ulDirection&PDF_FLIPEDGESPOST;
-  BOOL bInvert = (ulDirection&PDF_FLIPEDGESPRE)!=0;
+  BOOL bInvert = (ulDirection&PDF_FLIPEDGESPRE) != 0;
   
   // remember edge vertex start and count
   spo.spo_ctEdgeVx = ctEdges*2;
@@ -275,7 +275,7 @@ void CRenderer::MakeFinalPolygonEdges(void)
     CScreenPolygon &spo = re_aspoScreenPolygons[ispo];
 
     // if polygon has no edges
-    if (spo.spo_ctEdgeVx==0) {
+    if (spo.spo_ctEdgeVx == 0) {
       // skip it
       continue;
     }
@@ -362,7 +362,7 @@ __forceinline BOOL CRenderer::MakeOutcodes(void)
     // calculate the outcode
     const ULONG ulOutCode = (*(SLONG*)&vvx.vvx_fD) & 0x80000000;
     // add to the outcode of the vertex
-    vvx.vvx_ulOutcode = (vvx.vvx_ulOutcode>>1)|ulOutCode;
+    vvx.vvx_ulOutcode = (vvx.vvx_ulOutcode >> 1)|ulOutCode;
     // add to mask
     slMask|=ulOutCode;
   }
@@ -391,9 +391,9 @@ void CRenderer::ClipOnePolygon(CScreenPolygon &spo)
     // get vertices
     FLOAT fD0 = re_avvxViewVertices[ivx0].vvx_fD;
     FLOAT fD1 = re_avvxViewVertices[ivx1].vvx_fD;
-    if (fD0<=0) {
+    if (fD0 <= 0) {
       // if both are back
-      if (fD1<=0) {
+      if (fD1 <= 0) {
         // no screen edge remains
         continue;
       // if first is back, second front
@@ -417,7 +417,7 @@ void CRenderer::ClipOnePolygon(CScreenPolygon &spo)
       }
     } else {
       // if first is front, second back
-      if ((SLONG&)fD1<=0) {
+      if ((SLONG&)fD1 <= 0) {
         // make new vertex
         INDEX ivxNew = re_avvxViewVertices.Count();
         CViewVertex &vvxNew = re_avvxViewVertices.Push();
@@ -466,7 +466,7 @@ static int qsort_CompareVertices_plus( const void *ppvVertex0, const void *ppvVe
   FLOAT f1 = *(FLOAT*)(_aVertices+ivx1*sizeof(CViewVertex));
        if (f0<f1) return -1;
   else if (f0>f1) return +1;
-  else            return  0;
+  else            return 0;
 }
 static int qsort_CompareVertices_minus( const void *ppvVertex0, const void *ppvVertex1)
 {
@@ -476,7 +476,7 @@ static int qsort_CompareVertices_minus( const void *ppvVertex0, const void *ppvV
   FLOAT f1 = *(FLOAT*)(_aVertices+ivx1*sizeof(CViewVertex));
        if (f0<f1) return +1;
   else if (f0>f1) return -1;
-  else            return  0;
+  else            return 0;
 }
 
 // generate clip edges for one polygon

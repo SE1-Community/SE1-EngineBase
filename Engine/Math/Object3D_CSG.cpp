@@ -231,7 +231,7 @@ public:
 
 CObjectPolygon *CObjectCSG::GetWallA1(void)
 {
-  if (oc_popoWallA1==NULL) {
+  if (oc_popoWallA1 == NULL) {
     oc_popoWallA1 = CreatePieceOfPolygon(oc_poscSectorA, *oc_popoA, FALSE);
     oc_popoWallA1->opo_ulFlags &= ~OPOF_PORTAL;
   }
@@ -240,7 +240,7 @@ CObjectPolygon *CObjectCSG::GetWallA1(void)
 
 CObjectPolygon *CObjectCSG::GetWallA1_2(void)
 {
-  if (oc_popoWallA1_2==NULL) {
+  if (oc_popoWallA1_2 == NULL) {
     oc_popoWallA1_2 = CreatePieceOfPolygon(oc_poscSectorA, *oc_popoA, FALSE);
     oc_popoWallA1_2->opo_ulFlags &= ~OPOF_PORTAL;
   }
@@ -249,7 +249,7 @@ CObjectPolygon *CObjectCSG::GetWallA1_2(void)
 
 CObjectPolygon *CObjectCSG::GetPortalA1A2(void)
 {
-  if (oc_popoPortalA1A2==NULL) {
+  if (oc_popoPortalA1A2 == NULL) {
     oc_popoPortalA1A2 = CreatePieceOfPolygon(oc_poscSectorA, *oc_popoA, FALSE);
     oc_popoPortalA1A2->opo_ulFlags |= OPOF_PORTAL;
   }
@@ -258,7 +258,7 @@ CObjectPolygon *CObjectCSG::GetPortalA1A2(void)
 
 CObjectPolygon *CObjectCSG::GetPortalA1A2_2(void)
 {
-  if (oc_popoPortalA1A2_2==NULL) {
+  if (oc_popoPortalA1A2_2 == NULL) {
     oc_popoPortalA1A2_2 = CreatePieceOfPolygon(oc_poscSectorA, *oc_popoA, FALSE);
     oc_popoPortalA1A2_2->opo_ulFlags |= OPOF_PORTAL;
   }
@@ -267,7 +267,7 @@ CObjectPolygon *CObjectCSG::GetPortalA1A2_2(void)
 
 CObjectPolygon *CObjectCSG::GetPortalA1B1(void)
 {
-  if (oc_popoPortalA1B1==NULL) {
+  if (oc_popoPortalA1B1 == NULL) {
     oc_popoPortalA1B1 = CreatePieceOfPolygon(oc_poscSectorA, *oc_popoA, FALSE);
     oc_popoPortalA1B1->opo_ulFlags |= OPOF_PORTAL;
   }
@@ -276,7 +276,7 @@ CObjectPolygon *CObjectCSG::GetPortalA1B1(void)
 
 CObjectPolygon *CObjectCSG::GetWallB1(void)
 {
-  if (oc_popoWallB1==NULL) {
+  if (oc_popoWallB1 == NULL) {
     oc_popoWallB1 = CreatePieceOfPolygon(oc_poscSectorB, *oc_popoA, FALSE);
     oc_popoWallB1->opo_ulFlags &= ~OPOF_PORTAL;
   }
@@ -285,7 +285,7 @@ CObjectPolygon *CObjectCSG::GetWallB1(void)
 
 CObjectPolygon *CObjectCSG::GetPortalB1A1(void)
 {
-  if (oc_popoPortalB1A1==NULL) {
+  if (oc_popoPortalB1A1 == NULL) {
     oc_popoPortalB1A1 = CreatePieceOfPolygon(oc_poscSectorB, *oc_popoA, TRUE); // this one is reversed !
     oc_popoPortalB1A1->opo_ulFlags |= OPOF_PORTAL;
   }
@@ -294,7 +294,7 @@ CObjectPolygon *CObjectCSG::GetPortalB1A1(void)
 
 CObjectPolygon *CObjectCSG::GetPortalB1B2(void)
 {
-  if (oc_popoPortalB1B2==NULL) {
+  if (oc_popoPortalB1B2 == NULL) {
     oc_popoPortalB1B2 = CreatePieceOfPolygon(oc_poscSectorB, *oc_popoA, FALSE);
     oc_popoPortalB1B2->opo_ulFlags |= OPOF_PORTAL;
   }
@@ -347,19 +347,19 @@ inline void CObjectCSG::AddEdgeArrayAccordingToAction(
 {
   // if there are no edges to process
   INDEX ctEdges = abed.Count();
-  if (ctEdges==0) {
+  if (ctEdges == 0) {
     // do nothing
     return;
   }
 
   // if the action is Remove
-  if (csga==CSGA_Remove) {
+  if (csga == CSGA_Remove) {
     // do nothing
     return;
   }
 
   // if the action is Proceed
-  if (csga==CSGA_Proceed) {
+  if (csga == CSGA_Proceed) {
     // add entire array to array of proceeding edges
     oc_abedProceeding.MoveArray(abed);
     return;
@@ -416,7 +416,7 @@ inline void CObjectCSG::AddEdgeArrayAccordingToAction(
   aovxNormal = poscNormal->osc_aovxVertices.New(2*ctEdges);
   aoedNormal = poscNormal->osc_aoedEdges.New(ctEdges);
   aopeNormal = popoNormal->opo_PolygonEdges.New(ctEdges);
-  if (poscReverse!=NULL) {
+  if (poscReverse != NULL) {
     aovxReverse = poscReverse->osc_aovxVertices.New(2*ctEdges);
     aoedReverse = poscReverse->osc_aoedEdges.New(ctEdges);
     aopeReverse = popoReverse->opo_PolygonEdges.New(ctEdges);
@@ -435,7 +435,7 @@ inline void CObjectCSG::AddEdgeArrayAccordingToAction(
   }}
 
   // if there is reverse polygon
-  if (poscReverse!=NULL) {
+  if (poscReverse != NULL) {
   // add all edges to reverse polygon
     {for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
       DOUBLEbspedge3D &bed = abed[iEdge];

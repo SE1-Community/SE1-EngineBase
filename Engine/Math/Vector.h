@@ -80,8 +80,8 @@ public:
   __forceinline Vector<Type, iDimensions> &operator*=(const Vector<Type, iDimensions> &vector2);
   __forceinline Vector<Type, iDimensions> operator*(const Vector<Type, iDimensions> &vector2) const;
   // comparing vectors
-  __forceinline BOOL operator==(const Vector<Type, iDimensions> &vector2) const;
-  __forceinline BOOL operator!=(const Vector<Type, iDimensions> &vector2) const;
+  __forceinline BOOL operator == (const Vector<Type, iDimensions> &vector2) const;
+  __forceinline BOOL operator != (const Vector<Type, iDimensions> &vector2) const;
 
   /* Stream operations */
   friend __forceinline CTStream &operator>>(CTStream &strm, Vector<Type, iDimensions> &vector) {
@@ -110,14 +110,14 @@ __forceinline Vector<Type, iDimensions>::Vector(void) {}
 template<class Type, int iDimensions>
 __forceinline Vector<Type, iDimensions>::Vector(Type x1)
 {
-  ASSERT(iDimensions==1);
+  ASSERT(iDimensions == 1);
   (*this)(1)=x1;
 }
 
 template<class Type, int iDimensions>
 __forceinline Vector<Type, iDimensions>::Vector(Type x1, Type x2)
 {
-  ASSERT(iDimensions==2);
+  ASSERT(iDimensions == 2);
   (*this)(1)=x1;
   (*this)(2)=x2;
 }
@@ -125,7 +125,7 @@ __forceinline Vector<Type, iDimensions>::Vector(Type x1, Type x2)
 template<class Type, int iDimensions>
 __forceinline Vector<Type, iDimensions>::Vector(Type x1, Type x2, Type x3)
 {
-  ASSERT(iDimensions==3);
+  ASSERT(iDimensions == 3);
   (*this)(1)=x1;
   (*this)(2)=x2;
   (*this)(3)=x3;
@@ -134,7 +134,7 @@ __forceinline Vector<Type, iDimensions>::Vector(Type x1, Type x2, Type x3)
 template<class Type, int iDimensions>
 __forceinline Vector<Type, iDimensions>::Vector(Type x1, Type x2, Type x3, Type x4)
 {
-  ASSERT(iDimensions==4);
+  ASSERT(iDimensions == 4);
   (*this)(1)=x1;
   (*this)(2)=x2;
   (*this)(3)=x3;
@@ -159,7 +159,7 @@ template<class Type, int iDimensions>
 __forceinline Type Vector<Type, iDimensions>::Length(void) const
 {
   Type result=(Type)0;
-  for (int i=1; i<=iDimensions; i++) {
+  for (int i=1; i <= iDimensions; i++) {
     result += (*this)(i) * (*this)(i);
   }
   return (Type)sqrt((DOUBLE)result);
@@ -173,7 +173,7 @@ template<class Type, int iDimensions>
 __forceinline Type Vector<Type, iDimensions>::ManhattanNorm(void) const
 {
   Type result=(Type)0;
-  for (int i=1; i<=iDimensions; i++) {
+  for (int i=1; i <= iDimensions; i++) {
     result += Abs((*this)(i));
   }
   return result;
@@ -186,7 +186,7 @@ template<class Type, int iDimensions>
 __forceinline Type Vector<Type, iDimensions>::MaxNorm(void) const
 {
   Type result=(Type)0;
-  for (int i=1; i<=iDimensions; i++) {
+  for (int i=1; i <= iDimensions; i++) {
     result = Max(result, Abs((*this)(i)));
   }
   return result;
@@ -199,7 +199,7 @@ template<class Type, int iDimensions>
 __forceinline Type &Vector<Type, iDimensions>::operator()(int i)
 {
   // check boundaries (indices start at 1, not at 0)
-  ASSERT(i>=1 && i<=iDimensions);
+  ASSERT(i >= 1 && i <= iDimensions);
   // return vector member reference
   return vector[i-1];
 }
@@ -208,7 +208,7 @@ template<class Type, int iDimensions>
 __forceinline const Type &Vector<Type, iDimensions>::operator()(int i) const
 {
   // check boundaries (indices start at 1, not at 0)
-  ASSERT(i>=1 && i<=iDimensions);
+  ASSERT(i >= 1 && i <= iDimensions);
   // return vector member reference
   return vector[i-1];
 }
@@ -230,7 +230,7 @@ __forceinline Vector<Type, iDimensions> &Vector<Type, iDimensions>::SafeNormaliz
 {
   Type tLen = Length();
   if (tLen<1E-6) {
-    if (iDimensions==2) {
+    if (iDimensions == 2) {
       *this = Vector(1,0);
     } else {
       *this = Vector(0,0,-1);
@@ -265,8 +265,8 @@ template<class Type, int iDimensions>
 __forceinline Vector<Type, iDimensions> &Vector<Type, iDimensions>::Flip(void)
 {
   // flip member by member
-  ASSERT( iDimensions!=3);  // 3 is optimized special case 
-  for (int iDimension=1; iDimension<=iDimensions; iDimension++) {
+  ASSERT( iDimensions != 3);  // 3 is optimized special case 
+  for (int iDimension=1; iDimension <= iDimensions; iDimension++) {
     (*this)(iDimension) = -(*this)(iDimension);
   }
   return *this;
@@ -304,8 +304,8 @@ template<class Type, int iDimensions>
 __forceinline Vector<Type, iDimensions> &Vector<Type, iDimensions>::operator+=(const Vector<Type, iDimensions> &vector2)
 {
   // add member by member
-  ASSERT( iDimensions!=3);  // 3 is optimized special case 
-  for (int iDimension=1; iDimension<=iDimensions; iDimension++) {
+  ASSERT( iDimensions != 3);  // 3 is optimized special case 
+  for (int iDimension=1; iDimension <= iDimensions; iDimension++) {
     (*this)(iDimension) += vector2(iDimension);
   }
   return *this;
@@ -343,8 +343,8 @@ template<class Type, int iDimensions>
 __forceinline Vector<Type, iDimensions> &Vector<Type, iDimensions>::operator-=(const Vector<Type, iDimensions> &vector2)
 {
   // sub member by member
-  ASSERT( iDimensions!=3);  // 3 is optimized special case 
-  for (int iDimension=1; iDimension<=iDimensions; iDimension++) {
+  ASSERT( iDimensions != 3);  // 3 is optimized special case 
+  for (int iDimension=1; iDimension <= iDimensions; iDimension++) {
     (*this)(iDimension) -= vector2(iDimension);
   }
   return *this;
@@ -380,8 +380,8 @@ __forceinline Vector<DOUBLE,3> &Vector<DOUBLE,3>::operator*=(const DOUBLE scalar
 template<class Type, int iDimensions>
 __forceinline Vector<Type, iDimensions> &Vector<Type, iDimensions>::operator*=(const Type scalar)
 {
-  ASSERT( iDimensions!=3);  // 3 is optimized special case 
-  for (int i=1; i<=iDimensions; i++) (*this)(i) *= scalar;
+  ASSERT( iDimensions != 3);  // 3 is optimized special case 
+  for (int i=1; i <= iDimensions; i++) (*this)(i) *= scalar;
   return *this;
 }
 
@@ -417,8 +417,8 @@ __forceinline Vector<DOUBLE,3> &Vector<DOUBLE,3>::operator/=(const DOUBLE scalar
 template<class Type, int iDimensions>
 __forceinline Vector<Type, iDimensions> &Vector<Type, iDimensions>::operator/=(const Type scalar)
 {
-  ASSERT( iDimensions!=3);  // 3 is optimized special case 
-  for (int i=1; i<=iDimensions; i++) (*this)(i) /= scalar;
+  ASSERT( iDimensions != 3);  // 3 is optimized special case 
+  for (int i=1; i <= iDimensions; i++) (*this)(i) /= scalar;
   return *this;
 }
 
@@ -462,11 +462,11 @@ __forceinline Vector<Type, iDimensions> &Vector<Type, iDimensions>::operator*=(c
 template<class Type, int iDimensions>
 __forceinline Vector<Type, iDimensions> Vector<Type, iDimensions>::operator*(const Matrix<Type, iDimensions, iDimensions> &matrix2) const
 {
-  ASSERT( iDimensions!=3);  // 3 is optimized special case 
+  ASSERT( iDimensions != 3);  // 3 is optimized special case 
   Vector<Type, iDimensions> result;
-  for (int iRow=1; iRow<=iDimensions; iRow++) {
+  for (int iRow=1; iRow <= iDimensions; iRow++) {
     result(iRow) = (Type)0;
-    for (int s=1; s<=iDimensions; s++) {
+    for (int s=1; s <= iDimensions; s++) {
       result(iRow) += matrix2(iRow, s) * (*this)(s);
     }
   }
@@ -490,9 +490,9 @@ __forceinline DOUBLE Vector<DOUBLE,3>::operator%(const Vector<DOUBLE,3> &vector2
 template<class Type, int iDimensions>
 __forceinline Type Vector<Type, iDimensions>::operator%(const Vector<Type, iDimensions> &vector2) const
 {
-  ASSERT( iDimensions!=3);  // 3 is optimized special case 
+  ASSERT( iDimensions != 3);  // 3 is optimized special case 
   Type result=(Type)0;
-  for (int i=1; i<=iDimensions; i++) {
+  for (int i=1; i <= iDimensions; i++) {
     result += (*this)(i) * vector2(i);
   }
   return result;
@@ -517,7 +517,7 @@ template<class Type, int iDimensions>
 __forceinline Vector<Type, iDimensions> Vector<Type, iDimensions>::operator*(const Vector<Type, iDimensions> &vector2) const
 {
   Vector<Type, iDimensions> result;
-  ASSERT(iDimensions==3);    // cross product is defined only for 3D vectors
+  ASSERT(iDimensions == 3);    // cross product is defined only for 3D vectors
   result(1) = (*this)(2)*vector2(3) - (*this)(3)*vector2(2);
   result(2) = (*this)(3)*vector2(1) - (*this)(1)*vector2(3);
   result(3) = (*this)(1)*vector2(2) - (*this)(2)*vector2(1);
@@ -526,23 +526,23 @@ __forceinline Vector<Type, iDimensions> Vector<Type, iDimensions>::operator*(con
 
 
 // comparation FLOAT3D
-__forceinline BOOL Vector<FLOAT,3>::operator==(const Vector<FLOAT,3> &vector2) const
+__forceinline BOOL Vector<FLOAT,3>::operator == (const Vector<FLOAT,3> &vector2) const
 {
-  return( (*this)(1)==vector2(1) && (*this)(2)==vector2(2) && (*this)(3)==vector2(3));
+  return( (*this)(1) == vector2(1) && (*this)(2) == vector2(2) && (*this)(3) == vector2(3));
 }
 
 // comparation DOUBLE3D
-__forceinline BOOL Vector<DOUBLE,3>::operator==(const Vector<DOUBLE,3> &vector2) const
+__forceinline BOOL Vector<DOUBLE,3>::operator == (const Vector<DOUBLE,3> &vector2) const
 {
-  return( (*this)(1)==vector2(1) && (*this)(2)==vector2(2) && (*this)(3)==vector2(3));
+  return( (*this)(1) == vector2(1) && (*this)(2) == vector2(2) && (*this)(3) == vector2(3));
 }
 
 // comparation
 template<class Type, int iDimensions>
-__forceinline BOOL Vector<Type, iDimensions>::operator==(const Vector<Type, iDimensions> &vector2) const
+__forceinline BOOL Vector<Type, iDimensions>::operator == (const Vector<Type, iDimensions> &vector2) const
 {
-  ASSERT( iDimensions!=3);  // 3 is optimized special case 
-  for (int i=1; i<=iDimensions; i++) {
+  ASSERT( iDimensions != 3);  // 3 is optimized special case 
+  for (int i=1; i <= iDimensions; i++) {
     if ((*this)(i) != vector2(i))
       return FALSE;
   }
@@ -551,7 +551,7 @@ __forceinline BOOL Vector<Type, iDimensions>::operator==(const Vector<Type, iDim
 
 
 template<class Type, int iDimensions>
-__forceinline BOOL Vector<Type, iDimensions>::operator!=(const Vector<Type, iDimensions> &vector2) const
+__forceinline BOOL Vector<Type, iDimensions>::operator != (const Vector<Type, iDimensions> &vector2) const
 {
   return !(*this == vector2);
 }

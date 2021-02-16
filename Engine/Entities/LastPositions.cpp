@@ -31,7 +31,7 @@ CLastPositions::CLastPositions(const CLastPositions &lpOrg)
 // add a new position
 void CLastPositions::AddPosition(const FLOAT3D &vPos) {
   lp_iLast++;
-  if (lp_iLast>=lp_avPositions.Count()) {
+  if (lp_iLast >= lp_avPositions.Count()) {
     lp_iLast=0;
   }
   lp_ctUsed = Min(INDEX(lp_ctUsed+1), lp_avPositions.Count());

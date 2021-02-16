@@ -68,10 +68,10 @@ void ENGINE_API AddRelationPairHeadHead(CRelationSrc &rsSrc, CRelationDst &rdDst
 
 // make 'for' construct for walking a list in domain member
 #define FOREACHSRCLINK(head, iter) \
-  for ( LISTITER(CRelationLnk, rl_lnSrc) iter(head); !iter.IsPastEnd(); iter.MoveToNext() )
+  for (LISTITER(CRelationLnk, rl_lnSrc) iter(head); !iter.IsPastEnd(); iter.MoveToNext() )
 // make 'for' construct for walking a list in codomain member
 #define FOREACHDSTLINK(head, iter) \
-  for ( LISTITER(CRelationLnk, rl_lnDst) iter(head); !iter.IsPastEnd(); iter.MoveToNext() )
+  for (LISTITER(CRelationLnk, rl_lnDst) iter(head); !iter.IsPastEnd(); iter.MoveToNext() )
 
 // get a domain member related to a codomain member through a link
 #define DST(plink, dstclass, dstmember) \

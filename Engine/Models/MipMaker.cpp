@@ -54,7 +54,7 @@ CMipPolygon::~CMipPolygon()
 }
 void CMipPolygon::Clear()
 {
-  if (mp_pmpvFirstPolygonVertex!=NULL) {
+  if (mp_pmpvFirstPolygonVertex != NULL) {
     // delete all vertices in this polygon
     CMipPolygonVertex *pmpvCurrentInPolygon = mp_pmpvFirstPolygonVertex;
     do
@@ -205,9 +205,9 @@ void CMipModel::FromObject3D_t( CObject3D &objRestFrame, CObject3D &objMipSource
     iPolygon++;
   }
 
-	objRestFrame.ob_aoscSectors[0].UnlockAll();
+  objRestFrame.ob_aoscSectors[0].UnlockAll();
   // unlock all dynamic arrays in sector
-	objMipSourceFrame.ob_aoscSectors[0].UnlockAll();
+  objMipSourceFrame.ob_aoscSectors[0].UnlockAll();
   objRestFrame.ob_aoscSectors.Unlock();
   objMipSourceFrame.ob_aoscSectors.Unlock();
 
@@ -390,7 +390,7 @@ void CMipModel::FindBestVertexPair( CMipVertex *&pmvBestSource, CMipVertex *&pmv
 void CMipModel::RemoveUnusedVertices(void)
 {
   // if there are no vertices
-  if (mm_amvVertices.Count()==0) {
+  if (mm_amvVertices.Count() == 0) {
     // do nothing
     return;
   }
@@ -470,7 +470,7 @@ BOOL CMipModel::CreateMipModel_t(INDEX ctVerticesToRemove, INDEX iSurfacePreserv
     // setup flag for preserving surfaces
     _bPreserveSurfaces = TRUE;
     if ((ctVerticesWithOneSurface == 0) ||
-        (( ((FLOAT)ctVerticesWithOneSurface) / mm_amvVertices.Count())*100 <=
+        (( ((FLOAT)ctVerticesWithOneSurface) / mm_amvVertices.Count())*100 <= 
         (100-iSurfacePreservingFactor)) )
     {
       _bPreserveSurfaces = FALSE;

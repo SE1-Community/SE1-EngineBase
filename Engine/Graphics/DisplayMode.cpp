@@ -47,7 +47,7 @@ CTString CDisplayMode::DepthString(void) const
 BOOL CDisplayMode::IsDualHead(void)
 {
   // if size is 8:3 it is dual head
-  return dm_pixSizeI*3==dm_pixSizeJ*8;
+  return dm_pixSizeI*3 == dm_pixSizeJ*8;
 }
 
 
@@ -55,10 +55,10 @@ BOOL CDisplayMode::IsDualHead(void)
 BOOL CDisplayMode::IsWideScreen(void)
 {
   // only this one supported as widescreen
-  return dm_pixSizeI==856 && dm_pixSizeJ==480;
+  return dm_pixSizeI == 856 && dm_pixSizeJ == 480;
 }
 // check if mode is fullscreen
 BOOL CDisplayMode::IsFullScreen(void)
 {
-  return dm_pixSizeI!=0 && dm_pixSizeJ!=0;
+  return dm_pixSizeI != 0 && dm_pixSizeJ != 0;
 }

@@ -82,8 +82,8 @@ inline void CLinearAllocator<Type>::SetAllocationStep(INDEX ctStep)
 template <class Type>
 void CLinearAllocator<Type>::AllocBlock(INDEX iCount)
 {
-  ASSERT(this!=NULL && iCount>0);
-  //ASSERT(la_ctFree==0);
+  ASSERT(this != NULL && iCount>0);
+  //ASSERT(la_ctFree == 0);
   Type *ptBlock;
   CLABlockInfo *pbi;
 
@@ -149,7 +149,7 @@ inline void CLinearAllocator<Type>::Reset(void)
     return;
 
   // if there is only one block allocated
-  } else if (&la_lhBlocks.Head()==&la_lhBlocks.Tail()) {
+  } else if (&la_lhBlocks.Head() == &la_lhBlocks.Tail()) {
     // just restart at the beginning
     la_ctFree = la_ctObjects;
     la_ptNextFree = (Type*) (LIST_HEAD(la_lhBlocks, CLABlockInfo, bi_lnNode)->bi_pvMemory);

@@ -28,8 +28,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 class ENGINE_API CListNode {
 //implementation:
 public:
-  CListNode *ln_Succ;	/* pointer to previous node (successor) */
-  CListNode *ln_Pred;	/* pointer to next node (predecessor) */
+  CListNode *ln_Succ;  /* pointer to previous node (successor) */
+  CListNode *ln_Pred;  /* pointer to next node (predecessor) */
 
   /* Check if list node is valid. */
   BOOL IsValid(void) const;

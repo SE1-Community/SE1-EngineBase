@@ -41,10 +41,10 @@ public:
 };
 
 // Used for caching collision info for models
-#define CIF_IGNOREHEADING     (1L<<0) // heading rotation can be ignored
-#define CIF_IGNOREROTATION    (1L<<1) // any rotation can be ignored
-#define CIF_CANSTANDONHANDLE  (1L<<2) // entity can stand on its handle sphere
-#define CIF_BRUSH             (1L<<3) // entity is a brush
+#define CIF_IGNOREHEADING     (1L << 0) // heading rotation can be ignored
+#define CIF_IGNOREROTATION    (1L << 1) // any rotation can be ignored
+#define CIF_CANSTANDONHANDLE  (1L << 2) // entity can stand on its handle sphere
+#define CIF_BRUSH             (1L << 3) // entity is a brush
 class ENGINE_API CCollisionInfo {
 public:
   CStaticArray<CMovingSphere> ci_absSpheres;  // collision spheres of the model

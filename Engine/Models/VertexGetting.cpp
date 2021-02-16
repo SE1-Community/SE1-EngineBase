@@ -101,7 +101,7 @@ void CModelObject::GetModelVertices( CStaticStackArray<FLOAT3D> &avVertices, FLO
   BOOL bXInverted = vStretch(1)<0;
   BOOL bYInverted = vStretch(2)<0;
   BOOL bZInverted = vStretch(3)<0;
-  BOOL bInverted  = bXInverted!=bYInverted!=bZInverted;
+  BOOL bInverted  = bXInverted != bYInverted != bZInverted;
 
   // if dynamic stretch factor should be applied
   if (mo_Stretch != FLOAT3D(1.0f, 1.0f, 1.0f)) {
@@ -187,8 +187,8 @@ void CModelObject::GetModelVertices( CStaticStackArray<FLOAT3D> &avVertices, FLO
   FOREACHINLIST( CAttachmentModelObject, amo_lnInMain, mo_lhAttachments, itamo) {
     CAttachmentModelObject *pamo = itamo;
     CModelData *pmd=pamo->amo_moModelObject.GetData();
-    ASSERT(pmd!=NULL);
-    if (pmd==NULL || pmd->md_Flags&(MF_FACE_FORWARD|MF_HALF_FACE_FORWARD)) continue;
+    ASSERT(pmd != NULL);
+    if (pmd == NULL || pmd->md_Flags&(MF_FACE_FORWARD|MF_HALF_FACE_FORWARD)) continue;
     FLOATmatrix3D mNew = mRotation;
     FLOAT3D vNew = vPosition;
     // get new rotation and position matrices
@@ -336,7 +336,7 @@ void CModelObject::GetAttachmentTransformations( INDEX iAttachment, FLOATmatrix3
   // adjust for relative placement of the attachment
   if (!bDummyAttachment) {
     CAttachmentModelObject *amo = GetAttachmentModel(iAttachment);
-    ASSERT(amo!=NULL);
+    ASSERT(amo != NULL);
     FLOATmatrix3D mRelative;
     MakeRotationMatrixFast( mRelative, amo->amo_plRelative.pl_OrientationAngle);
     vOffset(1) = amo->amo_plRelative.pl_PositionVector(1) * mo_Stretch(1);

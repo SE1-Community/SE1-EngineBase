@@ -45,7 +45,7 @@ SHADER_MAIN(ReflectionAndSpecular)
 
   COLOR colModelColor = MulColors(shaGetModelColor(),shaGetCurrentColor());
   BOOL bFullBright = shaGetFlags()&BASE_FULL_BRIGHT;
-  BOOL bOpaque = (colModelColor&0xFF)==0xFF;
+  BOOL bOpaque = (colModelColor&0xFF) == 0xFF;
   // if fully opaque
   if (bOpaque) {
     shaDisableAlphaTest();

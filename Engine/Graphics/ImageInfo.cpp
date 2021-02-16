@@ -52,7 +52,7 @@ struct PCXHeader
   SBYTE Planes;
   UWORD BytesPerLine;
   SWORD PaletteInfo;
-  SWORD	HscreenSize, VscreenSize;
+  SWORD  HscreenSize, VscreenSize;
   SBYTE Filler[54];
 };
 
@@ -65,7 +65,7 @@ struct TGAHeader
   UBYTE ColorMapSpec[5];
   UWORD Xorigin;
   UWORD Yorigin;
-  UWORD	Width;
+  UWORD  Width;
   UWORD Height;
   UBYTE BitsPerPixel;
   UBYTE Descriptor;
@@ -156,7 +156,7 @@ void CImageInfo::Clear()
 void CImageInfo::ExpandEdges( INDEX ctPasses/*=8192*/)
 {
   // do nothing if image is too small or doesn't have an alpha channel
-  if (ii_Width<3 || ii_Height<3 || ii_BitsPerPixel!=32) return;
+  if (ii_Width<3 || ii_Height<3 || ii_BitsPerPixel != 32) return;
 
   // allocate some memory for spare picture and wipe it clean
   SLONG slSize = ii_Width*ii_Height*ii_BitsPerPixel/8;
@@ -176,16 +176,16 @@ void CImageInfo::ExpandEdges( INDEX ctPasses/*=8192*/)
         const PIX pixOffset = pixV*ii_Width + pixU;
         // do nothing if it is already visible
         COLOR col = ByteSwap(pulSrc[pixOffset]);
-        if (((col&CT_AMASK)>>CT_ASHIFT)>3) continue;
+        if (((col&CT_AMASK) >> CT_ASHIFT)>3) continue;
         bAllPixelsVisible = FALSE;
         // average all surrounding pixels that are visible
         ULONG ulRa=0, ulGa=0, ulBa=0;
         INDEX ctVisible=0;
-        for (INDEX j=-1; j<=1; j++) {
-          for (INDEX i=-1; i<=1; i++) {
+        for (INDEX j=-1; j <= 1; j++) {
+          for (INDEX i=-1; i <= 1; i++) {
             const PIX pixSurrOffset = pixOffset + j*ii_Width + i;
             col = ByteSwap(pulSrc[pixSurrOffset]);
-            if (((col&CT_AMASK)>>CT_ASHIFT)<4) continue; // skip non-visible pixels
+            if (((col&CT_AMASK) >> CT_ASHIFT)<4) continue; // skip non-visible pixels
             UBYTE ubR, ubG, ubB;
             ColorToRGB( col, ubR,ubG,ubB);
             ulRa+=ubR;  ulGa+=ubG;  ulBa += ubB;
@@ -225,7 +225,7 @@ INDEX CImageInfo::GetGfxFileInfo_t( const CTFileName &strFileName) // throw char
   GfxFile.Close();
 
   // check for supported targa format
-  if ((TGAhdr.ImageType==2 || TGAhdr.ImageType==10) && TGAhdr.BitsPerPixel>=24) {
+  if ((TGAhdr.ImageType == 2 || TGAhdr.ImageType == 10) && TGAhdr.BitsPerPixel >= 24) {
     // targa it is, so clear image info and set new values
     Clear();
     ii_Width  = TGAhdr.Width;
@@ -292,11 +292,11 @@ void CImageInfo::LoadTGA_t( const CTFileName &strFileName) // throw char *
   ii_BitsPerPixel = (SLONG)pTGAHdr->BitsPerPixel;
   SLONG slBytesPerPixel = ii_BitsPerPixel/8;
   PIX pixBitmapSize     = ii_Width*ii_Height;
-  BOOL bAlphaChannel    = (slBytesPerPixel==4);
+  BOOL bAlphaChannel    = (slBytesPerPixel == 4);
 
   // check for supported file types
-  ASSERT( slBytesPerPixel==3 || slBytesPerPixel==4);
-  if (slBytesPerPixel!=3 && slBytesPerPixel!=4) throw( TRANS("Unsupported BitsPerPixel in TGA format."));
+  ASSERT( slBytesPerPixel == 3 || slBytesPerPixel == 4);
+  if (slBytesPerPixel != 3 && slBytesPerPixel != 4) throw( TRANS("Unsupported BitsPerPixel in TGA format."));
 
   // allocate memory for image content
   ii_Picture = (UBYTE*)AllocMemory( ii_Width*ii_Height *slBytesPerPixel);
@@ -304,7 +304,7 @@ void CImageInfo::LoadTGA_t( const CTFileName &strFileName) // throw char *
   UBYTE *pubDst = ii_Picture;
 
   // determine TGA image type
-  if (pTGAHdr->ImageType==10) {
+  if (pTGAHdr->ImageType == 10) {
     // RLE encoded
     UBYTE ubControl;
     INDEX iBlockSize;
@@ -333,7 +333,7 @@ void CImageInfo::LoadTGA_t( const CTFileName &strFileName) // throw char *
     pTGAImage = ii_Picture; 
   } 
   // not true-colored?
-  else if (pTGAHdr->ImageType!=2) {
+  else if (pTGAHdr->ImageType != 2) {
     // whoops!
     ASSERTALWAYS("Unsupported TGA format.");
     throw( TRANS("Unsupported TGA format."));
@@ -341,7 +341,7 @@ void CImageInfo::LoadTGA_t( const CTFileName &strFileName) // throw char *
 
   // determine image flipping
   INDEX iFlipType;
-  switch ((pTGAHdr->Descriptor&0x30)>>4) {
+  switch ((pTGAHdr->Descriptor&0x30) >> 4) {
   case 0:  iFlipType = 1;  break; // vertical flipping
   case 1:  iFlipType = 3;  break; // diagonal flipping
   case 3:  iFlipType = 2;  break; // horizontal flipping
@@ -374,8 +374,8 @@ void CImageInfo::SaveTGA_t( const CTFileName &strFileName) const // throw char *
 
   // determine and check image info format
   SLONG slBytesPerPixel = ii_BitsPerPixel/8;
-  ASSERT( slBytesPerPixel==3 || slBytesPerPixel==4);
-  if (slBytesPerPixel!=3 && slBytesPerPixel!=4) throw( TRANS( "Unsupported BitsPerPixel in ImageInfo header."));
+  ASSERT( slBytesPerPixel == 3 || slBytesPerPixel == 4);
+  if (slBytesPerPixel != 3 && slBytesPerPixel != 4) throw( TRANS( "Unsupported BitsPerPixel in ImageInfo header."));
 
   // determine TGA file size and allocate memory
   slFileSize = sizeof(struct TGAHeader) + pixBitmapSize *slBytesPerPixel;
@@ -391,7 +391,7 @@ void CImageInfo::SaveTGA_t( const CTFileName &strFileName) const // throw char *
   pTGAHdr->ImageType    = 2;
 
   // flip image vertically
-  BOOL bAlphaChannel = (slBytesPerPixel==4);
+  BOOL bAlphaChannel = (slBytesPerPixel == 4);
   FlipBitmap( ii_Picture, pTGAImage, ii_Width, ii_Height, 1, bAlphaChannel);
 
   // convert CroTeam's pixel format to TGA format

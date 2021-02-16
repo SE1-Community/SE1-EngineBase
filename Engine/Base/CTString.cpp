@@ -24,21 +24,21 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 /*
  * Equality comparison.
  */
-BOOL CTString::operator==(const CTString &strOther) const
+BOOL CTString::operator == (const CTString &strOther) const
 {
   ASSERT(IsValid() && strOther.IsValid());
 
   return stricmp( str_String, strOther.str_String) == 0;
 }
-BOOL CTString::operator==(const char *strOther) const
+BOOL CTString::operator == (const char *strOther) const
 {
-  ASSERT(IsValid() && strOther!=NULL);
+  ASSERT(IsValid() && strOther != NULL);
 
   return stricmp( str_String, strOther) == 0;
 }
- BOOL operator==(const char *strThis, const CTString &strOther)
+ BOOL operator == (const char *strThis, const CTString &strOther)
 {
-  ASSERT(strOther.IsValid() && strThis!=NULL);
+  ASSERT(strOther.IsValid() && strThis != NULL);
 
   return strOther == strThis;
 }
@@ -46,21 +46,21 @@ BOOL CTString::operator==(const char *strOther) const
 /*
  * Inequality comparison.
  */
-BOOL CTString::operator!=(const CTString &strOther) const
+BOOL CTString::operator != (const CTString &strOther) const
 {
   ASSERT(IsValid() && strOther.IsValid());
 
   return !( *this == strOther );
 }
-BOOL CTString::operator!=(const char *strOther) const
+BOOL CTString::operator != (const char *strOther) const
 {
-  ASSERT(IsValid() && strOther!=NULL);
+  ASSERT(IsValid() && strOther != NULL);
 
   return !( *this == strOther );
 }
- BOOL operator!=(const char *strThis, const CTString &strOther)
+ BOOL operator != (const char *strThis, const CTString &strOther)
 {
-  ASSERT(strOther.IsValid() && strThis!=NULL);
+  ASSERT(strOther.IsValid() && strThis != NULL);
 
   return !( strOther == strThis);
 }
@@ -77,7 +77,7 @@ CTString CTString::operator+(const CTString &strSecond) const
 }
 CTString operator+(const char *strFirst, const CTString &strSecond)
 {
-  ASSERT(strFirst!=NULL && strSecond.IsValid());
+  ASSERT(strFirst != NULL && strSecond.IsValid());
 
   return(CTString(strFirst)+=strSecond);
 }
@@ -121,7 +121,7 @@ INDEX CTString::FindSubstr(const CTString &strSub)
   INDEX ctSub = strSub.Length();
   for (INDEX i=0; i<ct-ctSub+1; i++) {
     for (INDEX iSub=0; iSub<ctSub; iSub++) {
-      if ((*this)[i+iSub]!=strSub[iSub]) {
+      if ((*this)[i+iSub] != strSub[iSub]) {
         goto wrong;
       }
     }
@@ -157,7 +157,7 @@ INDEX CTString::TrimLeft( INDEX ctCharacters)
   INDEX lenOriginal = strlen(str_String);
   INDEX lenPrefix = lenOriginal-ctCharacters;
   // if nothing needs to be removed
-  if (lenPrefix<=0) return 0;
+  if (lenPrefix <= 0) return 0;
   // crop
   memmove( str_String, &str_String[ lenPrefix], ctCharacters+1);
   ShrinkMemory( (void **)&str_String, ctCharacters+1);
@@ -173,7 +173,7 @@ INDEX CTString::TrimRight( INDEX ctCharacters)
   INDEX lenOriginal = strlen(str_String);
   INDEX lenPrefix = lenOriginal-ctCharacters;
   // if nothing needs to be removed
-  if (lenPrefix<=0) return 0;
+  if (lenPrefix <= 0) return 0;
   // crop
   str_String[ctCharacters] = '\0';
   ShrinkMemory( (void**)&str_String, ctCharacters+1);
@@ -198,9 +198,9 @@ CTString CTString::Undecorated(void) const
   char *pchDst = strResult.str_String;
 
   // while the source is not finished
-  while (pchSrc[0]!=0) {
+  while (pchSrc[0] != 0) {
     // if the source char is not escape char
-    if (pchSrc[0]!='^') {
+    if (pchSrc[0] != '^') {
       // copy it over
       *pchDst++ = *pchSrc++;
       // go to next char
@@ -224,13 +224,13 @@ CTString CTString::Undecorated(void) const
     }
   }
   *pchDst++ = 0;
-  ASSERT(strResult.Length()<=Length());
+  ASSERT(strResult.Length() <= Length());
   return strResult;
 }
 
 BOOL IsSpace(char c)
 {
-  return c==' ' || c=='\t' || c=='\n' || c=='\r';
+  return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 }
 
 /* Trim the string from from spaces from left. */
@@ -238,7 +238,7 @@ INDEX CTString::TrimSpacesLeft(void)
 {
   // for each character in string
   const char *chr;
-  for (chr = str_String; *chr!=0; chr++) {
+  for (chr = str_String; *chr != 0; chr++) {
     // if the character is not space 
     if (!IsSpace(*chr)) {
       // stop searching
@@ -272,7 +272,7 @@ void CTString::OnlyFirstLine(void)
   // get position of first line end
   const char *pchNL = strchr(str_String, '\n');
   // if none
-  if (pchNL==NULL) {
+  if (pchNL == NULL) {
     // do nothing
     return;
   }
@@ -311,8 +311,8 @@ CTStream &operator>>(CTStream &strmStream, CTString &strString)
 
   // read length
   INDEX iLength;
-  strmStream>>iLength;
-  ASSERT(iLength>=0);
+  strmStream >> iLength;
+  ASSERT(iLength >= 0);
   // allocate that much memory
   FreeMemory(strString.str_String);
   strString.str_String = (char *) AllocMemory(iLength+1);  // take end-marker in account
@@ -354,7 +354,7 @@ CTStream &operator<<(CTStream &strmStream, const CTString &strString)
   // calculate size
   INDEX iStringLen = strlen( strString);
   // write size
-  strmStream<<iStringLen;
+  strmStream << iStringLen;
   // if the string is not empty
   if (iStringLen>0) {
     // write string
@@ -371,7 +371,7 @@ CTStream &operator<<(CTStream &strmStream, const CTString &strString)
  */
 BOOL CTString::IsValid(void) const
 {
-  ASSERT(this!=NULL && str_String!=NULL);
+  ASSERT(this != NULL && str_String != NULL);
   return TRUE;
 }
 #endif // NDEBUG
@@ -396,9 +396,9 @@ void CTString::ReadUntilEOF_t(CTStream &strmFile)  // throw char *
   // rewrite entire string
   char *pchRead=str_String;
   char *pchWrite=str_String;
-  while (*pchRead!=0) {
+  while (*pchRead != 0) {
     // skip the '\r' characters
-    if (*pchRead!='\r') {
+    if (*pchRead != '\r') {
       *pchWrite++ = *pchRead++;
     } else {
       pchRead++;
@@ -479,7 +479,7 @@ INDEX CTString::VPrintF(const char *strFormat, va_list arg)
   static char *_pchBuffer = NULL;
 
   // if buffer was not allocated yet
-  if (_ctBufferSize==0) {
+  if (_ctBufferSize == 0) {
     // allocate it
     _ctBufferSize = 256;
     _pchBuffer = (char*)AllocMemory(_ctBufferSize);
@@ -491,7 +491,7 @@ INDEX CTString::VPrintF(const char *strFormat, va_list arg)
     // print to the buffer
     iLen = _vsnprintf(_pchBuffer, _ctBufferSize, strFormat, arg);
     // if printed ok
-    if (iLen!=-1) {
+    if (iLen != -1) {
       // stop
       break;
     }
@@ -551,7 +551,7 @@ void CTString::DeleteChar( INDEX iPos)
 {
   // clamp position
   INDEX ctChars = strlen(str_String);
-  if (ctChars==0) {
+  if (ctChars == 0) {
     return;
   }
   if (iPos>ctChars) iPos=ctChars;
@@ -673,7 +673,7 @@ void LoadIntVar(const CTFileName &fnmVar, INDEX &iVar)
 {
   CTString strVar;
   strVar.LoadVar(fnmVar);
-  if (strVar!="") {
+  if (strVar != "") {
     CTString strHex = strVar;
     if (strHex.RemovePrefix("0x")) {
       strHex.ScanF("%x", &iVar);

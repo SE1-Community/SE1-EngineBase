@@ -27,11 +27,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // WORLD RENDER CONSTANTS
 
 // scene polygon flags
-#define SPOF_SELECTED     (1UL<< 0)   // is polygon currently selected or not?
-#define SPOF_TRANSPARENT  (1UL<< 1)   // polygon has alpha keying
-#define SPOF_RENDERFOG    (1UL<< 9)   // polygon has fog
-#define SPOF_RENDERHAZE   (1UL<<10)   // polygon has haze
-#define SPOF_BACKLIGHT    (1UL<<31)   // used internaly
+#define SPOF_SELECTED     (1UL << 0)   // is polygon currently selected or not?
+#define SPOF_TRANSPARENT  (1UL << 1)   // polygon has alpha keying
+#define SPOF_RENDERFOG    (1UL << 9)   // polygon has fog
+#define SPOF_RENDERHAZE   (1UL << 10)   // polygon has haze
+#define SPOF_BACKLIGHT    (1UL << 31)   // used internaly
 
 // scene texture flags
 #define STXF_CLAMPU         (0x01)    // clamp u coordinate in texture

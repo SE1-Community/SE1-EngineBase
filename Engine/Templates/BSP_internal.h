@@ -66,7 +66,7 @@ public:
   void Uninitialize(void);
 
   /* Check if this container is in an unusable state (polygon coplanar with the splitter).*/
-  inline BOOL IsPlannar(void) { return bvc_iMaxAxis==0; };
+  inline BOOL IsPlannar(void) { return bvc_iMaxAxis == 0; };
 
   /* Add a new vertex. */
   inline void AddVertex(const Vector<Type, iDimensions> &vPoint);

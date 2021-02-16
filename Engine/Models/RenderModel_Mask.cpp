@@ -72,18 +72,18 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
     MappingSurface &ms = *itms;
     ULONG ulFlags = ms.ms_ulRenderingFlags;
     // if surface is invisible or empty, skip it
-    if ((ulFlags&SRF_INVISIBLE) || ms.ms_ctSrfVx==0) continue;
+    if ((ulFlags&SRF_INVISIBLE) || ms.ms_ctSrfVx == 0) continue;
     // if rendering back side and surface is not double sided, skip entire surface
-    if (iVisibility==VISIBLE_BACK && !(ulFlags&SRF_DOUBLESIDED)) continue;
+    if (iVisibility == VISIBLE_BACK && !(ulFlags&SRF_DOUBLESIDED)) continue;
 
     // for each vertex in the surface
-    BOOL bTransparency = ms.ms_sttTranslucencyType!=STT_OPAQUE;
+    BOOL bTransparency = ms.ms_sttTranslucencyType != STT_OPAQUE;
     for (INDEX ivx=0; ivx<ms.ms_aiTextureVertices.Count(); ivx++) {
       ModelTextureVertex    &mtv = mmiMip.mmpi_TextureVertices[ms.ms_aiTextureVertices[ivx]];
       TransformedVertexData &tvd = rm.rm_pmdModelData->md_TransformedVertices[mtv.mtv_iTransformedVertex];
       // adjust texture coordinates for texture mapping and clipping
-      tvd.tvd_fU = (mtv.mtv_UV(1)>>iMipLevel);
-      tvd.tvd_fV = (mtv.mtv_UV(2)>>iMipLevel);
+      tvd.tvd_fU = (mtv.mtv_UV(1) >> iMipLevel);
+      tvd.tvd_fV = (mtv.mtv_UV(2) >> iMipLevel);
       tvd.tvd_pv2.pv2_fUoK = tvd.tvd_fU * tvd.tvd_pv2.pv2_f1oK;
       tvd.tvd_pv2.pv2_fVoK = tvd.tvd_fV * tvd.tvd_pv2.pv2_f1oK;
     }
@@ -108,7 +108,7 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
           FLOAT fd0 = fFrontClipDistance-tvd0.tvd_fZ;
           FLOAT fd1 = fFrontClipDistance-tvd1.tvd_fZ;
           // if first vertex is in
-          if (fd0>=0) {
+          if (fd0 >= 0) {
             // add it to clip array
             ptvdDst[ctvxDst] = tvd0;
             ctvxDst++;
@@ -130,7 +130,7 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
           // if first vertex is out (don't add it into clip array)
           } else {
             // if second vertex is in
-            if (fd1>=0) {
+            if (fd1 >= 0) {
               // add clipped vertex at entry
               TransformedVertexData &tvdClipped = ptvdDst[ctvxDst];
               ctvxDst++;
@@ -165,7 +165,7 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
             FLOAT fd0 = tvd0.tvd_fZ-fBackClipDistance;
             FLOAT fd1 = tvd1.tvd_fZ-fBackClipDistance;
             // if first vertex is in
-            if (fd0>=0) {
+            if (fd0 >= 0) {
               // add it to clip array
               ptvdDst[ctvxDst] = tvd0;
               ctvxDst++;
@@ -187,7 +187,7 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
             // if first vertex is out (don't add it into clip array)
             } else {
               // if second vertex is in
-              if (fd1>=0) {
+              if (fd1 >= 0) {
                 // add clipped vertex at entry
                 TransformedVertexData &tvdClipped = ptvdDst[ctvxDst];
                 ctvxDst++;
@@ -237,7 +237,7 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
           FLOAT fd0 = pv20.pv2_fI-0;
           FLOAT fd1 = pv21.pv2_fI-0;
           // if first vertex is in
-          if (fd0>=0) {
+          if (fd0 >= 0) {
             // add it to clip array
             ptvdDst[ctvxDst].tvd_pv2 = pv20;
             ctvxDst++;
@@ -255,7 +255,7 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
           // if first vertex is out (don't add it into clip array)
           } else {
             // if second vertex is in
-            if (fd1>=0) {
+            if (fd1 >= 0) {
               // add clipped vertex at entry
               PolyVertex2D &pv2Clipped = ptvdDst[ctvxDst].tvd_pv2;
               ctvxDst++;
@@ -286,7 +286,7 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
           FLOAT fd0 = pixWidth-pv20.pv2_fI;
           FLOAT fd1 = pixWidth-pv21.pv2_fI;
           // if first vertex is in
-          if (fd0>=0) {
+          if (fd0 >= 0) {
             // add it to clip array
             ptvdDst[ctvxDst].tvd_pv2 = pv20;
             ctvxDst++;
@@ -304,7 +304,7 @@ static void RenderOneSide( CRenderModel &rm, const INDEX iVisibility)
           // if first vertex is out (don't add it into clip array)
           } else {
             // if second vertex is in
-            if (fd1>=0) {
+            if (fd1 >= 0) {
               // add clipped vertex at entry
               PolyVertex2D &pv2Clipped = ptvdDst[ctvxDst].tvd_pv2;
               ctvxDst++;
@@ -358,7 +358,7 @@ void CModelObject::RenderModel_Mask( CRenderModel &rm)
 {
   // skip shadow generation if effect texture has been set
   CTextureData *ptd = (CTextureData*)mo_toTexture.GetData();
-  if (ptd!=NULL && ptd->td_ptegEffect!=NULL) {
+  if (ptd != NULL && ptd->td_ptegEffect != NULL) {
     // report to console
     CPrintF( TRANS("WARNING: model '%s' cast cluster shadows but has an effect texture.\n"), GetData()->GetName());
     return;
@@ -377,7 +377,7 @@ void CModelObject::RenderModel_Mask( CRenderModel &rm)
   ulColorMask = mo_ColorMask;
 
   // if texture is invalid, backup to white color mode
-  if (ptd==NULL) rm.rm_rtRenderType = (rm.rm_rtRenderType&~RT_TEXTURE_MASK)|RT_WHITE_TEXTURE;
+  if (ptd == NULL) rm.rm_rtRenderType = (rm.rm_rtRenderType&~RT_TEXTURE_MASK)|RT_WHITE_TEXTURE;
 
   // if texture is ok
   iMipLevel = 31;
@@ -459,7 +459,7 @@ void CModelObject::RenderModel_Mask( CRenderModel &rm)
     }
 
     // check clipping against horizontal screen boundaries and near clip plane
-    if (tvd.tvd_pv2.pv2_fI<0 || tvd.tvd_pv2.pv2_fI>=pixWidth  ||
+    if (tvd.tvd_pv2.pv2_fI<0 || tvd.tvd_pv2.pv2_fI >= pixWidth  ||
         tvd.tvd_fZ>fFrontClipDistance || (fBackClipDistance<0 && tvd.tvd_fZ<fBackClipDistance)) {
       tvd.tvd_bClipped = TRUE;
     }

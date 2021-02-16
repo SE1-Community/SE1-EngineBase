@@ -63,7 +63,7 @@ void CPlayerSource::Start_t(CPlayerCharacter &pcCharacter) // throw char *
 
   // request player connection
   CNetworkMessage nmRegisterPlayer(MSG_REQ_CONNECTPLAYER);
-  nmRegisterPlayer<<pls_pcCharacter;    // player's character data
+  nmRegisterPlayer << pls_pcCharacter;    // player's character data
   _pNetwork->SendToServerReliable(nmRegisterPlayer);
 
   for (TIME tmWait=0; 
@@ -74,8 +74,8 @@ void CPlayerSource::Start_t(CPlayerCharacter &pcCharacter) // throw char *
     }
 
     if (_cmiComm.Client_Update() == FALSE) {
-			break;
-		}
+      break;
+    }
     // wait for message to come
     CNetworkMessage nmReceived;
     if (!_pNetwork->ReceiveFromServerReliable(nmReceived)) {
@@ -85,19 +85,19 @@ void CPlayerSource::Start_t(CPlayerCharacter &pcCharacter) // throw char *
     // if this is the init message
     if (nmReceived.GetType() == MSG_REP_CONNECTPLAYER) {
       // remember your index
-      nmReceived>>pls_Index;
+      nmReceived >> pls_Index;
       // finish waiting
       pls_Active = TRUE;
       return;
     // if this is disconnect message
     } else if (nmReceived.GetType() == MSG_INF_DISCONNECTED) {
-			// confirm disconnect
-			CNetworkMessage nmConfirmDisconnect(MSG_REP_DISCONNECTED);			
-			_pNetwork->SendToServerReliable(nmConfirmDisconnect);
+      // confirm disconnect
+      CNetworkMessage nmConfirmDisconnect(MSG_REP_DISCONNECTED);      
+      _pNetwork->SendToServerReliable(nmConfirmDisconnect);
 
       // throw exception
       CTString strReason;
-      nmReceived>>strReason;
+      nmReceived >> strReason;
       _pNetwork->ga_sesSessionState.ses_strDisconnected = strReason;
       ThrowF_t(TRANS("Cannot add player because: %s\n"), strReason);
 
@@ -115,8 +115,8 @@ void CPlayerSource::Start_t(CPlayerCharacter &pcCharacter) // throw char *
 
   }
 
-		CNetworkMessage nmConfirmDisconnect(MSG_REP_DISCONNECTED);			
-	_pNetwork->SendToServerReliable(nmConfirmDisconnect);
+    CNetworkMessage nmConfirmDisconnect(MSG_REP_DISCONNECTED);      
+  _pNetwork->SendToServerReliable(nmConfirmDisconnect);
 
   ThrowF_t(TRANS("Timeout while waiting for player registration"));
 }
@@ -136,14 +136,14 @@ void CPlayerSource::Stop(void)
 void CPlayerSource::ChangeCharacter(CPlayerCharacter &pcNew)
 {
   // if the requested character has different guid
-  if (!(pls_pcCharacter==pcNew)) {
+  if (!(pls_pcCharacter == pcNew)) {
     // fail
     CPrintF(TRANS("Cannot update character - different GUID\n"));
   }
 
   // just request the change
   CNetworkMessage nmChangeChar(MSG_REQ_CHARACTERCHANGE);
-  nmChangeChar<<pls_Index<<pcNew;
+  nmChangeChar << pls_Index << pcNew;
   _pNetwork->SendToServerReliable(nmChangeChar);
   // remember new setting
   pls_pcCharacter = pcNew;
@@ -164,7 +164,7 @@ void CPlayerSource::SetAction(const CPlayerAction &paAction)
 // get mask of this player for chat messages
 ULONG CPlayerSource::GetChatMask(void)
 {
-  return 1UL<<pls_Index;
+  return 1UL << pls_Index;
 }
 
 /* Create action packet from current player commands and for sending to server. */
@@ -179,7 +179,7 @@ void CPlayerSource::WriteActionPacket(CNetworkMessage &nm)
     ppe = (CPlayerEntity *)_pNetwork->GetLocalPlayerEntity(this);
   }
   // if not
-  if (ppe==NULL) {
+  if (ppe == NULL) {
     // just write a dummy bit
     BOOL bActive = 0;
     nm.WriteBits(&bActive, 1);
@@ -190,7 +190,7 @@ void CPlayerSource::WriteActionPacket(CNetworkMessage &nm)
   pls_paAction.Normalize();
 
   ASSERT(pls_Active);
-  ASSERT(pls_Index>=0);
+  ASSERT(pls_Index >= 0);
 
   // determine ping
   FLOAT tmPing = ppe->en_tmPing;
@@ -201,7 +201,7 @@ void CPlayerSource::WriteActionPacket(CNetworkMessage &nm)
   nm.WriteBits(&bActive, 1);
   nm.WriteBits(&pls_Index, 4);  // your index
   nm.WriteBits(&iPing, 10);     // your ping
-  nm<<pls_paAction;             // action
+  nm << pls_paAction;             // action
 
   // get sendbehind parameters
   extern INDEX cli_iSendBehind;
@@ -217,7 +217,7 @@ void CPlayerSource::WriteActionPacket(CNetworkMessage &nm)
   // save sendbehind if needed
   nm.WriteBits(&iSendBehind, 2);
   for (INDEX i=0; i<iSendBehind; i++) {
-    nm<<pls_apaLastActions[i];
+    nm << pls_apaLastActions[i];
   }
 
   // remember last action
@@ -231,7 +231,7 @@ void CPlayerSource::WriteActionPacket(CNetworkMessage &nm)
     // get the index of the player target in game state
     INDEX iPlayerTarget = pls_Index;
     // if player is added
-    if (iPlayerTarget>=0) {
+    if (iPlayerTarget >= 0) {
       // get the player target
       CPlayerTarget &plt = _pNetwork->ga_sesSessionState.ses_apltPlayers[iPlayerTarget];
       // let it buffer the packet

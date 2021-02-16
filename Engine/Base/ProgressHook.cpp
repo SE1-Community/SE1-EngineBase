@@ -39,7 +39,7 @@ void SetProgressDescription(const CTString &strDescription)
 
 void CallProgressHook_t(FLOAT fCompleted)
 {
-  if (_pLoadingHook_t!=NULL) {
+  if (_pLoadingHook_t != NULL) {
     _phiLoadingInfo.phi_fCompleted = fCompleted;
     _pLoadingHook_t(&_phiLoadingInfo);
 
@@ -50,13 +50,13 @@ void CallProgressHook_t(FLOAT fCompleted)
     }
     CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
     if ((tvNow-tvLastUpdate) > CTimerValue(net_fSendRetryWait*1.1)) {
-		  if (_pNetwork->ga_IsServer) {
+      if (_pNetwork->ga_IsServer) {
         // handle server messages
         _cmiComm.Server_Update();
-		  } else {
-			  // handle client messages
-			  _cmiComm.Client_Update();
-		  }
+      } else {
+        // handle client messages
+        _cmiComm.Client_Update();
+      }
       tvLastUpdate = _pTimer->GetHighPrecisionTimer();
     }    
 

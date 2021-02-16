@@ -124,7 +124,7 @@ CNetworkMessage::CNetworkMessage(const CNetworkMessage &nmOriginal)
 void CNetworkMessage::operator=(const CNetworkMessage &nmOriginal)
 {
   if (nm_slMaxSize != nmOriginal.nm_slMaxSize) {
-    if (nm_pubMessage!=NULL) {
+    if (nm_pubMessage != NULL) {
       FreeMemory(nm_pubMessage);
     }
 
@@ -150,8 +150,8 @@ void CNetworkMessage::operator=(const CNetworkMessage &nmOriginal)
  */
 CNetworkMessage::~CNetworkMessage(void)
 {
-  ASSERT(nm_pubMessage!=NULL);
-  if (nm_pubMessage!=NULL) {
+  ASSERT(nm_pubMessage != NULL);
+  if (nm_pubMessage != NULL) {
     FreeMemory(nm_pubMessage);
   }
 }
@@ -204,7 +204,7 @@ CNetworkMessage &CNetworkMessage::operator>>(CTString &str)
   // repeat
   for (;;) {
     // if reached end of message (this happens when we read string-only messages)
-    if (nm_pubPointer-nm_pubMessage>=nm_slSize) {
+    if (nm_pubPointer-nm_pubMessage >= nm_slSize) {
       // stop
       return *this;
     }
@@ -213,7 +213,7 @@ CNetworkMessage &CNetworkMessage::operator>>(CTString &str)
     strChar[0] = *nm_pubPointer++;
     strChar[1] = 0;
     // if end of string
-    if (strChar[0]==0) {
+    if (strChar[0] == 0) {
       // stop
       return *this;
     // if normal char
@@ -231,7 +231,7 @@ CNetworkMessage &CNetworkMessage::operator<<(const CTString &str)
   // repeat
   for (;;) {
     // if reached one byte before end of message
-    if (nm_pubPointer-nm_pubMessage>=nm_slMaxSize-1) {
+    if (nm_pubPointer-nm_pubMessage >= nm_slMaxSize-1) {
       // put the end marker
       *nm_pubPointer++ = 0;
       nm_slSize++;
@@ -246,7 +246,7 @@ CNetworkMessage &CNetworkMessage::operator<<(const CTString &str)
     *nm_pubPointer++ = chr;
     nm_slSize++;
     // if end
-    if (chr==0) {
+    if (chr == 0) {
       // stop
       return *this;
     }
@@ -278,7 +278,7 @@ void CNetworkMessage::ExtractSubMessage(CNetworkMessage &nmSubMessage)
   nmSubMessage.nm_iBit = 0;
   // get the submessage type
   UBYTE ubType = 0;
-  nmSubMessage>>ubType;
+  nmSubMessage >> ubType;
   nmSubMessage.nm_mtType = (MESSAGETYPE)ubType;
 }
 
@@ -302,7 +302,7 @@ void CNetworkMessage::Pack(CNetworkMessage &nmPacked, CCompressor &comp)
   void *pvPacked        = nmPacked.nm_pubMessage+sizeof(UBYTE);
 
   // pack it there
-  ASSERT(comp.NeededDestinationSize(slUnpackedSize)<=slPackedSize);
+  ASSERT(comp.NeededDestinationSize(slUnpackedSize) <= slPackedSize);
   BOOL bSucceded = comp.Pack(pvUnpacked, slUnpackedSize, pvPacked, slPackedSize);
   ASSERT(bSucceded);
 
@@ -336,16 +336,16 @@ void CNetworkMessage::Unpack(CNetworkMessage &nmUnpacked, CCompressor &comp)
 void CNetworkMessage::PackDefault(CNetworkMessage &nmPacked)
 {
   extern INDEX net_iCompression;
-  if (net_iCompression==2) {
+  if (net_iCompression == 2) {
     // pack with zlib only
     CzlibCompressor compzlib;
     Pack(nmPacked, compzlib);
-    (int&)nmPacked.nm_mtType|=0<<6;
-  } else if (net_iCompression==1) {
+    (int&)nmPacked.nm_mtType|=0 << 6;
+  } else if (net_iCompression == 1) {
     // pack with LZ only
     CLZCompressor compLZ;
     Pack(nmPacked, compLZ);
-    (int&)nmPacked.nm_mtType|=1<<6;
+    (int&)nmPacked.nm_mtType|=1 << 6;
   } else {
     // no packing
     SLONG slUnpackedSize = nm_slSize-sizeof(UBYTE);
@@ -353,7 +353,7 @@ void CNetworkMessage::PackDefault(CNetworkMessage &nmPacked)
     void *pvPacked       = nmPacked.nm_pubMessage+sizeof(UBYTE);
     nmPacked.nm_slSize   = slUnpackedSize+sizeof(UBYTE);
     memcpy(pvPacked, pvUnpacked, slUnpackedSize);
-    (int&)nmPacked.nm_mtType|=2<<6;
+    (int&)nmPacked.nm_mtType|=2 << 6;
   }
   nmPacked.nm_pubMessage[0] = (UBYTE)nmPacked.nm_mtType;
 
@@ -368,7 +368,7 @@ void CNetworkMessage::PackDefault(CNetworkMessage &nmPacked)
 }
 void CNetworkMessage::UnpackDefault(CNetworkMessage &nmUnpacked)
 {
-  switch (nm_mtType>>6) {
+  switch (nm_mtType >> 6) {
   case 0: {
     // unpack with zlib only
     CzlibCompressor compzlib;
@@ -406,7 +406,7 @@ void CNetworkMessage::Dump(void)
   CPrintF("Message size: %d\n", nm_slSize);
   CPrintF("Message contents:");
   for (INDEX iByte=0; iByte<nm_slSize; iByte++) {
-    if (iByte%16==0) {
+    if (iByte%16 == 0) {
       CPrintF("\n");
     }
     CPrintF("%02x", nm_pubMessage[iByte]);
@@ -429,10 +429,10 @@ void CNetworkMessage::Shrink(void)
 // copy one bit from a byte to another byte
 static inline void CopyBit(const UBYTE &ubSrc, INDEX iSrc, UBYTE &ubDst, INDEX iDst)
 {
-  if (ubSrc&(1<<iSrc)) {
-    ubDst |= (1<<iDst);
+  if (ubSrc&(1 << iSrc)) {
+    ubDst |= (1 << iDst);
   } else {
-    ubDst &= ~(1<<iDst);
+    ubDst &= ~(1 << iDst);
   }
 }
 
@@ -446,7 +446,7 @@ void CNetworkMessage::ReadBits(void *pvBuffer, INDEX ctBits)
     UBYTE *pubSrcByte = nm_pubPointer;
     INDEX iSrcBit = nm_iBit;
     // if bit is 0 - start of byte
-    if (nm_iBit==0) {
+    if (nm_iBit == 0) {
       // we will start reading from this byte, advance message to next byte
       nm_pubPointer++;
     // if bit is not 0 - inside byte
@@ -460,11 +460,11 @@ void CNetworkMessage::ReadBits(void *pvBuffer, INDEX ctBits)
 
     // go to next bit
     nm_iBit++;
-    if (nm_iBit>=8) {
+    if (nm_iBit >= 8) {
       nm_iBit = 0;
     }
     iDstBit++;
-    if (iDstBit>=8) {
+    if (iDstBit >= 8) {
       iDstBit = 0;
       pubDstByte++;
     }
@@ -481,7 +481,7 @@ void CNetworkMessage::WriteBits(const void *pvBuffer, INDEX ctBits)
     UBYTE *pubDstByte = nm_pubPointer;
     INDEX iDstBit = nm_iBit;
     // if bit is 0 - start of byte
-    if (nm_iBit==0) {
+    if (nm_iBit == 0) {
       // we will start writing to this byte, advance message to next byte
       nm_pubPointer++;
       nm_slSize++;
@@ -496,11 +496,11 @@ void CNetworkMessage::WriteBits(const void *pvBuffer, INDEX ctBits)
 
     // go to next bit
     nm_iBit++;
-    if (nm_iBit>=8) {
+    if (nm_iBit >= 8) {
       nm_iBit = 0;
     }
     iSrcBit++;
-    if (iSrcBit>=8) {
+    if (iSrcBit >= 8) {
       iSrcBit = 0;
       pubSrcByte++;
     }
@@ -534,8 +534,8 @@ CNetworkStreamBlock::CNetworkStreamBlock(MESSAGETYPE mtType, INDEX iSequenceNumb
 void CNetworkStreamBlock::ReadFromMessage(CNetworkMessage &nmToRead)
 {
   // read sequence number from message
-  nmToRead>>nsb_iSequenceNumber;
-  ASSERT(nsb_iSequenceNumber>=0);
+  nmToRead >> nsb_iSequenceNumber;
+  ASSERT(nsb_iSequenceNumber >= 0);
   // read the block as a submessage
   nmToRead.ExtractSubMessage(*this);
 }
@@ -546,8 +546,8 @@ void CNetworkStreamBlock::ReadFromMessage(CNetworkMessage &nmToRead)
 void CNetworkStreamBlock::WriteToMessage(CNetworkMessage &nmToWrite)
 {
   // write sequence number to message
-  ASSERT(nsb_iSequenceNumber>=0);
-  nmToWrite<<nsb_iSequenceNumber;
+  ASSERT(nsb_iSequenceNumber >= 0);
+  nmToWrite << nsb_iSequenceNumber;
   // write the block as a submessage
   nmToWrite.InsertSubMessage(*this);
 }
@@ -563,18 +563,18 @@ void CNetworkStreamBlock::RemoveFromStream(void)
 void CNetworkStreamBlock::Write_t(CTStream &strm) // throw char *
 {
   // write sequence number
-  strm<<nsb_iSequenceNumber;
+  strm << nsb_iSequenceNumber;
   // write block size
-  strm<<nm_slSize;
+  strm << nm_slSize;
   // write block contents
   strm.Write_t(nm_pubMessage, nm_slSize);
 }
 void CNetworkStreamBlock::Read_t(CTStream &strm) // throw char *
 {
   // read sequence number
-  strm>>nsb_iSequenceNumber;
+  strm >> nsb_iSequenceNumber;
   // read block size
-  strm>>nm_slSize;
+  strm >> nm_slSize;
   // read block contents
   strm.Read_t(nm_pubMessage, nm_slSize);
   // init the message read/write pointer
@@ -582,7 +582,7 @@ void CNetworkStreamBlock::Read_t(CTStream &strm) // throw char *
   nm_iBit = 0;
   // get the message type
   UBYTE ubType = 0;
-  (*this)>>ubType;
+  (*this) >> ubType;
   nm_mtType = (MESSAGETYPE)ubType;
 }
 
@@ -784,7 +784,7 @@ INDEX CNetworkStream::WriteBlocksToMessage(CNetworkMessage &nmMessage, INDEX ctB
     // write the block to message
     itnsbInList->WriteToMessage(nmMessage);
     iBlock++;
-    if (iBlock>=ctBlocks) {
+    if (iBlock >= ctBlocks) {
       return iBlock;
     }
   }
@@ -851,7 +851,7 @@ void CPlayerAction::Normalize(void)
 {
   volatile FLOAT *pf = (FLOAT*)&pa_vTranslation;
   for (INDEX i=0; i<9; i++) {
-    if (*pf==0) {
+    if (*pf == 0) {
       *pf=0;
     }
     pf++;
@@ -888,7 +888,7 @@ void CPlayerAction::Lerp(const CPlayerAction &pa0, const CPlayerAction &pa1, FLO
 
 // player action compression algorithm:
 // - all axes (9 of them) are compressed as one bit telling whether the axis value is used
-// if that bit is ==0, then the axis value is 0.0, if it is 1, the value follows in next 32 
+// if that bit is == 0, then the axis value is 0.0, if it is 1, the value follows in next 32 
 // bits
 // - the flags are compressed by preceding them with a bit sequence telling how many bits
 // are saved after that:
@@ -908,7 +908,7 @@ CNetworkMessage &operator<<(CNetworkMessage &nm, const CPlayerAction &pa)
 
   const ULONG *pul = (const ULONG*)&pa.pa_vTranslation;
   for (INDEX i=0; i<9; i++) {
-    if (*pul==0) {
+    if (*pul == 0) {
       UBYTE ub=0;
       nm.WriteBits(&ub, 1);
     } else {
@@ -921,11 +921,11 @@ CNetworkMessage &operator<<(CNetworkMessage &nm, const CPlayerAction &pa)
   ULONG ulFlags = pa.pa_ulButtons;
 
   // (0)          1       = no bits follow, value is 0
-  if (ulFlags==0) {
+  if (ulFlags == 0) {
     UBYTE ub=1;
     nm.WriteBits(&ub, 1);
   // (1)          01      = no bits follow, value is 1
-  } else if (ulFlags==1) {
+  } else if (ulFlags == 1) {
     UBYTE ub=2;
     nm.WriteBits(&ub, 2);
   // (2-3)        001     = 1 bit follows, value is 1x where x is the given bit
@@ -965,7 +965,7 @@ CNetworkMessage &operator>>(CNetworkMessage &nm, CPlayerAction &pa)
   for (INDEX i=0; i<9; i++) {
     UBYTE ub = 0;
     nm.ReadBits(&ub, 1);
-    if (ub==0) {
+    if (ub == 0) {
       *pul = 0;
     } else {
       nm.ReadBits(pul, 32);
@@ -978,33 +978,33 @@ CNetworkMessage &operator>>(CNetworkMessage &nm, CPlayerAction &pa)
   for (; iZeros<6; iZeros++) {
     UBYTE ub=0;
     nm.ReadBits(&ub, 1);
-    if (ub!=0) {
+    if (ub != 0) {
       break;
     }
   }
   ULONG ulFlags = 0;
   // now read flags according to the number of bits
   // (0)          1       = no bits follow, value is 0
-  if (iZeros==0) {
+  if (iZeros == 0) {
     ulFlags = 0;
   // (1)          01      = no bits follow, value is 1
-  } else if (iZeros==1) {
+  } else if (iZeros == 1) {
     ulFlags = 1;
   // (2-3)        001     = 1 bit follows, value is 1x where x is the given bit
-  } else if (iZeros==2) {
+  } else if (iZeros == 2) {
     ulFlags = 0;
     nm.ReadBits(&ulFlags, 1);
     ulFlags |= 2;
   // (4-15)       0001    = 4 bit value follows
-  } else if (iZeros==3) {
+  } else if (iZeros == 3) {
     ulFlags = 0;
     nm.ReadBits(&ulFlags, 4);
   // (16-255)     00001   = 8 bit value follows
-  } else if (iZeros==4) {
+  } else if (iZeros == 4) {
     ulFlags = 0;
     nm.ReadBits(&ulFlags, 8);
   // (256-65535)  000001  = 16 bit value follows
-  } else if (iZeros==5) {
+  } else if (iZeros == 5) {
     ulFlags = 0;
     nm.ReadBits(&ulFlags, 16);
   // (65536-)     000000  = 32 bit value follows

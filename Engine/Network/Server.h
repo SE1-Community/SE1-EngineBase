@@ -75,7 +75,7 @@ public:
 
   // add a new sync check to buffer
   void AddSyncCheck(const CSyncCheck &sc);
-  // try to find a sync check for given time in the buffer (-1==too old, 0==found, 1==toonew)
+  // try to find a sync check for given time in the buffer (-1 == too old, 0 == found, 1 == toonew)
   INDEX FindSyncCheck(TICK llTick, CSyncCheck &sc);
 
   // make allaction messages for one tick

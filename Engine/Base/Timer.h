@@ -53,8 +53,8 @@ public:
   /* Comparisons. */
   inline BOOL operator<(const CTimerValue &tvOther) const;
   inline BOOL operator>(const CTimerValue &tvOther) const;
-  inline BOOL operator<=(const CTimerValue &tvOther) const;
-  inline BOOL operator>=(const CTimerValue &tvOther) const;
+  inline BOOL operator <= (const CTimerValue &tvOther) const;
+  inline BOOL operator >= (const CTimerValue &tvOther) const;
   /* Get the timer value in seconds. - use for time spans only! */
   inline double GetSeconds(void);
   /* Get the timer value in milliseconds as integral value. */

@@ -84,33 +84,33 @@ enum VtxType
 
 
 // common flags
-#define GLF_HASACCELERATION    (1UL<<0)   // set if current mode supports hardware acceleration
-#define GLF_INITONNEXTWINDOW   (1UL<<1)   // initialize rendering context on next window
-#define GLF_ADJUSTABLEGAMMA    (1UL<<2)   // set if display allows gamma adjustment
-#define GLF_TEXTURECOMPRESSION (1UL<<3)   // set if texture compression is supported
-#define GLF_32BITTEXTURES      (1UL<<4)   // 32-bit textures
-#define GLF_VSYNC              (1UL<<5)   // supports wait for VSYNC
-#define GLF_FULLSCREEN         (1UL<<9)   // currently in full-screen mode
+#define GLF_HASACCELERATION    (1UL << 0)   // set if current mode supports hardware acceleration
+#define GLF_INITONNEXTWINDOW   (1UL << 1)   // initialize rendering context on next window
+#define GLF_ADJUSTABLEGAMMA    (1UL << 2)   // set if display allows gamma adjustment
+#define GLF_TEXTURECOMPRESSION (1UL << 3)   // set if texture compression is supported
+#define GLF_32BITTEXTURES      (1UL << 4)   // 32-bit textures
+#define GLF_VSYNC              (1UL << 5)   // supports wait for VSYNC
+#define GLF_FULLSCREEN         (1UL << 9)   // currently in full-screen mode
 
 // Direct3D specific
-#define GLF_D3D_HASHWTNL    (1UL<<10)   // supports hardware T&L
-#define GLF_D3D_USINGHWTNL  (1UL<<11)   // using hardware T&L
-#define GLF_D3D_CLIPPLANE   (1UL<<12)   // supports at least one custom clip plane
-#define GLF_D3D_COLORWRITES (1UL<<13)   // supports enable/disable writes to color buffer
-#define GLF_D3D_ZBIAS       (1UL<<14)   // supports z-biasing
+#define GLF_D3D_HASHWTNL    (1UL << 10)   // supports hardware T&L
+#define GLF_D3D_USINGHWTNL  (1UL << 11)   // using hardware T&L
+#define GLF_D3D_CLIPPLANE   (1UL << 12)   // supports at least one custom clip plane
+#define GLF_D3D_COLORWRITES (1UL << 13)   // supports enable/disable writes to color buffer
+#define GLF_D3D_ZBIAS       (1UL << 14)   // supports z-biasing
 
 // OpenGL extensions (part of flags!)
-#define GLF_EXT_TBUFFER             (1UL<<19)   // 3DFX's T-Buffer (for partial FSAA & Motion-blur effects)
-#define GLF_EXT_EDGECLAMP           (1UL<<20)   // GL_EXT_texture_edge_clamp
-#define GLF_EXT_COMPILEDVERTEXARRAY (1UL<<21)   // GL_EXT_compiled_vertex_array
-#define GLF_EXT_CLIPHINT            (1UL<<22)   // GL_EXT_clip_volume_hint
-#define GLF_EXT_OCCLUSIONTEST       (1UL<<23)   // GL_HP_occlusion_test
-#define GLF_EXT_OCCLUSIONQUERY      (1UL<<24)   // GL_NV_occlusion_query
-	
-#define GLF_EXTC_ARB    (1UL<<27)   // GL_ARB_texture_compression
-#define GLF_EXTC_S3TC   (1UL<<28)   // GL_EXT_texture_compression_s3tc
-#define GLF_EXTC_FXT1   (1UL<<29)   // GL_3DFX_texture_compression_FXT1
-#define GLF_EXTC_LEGACY (1UL<<30)   // GL_S3_s3tc
+#define GLF_EXT_TBUFFER             (1UL << 19)   // 3DFX's T-Buffer (for partial FSAA & Motion-blur effects)
+#define GLF_EXT_EDGECLAMP           (1UL << 20)   // GL_EXT_texture_edge_clamp
+#define GLF_EXT_COMPILEDVERTEXARRAY (1UL << 21)   // GL_EXT_compiled_vertex_array
+#define GLF_EXT_CLIPHINT            (1UL << 22)   // GL_EXT_clip_volume_hint
+#define GLF_EXT_OCCLUSIONTEST       (1UL << 23)   // GL_HP_occlusion_test
+#define GLF_EXT_OCCLUSIONQUERY      (1UL << 24)   // GL_NV_occlusion_query
+  
+#define GLF_EXTC_ARB    (1UL << 27)   // GL_ARB_texture_compression
+#define GLF_EXTC_S3TC   (1UL << 28)   // GL_EXT_texture_compression_s3tc
+#define GLF_EXTC_FXT1   (1UL << 29)   // GL_3DFX_texture_compression_FXT1
+#define GLF_EXTC_LEGACY (1UL << 30)   // GL_S3_s3tc
 
 
 /*
@@ -262,10 +262,10 @@ public:
 
   // is API supported
   inline BOOL HasAPI( enum GfxAPIType eAPI) {
-    if (eAPI==GAT_CURRENT) return TRUE;
-    if (eAPI==GAT_OGL) return (gl_gaAPI[0].ga_ctAdapters>0);
+    if (eAPI == GAT_CURRENT) return TRUE;
+    if (eAPI == GAT_OGL) return (gl_gaAPI[0].ga_ctAdapters>0);
 #ifdef SE1_D3D
-    if (eAPI==GAT_D3D) return (gl_gaAPI[1].ga_ctAdapters>0);
+    if (eAPI == GAT_D3D) return (gl_gaAPI[1].ga_ctAdapters>0);
 #endif // SE1_D3D
     return FALSE;
   };

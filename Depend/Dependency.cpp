@@ -21,8 +21,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 void AdjustFilePath_t(CTFileName &fnm)
 {
   // if filename contains a colon or double backslash
-  if (strchr(fnm, ':')!=NULL
-    ||strstr(fnm, "\\\\")!=NULL) {
+  if (strchr(fnm, ':') != NULL
+    ||strstr(fnm, "\\\\") != NULL) {
     // it must be prefixed with application path
     fnm.RemoveApplicationPath_t();
   }
@@ -49,7 +49,7 @@ BOOL CDependInfo::IsFileOnDiskUpdated(void)
     struct stat statFileStatus;
     // get file status
     fstat( file_handle, &statFileStatus);
-    ASSERT(statFileStatus.st_mtime<=time(NULL));
+    ASSERT(statFileStatus.st_mtime <= time(NULL));
 
     // if last modification time is same as remembered in dependency info object
     if (difftime( statFileStatus.st_mtime, di_tTime) >= 0)
@@ -58,7 +58,7 @@ BOOL CDependInfo::IsFileOnDiskUpdated(void)
       bUpdated = TRUE;
     }
   }
-  if (file_handle!=-1) {
+  if (file_handle != -1) {
     _close(file_handle);
   }
 
@@ -93,9 +93,9 @@ void CDependencyList::ExtractDependencies()
   char strTFNM[]="TFNM";
   char strEFNM[]="EFNM";
 
-  ulDFNM |= ULONG('M')<<24;
-  ulTFNM |= ULONG('M')<<24;
-  ulEFNM |= ULONG('M')<<24;
+  ulDFNM |= ULONG('M') << 24;
+  ulTFNM |= ULONG('M') << 24;
+  ulEFNM |= ULONG('M') << 24;
 
   // for all list members
   CListHead lhToProcess;
@@ -124,7 +124,7 @@ void CDependencyList::ExtractDependencies()
       // get file status
       fstat( file_handle, &statFileStatus);
       pdi->di_tTime = statFileStatus.st_mtime;
-      ASSERT(pdi->di_tTime<=time(NULL));
+      ASSERT(pdi->di_tTime <= time(NULL));
       // get size
       SLONG ulSize = statFileStatus.st_size;
       // read file into memory
@@ -136,7 +136,7 @@ void CDependencyList::ExtractDependencies()
       {
         FatalError( "Fatal error ocured while reading file: %s.", (CTString&)pdi->di_fnFileName);
       }
-      if (file_handle!=-1) {
+      if (file_handle != -1) {
         _close(file_handle);
       }
 
@@ -156,7 +156,7 @@ void CDependencyList::ExtractDependencies()
             continue;
           }
           // if found file name does not yet exists in dependacy list
-          if ((fnTestName!="") && 
+          if ((fnTestName != "") && 
             (!ExistsInList(dl_ListHead, fnTestName)) &&
             (!ExistsInList(lhToProcess, fnTestName)))
           {
@@ -178,7 +178,7 @@ void CDependencyList::ExtractDependencies()
           chrFileName[ iStringLenght] = 0;
           // create full file name
           CTFileName fnTestName = CTString(chrFileName);
-          if (fnTestName!="" &&
+          if (fnTestName != "" &&
             (!ExistsInList(dl_ListHead, fnTestName)) &&
             (!ExistsInList(lhToProcess, fnTestName)))
           {
@@ -198,7 +198,7 @@ void CDependencyList::ExtractDependencies()
           char chrFileName[ 256];
           char *chrSrc = pchrDependentFile;
           char *chrDst = chrFileName;
-          while (*chrSrc!='\n' && *chrSrc!='\r' && chrSrc-pchrDependentFile<254) {
+          while (*chrSrc != '\n' && *chrSrc != '\r' && chrSrc-pchrDependentFile<254) {
             *chrDst++ = *chrSrc++;
           }
           *chrDst = 0;
@@ -207,7 +207,7 @@ void CDependencyList::ExtractDependencies()
             continue;
           }
           // if found file name does not yet exists in dependacy list
-          if ((fnTestName!="") && 
+          if ((fnTestName != "") && 
             (!ExistsInList(dl_ListHead, fnTestName)) &&
             (!ExistsInList(lhToProcess, fnTestName)))
           {
@@ -257,7 +257,7 @@ void CDependencyList::Substract( CDependencyList &dlToSubstract)
 // create list from ascii file
 void CDependencyList::ImportASCII( CTFileName fnAsciiFile)
 {
-	char chrOneLine[ 256];
+  char chrOneLine[ 256];
   CTFileStream file;
   int file_handle;
 
@@ -281,7 +281,7 @@ void CDependencyList::ImportASCII( CTFileName fnAsciiFile)
       // create file name from loaded line
       CTFileName fnFileName =  CTString(chrOneLine);
       AdjustFilePath_t(fnFileName);
-	    // try to open file for reading
+      // try to open file for reading
       file_handle = _open( _fnmApplicationPath+fnFileName, _O_RDONLY | _O_BINARY);
 
       // if opened succesefully
@@ -293,7 +293,7 @@ void CDependencyList::ImportASCII( CTFileName fnAsciiFile)
         fstat( file_handle, &statFileStatus);
         // obtain last modification time
         pDI->di_tTime = statFileStatus.st_mtime;
-        ASSERT(pDI->di_tTime<=time(NULL));
+        ASSERT(pDI->di_tTime <= time(NULL));
         // add it at tail of dependency list
         dl_ListHead.AddTail( pDI->di_Node);
         // close file
@@ -378,7 +378,7 @@ static void AddStringForTranslation(const CTString &str)
   INDEX ct = _atpPairs.Count();
   for (INDEX i=0; i<ct; i++) {
     // if it is that one
-    if (strcmp(_atpPairs[i].tp_strSrc, str)==0) {
+    if (strcmp(_atpPairs[i].tp_strSrc, str) == 0) {
       // just mark it as used
       _atpPairs[i].m_bUsed = TRUE;
       // don't search any more
@@ -407,13 +407,13 @@ static void WriteTranslationString_t(CTStream &strm, CTString str)
     char c = s[i];
     switch (c) {
     case '\n':
-      strm<<UBYTE('\\')<<UBYTE('n')<<UBYTE('\n');
+      strm << UBYTE('\\') << UBYTE('n') << UBYTE('\n');
       break;
     case '\\':
-      strm<<UBYTE('\\')<<UBYTE('\\');
+      strm << UBYTE('\\') << UBYTE('\\');
       break;
     default:
-      strm<<UBYTE(c);
+      strm << UBYTE(c);
     }
   }
 }
@@ -443,13 +443,13 @@ void CDependencyList::ExtractTranslations_t( const CTFileName &fnTranslations)
       ULONG *pul = (ULONG*)pub;
 
       // if exe translatable string is here
-      if (*pul=='SRTE') {
+      if (*pul == 'SRTE') {
         // get it
         CTString str = (char*)(pub+4);
         // add it
         AddStringForTranslation(str);
       // if data translatable string is here
-      } else if (*pul=='SRTD') {
+      } else if (*pul == 'SRTD') {
         char achr[ 256];
         INDEX iStrLen = *(INDEX *)(pub + 4);
         if (iStrLen > 254 || iStrLen<0) {
@@ -462,7 +462,7 @@ void CDependencyList::ExtractTranslations_t( const CTFileName &fnTranslations)
         // add it
         AddStringForTranslation(str);
       // if text translatable string is here
-      } else if (*pul=='SRTT') {
+      } else if (*pul == 'SRTT') {
 
         // after describing long and one space we will find file name
         char *pchrStart = (char*)pub + 4 + 1;
@@ -470,7 +470,7 @@ void CDependencyList::ExtractTranslations_t( const CTFileName &fnTranslations)
         char chrString[ 256];
         char *chrSrc = pchrStart;
         char *chrDst = chrString;
-        while (*chrSrc!='\n' && *chrSrc!='\r' && chrSrc-pchrStart<254) {
+        while (*chrSrc != '\n' && *chrSrc != '\r' && chrSrc-pchrStart<254) {
           *chrDst++ = *chrSrc++;
         }
         *chrDst = 0;
@@ -564,7 +564,7 @@ void CDependencyList::Write_t( CTStream *ostrFile)
 // make a new directory recursively
 static void MakeDirectory_t(const CTFileName &fnm)
 {
-  if (fnm=="") {
+  if (fnm == "") {
     return;
   }
   // remove trailing backslash
@@ -573,7 +573,7 @@ static void MakeDirectory_t(const CTFileName &fnm)
   // get the path part
   CTFileName fnmDirPath = fnmDir.FileDir();
   // if there is a path part
-  if (fnmDirPath!="") {
+  if (fnmDirPath != "") {
     // create that first
     MakeDirectory_t(fnmDirPath);
   }

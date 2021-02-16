@@ -84,7 +84,7 @@ CTString IFeel_GetProjectFileName()
     strLine = strIFeelTable;
     // read first line
     strLine.OnlyFirstLine();
-    if (strLine==strIFeelTable)
+    if (strLine == strIFeelTable)
     {
       break;
     }
@@ -94,7 +94,7 @@ CTString IFeel_GetProjectFileName()
     // read device name and project file name
     strIFeelTable.ScanF("\"%256[^\"]\" \"%256[^\"]\"",&strDeviceName,&strProjectFile);
     // check if this is default 
-    if (strcmp(strDeviceName,"Default")==0) strDefaultProjectFile = strProjectFile;
+    if (strcmp(strDeviceName,"Default") == 0) strDefaultProjectFile = strProjectFile;
     // check if this is current device 
     if (strProduct == strDeviceName) return strProjectFile;
   }
@@ -114,12 +114,12 @@ BOOL IFeel_InitDevice(HINSTANCE &hInstance, HWND &hWnd)
   // load iFeel lib 
   CTFileName fnmExpanded;
   ExpandFilePath(EFP_READ | EFP_NOZIPS,(CTString)IFEEL_DLL_NAME,fnmExpanded);
-  if (_hLib!=NULL) return FALSE;
+  if (_hLib != NULL) return FALSE;
 
   UINT iOldErrorMode = SetErrorMode( SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
   _hLib = LoadLibraryA(fnmExpanded);
   SetErrorMode(iOldErrorMode);
-  if (_hLib==NULL)
+  if (_hLib == NULL)
   {
     CPrintF("Error loading ImmWraper.dll.\n\tIFeel disabled\n");
     return FALSE;
@@ -173,7 +173,7 @@ BOOL IFeel_LoadFile(CTFileName fnFile)
   CTFileName fnmExpanded;
   ExpandFilePath(EFP_READ | EFP_NOZIPS,fnFile,fnmExpanded);
 
-  if (immLoadFile!=NULL)
+  if (immLoadFile != NULL)
   {
     BOOL hr = immLoadFile((const char*)fnmExpanded);
     if (hr)
@@ -192,23 +192,23 @@ BOOL IFeel_LoadFile(CTFileName fnFile)
 // unloads project file
 void IFeel_UnloadFile()
 {
-  if (immUnloadFile!=NULL) immUnloadFile();
+  if (immUnloadFile != NULL) immUnloadFile();
 }
 // plays effect from ifr file
 void IFeel_PlayEffect(char *pstrEffectName)
 {
   IFeel_ChangeGain(ifeel_fGain);
-  if (immPlayEffect!=NULL) immPlayEffect(pstrEffectName);
+  if (immPlayEffect != NULL) immPlayEffect(pstrEffectName);
 }
 // stops effect from ifr file
 void IFeel_StopEffect(char *pstrEffectName)
 {
-  if (immStopEffect!=NULL) immStopEffect(pstrEffectName);
+  if (immStopEffect != NULL) immStopEffect(pstrEffectName);
 }
 // change gain
 void IFeel_ChangeGain(FLOAT fGain)
 {
-  if (immChangeGain!=NULL)
+  if (immChangeGain != NULL)
   {
     immChangeGain(fGain);
     //CPrintF("Changing IFeel gain to '%g'\n",fGain);

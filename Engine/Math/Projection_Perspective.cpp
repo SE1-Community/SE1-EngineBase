@@ -52,7 +52,7 @@ void CPerspectiveProjection3D::Prepare(void)
   BOOL bYInverted = pr_ObjectStretch(2)<0;
   BOOL bZInverted = pr_ObjectStretch(3)<0;
 
-  pr_bInverted = bXInverted!=bYInverted!=bZInverted;
+  pr_bInverted = bXInverted != bYInverted != bZInverted;
 
   // if the projection is mirrored
   if (pr_bMirror) {
@@ -176,7 +176,7 @@ void CPerspectiveProjection3D::Prepare(void)
   FLOAT fRatioX = ppr_PerspectiveRatios(1);
   FLOAT fRatioY = ppr_PerspectiveRatios(2);
 
-#define MySgn(x) ((x)>=0?1:-1)
+#define MySgn(x) ((x) >= 0?1:-1)
 
   FLOAT fDZ = -1.0f;
   FLOAT fDXL = fDZ*fMinI/fRatioX;
@@ -266,7 +266,7 @@ void CPerspectiveProjection3D::PostClip( const FLOAT3D &v3dTransformedPoint, FLO
 /* Test if a sphere in view space is inside view frustum. */
 INDEX CPerspectiveProjection3D::TestSphereToFrustum( const FLOAT3D &vViewPoint, FLOAT fRadius) const
 {
-  ASSERT( pr_Prepared && fRadius>=0);
+  ASSERT( pr_Prepared && fRadius >= 0);
   const FLOAT fX = vViewPoint(1);
   const FLOAT fY = vViewPoint(2);
   const FLOAT fZ = vViewPoint(3);
@@ -330,7 +330,7 @@ INDEX CPerspectiveProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
   iTest = box.TestAgainstPlane( FLOATplane3D(FLOAT3D(0,0,-1), pr_NearClipDistance));
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // check to far
@@ -338,7 +338,7 @@ INDEX CPerspectiveProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
     iTest = box.TestAgainstPlane( FLOATplane3D(FLOAT3D(0.0f, 0.0f, 1.0f), -pr_FarClipDistance));
     if (iTest<0) {
       return -1;
-    } else if (iTest==0) {
+    } else if (iTest == 0) {
       iPass = 0;
     }
   }
@@ -346,28 +346,28 @@ INDEX CPerspectiveProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
   iTest = box.TestAgainstPlane(pr_plClipL);
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // check to right
   iTest = box.TestAgainstPlane(pr_plClipR);
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // check to up
   iTest = box.TestAgainstPlane(pr_plClipU);
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // check to down
   iTest = box.TestAgainstPlane(pr_plClipD);
   if (iTest<0) {
     return -1;
-  } else if (iTest==0) {
+  } else if (iTest == 0) {
     iPass = 0;
   }
   // all done
@@ -536,7 +536,7 @@ BOOL CPerspectiveProjection3D::IsObjectPlaneVisible(const FLOATplane3D &p3dObjec
    */
   // if viewer is in front of plane, after plane is transformed into viewer space
   // (viewer is at 0,0,0)
-  if ( (p3dObjectPlane*pr_mDirectionRotation + pr_TranslationVector).Distance() < 0.0f ) {
+  if ((p3dObjectPlane*pr_mDirectionRotation + pr_TranslationVector).Distance() < 0.0f ) {
     // plane might be visible (although it still might be out of the view frustum)
     return TRUE;
   // if viewer is on the plane or behind it
@@ -559,7 +559,7 @@ BOOL CPerspectiveProjection3D::IsViewerPlaneVisible(const FLOATplane3D &p3dViewe
     NOTES: 1) Could add a check for plane beeing inside view frustum.
    */
   // if viewer is in front of plane (viewer is at 0,0,0)
-  if ( p3dViewerPlane.Distance() < -0.01f ) {
+  if (p3dViewerPlane.Distance() < -0.01f ) {
     // plane might be visible (although it still might be out of the view frustum)
     return TRUE;
   // if viewer is on the plane or behind it

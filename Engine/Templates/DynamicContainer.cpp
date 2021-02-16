@@ -61,7 +61,7 @@ CDynamicContainer<Type>::~CDynamicContainer(void) {
  */
 template<class Type>
 void CDynamicContainer<Type>::Clear(void) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   CStaticStackArray<Type *>::Clear();
 }
 
@@ -98,7 +98,7 @@ void CDynamicContainer<Type>::Insert(Type *ptNewObject, const INDEX iPos/*=0*/)
 template<class Type>
 void CDynamicContainer<Type>::Remove(Type *ptOldObject)
 {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
 #if CHECKARRAYLOCKING
   // check that not locked for indices
   ASSERT(dc_LockCt == 0);
@@ -115,11 +115,11 @@ void CDynamicContainer<Type>::Remove(Type *ptOldObject)
 template<class Type>
 BOOL CDynamicContainer<Type>::IsMember(Type *ptOldObject)
 {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   // slow !!!!
   // check all members
   for (INDEX iMember=0; iMember<Count(); iMember++) {
-    if (sa_Array[iMember]==ptOldObject) {
+    if (sa_Array[iMember] == ptOldObject) {
       return TRUE;
     }
   }
@@ -131,9 +131,9 @@ BOOL CDynamicContainer<Type>::IsMember(Type *ptOldObject)
  */
 template<class Type>
 Type *CDynamicContainer<Type>::Pointer(INDEX iMember) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   // check that index is currently valid
-  ASSERT(iMember>=0 && iMember<Count());
+  ASSERT(iMember >= 0 && iMember<Count());
 #if CHECKARRAYLOCKING
   // check that locked for indices
   ASSERT(dc_LockCt>0);
@@ -142,9 +142,9 @@ Type *CDynamicContainer<Type>::Pointer(INDEX iMember) {
 }
 template<class Type>
 const Type *CDynamicContainer<Type>::Pointer(INDEX iMember) const {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   // check that index is currently valid
-  ASSERT(iMember>=0 && iMember<Count());
+  ASSERT(iMember >= 0 && iMember<Count());
 #if CHECKARRAYLOCKING
   // check that locked for indices
   ASSERT(dc_LockCt>0);
@@ -157,9 +157,9 @@ const Type *CDynamicContainer<Type>::Pointer(INDEX iMember) const {
  */
 template<class Type>
 void CDynamicContainer<Type>::Lock(void) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
 #if CHECKARRAYLOCKING
-  ASSERT(dc_LockCt>=0);
+  ASSERT(dc_LockCt >= 0);
   // increment lock counter
   dc_LockCt++;
 #endif
@@ -170,10 +170,10 @@ void CDynamicContainer<Type>::Lock(void) {
  */
 template<class Type>
 void CDynamicContainer<Type>::Unlock(void) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
 #if CHECKARRAYLOCKING
   dc_LockCt--;
-  ASSERT(dc_LockCt>=0);
+  ASSERT(dc_LockCt >= 0);
 #endif
 }
 
@@ -182,7 +182,7 @@ void CDynamicContainer<Type>::Unlock(void) {
  */
 template<class Type>
 INDEX CDynamicContainer<Type>::Index(Type *ptMember) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   // check that locked for indices
 #if CHECKARRAYLOCKING
   ASSERT(dc_LockCt>0);
@@ -195,11 +195,11 @@ INDEX CDynamicContainer<Type>::Index(Type *ptMember) {
  */
 template<class Type>
 INDEX CDynamicContainer<Type>::GetIndex(Type *ptMember) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   // slow !!!!
   // check all members
   for (INDEX iMember=0; iMember<Count(); iMember++) {
-    if (sa_Array[iMember]==ptMember) {
+    if (sa_Array[iMember] == ptMember) {
       return iMember;
     }
   }
@@ -211,7 +211,7 @@ INDEX CDynamicContainer<Type>::GetIndex(Type *ptMember) {
 template<class Type>
 Type &CDynamicContainer<Type>::GetFirst(void)
 {
-  ASSERT(Count()>=1);
+  ASSERT(Count() >= 1);
   return *sa_Array[0];
 }
 
@@ -231,10 +231,10 @@ CDynamicContainer<Type> &CDynamicContainer<Type>::operator=(CDynamicContainer<Ty
 template<class Type>
 void CDynamicContainer<Type>::MoveContainer(CDynamicContainer<Type> &coOther)
 {
-  ASSERT(this!=NULL && &coOther!=NULL);
+  ASSERT(this != NULL && &coOther != NULL);
   // check that not locked for indices
 #if CHECKARRAYLOCKING
-  ASSERT(dc_LockCt==0 && coOther.dc_LockCt==0);
+  ASSERT(dc_LockCt == 0 && coOther.dc_LockCt == 0);
 #endif
   CStaticStackArray<Type*>::MoveArray(coOther);
 }
@@ -260,7 +260,7 @@ public:
   inline void MoveToNext(void);
   /* Check if finished. */
   inline BOOL IsPastEnd(void);
-	
+  
   /* Get current element. */
   Type &Current(void) { return *dci_Array.Pointer(dci_Index); }
   Type &operator*(void) { return *dci_Array.Pointer(dci_Index); }
@@ -294,7 +294,7 @@ inline CDynamicContainerIterator<Type>::~CDynamicContainerIterator(void) {
  */
 template<class Type>
 inline void CDynamicContainerIterator<Type>::MoveToNext(void) {
-  ASSERT(this!=NULL);
+  ASSERT(this != NULL);
   dci_Index++;
 }
 
@@ -303,8 +303,8 @@ inline void CDynamicContainerIterator<Type>::MoveToNext(void) {
  */
 template<class Type>
 inline BOOL CDynamicContainerIterator<Type>::IsPastEnd(void) {
-  ASSERT(this!=NULL);
-  return dci_Index>=dci_Array.Count();
+  ASSERT(this != NULL);
+  return dci_Index >= dci_Array.Count();
 }
 
 // iterate whole dynamic container

@@ -44,8 +44,8 @@ public:
 };
 
 // type of surface of a polygon (its physical properties)
-#define STF_SLIDEDOWNSLOPE  (1UL<<0)    // can accelerate only across slope, not up/down
-#define STF_NOIMPACT        (1UL<<1)    // cannot damage because of impact with this polygon
+#define STF_SLIDEDOWNSLOPE  (1UL << 0)    // can accelerate only across slope, not up/down
+#define STF_NOIMPACT        (1UL << 1)    // cannot damage because of impact with this polygon
 class ENGINE_API CSurfaceType {
 public:
   FLOAT st_fFriction;       // friction coefficient on the surface
@@ -73,11 +73,11 @@ public:
 };
 
 // type of content of a sector
-#define CTF_BREATHABLE_LUNGS  (1UL<<0)    // breathable for creatures with lungs
-#define CTF_BREATHABLE_GILLS  (1UL<<1)    // breathable for creatures with gills
-#define CTF_FLYABLE           (1UL<<2)    // flyable in if can fly
-#define CTF_SWIMABLE          (1UL<<3)    // swimmable in if enough density
-#define CTF_FADESPINNING      (1UL<<4)    // spinning objects may stop spinning
+#define CTF_BREATHABLE_LUNGS  (1UL << 0)    // breathable for creatures with lungs
+#define CTF_BREATHABLE_GILLS  (1UL << 1)    // breathable for creatures with gills
+#define CTF_FLYABLE           (1UL << 2)    // flyable in if can fly
+#define CTF_SWIMABLE          (1UL << 3)    // swimmable in if enough density
+#define CTF_FADESPINNING      (1UL << 4)    // spinning objects may stop spinning
 
 class ENGINE_API CContentType {
 public:
@@ -142,7 +142,7 @@ public:
 /*
  * One type of mirroring (or warping) polygon.
  */
-#define MPF_WARP  (1UL<<0)    // warp portal
+#define MPF_WARP  (1UL << 0)    // warp portal
 class CMirrorParameters {
 public:
   ULONG mp_ulFlags;

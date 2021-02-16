@@ -367,7 +367,7 @@ void CRenderer::RenderEntityTargets(void)
     CEntity &enSource = *iten;
 
     // if the entity has parent
-    if (enSource.en_penParent!=NULL) {
+    if (enSource.en_penParent != NULL) {
       // draw the arrow from entity to its parent
       ProjectClipAndDrawArrow(
         enSource.GetLerpedPlacement().pl_PositionVector,
@@ -377,21 +377,21 @@ void CRenderer::RenderEntityTargets(void)
 
     // for all classes in hierarchy of this entity
     for (CDLLEntityClass *pdecDLLClass = enSource.en_pecClass->ec_pdecDLLClass;
-        pdecDLLClass!=NULL; 
+        pdecDLLClass != NULL; 
         pdecDLLClass = pdecDLLClass->dec_pdecBase) {
       // for all properties
       for (INDEX iProperty=0; iProperty<pdecDLLClass->dec_ctProperties; iProperty++) {
         CEntityProperty &epProperty = pdecDLLClass->dec_aepProperties[iProperty];
         // if the property is not entity pointer
-        if ((epProperty.ep_eptType!=CEntityProperty::EPT_ENTITYPTR)||
-            (strlen(epProperty.ep_strName)==0) ) {
+        if ((epProperty.ep_eptType != CEntityProperty::EPT_ENTITYPTR)||
+            (strlen(epProperty.ep_strName) == 0) ) {
           // skip it
           continue;
         }
         // get the target
         CEntity *penTarget = ENTITYPROPERTY(&enSource, epProperty.ep_slOffset, CEntityPointer);
         // if there is no target
-        if (penTarget==NULL) {
+        if (penTarget == NULL) {
           // skip it
           continue;
         }
@@ -415,18 +415,18 @@ void CRenderer::RenderEntityNames(void)
     CDelayedModel &dm = re_admDelayedModels[iModel];
     CEntity &en = *dm.dm_penModel;
     CTString strName=en.GetName();
-    if (strName=="") continue;
-    if ((en.GetRenderType()==CEntity::RT_EDITORMODEL || en.GetRenderType()==CEntity::RT_SKAEDITORMODEL) &&
+    if (strName == "") continue;
+    if ((en.GetRenderType() == CEntity::RT_EDITORMODEL || en.GetRenderType() == CEntity::RT_SKAEDITORMODEL) &&
       !_wrpWorldRenderPrefs.IsEditorModelsOn()) continue;
 
     FLOATaabbox3D boxModel;
     CModelObject *pmoModelObject;
     CModelInstance *pmiModelInstance;
     // get bounding box of current frame
-    if (en.GetRenderType()==CEntity::RT_MODEL || en.GetRenderType()==CEntity::RT_EDITORMODEL) {
+    if (en.GetRenderType() == CEntity::RT_MODEL || en.GetRenderType() == CEntity::RT_EDITORMODEL) {
       pmoModelObject = dm.dm_pmoModel;
       pmoModelObject->GetCurrentFrameBBox(boxModel);
-      if (en.en_pciCollisionInfo!=NULL) {
+      if (en.en_pciCollisionInfo != NULL) {
         // get its collision box
         INDEX iCollision = en.GetCollisionBoxIndex();
         FLOAT3D vMin = pmoModelObject->GetCollisionBoxMin(iCollision);
@@ -436,10 +436,10 @@ void CRenderer::RenderEntityNames(void)
       }
       // set position of marker at top of the model and it size to be proportional to the model
       boxModel.StretchByVector(pmoModelObject->mo_Stretch);
-    } else if (en.GetRenderType()==CEntity::RT_SKAMODEL || en.GetRenderType()==CEntity::RT_SKAEDITORMODEL) {
+    } else if (en.GetRenderType() == CEntity::RT_SKAMODEL || en.GetRenderType() == CEntity::RT_SKAEDITORMODEL) {
       pmiModelInstance = en.GetModelInstance();
       pmiModelInstance->GetAllFramesBBox(boxModel);
-      if (en.en_pciCollisionInfo!=NULL) {  
+      if (en.en_pciCollisionInfo != NULL) {  
       // get its collision box
         FLOATaabbox3D box;
         pmiModelInstance->GetCurrentColisionBox(box);
@@ -462,7 +462,7 @@ void CRenderer::RenderEntityNames(void)
     FLOAT fSizeFactor=1.0f+fSize;
     FLOAT fRatio=Clamp( -vProjected(3)/fSizeFactor, 0.0f, 25.0f);
     FLOAT fPower=CalculateRatio(fRatio, 0, 25.0f, 0, 0.25f);
-    if (fPower==0) continue;
+    if (fPower == 0) continue;
 
     PIX pixH=re_pdpDrawPort->GetHeight();
     re_pdpDrawPort->SetFont( _pfdConsoleFont);

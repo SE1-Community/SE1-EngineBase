@@ -50,10 +50,10 @@ struct ShellType {
 };
 
 // symbol flags
-#define SSF_CONSTANT    (1L<<0)   // the symbol cannot be changed
-#define SSF_USER        (1L<<1)   // the symbol is visible to user (with ListSymbols() )
-#define SSF_PERSISTENT  (1L<<2)   // the symbol is saved when exiting
-#define SSF_EXTERNAL    (1L<<3)   // the symbol was declared externally (in a script)
+#define SSF_CONSTANT    (1L << 0)   // the symbol cannot be changed
+#define SSF_USER        (1L << 1)   // the symbol is visible to user (with ListSymbols() )
+#define SSF_PERSISTENT  (1L << 2)   // the symbol is saved when exiting
+#define SSF_EXTERNAL    (1L << 3)   // the symbol was declared externally (in a script)
 
 // A symbol defined for using in shell.
 class CShellSymbol {

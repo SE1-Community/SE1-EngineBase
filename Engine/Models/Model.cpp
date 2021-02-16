@@ -101,8 +101,8 @@ void CompressNormal_HQ(const FLOAT3D &vNormal, UBYTE &ubH, UBYTE &ubP)
 
   h = (h/360.0f)+0.5f;
   p = (p/360.0f)+0.5f;
-  ASSERT(h>=0 && h<=1);
-  ASSERT(p>=0 && p<=1);
+  ASSERT(h >= 0 && h <= 1);
+  ASSERT(p >= 0 && p <= 1);
   ubH = UBYTE(h*255);
   ubP = UBYTE(p*255);
 }
@@ -129,7 +129,7 @@ INDEX GetBit( ULONG ulSource)
 {
   for (INDEX i=0; i<32; i++)
   {
-    if ((ulSource & (1<<i)) != 0) return i;
+    if ((ulSource & (1 << i)) != 0) return i;
   }
   return 0;
 }
@@ -293,23 +293,23 @@ void CModelPatch::Write_t(CTStream *strFile)
  */
 CModelData::CModelData()
 {
-	INDEX i;
+  INDEX i;
   md_bPreparedForRendering = FALSE;
 
-	md_VerticesCt = 0;															// number of vertices in model
-  md_FramesCt = 0;																// number of all frames used by this model
-  md_MipCt = 0;																		// number of mip-models
+  md_VerticesCt = 0;                              // number of vertices in model
+  md_FramesCt = 0;                                // number of all frames used by this model
+  md_MipCt = 0;                                    // number of mip-models
 
   md_bIsEdited = FALSE; // not edited by default
 
-	// invalidate mip-model info data
+  // invalidate mip-model info data
   for (i=0; i<MAX_MODELMIPS; i++) {
-		md_MipInfos[i].mmpi_PolygonsCt = 0;
-	}
+    md_MipInfos[i].mmpi_PolygonsCt = 0;
+  }
 
-  md_Flags = 0;		                                // model flags (flat, reflection mapping)
+  md_Flags = 0;                                    // model flags (flat, reflection mapping)
   md_ShadowQuality = 0;
-  md_Stretch = FLOAT3D(1.0f, 1.0f, 1.0f);                 		// stretch vector (static one, dynamic one is in model object)
+  md_Stretch = FLOAT3D(1.0f, 1.0f, 1.0f);                     // stretch vector (static one, dynamic one is in model object)
   md_bCollideAsCube = FALSE;                      // collide as sphere
   md_colDiffuse = C_WHITE|CT_OPAQUE;
   md_colReflections = C_WHITE|CT_OPAQUE;
@@ -363,7 +363,7 @@ SLONG CModelData::GetUsedMemory(void)
 
   for (INDEX i=0; i<md_MipCt; i++) {
     slUsed += md_MipInfos[i].mmpi_aPolygonsPerPatch.Count()*sizeof(struct PolygonsPerPatch);
-	  slUsed += md_MipInfos[i].mmpi_Polygons.Count()*sizeof(struct ModelPolygon);
+    slUsed += md_MipInfos[i].mmpi_Polygons.Count()*sizeof(struct ModelPolygon);
     slUsed += md_MipInfos[i].mmpi_TextureVertices.Count()*sizeof(struct ModelTextureVertex);
     slUsed += md_MipInfos[i].mmpi_MappingSurfaces.Count()*sizeof(struct MappingSurface);
   }
@@ -382,7 +382,7 @@ void CModelData::ClearAnimations(void)
 
   md_FrameVertices16.Clear();
   md_FrameVertices8.Clear();
-	md_FrameInfos.Clear();
+  md_FrameInfos.Clear();
   md_FramesCt = 0;
 }
 
@@ -544,37 +544,37 @@ void ModelPolygon::Read_t( CTStream *pFile)  // throw char *
 // POLYGON RENDER CONSTANTS
 // new_render_types = rendertype (0-7)<<0 + phongstrength(0-7)<<3 + alphatype(0-3)<<6
 // poly render types
-#define PR_PHONGSHADING     (0x00<<0)     // textures phong shading
-#define PR_LAMBERTSHADING   (0x01<<0)     // textures lambert shading (no phong/gouraud)
-#define PR_ALPHAGOURAUD     (0x02<<0)     // alpha gouraud shading
-#define PR_FRONTPROJECTION  (0x03<<0)     // front projection shading (no rotation, 2D zoom)
-#define PR_SHADOWBLENDING   (0x04<<0)     // shadow blending (black alpha gouraud)
-#define PR_COLORFILLING     (0x05<<0)     // flat filling (single color poly, no texture)
+#define PR_PHONGSHADING     (0x00 << 0)     // textures phong shading
+#define PR_LAMBERTSHADING   (0x01 << 0)     // textures lambert shading (no phong/gouraud)
+#define PR_ALPHAGOURAUD     (0x02 << 0)     // alpha gouraud shading
+#define PR_FRONTPROJECTION  (0x03 << 0)     // front projection shading (no rotation, 2D zoom)
+#define PR_SHADOWBLENDING   (0x04 << 0)     // shadow blending (black alpha gouraud)
+#define PR_COLORFILLING     (0x05 << 0)     // flat filling (single color poly, no texture)
 
-#define PR_MASK             (0x07<<0)     // mask for render types
+#define PR_MASK             (0x07 << 0)     // mask for render types
 
 // phong strengths (shading types)
-#define PS_MATTE  (0x00<<3)     // same as the gouraud
-#define PS_SHINY  (0x01<<3)     // mild shininig
-#define PS_METAL  (0x02<<3)     // shine as hell
+#define PS_MATTE  (0x00 << 3)     // same as the gouraud
+#define PS_SHINY  (0x01 << 3)     // mild shininig
+#define PS_METAL  (0x02 << 3)     // shine as hell
 
-#define PS_MASK   (0x07<<3)     // mask for phong strengths
+#define PS_MASK   (0x07 << 3)     // mask for phong strengths
 
 // texture's alpha channel flag
-#define AC_SKIPALPHACHANNEL (0x00<<6) // opaque rendering regardless of alpha channel presence
-#define AC_USEALPHACHANNEL  (0x01<<6) // texture's alpha ch. will be taken in consideration
-#define AC_ZEROTRANSPARENCY (0x02<<6) // texture's zero values are transparent (no alpha ch.)
+#define AC_SKIPALPHACHANNEL (0x00 << 6) // opaque rendering regardless of alpha channel presence
+#define AC_USEALPHACHANNEL  (0x01 << 6) // texture's alpha ch. will be taken in consideration
+#define AC_ZEROTRANSPARENCY (0x02 << 6) // texture's zero values are transparent (no alpha ch.)
 
-#define AC_MASK             (0x03<<6) // mask for texture's alpha flag
+#define AC_MASK             (0x03 << 6) // mask for texture's alpha flag
 
 // polygon's control flags
-#define PCF_DOUBLESIDED (0x01<<9)     // double sided polygon
-#define PCF_NOSHADING   (0x02<<9)     // this polygon will not be shaded anyhow (?)
-#define PCF_CLIPPOLYGON (0x04<<9)     // polygon is clipped, instead rejected
-#define PCF_REFLECTIONS (0x08<<9)     // use reflection mapping
+#define PCF_DOUBLESIDED (0x01 << 9)     // double sided polygon
+#define PCF_NOSHADING   (0x02 << 9)     // this polygon will not be shaded anyhow (?)
+#define PCF_CLIPPOLYGON (0x04 << 9)     // polygon is clipped, instead rejected
+#define PCF_REFLECTIONS (0x08 << 9)     // use reflection mapping
 //----------------------------------------------------------------------------------
 
-BOOL MappingSurface::operator==(const MappingSurface &msOther) const {
+BOOL MappingSurface::operator == (const MappingSurface &msOther) const {
   return msOther.ms_Name == ms_Name;
 };
 
@@ -600,9 +600,9 @@ void MappingSurface::SetRenderingParameters(ULONG ulOldFlags)
     }
   }
   // find translucency type
-  if ((ulOldFlags&PR_MASK)==PR_ALPHAGOURAUD) {
+  if ((ulOldFlags&PR_MASK) == PR_ALPHAGOURAUD) {
     ms_sttTranslucencyType = STT_ALPHAGOURAUD;
-  } else if ((ulOldFlags&AC_MASK)==AC_ZEROTRANSPARENCY) {
+  } else if ((ulOldFlags&AC_MASK) == AC_ZEROTRANSPARENCY) {
     ms_sttTranslucencyType = STT_TRANSLUCENT;
   } else {
     ms_sttTranslucencyType = STT_OPAQUE;
@@ -703,8 +703,8 @@ void MappingSurface::Read_t( CTStream *pFile, BOOL bReadPolygonsPerSurface,
     (*pFile) >> ms_ulRenderingFlags;
     if ((ms_ulRenderingFlags&SRF_NEW_TEXTURE_FORMAT) == 0)
       ms_ulRenderingFlags |= SRF_DIFFUSE|SRF_NEW_TEXTURE_FORMAT;
-    if (ms_sttTranslucencyType==STT_TRANSLUCENT || ms_sttTranslucencyType==STT_ALPHAGOURAUD
-      ||ms_sttTranslucencyType==STT_ADD||ms_sttTranslucencyType==STT_MULTIPLY) {
+    if (ms_sttTranslucencyType == STT_TRANSLUCENT || ms_sttTranslucencyType == STT_ALPHAGOURAUD
+      ||ms_sttTranslucencyType == STT_ADD||ms_sttTranslucencyType == STT_MULTIPLY) {
       _bHasAlpha = TRUE;
     }
 
@@ -1085,17 +1085,17 @@ void CModelCollisionBox::Read_t(CTStream *istrFile)
   // Read collision box size
   istrFile->Read_t( &mcb_vCollisionBoxMax, sizeof(FLOAT3D));
   // Get "colision box dimensions equality" value
-  if ((mcb_vCollisionBoxMax(2)-mcb_vCollisionBoxMin(2)) ==
+  if ((mcb_vCollisionBoxMax(2)-mcb_vCollisionBoxMin(2)) == 
       (mcb_vCollisionBoxMax(1)-mcb_vCollisionBoxMin(1)) )
   {
     mcb_iCollisionBoxDimensionEquality = HEIGHT_EQ_WIDTH;
   }
-  else if ((mcb_vCollisionBoxMax(3)-mcb_vCollisionBoxMin(3)) ==
+  else if ((mcb_vCollisionBoxMax(3)-mcb_vCollisionBoxMin(3)) == 
            (mcb_vCollisionBoxMax(1)-mcb_vCollisionBoxMin(1)) )
   {
     mcb_iCollisionBoxDimensionEquality = LENGTH_EQ_WIDTH;
   }
-  else if ((mcb_vCollisionBoxMax(3)-mcb_vCollisionBoxMin(3)) ==
+  else if ((mcb_vCollisionBoxMax(3)-mcb_vCollisionBoxMin(3)) == 
            (mcb_vCollisionBoxMax(2)-mcb_vCollisionBoxMin(2)) )
   {
     mcb_iCollisionBoxDimensionEquality = LENGTH_EQ_HEIGHT;
@@ -1155,7 +1155,7 @@ void CAttachedModelPosition::Write_t( CTStream *strFile)
 //------------------------------------------ WRITE
 void CModelData::Write_t( CTStream *pFile)  // throw char *
 {
-	INDEX i;
+  INDEX i;
 
   PtrsToIndices();
   // Save main ID
@@ -1430,7 +1430,7 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
   for (i=0; i<md_MipCt; i++) { 
     ModelMipInfo mmiDummy; // need one dummy mipmodel info in case of mip level rejection
     // reject mip model in case its even, and not last
-    if (!mdl_bFineQuality && (i%2)==1 && i!=(md_MipCt-1)) {
+    if (!mdl_bFineQuality && (i%2) == 1 && i != (md_MipCt-1)) {
       mmiDummy.Read_t( pFile, bHasPolygonalPatches, bHasPolygonsPerSurface, bHasDiffuseColor);
       mmiDummy.Clear();
       ctMipsRejected++;
@@ -1542,12 +1542,12 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
       ModelFrameVertex16 &mfv16 = md_FrameVertices16[iVtx];
       ModelFrameVertex8  &mfv8  = md_FrameVertices8[iVtx];
       // convert vertex coordinate
-      mfv8.mfv_SBPoint(1) = mfv16.mfv_SWPoint(1) >>8;
-      mfv8.mfv_SBPoint(2) = mfv16.mfv_SWPoint(2) >>8;
-      mfv8.mfv_SBPoint(3) = mfv16.mfv_SWPoint(3) >>8;
+      mfv8.mfv_SBPoint(1) = mfv16.mfv_SWPoint(1) >> 8;
+      mfv8.mfv_SBPoint(2) = mfv16.mfv_SWPoint(2) >> 8;
+      mfv8.mfv_SBPoint(3) = mfv16.mfv_SWPoint(3) >> 8;
       // convert normal
-      const INDEX iHofs = mfv16.mfv_ubNormH>>1;
-      const INDEX iPofs = mfv16.mfv_ubNormP>>1;
+      const INDEX iHofs = mfv16.mfv_ubNormH >> 1;
+      const INDEX iPofs = mfv16.mfv_ubNormP >> 1;
       mfv8.mfv_NormIndex = aubGouraudConv[iHofs*128+iPofs]; 
     }
 
@@ -1593,7 +1593,7 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
   }
 
   // peek chunk ID and see if we should read boolean defining collision type (speheres or cube)
-  if ( pFile->PeekID_t()==CChunkID("COLI"))
+  if (pFile->PeekID_t() == CChunkID("COLI"))
   {
     pFile->ExpectID_t("COLI");
     *pFile >> md_bCollideAsCube;
@@ -1756,8 +1756,8 @@ MappingSurface::MappingSurface()
   ms_colReflections = C_WHITE|CT_OPAQUE;
   ms_colSpecular = C_WHITE|CT_OPAQUE;
   ms_colBump = C_WHITE|CT_OPAQUE;
-	ms_ulOnColor = SC_ALLWAYS_ON;
-	ms_ulOffColor = SC_ALLWAYS_OFF;
+  ms_ulOnColor = SC_ALLWAYS_ON;
+  ms_ulOffColor = SC_ALLWAYS_OFF;
 }
 //--------------------------------------------------------------------------------------------
 /*
@@ -1790,8 +1790,8 @@ void CModelObject::Copy(CModelObject &moOther)
   CAnimObject::Copy(moOther);
   
   mo_PatchMask        = moOther.mo_PatchMask      ;
-	mo_iManualMipLevel  = moOther.mo_iManualMipLevel;
-	mo_AutoMipModeling  = moOther.mo_AutoMipModeling;
+  mo_iManualMipLevel  = moOther.mo_iManualMipLevel;
+  mo_AutoMipModeling  = moOther.mo_AutoMipModeling;
   mo_Stretch              = moOther.mo_Stretch            ;
   mo_ColorMask            = moOther.mo_ColorMask          ;
   mo_iLastRenderMipLevel  = moOther.mo_iLastRenderMipLevel;
@@ -1824,7 +1824,7 @@ void CModelObject::Synchronize(CModelObject &moOther)
 
   CModelData *pmd = GetData();
   CModelData *pmdOther = moOther.GetData();
-  if (pmd==NULL || pmdOther==NULL) {
+  if (pmd == NULL || pmdOther == NULL) {
     return;
   }
 
@@ -1835,7 +1835,7 @@ void CModelObject::Synchronize(CModelObject &moOther)
     // get one here with same index
     CAttachmentModelObject *pamo = GetAttachmentModel(iap);
     // if found
-    if (pamo!=NULL) {
+    if (pamo != NULL) {
   
       // sync the model itself
       pamo->amo_moModelObject.Synchronize(pamoOther->amo_moModelObject);
@@ -1878,7 +1878,7 @@ void CModelObject::Read_t( CTStream *pFile) // throw char *
 {
   CAnimObject::Read_t( pFile);
 
-  if (pFile->PeekID_t()==CChunkID("MODT"))
+  if (pFile->PeekID_t() == CChunkID("MODT"))
   {
     pFile->ExpectID_t( CChunkID( "MODT"));
     *pFile >> mo_colBlendColor;
@@ -1961,13 +1961,13 @@ BOOL CModelObject::IsModelVisible( FLOAT fMipFactor)
   ASSERT( pMD != NULL);
   ASSERT( pMD->md_MipCt>0);
   // visible if no mip models or disappearence not allowed
-  if (pMD->md_MipCt==0 || mdl_iLODDisappear==0) return TRUE;
+  if (pMD->md_MipCt == 0 || mdl_iLODDisappear == 0) return TRUE;
   // adjust mip factor in case of dynamic stretch factor
   if (mo_Stretch != FLOAT3D(1.0f, 1.0f, 1.0f)) {
     fMipFactor -= Log2( Max(mo_Stretch(1),Max(mo_Stretch(2),mo_Stretch(3))));
   }
   // eventually adjusted mip factor with LOD control variables
-  if (mdl_iLODDisappear==2) fMipFactor = fMipFactor*mdl_fLODMul +mdl_fLODAdd;
+  if (mdl_iLODDisappear == 2) fMipFactor = fMipFactor*mdl_fLODMul +mdl_fLODAdd;
   // return true if mip factor is smaller than last in model's mip switch factors array
   return( fMipFactor < pMD->md_MipSwitchFactors[pMD->md_MipCt-1]);
 }
@@ -2124,8 +2124,8 @@ COLOR CModelObject::GetSurfaceColor( INDEX iCurrentMip, INDEX iCurrentSurface)
 {
   struct ModelPolygon *pPoly;
   CModelData *pMD = (CModelData *) GetData();
-  if ((iCurrentMip>=pMD->md_MipCt) ||
-      (iCurrentSurface>=pMD->md_MipInfos[ iCurrentMip].mmpi_MappingSurfaces.Count()) )
+  if ((iCurrentMip >= pMD->md_MipCt) ||
+      (iCurrentSurface >= pMD->md_MipInfos[ iCurrentMip].mmpi_MappingSurfaces.Count()) )
   {
     return -1;
   }
@@ -2148,8 +2148,8 @@ void CModelObject::SetSurfaceColor( INDEX iCurrentMip, INDEX iCurrentSurface,
 {
   struct ModelPolygon *pPoly;
   CModelData *pMD = (CModelData *) GetData();
-  if ((iCurrentMip>=pMD->md_MipCt) ||
-      (iCurrentSurface>=pMD->md_MipInfos[ iCurrentMip].mmpi_MappingSurfaces.Count()) )
+  if ((iCurrentMip >= pMD->md_MipCt) ||
+      (iCurrentSurface >= pMD->md_MipInfos[ iCurrentMip].mmpi_MappingSurfaces.Count()) )
   {
     return;
   }
@@ -2172,8 +2172,8 @@ void CModelObject::GetSurfaceRenderFlags( INDEX iCurrentMip, INDEX iCurrentSurfa
       ULONG &ulRenderingFlags)
 {
   CModelData *pMD = (CModelData *) GetData();
-  if ((iCurrentMip>=pMD->md_MipCt) ||
-      (iCurrentSurface>=pMD->md_MipInfos[ iCurrentMip].mmpi_MappingSurfaces.Count()) )
+  if ((iCurrentMip >= pMD->md_MipCt) ||
+      (iCurrentSurface >= pMD->md_MipInfos[ iCurrentMip].mmpi_MappingSurfaces.Count()) )
   {
     return;
   }
@@ -2191,8 +2191,8 @@ void CModelObject::SetSurfaceRenderFlags( INDEX iCurrentMip, INDEX iCurrentSurfa
       ULONG ulRenderingFlags)
 {
   CModelData *pMD = (CModelData *) GetData();
-  if ((iCurrentMip>=pMD->md_MipCt) ||
-      (iCurrentSurface>=pMD->md_MipInfos[ iCurrentMip].mmpi_MappingSurfaces.Count()) )
+  if ((iCurrentMip >= pMD->md_MipCt) ||
+      (iCurrentSurface >= pMD->md_MipInfos[ iCurrentMip].mmpi_MappingSurfaces.Count()) )
   {
     return;
   }
@@ -2458,7 +2458,7 @@ struct ModelPolygon *CModelObject::PolygonHitModelData(CModelData *pMD,
 
       FLOAT3D f3dHitted3DPoint = FLOAT3D(0.0f, 0.0f, 0.0f);
       fplPlane.GetCoordinate( 3, f3dHitted3DPoint);
-      if (f3dHitted3DPoint(3)<=0.0f &&  f3dHitted3DPoint(3)> fClosest)
+      if (f3dHitted3DPoint(3) <= 0.0f &&  f3dHitted3DPoint(3)> fClosest)
       {
         fClosest = f3dHitted3DPoint(3);
         pResultPoly = pPoly;
@@ -2674,7 +2674,7 @@ INDEX CModelObject::GetCollisionBoxDimensionEquality(INDEX iCollisionBox)
 // test it the model has alpha blending
 BOOL CModelObject::HasAlpha(void)
 {
-  return GetData()->md_bHasAlpha || (mo_colBlendColor&0xFF)!=0xFF;
+  return GetData()->md_bHasAlpha || (mo_colBlendColor&0xFF) != 0xFF;
 }
 
 // retrieves number of surfaces used in given mip model
@@ -2746,7 +2746,7 @@ CTFileName CModelObject::GetName(void)
 void CModelObject::SetData_t(const CTFileName &fnmModel) // throw char *
 {
   // if the filename is empty
-  if (fnmModel=="") {
+  if (fnmModel == "") {
     // release current texture
     SetData(NULL);
 
@@ -2907,7 +2907,7 @@ CAttachmentModelObject *CModelObject::AddAttachmentModel( INDEX iAttachedPositio
 {
   CModelData *pMD = (CModelData *) GetData();
 
-  if (pMD->md_aampAttachedPosition.Count()==0) {
+  if (pMD->md_aampAttachedPosition.Count() == 0) {
     return NULL;
   }
   ASSERT( iAttachedPosition >= 0);
@@ -2942,11 +2942,11 @@ CAttachmentModelObject *CModelObject::GetAttachmentModelList( INDEX ipos, ...)
   CModelObject *pmo = this;
 
   // while not end of list
-  while (ipos>=0) {
+  while (ipos >= 0) {
     // get attachment
     pamo = pmo->GetAttachmentModel(ipos);
     // if not found
-    if (pamo==NULL) {
+    if (pamo == NULL) {
       // return failure
       va_end(marker);
       return NULL;
@@ -2958,7 +2958,7 @@ CAttachmentModelObject *CModelObject::GetAttachmentModelList( INDEX ipos, ...)
   va_end(marker);
 
   // return current attachment
-  ASSERT(pamo!=NULL);
+  ASSERT(pamo != NULL);
   return pamo;
 }
 

@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/ErrorReporting.h>
 #include <Engine/Sound/Wave.h>
 
-/* ====================================================
+/* == == == == == == == == == == == == == == == == == == == == == == == == == == 
  *
  *      CONVERSION FUNCTIONS
  *
@@ -42,7 +42,7 @@ void PCMWaveInput::CheckWaveFormat_t(WAVEFORMATEX wfeCheck, char *pcErrorString)
       wfeCheck.nChannels != 2) {
     ThrowF_t(TRANS("%s: Invalid number of channels!"), pcErrorString);
   }
-  //ASSERT( wfeCheck.wBitsPerSample==16);
+  //ASSERT( wfeCheck.wBitsPerSample == 16);
 }
 
 
@@ -51,16 +51,16 @@ inline ULONG PCMWaveInput::GetData_t(CTStream *pCstrInput)
 {
   ASSERT(pwi_bInfoLoaded);
   // read data according to bits per sample value
-  if (pwi_wfeWave.wBitsPerSample==8) {
+  if (pwi_wfeWave.wBitsPerSample == 8) {
     // read UBYTE
     UBYTE ubData;
     *pCstrInput >> ubData;
-    return ((ULONG)ubData) <<16;            // (shift) prepare data for shrink/expand operation
+    return ((ULONG)ubData) << 16;            // (shift) prepare data for shrink/expand operation
   } else {
     // read UWORD
     SWORD swData;
     *pCstrInput >> swData;
-    return ((ULONG)(swData+0x8000)) <<8;   // (shift) prepare data for shrink/expand operation
+    return ((ULONG)(swData+0x8000)) << 8;   // (shift) prepare data for shrink/expand operation
   }
 }
 
@@ -68,8 +68,8 @@ inline ULONG PCMWaveInput::GetData_t(CTStream *pCstrInput)
 // Store data
 inline void PCMWaveInput::StoreData(ULONG ulData)
 {
-  ASSERT( pwi_wfeDesired.wBitsPerSample==16);
-  *pwi_pswMemory++ = ((SWORD)(ulData>>8) -0x8000);  // (shift) restore data format
+  ASSERT( pwi_wfeDesired.wBitsPerSample == 16);
+  *pwi_pswMemory++ = ((SWORD)(ulData >> 8) -0x8000);  // (shift) restore data format
 }
 
 
@@ -169,7 +169,7 @@ void PCMWaveInput::ShrinkData_t(CTStream *pCstrInput)
 
 
 
-/* ====================================================
+/* == == == == == == == == == == == == == == == == == == == == == == == == == == 
  *
  *      WAVE FUNCTIONS
  *
@@ -234,7 +234,7 @@ WAVEFORMATEX PCMWaveInput::LoadInfo_t(CTStream *pCstrInput)
   // mark Info loaded
   pwi_bInfoLoaded = TRUE;
 
-  // ASSERT( pwi_wfeWave.wBitsPerSample==16);
+  // ASSERT( pwi_wfeWave.wBitsPerSample == 16);
   // return Wave Format
   return pwi_wfeWave;
 }
@@ -273,12 +273,12 @@ void PCMWaveInput::LoadData_t(CTStream *pCstrInput, SWORD *pswMemory, WAVEFORMAT
     memset(pwi_pswMemory, 0, DetermineBufferSize(pwi_wfeDesired));
   // copy data
   } else {
-    ASSERT(pwi_dRatio==1.0f);
+    ASSERT(pwi_dRatio == 1.0f);
     CopyData_t(pCstrInput);
   }
 
   // data is loaded (and maybe converted from 16-bits)
-  if (pwi_wfeWave.wBitsPerSample==8) SwfeDesired.nBlockAlign *= 2; 
+  if (pwi_wfeWave.wBitsPerSample == 8) SwfeDesired.nBlockAlign *= 2; 
   pwi_bDataLoaded = TRUE;
 }
 

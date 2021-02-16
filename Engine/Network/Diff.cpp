@@ -39,15 +39,15 @@ CTStream *_pstrmOut;
 // emit one block copied from old file
 void EmitOld_t(SLONG slOffsetOld, SLONG slSizeOld)
 {
-  (*_pstrmOut)<<UBYTE(DIFF_OLD);
-  (*_pstrmOut)<<slOffsetOld;
-  (*_pstrmOut)<<slSizeOld;
+  (*_pstrmOut) << UBYTE(DIFF_OLD);
+  (*_pstrmOut) << slOffsetOld;
+  (*_pstrmOut) << slSizeOld;
 }
 // emit one block copied from new file
 void EmitNew_t(SLONG slOffsetNew, SLONG slSizeNew)
 {
-  (*_pstrmOut)<<UBYTE(DIFF_NEW);
-  (*_pstrmOut)<<slSizeNew;
+  (*_pstrmOut) << UBYTE(DIFF_NEW);
+  (*_pstrmOut) << slSizeNew;
   (*_pstrmOut).Write_t(_pubNew+slOffsetNew, slSizeNew);
 }
 
@@ -63,10 +63,10 @@ void EmitXor_t(SLONG slOffsetOld, SLONG slSizeOld, SLONG slOffsetNew, SLONG slSi
   }
 
   // emit it
-  (*_pstrmOut)<<UBYTE(DIFF_XOR);
-  (*_pstrmOut)<<slOffsetOld;
-  (*_pstrmOut)<<slSizeOld;
-  (*_pstrmOut)<<slSizeNew;
+  (*_pstrmOut) << UBYTE(DIFF_XOR);
+  (*_pstrmOut) << slOffsetOld;
+  (*_pstrmOut) << slSizeOld;
+  (*_pstrmOut) << slSizeNew;
   (*_pstrmOut).Write_t(_pubNew+slOffsetNew, slSizeNew);
 }
 
@@ -138,12 +138,12 @@ void MakeDiff_t(void)
 {
   // write header with size of files
   (*_pstrmOut).WriteID_t("DIFF");
-  (*_pstrmOut)<<_slSizeOld<<_slSizeNew<<_ulCRC;
+  (*_pstrmOut) << _slSizeOld << _slSizeNew << _ulCRC;
 
   // find first entities in blocks
   UBYTE *pubOldEnts = FindFirstEntity(_pubOld, _slSizeOld);
   UBYTE *pubNewEnts = FindFirstEntity(_pubNew, _slSizeNew);
-  if (pubOldEnts==NULL || pubNewEnts==NULL) {
+  if (pubOldEnts == NULL || pubNewEnts == NULL) {
     ThrowF_t(TRANS("Invalid stream for Diff!"));
   }
 
@@ -162,7 +162,7 @@ void MakeDiff_t(void)
     // find same in old file
     INDEX ieibOld = -1;
     for (INDEX i=0; i<_aebiOld.Count(); i++) {
-      if (_aebiOld[i].ebi_ulID==ebiNew.ebi_ulID) {
+      if (_aebiOld[i].ebi_ulID == ebiNew.ebi_ulID) {
         ieibOld = i;
         break;
       }
@@ -170,13 +170,13 @@ void MakeDiff_t(void)
     BOOL bDone = FALSE;
 
     // if found
-    if (ieibOld>=0) {
+    if (ieibOld >= 0) {
       EntityBlockInfo &ebiOld = _aebiOld[ieibOld];
 
       // if same
-      if ( ebiOld.ebi_slSize==ebiNew.ebi_slSize) {
+      if (ebiOld.ebi_slSize == ebiNew.ebi_slSize) {
         if (memcmp(_pubOld+ebiOld.ebi_slOffset, 
-        _pubNew+ebiNew.ebi_slOffset, ebiNew.ebi_slSize)==0) {
+        _pubNew+ebiNew.ebi_slOffset, ebiNew.ebi_slSize) == 0) {
           //CPrintF("Same blocks\n");
           // emit copy from old
           EmitOld_t(ebiOld.ebi_slOffset, ebiOld.ebi_slSize);
@@ -220,7 +220,7 @@ void UnDiff_t(void)
   SLONG slSizeOldStream = 0;
   SLONG slSizeOutStream = 0;
   // get header with size of files
-  if (*(SLONG*)pubNew!='FFID') {
+  if (*(SLONG*)pubNew != 'FFID') {
     ThrowF_t(TRANS("Not a DIFF stream!"));
   }
   pubNew+=sizeof(SLONG);
@@ -230,7 +230,7 @@ void UnDiff_t(void)
 
   CRC_Start(_ulCRC);
 
-  if (slSizeOldStream!=_slSizeOld) {
+  if (slSizeOldStream != _slSizeOld) {
     ThrowF_t(TRANS("Invalid DIFF stream!"));
   }
   // while not end of diff file
@@ -282,18 +282,18 @@ void UnDiff_t(void)
   }
 
   CRC_Finish(_ulCRC);
-  if (_ulCRC!=ulCRC) {
+  if (_ulCRC != ulCRC) {
     ThrowF_t(TRANS("CRC error in DIFF!"));
   }
 }
 
 static void Cleanup(void)
 {
-  if (_pubOld!=NULL) {
+  if (_pubOld != NULL) {
     FreeMemory(_pubOld);
   }
 
-  if (_pubNew!=NULL) {
+  if (_pubNew != NULL) {
     FreeMemory(_pubNew);
   }
   _pubOld = NULL;

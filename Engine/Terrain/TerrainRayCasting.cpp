@@ -43,11 +43,11 @@ static FLOAT HitCheckQuad(const PIX ix, const PIX iz)
   FLOAT fDistance = UpperLimit(0.0f);
 
   // if quad is outside terrain
-  if (ix<0 || iz<0 || ix>= (_ptrTerrain->tr_pixHeightMapWidth-1) || iz >= (_ptrTerrain->tr_pixHeightMapHeight-1)) {
+  if (ix<0 || iz<0 || ix >= (_ptrTerrain->tr_pixHeightMapWidth-1) || iz >= (_ptrTerrain->tr_pixHeightMapHeight-1)) {
     return fDistance;
   }
 
-  ASSERT(ix>=0 && iz>=0);
+  ASSERT(ix >= 0 && iz >= 0);
   ASSERT(ix<(_ptrTerrain->tr_pixHeightMapWidth-1) && iz<(_ptrTerrain->tr_pixHeightMapHeight-1));
 
   const PIX pixMapWidth = _ptrTerrain->tr_pixHeightMapWidth;
@@ -85,8 +85,8 @@ static FLOAT HitCheckQuad(const PIX ix, const PIX iz)
   // Add one quad
   if (bFacing) {
     // if at least one point of triangle is above min height and bellow max height of ray and traingle is visible
-    if ((pvx[0].y>=_fMinHeight || pvx[2].y>=_fMinHeight || pvx[1].y>=_fMinHeight) &&
-       (pvx[0].y<=_fMaxHeight || pvx[2].y<=_fMinHeight || pvx[1].y<=_fMinHeight) &&
+    if ((pvx[0].y >= _fMinHeight || pvx[2].y >= _fMinHeight || pvx[1].y >= _fMinHeight) &&
+       (pvx[0].y <= _fMaxHeight || pvx[2].y <= _fMinHeight || pvx[1].y <= _fMinHeight) &&
        ((pvx[0].shade + pvx[2].shade + pvx[1].shade == 255*3) | _bHitInvisibleTris)) {
       // Add this triangle
       INDEX *pind = _aiRCIndices.Push(3);
@@ -96,8 +96,8 @@ static FLOAT HitCheckQuad(const PIX ix, const PIX iz)
       ctIndices+=3;
     }
     // if at least one point of triangle is above min height and bellow max height of ray and traingle is visible
-    if ((pvx[1].y>=_fMinHeight || pvx[2].y>=_fMinHeight || pvx[3].y>=_fMinHeight) &&
-       (pvx[1].y<=_fMaxHeight || pvx[2].y<=_fMaxHeight || pvx[3].y<=_fMaxHeight) &&
+    if ((pvx[1].y >= _fMinHeight || pvx[2].y >= _fMinHeight || pvx[3].y >= _fMinHeight) &&
+       (pvx[1].y <= _fMaxHeight || pvx[2].y <= _fMaxHeight || pvx[3].y <= _fMaxHeight) &&
        ((pvx[1].shade + pvx[2].shade + pvx[3].shade == 255*3) | _bHitInvisibleTris)) {
       // Add this triangle
       INDEX *pind = _aiRCIndices.Push(3);
@@ -108,8 +108,8 @@ static FLOAT HitCheckQuad(const PIX ix, const PIX iz)
     }
   } else {
     // if at least one point of triangle is above min height and bellow max height of ray and traingle is visible
-    if ((pvx[2].y>=_fMinHeight || pvx[3].y>=_fMinHeight || pvx[0].y>=_fMinHeight) &&
-       (pvx[2].y<=_fMaxHeight || pvx[3].y<=_fMaxHeight || pvx[0].y<=_fMaxHeight) &&
+    if ((pvx[2].y >= _fMinHeight || pvx[3].y >= _fMinHeight || pvx[0].y >= _fMinHeight) &&
+       (pvx[2].y <= _fMaxHeight || pvx[3].y <= _fMaxHeight || pvx[0].y <= _fMaxHeight) &&
        ((pvx[2].shade + pvx[3].shade + pvx[0].shade == 255*3) | _bHitInvisibleTris)) {
       // Add this triangle
       INDEX *pind = _aiRCIndices.Push(3);
@@ -119,8 +119,8 @@ static FLOAT HitCheckQuad(const PIX ix, const PIX iz)
       ctIndices+=3;
     }
     // if at least one point of triangle is above min height and bellow max height of ray and traingle is visible
-    if ((pvx[0].y>=_fMinHeight || pvx[3].y>=_fMinHeight || pvx[1].y>=_fMinHeight) &&
-       (pvx[0].y<=_fMaxHeight || pvx[3].y<=_fMaxHeight || pvx[1].y<=_fMaxHeight) &&
+    if ((pvx[0].y >= _fMinHeight || pvx[3].y >= _fMinHeight || pvx[1].y >= _fMinHeight) &&
+       (pvx[0].y <= _fMaxHeight || pvx[3].y <= _fMaxHeight || pvx[1].y <= _fMaxHeight) &&
        ((pvx[0].shade + pvx[3].shade + pvx[1].shade == 255*3) | _bHitInvisibleTris)) {
       // Add this triangle
       INDEX *pind = _aiRCIndices.Push(3);
@@ -131,7 +131,7 @@ static FLOAT HitCheckQuad(const PIX ix, const PIX iz)
     }
   }
 
-  if (ctIndices==0) {
+  if (ctIndices == 0) {
     return fDistance;
   }
 
@@ -149,59 +149,59 @@ static FLOAT HitCheckQuad(const PIX ix, const PIX iz)
 
     FLOATplane3D plTriPlane(vx0,vx1,vx2);
     FLOAT fDistance0 = plTriPlane.PointDistance(_vOrigin);
-	  FLOAT fDistance1 = plTriPlane.PointDistance(_vTarget);
+    FLOAT fDistance1 = plTriPlane.PointDistance(_vTarget);
 
     // if the ray hits the polygon plane
-	  if (fDistance0>=0 && fDistance0>=fDistance1) {
-		  // calculate fraction of line before intersection
-		  FLOAT fFraction = fDistance0/(fDistance0-fDistance1);
-		  // calculate intersection coordinate
-		  FLOAT3D vHitPoint = _vOrigin+(_vTarget-_vOrigin)*fFraction;
-		  // calculate intersection distance
-		  FLOAT fHitDistance = (vHitPoint-_vOrigin).Length();
-		  // if the hit point can not be new closest candidate
-		  if (fHitDistance>fDistance) {
-			  // skip this triangle
-			  continue;
-		  }
+    if (fDistance0 >= 0 && fDistance0 >= fDistance1) {
+      // calculate fraction of line before intersection
+      FLOAT fFraction = fDistance0/(fDistance0-fDistance1);
+      // calculate intersection coordinate
+      FLOAT3D vHitPoint = _vOrigin+(_vTarget-_vOrigin)*fFraction;
+      // calculate intersection distance
+      FLOAT fHitDistance = (vHitPoint-_vOrigin).Length();
+      // if the hit point can not be new closest candidate
+      if (fHitDistance>fDistance) {
+        // skip this triangle
+        continue;
+      }
 
       // find major axes of the polygon plane
-			INDEX iMajorAxis1, iMajorAxis2;
-			GetMajorAxesForPlane(plTriPlane, iMajorAxis1, iMajorAxis2);
+      INDEX iMajorAxis1, iMajorAxis2;
+      GetMajorAxesForPlane(plTriPlane, iMajorAxis1, iMajorAxis2);
 
       // create an intersector
-			CIntersector isIntersector(vHitPoint(iMajorAxis1), vHitPoint(iMajorAxis2));
+      CIntersector isIntersector(vHitPoint(iMajorAxis1), vHitPoint(iMajorAxis2));
 
-			// check intersections for all three edges of the polygon
-			isIntersector.AddEdge(
-					vx0(iMajorAxis1), vx0(iMajorAxis2),
-					vx1(iMajorAxis1), vx1(iMajorAxis2));
-			isIntersector.AddEdge(
-					vx1(iMajorAxis1), vx1(iMajorAxis2),
-					vx2(iMajorAxis1), vx2(iMajorAxis2));
-			isIntersector.AddEdge(
-					vx2(iMajorAxis1), vx2(iMajorAxis2),
-					vx0(iMajorAxis1), vx0(iMajorAxis2));
+      // check intersections for all three edges of the polygon
+      isIntersector.AddEdge(
+          vx0(iMajorAxis1), vx0(iMajorAxis2),
+          vx1(iMajorAxis1), vx1(iMajorAxis2));
+      isIntersector.AddEdge(
+          vx1(iMajorAxis1), vx1(iMajorAxis2),
+          vx2(iMajorAxis1), vx2(iMajorAxis2));
+      isIntersector.AddEdge(
+          vx2(iMajorAxis1), vx2(iMajorAxis2),
+          vx0(iMajorAxis1), vx0(iMajorAxis2));
 
       // if the polygon is intersected by the ray, and it is the closest intersection so far
-			if (isIntersector.IsIntersecting() && (fHitDistance < fDistance)) {
-				// remember hit coordinates
+      if (isIntersector.IsIntersecting() && (fHitDistance < fDistance)) {
+        // remember hit coordinates
         if (fHitDistance<fDistance) {
-				  fDistance = fHitDistance;
+          fDistance = fHitDistance;
           _vHitExact = vHitPoint;
           _plHitPlane = plTriPlane;
         }
-  		}
+      }
     }
   }
   return fDistance;
 }
 
 #pragma message(">> Remove defined NUMDIM, RIGHT, LEFT ...")
-#define NUMDIM	3
-#define RIGHT	  0
-#define LEFT	  1
-#define MIDDLE	2
+#define NUMDIM  3
+#define RIGHT    0
+#define LEFT    1
+#define MIDDLE  2
 
 // Check if ray hits aabbox and return coords where ray enter and exit the box
 static BOOL HitAABBox(const FLOAT3D &vOrigin, const FLOAT3D &vTarget, FLOAT3D &vHitBegin,
@@ -217,54 +217,54 @@ static BOOL HitAABBox(const FLOAT3D &vOrigin, const FLOAT3D &vTarget, FLOAT3D &v
   INDEX   iOriginSide[3];
   BOOL    bOriginInside = TRUE;
 
-	INDEX i;
+  INDEX i;
 
-	// Find candidate planes
+  // Find candidate planes
   for (i=1;i<4;i++) {
     // Check begining of ray
-		if (vOrigin(i) < vMin(i)) {
-			vBeginCandidatePlane(i) = vMin(i);
+    if (vOrigin(i) < vMin(i)) {
+      vBeginCandidatePlane(i) = vMin(i);
       vEndCandidatePlane(i)   = vMax(i);
-			bOriginInside = FALSE;
-			iOriginSide[i-1] = LEFT;
+      bOriginInside = FALSE;
+      iOriginSide[i-1] = LEFT;
     } else if (vOrigin(i) > vMax(i)) {
-			vBeginCandidatePlane(i) = vMax(i);
+      vBeginCandidatePlane(i) = vMax(i);
       vEndCandidatePlane(i)   = vMin(i);
-			bOriginInside = FALSE;
-			iOriginSide[i-1] = RIGHT;
+      bOriginInside = FALSE;
+      iOriginSide[i-1] = RIGHT;
     } else {
-			iOriginSide[i-1] = MIDDLE;
+      iOriginSide[i-1] = MIDDLE;
       if (vDir(i)>0.0f) {
         vEndCandidatePlane(i) = vMax(i);
       } else {
         vEndCandidatePlane(i) = vMin(i);
       }
-		}
+    }
   }
 
-	// Calculate T distances to candidate planes
+  // Calculate T distances to candidate planes
   for (i=1;i<4;i++) {
-    if (iOriginSide[i-1]!=MIDDLE && vDir(i)!=0.0f) {
-			vBeginTDistance(i) = (vBeginCandidatePlane(i)-vOrigin(i)) / vDir(i);
+    if (iOriginSide[i-1] != MIDDLE && vDir(i) != 0.0f) {
+      vBeginTDistance(i) = (vBeginCandidatePlane(i)-vOrigin(i)) / vDir(i);
     } else {
-			vBeginTDistance(i) = -1.0f;
+      vBeginTDistance(i) = -1.0f;
     }
-    if (vDir(i)!=0.0f) {
-			vEndTDistance(i) = (vEndCandidatePlane(i)-vOrigin(i)) / vDir(i);
+    if (vDir(i) != 0.0f) {
+      vEndTDistance(i) = (vEndCandidatePlane(i)-vOrigin(i)) / vDir(i);
     } else {
-			vEndTDistance(i) = -1.0f;
+      vEndTDistance(i) = -1.0f;
     }
   }
 
-	// Get largest of the T distances for final choice of intersection
-	INDEX iBeginMaxT = 1;
+  // Get largest of the T distances for final choice of intersection
+  INDEX iBeginMaxT = 1;
   INDEX iEndMinT = 1;
   for (i=2;i<4;i++) {
     if (vBeginTDistance(i) > vBeginTDistance(iBeginMaxT)) {
-			iBeginMaxT = i;
+      iBeginMaxT = i;
     }
-    if (vEndTDistance(i)>=0.0f && (vEndTDistance(iEndMinT)<0.0f || vEndTDistance(i) < vEndTDistance(iEndMinT)) ) {
-			iEndMinT = i;
+    if (vEndTDistance(i) >= 0.0f && (vEndTDistance(iEndMinT)<0.0f || vEndTDistance(i) < vEndTDistance(iEndMinT)) ) {
+      iEndMinT = i;
     }
   }
 
@@ -274,7 +274,7 @@ static BOOL HitAABBox(const FLOAT3D &vOrigin, const FLOAT3D &vTarget, FLOAT3D &v
     vHitBegin = vOrigin;
   // else 
   } else {
-	  // Check final candidate actually inside box
+    // Check final candidate actually inside box
     if (vBeginTDistance(iBeginMaxT)<0.0f) {
       return FALSE;
     }
@@ -284,28 +284,28 @@ static BOOL HitAABBox(const FLOAT3D &vOrigin, const FLOAT3D &vTarget, FLOAT3D &v
 
     // Calculate point where ray enter box
     for (i=1;i<4;i++) {
-		  if (iBeginMaxT != i) {
-			  vHitBegin(i) = vOrigin(i) + vBeginTDistance(iBeginMaxT) * vDir(i);
+      if (iBeginMaxT != i) {
+        vHitBegin(i) = vOrigin(i) + vBeginTDistance(iBeginMaxT) * vDir(i);
         if (vHitBegin(i) < vMin(i) || vHitBegin(i) > vMax(i)) {
           return FALSE;
         }
-		  } else {
-			  vHitBegin(i) = vBeginCandidatePlane(i);
-		  }
+      } else {
+        vHitBegin(i) = vBeginCandidatePlane(i);
+      }
     }
   }
 
   // Caclulate point where ray exit box
   for (i=1;i<4;i++) {
     if (iEndMinT != i) {
-			vHitEnd(i) = vOrigin(i) + vEndTDistance(iEndMinT) * vDir(i);
+      vHitEnd(i) = vOrigin(i) + vEndTDistance(iEndMinT) * vDir(i);
       if (vHitEnd(i) < vMin(i) || vHitEnd(i) > vMax(i)) {
         // no ray exit point !?
         ASSERT(FALSE);
       }
-		} else {
-			vHitEnd(i) = vEndCandidatePlane(i);
-		}
+    } else {
+      vHitEnd(i) = vEndCandidatePlane(i);
+    }
   }
 
   return TRUE;
@@ -340,7 +340,7 @@ static FLOAT GetExactHitLocation(CTerrain *ptrTerrain, const FLOAT3D &vHitBegin,
   } else {
     fIterator = fDeltaY;
   }
-  if (fIterator==0) {
+  if (fIterator == 0) {
     fIterator = 0.01f;
   }
 
@@ -462,7 +462,7 @@ FLOAT TestRayCastHit(CTerrain *ptrTerrain, const FLOATmatrix3D &mRotation, const
   if (ter_bTempFreezeCast) {
     vStart = _vFrozenStart;
     vEnd   = _vFrozenEnd;
-  } else  {
+  } else {
     _vFrozenStart = vStart;
     _vFrozenEnd   = vEnd;
   }
@@ -470,7 +470,7 @@ FLOAT TestRayCastHit(CTerrain *ptrTerrain, const FLOATmatrix3D &mRotation, const
   // if ray hits terrain box
   if (HitAABBox(vStart,vEnd,vHitBegin,vHitEnd,bboxAll)) {
     // if begin and end are at same pos
-    if (vHitBegin==vHitEnd) {
+    if (vHitBegin == vHitEnd) {
       // move end hit
       vHitBegin(2)+=0.1f;
       vHitEnd(2)-=0.1f;
@@ -489,8 +489,8 @@ FLOAT TestRayCastHit(CTerrain *ptrTerrain, const FLOATmatrix3D &mRotation, const
                      const FLOAT3D &vOrigin, const FLOAT3D &vTarget,const FLOAT fOldDistance, 
                      const BOOL bHitInvisibleTris, FLOATplane3D &plHitPlane, FLOAT3D &vHitPoint)
 {
-  ASSERT(ptrTerrain!=NULL);
-  ASSERT(ptrTerrain->tr_penEntity!=NULL);
+  ASSERT(ptrTerrain != NULL);
+  ASSERT(ptrTerrain->tr_penEntity != NULL);
 
   CEntity *pen = ptrTerrain->tr_penEntity;
   
@@ -535,7 +535,7 @@ void ShowRayPath(CDrawPort *pdp)
 
   /*
   extern void gfxDrawWireBox(FLOATaabbox3D &bbox, COLOR col);
-  if (_ptrTerrain!=NULL) {
+  if (_ptrTerrain != NULL) {
     FLOATaabbox3D bboxAll;
     _ptrTerrain->GetAllTerrainBBox(bboxAll);
     gfxDrawWireBox(bboxAll,0xFFFF00FF);

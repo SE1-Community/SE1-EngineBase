@@ -48,7 +48,7 @@ public:
   void Deactivate(void);
   /* Check if this player is active. */
   BOOL IsActive(void) { return plt_bActive; };
-	/* Attach an entity to this player. */
+  /* Attach an entity to this player. */
   void AttachEntity(CPlayerEntity *penClientEntity);
 
   /* Apply action packet to current actions. */

@@ -74,7 +74,7 @@ CSetFPUPrecision::CSetFPUPrecision(enum FPUPrecisionType fptNew)
   sfp_fptOldPrecision = GetFPUPrecision();
   // set new precision if needed
   sfp_fptNewPrecision = fptNew;
-  if (sfp_fptNewPrecision!=sfp_fptOldPrecision) {
+  if (sfp_fptNewPrecision != sfp_fptOldPrecision) {
     SetFPUPrecision(fptNew);
   }
 }
@@ -85,38 +85,38 @@ CSetFPUPrecision::CSetFPUPrecision(enum FPUPrecisionType fptNew)
 CSetFPUPrecision::~CSetFPUPrecision(void)
 {
   // check consistency
-  ASSERT(GetFPUPrecision()==sfp_fptNewPrecision);
+  ASSERT(GetFPUPrecision() == sfp_fptNewPrecision);
   // restore old precision if needed
-  if (sfp_fptNewPrecision!=sfp_fptOldPrecision) {
+  if (sfp_fptNewPrecision != sfp_fptOldPrecision) {
     SetFPUPrecision(sfp_fptOldPrecision);
   }
 }
 
 BOOL IsValidFloat(float f)
 {
-  return _finite(f) && (*(ULONG*)&f)!=0xcdcdcdcdUL;
+  return _finite(f) && (*(ULONG*)&f) != 0xcdcdcdcdUL;
 /*  int iClass = _fpclass(f);
   return
-    iClass==_FPCLASS_NN ||
-    iClass==_FPCLASS_ND ||
-    iClass==_FPCLASS_NZ ||
-    iClass==_FPCLASS_PZ ||
-    iClass==_FPCLASS_PD ||
-    iClass==_FPCLASS_PN;
+    iClass == _FPCLASS_NN ||
+    iClass == _FPCLASS_ND ||
+    iClass == _FPCLASS_NZ ||
+    iClass == _FPCLASS_PZ ||
+    iClass == _FPCLASS_PD ||
+    iClass == _FPCLASS_PN;
     */
 }
 
 BOOL IsValidDouble(double f)
 {
-  return _finite(f) && (*(unsigned __int64*)&f)!=0xcdcdcdcdcdcdcdcdI64;
+  return _finite(f) && (*(unsigned __int64*)&f) != 0xcdcdcdcdcdcdcdcdI64;
 /*  int iClass = _fpclass(f);
   return
-    iClass==_FPCLASS_NN ||
-    iClass==_FPCLASS_ND ||
-    iClass==_FPCLASS_NZ ||
-    iClass==_FPCLASS_PZ ||
-    iClass==_FPCLASS_PD ||
-    iClass==_FPCLASS_PN;
+    iClass == _FPCLASS_NN ||
+    iClass == _FPCLASS_ND ||
+    iClass == _FPCLASS_NZ ||
+    iClass == _FPCLASS_PZ ||
+    iClass == _FPCLASS_PD ||
+    iClass == _FPCLASS_PN;
     */
 }
 

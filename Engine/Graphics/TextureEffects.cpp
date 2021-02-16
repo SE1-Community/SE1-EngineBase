@@ -62,17 +62,17 @@ static ULONG ulRNDSeed;
 
 inline void Randomize( ULONG ulSeed)
 {
-  if (ulSeed==0) ulSeed = 0x87654321;
+  if (ulSeed == 0) ulSeed = 0x87654321;
   ulRNDSeed = ulSeed*262147;
 };
 
 inline ULONG Rnd(void)
 {
-	ulRNDSeed = ulRNDSeed*262147;
+  ulRNDSeed = ulRNDSeed*262147;
   return ulRNDSeed;
 };
 
-#define RNDW (Rnd()>>16)
+#define RNDW (Rnd() >> 16)
 
 
 
@@ -115,8 +115,8 @@ inline void PutPixelSLONG_WATER( PIX pixU, PIX pixV, INDEX iHeight)
 
 inline void PutPixel9SLONG_WATER( PIX pixU, PIX pixV, INDEX iHeightMid)
 {
-  INDEX iHeightSide = (iHeightMid*28053) >>16;  // iHeight /0.851120 *0.364326;
-  INDEX iHeightDiag = (iHeightMid*12008) >>16;  // iHeight /0.851120 *0.155951;
+  INDEX iHeightSide = (iHeightMid*28053) >> 16;  // iHeight /0.851120 *0.364326;
+  INDEX iHeightDiag = (iHeightMid*12008) >> 16;  // iHeight /0.851120 *0.155951;
 
   PutPixelSLONG_WATER( pixU-1, pixV-1, iHeightDiag);
   PutPixelSLONG_WATER( pixU,   pixV-1, iHeightSide);
@@ -143,8 +143,8 @@ inline void PutPixelUBYTE_FIRE( PIX pixU, PIX pixV, INDEX iHeight)
 
 inline void PutPixel9UBYTE_FIRE( PIX pixU, PIX pixV, INDEX iHeightMid)
 {
-  INDEX iHeightSide = (iHeightMid*28053) >>16;  // iHeight /0.851120 *0.364326;
-  INDEX iHeightDiag = (iHeightMid*12008) >>16;  // iHeight /0.851120 *0.155951;
+  INDEX iHeightSide = (iHeightMid*28053) >> 16;  // iHeight /0.851120 *0.364326;
+  INDEX iHeightDiag = (iHeightMid*12008) >> 16;  // iHeight /0.851120 *0.155951;
 
   PutPixelUBYTE_FIRE( pixU-1, pixV-1, iHeightDiag);
   PutPixelUBYTE_FIRE( pixU,   pixV-1, iHeightSide);
@@ -161,8 +161,8 @@ inline void PutPixel9UBYTE_FIRE( PIX pixU, PIX pixV, INDEX iHeightMid)
 
 inline void PutPixel25UBYTE_FIRE( PIX pixU, PIX pixV, INDEX iHeightMid)
 {
-  INDEX iHeightSide = (iHeightMid*28053) >>16;  // iHeight /0.851120 *0.364326;
-  INDEX iHeightDiag = (iHeightMid*12008) >>16;  // iHeight /0.851120 *0.155951;
+  INDEX iHeightSide = (iHeightMid*28053) >> 16;  // iHeight /0.851120 *0.364326;
+  INDEX iHeightDiag = (iHeightMid*12008) >> 16;  // iHeight /0.851120 *0.155951;
 
   PutPixelUBYTE_FIRE( pixU-2, pixV-2, iHeightDiag);
   PutPixelUBYTE_FIRE( pixU-1, pixV-2, iHeightSide);
@@ -230,10 +230,10 @@ void AnimateRandomSurfer(CTextureEffectSource *ptes)
   sf.fV += 2*cos(sf.fAngle);
   PutPixel9SLONG_WATER(sf.fU, sf.fV, 250);
 
-  if ((RNDW&15)==0) {
+  if ((RNDW&15) == 0) {
     sf.fAngle += 3.14f/7.0f;
   }
-  if ((RNDW&15)==0) {
+  if ((RNDW&15) == 0) {
     sf.fAngle -= 3.14f/5.0f;
   }
 }
@@ -346,7 +346,7 @@ void InitializeVertLine(CTextureEffectSource *ptes,
   vl.pixU = pixU0;
   vl.pixV = pixV0;
   vl.fAngle = -3.14f;
-  if (pixV0==pixV1) {
+  if (pixV0 == pixV1) {
     vl.uwSize = 16;
   } else {
     vl.uwSize = abs(pixV1-pixV0);
@@ -382,7 +382,7 @@ void InitializeHortLine(CTextureEffectSource *ptes,
   hl.pixU = pixU0;
   hl.pixV = pixV0;
   hl.fAngle = -3.14f;
-  if (pixU0==pixU1) {
+  if (pixU0 == pixU1) {
     hl.uwSize = 16;
   } else {
     hl.uwSize = abs(pixU1-pixU0);
@@ -559,7 +559,7 @@ void InitializeFireRoler(CTextureEffectSource *ptes,
     ((FireRoler&) ptes->tes_tespEffectSourceProperties.tesp_achDummy);
   fr.pixU = pixU0;
   fr.pixV = pixV0;
-  if (pixU0==pixU1 && pixV0==pixV1) {
+  if (pixU0 == pixU1 && pixV0 == pixV1) {
     //fr.fRadius = 3;
     fr.fRadiusU = 3;
     fr.fRadiusV = 3;
@@ -613,7 +613,7 @@ void InitializeFireFall(CTextureEffectSource *ptes,
     ((FireFall&) ptes->tes_tespEffectSourceProperties.tesp_achDummy);
   ff.pixU = pixU0;
   ff.pixV = pixV0;
-  if (pixU0==pixU1) {
+  if (pixU0 == pixU1) {
     ff.ulWidth = 15;
   } else {
     ff.ulWidth = abs(pixU1-pixU0);
@@ -691,13 +691,13 @@ void InitializeFireFountain(CTextureEffectSource *ptes,
   ff.pixU = pixU0;
   ff.pixV = pixV0;
   // fountain width
-  if (pixU0==pixU1) {
+  if (pixU0 == pixU1) {
     ff.ulWidth = 31;
   } else {
     ff.ulWidth = abs(pixU1-pixU0)*2;
   }
   // fountain height
-  if (pixV0==pixV1) {
+  if (pixV0 == pixV1) {
     ff.ulBaseHeight = 120;
     ff.ulRandomHeight = 40;
   } else {
@@ -708,10 +708,10 @@ void InitializeFireFountain(CTextureEffectSource *ptes,
   ptes->tes_atepPixels.New(FIREFOUNTAIN_POINTS*2);
   for (INDEX iIndex=0; iIndex<FIREFOUNTAIN_POINTS*2; iIndex+=2) {
     FireFountainPixel &ffp = ((FireFountainPixel&) ptes->tes_atepPixels[iIndex]);
-    ffp.pixU = (ff.pixU)<<6;
-    ffp.pixV = (RNDW%(_pixBufferHeight-(_pixBufferHeight>>3))+(_pixBufferHeight>>3))<<6;
-    ffp.pixLastU = (ffp.pixU)>>6;
-    ffp.pixLastV = (ffp.pixV)>>6;
+    ffp.pixU = (ff.pixU) << 6;
+    ffp.pixV = (RNDW%(_pixBufferHeight-(_pixBufferHeight >> 3))+(_pixBufferHeight >> 3)) << 6;
+    ffp.pixLastU = (ffp.pixU) >> 6;
+    ffp.pixLastV = (ffp.pixV) >> 6;
     ffp.sbSpeedU = 0;
     ffp.sbSpeedV = 0;
   }
@@ -725,20 +725,20 @@ void AnimateFireFountain(CTextureEffectSource *ptes)
   for (INDEX iIndex=0; iIndex<FIREFOUNTAIN_POINTS*2; iIndex+=2) {
     FireFountainPixel &ffp = ((FireFountainPixel&) ptes->tes_atepPixels[iIndex]);
     // fall from fountain
-    PutPixelUBYTE_FIRE((ffp.pixU)>>6, (ffp.pixV)>>6, 200);
+    PutPixelUBYTE_FIRE((ffp.pixU) >> 6, (ffp.pixV) >> 6, 200);
     PutPixelUBYTE_FIRE(ffp.pixLastU, ffp.pixLastV, 150);
     // move pixel
-    ffp.pixLastU = (ffp.pixU)>>6;
-    ffp.pixLastV = (ffp.pixV)>>6;
+    ffp.pixLastU = (ffp.pixU) >> 6;
+    ffp.pixLastV = (ffp.pixV) >> 6;
     ffp.pixU+=ffp.sbSpeedU;
     ffp.pixV-=ffp.sbSpeedV;
     ffp.sbSpeedV-=8;
     // when falled down reinitialize
-    if ((ffp.pixV>>6) >= (_pixBufferHeight-5)) {
-      ffp.pixU = (ff.pixU)<<6;
-      ffp.pixV = (ff.pixV)<<6;
-      ffp.pixLastU = (ffp.pixU)>>6;
-      ffp.pixLastV = (ffp.pixV)>>6;
+    if ((ffp.pixV >> 6) >= (_pixBufferHeight-5)) {
+      ffp.pixU = (ff.pixU) << 6;
+      ffp.pixV = (ff.pixV) << 6;
+      ffp.pixLastU = (ffp.pixU) >> 6;
+      ffp.pixLastV = (ffp.pixV) >> 6;
       ffp.sbSpeedU = (RNDW%ff.ulWidth)-(ff.ulWidth/2-1);
       ffp.sbSpeedV = (RNDW%ff.ulRandomHeight)+ff.ulBaseHeight;
     }
@@ -774,7 +774,7 @@ void InitializeFireSideFountain(CTextureEffectSource *ptes,
   fsf.pixU = pixU0;
   fsf.pixV = pixV0;
   // fountain width
-  if (pixU0==pixU1) {
+  if (pixU0 == pixU1) {
     fsf.ulBaseWidth = 80;
     fsf.ulRandomWidth = 40;
     fsf.ulSide = (pixU0>(_pixBufferWidth/2));
@@ -787,10 +787,10 @@ void InitializeFireSideFountain(CTextureEffectSource *ptes,
   ptes->tes_atepPixels.New(FIRESIDEFOUNTAIN_POINTS*2);
   for (INDEX iIndex=0; iIndex<FIRESIDEFOUNTAIN_POINTS*2; iIndex+=2) {
     FireSideFountainPixel &fsfp = ((FireSideFountainPixel&) ptes->tes_atepPixels[iIndex]);
-    fsfp.pixU = (fsf.pixU)<<6;
-    fsfp.pixV = (RNDW%(_pixBufferHeight-(_pixBufferHeight>>3))+(_pixBufferHeight>>3))<<6;
-    fsfp.pixLastU = (fsfp.pixU)>>6;
-    fsfp.pixLastV = (fsfp.pixV)>>6;
+    fsfp.pixU = (fsf.pixU) << 6;
+    fsfp.pixV = (RNDW%(_pixBufferHeight-(_pixBufferHeight >> 3))+(_pixBufferHeight >> 3)) << 6;
+    fsfp.pixLastU = (fsfp.pixU) >> 6;
+    fsfp.pixLastV = (fsfp.pixV) >> 6;
     fsfp.sbSpeedU = 0;
     fsfp.sbSpeedV = 0;
   }
@@ -804,20 +804,20 @@ void AnimateFireSideFountain(CTextureEffectSource *ptes)
   for (INDEX iIndex=0; iIndex<FIRESIDEFOUNTAIN_POINTS*2; iIndex+=2) {
     FireSideFountainPixel &fsfp = ((FireSideFountainPixel&) ptes->tes_atepPixels[iIndex]);
     // fall from fountain
-    PutPixelUBYTE_FIRE((fsfp.pixU)>>6, (fsfp.pixV)>>6, 200);
+    PutPixelUBYTE_FIRE((fsfp.pixU) >> 6, (fsfp.pixV) >> 6, 200);
     PutPixelUBYTE_FIRE(fsfp.pixLastU, fsfp.pixLastV, 150);
     // move pixel
-    fsfp.pixLastU = (fsfp.pixU)>>6;
-    fsfp.pixLastV = (fsfp.pixV)>>6;
+    fsfp.pixLastU = (fsfp.pixU) >> 6;
+    fsfp.pixLastV = (fsfp.pixV) >> 6;
     fsfp.pixU+=fsfp.sbSpeedU;
     fsfp.pixV-=fsfp.sbSpeedV;
     fsfp.sbSpeedV-=8;
     // when falled down reinitialize
-    if ((fsfp.pixV>>6) >= (_pixBufferHeight-5)) {
-      fsfp.pixU = (fsf.pixU)<<6;
-      fsfp.pixV = (fsf.pixV)<<6;
-      fsfp.pixLastU = (fsfp.pixU)>>6;
-      fsfp.pixLastV = (fsfp.pixV)>>6;
+    if ((fsfp.pixV >> 6) >= (_pixBufferHeight-5)) {
+      fsfp.pixU = (fsf.pixU) << 6;
+      fsfp.pixV = (fsf.pixV) << 6;
+      fsfp.pixLastU = (fsfp.pixU) >> 6;
+      fsfp.pixLastV = (fsfp.pixV) >> 6;
       fsfp.sbSpeedU = (RNDW%fsf.ulRandomWidth)+fsf.ulBaseWidth;
       if (fsf.ulSide) {
         fsfp.sbSpeedU = -fsfp.sbSpeedU;
@@ -849,7 +849,7 @@ void InitializeFireLightning(CTextureEffectSource *ptes,
     ((FireLightning&) ptes->tes_tespEffectSourceProperties.tesp_achDummy);
   fl.fpixUFrom = (FLOAT) pixU0;
   fl.fpixVFrom = (FLOAT) pixV0;
-  if (pixU0==pixU1 && pixV0==pixV1) {
+  if (pixU0 == pixU1 && pixV0 == pixV1) {
     fl.fpixUTo = Abs((FLOAT)_pixBufferWidth -fl.fpixUFrom);
     fl.fpixVTo = Abs((FLOAT)_pixBufferHeight-fl.fpixVFrom);
   } else {
@@ -887,7 +887,7 @@ void AnimateFireLightning(CTextureEffectSource *ptes)
     while ((FLOAT)ulDist<fl.fDistance) {
       // go away from source point to destination point
       ulDist += (RNDW%5)+5;
-      if ((FLOAT)ulDist>=fl.fDistance) {
+      if ((FLOAT)ulDist >= fl.fDistance) {
         // move point to line end
         fU = fl.fpixUTo;
         fV = fl.fpixVTo;
@@ -939,7 +939,7 @@ void InitializeFireLightningBall(CTextureEffectSource *ptes,
     ((FireLightningBall&) ptes->tes_tespEffectSourceProperties.tesp_achDummy);
   flb.fpixU = (FLOAT) pixU0;
   flb.fpixV = (FLOAT) pixV0;
-  if (pixU0==pixU1 && pixV0==pixV1) {
+  if (pixU0 == pixU1 && pixV0 == pixV1) {
     flb.fRadiusU = 20;
     flb.fRadiusV = 20;
   } else {
@@ -978,7 +978,7 @@ void AnimateFireLightningBall(CTextureEffectSource *ptes)
     while ((FLOAT)ulDist<fDistance) {
       // go away from source point to destination point
       ulDist += (RNDW%5)+5;
-      if ((FLOAT)ulDist>=fDistance) {
+      if ((FLOAT)ulDist >= fDistance) {
         // move point on line
         fU = fDestU;
         fV = fDestV;
@@ -1034,7 +1034,7 @@ void InitializeFireSmoke(CTextureEffectSource *ptes,
     ((FireSmoke&) ptes->tes_tespEffectSourceProperties.tesp_achDummy);
   fs.fpixU = (FLOAT) pixU0;
   fs.fpixV = (FLOAT) pixV0;
-  if (pixU0==pixU1 && pixV0==pixV1) {
+  if (pixU0 == pixU1 && pixV0 == pixV1) {
   } else {
   }
   // initialize smoke points
@@ -1067,13 +1067,13 @@ void AnimateFireSmoke(CTextureEffectSource *ptes)
       PutPixel25UBYTE_FIRE((PIX) fsp.fpixU+pixU, (PIX) fsp.fpixV+pixV, RNDW%iHeat);
     }
     // start moving up
-    if (fsp.fSpeedV<0.1f && (RNDW&255)==0) {
+    if (fsp.fSpeedV<0.1f && (RNDW&255) == 0) {
       fsp.fSpeedV = 1.0f;
     }
     // move up
     fsp.fpixV -= fsp.fSpeedV;
     // at the end of texture go on bottom
-    if (fsp.fpixV<=(FLOAT)_pixBufferHeight) {
+    if (fsp.fpixV <= (FLOAT)_pixBufferHeight) {
       fsp.fpixV = fs.fpixV;
       fsp.fSpeedV = 0.0f;
     }
@@ -1220,12 +1220,12 @@ static void RenderWater(void)
   PIX pixBaseHeight     = _ptdBase->GetPixHeight();
   ULONG *pulTextureBase = _ptdBase->td_pulFrames
                         + GetMipmapOffset( _iWantedMipLevel, pixBaseWidth, pixBaseHeight);
-  pixBaseWidth   >>= _iWantedMipLevel;
-  pixBaseHeight  >>= _iWantedMipLevel;
+  pixBaseWidth >>= _iWantedMipLevel;
+  pixBaseHeight >>= _iWantedMipLevel;
   mmBaseWidthMask  = pixBaseWidth -1;
   mmBaseHeightMask = pixBaseHeight-1;
 
-  ASSERT( _ptdEffect->td_pulFrames!=NULL && _ptdBase->td_pulFrames!=NULL);
+  ASSERT( _ptdEffect->td_pulFrames != NULL && _ptdBase->td_pulFrames != NULL);
   SWORD *pswHeightMap = (SWORD*)_ptdEffect->td_pubBuffer1; // height map pointer
 
   // copy top 2 lines from height map to bottom (so no mask offset will be needed)
@@ -1320,8 +1320,8 @@ pixLoop:
       for (PIX pixU=0; pixU<_pixTexWidth; pixU++)
       { // texel loop
         pixPos =  pswHeightMap[0];
-        pixDU  = (pswHeightMap[1]               - pixPos) >>(SLONG&)mmShift;
-        pixDV  = (pswHeightMap[_pixBufferWidth] - pixPos) >>(SLONG&)mmShift;
+        pixDU  = (pswHeightMap[1]               - pixPos) >> (SLONG&)mmShift;
+        pixDV  = (pswHeightMap[_pixBufferWidth] - pixPos) >> (SLONG&)mmShift;
         pixDU  = (pixU +pixDU) & (SLONG&)mmBaseWidthMask;
         pixDV  = (pixV +pixDV) & (SLONG&)mmBaseHeightMask;
         *pulTexture++ = pulTextureBase[pixDV*pixBaseWidth + pixDU];
@@ -1478,19 +1478,19 @@ pixLoop2:
     { // row loop
       for (PIX pixU=0; pixU<_pixBufferWidth; pixU++)
       { // texel loop
-        slU_00 = pswHeightMap[_pixBufferWidth*0+1] - pswHeightMap[_pixBufferWidth*0+0] + ((pixU+0)<<(DISTORSION+1+1));
-        slV_00 = pswHeightMap[_pixBufferWidth*1+0] - pswHeightMap[_pixBufferWidth*0+0] + ((pixV+0)<<(DISTORSION+1+1));
-        slU_01 = pswHeightMap[_pixBufferWidth*0+2] - pswHeightMap[_pixBufferWidth*0+1] + ((pixU+1)<<(DISTORSION+1+1));
-        slV_01 = pswHeightMap[_pixBufferWidth*1+1] - pswHeightMap[_pixBufferWidth*0+1] + ((pixV+0)<<(DISTORSION+1+1));
-        slU_10 = pswHeightMap[_pixBufferWidth*1+1] - pswHeightMap[_pixBufferWidth*1+0] + ((pixU+0)<<(DISTORSION+1+1));
-        slV_10 = pswHeightMap[_pixBufferWidth*2+0] - pswHeightMap[_pixBufferWidth*1+0] + ((pixV+1)<<(DISTORSION+1+1));
-        slU_11 = pswHeightMap[_pixBufferWidth*1+2] - pswHeightMap[_pixBufferWidth*1+1] + ((pixU+1)<<(DISTORSION+1+1));
-        slV_11 = pswHeightMap[_pixBufferWidth*2+1] - pswHeightMap[_pixBufferWidth*1+1] + ((pixV+1)<<(DISTORSION+1+1));
+        slU_00 = pswHeightMap[_pixBufferWidth*0+1] - pswHeightMap[_pixBufferWidth*0+0] + ((pixU+0) << (DISTORSION+1+1));
+        slV_00 = pswHeightMap[_pixBufferWidth*1+0] - pswHeightMap[_pixBufferWidth*0+0] + ((pixV+0) << (DISTORSION+1+1));
+        slU_01 = pswHeightMap[_pixBufferWidth*0+2] - pswHeightMap[_pixBufferWidth*0+1] + ((pixU+1) << (DISTORSION+1+1));
+        slV_01 = pswHeightMap[_pixBufferWidth*1+1] - pswHeightMap[_pixBufferWidth*0+1] + ((pixV+0) << (DISTORSION+1+1));
+        slU_10 = pswHeightMap[_pixBufferWidth*1+1] - pswHeightMap[_pixBufferWidth*1+0] + ((pixU+0) << (DISTORSION+1+1));
+        slV_10 = pswHeightMap[_pixBufferWidth*2+0] - pswHeightMap[_pixBufferWidth*1+0] + ((pixV+1) << (DISTORSION+1+1));
+        slU_11 = pswHeightMap[_pixBufferWidth*1+2] - pswHeightMap[_pixBufferWidth*1+1] + ((pixU+1) << (DISTORSION+1+1));
+        slV_11 = pswHeightMap[_pixBufferWidth*2+1] - pswHeightMap[_pixBufferWidth*1+1] + ((pixV+1) << (DISTORSION+1+1));
 
-        pulTexture[_pixTexWidth*0+0] = PIXEL( (slU_00                     ) >>(DISTORSION+1  ), (slV_00                     ) >>(DISTORSION+1  ) );
-        pulTexture[_pixTexWidth*0+1] = PIXEL( (slU_00+slU_01              ) >>(DISTORSION+1+1), (slV_00+slV_01              ) >>(DISTORSION+1+1) );
-        pulTexture[_pixTexWidth*1+0] = PIXEL( (slU_00       +slU_10       ) >>(DISTORSION+1+1), (slV_00       +slV_10       ) >>(DISTORSION+1+1) );
-        pulTexture[_pixTexWidth*1+1] = PIXEL( (slU_00+slU_01+slU_10+slU_11) >>(DISTORSION+1+2), (slV_00+slV_01+slV_10+slV_11) >>(DISTORSION+1+2) );
+        pulTexture[_pixTexWidth*0+0] = PIXEL( (slU_00                     ) >> (DISTORSION+1  ), (slV_00                     ) >> (DISTORSION+1  ) );
+        pulTexture[_pixTexWidth*0+1] = PIXEL( (slU_00+slU_01              ) >> (DISTORSION+1+1), (slV_00+slV_01              ) >> (DISTORSION+1+1) );
+        pulTexture[_pixTexWidth*1+0] = PIXEL( (slU_00       +slU_10       ) >> (DISTORSION+1+1), (slV_00       +slV_10       ) >> (DISTORSION+1+1) );
+        pulTexture[_pixTexWidth*1+1] = PIXEL( (slU_00+slU_01+slU_10+slU_11) >> (DISTORSION+1+2), (slV_00+slV_01+slV_10+slV_11) >> (DISTORSION+1+2) );
 
         // advance to next texel
         pulTexture+=2;
@@ -1849,34 +1849,34 @@ pixLoop4:
     { // row loop
       for (PIX pixU=0; pixU<_pixBufferWidth; pixU++)
       { // texel loop
-        slU_00 = pswHeightMap[_pixBufferWidth*0+1] - pswHeightMap[_pixBufferWidth*0+0] + ((pixU+0)<<(DISTORSION+2));
-        slV_00 = pswHeightMap[_pixBufferWidth*1+0] - pswHeightMap[_pixBufferWidth*0+0] + ((pixV+0)<<(DISTORSION+2));
-        slU_01 = pswHeightMap[_pixBufferWidth*0+2] - pswHeightMap[_pixBufferWidth*0+1] + ((pixU+1)<<(DISTORSION+2));
-        slV_01 = pswHeightMap[_pixBufferWidth*1+1] - pswHeightMap[_pixBufferWidth*0+1] + ((pixV+0)<<(DISTORSION+2));
-        slU_10 = pswHeightMap[_pixBufferWidth*1+1] - pswHeightMap[_pixBufferWidth*1+0] + ((pixU+0)<<(DISTORSION+2));
-        slV_10 = pswHeightMap[_pixBufferWidth*2+0] - pswHeightMap[_pixBufferWidth*1+0] + ((pixV+1)<<(DISTORSION+2));
-        slU_11 = pswHeightMap[_pixBufferWidth*1+2] - pswHeightMap[_pixBufferWidth*1+1] + ((pixU+1)<<(DISTORSION+2));
-        slV_11 = pswHeightMap[_pixBufferWidth*2+1] - pswHeightMap[_pixBufferWidth*1+1] + ((pixV+1)<<(DISTORSION+2));
+        slU_00 = pswHeightMap[_pixBufferWidth*0+1] - pswHeightMap[_pixBufferWidth*0+0] + ((pixU+0) << (DISTORSION+2));
+        slV_00 = pswHeightMap[_pixBufferWidth*1+0] - pswHeightMap[_pixBufferWidth*0+0] + ((pixV+0) << (DISTORSION+2));
+        slU_01 = pswHeightMap[_pixBufferWidth*0+2] - pswHeightMap[_pixBufferWidth*0+1] + ((pixU+1) << (DISTORSION+2));
+        slV_01 = pswHeightMap[_pixBufferWidth*1+1] - pswHeightMap[_pixBufferWidth*0+1] + ((pixV+0) << (DISTORSION+2));
+        slU_10 = pswHeightMap[_pixBufferWidth*1+1] - pswHeightMap[_pixBufferWidth*1+0] + ((pixU+0) << (DISTORSION+2));
+        slV_10 = pswHeightMap[_pixBufferWidth*2+0] - pswHeightMap[_pixBufferWidth*1+0] + ((pixV+1) << (DISTORSION+2));
+        slU_11 = pswHeightMap[_pixBufferWidth*1+2] - pswHeightMap[_pixBufferWidth*1+1] + ((pixU+1) << (DISTORSION+2));
+        slV_11 = pswHeightMap[_pixBufferWidth*2+1] - pswHeightMap[_pixBufferWidth*1+1] + ((pixV+1) << (DISTORSION+2));
 
-        pulTexture[_pixTexWidth*0+0] = PIXEL( (slU_00                                 ) >>(DISTORSION  ), (slV_00                                 ) >>(DISTORSION  ) );
-        pulTexture[_pixTexWidth*0+1] = PIXEL( (slU_00* 3+slU_01* 1                    ) >>(DISTORSION+2), (slV_00* 3+slV_01* 1                    ) >>(DISTORSION+2) );
-        pulTexture[_pixTexWidth*0+2] = PIXEL( (slU_00   +slU_01                       ) >>(DISTORSION+1), (slV_00   +slV_01                       ) >>(DISTORSION+1) );
-        pulTexture[_pixTexWidth*0+3] = PIXEL( (slU_00* 1+slU_01* 3                    ) >>(DISTORSION+2), (slV_00* 1+slV_01* 3                    ) >>(DISTORSION+2) );
+        pulTexture[_pixTexWidth*0+0] = PIXEL( (slU_00                                 ) >> (DISTORSION  ), (slV_00                                 ) >> (DISTORSION  ) );
+        pulTexture[_pixTexWidth*0+1] = PIXEL( (slU_00* 3+slU_01* 1                    ) >> (DISTORSION+2), (slV_00* 3+slV_01* 1                    ) >> (DISTORSION+2) );
+        pulTexture[_pixTexWidth*0+2] = PIXEL( (slU_00   +slU_01                       ) >> (DISTORSION+1), (slV_00   +slV_01                       ) >> (DISTORSION+1) );
+        pulTexture[_pixTexWidth*0+3] = PIXEL( (slU_00* 1+slU_01* 3                    ) >> (DISTORSION+2), (slV_00* 1+slV_01* 3                    ) >> (DISTORSION+2) );
 
-        pulTexture[_pixTexWidth*1+0] = PIXEL( (slU_00* 3          +slU_10* 1          ) >>(DISTORSION+2), (slV_00* 3          +slV_10             ) >>(DISTORSION+2) );
-        pulTexture[_pixTexWidth*1+1] = PIXEL( (slU_00* 9+slU_01* 3+slU_10* 3+slU_11* 1) >>(DISTORSION+4), (slV_00* 9+slV_01* 3+slV_10* 3+slV_11* 1) >>(DISTORSION+4) );
-        pulTexture[_pixTexWidth*1+2] = PIXEL( (slU_00* 3+slU_01* 3+slU_10* 1+slU_11* 1) >>(DISTORSION+3), (slV_00* 3+slV_01* 3+slV_10* 1+slV_11* 1) >>(DISTORSION+3) );
-        pulTexture[_pixTexWidth*1+3] = PIXEL( (slU_00* 3+slU_01* 9+slU_10* 1+slU_11* 3) >>(DISTORSION+4), (slV_00* 3+slV_01* 9+slV_10* 1+slV_11* 3) >>(DISTORSION+4) );
+        pulTexture[_pixTexWidth*1+0] = PIXEL( (slU_00* 3          +slU_10* 1          ) >> (DISTORSION+2), (slV_00* 3          +slV_10             ) >> (DISTORSION+2) );
+        pulTexture[_pixTexWidth*1+1] = PIXEL( (slU_00* 9+slU_01* 3+slU_10* 3+slU_11* 1) >> (DISTORSION+4), (slV_00* 9+slV_01* 3+slV_10* 3+slV_11* 1) >> (DISTORSION+4) );
+        pulTexture[_pixTexWidth*1+2] = PIXEL( (slU_00* 3+slU_01* 3+slU_10* 1+slU_11* 1) >> (DISTORSION+3), (slV_00* 3+slV_01* 3+slV_10* 1+slV_11* 1) >> (DISTORSION+3) );
+        pulTexture[_pixTexWidth*1+3] = PIXEL( (slU_00* 3+slU_01* 9+slU_10* 1+slU_11* 3) >> (DISTORSION+4), (slV_00* 3+slV_01* 9+slV_10* 1+slV_11* 3) >> (DISTORSION+4) );
 
-        pulTexture[_pixTexWidth*2+0] = PIXEL( (slU_00             +slU_10             ) >>(DISTORSION+1), (slV_00             +slV_10             ) >>(DISTORSION+1) );
-        pulTexture[_pixTexWidth*2+1] = PIXEL( (slU_00* 3+slU_01* 1+slU_10* 3+slU_11* 1) >>(DISTORSION+3), (slV_00* 3+slV_01* 1+slV_10* 3+slV_11* 1) >>(DISTORSION+3) );
-        pulTexture[_pixTexWidth*2+2] = PIXEL( (slU_00   +slU_01   +slU_10   +slU_11   ) >>(DISTORSION+2), (slV_00   +slV_01   +slV_10   +slV_11   ) >>(DISTORSION+2) );
-        pulTexture[_pixTexWidth*2+3] = PIXEL( (slU_00* 1+slU_01* 3+slU_10* 1+slU_11* 3) >>(DISTORSION+3), (slV_00* 1+slV_01* 3+slV_10* 1+slV_11* 3) >>(DISTORSION+3) );
+        pulTexture[_pixTexWidth*2+0] = PIXEL( (slU_00             +slU_10             ) >> (DISTORSION+1), (slV_00             +slV_10             ) >> (DISTORSION+1) );
+        pulTexture[_pixTexWidth*2+1] = PIXEL( (slU_00* 3+slU_01* 1+slU_10* 3+slU_11* 1) >> (DISTORSION+3), (slV_00* 3+slV_01* 1+slV_10* 3+slV_11* 1) >> (DISTORSION+3) );
+        pulTexture[_pixTexWidth*2+2] = PIXEL( (slU_00   +slU_01   +slU_10   +slU_11   ) >> (DISTORSION+2), (slV_00   +slV_01   +slV_10   +slV_11   ) >> (DISTORSION+2) );
+        pulTexture[_pixTexWidth*2+3] = PIXEL( (slU_00* 1+slU_01* 3+slU_10* 1+slU_11* 3) >> (DISTORSION+3), (slV_00* 1+slV_01* 3+slV_10* 1+slV_11* 3) >> (DISTORSION+3) );
 
-        pulTexture[_pixTexWidth*3+0] = PIXEL( (slU_00* 1          +slU_10* 3          ) >>(DISTORSION+2), (slV_00* 1          +slV_10* 3          ) >>(DISTORSION+2) );
-        pulTexture[_pixTexWidth*3+1] = PIXEL( (slU_00* 3+slU_01* 1+slU_10* 9+slU_11* 3) >>(DISTORSION+4), (slV_00* 3+slV_01* 1+slV_10* 9+slV_11* 3) >>(DISTORSION+4) );
-        pulTexture[_pixTexWidth*3+2] = PIXEL( (slU_00* 1+slU_01* 1+slU_10* 3+slU_11* 3) >>(DISTORSION+3), (slV_00* 1+slV_01* 1+slV_10* 3+slV_11* 3) >>(DISTORSION+3) );
-        pulTexture[_pixTexWidth*3+3] = PIXEL( (slU_00* 1+slU_01* 3+slU_10* 3+slU_11* 9) >>(DISTORSION+4), (slV_00* 1+slV_01* 3+slV_10* 3+slV_11* 9) >>(DISTORSION+4) );
+        pulTexture[_pixTexWidth*3+0] = PIXEL( (slU_00* 1          +slU_10* 3          ) >> (DISTORSION+2), (slV_00* 1          +slV_10* 3          ) >> (DISTORSION+2) );
+        pulTexture[_pixTexWidth*3+1] = PIXEL( (slU_00* 3+slU_01* 1+slU_10* 9+slU_11* 3) >> (DISTORSION+4), (slV_00* 3+slV_01* 1+slV_10* 9+slV_11* 3) >> (DISTORSION+4) );
+        pulTexture[_pixTexWidth*3+2] = PIXEL( (slU_00* 1+slU_01* 1+slU_10* 3+slU_11* 3) >> (DISTORSION+3), (slV_00* 1+slV_01* 1+slV_10* 3+slV_11* 3) >> (DISTORSION+3) );
+        pulTexture[_pixTexWidth*3+3] = PIXEL( (slU_00* 1+slU_01* 3+slU_10* 3+slU_11* 9) >> (DISTORSION+4), (slV_00* 1+slV_01* 3+slV_10* 3+slV_11* 9) >> (DISTORSION+4) );
 
         // advance to next texel
         pulTexture+=4;
@@ -1944,9 +1944,9 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
                    (ULONG)pOld[pixOffset + _pixBufferWidth] +
                    (ULONG)pOld[pixOffset - 1] +
                    (ULONG)pOld[pixOffset + 1]
-                  )>>2) +
+                  ) >> 2) +
                    (ULONG)pOld[pixOffset]
-                )>>1;
+                ) >> 1;
         pNew[pixOffset] = ulNew - (ulNew >> slDensity);
         pixOffset++;
       }
@@ -1962,9 +1962,9 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
                  (ULONG)pOld[slLineBelow] +
                  (ULONG)pOld[slLineLeft] +
                  (ULONG)pOld[slLineRight]
-                )>>2) +
+                ) >> 2) +
                  (ULONG)pOld[pixOffset]
-              )>>1;
+              ) >> 1;
       pNew[pixOffset] = ulNew - (ulNew >> slDensity);
       slLineAbove++;
       slLineBelow++;
@@ -1983,9 +1983,9 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
                  (ULONG)pOld[slLineBelow] +
                  (ULONG)pOld[slLineLeft] +
                  (ULONG)pOld[slLineRight]
-                )>>2) +
+                ) >> 2) +
                  (ULONG)pOld[pixOffset]
-              )>>1;
+              ) >> 1;
       pNew[pixOffset] = ulNew - (ulNew >> slDensity);
       slLineAbove++;
       slLineBelow++;
@@ -1998,43 +1998,43 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
                (ULONG)pOld[(_pixBufferHeight-1)*_pixBufferWidth] +
                (ULONG)pOld[1] +
                (ULONG)pOld[_pixBufferWidth-1]
-              )>>2) +
+              ) >> 2) +
                (ULONG)pOld[0]
-            )>>1;
+            ) >> 1;
     pNew[0] = ulNew - (ulNew >> slDensity);
     // corner ( 0, _pixBufferWidth)
     ulNew = ((((ULONG)pOld[(2*_pixBufferWidth) - 1] +
                (ULONG)pOld[(_pixBufferHeight*_pixBufferWidth) - 1] +
                (ULONG)pOld[0] +
                (ULONG)pOld[_pixBufferWidth-2]
-              )>>2) +
+              ) >> 2) +
                (ULONG)pOld[_pixBufferWidth-1]
-            )>>1;
+            ) >> 1;
     pNew[_pixBufferWidth-1] = ulNew - (ulNew >> slDensity);
     // corner ( _pixBufferHeight, 0)
     ulNew = ((((ULONG)pOld[0] +
                (ULONG)pOld[(_pixBufferHeight-2)*_pixBufferWidth] +
                (ULONG)pOld[((_pixBufferHeight-1)*_pixBufferWidth) + 1] +
                (ULONG)pOld[(_pixBufferHeight*_pixBufferWidth) - 1]
-              )>>2) +
+              ) >> 2) +
                (ULONG)pOld[(_pixBufferHeight-1)*_pixBufferWidth]
-            )>>1;
+            ) >> 1;
     pNew[(_pixBufferHeight-1)*_pixBufferWidth] = ulNew - (ulNew >> slDensity);
     // corner ( _pixBufferHeight, _pixBufferWidth)
     ulNew = ((((ULONG)pOld[_pixBufferWidth-1] +
                (ULONG)pOld[((_pixBufferHeight-1)*_pixBufferWidth) - 1] +
                (ULONG)pOld[(_pixBufferHeight-1)*_pixBufferWidth] +
                (ULONG)pOld[(_pixBufferHeight*_pixBufferWidth) - 2]
-              )>>2) +
+              ) >> 2) +
                (ULONG)pOld[(_pixBufferHeight*_pixBufferWidth) - 1]
-            )>>1;
+            ) >> 1;
     pNew[(_pixBufferHeight*_pixBufferWidth) - 1] = ulNew - (ulNew >> slDensity);
 
 
   // --------------------------
   //      Plasma going up
   // --------------------------
-  } else if (eType==ptUp || eType==ptUpTile) {
+  } else if (eType == ptUp || eType == ptUpTile) {
     // inner rectangle (without 1 pixel border)
     pixOffset = _pixBufferWidth;
     for (pixV=1; pixV<_pixBufferHeight-1; pixV++) {
@@ -2043,15 +2043,15 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
                    (ULONG)pOld[pixOffset + _pixBufferWidth] +
                    (ULONG)pOld[pixOffset - 1] +
                    (ULONG)pOld[pixOffset + 1]
-                  )>>2) +
+                  ) >> 2) +
                    (ULONG)pOld[pixOffset]
-                )>>1;
+                ) >> 1;
         pNew[pixOffset-_pixBufferWidth] = ulNew - (ulNew >> slDensity);
         pixOffset++;
       }
     }
     // tile
-    if (eType==ptUpTile) {
+    if (eType == ptUpTile) {
       // upper horizontal border (without corners)
       slLineAbove = ((_pixBufferHeight-1)*_pixBufferWidth) + 1;
       slLineBelow = _pixBufferWidth + 1;
@@ -2063,9 +2063,9 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
                    (ULONG)pOld[slLineBelow] +
                    (ULONG)pOld[slLineLeft] +
                    (ULONG)pOld[slLineRight]
-                  )>>2) +
+                  ) >> 2) +
                    (ULONG)pOld[pixOffset]
-                )>>1;
+                ) >> 1;
         pNew[slLineAbove] = ulNew - (ulNew >> slDensity);
         slLineAbove++;
         slLineBelow++;
@@ -2084,9 +2084,9 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
                    (ULONG)pOld[slLineBelow] +
                    (ULONG)pOld[slLineLeft] +
                    (ULONG)pOld[slLineRight]
-                  )>>2) +
+                  ) >> 2) +
                    (ULONG)pOld[pixOffset]
-                )>>1;
+                ) >> 1;
         pNew[slLineAbove] = ulNew - (ulNew >> slDensity);
         slLineAbove++;
         slLineBelow++;
@@ -2099,36 +2099,36 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
                  (ULONG)pOld[(_pixBufferHeight-1)*_pixBufferWidth] +
                  (ULONG)pOld[1] +
                  (ULONG)pOld[_pixBufferWidth-1]
-                )>>2) +
+                ) >> 2) +
                  (ULONG)pOld[0]
-              )>>1;
+              ) >> 1;
       pNew[(_pixBufferHeight-1)*_pixBufferWidth] = ulNew - (ulNew >> slDensity);
       // corner ( 0, _pixBufferWidth)
       ulNew = ((((ULONG)pOld[(2*_pixBufferWidth) - 1] +
                  (ULONG)pOld[(_pixBufferHeight*_pixBufferWidth) - 1] +
                  (ULONG)pOld[0] +
                  (ULONG)pOld[_pixBufferWidth-2]
-                )>>2) +
+                ) >> 2) +
                  (ULONG)pOld[_pixBufferWidth-1]
-              )>>1;
+              ) >> 1;
       pNew[(_pixBufferHeight*_pixBufferWidth) - 1] = ulNew - (ulNew >> slDensity);
       // corner ( _pixBufferHeight, 0)
       ulNew = ((((ULONG)pOld[0] +
                  (ULONG)pOld[(_pixBufferHeight-2)*_pixBufferWidth] +
                  (ULONG)pOld[((_pixBufferHeight-1)*_pixBufferWidth) + 1] +
                  (ULONG)pOld[(_pixBufferHeight*_pixBufferWidth) - 1]
-                )>>2) +
+                ) >> 2) +
                  (ULONG)pOld[(_pixBufferHeight-1)*_pixBufferWidth]
-              )>>1;
+              ) >> 1;
       pNew[(_pixBufferHeight-2)*_pixBufferWidth] = ulNew - (ulNew >> slDensity);
       // corner ( _pixBufferHeight, _pixBufferWidth)
       ulNew = ((((ULONG)pOld[_pixBufferWidth-1] +
                  (ULONG)pOld[((_pixBufferHeight-1)*_pixBufferWidth) - 1] +
                  (ULONG)pOld[(_pixBufferHeight-1)*_pixBufferWidth] +
                  (ULONG)pOld[(_pixBufferHeight*_pixBufferWidth) - 2]
-                )>>2) +
+                ) >> 2) +
                  (ULONG)pOld[(_pixBufferHeight*_pixBufferWidth) - 1]
-              )>>1;
+              ) >> 1;
       pNew[((_pixBufferHeight-1)*_pixBufferWidth) - 1] = ulNew - (ulNew >> slDensity);
     }
 
@@ -2136,7 +2136,7 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
   // --------------------------
   //     Plasma going down
   // --------------------------
-  } else if (eType==ptDown || eType==ptDownTile) {
+  } else if (eType == ptDown || eType == ptDownTile) {
     // inner rectangle (without 1 pixel border)
     pixOffset = _pixBufferWidth;
     for (pixV=1; pixV<_pixBufferHeight-1; pixV++) {
@@ -2145,15 +2145,15 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
                    (ULONG)pOld[pixOffset + _pixBufferWidth] +
                    (ULONG)pOld[pixOffset - 1] +
                    (ULONG)pOld[pixOffset + 1]
-                  )>>2) +
+                  ) >> 2) +
                    (ULONG)pOld[pixOffset]
-                )>>1;
+                ) >> 1;
         pNew[pixOffset+_pixBufferWidth] = ulNew - (ulNew >> slDensity);
         pixOffset++;
       }
     }
     // tile
-    if (eType==ptDownTile) {
+    if (eType == ptDownTile) {
       // upper horizontal border (without corners)
       slLineAbove = ((_pixBufferHeight-1)*_pixBufferWidth) + 1;
       slLineBelow = _pixBufferWidth + 1;
@@ -2165,9 +2165,9 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
                    (ULONG)pOld[slLineBelow] +
                    (ULONG)pOld[slLineLeft] +
                    (ULONG)pOld[slLineRight]
-                  )>>2) +
+                  ) >> 2) +
                    (ULONG)pOld[pixOffset]
-                )>>1;
+                ) >> 1;
         pNew[slLineBelow] = ulNew - (ulNew >> slDensity);
         slLineAbove++;
         slLineBelow++;
@@ -2186,9 +2186,9 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
                    (ULONG)pOld[slLineBelow] +
                    (ULONG)pOld[slLineLeft] +
                    (ULONG)pOld[slLineRight]
-                  )>>2) +
+                  ) >> 2) +
                    (ULONG)pOld[pixOffset]
-                )>>1;
+                ) >> 1;
         pNew[slLineBelow] = ulNew - (ulNew >> slDensity);
         slLineAbove++;
         slLineBelow++;
@@ -2201,36 +2201,36 @@ static void AnimatePlasma( SLONG slDensity, PlasmaType eType)
                  (ULONG)pOld[(_pixBufferHeight-1)*_pixBufferWidth] +
                  (ULONG)pOld[1] +
                  (ULONG)pOld[_pixBufferWidth-1]
-                )>>2) +
+                ) >> 2) +
                  (ULONG)pOld[0]
-              )>>1;
+              ) >> 1;
       pNew[_pixBufferWidth] = ulNew - (ulNew >> slDensity);
       // corner ( 0, _pixBufferWidth)
       ulNew = ((((ULONG)pOld[(2*_pixBufferWidth) - 1] +
                  (ULONG)pOld[(_pixBufferHeight*_pixBufferWidth) - 1] +
                  (ULONG)pOld[0] +
                  (ULONG)pOld[_pixBufferWidth-2]
-                )>>2) +
+                ) >> 2) +
                  (ULONG)pOld[_pixBufferWidth-1]
-              )>>1;
+              ) >> 1;
       pNew[(2*_pixBufferWidth) - 1] = ulNew - (ulNew >> slDensity);
       // corner ( _pixBufferHeight, 0)
       ulNew = ((((ULONG)pOld[0] +
                  (ULONG)pOld[(_pixBufferHeight-2)*_pixBufferWidth] +
                  (ULONG)pOld[((_pixBufferHeight-1)*_pixBufferWidth) + 1] +
                  (ULONG)pOld[(_pixBufferHeight*_pixBufferWidth) - 1]
-                )>>2) +
+                ) >> 2) +
                  (ULONG)pOld[(_pixBufferHeight-1)*_pixBufferWidth]
-              )>>1;
+              ) >> 1;
       pNew[0] = ulNew - (ulNew >> slDensity);
       // corner ( _pixBufferHeight, _pixBufferWidth)
       ulNew = ((((ULONG)pOld[_pixBufferWidth-1] +
                  (ULONG)pOld[((_pixBufferHeight-1)*_pixBufferWidth) - 1] +
                  (ULONG)pOld[(_pixBufferHeight-1)*_pixBufferWidth] +
                  (ULONG)pOld[(_pixBufferHeight*_pixBufferWidth) - 2]
-                )>>2) +
+                ) >> 2) +
                  (ULONG)pOld[(_pixBufferHeight*_pixBufferWidth) - 1]
-              )>>1;
+              ) >> 1;
       pNew[_pixBufferWidth-1] = ulNew - (ulNew >> slDensity);
     }
   }
@@ -2315,7 +2315,7 @@ pixDone:
     SLONG slOffset = pixU;
     for (PIX pixV=1; pixV<_pixBufferHeight-1; pixV++)
     {
-      ULONG ulNew = ((ULONG)pubNew[_pixBufferWidth+slOffset] + (ULONG)pubNew[_pixBufferWidth*2+slOffset]) >>1;
+      ULONG ulNew = ((ULONG)pubNew[_pixBufferWidth+slOffset] + (ULONG)pubNew[_pixBufferWidth*2+slOffset]) >> 1;
       if (ulNew>slDensity) {
         ULONG ulNewDensity = RNDW&slDensity;
         ulNew -= ulNewDensity;
@@ -2345,7 +2345,7 @@ static void RenderPlasmaFire(void)
   ULONG *pulTextureBase = _ptdBase->td_pulFrames;
   ULONG *pulTexture     = _ptdEffect->td_pulFrames;
 
-  ASSERT( _ptdEffect->td_pulFrames!=NULL && _ptdBase->td_pulFrames!=NULL && pixBaseWidth<=256);
+  ASSERT( _ptdEffect->td_pulFrames != NULL && _ptdBase->td_pulFrames != NULL && pixBaseWidth <= 256);
   UBYTE *pubHeat = (UBYTE*)_ptdEffect->td_pubBuffer2;  // heat map pointer
   SLONG slHeatMapStep  = _pixBufferWidth/_pixTexWidth;
   SLONG slHeatRowStep  = (slHeatMapStep-1)*_pixBufferWidth;
@@ -2387,7 +2387,7 @@ pixLoopF:
   for (INDEX pixV=0; pixV<_pixTexHeight; pixV++) {
     // for every pixel in horizontal line
     for (INDEX pixU=0; pixU<_pixTexWidth; pixU++) {
-      iPalette = (*pubHeat)>>slBaseMipShift;
+      iPalette = (*pubHeat) >> slBaseMipShift;
       *pulTexture++ = pulTextureBase[iPalette];
       pubHeat += slHeatMapStep;
     }
@@ -2675,8 +2675,8 @@ void CTextureEffectGlobal::Render( INDEX iWantedMipLevel, PIX pixTexWidth, PIX p
     RenderWater();
   } else {
     // use plasma & fire rendering routine
-    _pixTexWidth  = _ptdEffect->GetWidth()  >>iWantedMipLevel;
-    _pixTexHeight = _ptdEffect->GetHeight() >>iWantedMipLevel;
+    _pixTexWidth  = _ptdEffect->GetWidth() >> iWantedMipLevel;
+    _pixTexHeight = _ptdEffect->GetHeight() >> iWantedMipLevel;
     RenderPlasmaFire();
   }
 }

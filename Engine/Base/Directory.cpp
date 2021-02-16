@@ -56,7 +56,7 @@ void FillDirList_internal(const CTFileName &fnmBasePath,
     delete pdr;
 
     // if the dir is not allowed
-    if (pafnmInclude!=NULL &&
+    if (pafnmInclude != NULL &&
       (!FileMatchesList(*pafnmInclude, fnmDir) || FileMatchesList(*pafnmExclude, fnmDir)) ) {
       // skip it
       continue;
@@ -68,12 +68,12 @@ void FillDirList_internal(const CTFileName &fnmBasePath,
     
     // for each file in the directory
     for (
-      BOOL bFileExists = hFile!=-1; 
+      BOOL bFileExists = hFile != -1; 
       bFileExists; 
-      bFileExists = _findnext( hFile, &c_file )==0) {
+      bFileExists = _findnext( hFile, &c_file ) == 0) {
 
       // if dummy dir (this dir, parent dir, or any dir starting with '.')
-      if (c_file.name[0]=='.') {
+      if (c_file.name[0] == '.') {
         // skip it
         continue;
       }
@@ -91,7 +91,7 @@ void FillDirList_internal(const CTFileName &fnmBasePath,
           lhDirs.AddTail(pdrNew->dr_lnNode);
         }
       // if it matches the pattern
-      } else if (strPattern=="" || fnm.Matches(strPattern)) {
+      } else if (strPattern == "" || fnm.Matches(strPattern)) {
         // add that file
         afnm.Push() = fnm;
       }
@@ -111,7 +111,7 @@ ENGINE_API void MakeDirList(
   // make one temporary array
   CDynamicStackArray<CTFileName> afnm;
 
-  if (_fnmMod!="") {
+  if (_fnmMod != "") {
     FillDirList_internal(_fnmApplicationPath, afnm, fnmDir, strPattern, bRecursive,
       &_afnmBaseBrowseInc, &_afnmBaseBrowseExc);
     if (bSearchCD) {
@@ -138,21 +138,21 @@ ENGINE_API void MakeDirList(
         continue;
       }
     } else {
-      if (fnm.FileDir()!=fnmDir) {
+      if (fnm.FileDir() != fnmDir) {
         continue;
       }
     }
 
     // if doesn't match pattern
-    if (strPattern!="" && !fnm.Matches(strPattern)) {
+    if (strPattern != "" && !fnm.Matches(strPattern)) {
       // skip it
       continue;
     }
 
     // if mod is active, and the file is not in mod
-    if (_fnmMod!="" && !UNZIPIsFileAtIndexMod(iFileInZip)) {
+    if (_fnmMod != "" && !UNZIPIsFileAtIndexMod(iFileInZip)) {
       // if it doesn't match base browse path
-      if ( !FileMatchesList(_afnmBaseBrowseInc, fnm) || FileMatchesList(_afnmBaseBrowseExc, fnm) ) {
+      if (!FileMatchesList(_afnmBaseBrowseInc, fnm) || FileMatchesList(_afnmBaseBrowseExc, fnm) ) {
         // skip it
         continue;
       }
@@ -163,7 +163,7 @@ ENGINE_API void MakeDirList(
   }
 
   // if no files
-  if (afnm.Count()==0) {
+  if (afnm.Count() == 0) {
     // don't check for duplicates
     return;
   }
@@ -175,7 +175,7 @@ ENGINE_API void MakeDirList(
   INDEX ctFiles = afnm.Count();
   for (INDEX iFile=0; iFile<ctFiles; iFile++) {
     // if not same as last one
-    if (iFile==0 || afnm[iFile]!=afnm[iFile-1]) {
+    if (iFile == 0 || afnm[iFile] != afnm[iFile-1]) {
       // copy over to final array
       afnmDir.Push() = afnm[iFile];
     }

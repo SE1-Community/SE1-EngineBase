@@ -27,25 +27,25 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // td_ulFlags bits
 // (on disk and in memory)
-#define TEX_ALPHACHANNEL (1UL<<0)   // texture has alpha channel (for old version support)
-#define TEX_32BIT        (1UL<<1)   // texture needs to be in 32-bit quality uploaded if can
+#define TEX_ALPHACHANNEL (1UL << 0)   // texture has alpha channel (for old version support)
+#define TEX_32BIT        (1UL << 1)   // texture needs to be in 32-bit quality uploaded if can
 // (only in memory)
-#define TEX_STATIC       (1UL<<5)   // remain loaded after being bound (i.e. uploaded - for base textures)
-#define TEX_CONSTANT     (1UL<<6)   // cannot be changed (no mip-map disposing, no LOD biasing, no colorizing, nothing!)
-#define TEX_TRANSPARENT  (1UL<<7)   // only one bit of alpha channel is enough (internal format GL_RGB5_A1)
-#define TEX_EQUALIZED    (1UL<<8)   // texture has 128-gray last mipmap (i.e. can be discarded in shade mode)
-#define TEX_GRAY         (1UL<<9)   // grayscale texture
-#define TEX_WHITE        (1UL<<10)  // completely white texture (believe me, there are some cases)
-#define TEX_KEEPCOLOR    (1UL<<11)  // don't (de)saturate (for heightmaps and such!)
-#define TEX_SINGLEMIPMAP (1UL<<18)  // set if last uploading was in single-mipmap
-#define TEX_PROBED       (1UL<<19)  // set if last binding was as probe-texture
+#define TEX_STATIC       (1UL << 5)   // remain loaded after being bound (i.e. uploaded - for base textures)
+#define TEX_CONSTANT     (1UL << 6)   // cannot be changed (no mip-map disposing, no LOD biasing, no colorizing, nothing!)
+#define TEX_TRANSPARENT  (1UL << 7)   // only one bit of alpha channel is enough (internal format GL_RGB5_A1)
+#define TEX_EQUALIZED    (1UL << 8)   // texture has 128-gray last mipmap (i.e. can be discarded in shade mode)
+#define TEX_GRAY         (1UL << 9)   // grayscale texture
+#define TEX_WHITE        (1UL << 10)  // completely white texture (believe me, there are some cases)
+#define TEX_KEEPCOLOR    (1UL << 11)  // don't (de)saturate (for heightmaps and such!)
+#define TEX_SINGLEMIPMAP (1UL << 18)  // set if last uploading was in single-mipmap
+#define TEX_PROBED       (1UL << 19)  // set if last binding was as probe-texture
 // (flags that shows if texture mipmaps has been changed)
-#define TEX_DISPOSED     (1UL<<20)  // largest mip-map(s) has been left-out
-#define TEX_DITHERED     (1UL<<21)  // dithering has been applied on this texture
-#define TEX_FILTERED     (1UL<<22)  // flitering has been applied on this texture
-#define TEX_SATURATED    (1UL<<23)  // saturation has been adjusted on this texture
-#define TEX_COLORIZED    (1UL<<24)  // mipmaps has been colorized on this texture
-#define TEX_WASOLD       (1UL<<30)  // loaded from old format (version 3)
+#define TEX_DISPOSED     (1UL << 20)  // largest mip-map(s) has been left-out
+#define TEX_DITHERED     (1UL << 21)  // dithering has been applied on this texture
+#define TEX_FILTERED     (1UL << 22)  // flitering has been applied on this texture
+#define TEX_SATURATED    (1UL << 23)  // saturation has been adjusted on this texture
+#define TEX_COLORIZED    (1UL << 24)  // mipmaps has been colorized on this texture
+#define TEX_WASOLD       (1UL << 30)  // loaded from old format (version 3)
 
 
 /*
@@ -78,8 +78,8 @@ public:
   INDEX td_iRenderFrame; // frame number currently rendering (for profiling)
 
   // constructor and destructor
-	CTextureData();
-	~CTextureData();
+  CTextureData();
+  ~CTextureData();
 
   // reference counting (override from CAnimData)
   void RemReference_internal(void);
@@ -90,8 +90,8 @@ public:
   // gets values from some of texture data members
   inline MEX GetWidth(void)     const { return td_mexWidth;  };
   inline MEX GetHeight(void)    const { return td_mexHeight; };
-  inline PIX GetPixWidth(void)  const { return td_mexWidth >>td_iFirstMipLevel; };
-  inline PIX GetPixHeight(void) const { return td_mexHeight>>td_iFirstMipLevel; };
+  inline PIX GetPixWidth(void)  const { return td_mexWidth >> td_iFirstMipLevel; };
+  inline PIX GetPixHeight(void) const { return td_mexHeight >> td_iFirstMipLevel; };
   inline ULONG GetFlags(void)   const { return td_ulFlags; };
   inline ULONG GetNoOfMips(void)     const { return GetNoOfMipmaps( GetPixWidth(), GetPixHeight()); };
   inline ULONG GetNoOfFineMips(void) const { return td_ctFineMipLevels; };
@@ -169,8 +169,8 @@ public:
   MEX GetWidth(void) const;
   MEX GetHeight(void) const;
   ULONG GetFlags(void) const;
-  void Read_t(  CTStream *istrFile); // throw char * //	read and
-	void Write_t( CTStream *ostrFile); // throw char * //	write functions
+  void Read_t(  CTStream *istrFile); // throw char * //  read and
+  void Write_t( CTStream *ostrFile); // throw char * //  write functions
 
   // obtain texture and set it for this object
   void SetData_t(const CTFileName &fnmTexture); // throw char *

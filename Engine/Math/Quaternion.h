@@ -207,7 +207,7 @@ inline Quaternion<Type> Log(const Quaternion<Type> &q)
   if (fabs(q.q_w)<1.0) {
     Type tAngle = acos(q.q_w);
     Type tSin   = sin(tAngle);
-    if (fabs(tSin)>=0.001) {
+    if (fabs(tSin) >= 0.001) {
       Type tRatio = tAngle/tSin;
       return Quaternion<Type>(Type(0), q.q_x*tRatio, q.q_y*tRatio, q.q_z*tRatio);
     }
@@ -228,7 +228,7 @@ inline Quaternion<Type> Slerp(Type tT,
   if (tCos<Type(0)) {
     tCos = -tCos;
     qTemp = -q2;
-  } else  {
+  } else {
     qTemp = q2;
   }
 
@@ -288,9 +288,9 @@ void Quaternion<Type>::ToMatrix(Matrix<Type, 3, 3> &m) const
   Type yy = 2*q_y*q_y; Type yz = 2*q_y*q_z; Type zz = 2*q_z*q_z;
   Type wx = 2*q_w*q_x; Type wy = 2*q_w*q_y; Type wz = 2*q_w*q_z;
 
-  m(1,1) = 1.0-(yy+zz); m(1,2) = xy-wz;        m(1,3) = xz+wy;      	
-  m(2,1) = xy+wz;		    m(2,2) = 1.0-(xx+zz);  m(2,3) = yz-wx;		    
-  m(3,1) = xz-wy;		    m(3,2) = yz+wx;        m(3,3) = 1.0-(xx+yy);
+  m(1,1) = 1.0-(yy+zz); m(1,2) = xy-wz;        m(1,3) = xz+wy;        
+  m(2,1) = xy+wz;        m(2,2) = 1.0-(xx+zz);  m(2,3) = yz-wx;        
+  m(3,1) = xz-wy;        m(3,2) = yz+wx;        m(3,3) = 1.0-(xx+yy);
 }
 
 // conversion from matrix
@@ -300,7 +300,7 @@ void Quaternion<Type>::FromMatrix(Matrix<Type, 3, 3> &m)
     Type trace = m(1,1)+m(2,2)+m(3,3);
     Type root;
 
-    if ( trace > 0.0 )
+    if (trace > 0.0 )
     {
         // |w| > 1/2, may as well choose w > 1/2
         root = sqrt(trace+1.0);  // 2w
@@ -315,9 +315,9 @@ void Quaternion<Type>::FromMatrix(Matrix<Type, 3, 3> &m)
         // |w| <= 1/2
         static int next[3] = { 1, 2, 0 };
         int i = 0;
-        if ( m(2,2) > m(1,1) )
+        if (m(2,2) > m(1,1) )
             i = 1;
-        if ( m(3,3) > m(i+1,i+1) )
+        if (m(3,3) > m(i+1,i+1) )
             i = 2;
         int j = next[i];
         int k = next[j];
@@ -353,7 +353,7 @@ void Quaternion<Type>::ToAxisAngle(Vector<Type, 3> &n, Type &a)
   a = 2*acos(tCos);
 
   // if angle is not zero
-  if (Abs(tSin)>=0.001) {
+  if (Abs(tSin) >= 0.001) {
     n(1) = q_x / tSin;
     n(2) = q_y / tSin;
     n(3) = q_z / tSin;

@@ -104,12 +104,12 @@ IMPORTANT:
 This is how this piece of code should look like:
 
   // if not already going down at max speed
-  if (! (vCurrentOrthogonal%vGDir>=fGV)) {
+  if (! (vCurrentOrthogonal%vGDir >= fGV)) {
     // add accelleration to parallel speed
     vCurrentOrthogonal+=vGDir*fGA;
 
     // if going down at max speed
-    if (vCurrentOrthogonal%vGDir>=fGV) {
+    if (vCurrentOrthogonal%vGDir >= fGV) {
       // clamp
       vCurrentOrthogonal = vGDir*fGV;
     }
@@ -120,7 +120,7 @@ But, due to need for compatibility with older versions and bad VC code generator
   
 // KLUDGE_BEGIN
 
-  if (_pNetwork->ga_ulDemoMinorVersion<=2) {
+  if (_pNetwork->ga_ulDemoMinorVersion <= 2) {
     Swap(vCurrentOrthogonal, vCurrentParallel);
   }
 
@@ -129,7 +129,7 @@ But, due to need for compatibility with older versions and bad VC code generator
   vCurrentOrthogonal+=vGDir*fGA;
 
   // if going down at max speed
-  if (vCurrentOrthogonal%vGDir>=fGV) {
+  if (vCurrentOrthogonal%vGDir >= fGV) {
     // clamp
     vCurrentOrthogonal = vGDir*fGV;
   } else {
@@ -417,7 +417,7 @@ functions:
   {
     CRationalEntity::ChecksumForSync(ulCRC, iExtensiveSyncCheck);
     if (iExtensiveSyncCheck>0) {
-      if (en_pbpoStandOn!=NULL) {
+      if (en_pbpoStandOn != NULL) {
         CRC_AddLONG(ulCRC, en_pbpoStandOn->bpo_iInWorld);
       }
       CRC_AddFLOAT(ulCRC, en_apbpoNearPolygons.Count());
@@ -440,7 +440,7 @@ functions:
     CRationalEntity::DumpSync_t(strm, iExtensiveSyncCheck);
     if (iExtensiveSyncCheck>0) {
       strm.FPrintF_t("standon polygon: ");
-      if (en_pbpoStandOn!=NULL) {
+      if (en_pbpoStandOn != NULL) {
         strm.FPrintF_t("%d\n", en_pbpoStandOn->bpo_iInWorld);
       } else {
         strm.FPrintF_t("<none>\n");
@@ -489,7 +489,7 @@ functions:
         (ULONG&)en_vReferencePlane(3));
       strm.FPrintF_t("reference surface: %d\n", en_iReferenceSurface);
       strm.FPrintF_t("reference entity: ");
-      if (en_penReference!=NULL) {
+      if (en_penReference != NULL) {
         strm.FPrintF_t("id: %08X\n", en_penReference->en_ulID);
       } else {
         strm.FPrintF_t("none\n");
@@ -505,24 +505,24 @@ functions:
     ClearTemporaryData();
 
     // old version didn't load this
-    if (istr->PeekID_t()==CChunkID("MENT")) { // 'movable entity'
+    if (istr->PeekID_t() == CChunkID("MENT")) { // 'movable entity'
       istr->ExpectID_t("MENT"); // 'movable entity'
 
       INDEX ibpo;
-      (*istr)>>ibpo;
+      (*istr) >> ibpo;
       en_pbpoStandOn = GetWorldPolygonPointer(ibpo);
 
       BOOL bAnyNULLs = FALSE;
       INDEX ctbpoNear;
-      (*istr)>>ctbpoNear;
+      (*istr) >> ctbpoNear;
       if (ctbpoNear>0) {
         en_apbpoNearPolygons.PopAll();
         en_apbpoNearPolygons.Push(ctbpoNear);
         for (INDEX i=0; i<ctbpoNear; i++) {
           INDEX ibpo;
-          (*istr)>>ibpo;
+          (*istr) >> ibpo;
            en_apbpoNearPolygons[i] = GetWorldPolygonPointer(ibpo);
-           if (en_apbpoNearPolygons[i]==NULL) {
+           if (en_apbpoNearPolygons[i] == NULL) {
             bAnyNULLs = TRUE;
            }
         }
@@ -535,7 +535,7 @@ functions:
 
     // if entity was in list of movers when saving
     BOOL bWasMoving;
-    (*istr)>>bWasMoving;
+    (*istr) >> bWasMoving;
     if (bWasMoving) {
       // add it to movers
       AddToMovers();
@@ -550,19 +550,19 @@ functions:
 
     INDEX ibpo;
     ibpo = GetWorldPolygonIndex(en_pbpoStandOn);
-    (*ostr)<<ibpo;
+    (*ostr) << ibpo;
 
     INDEX ctbpoNear = en_apbpoNearPolygons.Count();
-    (*ostr)<<ctbpoNear;
+    (*ostr) << ctbpoNear;
     for (INDEX i=0; i<ctbpoNear; i++) {
       INDEX ibpo;
       ibpo = GetWorldPolygonIndex(en_apbpoNearPolygons[i]);
-      (*ostr)<<ibpo;
+      (*ostr) << ibpo;
     }
 
     // last placement is not saved to disk - it is not neccessary!
     // save linked state in list of movers
-    (*ostr)<<en_lnInMovers.IsLinked();
+    (*ostr) << en_lnInMovers.IsLinked();
   }
 
   // this one is used in rendering - gets lerped placement between ticks 
@@ -782,11 +782,11 @@ functions:
   {
     // NOTE: must be damaged by some brush if possible, because enemies are set up so
     // that they cannot harm themselves.
-    if (en_penLastValidReference!=NULL) {
+    if (en_penLastValidReference != NULL) {
       return en_penLastValidReference;
     } else {
       CBrushSector *pbsc = GetFirstSector();
-      if (pbsc==NULL) {
+      if (pbsc == NULL) {
         return this;
       } else {
         return pbsc->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
@@ -813,7 +813,7 @@ functions:
       CMovingSphere &ms = absSpheres[iSphere];
       // if the sphere is in field sector
       if (bsc.bsc_bspBSPTree.TestSphere(
-        FLOATtoDOUBLE(ms.ms_vRelativeCenter0), ms.ms_fR)>=0) {
+        FLOATtoDOUBLE(ms.ms_vRelativeCenter0), ms.ms_fR) >= 0) {
         bAnyIn = TRUE;
         break;
       }
@@ -825,15 +825,15 @@ functions:
     // try to find the force in container
     CEntityForce *pef = NULL;
     for (INDEX iForce=0; iForce<_aefForces.Count(); iForce++) {
-      if (penEntity ==_aefForces[iForce].ef_penEntity
-        &&iForceType==_aefForces[iForce].ef_iForceType) {
+      if (penEntity == _aefForces[iForce].ef_penEntity
+        &&iForceType == _aefForces[iForce].ef_iForceType) {
         pef = &_aefForces[iForce];
         break;
       }
     }
    
     // if field is not found
-    if (pef==NULL) {
+    if (pef == NULL) {
       // add a new one
       pef = _aefForces.Push(1);
       pef->ef_penEntity = penEntity;
@@ -847,7 +847,7 @@ functions:
   void TestFields(INDEX &iUpContent, INDEX &iDnContent, FLOAT &fImmersionFactor)
   {
     // this works only for models
-    ASSERT(en_RenderType==RT_MODEL || en_RenderType==RT_EDITORMODEL || en_RenderType==RT_SKAMODEL || en_RenderType==RT_SKAEDITORMODEL);
+    ASSERT(en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL || en_RenderType == RT_SKAMODEL || en_RenderType == RT_SKAEDITORMODEL);
     iUpContent = 0;
     iDnContent = 0;
     FLOAT fUp = 0.0f;
@@ -880,7 +880,7 @@ functions:
       CEntity *penSector = bsc.bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
 
       // if not real brush
-      if (penSector->en_RenderType!=RT_BRUSH) {
+      if (penSector->en_RenderType != RT_BRUSH) {
         // skip it
         continue;
       }
@@ -891,7 +891,7 @@ functions:
 
       // if sector content is not default
       INDEX iContent = bsc.GetContentType();
-      if (iContent!=0) {
+      if (iContent != 0) {
         // if inside sector at all
         if (dMax>0.0f && dMin<1.0f) {
           //CPrintF("%s: %lf %lf    ", bsc.bsc_strName, dMin, dMax);
@@ -923,9 +923,9 @@ functions:
     // if different contents
     } else {
       // calculate immersion factor
-      if (iUpContent==0) {
+      if (iUpContent == 0) {
         fImmersionFactor = fDn;
-      } else if (iDnContent==0) {
+      } else if (iDnContent == 0) {
         fImmersionFactor = 1-fUp;
       } else {
         fImmersionFactor = Max(fDn, 1-fUp);
@@ -1048,7 +1048,7 @@ functions:
       }
     }
     // if the content kills
-    if (ctDn.ct_fKillImmersion>0 && fImmersion>=ctDn.ct_fKillImmersion
+    if (ctDn.ct_fKillImmersion>0 && fImmersion >= ctDn.ct_fKillImmersion
       &&(en_ulFlags&ENF_ALIVE)) {
       // inflict killing damage 
       InflictDirectDamage(this, MiscDamageInflictor(),
@@ -1109,7 +1109,7 @@ functions:
   {
     _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_ISSTANDINGONPOLYGON);
     // if cannot optimize for standing on handle
-    if (en_pciCollisionInfo==NULL 
+    if (en_pciCollisionInfo == NULL 
       ||!(en_pciCollisionInfo->ci_ulFlags&CIF_CANSTANDONHANDLE)) {
       // not standing on polygon
       _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_ISSTANDINGONPOLYGON);
@@ -1117,7 +1117,7 @@ functions:
     }
 
     // if polygon is not valid for standing on any more (brush turned off collision)
-    if (en_pbpoStandOn->bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->en_ulCollisionFlags==0) {
+    if (en_pbpoStandOn->bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->en_ulCollisionFlags == 0) {
       // not standing on polygon
       return FALSE;
     }
@@ -1194,7 +1194,7 @@ functions:
 
     // if polygon's steepness is too high
     CSurfaceType &stReference = en_pwoWorld->wo_astSurfaceTypes[pbpo->bpo_bppProperties.bpp_ubSurfaceType];
-    if (fCos>=-stReference.st_fClimbSlopeCos&&fCos<0
+    if (fCos >= -stReference.st_fClimbSlopeCos&&fCos<0
       ||stReference.st_ulFlags&STF_SLIDEDOWNSLOPE) {
       // it cannot be below
       _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_ISSTANDINGONPOLYGON);
@@ -1290,7 +1290,7 @@ functions:
     }
   
     // if the stand-on polygon is near below
-    if (en_pbpoStandOn!=NULL &&
+    if (en_pbpoStandOn != NULL &&
       IsPolygonBelowPoint(en_pbpoStandOn, en_vNextPosition, en_fStepDnHeight)) {
       // it won't fall
       return FALSE;
@@ -1319,9 +1319,9 @@ functions:
     // NOTE: We add non-zoning reference first (if existing),
     // to speed up cases when standing on moving brushes.
     // if the reference is a non-zoning brush
-    if (en_penReference!=NULL && en_penReference->en_RenderType==RT_BRUSH
+    if (en_penReference != NULL && en_penReference->en_RenderType == RT_BRUSH
       &&!(en_penReference->en_ulFlags&ENF_ZONING)
-      && en_penReference->en_pbrBrush!=NULL) {
+      && en_penReference->en_pbrBrush != NULL) {
       // get first mip of the brush
       CBrushMip *pbmMip = en_penReference->en_pbrBrush->GetFirstMip();
       // for each sector in the brush mip
@@ -1351,15 +1351,15 @@ functions:
       if (pbsc->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->en_ulFlags&ENF_ZONING) {
         // for non-zoning brush entities in the sector
         {FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen);
-          if (pen->en_RenderType==CEntity::RT_TERRAIN) {
+          if (pen->en_RenderType == CEntity::RT_TERRAIN) {
             if (IsTerrainBelowPoint(pen->en_ptrTerrain, en_vNextPosition, en_fStepDnHeight, en_vGravityDir)) {
               bSupportFound = TRUE;
               goto out;
             }
             continue;
           }
-          if (pen->en_RenderType!=CEntity::RT_BRUSH&&
-              pen->en_RenderType!=CEntity::RT_FIELDBRUSH) {
+          if (pen->en_RenderType != CEntity::RT_BRUSH&&
+              pen->en_RenderType != CEntity::RT_FIELDBRUSH) {
             break;  // brushes are sorted first in list
           }
           // get first mip of the brush
@@ -1412,7 +1412,7 @@ out:;
     // use this for collision code debugging only not useful in real conditions
 /*
     // check that we have not ended inside a wall
-    if (GetRenderType()==RT_MODEL) {
+    if (GetRenderType() == RT_MODEL) {
       extern BOOL CanEntityChangeCollisionBox(CEntity *pen, INDEX iNewCollisionBox, CEntity **ppenObstacle);
       CEntity *penObstacle;
       if (!CanEntityChangeCollisionBox(this, GetCollisionBoxIndex(), &penObstacle)) {
@@ -1469,7 +1469,7 @@ out:;
     if ((ctDn.ct_ulFlags&CTF_SWIMABLE) && !(ctUp.ct_ulFlags&CTF_SWIMABLE)
       && en_fImmersionFactor>0.3f) {
       // add immersion height to up step
-      if (en_pciCollisionInfo!=NULL) {
+      if (en_pciCollisionInfo != NULL) {
         fStairsHeight=fStairsHeight*2+en_fImmersionFactor*
           (en_pciCollisionInfo->ci_fMaxHeight-en_pciCollisionInfo->ci_fMinHeight);
         // remember that we are trying to get out of water
@@ -1498,7 +1498,7 @@ out:;
         // find hit surface
         INDEX iSurfaceHit = 0;
         BOOL bHitStairsNow = FALSE;
-        if (cm.cm_pbpoHit!=NULL) {
+        if (cm.cm_pbpoHit != NULL) {
           bHitStairsNow = cm.cm_pbpoHit->bpo_ulFlags&BPOF_STAIRS;
           iSurfaceHit = cm.cm_pbpoHit->bpo_bppProperties.bpp_ubSurfaceType;
         }
@@ -1514,11 +1514,11 @@ out:;
 
         BOOL bEarlyClipAllowed = 
           // going up or
-          iStep==0 || 
+          iStep == 0 || 
           // going forward and hit stairs or
-          iStep==1 && bHitStairsNow || 
+          iStep == 1 && bHitStairsNow || 
           // going down and ends on something that is not high slope
-          iStep==2 && 
+          iStep == 2 && 
             (vHitPlane%en_vGravityDir<-stHit.st_fClimbSlopeCos ||
              bHitStairsNow);
 
@@ -1527,7 +1527,7 @@ out:;
           // try to go to where it is clipped (little bit before)
           en_vNextPosition = en_plPlacement.pl_PositionVector +
             avTranslation[iStep]*(cm.cm_fMovementFraction*0.98f);
-          if (bSlidingAllowed && iStep!=2) {
+          if (bSlidingAllowed && iStep != 2) {
             FLOAT3D vSliding = cm.cm_plClippedPlane.ProjectDirection(
                   avTranslation[iStep]*(1.0f-cm.cm_fMovementFraction))+
             vHitPlane*(ClampUp(avTranslation[iStep].Length(), 0.5f)/100.0f);
@@ -1536,7 +1536,7 @@ out:;
           CClipMove cm(this);
           en_pwoWorld->ClipMove(cm);
           // if it failed
-          if (cm.cm_fMovementFraction<=1.0f) {
+          if (cm.cm_fMovementFraction <= 1.0f) {
             // mark that this step is unsuccessful
             bStepOK = FALSE;
           }
@@ -1582,7 +1582,7 @@ out:;
   {
     //CPrintF("TryToMove(%d)\n", _ctTryToMoveCheckCounter);
     // decrement the recursion counter
-    if (penPusher!=NULL) {
+    if (penPusher != NULL) {
       _ctTryToMoveCheckCounter--;
     } else {
       _ctTryToMoveCheckCounter-=4;
@@ -1600,7 +1600,7 @@ out:;
     if (bTranslate) {
       en_vNextPosition = en_plPlacement.pl_PositionVector+en_vMoveTranslation;
 /* STREAMDUMP START
-       if (GetRenderType()==RT_MODEL)
+       if (GetRenderType() == RT_MODEL)
         {
           try
           {
@@ -1630,7 +1630,7 @@ out:;
     BOOL bIgnoreRotation = !bRotate ||
       ((ulCIFlags&CIF_IGNOREROTATION)|| 
       ( (ulCIFlags&CIF_IGNOREHEADING) && 
-        (en_mMoveRotation(1,2)==0&&en_mMoveRotation(2,2)==1&&en_mMoveRotation(3,2)==0) ));
+        (en_mMoveRotation(1,2) == 0&&en_mMoveRotation(2,2) == 1&&en_mMoveRotation(3,2) == 0) ));
 
     // create movement towards the new placement
     CClipMove cmMove(this);
@@ -1647,10 +1647,10 @@ out:;
 //      CPrintF("  passed\n");
       //CPrintF("%d\n", MAXCOLLISIONRETRIES-(_ctTryToMoveCheckCounter+1));
       // if entity is in walking control now, but it might fall of an edge
-      if (bTranslate && en_penReference!=NULL && 
+      if (bTranslate && en_penReference != NULL && 
          (en_ulPhysicsFlags&EPF_TRANSLATEDBYGRAVITY) &&
          !(en_ulPhysicsFlags&(EPF_ONSTEEPSLOPE|EPF_ORIENTINGTOGRAVITY|EPF_FLOATING)) &&
-         penPusher==NULL && WouldFallInNextPosition()) {
+         penPusher == NULL && WouldFallInNextPosition()) {
         // fail the movement
         SendEvent(EWouldFall());
         //CPrintF("  wouldfall\n");
@@ -1675,7 +1675,7 @@ out:;
       _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_TRYTOMOVE_CLIP);
 
       /* STREAMDUMP START
-        if (GetRenderType()==RT_MODEL)
+        if (GetRenderType() == RT_MODEL)
         {
           try
           {
@@ -1692,17 +1692,17 @@ out:;
       STREAMDUMP END */
 
       // if must not retry
-      if (_ctTryToMoveCheckCounter<=0) {
+      if (_ctTryToMoveCheckCounter <= 0) {
         // fail
         _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_TRYTOTRANSLATE);
         return FALSE;
       }
 
       // if hit brush
-      if (cmMove.cm_pbpoHit!=NULL) {
+      if (cmMove.cm_pbpoHit != NULL) {
         // if polygon is stairs, and the entity can climb stairs
         if ((cmMove.cm_pbpoHit->bpo_ulFlags&BPOF_STAIRS)
-          &&((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_CLIMBORSLIDE)) {
+          &&((en_ulPhysicsFlags&EPF_ONBLOCK_MASK) == EPF_ONBLOCK_CLIMBORSLIDE)) {
           // adjust against sliding upwards
           cmMove.cm_plClippedPlane = FLOATplane3D(-en_vGravityDir, 0);
         }
@@ -1725,7 +1725,7 @@ out:;
 //        CPrintF("    newreference id%08x\n", en_penReference->en_ulID);
         en_vReferencePlane = (FLOAT3D&)cmMove.cm_plClippedPlane;
         en_pbpoStandOn = cmMove.cm_pbpoHit;  // is NULL if not hit a brush
-        if (cmMove.cm_pbpoHit==NULL) {
+        if (cmMove.cm_pbpoHit == NULL) {
           en_iReferenceSurface = 0;
         } else {
           en_iReferenceSurface = cmMove.cm_pbpoHit->bpo_bppProperties.bpp_ubSurfaceType;
@@ -1744,7 +1744,7 @@ out:;
       // if entity bounces when blocked
       FLOAT3D vBounce;
       BOOL bBounce = FALSE;
-      if ( ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_BOUNCE) && bTranslate) {
+      if (((en_ulPhysicsFlags&EPF_ONBLOCK_MASK) == EPF_ONBLOCK_BOUNCE) && bTranslate) {
         // create translation speed for bouncing off clipping plane
         FLOAT3D vParallel, vNormal;
         GetParallelAndNormalComponents(en_vMoveTranslation, cmMove.cm_plClippedPlane, 
@@ -1765,7 +1765,7 @@ out:;
       }
       
       // if entity pushes when blocked and the blocking entity is pushable
-      if (penPusher!=NULL&&(cmMove.cm_penHit->en_ulPhysicsFlags&EPF_PUSHABLE)) {
+      if (penPusher != NULL&&(cmMove.cm_penHit->en_ulPhysicsFlags&EPF_PUSHABLE)) {
         CMovableModelEntity *penBlocking = ((CMovableModelEntity *)cmMove.cm_penHit);
         // create push translation to account for rotating radius
         FLOAT3D vRadius = cmMove.cm_penHit->en_plPlacement.pl_PositionVector-
@@ -1799,10 +1799,10 @@ out:;
         }
       // if entity slides if blocked
       } else if (
-        ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_SLIDE)||
-        ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_BOUNCE)||
-        ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_CLIMBORSLIDE)||
-        ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_STOPEXACT) ) {
+        ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK) == EPF_ONBLOCK_SLIDE)||
+        ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK) == EPF_ONBLOCK_BOUNCE)||
+        ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK) == EPF_ONBLOCK_CLIMBORSLIDE)||
+        ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK) == EPF_ONBLOCK_STOPEXACT) ) {
 
         // if translating
         if (bTranslate) {
@@ -1810,7 +1810,7 @@ out:;
           // create translation for sliding along clipping plane
           FLOAT3D vSliding;
           // if sliding along one plane
-          if (_ctSliding==0) {
+          if (_ctSliding == 0) {
             // remember sliding parameters from the plane
             _vSlideOffDir = cmMove.cm_plClippedPlane;
             // get sliding velocity
@@ -1818,7 +1818,7 @@ out:;
                 en_vMoveTranslation*(1.0f-cmMove.cm_fMovementFraction));
             _ctSliding++;
           // if second plane
-          } else if (_ctSliding==1) {
+          } else if (_ctSliding == 1) {
             // off direction is away from both planes
             _vSlideOffDir+=cmMove.cm_plClippedPlane;
             // sliding direction is along both planes
@@ -1846,12 +1846,12 @@ out:;
           ASSERT(IsValidFloat(_vSlideOffDir(1)));
 
           // if entity hit a brush polygon
-          if (cmMove.cm_pbpoHit!=NULL) {
+          if (cmMove.cm_pbpoHit != NULL) {
             CSurfaceType &stHit = en_pwoWorld->wo_astSurfaceTypes[
               cmMove.cm_pbpoHit->bpo_bppProperties.bpp_ubSurfaceType];
             // if it is not beeing pushed, and it can climb stairs
-            if (penPusher==NULL
-             &&(en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_CLIMBORSLIDE) {
+            if (penPusher == NULL
+             &&(en_ulPhysicsFlags&EPF_ONBLOCK_MASK) == EPF_ONBLOCK_CLIMBORSLIDE) {
               // NOTE: originally, the polygon's plane was considered here.
               // due to sphere-polygon collision algo, it is possible for the collision
               // plane to be even orthogonal to the polygon plane.
@@ -1870,7 +1870,7 @@ out:;
                 FLOAT fSlidingVertical2 = en_vMoveTranslation%en_vGravityDir;
                 fSlidingVertical2*=fSlidingVertical2;
                 FLOAT fSliding2 = en_vMoveTranslation%en_vMoveTranslation;
-                if ((2*fSlidingVertical2<=fSliding2)
+                if ((2*fSlidingVertical2 <= fSliding2)
                 // if can go upstairs
                   && TryToGoUpstairs(en_vMoveTranslation, stHit, bHitStairs)) {
                   // movement is ok
@@ -1881,7 +1881,7 @@ out:;
             }
           }
           // entity shouldn't really slide
-          if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_STOPEXACT) {
+          if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK) == EPF_ONBLOCK_STOPEXACT) {
             // kill sliding
             vSliding = FLOAT3D(0.0f, 0.0f, 0.0f);
           }
@@ -1925,7 +1925,7 @@ out:;
         // if rotating
         } else if (bRotate) {
           // if bouncing entity
-          if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_BOUNCE) {
+          if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK) == EPF_ONBLOCK_BOUNCE) {
             // rotate slower
             en_aDesiredRotationRelative *= en_fBounceDampParallel;
             if (en_aDesiredRotationRelative.Length()<10) {
@@ -2003,7 +2003,7 @@ out:;
     // FOR LICENSEES: Since you don't need to replay old demos from SSam, you may remove the whole
     // PreMovingOld() function.
     //
-    if (_pNetwork->ga_ulDemoMinorVersion<=5) {
+    if (_pNetwork->ga_ulDemoMinorVersion <= 5) {
       PreMovingOld();
     } else {
       PreMovingNew();
@@ -2011,7 +2011,7 @@ out:;
   }
   void PreMovingNew(void)
   {
-    if (en_pciCollisionInfo==NULL) {
+    if (en_pciCollisionInfo == NULL) {
       return;
     }
 
@@ -2060,8 +2060,8 @@ out:;
     en_vCurrentTranslationAbsolute(3)=Clamp(en_vCurrentTranslationAbsolute(3), -fMaxSpeed, +fMaxSpeed);
 
     // if the entity is a model
-    if (en_RenderType==RT_MODEL || en_RenderType==RT_EDITORMODEL ||
-        en_RenderType==RT_SKAMODEL || en_RenderType==RT_SKAEDITORMODEL) {
+    if (en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL ||
+        en_RenderType == RT_SKAMODEL || en_RenderType == RT_SKAEDITORMODEL) {
       // test for field containment
       TestFields(en_iUpContent, en_iDnContent, en_fImmersionFactor);
       // if entity has sticky feet
@@ -2083,7 +2083,7 @@ out:;
     // test content damage
     TestContentDamage(ctDn, en_fImmersionFactor);
     // test surface damage
-    if (en_penReference!=NULL) {
+    if (en_penReference != NULL) {
       CSurfaceType &stReference = en_pwoWorld->wo_astSurfaceTypes[en_iReferenceSurface];
       TestSurfaceDamage(stReference);
     }
@@ -2117,7 +2117,7 @@ out:;
     // make absolute matrix rotation from relative angle rotation
     FLOATmatrix3D mRotationAbsolute;
 
-    if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_PUSH) {
+    if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK) == EPF_ONBLOCK_PUSH) {
       FLOATmatrix3D mNewRotation;
       MakeRotationMatrixFast(mNewRotation, en_plPlacement.pl_OrientationAngle+aRotationRelative);
       mRotationAbsolute = mNewRotation*!en_mRotation;
@@ -2136,7 +2136,7 @@ out:;
     BOOL bReferenceMovingInY = FALSE;
     BOOL bReferenceRotatingNonY = FALSE;
     // if we have a CMovableEntity for a reference entity
-    if (en_penReference!=NULL && (en_penReference->en_ulPhysicsFlags&EPF_MOVABLE)) {
+    if (en_penReference != NULL && (en_penReference->en_ulPhysicsFlags&EPF_MOVABLE)) {
       CMovableEntity *penReference = (CMovableEntity *)(CEntity*)en_penReference;
       // get reference deltas for this tick
       const FLOAT3D &vReferenceTranslation = penReference->en_vIntendedTranslation;
@@ -2249,7 +2249,7 @@ out:;
     } else {
       BOOL bGravityAlongPolygon = TRUE;
       // if there is no fixed remembered stand-on polygon or the entity is not on it anymore
-      if (en_pbpoStandOn==NULL || !IsStandingOnPolygon(en_pbpoStandOn) || bReferenceMovingInY
+      if (en_pbpoStandOn == NULL || !IsStandingOnPolygon(en_pbpoStandOn) || bReferenceMovingInY
         || (en_ulPhysicsFlags&EPF_ORIENTINGTOGRAVITY)) {
         // clear the stand on polygon
         en_pbpoStandOn=NULL;
@@ -2292,7 +2292,7 @@ out:;
         }
 
         // if a bouncer
-        if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_BOUNCE) {
+        if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK) == EPF_ONBLOCK_BOUNCE) {
           // rotate slower
           en_aDesiredRotationRelative *= en_fJumpControlMultiplier;
           if (en_aDesiredRotationRelative.Length()<10) {
@@ -2304,12 +2304,12 @@ out:;
       CSurfaceType &stReference = en_pwoWorld->wo_astSurfaceTypes[en_iReferenceSurface];
 
       // if it has a reference entity
-      if (en_penReference!=NULL) {
+      if (en_penReference != NULL) {
         FLOAT fPlaneY = (en_vGravityDir%en_vReferencePlane);
         FLOAT fPlaneYAbs = Abs(fPlaneY);
         FLOAT fFriction = stReference.st_fFriction;
         // if on a steep slope
-        if (fPlaneY>=-stReference.st_fClimbSlopeCos&&fPlaneY<0
+        if (fPlaneY >= -stReference.st_fClimbSlopeCos&&fPlaneY<0
           ||(stReference.st_ulFlags&STF_SLIDEDOWNSLOPE)&&fPlaneY>-0.99f) {
           en_ulPhysicsFlags|=EPF_ONSTEEPSLOPE;
           // accellerate horizontaly towards desired absolute translation
@@ -2341,7 +2341,7 @@ out:;
         }
 
       // if it doesn't have a reference entity
-      } else {//if (en_penReference==NULL) 
+      } else {//if (en_penReference == NULL) 
         // if can control after jump
         if (_pTimer->GetGameTick() - en_llJumped < CTimer::InTicks(en_tmMaxJumpControl)) {
           // accellerate horizontaly, but slower
@@ -2376,7 +2376,7 @@ out:;
     }
 
     // if may slow down spinning
-    if ( (en_ulPhysicsFlags& EPF_CANFADESPINNING) &&
+    if ((en_ulPhysicsFlags& EPF_CANFADESPINNING) &&
       ( (ctDn.ct_ulFlags&CTF_FADESPINNING) || (ctUp.ct_ulFlags&CTF_FADESPINNING) ) ) {
       // reduce desired rotation
       en_aDesiredRotationRelative *= (1-fSpeedModifier*0.05f);
@@ -2386,7 +2386,7 @@ out:;
     }
 
     // discard reference entity (will be recalculated)
-    if (en_pbpoStandOn==NULL && (vTranslationAbsolute.ManhattanNorm()>1E-5f || 
+    if (en_pbpoStandOn == NULL && (vTranslationAbsolute.ManhattanNorm()>1E-5f || 
       en_vReferencePlane%en_vGravityDir<0.0f)) {
       en_penReference = NULL;
       en_vReferencePlane = FLOAT3D(0.0f, 0.0f, 0.0f);
@@ -2403,7 +2403,7 @@ out:;
     en_pciCollisionInfo->MakeBoxAtPlacement(FLOAT3D(0.0f, 0.0f, 0.0f), en_mRotation, box);
     // if it is a light source
     {CLightSource *pls = GetLightSource();
-    if (pls!=NULL && !(pls->ls_ulFlags&LSF_LENSFLAREONLY)) {
+    if (pls != NULL && !(pls->ls_ulFlags&LSF_LENSFLAREONLY)) {
       // expand the box to be sure that it contains light range
       ASSERT(!(pls->ls_ulFlags&LSF_DIRECTIONAL));
       box |= FLOATaabbox3D(FLOAT3D(0.0f, 0.0f, 0.0f), pls->ls_rFallOff);
@@ -2427,7 +2427,7 @@ out:;
   // See note above in PreMoving()
 /* old */  void PreMovingOld(void)
 /* old */  {
-/* old */    if (en_pciCollisionInfo==NULL) {
+/* old */    if (en_pciCollisionInfo == NULL) {
 /* old */      return;
 /* old */    }
 /* old */
@@ -2476,7 +2476,7 @@ out:;
 /* old */    en_vCurrentTranslationAbsolute(3)=Clamp(en_vCurrentTranslationAbsolute(3), -fMaxSpeed, +fMaxSpeed);
 /* old */
 /* old */    // if the entity is a model
-/* old */    if (en_RenderType==RT_MODEL || en_RenderType==RT_EDITORMODEL) {
+/* old */    if (en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL) {
 /* old */      // test for field containment
 /* old */      TestFields(en_iUpContent, en_iDnContent, en_fImmersionFactor);
 /* old */      // if entity has sticky feet
@@ -2498,7 +2498,7 @@ out:;
 /* old */    // test content damage
 /* old */    TestContentDamage(ctDn, en_fImmersionFactor);
 /* old */    // test surface damage
-/* old */    if (en_penReference!=NULL) {
+/* old */    if (en_penReference != NULL) {
 /* old */      CSurfaceType &stReference = en_pwoWorld->wo_astSurfaceTypes[en_iReferenceSurface];
 /* old */      TestSurfaceDamage(stReference);
 /* old */    }
@@ -2532,7 +2532,7 @@ out:;
 /* old */    // make absolute matrix rotation from relative angle rotation
 /* old */    FLOATmatrix3D mRotationAbsolute;
 /* old */
-/* old */    if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_PUSH) {
+/* old */    if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK) == EPF_ONBLOCK_PUSH) {
 /* old */      FLOATmatrix3D mNewRotation;
 /* old */      MakeRotationMatrixFast(mNewRotation, en_plPlacement.pl_OrientationAngle+aRotationRelative);
 /* old */      mRotationAbsolute = mNewRotation*!en_mRotation;
@@ -2551,7 +2551,7 @@ out:;
 /* old */    BOOL bReferenceMovingInY = FALSE;
 /* old */    BOOL bReferenceRotatingNonY = FALSE;
 /* old */    // if we have a CMovableEntity for a reference entity
-/* old */    if (en_penReference!=NULL && (en_penReference->en_ulPhysicsFlags&EPF_MOVABLE)) {
+/* old */    if (en_penReference != NULL && (en_penReference->en_ulPhysicsFlags&EPF_MOVABLE)) {
 /* old */      CMovableEntity *penReference = (CMovableEntity *)(CEntity*)en_penReference;
 /* old */      // get reference deltas for this tick
 /* old */      const FLOAT3D &vReferenceTranslation = penReference->en_vIntendedTranslation;
@@ -2664,7 +2664,7 @@ out:;
 /* old */    } else {
 /* old */      BOOL bGravityAlongPolygon = TRUE;
 /* old */      // if there is no fixed remembered stand-on polygon or the entity is not on it anymore
-/* old */      if (en_pbpoStandOn==NULL || !IsStandingOnPolygon(en_pbpoStandOn) || bReferenceMovingInY
+/* old */      if (en_pbpoStandOn == NULL || !IsStandingOnPolygon(en_pbpoStandOn) || bReferenceMovingInY
 /* old */        || (en_ulPhysicsFlags&EPF_ORIENTINGTOGRAVITY)) {
 /* old */        // clear the stand on polygon
 /* old */        en_pbpoStandOn=NULL;
@@ -2707,7 +2707,7 @@ out:;
 /* old */        }
 /* old */
 /* old */        // if a bouncer
-/* old */        if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_BOUNCE) {
+/* old */        if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK) == EPF_ONBLOCK_BOUNCE) {
 /* old */          // rotate slower
 /* old */          en_aDesiredRotationRelative *= en_fJumpControlMultiplier;
 /* old */          if (en_aDesiredRotationRelative.Length()<10) {
@@ -2719,12 +2719,12 @@ out:;
 /* old */      CSurfaceType &stReference = en_pwoWorld->wo_astSurfaceTypes[en_iReferenceSurface];
 /* old */
 /* old */      // if it has a reference entity
-/* old */      if (en_penReference!=NULL) {
+/* old */      if (en_penReference != NULL) {
 /* old */        FLOAT fPlaneY = (en_vGravityDir%en_vReferencePlane);
 /* old */        FLOAT fPlaneYAbs = Abs(fPlaneY);
 /* old */        FLOAT fFriction = stReference.st_fFriction;
 /* old */        // if on a steep slope
-/* old */        if (fPlaneY>=-stReference.st_fClimbSlopeCos&&fPlaneY<0
+/* old */        if (fPlaneY >= -stReference.st_fClimbSlopeCos&&fPlaneY<0
 /* old */          ||(stReference.st_ulFlags&STF_SLIDEDOWNSLOPE)&&fPlaneY>-0.99f) {
 /* old */          en_ulPhysicsFlags|=EPF_ONSTEEPSLOPE;
 /* old */          // accellerate horizontaly towards desired absolute translation
@@ -2756,7 +2756,7 @@ out:;
 /* old */        }
 /* old */
 /* old */      // if it doesn't have a reference entity
-/* old */      } else {//if (en_penReference==NULL) 
+/* old */      } else {//if (en_penReference == NULL) 
 /* old */        // if can control after jump
 /* old */        if (_pTimer->GetGameTick() - en_llJumped < CTimer::InTicks(en_tmMaxJumpControl)) {
 /* old */          // accellerate horizontaly, but slower
@@ -2791,7 +2791,7 @@ out:;
 /* old */    }
 /* old */
 /* old */    // if may slow down spinning
-/* old */    if ( (en_ulPhysicsFlags& EPF_CANFADESPINNING) &&
+/* old */    if ((en_ulPhysicsFlags& EPF_CANFADESPINNING) &&
 /* old */      ( (ctDn.ct_ulFlags&CTF_FADESPINNING) || (ctUp.ct_ulFlags&CTF_FADESPINNING) ) ) {
 /* old */      // reduce desired rotation
 /* old */      en_aDesiredRotationRelative *= (1-fSpeedModifier*0.05f);
@@ -2801,7 +2801,7 @@ out:;
 /* old */    }
 /* old */
 /* old */    // discard reference entity (will be recalculated)
-/* old */    if (en_pbpoStandOn==NULL) {
+/* old */    if (en_pbpoStandOn == NULL) {
 /* old */      en_penReference = NULL;
 /* old */      en_vReferencePlane = FLOAT3D(0.0f, 0.0f, 0.0f);
 /* old */      en_iReferenceSurface = 0;
@@ -2817,7 +2817,7 @@ out:;
 /* old */    en_pciCollisionInfo->MakeBoxAtPlacement(FLOAT3D(0.0f, 0.0f, 0.0f), en_mRotation, box);
 /* old */    // if it is a light source
 /* old */    {CLightSource *pls = GetLightSource();
-/* old */    if (pls!=NULL && !(pls->ls_ulFlags&LSF_LENSFLAREONLY)) {
+/* old */    if (pls != NULL && !(pls->ls_ulFlags&LSF_LENSFLAREONLY)) {
 /* old */      // expand the box to be sure that it contains light range
 /* old */      ASSERT(!(pls->ls_ulFlags&LSF_DIRECTIONAL));
 /* old */      box |= FLOATaabbox3D(FLOAT3D(0.0f, 0.0f, 0.0f), pls->ls_rFallOff);
@@ -2840,7 +2840,7 @@ out:;
   /* Calculate physics for moving. */
   export void DoMoving(void)
   {
-    if (en_pciCollisionInfo==NULL || (en_ulPhysicsFlags&EPF_FORCEADDED)) {
+    if (en_pciCollisionInfo == NULL || (en_ulPhysicsFlags&EPF_FORCEADDED)) {
       return;
     }
 // STREAMDUMP     ExportEntityPlacementAndSpeed(*(CMovableEntity *)this, "Do moving (start of function)");
@@ -2862,14 +2862,14 @@ out:;
 
       InitTryToMove();
       CMovableEntity *penPusher = NULL;
-      if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_PUSH) {
+      if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK) == EPF_ONBLOCK_PUSH) {
         penPusher = this;
       }
       BOOL bMoveSuccessfull = TryToMove(penPusher, TRUE, TRUE);
 
     // if rotation and translation are asynchronious
     } else {
-      ASSERT((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)!=EPF_ONBLOCK_PUSH);
+      ASSERT((en_ulPhysicsFlags&EPF_ONBLOCK_MASK) != EPF_ONBLOCK_PUSH);
       _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_DOMOVING_ASYNC);
 
       // if there is no reference
@@ -2901,9 +2901,9 @@ out:;
       // rotate
       en_mMoveRotation = en_mIntendedRotation*!en_mAppliedRotation;
       if (
-          en_mMoveRotation(1,1)!=1 || en_mMoveRotation(1,2)!=0 || en_mMoveRotation(1,3)!=0 ||
-          en_mMoveRotation(2,1)!=0 || en_mMoveRotation(2,2)!=1 || en_mMoveRotation(2,3)!=0 ||
-          en_mMoveRotation(3,1)!=0 || en_mMoveRotation(3,2)!=0 || en_mMoveRotation(3,3)!=1) {
+          en_mMoveRotation(1,1) != 1 || en_mMoveRotation(1,2) != 0 || en_mMoveRotation(1,3) != 0 ||
+          en_mMoveRotation(2,1) != 0 || en_mMoveRotation(2,2) != 1 || en_mMoveRotation(2,3) != 0 ||
+          en_mMoveRotation(3,1) != 0 || en_mMoveRotation(3,2) != 0 || en_mMoveRotation(3,3) != 1) {
         _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_DOMOVING_ASYNC_ROTATE);
         InitTryToMove();
         TryToMove(NULL, FALSE, TRUE);
@@ -2917,7 +2917,7 @@ out:;
   // calculate consequences of moving/not moving in this tick
   export void PostMoving(void) 
   {
-    if (en_pciCollisionInfo==NULL) {
+    if (en_pciCollisionInfo == NULL) {
       // mark for removing from list of movers
       en_ulFlags |= ENF_INRENDERING;
       return;
@@ -2934,7 +2934,7 @@ out:;
     _pfPhysicsProfile.IncrementTimerAveragingCounter(CPhysicsProfile::PTI_POSTMOVING);
 
     // remember valid reference if valid
-    if (en_penReference!=NULL) {
+    if (en_penReference != NULL) {
       en_penLastValidReference = en_penReference;
     }
 
@@ -2970,11 +2970,11 @@ out:;
 
     // if not moving anymore
     if (en_vCurrentTranslationAbsolute.ManhattanNorm()<0.001f
-      &&(en_vDesiredTranslationRelative.ManhattanNorm()==0 || en_fAcceleration==0)
-      &&en_aDesiredRotationRelative.ManhattanNorm()==0) {
+      &&(en_vDesiredTranslationRelative.ManhattanNorm() == 0 || en_fAcceleration == 0)
+      &&en_aDesiredRotationRelative.ManhattanNorm() == 0) {
 
       // if there is a reference
-      if (en_penReference!=NULL) {
+      if (en_penReference != NULL) {
         // it the reference is movable
         if (en_penReference->en_ulPhysicsFlags&EPF_MOVABLE) {
           CMovableEntity *penReference = (CMovableEntity *)(CEntity*)en_penReference;
@@ -2994,7 +2994,7 @@ out:;
         // if no gravity and no forces can affect this entity
         if (
           (!(en_ulPhysicsFlags&(EPF_TRANSLATEDBYGRAVITY|EPF_ORIENTEDBYGRAVITY))
-            || en_fGravityA==0.0f)) { // !!!! test for forces also when implemented
+            || en_fGravityA == 0.0f)) { // !!!! test for forces also when implemented
           // mark for removing from list of movers
           en_ulFlags |= ENF_INRENDERING;
         }
@@ -3008,7 +3008,7 @@ out:;
     }
 
     // remember new position for particles
-    if (en_plpLastPositions!=NULL) {
+    if (en_plpLastPositions != NULL) {
       en_plpLastPositions->AddPosition(en_vNextPosition);
     }
 

@@ -57,7 +57,7 @@ public:
   void TestModelCollisionBox(CEntity *penModel);
   void TestModelFull(CEntity *penModel, CModelObject &mo);
   void TestSkaModelSimple(CEntity *penModel, CModelInstance &mi);
-	void TestSkaModelFull(CEntity *penModel, CModelInstance &mi);
+  void TestSkaModelFull(CEntity *penModel, CModelInstance &mi);
   void TestModel(CEntity *penModel);
   void TestSkaModel(CEntity *penModel);
 
@@ -97,8 +97,8 @@ public:
   FLOAT3D cr_vHit;            // coordinate where the ray hit the entity
   FLOAT cr_fHitDistance;      // how far the hit was from the origin
 
-	BOOL	cr_bFindBone;					// should the bone ID be checked while testing with SKA
-	INDEX cr_iBoneHit;					// id of the bone hit by the ray (SKA)
+  BOOL  cr_bFindBone;          // should the bone ID be checked while testing with SKA
+  INDEX cr_iBoneHit;          // id of the bone hit by the ray (SKA)
 
   CBrushPolygon *cr_pbpoBrushPolygon;   // polygon that was hit (if brush entity hit)
   CBrushSector *cr_pbscBrushSector;     // sector that was hit (if brush entity hit)

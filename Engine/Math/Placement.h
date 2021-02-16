@@ -35,7 +35,7 @@ public:
   /* Constructor from coordinates and angle. */
   inline CPlacement3D(const FLOAT3D &vPosition, const ANGLE3D &aOrientation);
   /* Comparison operator. */
-  inline BOOL operator==(const CPlacement3D &plOther) const;
+  inline BOOL operator == (const CPlacement3D &plOther) const;
 
   /* Rotate using trackball method. */
   void Rotate_TrackBall(const ANGLE3D &a3dRotation);
@@ -77,9 +77,9 @@ inline CPlacement3D::CPlacement3D(const FLOAT3D &vPosition, const ANGLE3D &aOrie
   , pl_OrientationAngle(aOrientation)
 {}
 /* Comparison operator. */
-inline BOOL CPlacement3D::operator==(const CPlacement3D &plOther) const {
-  return pl_PositionVector==plOther.pl_PositionVector
-    && pl_OrientationAngle==plOther.pl_OrientationAngle;
+inline BOOL CPlacement3D::operator == (const CPlacement3D &plOther) const {
+  return pl_PositionVector == plOther.pl_PositionVector
+    && pl_OrientationAngle == plOther.pl_OrientationAngle;
 }
 /* Get the direction vector in the direction of this placement. */
 inline void CPlacement3D::GetDirectionVector(FLOAT3D &vDirection)

@@ -136,8 +136,8 @@ void CBrushSector::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prRelative
     bsc_bspBSPTree.Destroy();
     // if the brush is zoning or field
     CEntity *pen = bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
-    if (pen!=NULL && 
-      ((pen->en_ulFlags&ENF_ZONING) || pen->en_RenderType==CEntity::RT_FIELDBRUSH) ) {
+    if (pen != NULL && 
+      ((pen->en_ulFlags&ENF_ZONING) || pen->en_RenderType == CEntity::RT_FIELDBRUSH) ) {
       // create an array of bsp polygons for sector polygons
       INDEX ctPolygons = bsc_abpoPolygons.Count();
       CDynamicArray< BSPPolygon<DOUBLE, 3> > arbpoPolygons;
@@ -182,7 +182,7 @@ void CBrushSector::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prRelative
   {for (INDEX iPolygon=0; iPolygon<bsc_abpoPolygons.Count(); iPolygon++) {
     CBrushPolygon  &bpo =    bsc_abpoPolygons[iPolygon];  // brush polygon alias
     // if the shadow map of the polygon is not initialized
-    if (bpo.bpo_smShadowMap.sm_mexWidth==0 || bpo.bpo_smShadowMap.sm_pixPolygonSizeU<0) {
+    if (bpo.bpo_smShadowMap.sm_mexWidth == 0 || bpo.bpo_smShadowMap.sm_pixPolygonSizeU<0) {
       // initialize the shadow map of the polygon
       bpo.InitializeShadowMap();
     }
@@ -208,7 +208,7 @@ void CBrushSector::FindEntitiesInSector(void)
   // get the entity of this sector's brush
   CEntity *penEntity = bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
   // if the brush entity is not zoning
-  if (penEntity==NULL || !(penEntity->en_ulFlags&ENF_ZONING)) {
+  if (penEntity == NULL || !(penEntity->en_ulFlags&ENF_ZONING)) {
     // do nothing
     return;
   }
@@ -234,18 +234,18 @@ void CBrushSector::FindEntitiesInSector(void)
       
       // if the sphere is inside the sector
       if (bsc_bspBSPTree.TestSphere(
-          FLOATtoDOUBLE(vSphereCenter), FLOATtoDOUBLE(fSphereRadius))>=0) {
+          FLOATtoDOUBLE(vSphereCenter), FLOATtoDOUBLE(fSphereRadius)) >= 0) {
         // make oriented bounding box of the entity
         FLOATobbox3D boxEntity(iten->en_boxSpatialClassification, 
           iten->en_plPlacement.pl_PositionVector, iten->en_mRotation);
 
         // if the box is inside the sector
         if (boxSector.HasContactWith(boxEntity) &&
-          bsc_bspBSPTree.TestBox(FLOATtoDOUBLE(boxEntity))>=0) {
+          bsc_bspBSPTree.TestBox(FLOATtoDOUBLE(boxEntity)) >= 0) {
           // relate the entity to the sector
-          if (iten->en_RenderType==CEntity::RT_BRUSH
-            ||iten->en_RenderType==CEntity::RT_FIELDBRUSH
-            ||iten->en_RenderType==CEntity::RT_TERRAIN) {  // brushes first
+          if (iten->en_RenderType == CEntity::RT_BRUSH
+            ||iten->en_RenderType == CEntity::RT_FIELDBRUSH
+            ||iten->en_RenderType == CEntity::RT_TERRAIN) {  // brushes first
             AddRelationPairHeadHead(bsc_rsEntities, iten->en_rdSectors);
           } else {
             AddRelationPairTailTail(bsc_rsEntities, iten->en_rdSectors);
@@ -312,13 +312,13 @@ DOUBLE CBrushSector::CalculateVolume(void)
   }}
 
   // if the volume is positive
-  if (fSectorVolume>=0.0) {
+  if (fSectorVolume >= 0.0) {
     // remember that the sector is open
     bsc_ulFlags |= BSCF_OPENSECTOR;
     // if the sector belongs to a field brush
     CBrush3D *pbr = bsc_pbmBrushMip->bm_pbrBrush;
-    ASSERT(pbr!=NULL);
-    if (pbr->br_pfsFieldSettings!=NULL) {
+    ASSERT(pbr != NULL);
+    if (pbr->br_pfsFieldSettings != NULL) {
       // report a warning
       CPrintF("Warning: Open sector in a field brush!\n");
     }
@@ -394,13 +394,13 @@ void CBrushSector::MakePlanesFromVertices(void)
     // for all edges in polygon
     INDEX ctVertices = bpo.bpo_abpePolygonEdges.Count();
     {for (INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
-		  // get its vertices in counterclockwise order
+      // get its vertices in counterclockwise order
       CBrushPolygonEdge &bpe = bpo.bpo_abpePolygonEdges[iVertex];
       DOUBLE3D v0, v1;
       bpe.GetVertexCoordinatesPreciseRelative(v0, v1);
       DOUBLE3D vSum = v0+v1;
       DOUBLE3D vDif = v0-v1;
-		  // add the edge contribution to the normal vector
+      // add the edge contribution to the normal vector
       vNormal(1) += vDif (2)*vSum(3);
       vNormal(2) += vDif (3)*vSum(1);
       vNormal(3) += vDif (1)*vSum(2);
@@ -413,7 +413,7 @@ void CBrushSector::MakePlanesFromVertices(void)
       vNormal = DOUBLE3D(0,1,0);
     }
     // construct this plane from normal vector and one point
-	  bpl.bpl_pldPreciseRelative = DOUBLEplane3D(vNormal, vAnyVertex);
+    bpl.bpl_pldPreciseRelative = DOUBLEplane3D(vNormal, vAnyVertex);
     wpl.wpl_plRelative = DOUBLEtoFLOAT(bpl.bpl_pldPreciseRelative);
     // make default mapping coordinates for the plane
     wpl.wpl_mvRelative.FromPlane(wpl.wpl_plRelative);

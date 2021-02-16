@@ -38,7 +38,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 //#define EPSILON 0.00390625f // 1/2^8
 
 template <class Type>
-inline BOOL EpsilonEq(const Type &a, const Type &b) { return Abs(a-b)<=BSP_EPSILON; };
+inline BOOL EpsilonEq(const Type &a, const Type &b) { return Abs(a-b) <= BSP_EPSILON; };
 template <class Type>
 inline BOOL EpsilonNe(const Type &a, const Type &b) { return Abs(a-b)> BSP_EPSILON; };
 
@@ -86,7 +86,7 @@ void BSPVertexContainer<Type, iDimensions>::Initialize(const Vector<Type, iDimen
   // find largest axis of direction vector
   INDEX iMaxAxis = 0;
   Type tMaxAxis = (Type)0;//vDirection(1);
-  for (INDEX iAxis=1; iAxis<=iDimensions; iAxis++) {
+  for (INDEX iAxis=1; iAxis <= iDimensions; iAxis++) {
     if (Abs(vDirection(iAxis)) > Abs(tMaxAxis) ) {
       tMaxAxis = vDirection(iAxis);
       iMaxAxis = iAxis;
@@ -154,7 +154,7 @@ template<class Type, int iDimensions>
 void BSPVertexContainer<Type, iDimensions>::Sort(void)
 {
   // if there are no vertices, or the container is not line
-  if (bvc_aVertices.Count()==0 || IsPlannar()) {
+  if (bvc_aVertices.Count() == 0 || IsPlannar()) {
     // do not attempt to sort
     return;
   }
@@ -186,7 +186,7 @@ template<class Type, int iDimensions>
 void BSPVertexContainer<Type, iDimensions>::ElliminatePairedVertices(void)
 {
   // if there are no vertices, or the container is not line
-  if (bvc_aVertices.Count()==0 || IsPlannar()) {
+  if (bvc_aVertices.Count() == 0 || IsPlannar()) {
     // do not attempt to sort
     return;
   }
@@ -201,7 +201,7 @@ void BSPVertexContainer<Type, iDimensions>::ElliminatePairedVertices(void)
     Type t = bvx(bvc_iMaxAxis);                 // coordinate along max. axis
 
     // if last inside vertex is next to this one
-    if ( EpsilonEq(t, tLastInside) ) {
+    if (EpsilonEq(t, tLastInside) ) {
       // last vertex is far away
       tLastInside  = (Type)32000;
       IFDEBUG(pbvxLastInside = NULL);
@@ -222,7 +222,7 @@ template<class Type, int iDimensions>
 void BSPVertexContainer<Type, iDimensions>::CreateEdges(CDynamicArray<BSPEdge<Type, iDimensions> > &abed, ULONG ulEdgeTag)
 {
   // if there are no vertices, or the container is not line
-  if (bvc_aVertices.Count()==0 || IsPlannar()) {
+  if (bvc_aVertices.Count() == 0 || IsPlannar()) {
     // do not attempt to sort
     return;
   }
@@ -303,7 +303,7 @@ void BSPEdge<Type, iDimensions>::OptimizeBSPEdges(CDynamicArray<BSPEdge<Type, iD
   typedef BSPEdge<Type, iDimensions> edge_t; // local declaration, to fix macro expansion in FOREACHINDYNAMICARRAY
 
   // if there are no edges
-  if (abed.Count()==0) {
+  if (abed.Count() == 0) {
     // do nothing
     return;
   }
@@ -320,7 +320,7 @@ void BSPEdge<Type, iDimensions>::OptimizeBSPEdges(CDynamicArray<BSPEdge<Type, iD
         continue;
       }
       // if it is dummy edge
-      if (bed1.bed_vVertex0==bed1.bed_vVertex1) {
+      if (bed1.bed_vVertex0 == bed1.bed_vVertex1) {
         // mark it for removal
         bSomeJoined = TRUE;
         bed1.bed_ulEdgeTag = 0;
@@ -331,7 +331,7 @@ void BSPEdge<Type, iDimensions>::OptimizeBSPEdges(CDynamicArray<BSPEdge<Type, iD
       // for each other edge
       {FOREACHINDYNAMICARRAY(abed, edge_t, itbed2) {
         edge_t &bed2 = *itbed2;
-        if (&bed1==&bed2) {
+        if (&bed1 == &bed2) {
           continue;
         }
         // if it is already marked
@@ -342,7 +342,7 @@ void BSPEdge<Type, iDimensions>::OptimizeBSPEdges(CDynamicArray<BSPEdge<Type, iD
         // if they originate from same edge (plane)
         if (bed1.bed_ulEdgeTag == bed2.bed_ulEdgeTag) {
           // if they are complemented
-          if (bed1.bed_vVertex0==bed2.bed_vVertex1 && bed1.bed_vVertex1==bed2.bed_vVertex0) {
+          if (bed1.bed_vVertex0 == bed2.bed_vVertex1 && bed1.bed_vVertex1 == bed2.bed_vVertex0) {
             // marked them both
             bSomeJoined = TRUE;
             bed1.bed_ulEdgeTag = 0;
@@ -351,14 +351,14 @@ void BSPEdge<Type, iDimensions>::OptimizeBSPEdges(CDynamicArray<BSPEdge<Type, iD
             break;
           }
           // if second one continues after first one
-          if (bed1.bed_vVertex1==bed2.bed_vVertex0) {
+          if (bed1.bed_vVertex1 == bed2.bed_vVertex0) {
             // extend end of first edge to the end of second one
             bed1.bed_vVertex1=bed2.bed_vVertex1;
             bSomeJoined = TRUE;
             // marked second edge
             bed2.bed_ulEdgeTag = 0;
           // if second one continues before first one
-          } else if (bed1.bed_vVertex0==bed2.bed_vVertex1) {
+          } else if (bed1.bed_vVertex0 == bed2.bed_vVertex1) {
             // extend start of first edge to the start of second one
             bed1.bed_vVertex0=bed2.bed_vVertex0;
             bSomeJoined = TRUE;
@@ -397,10 +397,10 @@ template<class Type, int iDimensions>
 void BSPNode<Type, iDimensions>::DeleteBSPNodeRecursively(void)
 {
   // delete sub-trees first, before deleting this node
-  if (bn_pbnFront!=NULL) {
+  if (bn_pbnFront != NULL) {
     bn_pbnFront->DeleteBSPNodeRecursively();
   }
-  if (bn_pbnBack!=NULL) {
+  if (bn_pbnBack != NULL) {
     bn_pbnBack->DeleteBSPNodeRecursively();
   }
   delete this;
@@ -491,18 +491,18 @@ FLOAT BSPNode<Type, iDimensions>::TestSphere(const Vector<Type, iDimensions> &vS
     } else {
       // if front node touches
       FLOAT fFront = bn_pbnFront->TestSphere(vSphereCenter, tSphereRadius);
-      if (fFront==0) {
+      if (fFront == 0) {
         // it touches
         return 0;
       }
       // if back node touches
       FLOAT fBack = bn_pbnBack->TestSphere(vSphereCenter, tSphereRadius);
-      if (fBack==0) {
+      if (fBack == 0) {
         // it touches
         return 0;
       }
       // if front and back have same classification
-      if (fFront==fBack) {
+      if (fFront == fBack) {
         // return it
         return fFront;
       // if front and back have different classification
@@ -542,18 +542,18 @@ FLOAT BSPNode<Type, iDimensions>::TestBox(const OBBox<Type> &box) const
     } else {
       // if front node touches
       FLOAT fFront = bn_pbnFront->TestBox(box);
-      if (fFront==0) {
+      if (fFront == 0) {
         // it touches
         return 0;
       }
       // if back node touches
       FLOAT fBack = bn_pbnBack->TestBox(box);
-      if (fBack==0) {
+      if (fBack == 0) {
         // it touches
         return 0;
       }
       // if front and back have same classification
-      if (fFront==fBack) {
+      if (fFront == fBack) {
         // return it
         return fFront;
       // if front and back have different classification
@@ -590,7 +590,7 @@ void BSPNode<Type, iDimensions>::FindLineMinMax(
     Type tD0 = PointDistance(v0);
     Type tD1 = PointDistance(v1);
     // if both are front
-    if (tD0>=0 && tD1>=0) {
+    if (tD0 >= 0 && tD1 >= 0) {
       // recurse down the front node
       bn_pbnFront->FindLineMinMax(bl, v0, v1, t0, t1);
       return;
@@ -606,7 +606,7 @@ void BSPNode<Type, iDimensions>::FindLineMinMax(
       Vector<Type, iDimensions> vS = v0+(v1-v0)*tFraction;
       Type tS = t0+(t1-t0)*tFraction;
       // if first is front
-      if (tD0>=0) {
+      if (tD0 >= 0) {
         // recurse first part down the front node
         bn_pbnFront->FindLineMinMax(bl, v0, vS, t0, tS);
         // recurse second part down the back node
@@ -652,7 +652,7 @@ template<class Type, int iDimensions>
 void BSPCutter<Type, iDimensions>::CutPolygon(BSPPolygon<Type, iDimensions> &bpoPolygon, BSPNode<Type, iDimensions> &bn)
 {
   // if the polygon has no edges
-  if (bpoPolygon.bpo_abedPolygonEdges.Count()==0) {
+  if (bpoPolygon.bpo_abedPolygonEdges.Count() == 0) {
     // skip cutting
     return;
   }
@@ -709,7 +709,7 @@ void BSPCutter<Type, iDimensions>::CutPolygon(BSPPolygon<Type, iDimensions> &bpo
       // cut it with front part of bsp
       BSPCutter<Type, iDimensions> bcFront(bpoPolygon, *pbnFront);
       // there must be no on-border parts
-      ASSERT(bcFront.bc_abedBorderInside.Count()==0 && bcFront.bc_abedBorderOutside.Count()==0);
+      ASSERT(bcFront.bc_abedBorderInside.Count() == 0 && bcFront.bc_abedBorderOutside.Count() == 0);
 
       // make a polygon from parts that are inside in front part of BSP
       BSPPolygon<Type, iDimensions> bpoInsideFront((Plane<Type, iDimensions> &)bpoPolygon, bcFront.bc_abedInside, bpoPolygon.bpo_ulPlaneTag);
@@ -967,14 +967,14 @@ BSPNode<Type, iDimensions> *BSPTree<Type, iDimensions>::CreateSubTree(CDynamicAr
   // local declarations, to fix macro expansion in FOREACHINDYNAMICARRAY
   typedef BSPEdge<Type, iDimensions> edge_t;
   typedef BSPPolygon<Type, iDimensions> polygon_t;
-  ASSERT(abpoPolygons.Count()>=1);
+  ASSERT(abpoPolygons.Count() >= 1);
 
   // use first polygon as splitter
   abpoPolygons.Lock();
   BSPPolygon<Type, iDimensions> bpoSplitter = abpoPolygons[0];
   abpoPolygons.Unlock();
   // tags must be valid
-  ASSERT(bpoSplitter.bpo_ulPlaneTag!=-1);
+  ASSERT(bpoSplitter.bpo_ulPlaneTag != -1);
 
   // create two new polygon arrays - back and front
   CDynamicArray<BSPPolygon<Type, iDimensions> > abpoFront, abpoBack;
@@ -984,7 +984,7 @@ BSPNode<Type, iDimensions> *BSPTree<Type, iDimensions>::CreateSubTree(CDynamicAr
     BSPPolygon<Type, iDimensions> bpoFront, bpoBack;
 
     // tags must be valid
-    ASSERT(itbpo->bpo_ulPlaneTag!=-1);
+    ASSERT(itbpo->bpo_ulPlaneTag != -1);
     // if the polygon has plane tag same as the tag of the splitter
     if (itbpo->bpo_ulPlaneTag == bpoSplitter.bpo_ulPlaneTag) {
       // they are assumed coplanar, so skip it
@@ -1085,7 +1085,7 @@ void BSPTree<Type, iDimensions>::Destroy(void)
 template<class Type, int iDimensions>
 FLOAT BSPTree<Type, iDimensions>::TestSphere(const Vector<Type, iDimensions> &vSphereCenter, Type tSphereRadius) const
 {
-  if (bt_pbnRoot==NULL) return FALSE;
+  if (bt_pbnRoot == NULL) return FALSE;
   // just start recursive testing at root node
   return bt_pbnRoot->TestSphere(vSphereCenter, tSphereRadius);
 }
@@ -1093,7 +1093,7 @@ FLOAT BSPTree<Type, iDimensions>::TestSphere(const Vector<Type, iDimensions> &vS
 template<class Type, int iDimensions>
 FLOAT BSPTree<Type, iDimensions>::TestBox(const OBBox<Type> &box) const
 {
-  if (bt_pbnRoot==NULL) return FALSE;
+  if (bt_pbnRoot == NULL) return FALSE;
   // just start recursive testing at root node
   return bt_pbnRoot->TestBox(box);
 }
@@ -1125,7 +1125,7 @@ template<class Type, int iDimensions>
 void BSPTree<Type, iDimensions>::MoveSubTreeToArray(BSPNode<Type, iDimensions> *pbnSubtree)
 {
   // if this is no node
-  if (pbnSubtree==NULL) {
+  if (pbnSubtree == NULL) {
     // do nothing
     return;
   }
@@ -1145,12 +1145,12 @@ void BSPTree<Type, iDimensions>::MoveSubTreeToArray(BSPNode<Type, iDimensions> *
   pbnSubtree->bn_ulPlaneTag = (ULONG)&bnInArray;
 
   // remap pointers to subnodes
-  if (pbnSubtree->bn_pbnFront==NULL) {
+  if (pbnSubtree->bn_pbnFront == NULL) {
     bnInArray.bn_pbnFront = NULL;
   } else {
     bnInArray.bn_pbnFront = (BSPNode<Type, iDimensions>*)pbnSubtree->bn_pbnFront->bn_ulPlaneTag;
   }
-  if (pbnSubtree->bn_pbnBack==NULL) {
+  if (pbnSubtree->bn_pbnBack == NULL) {
     bnInArray.bn_pbnBack = NULL;
   } else {
     bnInArray.bn_pbnBack = (BSPNode<Type, iDimensions>*)pbnSubtree->bn_pbnBack->bn_ulPlaneTag;
@@ -1161,7 +1161,7 @@ void BSPTree<Type, iDimensions>::MoveSubTreeToArray(BSPNode<Type, iDimensions> *
 template<class Type, int iDimensions>
 INDEX BSPTree<Type, iDimensions>::CountNodes(BSPNode<Type, iDimensions> *pbnSubtree)
 {
-  if (pbnSubtree==NULL) {
+  if (pbnSubtree == NULL) {
     return 0;
   } else {
     return 1+
@@ -1206,38 +1206,38 @@ void BSPTree<Type, iDimensions>::Read_t(CTStream &strm) // throw char *
   // read current version and size
   INDEX iVersion;
   SLONG slSize;
-  strm>>iVersion>>slSize;
-  ASSERT(iVersion==1);
+  strm >> iVersion >> slSize;
+  ASSERT(iVersion == 1);
 
   // read count of nodes and create array
   INDEX ctNodes;
-  strm>>ctNodes;
-  ASSERT(slSize==(SLONG)(sizeof(INDEX)+ctNodes*sizeof(BSPNode<Type, iDimensions>)));
+  strm >> ctNodes;
+  ASSERT(slSize == (SLONG)(sizeof(INDEX)+ctNodes*sizeof(BSPNode<Type, iDimensions>)));
   bt_abnNodes.New(ctNodes);
   // for each node
   for (INDEX iNode=0; iNode<ctNodes; iNode++) {
     BSPNode<Type, iDimensions> &bn = bt_abnNodes[iNode];
     // read it from disk
     strm.Read_t(&(Plane<Type, iDimensions>&)bn, sizeof(Plane<Type, iDimensions>));
-    strm>>(INDEX&)bn.bn_bnlLocation;
+    strm >> (INDEX&)bn.bn_bnlLocation;
 
     INDEX iFront;
-    strm>>iFront;
-    if (iFront==-1) {
+    strm >> iFront;
+    if (iFront == -1) {
       bn.bn_pbnFront=NULL;
     } else {
       bn.bn_pbnFront = &bt_abnNodes[iFront];
     }
 
     INDEX iBack;
-    strm>>iBack;
-    if (iBack==-1) {
+    strm >> iBack;
+    if (iBack == -1) {
       bn.bn_pbnBack=NULL;
     } else {
       bn.bn_pbnBack = &bt_abnNodes[iBack];
     }
 
-    strm>>bn.bn_ulPlaneTag;
+    strm >> bn.bn_ulPlaneTag;
   }
 
   // check end id
@@ -1259,34 +1259,34 @@ void BSPTree<Type, iDimensions>::Write_t(CTStream &strm) // throw char *
   // calculate size of chunk to write
   SLONG slSize = sizeof(INDEX)+ctNodes*sizeof(BSPNode<Type, iDimensions>);
   // write current version and size
-  strm<<INDEX(1)<<slSize;
+  strm << INDEX(1) << slSize;
 
   // write count of nodes
-  strm<<ctNodes;
+  strm << ctNodes;
   // for each node
   for (INDEX iNode=0; iNode<ctNodes; iNode++) {
     BSPNode<Type, iDimensions> &bn = bt_abnNodes[iNode];
     // write it to disk
     strm.Write_t(&(Plane<Type, iDimensions>&)bn, sizeof(Plane<Type, iDimensions>));
-    strm<<(INDEX&)bn.bn_bnlLocation;
+    strm << (INDEX&)bn.bn_bnlLocation;
 
     INDEX iFront;
-    if (bn.bn_pbnFront==NULL) {
+    if (bn.bn_pbnFront == NULL) {
       iFront=-1;
     } else {
       iFront = bt_abnNodes.Index(bn.bn_pbnFront);
     }
-    strm<<iFront;
+    strm << iFront;
 
     INDEX iBack;
-    if (bn.bn_pbnBack==NULL) {
+    if (bn.bn_pbnBack == NULL) {
       iBack=-1;
     } else {
       iBack = bt_abnNodes.Index(bn.bn_pbnBack);
     }
-    strm<<iBack;
+    strm << iBack;
 
-    strm<<bn.bn_ulPlaneTag;
+    strm << bn.bn_ulPlaneTag;
   }
   // write end id for checking
   strm.WriteID_t("BSPE");  // bsp end

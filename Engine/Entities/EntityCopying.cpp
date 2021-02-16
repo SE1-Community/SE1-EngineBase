@@ -58,10 +58,10 @@ extern INDEX _ctPredictorEntities;
 // mirror a placement of one entity
 static void MirrorAndStretchPlacement(CPlacement3D &pl)
 {
-  ASSERT(_wmtMirror==WMT_X||_wmtMirror==WMT_Y||_wmtMirror==WMT_Z||_wmtMirror==WMT_NONE);
+  ASSERT(_wmtMirror == WMT_X||_wmtMirror == WMT_Y||_wmtMirror == WMT_Z||_wmtMirror == WMT_NONE);
 
   // if there should be mirror
-  if (_wmtMirror!=WMT_NONE) {
+  if (_wmtMirror != WMT_NONE) {
     // make rotation matrix for the placement
     FLOATmatrix3D m;
     MakeRotationMatrix(m, pl.pl_OrientationAngle);
@@ -101,14 +101,14 @@ static void MirrorAndStretchPlacement(CPlacement3D &pl)
 CEntity *CEntity::FindRemappedEntityPointer(CEntity *penOriginal)
 {
   // if original is null
-  if (penOriginal==NULL) {
+  if (penOriginal == NULL) {
     // copy is null
     return NULL;
   }
 
   // try to find valid remap
   {FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {
-    if (itpr->pr_penOriginal==penOriginal) {
+    if (itpr->pr_penOriginal == penOriginal) {
       return itpr->pr_penCopy;
     }
   }}
@@ -145,7 +145,7 @@ void CEntity::Copy(CEntity &enOther, ULONG ulFlags)
   }
 
   // if this is a brush
-  if ( enOther.en_RenderType == RT_BRUSH || en_RenderType == RT_FIELDBRUSH) {
+  if (enOther.en_RenderType == RT_BRUSH || en_RenderType == RT_FIELDBRUSH) {
     // there must be no existing brush
     ASSERT(en_pbrBrush == NULL);
     // create a new empty brush in the brush archive of current world
@@ -153,7 +153,7 @@ void CEntity::Copy(CEntity &enOther, ULONG ulFlags)
     en_pbrBrush->br_penEntity = this;
     // copy the brush
     if (_bMirrorAndStretch) {
-      en_pbrBrush->Copy(*enOther.en_pbrBrush, _fStretch, _wmtMirror!=WMT_NONE);
+      en_pbrBrush->Copy(*enOther.en_pbrBrush, _fStretch, _wmtMirror != WMT_NONE);
     } else {
       en_pbrBrush->Copy(*enOther.en_pbrBrush, 1.0f, FALSE);
     }
@@ -162,7 +162,7 @@ void CEntity::Copy(CEntity &enOther, ULONG ulFlags)
     #pragma message(">> CEntity::Copy")
     ASSERT(FALSE);
   // if this is a model
-  } if ( enOther.en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL) {
+  } if (enOther.en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL) {
     // if will not initialize
     if (!(ulFlags&COPY_REINIT)) {
       // create a new model object
@@ -173,7 +173,7 @@ void CEntity::Copy(CEntity &enOther, ULONG ulFlags)
       en_pmoModelObject->Copy(*enOther.en_pmoModelObject);
     }
   // if this is ska model
-  } else if ( enOther.en_RenderType == RT_SKAMODEL || en_RenderType == RT_SKAEDITORMODEL) {
+  } else if (enOther.en_RenderType == RT_SKAMODEL || en_RenderType == RT_SKAEDITORMODEL) {
       en_psiShadingInfo = new CShadingInfo;
       en_ulFlags &= ~ENF_VALIDSHADINGINFO;
       en_pmiModelInstance = CreateModelInstance("Temp");
@@ -188,7 +188,7 @@ void CEntity::Copy(CEntity &enOther, ULONG ulFlags)
     en_penParent = enOther.en_penParent;
   }
   // if the entity has a parent
-  if (en_penParent!=NULL) {
+  if (en_penParent != NULL) {
     // create relative offset
     en_plRelativeToParent = en_plPlacement;
     en_plRelativeToParent.AbsoluteToRelativeSmooth(en_penParent->en_plPlacement);
@@ -207,7 +207,7 @@ void CEntity::Copy(CEntity &enOther, ULONG ulFlags)
     enOther.en_pwoWorld->wo_cenPredicted.Add(&enOther);
     enOther.en_pwoWorld->wo_cenPredictor.Add(this);
     // copy last positions
-    if (enOther.en_plpLastPositions!=NULL) {
+    if (enOther.en_plpLastPositions != NULL) {
       en_plpLastPositions = new CLastPositions(*enOther.en_plpLastPositions);
     }
   }
@@ -363,7 +363,7 @@ void CEntity::CopyEntityProperties(CEntity &enOther, ULONG ulFlags)
 
   // for all classes in hierarchy of this entity
   for (CDLLEntityClass *pdecDLLClass = en_pecClass->ec_pdecDLLClass;
-      pdecDLLClass!=NULL;
+      pdecDLLClass != NULL;
       pdecDLLClass = pdecDLLClass->dec_pdecBase) {
 
     // for all properties
@@ -379,7 +379,7 @@ void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy
   CEntitySelection &senCopied, const CPlacement3D &plOtherSystem)
 {
   INDEX ctEntities = cenToCopy.Count();
-  if (ctEntities<=0) {
+  if (ctEntities <= 0) {
     return;
   }
 
@@ -444,13 +444,13 @@ void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy
     // copy the entity from its original
     penCopy->Copy(*penOriginal, ulCopyFlags);
     // if this is a brush
-    if ( penOriginal->en_RenderType == CEntity::RT_BRUSH ||
+    if (penOriginal->en_RenderType == CEntity::RT_BRUSH ||
          penOriginal->en_RenderType == CEntity::RT_FIELDBRUSH) {
       // update the bounding boxes of the brush
       penCopy->en_pbrBrush->CalculateBoundingBoxes();
     }
     if (_bMirrorAndStretch) {
-      penCopy->MirrorAndStretch(_fStretch, _wmtMirror!=WMT_NONE);
+      penCopy->MirrorAndStretch(_fStretch, _wmtMirror != WMT_NONE);
     }
   }}
 
@@ -479,7 +479,7 @@ void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy
     CEntity *penCopy = itpr->pr_penCopy;
 
     // if this is a brush
-    if ( penCopy->en_RenderType == CEntity::RT_BRUSH ||
+    if (penCopy->en_RenderType == CEntity::RT_BRUSH ||
          penCopy->en_RenderType == CEntity::RT_FIELDBRUSH) {
       // find possible shadow layers near affected area
       FindShadowLayers(penCopy->en_pbrBrush->GetFirstMip()->bm_boxBoundingBox);
@@ -487,7 +487,7 @@ void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy
 
     // if this is a light source
     {CLightSource *pls = penCopy->GetLightSource();
-    if (pls!=NULL) {
+    if (pls != NULL) {
       // find all shadow maps that should have layers from this light source
       pls->FindShadowLayers(FALSE);
       // update shadow map on terrains
@@ -561,7 +561,7 @@ CEntity *CWorld::CopyEntityInWorld(CEntity &enOriginal, const CPlacement3D &plOt
   // copy the entity from its original
   penNew->Copy(enOriginal, COPY_REINIT);
   // if this is a brush
-  if ( enOriginal.en_RenderType == CEntity::RT_BRUSH ||
+  if (enOriginal.en_RenderType == CEntity::RT_BRUSH ||
        enOriginal.en_RenderType == CEntity::RT_FIELDBRUSH) {
     // update the bounding boxes of the brush
     penNew->en_pbrBrush->CalculateBoundingBoxes();
@@ -570,7 +570,7 @@ CEntity *CWorld::CopyEntityInWorld(CEntity &enOriginal, const CPlacement3D &plOt
   penNew->Initialize();
 
   // if this is a brush
-  if ( penNew->en_RenderType == CEntity::RT_BRUSH ||
+  if (penNew->en_RenderType == CEntity::RT_BRUSH ||
        penNew->en_RenderType == CEntity::RT_FIELDBRUSH) {
     // find possible shadow layers near affected area
     FindShadowLayers(penNew->en_pbrBrush->GetFirstMip()->bm_boxBoundingBox);
@@ -578,7 +578,7 @@ CEntity *CWorld::CopyEntityInWorld(CEntity &enOriginal, const CPlacement3D &plOt
 
   // if this is a light source
   {CLightSource *pls = penNew->GetLightSource();
-  if (pls!=NULL) {
+  if (pls != NULL) {
     // find all shadow maps that should have layers from this light source
     pls->FindShadowLayers(FALSE);
   }}
@@ -633,7 +633,7 @@ void CWorld::MirrorAndStretch(CWorld &woOriginal, FLOAT fStretch, enum WorldMirr
 void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy)
 {
   INDEX ctEntities = cenToCopy.Count();
-  if (ctEntities<=0) {
+  if (ctEntities <= 0) {
     return;
   }
 
@@ -687,7 +687,7 @@ void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy)
     // copy the entity from its original
     penCopy->Copy(*penOriginal, ulCopyFlags);
     // if this is a brush
-    if ( penOriginal->en_RenderType == CEntity::RT_BRUSH ||
+    if (penOriginal->en_RenderType == CEntity::RT_BRUSH ||
          penOriginal->en_RenderType == CEntity::RT_FIELDBRUSH) {
       ASSERT(FALSE);  // should we allow prediction of brushes?
       // update the bounding boxes of the brush
@@ -710,9 +710,9 @@ void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy)
     // for each sector around the original
     {FOREACHSRCOFDST(penOriginal->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
       // copy the link
-      if (penOriginal->en_RenderType==CEntity::RT_BRUSH
-        ||penOriginal->en_RenderType==CEntity::RT_FIELDBRUSH
-        ||penOriginal->en_RenderType==CEntity::RT_TERRAIN) {  // brushes first
+      if (penOriginal->en_RenderType == CEntity::RT_BRUSH
+        ||penOriginal->en_RenderType == CEntity::RT_FIELDBRUSH
+        ||penOriginal->en_RenderType == CEntity::RT_TERRAIN) {  // brushes first
         AddRelationPairHeadHead(pbsc->bsc_rsEntities, penCopy->en_rdSectors);
       } else {
         AddRelationPairTailTail(pbsc->bsc_rsEntities, penCopy->en_rdSectors);
@@ -728,7 +728,7 @@ void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy)
     CEntity *penCopy = itpr->pr_penCopy;
 
     // if this is a brush
-    if ( penCopy->en_RenderType == CEntity::RT_BRUSH ||
+    if (penCopy->en_RenderType == CEntity::RT_BRUSH ||
          penCopy->en_RenderType == CEntity::RT_FIELDBRUSH) {
       ASSERT(FALSE);  // should we allow prediction of brushes?
       // find possible shadow layers near affected area
@@ -737,7 +737,7 @@ void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy)
 
     // if this is a light source
     {CLightSource *pls = penCopy->GetLightSource();
-    if (pls!=NULL) {
+    if (pls != NULL) {
       // find all shadow maps that should have layers from this light source
       pls->FindShadowLayers(FALSE);
     }}

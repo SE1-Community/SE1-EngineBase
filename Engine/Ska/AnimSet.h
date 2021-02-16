@@ -25,12 +25,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #define ANG_COMPRESIONMUL 182.041666666666666666666666666667f;
 
-#define AN_LOOPING              (1UL<<0) // looping animation
-#define AN_NORESTART            (1UL<<1) // dont restart anim
-#define AN_PAUSED               (1UL<<2)
-#define AN_CLEAR                (1UL<<3) // do new clear state before adding animation
-#define AN_CLONE                (1UL<<4) // do new cloned state before adding animation
-#define AN_NOGROUP_SORT         (1UL<<5) // dont sort animations by groups
+#define AN_LOOPING              (1UL << 0) // looping animation
+#define AN_NORESTART            (1UL << 1) // dont restart anim
+#define AN_PAUSED               (1UL << 2)
+#define AN_CLEAR                (1UL << 3) // do new clear state before adding animation
+#define AN_CLONE                (1UL << 4) // do new cloned state before adding animation
+#define AN_NOGROUP_SORT         (1UL << 5) // dont sort animations by groups
 
 #define CLEAR_STATE_LENGTH  0.2f
 #define CLONED_STATE_LENGTH  0.2f

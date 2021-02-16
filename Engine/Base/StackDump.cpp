@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 extern ULONG _ulEngineBuildMajor;
 extern ULONG _ulEngineBuildMinor;
 
-//==========================================
+// == == == == == == == == == == == == == == == == == == == == == 
 // Matt Pietrek
 // Microsoft Systems Journal, May 1997
 // FILE: MSJEXHND.CPP
@@ -63,7 +63,7 @@ class MSJExceptionHandler
 
 MSJExceptionHandler g_MSJExceptionHandler;  // Declare global instance of class
 
-//============================== Global Variables =============================
+// == == == == == == == == == == == == == == == Global Variables == == == == == == == == == == == == == == =
 
 //
 // Declare the static variables of the MSJExceptionHandler class
@@ -72,11 +72,11 @@ char MSJExceptionHandler::m_szLogFileName[MAX_PATH];
 LPTOP_LEVEL_EXCEPTION_FILTER MSJExceptionHandler::m_previousFilter;
 HANDLE MSJExceptionHandler::m_hReportFile;
 
-//============================== Class Methods =============================
+// == == == == == == == == == == == == == == == Class Methods == == == == == == == == == == == == == == =
 
-//=============
+// == == == == == == =
 // Constructor
-//=============
+// == == == == == == =
 MSJExceptionHandler::MSJExceptionHandler( )
 {
     // Install the unhandled exception filter function
@@ -88,33 +88,33 @@ MSJExceptionHandler::MSJExceptionHandler( )
     // Look for the '.' before the "EXE" extension.  Replace the extension
     // with "RPT"
     char* pszDot = strrchr( m_szLogFileName, '.' );
-    if ( pszDot )
+    if (pszDot )
     {
         pszDot++;   // Advance past the '.'
-        if ( strlen(pszDot) >= 3 )
+        if (strlen(pszDot) >= 3 )
             strcpy( pszDot, "RPT" );   // "RPT" -> "Report"
     }
 }
 
-//============
+// == == == == == == 
 // Destructor
-//============
+// == == == == == == 
 MSJExceptionHandler::~MSJExceptionHandler( )
 {
     SetUnhandledExceptionFilter( m_previousFilter );
 }
 
-//==============================================================
+// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == 
 // Lets user change the name of the report file to be generated
-//==============================================================
+// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == 
 void MSJExceptionHandler::SetLogFileName(const char* pszLogFileName )
 {
     strcpy( m_szLogFileName, pszLogFileName );
 }
 
-//===========================================================
+// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == =
 // Entry point where control comes on an unhandled exception
-//===========================================================
+// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == =
 LONG WINAPI MSJExceptionHandler::MSJUnhandledExceptionFilter(
                                              PEXCEPTION_POINTERS pExceptionInfo )
 {
@@ -126,7 +126,7 @@ LONG WINAPI MSJExceptionHandler::MSJUnhandledExceptionFilter(
                                 FILE_FLAG_WRITE_THROUGH,
                                 0 );
 
-    if ( m_hReportFile )
+    if (m_hReportFile )
     {
         SetFilePointer( m_hReportFile, 0, 0, FILE_END );
 
@@ -137,27 +137,27 @@ LONG WINAPI MSJExceptionHandler::MSJUnhandledExceptionFilter(
     }
 
     // make sure the console log was written safely
-    if (_pConsole!=NULL) {
+    if (_pConsole != NULL) {
       _pConsole->CloseLog();
     }
     extern void EnableWindowsKeys(void);
     EnableWindowsKeys();
 
-    if ( m_previousFilter )
+    if (m_previousFilter )
         return m_previousFilter( pExceptionInfo );
     else
         return EXCEPTION_CONTINUE_SEARCH;
 }
 
-//===========================================================================
+// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == =
 // Open the report file, and write the desired information to it.  Called by
 // MSJUnhandledExceptionFilter
-//===========================================================================
+// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == =
 void MSJExceptionHandler::GenerateExceptionReport(
     PEXCEPTION_POINTERS pExceptionInfo )
 {
     // Start out with a banner
-    _tprintf( "//=====================================================\n" );
+    _tprintf( "// == == == == == == == == == == == == == == == == == == == == == == == == == == =\n" );
     char strTime[80];
     _strtime(strTime);
     char strDate[80];
@@ -210,15 +210,15 @@ void MSJExceptionHandler::GenerateExceptionReport(
     _tprintf( "\n" );
 }
 
-//======================================================================
+// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == 
 // Given an exception code, returns a pointer to a static string with a
 // description of the exception
-//======================================================================
+// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == 
 const char* MSJExceptionHandler::GetExceptionString( DWORD dwCode )
 {
     #define EXCEPTION( x ) case EXCEPTION_##x: return #x;
 
-    switch ( dwCode )
+    switch (dwCode )
     {
         EXCEPTION( ACCESS_VIOLATION )
         EXCEPTION( DATATYPE_MISALIGNMENT )
@@ -257,24 +257,24 @@ const char* MSJExceptionHandler::GetExceptionString( DWORD dwCode )
     return szBuffer;
 }
 
-//==============================================================================
+// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == 
 // Given a linear address, locates the module, section, and offset containing
 // that address.
 //
 // Note: the szModule paramater buffer is an output buffer of length specified
 // by the len parameter (in characters!)
-//==============================================================================
+// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == 
 BOOL MSJExceptionHandler::GetLogicalAddress(
         PVOID addr, char* szModule, DWORD len, DWORD& section, DWORD& offset )
 {
     MEMORY_BASIC_INFORMATION mbi;
 
-    if ( !VirtualQuery( addr, &mbi, sizeof(mbi) ) )
+    if (!VirtualQuery( addr, &mbi, sizeof(mbi) ) )
         return FALSE;
 
     DWORD hMod = (DWORD)mbi.AllocationBase;
 
-    if ( !GetModuleFileNameA( (HMODULE)hMod, szModule, len ) )
+    if (!GetModuleFileNameA( (HMODULE)hMod, szModule, len ) )
         return FALSE;
 
     // Point to the DOS header in memory
@@ -289,7 +289,7 @@ BOOL MSJExceptionHandler::GetLogicalAddress(
 
     // Iterate through the section table, looking for the one that encompasses
     // the linear address.
-    for (   unsigned i = 0;
+    for (unsigned i = 0;
             i < pNtHdr->FileHeader.NumberOfSections;
             i++, pSection++ )
     {
@@ -298,7 +298,7 @@ BOOL MSJExceptionHandler::GetLogicalAddress(
                     + max(pSection->SizeOfRawData, pSection->Misc.VirtualSize);
 
         // Is the address in this section???
-        if ( (rva >= sectionStart) && (rva <= sectionEnd) )
+        if ((rva >= sectionStart) && (rva <= sectionEnd) )
         {
             // Yes, address is in the section.  Calculate section and offset,
             // and store in the "section" & "offset" params, which were
@@ -312,9 +312,9 @@ BOOL MSJExceptionHandler::GetLogicalAddress(
     return FALSE;   // Should never get here!
 }
 
-//============================================================
+// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == 
 // Walks the stack, and writes the results to the report file
-//============================================================
+// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == 
 void MSJExceptionHandler::IntelStackWalk( PCONTEXT pContext )
 {
     _tprintf( "\nmanual stack frame walk begin:\n" );
@@ -350,24 +350,24 @@ void MSJExceptionHandler::IntelStackWalk( PCONTEXT pContext )
 
         pFrame = (PDWORD)pFrame[0]; // proceed to next higher frame on stack
 
-        if ( (DWORD)pFrame & 3 )    // Frame pointer must be aligned on a
+        if ((DWORD)pFrame & 3 )    // Frame pointer must be aligned on a
             break;                  // DWORD boundary.  Bail if not so.
 
-        if ( pFrame <= pPrevFrame )
+        if (pFrame <= pPrevFrame )
             break;
 
         // Can two DWORDs be read from the supposed frame address?
-        if ( IsBadWritePtr(pFrame, sizeof(PVOID)*2) )
+        if (IsBadWritePtr(pFrame, sizeof(PVOID)*2) )
             break;
 
     };
     _tprintf( "\nmanual stack frame walk end:\n" );
 }
 
-//============================================================================
+// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == 
 // Helper function that writes to the report file, and allows the user to use
 // printf style formating
-//============================================================================
+// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == 
 int __cdecl MSJExceptionHandler::_tprintf(const char * format, ...)
 {
     char szBuff[1024];

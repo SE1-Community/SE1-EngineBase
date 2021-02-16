@@ -78,13 +78,13 @@ public:
   void OnlyFirstLine(void);
 
   /* Equality comparison. */
-  BOOL operator==(const CTString &strOther) const;
-  BOOL operator==(const char *strOther) const;
-  ENGINE_API friend BOOL operator==(const char *strThis, const CTString &strOther);
+  BOOL operator == (const CTString &strOther) const;
+  BOOL operator == (const char *strOther) const;
+  ENGINE_API friend BOOL operator == (const char *strThis, const CTString &strOther);
   /* Inequality comparison. */
-  BOOL operator!=(const CTString &strOther) const;
-  BOOL operator!=(const char *strOther) const;
-  ENGINE_API friend BOOL operator!=(const char *strThis, const CTString &strOther);
+  BOOL operator != (const CTString &strOther) const;
+  BOOL operator != (const char *strOther) const;
+  ENGINE_API friend BOOL operator != (const char *strThis, const CTString &strOther);
   // wild card comparison (other string may contain wildcards)
   BOOL Matches(const CTString &strOther) const;
   BOOL Matches(const char *strOther) const;

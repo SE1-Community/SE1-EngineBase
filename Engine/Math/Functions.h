@@ -33,7 +33,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 template<class Type>
 inline Type Abs( const Type x)
 {
-  return ( x>=Type(0) ? x : -x );
+  return ( x >= Type(0) ? x : -x );
 }
 
 template<class Type>
@@ -52,8 +52,8 @@ inline Type Min( const Type a, const Type b)
 template<class Type>
 inline Type Lerp( const Type x0, const Type x1, const FLOAT fRatio)
 {
-       if (fRatio==0) return x0;
-  else if (fRatio==1) return x1;
+       if (fRatio == 0) return x0;
+  else if (fRatio == 1) return x1;
   else return x0+(x1-x0)*fRatio;
 }
 
@@ -66,7 +66,7 @@ inline Type Sgn( const Type x)
 template<class Type>
 inline Type SgnNZ( const Type x)
 {
-  return (x)>=Type(0) ? Type(1):Type(-1);
+  return (x) >= Type(0) ? Type(1):Type(-1);
 }
 
 template<class Type>
@@ -78,19 +78,19 @@ inline void Swap( Type &a, Type &b)
 template<class Type>
 inline Type ClampUp( const Type x, const Type uplimit)
 {
-  return ( x<=uplimit ? x : uplimit );
+  return ( x <= uplimit ? x : uplimit );
 }
 
 template<class Type>
 inline Type ClampDn( const Type x, const Type dnlimit)
 {
-  return ( x>=dnlimit ? x : dnlimit );
+  return ( x >= dnlimit ? x : dnlimit );
 }
 
 template<class Type>
 inline Type Clamp( const Type x, const Type dnlimit, const Type uplimit)
 {
-  return ( x>=dnlimit ? (x<=uplimit ? x : uplimit): dnlimit );
+  return ( x >= dnlimit ? (x <= uplimit ? x : uplimit): dnlimit );
 }
 
 /* 
@@ -551,7 +551,7 @@ inline ANGLE LerpANGLE(ANGLE a0, ANGLE a1, FLOAT fFactor)
 // (ie. 0.2f means 20% fade in, 0.1f stands for 10% fade out)
 inline FLOAT CalculateRatio(FLOAT fCurr, FLOAT fMin, FLOAT fMax, FLOAT fFadeInRatio, FLOAT fFadeOutRatio)
 {
-  if (fCurr<=fMin || fCurr>=fMax)
+  if (fCurr <= fMin || fCurr >= fMax)
   {
     return 0.0f;
   }

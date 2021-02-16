@@ -29,7 +29,7 @@ class ENGINE_API CNetworkProvider {
 public:
   CTString np_Description;    // description string of the driver
 public:
-  CListNode np_Node;						   // for linking in list of avaliable providers
+  CListNode np_Node;               // for linking in list of avaliable providers
 
   /* Default constructor. */
   CNetworkProvider(void);

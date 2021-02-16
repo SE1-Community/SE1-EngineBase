@@ -61,7 +61,7 @@ CBrushShadowLayer::~CBrushShadowLayer(void)
 void CBrushShadowLayer::DiscardShadows(void)
 {
   // if the layer is calculated
-  if (bsl_pubLayer!=NULL) {
+  if (bsl_pubLayer != NULL) {
     // free its memory
     FreeMemory(bsl_pubLayer);
     bsl_pubLayer = NULL;
@@ -115,36 +115,36 @@ void CBrushPolygon::InitializeShadowMap(void)
 
   // expand shadow map for the sake of dark corners
   if (bpo_ulFlags&BPOF_DARKCORNERS) {
-    mexSizeU += 2<<iMipLevel;
-    mexSizeV += 2<<iMipLevel;
+    mexSizeU += 2 << iMipLevel;
+    mexSizeV += 2 << iMipLevel;
   }
   // round the dimensions up to power of 2
   INDEX iSizeULog2 = (INDEX)ceil(Log2(mexSizeU));
   INDEX iSizeVLog2 = (INDEX)ceil(Log2(mexSizeV));
-  mexSizeU = 1<<iSizeULog2;
-  mexSizeV = 1<<iSizeVLog2;
+  mexSizeU = 1 << iSizeULog2;
+  mexSizeV = 1 << iSizeVLog2;
 
   // calculate dimensions in pixels and eventually reduce shadowmap size
-  PIX pixSizeU  = mexSizeU>>iMipLevel;
-  PIX pixSizeV  = mexSizeV>>iMipLevel;
+  PIX pixSizeU  = mexSizeU >> iMipLevel;
+  PIX pixSizeV  = mexSizeV >> iMipLevel;
   INDEX iMipAdj = ClampTextureSize( MAX_SHADOWMAP_SIZE, _pGfx->gl_pixMaxTextureDimension, pixSizeU, pixSizeV);
-  pixSizeU   = ClampDn( pixSizeU>>iMipAdj, 1L);
-  pixSizeV   = ClampDn( pixSizeV>>iMipAdj, 1L);
+  pixSizeU   = ClampDn( pixSizeU >> iMipAdj, 1L);
+  pixSizeV   = ClampDn( pixSizeV >> iMipAdj, 1L);
   iMipLevel += iMipAdj;
 
   // move shadow map offset for the sake of dark corners
   if (bpo_ulFlags&BPOF_DARKCORNERS) {
-    mexMinU -= 1<<iMipLevel;
-    mexMinV -= 1<<iMipLevel;
+    mexMinU -= 1 << iMipLevel;
+    mexMinV -= 1 << iMipLevel;
   }
   // recalculate dimensions and offsets in mex back from the dimensions in pixels
-  mexSizeU = (pixSizeU<<iMipLevel);
-  mexSizeV = (pixSizeV<<iMipLevel);
+  mexSizeU = (pixSizeU << iMipLevel);
+  mexSizeV = (pixSizeV << iMipLevel);
   MEX mexOffsetU = -mexMinU;
   MEX mexOffsetV = -mexMinV;
   // remember size of polygon (not necessarily 2^n) (min is always (0,0))
-  bpo_smShadowMap.sm_pixPolygonSizeU = Min( (PIX)((vmexShadowSize(1)>>iMipLevel)+3), pixSizeU);
-  bpo_smShadowMap.sm_pixPolygonSizeV = Min( (PIX)((vmexShadowSize(2)>>iMipLevel)+3), pixSizeV);
+  bpo_smShadowMap.sm_pixPolygonSizeU = Min( (PIX)((vmexShadowSize(1) >> iMipLevel)+3), pixSizeU);
+  bpo_smShadowMap.sm_pixPolygonSizeV = Min( (PIX)((vmexShadowSize(2) >> iMipLevel)+3), pixSizeV);
   // safety check
   ASSERT( bpo_smShadowMap.sm_pixPolygonSizeU <= _pGfx->gl_pixMaxTextureDimension &&
           bpo_smShadowMap.sm_pixPolygonSizeV <= _pGfx->gl_pixMaxTextureDimension &&
@@ -171,9 +171,9 @@ FLOAT CBrushShadowLayer::GetLightStrength(PIX pixU, PIX pixV, FLOAT fLRRatio, FL
     return 0.0f;
   }
   // if there is no layer mask, full light layer or the coordinates are out of the layer
-  if (bsl_pubLayer==NULL || (bsl_ulFlags&BSLF_ALLLIGHT) ||
+  if (bsl_pubLayer == NULL || (bsl_ulFlags&BSLF_ALLLIGHT) ||
     (pixU<bsl_pixMinU) || (pixV<bsl_pixMinV) ||
-    (pixU>=bsl_pixMinU+bsl_pixSizeU) || (pixV>=bsl_pixMinV+bsl_pixSizeV)) {
+    (pixU >= bsl_pixMinU+bsl_pixSizeU) || (pixV >= bsl_pixMinV+bsl_pixSizeV)) {
     // full light
     return 1.0f;
   }
@@ -187,10 +187,10 @@ FLOAT CBrushShadowLayer::GetLightStrength(PIX pixU, PIX pixV, FLOAT fLRRatio, FL
   ULONG ulOffsetDR = pixU1+pixV1*bsl_pixSizeU;
   // get light at the four pixels
   FLOAT fUL=0.0f, fUR=0.0f, fDL=0.0f, fDR=0.0f;
-  if (bsl_pubLayer[ulOffsetUL/8]&(1<<(ulOffsetUL%8))) { fUL = 1.0f; };
-  if (bsl_pubLayer[ulOffsetUR/8]&(1<<(ulOffsetUR%8))) { fUR = 1.0f; };
-  if (bsl_pubLayer[ulOffsetDL/8]&(1<<(ulOffsetDL%8))) { fDL = 1.0f; };
-  if (bsl_pubLayer[ulOffsetDR/8]&(1<<(ulOffsetDR%8))) { fDR = 1.0f; };
+  if (bsl_pubLayer[ulOffsetUL/8]&(1 << (ulOffsetUL%8))) { fUL = 1.0f; };
+  if (bsl_pubLayer[ulOffsetUR/8]&(1 << (ulOffsetUR%8))) { fUR = 1.0f; };
+  if (bsl_pubLayer[ulOffsetDL/8]&(1 << (ulOffsetDL%8))) { fDL = 1.0f; };
+  if (bsl_pubLayer[ulOffsetDR/8]&(1 << (ulOffsetDR%8))) { fDR = 1.0f; };
 
   // return interpolated value
   return Lerp( Lerp(fUL, fUR, fLRRatio), Lerp(fDL, fDR, fLRRatio), fUDRatio);
@@ -200,12 +200,12 @@ void CBrushShadowMap::ReadLayers_t( CTStream *pstrm)  // throw char *
 {
   BOOL bUncalculated = FALSE;
   // if the old version of layers information is really saved here
-  if (pstrm->PeekID_t()==CChunkID("SHLY")) {  // shadow layers
+  if (pstrm->PeekID_t() == CChunkID("SHLY")) {  // shadow layers
     pstrm->ExpectID_t("SHLY");
 
     // read number of layers
     INDEX ctLayers;
-    *pstrm>>ctLayers;
+    *pstrm >> ctLayers;
     // for each shadow layer
     for (INDEX iLayer=0; iLayer<ctLayers; iLayer++) {
       // create a new layer
@@ -219,11 +219,11 @@ void CBrushShadowMap::ReadLayers_t( CTStream *pstrm)  // throw char *
       pbsl->bsl_plsLightSource = NULL;
 
       // read the layer data
-      *pstrm>>pbsl->bsl_ulFlags;    // flags
+      *pstrm >> pbsl->bsl_ulFlags;    // flags
       // if it is new version
       if (pbsl->bsl_ulFlags&BSLF_RECTANGLE) {
         SLONG slLayerSize;
-        *pstrm>>slLayerSize;
+        *pstrm >> slLayerSize;
         if (slLayerSize != 0) {
           pbsl->bsl_pubLayer = (UBYTE *)AllocMemory(slLayerSize);
           pstrm->Read_t(pbsl->bsl_pubLayer, slLayerSize); // the bit packed layer mask
@@ -232,15 +232,15 @@ void CBrushShadowMap::ReadLayers_t( CTStream *pstrm)  // throw char *
           pbsl->bsl_pubLayer = NULL;
         }
         // read layer rectangle
-        *pstrm>>pbsl->bsl_pixMinU;
-        *pstrm>>pbsl->bsl_pixMinV;
-        *pstrm>>pbsl->bsl_pixSizeU;
-        *pstrm>>pbsl->bsl_pixSizeV;
+        *pstrm >> pbsl->bsl_pixMinU;
+        *pstrm >> pbsl->bsl_pixMinV;
+        *pstrm >> pbsl->bsl_pixSizeU;
+        *pstrm >> pbsl->bsl_pixSizeV;
       // if it is old version
       } else {
         // skip it
         SLONG slLayerSize;
-        *pstrm>>slLayerSize;
+        *pstrm >> slLayerSize;
         if (slLayerSize != 0) {
           pstrm->Seek_t(slLayerSize, CTStream::SD_CUR);
           pbsl->bsl_pubLayer = NULL;
@@ -255,15 +255,15 @@ void CBrushShadowMap::ReadLayers_t( CTStream *pstrm)  // throw char *
       }
     }
   // if the new version of layers information is really saved here
-  } else if (pstrm->PeekID_t()==CChunkID("SHLA")) {  // shadow layers
+  } else if (pstrm->PeekID_t() == CChunkID("SHLA")) {  // shadow layers
     pstrm->ExpectID_t("SHLA");
     // read polygon size
-    *pstrm>>sm_pixPolygonSizeU;
-    *pstrm>>sm_pixPolygonSizeV;
+    *pstrm >> sm_pixPolygonSizeU;
+    *pstrm >> sm_pixPolygonSizeV;
 
     // read number of layers
     INDEX ctLayers;
-    *pstrm>>ctLayers;
+    *pstrm >> ctLayers;
     // for each shadow layer
     for (INDEX iLayer=0; iLayer<ctLayers; iLayer++) {
       // create a new layer
@@ -277,9 +277,9 @@ void CBrushShadowMap::ReadLayers_t( CTStream *pstrm)  // throw char *
       pbsl->bsl_plsLightSource = NULL;
 
       // read the layer data
-      *pstrm>>pbsl->bsl_ulFlags;    // flags
+      *pstrm >> pbsl->bsl_ulFlags;    // flags
       SLONG slLayerSize;
-      *pstrm>>slLayerSize;
+      *pstrm >> slLayerSize;
       if (slLayerSize != 0) {
         pstrm->Seek_t(slLayerSize, CTStream::SD_CUR);
       }
@@ -287,26 +287,26 @@ void CBrushShadowMap::ReadLayers_t( CTStream *pstrm)  // throw char *
       pbsl->bsl_pubLayer = NULL;
       pbsl->bsl_ulFlags&=~BSLF_CALCULATED;
       // read layer rectangle
-      *pstrm>>pbsl->bsl_pixMinU;
-      *pstrm>>pbsl->bsl_pixMinV;
-      *pstrm>>pbsl->bsl_pixSizeU;
-      *pstrm>>pbsl->bsl_pixSizeV;
+      *pstrm >> pbsl->bsl_pixMinU;
+      *pstrm >> pbsl->bsl_pixMinV;
+      *pstrm >> pbsl->bsl_pixSizeU;
+      *pstrm >> pbsl->bsl_pixSizeV;
 
     }
   // if the new version of layers information is really saved here
-  } else if (pstrm->PeekID_t()==CChunkID("SHAL")) {  // shadow layers
+  } else if (pstrm->PeekID_t() == CChunkID("SHAL")) {  // shadow layers
     pstrm->ExpectID_t("SHAL");
     // read version number
     INDEX iVersion;
-    *pstrm>>iVersion;
-    ASSERT(iVersion==VERSION_CURRENT);
+    *pstrm >> iVersion;
+    ASSERT(iVersion == VERSION_CURRENT);
     // read polygon size
-    *pstrm>>sm_pixPolygonSizeU;
-    *pstrm>>sm_pixPolygonSizeV;
+    *pstrm >> sm_pixPolygonSizeU;
+    *pstrm >> sm_pixPolygonSizeV;
 
     // read number of layers
     INDEX ctLayers;
-    *pstrm>>ctLayers;
+    *pstrm >> ctLayers;
     // for each shadow layer
     for (INDEX iLayer=0; iLayer<ctLayers; iLayer++) {
       // create a new layer
@@ -320,8 +320,8 @@ void CBrushShadowMap::ReadLayers_t( CTStream *pstrm)  // throw char *
       pbsl->bsl_plsLightSource = NULL;
 
       // read the layer data
-      *pstrm>>pbsl->bsl_ulFlags;    // flags
-      *pstrm>>pbsl->bsl_slSizeInPixels;
+      *pstrm >> pbsl->bsl_ulFlags;    // flags
+      *pstrm >> pbsl->bsl_slSizeInPixels;
       if (pbsl->bsl_slSizeInPixels != 0) {
         SLONG slLayerSize = (pbsl->bsl_slSizeInPixels+7)/8;
         pbsl->bsl_pubLayer = (UBYTE *)AllocMemory(slLayerSize);
@@ -331,14 +331,14 @@ void CBrushShadowMap::ReadLayers_t( CTStream *pstrm)  // throw char *
         pbsl->bsl_pubLayer = NULL;
       }
       // read layer rectangle
-      *pstrm>>pbsl->bsl_pixMinU;
-      *pstrm>>pbsl->bsl_pixMinV;
-      *pstrm>>pbsl->bsl_pixSizeU;
-      *pstrm>>pbsl->bsl_pixSizeV;
+      *pstrm >> pbsl->bsl_pixMinU;
+      *pstrm >> pbsl->bsl_pixMinV;
+      *pstrm >> pbsl->bsl_pixSizeU;
+      *pstrm >> pbsl->bsl_pixSizeV;
 
       // fixup for old levels before alllight and alldark flags
       if ((pbsl->bsl_ulFlags&BSLF_CALCULATED)
-        && (pbsl->bsl_pubLayer==NULL)
+        && (pbsl->bsl_pubLayer == NULL)
         &&!(pbsl->bsl_ulFlags&BSLF_ALLLIGHT)
         &&!(pbsl->bsl_ulFlags&BSLF_ALLDARK)) {
         pbsl->bsl_ulFlags|=BSLF_ALLLIGHT;
@@ -359,11 +359,11 @@ void CBrushShadowMap::WriteLayers_t( CTStream *pstrm) // throw char *
 {
   pstrm->WriteID_t("SHAL"); // shadow layers
   // write version number
-  *pstrm<<INDEX(VERSION_CURRENT);
+  *pstrm << INDEX(VERSION_CURRENT);
 
   // write polygon size
-  *pstrm<<sm_pixPolygonSizeU;
-  *pstrm<<sm_pixPolygonSizeV;
+  *pstrm << sm_pixPolygonSizeU;
+  *pstrm << sm_pixPolygonSizeV;
 
   // write number of layers
   INDEX ctLayers = 0;
@@ -373,7 +373,7 @@ void CBrushShadowMap::WriteLayers_t( CTStream *pstrm) // throw char *
     }
     ctLayers++;
   }}
-  *pstrm<<ctLayers;
+  *pstrm << ctLayers;
   // for each shadow layer
   FOREACHINLIST(CBrushShadowLayer, bsl_lnInShadowMap, bsm_lhLayers, itbsl) {
     CBrushShadowLayer &bsl = *itbsl;
@@ -381,19 +381,19 @@ void CBrushShadowMap::WriteLayers_t( CTStream *pstrm) // throw char *
       continue;
     }
     // write the layer data
-    *pstrm<<bsl.bsl_ulFlags;    // flags
+    *pstrm << bsl.bsl_ulFlags;    // flags
     if (bsl.bsl_pubLayer == NULL ) {
-      *pstrm<<SLONG(0);
+      *pstrm << SLONG(0);
     } else {
-      *pstrm<<bsl.bsl_slSizeInPixels;
+      *pstrm << bsl.bsl_slSizeInPixels;
       SLONG slLayerSize = (bsl.bsl_slSizeInPixels+7)/8;
       pstrm->Write_t(bsl.bsl_pubLayer, slLayerSize); // the bit packed layer mask
     }
     // write layer rectangle
-    *pstrm<<bsl.bsl_pixMinU;
-    *pstrm<<bsl.bsl_pixMinV;
-    *pstrm<<bsl.bsl_pixSizeU;
-    *pstrm<<bsl.bsl_pixSizeV;
+    *pstrm << bsl.bsl_pixMinU;
+    *pstrm << bsl.bsl_pixMinV;
+    *pstrm << bsl.bsl_pixSizeU;
+    *pstrm << bsl.bsl_pixSizeV;
   }
 }
 
@@ -435,7 +435,7 @@ void CBrushShadowMap::RemoveDummyLayers(void)
   // for each shadow layer
   FORDELETELIST(CBrushShadowLayer, bsl_lnInShadowMap, bsm_lhLayers, itbsl) {
     // if dummy
-    if (itbsl->bsl_plsLightSource==NULL) {
+    if (itbsl->bsl_plsLightSource == NULL) {
       // remove it
       delete &*itbsl;
     }
@@ -487,11 +487,11 @@ void CBrushShadowMap::FindLightRectangle(CLightSource &ls, class CLightRectangle
     pixMinU = 0;
     pixMinV = 0;
     // rectangle is around entire shadowmap
-    // pixMaxU = PIX(sm_mexWidth >>iMipLevel);
-    // pixMaxV = PIX(sm_mexHeight>>iMipLevel);
+    // pixMaxU = PIX(sm_mexWidth >> iMipLevel);
+    // pixMaxV = PIX(sm_mexHeight >> iMipLevel);
     // rectangle is around entire polygon
-    pixMaxU = Min( sm_pixPolygonSizeU+16L, sm_mexWidth >>iMipLevel);
-    pixMaxV = Min( sm_pixPolygonSizeV+16L, sm_mexHeight>>iMipLevel);
+    pixMaxU = Min( sm_pixPolygonSizeU+16L, sm_mexWidth >> iMipLevel);
+    pixMaxV = Min( sm_pixPolygonSizeV+16L, sm_mexHeight >> iMipLevel);
   }
   // if the light is point
   else
@@ -503,7 +503,7 @@ void CBrushShadowMap::FindLightRectangle(CLightSource &ls, class CLightRectangle
     lr.lr_fLightPlaneDistance = plPlane.PointDistance(vLight);
 
     CEntity *penWithPolygon = bpoPolygon.bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
-    ASSERT(penWithPolygon!=NULL);
+    ASSERT(penWithPolygon != NULL);
     const FLOATmatrix3D &mPolygonRotation = penWithPolygon->en_mRotation;
     const FLOAT3D &vPolygonTranslation = penWithPolygon->GetPlacement().pl_PositionVector;
 
@@ -514,38 +514,38 @@ void CBrushShadowMap::FindLightRectangle(CLightSource &ls, class CLightRectangle
       bpoPolygon.bpo_pbplPlane->bpl_pwplWorking->wpl_mvRelative, vHotPoint, vmexHotPoint);
 
     if (!(bpoPolygon.bpo_ulFlags&BPOF_DARKCORNERS)) {
-      lr.lr_fpixHotU = FLOAT(vmexHotPoint(1)+sm_mexOffsetX+(1<<iMipLevel))/(1L<<iMipLevel);
-      lr.lr_fpixHotV = FLOAT(vmexHotPoint(2)+sm_mexOffsetY+(1<<iMipLevel))/(1L<<iMipLevel);
+      lr.lr_fpixHotU = FLOAT(vmexHotPoint(1)+sm_mexOffsetX+(1 << iMipLevel))/(1L << iMipLevel);
+      lr.lr_fpixHotV = FLOAT(vmexHotPoint(2)+sm_mexOffsetY+(1 << iMipLevel))/(1L << iMipLevel);
     } else {
-      lr.lr_fpixHotU = FLOAT(vmexHotPoint(1)+sm_mexOffsetX)/(1L<<iMipLevel);
-      lr.lr_fpixHotV = FLOAT(vmexHotPoint(2)+sm_mexOffsetY)/(1L<<iMipLevel);
+      lr.lr_fpixHotU = FLOAT(vmexHotPoint(1)+sm_mexOffsetX)/(1L << iMipLevel);
+      lr.lr_fpixHotV = FLOAT(vmexHotPoint(2)+sm_mexOffsetY)/(1L << iMipLevel);
     }
     // calculate maximum radius of light on the polygon
     MEX mexFallOff = MEX( sqrt(ls.ls_rFallOff*ls.ls_rFallOff -
                                lr.lr_fLightPlaneDistance*lr.lr_fLightPlaneDistance)*1024.0f);
     // find rectangle coordinates from that
-    pixMinU = ((vmexHotPoint(1)+sm_mexOffsetX-mexFallOff)>>iMipLevel);
-    pixMinV = ((vmexHotPoint(2)+sm_mexOffsetY-mexFallOff)>>iMipLevel);
-    pixMaxU = ((vmexHotPoint(1)+sm_mexOffsetX+mexFallOff)>>iMipLevel)+1;
-    pixMaxV = ((vmexHotPoint(2)+sm_mexOffsetY+mexFallOff)>>iMipLevel)+1;
+    pixMinU = ((vmexHotPoint(1)+sm_mexOffsetX-mexFallOff) >> iMipLevel);
+    pixMinV = ((vmexHotPoint(2)+sm_mexOffsetY-mexFallOff) >> iMipLevel);
+    pixMaxU = ((vmexHotPoint(1)+sm_mexOffsetX+mexFallOff) >> iMipLevel)+1;
+    pixMaxV = ((vmexHotPoint(2)+sm_mexOffsetY+mexFallOff) >> iMipLevel)+1;
     // clamp the rectangle to the size of shadow map
-    // pixMinU = Min( Max(pixMinU, 0L), sm_mexWidth >>iMipLevel);
-    // pixMinV = Min( Max(pixMinV, 0L), sm_mexHeight>>iMipLevel);
-    // pixMaxU = Min( Max(pixMaxU, 0L), sm_mexWidth >>iMipLevel);
-    // pixMaxV = Min( Max(pixMaxV, 0L), sm_mexHeight>>iMipLevel);
+    // pixMinU = Min( Max(pixMinU, 0L), sm_mexWidth >> iMipLevel);
+    // pixMinV = Min( Max(pixMinV, 0L), sm_mexHeight >> iMipLevel);
+    // pixMaxU = Min( Max(pixMaxU, 0L), sm_mexWidth >> iMipLevel);
+    // pixMaxV = Min( Max(pixMaxV, 0L), sm_mexHeight >> iMipLevel);
     // clamp the rectangle to the size of polygon
-    pixMinU = Min( Max(pixMinU, 0L), Min(sm_pixPolygonSizeU+16L, sm_mexWidth >>iMipLevel));
-    pixMinV = Min( Max(pixMinV, 0L), Min(sm_pixPolygonSizeV+16L, sm_mexHeight>>iMipLevel));
-    pixMaxU = Min( Max(pixMaxU, 0L), Min(sm_pixPolygonSizeU+16L, sm_mexWidth >>iMipLevel));
-    pixMaxV = Min( Max(pixMaxV, 0L), Min(sm_pixPolygonSizeV+16L, sm_mexHeight>>iMipLevel));
+    pixMinU = Min( Max(pixMinU, 0L), Min(sm_pixPolygonSizeU+16L, sm_mexWidth >> iMipLevel));
+    pixMinV = Min( Max(pixMinV, 0L), Min(sm_pixPolygonSizeV+16L, sm_mexHeight >> iMipLevel));
+    pixMaxU = Min( Max(pixMaxU, 0L), Min(sm_pixPolygonSizeU+16L, sm_mexWidth >> iMipLevel));
+    pixMaxV = Min( Max(pixMaxV, 0L), Min(sm_pixPolygonSizeV+16L, sm_mexHeight >> iMipLevel));
   }
   // all done
   lr.lr_pixMinU = pixMinU;
   lr.lr_pixMinV = pixMinV;
   lr.lr_pixSizeU = pixMaxU-pixMinU;
   lr.lr_pixSizeV = pixMaxV-pixMinV;
-  ASSERT(lr.lr_pixSizeU>=0);
-  ASSERT(lr.lr_pixSizeV>=0);
+  ASSERT(lr.lr_pixSizeU >= 0);
+  ASSERT(lr.lr_pixSizeV >= 0);
 }
 
 
@@ -553,9 +553,9 @@ void CBrushShadowMap::FindLightRectangle(CLightSource &ls, class CLightRectangle
 void CBrushShadowMap::CheckLayersUpToDate(void)
 {
   // do nothing if the shadow map is not cached at all or hasn't got any animating lights
-  if (((sm_pulDynamicShadowMap==NULL || (sm_ulFlags&SMF_DYNAMICBLACK))
+  if (((sm_pulDynamicShadowMap == NULL || (sm_ulFlags&SMF_DYNAMICBLACK))
    && !(sm_ulFlags&SMF_ANIMATINGLIGHTS))
-   ||   sm_pulCachedShadowMap==NULL) return;
+   ||   sm_pulCachedShadowMap == NULL) return;
 
   // for each layer
   FOREACHINLIST( CBrushShadowLayer, bsl_lnInShadowMap, bsm_lhLayers, itbsl)
@@ -564,8 +564,8 @@ void CBrushShadowMap::CheckLayersUpToDate(void)
     if (bsl.bsl_ulFlags&BSLF_ALLDARK) continue;
     // light source must be valid
     CLightSource &ls = *bsl.bsl_plsLightSource;
-    ASSERT( &ls!=NULL);
-    if (&ls==NULL) continue;
+    ASSERT( &ls != NULL);
+    if (&ls == NULL) continue;
     // if the layer is not up to date
     if (bsl.bsl_colLastAnim != ls.GetLightColor()) {
       // invalidate entire shadow map
@@ -583,8 +583,8 @@ BOOL CBrushShadowMap::HasDynamicLayers(void)
   FOREACHINLIST( CBrushShadowLayer, bsl_lnInShadowMap, bsm_lhLayers, itbsl)
   { // light source must be valid
     CLightSource &ls = *itbsl->bsl_plsLightSource;
-    ASSERT( &ls!=NULL);
-    if (&ls==NULL) continue;
+    ASSERT( &ls != NULL);
+    if (&ls == NULL) continue;
     // if the layer is dynamic, it has
     if (ls.ls_ulFlags&LSF_DYNAMIC) return TRUE;
   }
@@ -626,7 +626,7 @@ BOOL CBrushShadowMap::IsShadowFlat( COLOR &colFlat)
   { 
     CGradientParameters gp;
     CEntity *pen = pbpo->bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
-    if (pen!=NULL && pen->GetGradient( ulGradientType, gp)) {
+    if (pen != NULL && pen->GetGradient( ulGradientType, gp)) {
       // shadowmap cannot be flat
       if (shd_iForceFlats<1) return FALSE;
       // unless it has been forced
@@ -677,7 +677,7 @@ BOOL CBrushShadowMap::IsShadowFlat( COLOR &colFlat)
         // done if polygon is turn away from light source (we already added ambient component)
         if (fIntensity<0.01f) continue;
         ULONG ulIntensity = NormFloatToByte(fIntensity);
-        ulIntensity = (ulIntensity<<CT_RSHIFT) | (ulIntensity<<CT_GSHIFT) | (ulIntensity<<CT_BSHIFT);
+        ulIntensity = (ulIntensity << CT_RSHIFT) | (ulIntensity << CT_GSHIFT) | (ulIntensity << CT_BSHIFT);
         col = MulColors( col, ulIntensity);
       }
       // determine and add light color
@@ -728,7 +728,7 @@ SLONG CBrushShadowMap::GetUsedMemory(void)
   SLONG slUsedMemory = sizeof(CBrushShadowMap);
 
   // add polyhon mask (if any)
-  if (bsm_pubPolygonMask!=NULL) {
+  if (bsm_pubPolygonMask != NULL) {
     // loop and add mip-maps
     SLONG slPolyMaskSize = 0;
     PIX pixPolySizeU = sm_pixPolygonSizeU;
@@ -746,7 +746,7 @@ SLONG CBrushShadowMap::GetUsedMemory(void)
   FOREACHINLIST( CBrushShadowLayer, bsl_lnInShadowMap, bsm_lhLayers, itbsl) { // count shadow layers
     CBrushShadowLayer &bsl = *itbsl;
     slUsedMemory += sizeof(CBrushShadowLayer);
-    if (bsl.bsl_pubLayer!=NULL) slUsedMemory += bsl.bsl_pixSizeU * bsl.bsl_pixSizeV /8; 
+    if (bsl.bsl_pubLayer != NULL) slUsedMemory += bsl.bsl_pixSizeU * bsl.bsl_pixSizeV /8; 
   }
 
   // done

@@ -32,9 +32,9 @@ CAllocationArray<ShellType> _shell_ast;
 INDEX ShellTypeNew(void)
 {
   INDEX ist = _shell_ast.Allocate();
-	ShellType &st = _shell_ast[ist];
+  ShellType &st = _shell_ast[ist];
 
-	st.st_sttType = STT_ILLEGAL;
+  st.st_sttType = STT_ILLEGAL;
   st.st_ctArraySize = -1;
   st.st_istBaseType = -1;
   st.st_istFirstArgument = -1;
@@ -42,40 +42,40 @@ INDEX ShellTypeNew(void)
   st.st_istNextInArguments = -1;
   st.st_istPrevInArguments = -1;
 
-	return ist;
+  return ist;
 }
 
 // make a new type for a basic type
 INDEX ShellTypeNewVoid(void)
 {
   INDEX ist = ShellTypeNew();
-	ShellType &st = _shell_ast[ist];
-	st.st_sttType = STT_VOID;
-	return ist;
+  ShellType &st = _shell_ast[ist];
+  st.st_sttType = STT_VOID;
+  return ist;
 }
 
 INDEX ShellTypeNewIndex(void)
 {
   INDEX ist = ShellTypeNew();
-	ShellType &st = _shell_ast[ist];
-	st.st_sttType = STT_INDEX;
-	return ist;
+  ShellType &st = _shell_ast[ist];
+  st.st_sttType = STT_INDEX;
+  return ist;
 }
 
 INDEX ShellTypeNewFloat(void)
 {
   INDEX ist = ShellTypeNew();
-	ShellType &st = _shell_ast[ist];
-	st.st_sttType = STT_FLOAT;
-	return ist;
+  ShellType &st = _shell_ast[ist];
+  st.st_sttType = STT_FLOAT;
+  return ist;
 }
 
 INDEX ShellTypeNewString(void)
 {
   INDEX ist = ShellTypeNew();
-	ShellType &st = _shell_ast[ist];
-	st.st_sttType = STT_STRING;
-	return ist;
+  ShellType &st = _shell_ast[ist];
+  st.st_sttType = STT_STRING;
+  return ist;
 }
 INDEX ShellTypeNewByType(enum ShellTypeType stt)
 {
@@ -92,48 +92,48 @@ INDEX ShellTypeNewByType(enum ShellTypeType stt)
 INDEX ShellTypeNewPointer(INDEX istBaseType)
 {
   INDEX ist = ShellTypeNew();
-	ShellType &st = _shell_ast[ist];
-	st.st_sttType = STT_POINTER;
-	st.st_istBaseType = istBaseType;
-	return ist;
+  ShellType &st = _shell_ast[ist];
+  st.st_sttType = STT_POINTER;
+  st.st_istBaseType = istBaseType;
+  return ist;
 }
 
 // make a new array type
 INDEX ShellTypeNewArray(INDEX istMemberType, int iArraySize)
 {
   INDEX ist = ShellTypeNew();
-	ShellType &st = _shell_ast[ist];
-	st.st_sttType = STT_ARRAY;
-	st.st_ctArraySize = iArraySize;
-	st.st_istBaseType = istMemberType;
-	return ist;
+  ShellType &st = _shell_ast[ist];
+  st.st_sttType = STT_ARRAY;
+  st.st_ctArraySize = iArraySize;
+  st.st_istBaseType = istMemberType;
+  return ist;
 }
 
 // make a new function type
 INDEX ShellTypeNewFunction(INDEX istReturnType)
 {
   INDEX ist = ShellTypeNew();
-	ShellType &st = _shell_ast[ist];
-	st.st_sttType = STT_FUNCTION;
-	st.st_istBaseType = istReturnType;
-	st.st_istFirstArgument = -1;
-	st.st_istLastArgument = -1;
-	return ist;
+  ShellType &st = _shell_ast[ist];
+  st.st_sttType = STT_FUNCTION;
+  st.st_istBaseType = istReturnType;
+  st.st_istFirstArgument = -1;
+  st.st_istLastArgument = -1;
+  return ist;
 }
 
 // add an argument to a function from the left
 void ShellTypeAddFunctionArgument(INDEX istFunction,INDEX istArgument)
 {
-	ShellType &stFunction = _shell_ast[istFunction];
-	ShellType &stArgument = _shell_ast[istArgument];
+  ShellType &stFunction = _shell_ast[istFunction];
+  ShellType &stArgument = _shell_ast[istArgument];
   if (stFunction.st_istFirstArgument == -1) {
-	  stFunction.st_istLastArgument = istArgument;
+    stFunction.st_istLastArgument = istArgument;
   } else {
     _shell_ast[stFunction.st_istFirstArgument].st_istPrevInArguments = istArgument;
   }
-	stArgument.st_istNextInArguments = stFunction.st_istFirstArgument;
-	stArgument.st_istPrevInArguments = -1;
-	stFunction.st_istFirstArgument = istArgument;
+  stArgument.st_istNextInArguments = stFunction.st_istFirstArgument;
+  stArgument.st_istPrevInArguments = -1;
+  stFunction.st_istFirstArgument = istArgument;
 }
 
 // This mess is neccessary to prevent code optimizer to create aliases
@@ -149,10 +149,10 @@ static volatile INDEX iTmp;
 // make a copy of a type tree
 INDEX ShellTypeMakeDuplicate(INDEX istOriginal)
 {
-	INDEX istDuplicate = ShellTypeNew();
+  INDEX istDuplicate = ShellTypeNew();
 
-	// copy values of the original structure
-	stDuplicate.st_sttType = stOriginal.st_sttType;
+  // copy values of the original structure
+  stDuplicate.st_sttType = stOriginal.st_sttType;
 
   // check type
   switch (stOriginal.st_sttType) {
@@ -160,13 +160,13 @@ INDEX ShellTypeMakeDuplicate(INDEX istOriginal)
   case STT_POINTER:
     // copy what it points to
     iTmp = ShellTypeMakeDuplicate(stOriginal.st_istBaseType);
-		stDuplicate.st_istBaseType = iTmp;
+    stDuplicate.st_istBaseType = iTmp;
     break;
 
   // if an array
   case STT_ARRAY:
     // copy the member type
-		stDuplicate.st_ctArraySize = stOriginal.st_ctArraySize;
+    stDuplicate.st_ctArraySize = stOriginal.st_ctArraySize;
     iTmp = ShellTypeMakeDuplicate(stOriginal.st_istBaseType);
     stDuplicate.st_istBaseType = iTmp;
     break;
@@ -175,12 +175,12 @@ INDEX ShellTypeMakeDuplicate(INDEX istOriginal)
   case STT_FUNCTION: {
     // copy return type
     iTmp = ShellTypeMakeDuplicate(stOriginal.st_istBaseType);
-		stDuplicate.st_istBaseType = iTmp;
+    stDuplicate.st_istBaseType = iTmp;
 
     // for each argument (backwards)
-  	INDEX istArgOrg, istArgDup;
+    INDEX istArgOrg, istArgDup;
     for (istArgOrg=stOriginal.st_istLastArgument; 
-         istArgOrg!=-1;
+         istArgOrg != -1;
          istArgOrg = _shell_ast[istArgOrg].st_istPrevInArguments) {
       // copy it
       istArgDup = ShellTypeMakeDuplicate(istArgOrg);
@@ -199,24 +199,24 @@ INDEX ShellTypeMakeDuplicate(INDEX istOriginal)
 BOOL ShellTypeIsSame(INDEX ist1, INDEX ist2)
 {
   // if both are end of list
-  if (ist1==-1 && ist2==-1) {
+  if (ist1 == -1 && ist2 == -1) {
     // same
     return TRUE;
   }
   // if only one is end of list
-  if (ist1==-1 || ist2==-1) {
+  if (ist1 == -1 || ist2 == -1) {
     // different
     return FALSE;
   }
 
   // get the types
   ShellType &st1 = _shell_ast[ist1];
-	ShellType &st2 = _shell_ast[ist2];
+  ShellType &st2 = _shell_ast[ist2];
 
   // if types or base types or sizes don't match
-  if (st1.st_sttType!=st2.st_sttType ||
+  if (st1.st_sttType != st2.st_sttType ||
     !ShellTypeIsSame(st1.st_istBaseType, st2.st_istBaseType)
-    ||st1.st_ctArraySize!=st2.st_ctArraySize) {
+    ||st1.st_ctArraySize != st2.st_ctArraySize) {
     // different
     return FALSE;
   }

@@ -43,7 +43,7 @@ SHADER_MAIN(Specular)
 
   COLOR colModelColor = MulColors(shaGetModelColor(),shaGetCurrentColor());
   BOOL bDoubleSides = shaGetFlags() & BASE_DOUBLE_SIDED;
-  BOOL bOpaque = (colModelColor&0xFF)==0xFF;
+  BOOL bOpaque = (colModelColor&0xFF) == 0xFF;
 
   if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
 

@@ -35,7 +35,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define GRID_CELLSIZE  2.0 // size of one grid cell (meters)
 // number of hash table entries for grid cells
 #define GRID_HASHTABLESIZE_LOG2  12 // must be even for bit-shuffling
-#define GRID_HASHTABLESIZE (1<<GRID_HASHTABLESIZE_LOG2)
+#define GRID_HASHTABLESIZE (1 << GRID_HASHTABLESIZE_LOG2)
 
 //#pragma inline_depth(0)
 
@@ -61,7 +61,7 @@ static inline void BoxToGrid(
 // key calculations
 static inline ULONG MakeCode(INDEX iX, INDEX iZ)
 {
-  return (iX<<16)|(iZ&0xffff);
+  return (iX << 16)|(iZ&0xffff);
 }
 
 static inline INDEX MakeKey(INDEX iX, INDEX iZ)
@@ -69,8 +69,8 @@ static inline INDEX MakeKey(INDEX iX, INDEX iZ)
   //INDEX iKey = (iX+iZ)&(GRID_HASHTABLESIZE-1);  // x+z
   // use absolute x and z, swap upper and lower bits in z, xor x and z
   INDEX iZ2 = abs(iZ);
-  INDEX iKey = (iZ2>>(GRID_HASHTABLESIZE_LOG2/2)) | (
-    (iZ2&(GRID_HASHTABLESIZE/2-1))<<(GRID_HASHTABLESIZE_LOG2/2));
+  INDEX iKey = (iZ2 >> (GRID_HASHTABLESIZE_LOG2/2)) | (
+    (iZ2&(GRID_HASHTABLESIZE/2-1)) << (GRID_HASHTABLESIZE_LOG2/2));
   iKey = iKey^abs(iX);
   iKey = iKey&(GRID_HASHTABLESIZE-1);
   return iKey;
@@ -78,7 +78,7 @@ static inline INDEX MakeKey(INDEX iX, INDEX iZ)
 
 static inline INDEX MakeKeyFromCode(ULONG ulCode)
 {
-  INDEX iX = SLONG(ulCode)>>16;
+  INDEX iX = SLONG(ulCode) >> 16;
   INDEX iZ = SLONG(SWORD(ulCode&0xffff));
   return MakeKey(iX, iZ);
 }
@@ -173,10 +173,10 @@ void CCollisionGrid::RemoveCell(INDEX igc)
 
   // find the cell's index pointer
   INDEX *pigc = &cg_aiFirstCells[iKey];
-  ASSERT(*pigc>=0);
-  while (*pigc>=0) {
+  ASSERT(*pigc >= 0);
+  while (*pigc >= 0) {
     CGridCell &gc = cg_agcCells[*pigc];
-    if (*pigc==igc) {
+    if (*pigc == igc) {
       *pigc = gc.gc_iNextCell;
       gc.gc_iNextCell = -2;
       gc.gc_iFirstEntry = -1;
@@ -193,23 +193,23 @@ void CCollisionGrid::RemoveCell(INDEX igc)
 INDEX CCollisionGrid::FindCell(INDEX iX, INDEX iZ, BOOL bCreate)
 {
   // make uid of the cell
-  ASSERT(iX>=GRID_MIN && iX<=GRID_MAX);
-  ASSERT(iZ>=GRID_MIN && iZ<=GRID_MAX);
+  ASSERT(iX >= GRID_MIN && iX <= GRID_MAX);
+  ASSERT(iZ >= GRID_MIN && iZ <= GRID_MAX);
   ULONG ulCode = MakeCode(iX, iZ);
   // get the hash key for the cell
   INDEX iKey = MakeKey(iX, iZ);  // x+z, use lower bits
-  ASSERT(iKey==MakeKeyFromCode(ulCode));
+  ASSERT(iKey == MakeKeyFromCode(ulCode));
   // find the cell in list of cells with that key
   INDEX igcFound = -1;
-  for (INDEX igc=cg_aiFirstCells[iKey]; igc>=0; igc = cg_agcCells[igc].gc_iNextCell) {
-    if (cg_agcCells[igc].gc_ulCode==ulCode) {
+  for (INDEX igc=cg_aiFirstCells[iKey]; igc >= 0; igc = cg_agcCells[igc].gc_iNextCell) {
+    if (cg_agcCells[igc].gc_ulCode == ulCode) {
       igcFound = igc;
       break;
     }
   }
 
   // if the cell is found
-  if (igcFound>=0) {
+  if (igcFound >= 0) {
     // use existing one
     return igcFound;
   // if the cell is not found
@@ -247,10 +247,10 @@ void CCollisionGrid::RemoveEntry(INDEX igc, CEntity *pen)
 
   // find the entry's index pointer
   INDEX *pige = &gc.gc_iFirstEntry;
-  ASSERT(*pige>=0);
-  while (*pige>=0) {
+  ASSERT(*pige >= 0);
+  while (*pige >= 0) {
     CGridEntry &ge = cg_ageEntries[*pige];
-    if (ge.ge_penEntity==pen) {
+    if (ge.ge_penEntity == pen) {
       // remove the entry from the list
       cg_ageEntries.Free(*pige);
       *pige = ge.ge_iNextEntry;
@@ -296,8 +296,8 @@ void CWorld::AddEntityToCollisionGrid(CEntity *pen, const FLOATaabbox3D &boxEnti
   INDEX iMinX, iMaxX, iMinZ, iMaxZ;
   BoxToGrid(boxEntity, iMinX, iMaxX, iMinZ, iMaxZ);
   // for each cell spanned by the entity
-  for (INDEX iX=iMinX; iX<=iMaxX; iX++) {
-    for (INDEX iZ=iMinZ; iZ<=iMaxZ; iZ++) {
+  for (INDEX iX=iMinX; iX <= iMaxX; iX++) {
+    for (INDEX iZ=iMinZ; iZ <= iMaxZ; iZ++) {
       // find that cell
       INDEX igc = wo_pcgCollisionGrid->FindCell(iX, iZ, TRUE);
       // add the entity to the cell
@@ -316,13 +316,13 @@ void CWorld::RemoveEntityFromCollisionGrid(CEntity *pen, const FLOATaabbox3D &bo
   INDEX iMinX, iMaxX, iMinZ, iMaxZ;
   BoxToGrid(boxEntity, iMinX, iMaxX, iMinZ, iMaxZ);
   // for each cell spanned by the entity
-  for (INDEX iX=iMinX; iX<=iMaxX; iX++) {
-    for (INDEX iZ=iMinZ; iZ<=iMaxZ; iZ++) {
+  for (INDEX iX=iMinX; iX <= iMaxX; iX++) {
+    for (INDEX iZ=iMinZ; iZ <= iMaxZ; iZ++) {
       // find that cell
       INDEX igc = wo_pcgCollisionGrid->FindCell(iX, iZ, FALSE);
-      ASSERT(igc>=0);
+      ASSERT(igc >= 0);
       // remove the entity from the cell
-      if (igc>=0) {
+      if (igc >= 0) {
         wo_pcgCollisionGrid->RemoveEntry(igc, pen);
       }
     }
@@ -343,27 +343,27 @@ void CWorld::MoveEntityInCollisionGrid(CEntity *pen,
   BoxToGrid(boxNew, iNewMinX, iNewMaxX, iNewMinZ, iNewMaxZ);
 
   // for each cell spanned by the entity before moving but not after moving
-  {for (INDEX iX=iOldMinX; iX<=iOldMaxX; iX++) {
-    for (INDEX iZ=iOldMinZ; iZ<=iOldMaxZ; iZ++) {
-      if (iX>=iNewMinX && iX<=iNewMaxX
-        &&iZ>=iNewMinZ && iZ<=iNewMaxZ) {
+  {for (INDEX iX=iOldMinX; iX <= iOldMaxX; iX++) {
+    for (INDEX iZ=iOldMinZ; iZ <= iOldMaxZ; iZ++) {
+      if (iX >= iNewMinX && iX <= iNewMaxX
+        &&iZ >= iNewMinZ && iZ <= iNewMaxZ) {
         continue;
       }
       // find that cell
       INDEX igc = wo_pcgCollisionGrid->FindCell(iX, iZ, FALSE);
-      ASSERT(igc>=0);
+      ASSERT(igc >= 0);
       // remove the entity from the cell
-      if (igc>=0) {
+      if (igc >= 0) {
         wo_pcgCollisionGrid->RemoveEntry(igc, pen);
       }
     }
   }}
 
   // for each cell spanned by the entity after moving but not before moving
-  {for (INDEX iX=iNewMinX; iX<=iNewMaxX; iX++) {
-    for (INDEX iZ=iNewMinZ; iZ<=iNewMaxZ; iZ++) {
-      if (iX>=iOldMinX && iX<=iOldMaxX
-        &&iZ>=iOldMinZ && iZ<=iOldMaxZ) {
+  {for (INDEX iX=iNewMinX; iX <= iNewMaxX; iX++) {
+    for (INDEX iZ=iNewMinZ; iZ <= iNewMaxZ; iZ++) {
+      if (iX >= iOldMinX && iX <= iOldMaxX
+        &&iZ >= iOldMinZ && iZ <= iOldMaxZ) {
         continue;
       }
       // find that cell
@@ -385,7 +385,7 @@ void CWorld::FindEntitiesNearBox(const FLOATaabbox3D &boxNear,
   // for each entity
   {FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     CEntity &en = *iten;
-    if (en.GetRenderType()==CEntity::RT_MODEL && en.en_pciCollisionInfo!=NULL) {
+    if (en.GetRenderType() == CEntity::RT_MODEL && en.en_pciCollisionInfo != NULL) {
       apenNearEntities.Push() = &en;
     }
   }}
@@ -402,8 +402,8 @@ void CWorld::FindEntitiesNearBox(const FLOATaabbox3D &boxNear,
   apenNearEntities.PopAll();
 
   // for each cell spanned by the box
-  {for (INDEX iX=iMinX; iX<=iMaxX; iX++) {
-    for (INDEX iZ=iMinZ; iZ<=iMaxZ; iZ++) {
+  {for (INDEX iX=iMinX; iX <= iMaxX; iX++) {
+    for (INDEX iZ=iMinZ; iZ <= iMaxZ; iZ++) {
       _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_NEARCELLSFOUND);
       // find that cell
       INDEX igc = wo_pcgCollisionGrid->FindCell(iX, iZ, FALSE);
@@ -415,7 +415,7 @@ void CWorld::FindEntitiesNearBox(const FLOATaabbox3D &boxNear,
       _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_NEAROCCUPIEDCELLSFOUND);
       // for each entity in the cell
       for (INDEX iEntry = wo_pcgCollisionGrid->cg_agcCells[igc].gc_iFirstEntry;
-          iEntry>=0;
+          iEntry >= 0;
           iEntry = wo_pcgCollisionGrid->cg_ageEntries[iEntry].ge_iNextEntry) {
         CEntity *penEntity = wo_pcgCollisionGrid->cg_ageEntries[iEntry].ge_penEntity;
         // if it is not already found
@@ -446,7 +446,7 @@ void CWorld::FindEntitiesNearBox(const FLOATaabbox3D &boxNear,
 extern SLONG GetCollisionGridMemory( CCollisionGrid *pcg)
 {
   // no collision grid?
-  if (pcg==NULL) return 0;
+  if (pcg == NULL) return 0;
 
   // phew, it's here!
   SLONG slUsedMemory = pcg->cg_aiFirstCells.Count() * sizeof(INDEX);
