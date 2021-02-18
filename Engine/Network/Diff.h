@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_DIFF_H
 #define SE_INCL_DIFF_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 // make a difference file from two saved games
@@ -24,6 +24,4 @@ void DIFF_Diff_t(CTStream *pstrmOld, CTStream *pstrmNew, CTStream *pstrmDiff); /
 // make a new saved game from difference file and old saved game
 void DIFF_Undiff_t(CTStream *pstrmOld, CTStream *pstrmDiff, CTStream *pstrmNew); // throw char *
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

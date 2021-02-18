@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -23,20 +23,19 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 typedef HRESULT __stdcall CoCreateGuid_t(UBYTE *pguid);
 
 // get a GUID from system
-static void GetGUID(UBYTE aub[16])
-{
+static void GetGUID(UBYTE aub[16]) {
   HINSTANCE hOle32Lib = NULL;
   CoCreateGuid_t *pCoCreateGuid = NULL;
 
   try {
     // load ole32
-    hOle32Lib = ::LoadLibraryA( "ole32.dll");
+    hOle32Lib = ::LoadLibraryA("ole32.dll");
     if (hOle32Lib == NULL) {
       ThrowF_t(TRANS("Cannot load ole32.dll."));
     }
 
     // find GUID function
-    pCoCreateGuid = (CoCreateGuid_t*)GetProcAddress(hOle32Lib, "CoCreateGuid");
+    pCoCreateGuid = (CoCreateGuid_t *)GetProcAddress(hOle32Lib, "CoCreateGuid");
     if (pCoCreateGuid == NULL) {
       ThrowF_t(TRANS("Cannot find CoCreateGuid()."));
     }
@@ -52,7 +51,7 @@ static void GetGUID(UBYTE aub[16])
     // free the ole32 library
     FreeLibrary(hOle32Lib);
 
-  } catch(char *strError) {
+  } catch (char *strError) {
     FatalError(TRANS("Cannot make GUID for a player:\n%s"), strError);
   }
 }
@@ -60,9 +59,7 @@ static void GetGUID(UBYTE aub[16])
 /*
  * Default constructor -- no character.
  */
-CPlayerCharacter::CPlayerCharacter(void)
-  : pc_strName("<invalid player>"), pc_strTeam("")
-{
+CPlayerCharacter::CPlayerCharacter(void) : pc_strName("<invalid player>"), pc_strTeam("") {
   memset(pc_aubGUID, 0, PLAYERGUIDSIZE);
   memset(pc_aubAppearance, 0, MAX_PLAYERAPPEARANCE);
 }
@@ -70,9 +67,7 @@ CPlayerCharacter::CPlayerCharacter(void)
 /*
  * Create a new character with its name.
  */
-CPlayerCharacter::CPlayerCharacter(const CTString &strName)
-  : pc_strName(strName), pc_strTeam("")
-{
+CPlayerCharacter::CPlayerCharacter(const CTString &strName) : pc_strName(strName), pc_strTeam("") {
   // if the name passed to constructor is empty string
   if (strName == "") {
     // make this an unnamed player
@@ -83,7 +78,7 @@ CPlayerCharacter::CPlayerCharacter(const CTString &strName)
   memset(pc_aubAppearance, 0, MAX_PLAYERAPPEARANCE);
 }
 
-void CPlayerCharacter::Load_t( const CTFileName &fnFile) // throw char *
+void CPlayerCharacter::Load_t(const CTFileName &fnFile) // throw char *
 {
   CTFileStream strm;
   strm.Open_t(fnFile);
@@ -91,7 +86,7 @@ void CPlayerCharacter::Load_t( const CTFileName &fnFile) // throw char *
   strm.Close();
 }
 
-void CPlayerCharacter::Save_t( const CTFileName &fnFile) // throw char *
+void CPlayerCharacter::Save_t(const CTFileName &fnFile) // throw char *
 {
   CTFileStream strm;
   strm.Create_t(fnFile);
@@ -121,49 +116,42 @@ void CPlayerCharacter::Write_t(CTStream *pstr) // throw char *
   pstr->Write_t(pc_aubAppearance, sizeof(pc_aubAppearance));
 }
 
-// Get character name. 
-const CTString &CPlayerCharacter::GetName(void) const 
-{
-  return pc_strName; 
+// Get character name.
+const CTString &CPlayerCharacter::GetName(void) const {
+  return pc_strName;
 };
-const CTString CPlayerCharacter::GetNameForPrinting(void) const
-{
+const CTString CPlayerCharacter::GetNameForPrinting(void) const {
   CTString strName(pc_strName);
   // get rid of newlines in the name
   strName.ReplaceSubstr("\n", "");
   strName.ReplaceSubstr("\r", "");
-  return "^o"+pc_strName+"^r";
+  return "^o" + pc_strName + "^r";
 }
-// Set character name. 
-void CPlayerCharacter::SetName(CTString strName) 
-{ 
+// Set character name.
+void CPlayerCharacter::SetName(CTString strName) {
   // limit string length to 20 characters not including decorated text control codes
   // strName.TrimRightNaked(20); !!!! needs checking
-  pc_strName = strName; 
+  pc_strName = strName;
 };
 
-// Get character team. 
-const CTString &CPlayerCharacter::GetTeam(void) const
-{
-  return pc_strTeam; 
+// Get character team.
+const CTString &CPlayerCharacter::GetTeam(void) const {
+  return pc_strTeam;
 }
 
-const CTString CPlayerCharacter::GetTeamForPrinting(void) const
-{
-  return "^o"+pc_strTeam+"^r"; 
+const CTString CPlayerCharacter::GetTeamForPrinting(void) const {
+  return "^o" + pc_strTeam + "^r";
 }
 
-// Set character team. 
-void CPlayerCharacter::SetTeam(CTString strTeam)
-{
+// Set character team.
+void CPlayerCharacter::SetTeam(CTString strTeam) {
   // limit string length to 20 characters not including decorated text control codes
   // strTeam.TrimRightNaked(20); !!!! needs checking
-  pc_strTeam = strTeam; 
+  pc_strTeam = strTeam;
 }
 
-// Assignment operator. 
-CPlayerCharacter &CPlayerCharacter::operator=(const CPlayerCharacter &pcOther)
-{
+// Assignment operator.
+CPlayerCharacter &CPlayerCharacter::operator=(const CPlayerCharacter &pcOther) {
   ASSERT(this != NULL && &pcOther != NULL);
   pc_strName = pcOther.pc_strName;
   pc_strTeam = pcOther.pc_strTeam;
@@ -172,10 +160,9 @@ CPlayerCharacter &CPlayerCharacter::operator=(const CPlayerCharacter &pcOther)
   return *this;
 };
 
-// Comparison operator. 
-BOOL CPlayerCharacter::operator == (const CPlayerCharacter &pcOther) const
-{
-  for (INDEX i=0;i<PLAYERGUIDSIZE; i++) {
+// Comparison operator.
+BOOL CPlayerCharacter::operator==(const CPlayerCharacter &pcOther) const {
+  for (INDEX i = 0; i < PLAYERGUIDSIZE; i++) {
     if (pc_aubGUID[i] != pcOther.pc_aubGUID[i]) {
       return FALSE;
     }
@@ -184,26 +171,22 @@ BOOL CPlayerCharacter::operator == (const CPlayerCharacter &pcOther) const
 };
 
 // stream operations
-CTStream &operator<<(CTStream &strm, CPlayerCharacter &pc)
-{
+CTStream &operator<<(CTStream &strm, CPlayerCharacter &pc) {
   pc.Write_t(&strm);
   return strm;
 };
-CTStream &operator>>(CTStream &strm, CPlayerCharacter &pc)
-{
+CTStream &operator>>(CTStream &strm, CPlayerCharacter &pc) {
   pc.Read_t(&strm);
   return strm;
 };
 // message operations
-CNetworkMessage &operator<<(CNetworkMessage &nm, CPlayerCharacter &pc)
-{
+CNetworkMessage &operator<<(CNetworkMessage &nm, CPlayerCharacter &pc) {
   nm << pc.pc_strName << pc.pc_strTeam;
   nm.Write(pc.pc_aubGUID, PLAYERGUIDSIZE);
   nm.Write(pc.pc_aubAppearance, MAX_PLAYERAPPEARANCE);
   return nm;
 };
-CNetworkMessage &operator>>(CNetworkMessage &nm, CPlayerCharacter &pc)
-{
+CNetworkMessage &operator>>(CNetworkMessage &nm, CPlayerCharacter &pc) {
   nm >> pc.pc_strName >> pc.pc_strTeam;
   nm.Read(pc.pc_aubGUID, PLAYERGUIDSIZE);
   nm.Read(pc.pc_aubAppearance, MAX_PLAYERAPPEARANCE);

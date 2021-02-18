@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -22,8 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Network/Buffer.h>
 
 // default constructor
-CBuffer::CBuffer(void)
-{
+CBuffer::CBuffer(void) {
   bu_slAllocationStep = 1024;
   bu_slWriteOffset = 0;
   bu_slReadOffset = 0;
@@ -34,18 +33,16 @@ CBuffer::CBuffer(void)
 }
 
 // destructor
-CBuffer::~CBuffer(void)
-{
+CBuffer::~CBuffer(void) {
   Clear();
 }
 
 // free buffer
-void CBuffer::Clear(void)
-{
+void CBuffer::Clear(void) {
   bu_slWriteOffset = 0;
   bu_slReadOffset = 0;
 
-  if (bu_slSize>0) {
+  if (bu_slSize > 0) {
     ASSERT(bu_pubBuffer != NULL);
     FreeMemory(bu_pubBuffer);
   }
@@ -55,15 +52,14 @@ void CBuffer::Clear(void)
 }
 
 // expand buffer to be given number of bytes in size
-void CBuffer::Expand(SLONG slNewSize)
-{
-  ASSERT(slNewSize>0);
+void CBuffer::Expand(SLONG slNewSize) {
+  ASSERT(slNewSize > 0);
   ASSERT(bu_slSize >= 0);
   // if not already allocated
   if (bu_slSize == 0) {
     // allocate a new empty buffer
     ASSERT(bu_pubBuffer == NULL);
-    bu_pubBuffer = (UBYTE*)AllocMemory(slNewSize);
+    bu_pubBuffer = (UBYTE *)AllocMemory(slNewSize);
     bu_slWriteOffset = 0;
     bu_slReadOffset = 0;
     bu_slFree = slNewSize;
@@ -71,43 +67,40 @@ void CBuffer::Expand(SLONG slNewSize)
 
     // if already allocated
   } else {
-    ASSERT(slNewSize>bu_slSize);
-    SLONG slSizeDiff = slNewSize-bu_slSize;
+    ASSERT(slNewSize > bu_slSize);
+    SLONG slSizeDiff = slNewSize - bu_slSize;
     ASSERT(bu_pubBuffer != NULL);
     // grow buffer
-    GrowMemory((void**)&bu_pubBuffer, slNewSize);
+    GrowMemory((void **)&bu_pubBuffer, slNewSize);
 
     // if buffer is currently wrapping
-    if (bu_slReadOffset>bu_slWriteOffset||bu_slFree == 0) {
+    if (bu_slReadOffset > bu_slWriteOffset || bu_slFree == 0) {
       // move part at the end of buffer to the end
-      memmove(bu_pubBuffer+bu_slReadOffset+slSizeDiff, bu_pubBuffer+bu_slReadOffset,
-        bu_slSize-bu_slReadOffset);
-      bu_slReadOffset+=slSizeDiff;
+      memmove(bu_pubBuffer + bu_slReadOffset + slSizeDiff, bu_pubBuffer + bu_slReadOffset, bu_slSize - bu_slReadOffset);
+      bu_slReadOffset += slSizeDiff;
     }
-    bu_slFree += slNewSize-bu_slSize;
+    bu_slFree += slNewSize - bu_slSize;
     bu_slSize = slNewSize;
 
-    ASSERT(bu_slReadOffset >= 0 && bu_slReadOffset<bu_slSize);
+    ASSERT(bu_slReadOffset >= 0 && bu_slReadOffset < bu_slSize);
     ASSERT(bu_slFree >= 0 && bu_slFree <= bu_slSize);
   }
 }
 
 // set how many bytes to add when buffer overflows
-void CBuffer::SetAllocationStep(SLONG slStep)
-{
-  ASSERT(slStep>0);
+void CBuffer::SetAllocationStep(SLONG slStep) {
+  ASSERT(slStep > 0);
   bu_slAllocationStep = slStep;
 }
 
 // read bytes from buffer
-SLONG CBuffer::ReadBytes(void *pv, SLONG slSize)
-{
-  ASSERT(slSize>0 && pv != NULL);
-  UBYTE *pub = (UBYTE*)pv;
+SLONG CBuffer::ReadBytes(void *pv, SLONG slSize) {
+  ASSERT(slSize > 0 && pv != NULL);
+  UBYTE *pub = (UBYTE *)pv;
 
   // clamp size to amount of bytes actually in the buffer
-  SLONG slUsed = bu_slSize-bu_slFree;
-  if (slUsed<slSize) {
+  SLONG slUsed = bu_slSize - bu_slFree;
+  if (slUsed < slSize) {
     slSize = slUsed;
   }
   // if there is nothing to read
@@ -117,33 +110,32 @@ SLONG CBuffer::ReadBytes(void *pv, SLONG slSize)
   }
 
   // read part of block after read pointer to the end of buffer
-  SLONG slSizeEnd = __min(bu_slSize-bu_slReadOffset, slSize);
-  memcpy(pub, bu_pubBuffer+bu_slReadOffset, slSizeEnd);
-  pub+=slSizeEnd;
+  SLONG slSizeEnd = __min(bu_slSize - bu_slReadOffset, slSize);
+  memcpy(pub, bu_pubBuffer + bu_slReadOffset, slSizeEnd);
+  pub += slSizeEnd;
   // if that is not all
-  if (slSizeEnd<slSize) {
+  if (slSizeEnd < slSize) {
     // read rest from start of buffer
-    memcpy(pub, bu_pubBuffer, slSize-slSizeEnd);
+    memcpy(pub, bu_pubBuffer, slSize - slSizeEnd);
   }
   // move read pointer
-  bu_slReadOffset+=slSize;
-  bu_slReadOffset%=bu_slSize;
-  bu_slFree+=slSize;
+  bu_slReadOffset += slSize;
+  bu_slReadOffset %= bu_slSize;
+  bu_slFree += slSize;
 
-  ASSERT(bu_slReadOffset >= 0 && bu_slReadOffset<bu_slSize);
+  ASSERT(bu_slReadOffset >= 0 && bu_slReadOffset < bu_slSize);
   ASSERT(bu_slFree >= 0 && bu_slFree <= bu_slSize);
 
   return slSize;
 }
 
 // skip bytes from buffer (read without actually reading)
-SLONG CBuffer::SkipBytes(SLONG slSize)
-{
-  ASSERT(slSize>0);
+SLONG CBuffer::SkipBytes(SLONG slSize) {
+  ASSERT(slSize > 0);
 
   // clamp size to amount of bytes actually in the buffer
-  SLONG slUsed = bu_slSize-bu_slFree;
-  if (slUsed<slSize) {
+  SLONG slUsed = bu_slSize - bu_slFree;
+  if (slUsed < slSize) {
     slSize = slUsed;
   }
   // if there is nothing to skip
@@ -153,24 +145,23 @@ SLONG CBuffer::SkipBytes(SLONG slSize)
   }
 
   // move read pointer
-  bu_slReadOffset+=slSize;
-  bu_slReadOffset%=bu_slSize;
-  bu_slFree+=slSize;
+  bu_slReadOffset += slSize;
+  bu_slReadOffset %= bu_slSize;
+  bu_slFree += slSize;
 
-  ASSERT(bu_slReadOffset >= 0 && bu_slReadOffset<bu_slSize);
+  ASSERT(bu_slReadOffset >= 0 && bu_slReadOffset < bu_slSize);
   ASSERT(bu_slFree >= 0 && bu_slFree <= bu_slSize);
 
   return slSize;
 }
 
 // read bytes from buffer to stream
-SLONG CBuffer::ReadBytesToStream(CTStream &strm, SLONG slSize)
-{
-  ASSERT(slSize>0);
+SLONG CBuffer::ReadBytesToStream(CTStream &strm, SLONG slSize) {
+  ASSERT(slSize > 0);
 
   // clamp size to amount of bytes actually in the buffer
-  SLONG slUsed = bu_slSize-bu_slFree;
-  if (slUsed<slSize) {
+  SLONG slUsed = bu_slSize - bu_slFree;
+  if (slUsed < slSize) {
     slSize = slUsed;
   }
   // if there is nothing to read
@@ -180,51 +171,49 @@ SLONG CBuffer::ReadBytesToStream(CTStream &strm, SLONG slSize)
   }
 
   // read part of block after read pointer to the end of buffer
-  SLONG slSizeEnd = __min(bu_slSize-bu_slReadOffset, slSize);
-  strm.Write_t(bu_pubBuffer+bu_slReadOffset, slSizeEnd);
+  SLONG slSizeEnd = __min(bu_slSize - bu_slReadOffset, slSize);
+  strm.Write_t(bu_pubBuffer + bu_slReadOffset, slSizeEnd);
   // if that is not all
-  if (slSizeEnd<slSize) {
+  if (slSizeEnd < slSize) {
     // read rest from start of buffer
-    strm.Write_t(bu_pubBuffer, slSize-slSizeEnd);
+    strm.Write_t(bu_pubBuffer, slSize - slSizeEnd);
   }
   // move read pointer
-  bu_slReadOffset+=slSize;
-  bu_slReadOffset%=bu_slSize;
-  bu_slFree+=slSize;
+  bu_slReadOffset += slSize;
+  bu_slReadOffset %= bu_slSize;
+  bu_slFree += slSize;
 
-  ASSERT(bu_slReadOffset >= 0 && bu_slReadOffset<bu_slSize);
+  ASSERT(bu_slReadOffset >= 0 && bu_slReadOffset < bu_slSize);
   ASSERT(bu_slFree >= 0 && bu_slFree <= bu_slSize);
 
   return slSize;
 }
 
 // unread bytes from buffer
-void CBuffer::UnreadBytes(SLONG slSize)
-{
+void CBuffer::UnreadBytes(SLONG slSize) {
   ASSERT(bu_slFree >= slSize);
 
-  if (slSize == 0) return;
-  bu_slReadOffset-=slSize;
-  bu_slReadOffset%=bu_slSize;
-  if (bu_slReadOffset<0) {
-    bu_slReadOffset+=bu_slSize;
+  if (slSize == 0)
+    return;
+  bu_slReadOffset -= slSize;
+  bu_slReadOffset %= bu_slSize;
+  if (bu_slReadOffset < 0) {
+    bu_slReadOffset += bu_slSize;
   }
-  bu_slFree-=slSize;
+  bu_slFree -= slSize;
 
-  ASSERT(bu_slReadOffset >= 0 && bu_slReadOffset<bu_slSize);
+  ASSERT(bu_slReadOffset >= 0 && bu_slReadOffset < bu_slSize);
   ASSERT(bu_slFree >= 0 && bu_slFree <= bu_slSize);
 }
 
 // check how many bytes are there to read
-SLONG CBuffer::QueryReadBytes(void)
-{
+SLONG CBuffer::QueryReadBytes(void) {
   // return amount of bytes actually in the buffer
-  return bu_slSize-bu_slFree;
+  return bu_slSize - bu_slFree;
 }
 
 // write bytes to buffer
-void CBuffer::WriteBytes(const void *pv, SLONG slSize)
-{
+void CBuffer::WriteBytes(const void *pv, SLONG slSize) {
   ASSERT(slSize >= 0 && pv != NULL);
   // if there is nothing to write
   if (slSize == 0) {
@@ -232,38 +221,36 @@ void CBuffer::WriteBytes(const void *pv, SLONG slSize)
     return;
   }
   // check for errors
-  if (slSize<0) {
+  if (slSize < 0) {
     CPrintF("WARNING: WriteBytes(): slSize<0\n!");
     return;
   }
 
   // if there is not enough free space
-  if (bu_slFree<slSize) {
+  if (bu_slFree < slSize) {
     // expand the buffer
-    Expand(bu_slSize+
-      ((slSize-bu_slFree+bu_slAllocationStep-1)/bu_slAllocationStep)*bu_slAllocationStep );
+    Expand(bu_slSize + ((slSize - bu_slFree + bu_slAllocationStep - 1) / bu_slAllocationStep) * bu_slAllocationStep);
     ASSERT(bu_slFree >= slSize);
   }
 
-  UBYTE *pub = (UBYTE*)pv;
+  UBYTE *pub = (UBYTE *)pv;
 
   // write part of block at the end of buffer
-  SLONG slSizeEnd = __min(bu_slSize-bu_slWriteOffset, slSize);
-  memcpy(bu_pubBuffer+bu_slWriteOffset, pub, slSizeEnd);
-  pub+=slSizeEnd;
-  memcpy(bu_pubBuffer, pub, slSize-slSizeEnd);
+  SLONG slSizeEnd = __min(bu_slSize - bu_slWriteOffset, slSize);
+  memcpy(bu_pubBuffer + bu_slWriteOffset, pub, slSizeEnd);
+  pub += slSizeEnd;
+  memcpy(bu_pubBuffer, pub, slSize - slSizeEnd);
   // move write pointer
-  bu_slWriteOffset+=slSize;
-  bu_slWriteOffset%=bu_slSize;
-  bu_slFree-=slSize;
+  bu_slWriteOffset += slSize;
+  bu_slWriteOffset %= bu_slSize;
+  bu_slFree -= slSize;
 
-  ASSERT(bu_slWriteOffset >= 0 && bu_slWriteOffset<bu_slSize);
+  ASSERT(bu_slWriteOffset >= 0 && bu_slWriteOffset < bu_slSize);
   ASSERT(bu_slFree >= 0 && bu_slFree <= bu_slSize);
 }
 
 // move all data from another buffer to this one
-void CBuffer::MoveBuffer(CBuffer &buFrom)
-{
+void CBuffer::MoveBuffer(CBuffer &buFrom) {
   // repeat
   for (;;) {
     // read a block from the other buffer
@@ -279,14 +266,12 @@ void CBuffer::MoveBuffer(CBuffer &buFrom)
   }
 }
 
-void CBlockBufferStats::Clear(void)
-{
+void CBlockBufferStats::Clear(void) {
   bbs_tvTimeUsed.Clear();
 }
 
 // get time when block of given size will be finished if started now
-CTimerValue CBlockBufferStats::GetBlockFinalTime(SLONG slSize)
-{
+CTimerValue CBlockBufferStats::GetBlockFinalTime(SLONG slSize) {
   CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
 
   // calculate how much should block be delayed due to latency and due to bandwidth
@@ -294,61 +279,55 @@ CTimerValue CBlockBufferStats::GetBlockFinalTime(SLONG slSize)
   if (bbs_fBandwidthLimit <= 0.0f) {
     tvBandwidth = CTimerValue(0.0);
   } else {
-    tvBandwidth = CTimerValue(DOUBLE((slSize*8)/bbs_fBandwidthLimit));
+    tvBandwidth = CTimerValue(DOUBLE((slSize * 8) / bbs_fBandwidthLimit));
   }
   CTimerValue tvLatency;
   if (bbs_fLatencyLimit <= 0.0f && bbs_fLatencyVariation <= 0.0f) {
-   tvLatency = CTimerValue(0.0);
+    tvLatency = CTimerValue(0.0);
   } else {
-   tvLatency = CTimerValue(DOUBLE(bbs_fLatencyLimit+(bbs_fLatencyVariation*rand())/RAND_MAX));
+    tvLatency = CTimerValue(DOUBLE(bbs_fLatencyLimit + (bbs_fLatencyVariation * rand()) / RAND_MAX));
   }
 
   // start of packet receiving is later of
-  CTimerValue tvStart(
-    Max(
-      // current time plus latency and
-      (tvNow+tvLatency).tv_llValue,
-      // next free point in time
-      bbs_tvTimeUsed.tv_llValue));
+  CTimerValue tvStart(Max(
+    // current time plus latency and
+    (tvNow + tvLatency).tv_llValue,
+    // next free point in time
+    bbs_tvTimeUsed.tv_llValue));
   // remember next free time and return it
-  bbs_tvTimeUsed = tvStart+tvBandwidth;
+  bbs_tvTimeUsed = tvStart + tvBandwidth;
   return bbs_tvTimeUsed;
 }
 
 // default constructor
-CBlockBuffer::CBlockBuffer(void)
-{
+CBlockBuffer::CBlockBuffer(void) {
   bb_slBlockSizeRead = 0;
   bb_slBlockSizeWrite = 0;
   bb_pbbsStats = NULL;
 }
 
 // destructor
-CBlockBuffer::~CBlockBuffer(void)
-{
+CBlockBuffer::~CBlockBuffer(void) {
   bb_slBlockSizeRead = 0;
   bb_slBlockSizeWrite = 0;
   bb_pbbsStats = NULL;
 }
 
 // free buffer
-void CBlockBuffer::Clear(void)
-{
+void CBlockBuffer::Clear(void) {
   bb_slBlockSizeRead = 0;
   bb_slBlockSizeWrite = 0;
   bb_pbbsStats = NULL;
   CBuffer::Clear();
 }
 
-
 struct BlockHeader {
-  SLONG bh_slSize;              // block size
-  CTimerValue bh_tvFinalTime;   // block may be read only after this moment in time
+  SLONG bh_slSize;            // block size
+  CTimerValue bh_tvFinalTime; // block may be read only after this moment in time
 };
 
 // read one block if possible
-BOOL CBlockBuffer::ReadBlock(void *pv, SLONG &slSize)
-{
+BOOL CBlockBuffer::ReadBlock(void *pv, SLONG &slSize) {
   // must not be inside block reading
   ASSERT(bb_slBlockSizeRead == 0);
 
@@ -380,14 +359,14 @@ BOOL CBlockBuffer::ReadBlock(void *pv, SLONG &slSize)
     // mark how much space we would need
     slSize = bh.bh_slSize;
     // nothing to receive
-    ASSERT(FALSE);  // this shouldn't happen
+    ASSERT(FALSE); // this shouldn't happen
     return FALSE;
   }
 
   // if using stats
   if (bb_pbbsStats != NULL) {
     // if block could not have been received yet, due to time limits
-    if (bh.bh_tvFinalTime>_pTimer->GetHighPrecisionTimer()) {
+    if (bh.bh_tvFinalTime > _pTimer->GetHighPrecisionTimer()) {
       // unwind
       UnreadBytes(slbhSize);
       // nothing to receive
@@ -404,8 +383,7 @@ BOOL CBlockBuffer::ReadBlock(void *pv, SLONG &slSize)
 }
 
 // read one block from buffer to stream
-BOOL CBlockBuffer::ReadBlockToStream(CTStream &strm)
-{
+BOOL CBlockBuffer::ReadBlockToStream(CTStream &strm) {
   // must not be inside block reading
   ASSERT(bb_slBlockSizeRead == 0);
 
@@ -433,7 +411,7 @@ BOOL CBlockBuffer::ReadBlockToStream(CTStream &strm)
   // if using stats
   if (bb_pbbsStats != NULL) {
     // if block could not have been received yet, due to time limits
-    if (bh.bh_tvFinalTime>_pTimer->GetHighPrecisionTimer()) {
+    if (bh.bh_tvFinalTime > _pTimer->GetHighPrecisionTimer()) {
       // unwind
       UnreadBytes(slbhSize);
       // nothing to receive
@@ -455,8 +433,7 @@ BOOL CBlockBuffer::ReadBlockToStream(CTStream &strm)
 }
 
 // write one block
-void CBlockBuffer::WriteBlock(const void *pv, SLONG slSize)
-{
+void CBlockBuffer::WriteBlock(const void *pv, SLONG slSize) {
   // must not be inside block writing
   ASSERT(bb_slBlockSizeWrite == 0);
 
@@ -469,21 +446,19 @@ void CBlockBuffer::WriteBlock(const void *pv, SLONG slSize)
     bh.bh_tvFinalTime.Clear();
   }
   // write the data to send-buffer
-  WriteBytes((void*)&bh, sizeof(bh));
+  WriteBytes((void *)&bh, sizeof(bh));
   WriteBytes(pv, slSize);
 }
 
 // unread one block
-void CBlockBuffer::UnreadBlock(SLONG slSize)
-{
-  UnreadBytes(slSize+sizeof(struct BlockHeader));
+void CBlockBuffer::UnreadBlock(SLONG slSize) {
+  UnreadBytes(slSize + sizeof(struct BlockHeader));
 }
 
 // read raw block data
-SLONG CBlockBuffer::ReadRawBlock(void *pv, SLONG slSize)
-{
+SLONG CBlockBuffer::ReadRawBlock(void *pv, SLONG slSize) {
   // if inside block reading
-  if (bb_slBlockSizeRead>0) {
+  if (bb_slBlockSizeRead > 0) {
     // clamp size to prevent reading across real blocks
     slSize = Min(slSize, bb_slBlockSizeRead);
 
@@ -491,12 +466,12 @@ SLONG CBlockBuffer::ReadRawBlock(void *pv, SLONG slSize)
     SLONG slResult = ReadBytes(pv, slSize);
     ASSERT(slResult == slSize);
     // decrement block size counter
-    bb_slBlockSizeRead-=slResult;
+    bb_slBlockSizeRead -= slResult;
     // must not underflow
     ASSERT(bb_slBlockSizeRead >= 0);
     return slResult;
 
-  // if not inside block reading
+    // if not inside block reading
   } else {
     // read header of next block in incoming buffer
     struct BlockHeader bh;
@@ -522,7 +497,7 @@ SLONG CBlockBuffer::ReadRawBlock(void *pv, SLONG slSize)
     // if using stats
     if (bb_pbbsStats != NULL) {
       // if block could not have been received yet, due to time limits
-      if (bh.bh_tvFinalTime>_pTimer->GetHighPrecisionTimer()) {
+      if (bh.bh_tvFinalTime > _pTimer->GetHighPrecisionTimer()) {
         // unwind
         UnreadBytes(slbhSize);
         // nothing to receive
@@ -531,7 +506,7 @@ SLONG CBlockBuffer::ReadRawBlock(void *pv, SLONG slSize)
     }
 
     // remember block size counter
-    bb_slBlockSizeRead = bh.bh_slSize+sizeof(struct BlockHeader);
+    bb_slBlockSizeRead = bh.bh_slSize + sizeof(struct BlockHeader);
     // unwind header
     UnreadBytes(slbhSize);
 
@@ -542,7 +517,7 @@ SLONG CBlockBuffer::ReadRawBlock(void *pv, SLONG slSize)
     SLONG slResult = ReadBytes(pv, slSize);
     ASSERT(slResult == slSize);
     // decrement block size counter
-    bb_slBlockSizeRead-=slResult;
+    bb_slBlockSizeRead -= slResult;
     // must not underflow
     ASSERT(bb_slBlockSizeRead >= 0);
 
@@ -551,31 +526,29 @@ SLONG CBlockBuffer::ReadRawBlock(void *pv, SLONG slSize)
 }
 
 // write raw block data
-void CBlockBuffer::WriteRawBlock(const void *pv, SLONG slSize)
-{
+void CBlockBuffer::WriteRawBlock(const void *pv, SLONG slSize) {
   // while there is something to write
-  while (slSize>0) {
-
+  while (slSize > 0) {
     // if inside block writing
-    if (bb_slBlockSizeWrite>0) {
+    if (bb_slBlockSizeWrite > 0) {
       SLONG slToWrite = Min(bb_slBlockSizeWrite, slSize);
       // write the raw block
       WriteBytes(pv, slToWrite);
-      slSize-=slToWrite;
-      ((UBYTE*&)pv)+=slToWrite;
+      slSize -= slToWrite;
+      ((UBYTE *&)pv) += slToWrite;
       // decrement block size counter
-      bb_slBlockSizeWrite-=slToWrite;
+      bb_slBlockSizeWrite -= slToWrite;
       // must not underflow
       ASSERT(bb_slBlockSizeWrite >= 0);
 
-    // if not inside block writing
+      // if not inside block writing
     } else {
       // must contain at least the header
-      ASSERT(slSize>sizeof(struct BlockHeader));
+      ASSERT(slSize > sizeof(struct BlockHeader));
       // find the header in the raw block
-      struct BlockHeader &bh = *(struct BlockHeader*)pv;
+      struct BlockHeader &bh = *(struct BlockHeader *)pv;
       // remember block size counter
-      bb_slBlockSizeWrite = bh.bh_slSize+sizeof(struct BlockHeader);
+      bb_slBlockSizeWrite = bh.bh_slSize + sizeof(struct BlockHeader);
       // create new block timestamp
       if (bb_pbbsStats != NULL) {
         bh.bh_tvFinalTime = bb_pbbsStats->GetBlockFinalTime(bb_slBlockSizeWrite);
@@ -586,10 +559,10 @@ void CBlockBuffer::WriteRawBlock(const void *pv, SLONG slSize)
       SLONG slToWrite = Min(bb_slBlockSizeWrite, slSize);
       // write the raw block, with the new header
       WriteBytes(pv, slToWrite);
-      slSize-=slToWrite;
-      ((UBYTE*&)pv)+=slToWrite;
+      slSize -= slToWrite;
+      ((UBYTE *&)pv) += slToWrite;
       // decrement block size counter
-      bb_slBlockSizeWrite-=slToWrite;
+      bb_slBlockSizeWrite -= slToWrite;
       // must not underflow
       ASSERT(bb_slBlockSizeWrite >= 0);
     }
@@ -597,15 +570,14 @@ void CBlockBuffer::WriteRawBlock(const void *pv, SLONG slSize)
 }
 
 // peek sizes of next block
-void CBlockBuffer::PeekBlockSize(SLONG &slExpectedSize, SLONG &slReceivedSoFar)
-{
+void CBlockBuffer::PeekBlockSize(SLONG &slExpectedSize, SLONG &slReceivedSoFar) {
   // if inside block reading
-  if (bb_slBlockSizeRead>0) {
+  if (bb_slBlockSizeRead > 0) {
     // no information available
     slExpectedSize = 0;
     slReceivedSoFar = 0;
 
-  // if not inside block reading
+    // if not inside block reading
   } else {
     // read header of next block in incoming buffer
     struct BlockHeader bh;
@@ -619,26 +591,24 @@ void CBlockBuffer::PeekBlockSize(SLONG &slExpectedSize, SLONG &slReceivedSoFar)
       // no information available
       slExpectedSize = 0;
       slReceivedSoFar = 0;
-    // if the header information is present
+      // if the header information is present
     } else {
       // total size is size of block
       slExpectedSize = bh.bh_slSize;
       // received so far is how much is really present
-      slReceivedSoFar = QueryReadBytes()-sizeof(struct BlockHeader);
+      slReceivedSoFar = QueryReadBytes() - sizeof(struct BlockHeader);
     }
   }
 }
 
 // unread raw block data
-void CBlockBuffer::UnreadRawBlock(SLONG slSize)
-{
-  bb_slBlockSizeRead+=slSize;
+void CBlockBuffer::UnreadRawBlock(SLONG slSize) {
+  bb_slBlockSizeRead += slSize;
   UnreadBytes(slSize);
 }
 
 // move all data from another buffer to this one
-void CBlockBuffer::MoveBlockBuffer(CBlockBuffer &buFrom)
-{
+void CBlockBuffer::MoveBlockBuffer(CBlockBuffer &buFrom) {
   // repeat
   for (;;) {
     // read a block from the other buffer

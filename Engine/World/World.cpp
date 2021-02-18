@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -52,45 +52,43 @@ extern BOOL _bEntitySectorLinksPreLoaded;
 extern INDEX _ctPredictorEntities;
 
 // calculate ray placement from origin and target positions (obsolete?)
-static inline CPlacement3D CalculateRayPlacement(
-  const FLOAT3D &vOrigin, const FLOAT3D &vTarget)
-{
+static inline CPlacement3D CalculateRayPlacement(const FLOAT3D &vOrigin, const FLOAT3D &vTarget) {
   CPlacement3D plRay;
   // ray position is at origin
   plRay.pl_PositionVector = vOrigin;
   // calculate ray direction vector
-  FLOAT3D vDirection = vTarget-vOrigin;
+  FLOAT3D vDirection = vTarget - vOrigin;
   // calculate ray orientation from the direction vector
   vDirection.Normalize();
   DirectionVectorToAngles(vDirection, plRay.pl_OrientationAngle);
   return plRay;
 }
 
-// Constructor. 
-CTextureTransformation::CTextureTransformation(void)
-{
+// Constructor.
+CTextureTransformation::CTextureTransformation(void) {
   tt_strName = "";
 }
 
-// Constructor. 
-CTextureBlending::CTextureBlending(void)
-{
+// Constructor.
+CTextureBlending::CTextureBlending(void) {
   tb_strName = "";
   tb_ubBlendingType = STXF_BLEND_OPAQUE;
-  tb_colMultiply = C_WHITE|0xFF;
+  tb_colMultiply = C_WHITE | 0xFF;
 }
 
 /*
  * Constructor.
  */
-CWorld::CWorld(void)
-  : wo_colBackground(C_lGRAY)       // clear background color
-  , wo_pecWorldBaseClass(NULL)      // worldbase class must be obtained before using the world
-  , wo_bPortalLinksUpToDate(FALSE)  // portal-sector links must be updated
-  , wo_baBrushes(*new CBrushArchive)
-  , wo_taTerrains(*new CTerrainArchive)
-  , wo_ulSpawnFlags(0)
-{
+CWorld::CWorld(void) :
+wo_colBackground(C_lGRAY) // clear background color
+,
+wo_pecWorldBaseClass(NULL) // worldbase class must be obtained before using the world
+,
+wo_bPortalLinksUpToDate(FALSE) // portal-sector links must be updated
+,
+wo_baBrushes(*new CBrushArchive),
+wo_taTerrains(*new CTerrainArchive),
+wo_ulSpawnFlags(0) {
   wo_baBrushes.ba_pwoWorld = this;
   wo_taTerrains.ta_pwoWorld = this;
 
@@ -110,28 +108,28 @@ CWorld::CWorld(void)
   wo_strBackdropFt = "";
   wo_strBackdropRt = "";
   wo_strBackdropObject = "";
-  wo_fUpW = wo_fUpL = 1.0f; wo_fUpCX = wo_fUpCZ = 0.0f;
-  wo_fFtW = wo_fFtH = 1.0f; wo_fFtCX = wo_fFtCY = 0.0f;
-  wo_fRtL = wo_fRtH = 1.0f; wo_fRtCZ = wo_fRtCY = 0.0f;
+  wo_fUpW = wo_fUpL = 1.0f;
+  wo_fUpCX = wo_fUpCZ = 0.0f;
+  wo_fFtW = wo_fFtH = 1.0f;
+  wo_fFtCX = wo_fFtCY = 0.0f;
+  wo_fRtL = wo_fRtH = 1.0f;
+  wo_fRtCZ = wo_fRtCY = 0.0f;
 
   wo_ulNextEntityID = 1;
 
   // set default placement
-  wo_plFocus = CPlacement3D( FLOAT3D(3.0f, 4.0f, 10.0f),
-                             ANGLE3D(AngleDeg( 20.0f), AngleDeg( -20.0f), 0));
+  wo_plFocus = CPlacement3D(FLOAT3D(3.0f, 4.0f, 10.0f), ANGLE3D(AngleDeg(20.0f), AngleDeg(-20.0f), 0));
   wo_fTargetDistance = 10.0f;
 
   // set default thumbnail placement
-  wo_plThumbnailFocus = CPlacement3D( FLOAT3D(3.0f, 4.0f, 10.0f),
-                             ANGLE3D(AngleDeg( 20.0f), AngleDeg( -20.0f), 0));
+  wo_plThumbnailFocus = CPlacement3D(FLOAT3D(3.0f, 4.0f, 10.0f), ANGLE3D(AngleDeg(20.0f), AngleDeg(-20.0f), 0));
   wo_fThumbnailTargetDistance = 10.0f;
 }
 
 /*
  * Destructor.
  */
-CWorld::~CWorld()
-{
+CWorld::~CWorld() {
   // clear all arrays
   Clear();
   // destroy collision grid
@@ -144,15 +142,13 @@ CWorld::~CWorld()
 /*
  * Clear all arrays.
  */
-void CWorld::Clear(void)
-{
+void CWorld::Clear(void) {
   // detach worldbase class
   if (wo_pecWorldBaseClass != NULL) {
-    if (wo_pecWorldBaseClass->ec_pdecDLLClass != NULL
-       &&wo_pecWorldBaseClass->ec_pdecDLLClass->dec_OnWorldEnd != NULL) {
+    if (wo_pecWorldBaseClass->ec_pdecDLLClass != NULL && wo_pecWorldBaseClass->ec_pdecDLLClass->dec_OnWorldEnd != NULL) {
       wo_pecWorldBaseClass->ec_pdecDLLClass->dec_OnWorldEnd(this);
     }
-    wo_pecWorldBaseClass=NULL;
+    wo_pecWorldBaseClass = NULL;
   }
 
   {
@@ -164,10 +160,12 @@ void CWorld::Clear(void)
     // make a new container of entities
     CDynamicContainer<CEntity> cenToDestroy = wo_cenEntities;
     // for each of the entities
-    {FOREACHINDYNAMICCONTAINER(cenToDestroy, CEntity, iten) {
-      // destroy it
-      iten->Destroy();
-    }}
+    {
+      FOREACHINDYNAMICCONTAINER(cenToDestroy, CEntity, iten) {
+        // destroy it
+        iten->Destroy();
+      }
+    }
     // the original container must be empty
     ASSERT(wo_cenEntities.Count() == 0);
     ASSERT(wo_cenAllEntities.Count() == 0);
@@ -192,14 +190,12 @@ void CWorld::Clear(void)
 /*
  * Create a new entity of given class.
  */
-CEntity *CWorld::CreateEntity(const CPlacement3D &plPlacement, CEntityClass *pecClass)
-{
+CEntity *CWorld::CreateEntity(const CPlacement3D &plPlacement, CEntityClass *pecClass) {
   // must be in 24bit mode when managing entities
   CSetFPUPrecision FPUPrecision(FPT_24BIT);
-  
+
   // if the world base class is not yet remembered and this class is world base
-  if (wo_pecWorldBaseClass == NULL
-    && stricmp(pecClass->ec_pdecDLLClass->dec_strName, "WorldBase") == 0) {
+  if (wo_pecWorldBaseClass == NULL && stricmp(pecClass->ec_pdecDLLClass->dec_strName, "WorldBase") == 0) {
     // remember it
     wo_pecWorldBaseClass = pecClass;
     // execute the class attach function
@@ -230,7 +226,7 @@ CEntity *CWorld::CreateEntity(const CPlacement3D &plPlacement, CEntityClass *pec
   // if now predicting
   if (_pNetwork->IsPredicting()) {
     // mark entity as a temporary predictor
-    penEntity->en_ulFlags |= ENF_PREDICTOR|ENF_TEMPPREDICTOR;
+    penEntity->en_ulFlags |= ENF_PREDICTOR | ENF_TEMPPREDICTOR;
     wo_cenPredictor.Add(penEntity);
     _ctPredictorEntities++;
   }
@@ -258,12 +254,11 @@ CEntity *CWorld::CreateEntity_t(const CPlacement3D &plPlacement,
 /*
  * Destroy one entities.
  */
-void CWorld::DestroyOneEntity( CEntity *penToDestroy)
-{
+void CWorld::DestroyOneEntity(CEntity *penToDestroy) {
   // if the entity is targetable
   if (penToDestroy->IsTargetable()) {
     // remove all eventual pointers to it
-    UntargetEntity( penToDestroy);
+    UntargetEntity(penToDestroy);
   }
   // destroy it
   penToDestroy->Destroy();
@@ -272,8 +267,7 @@ void CWorld::DestroyOneEntity( CEntity *penToDestroy)
 /*
  * Destroy a selection of entities.
  */
-void CWorld::DestroyEntities(CEntitySelection &senToDestroy)
-{
+void CWorld::DestroyEntities(CEntitySelection &senToDestroy) {
   // must be in 24bit mode when managing entities
   CSetFPUPrecision FPUPrecision(FPT_24BIT);
 
@@ -298,19 +292,16 @@ void CWorld::DestroyEntities(CEntitySelection &senToDestroy)
 /*
  * Clear all entity pointers that point to this entity.
  */
-void CWorld::UntargetEntity(CEntity *penToUntarget)
-{
+void CWorld::UntargetEntity(CEntity *penToUntarget) {
   // for all entities in this world
   FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, itenInWorld) {
     // get the DLL class of this entity
     CDLLEntityClass *pdecDLLClass = itenInWorld->en_pecClass->ec_pdecDLLClass;
 
     // for all classes in hierarchy of this entity
-    for (;
-        pdecDLLClass != NULL;
-        pdecDLLClass = pdecDLLClass->dec_pdecBase) {
+    for (; pdecDLLClass != NULL; pdecDLLClass = pdecDLLClass->dec_pdecBase) {
       // for all properties
-      for (INDEX iProperty=0; iProperty<pdecDLLClass->dec_ctProperties; iProperty++) {
+      for (INDEX iProperty = 0; iProperty < pdecDLLClass->dec_ctProperties; iProperty++) {
         CEntityProperty &epProperty = pdecDLLClass->dec_aepProperties[iProperty];
 
         // if the property type is entity pointer
@@ -338,8 +329,7 @@ void CWorld::UntargetEntity(CEntity *penToUntarget)
 /*
  * Find an entity with given character.
  */
-CPlayerEntity *CWorld::FindEntityWithCharacter(CPlayerCharacter &pcCharacter)
-{
+CPlayerEntity *CWorld::FindEntityWithCharacter(CPlayerCharacter &pcCharacter) {
   ASSERT(pcCharacter.pc_strName != "");
 
   // for each entity
@@ -362,8 +352,7 @@ CPlayerEntity *CWorld::FindEntityWithCharacter(CPlayerCharacter &pcCharacter)
 /*
  * Add an entity to list of thinkers.
  */
-void CWorld::AddTimer(CRationalEntity *penThinker)
-{
+void CWorld::AddTimer(CRationalEntity *penThinker) {
   ASSERT(penThinker->en_llTimer > _pTimer->GetGameTick());
   ASSERT(GetFPUPrecision() == FPT_24BIT);
 
@@ -385,8 +374,7 @@ void CWorld::AddTimer(CRationalEntity *penThinker)
 }
 
 // set overdue timers to be due in current time
-void CWorld::AdjustLateTimers(TICK llCurrentTime)
-{
+void CWorld::AdjustLateTimers(TICK llCurrentTime) {
   // must be in 24bit mode when managing entities
   CSetFPUPrecision FPUPrecision(FPT_24BIT);
 
@@ -401,12 +389,10 @@ void CWorld::AdjustLateTimers(TICK llCurrentTime)
   }
 }
 
-
 /*
  * Lock all arrays.
  */
-void CWorld::LockAll(void)
-{
+void CWorld::LockAll(void) {
   wo_cenEntities.Lock();
   wo_cenAllEntities.Lock();
   // lock the brush archive
@@ -418,8 +404,7 @@ void CWorld::LockAll(void)
 /*
  * Unlock all arrays.
  */
-void CWorld::UnlockAll(void)
-{
+void CWorld::UnlockAll(void) {
   wo_cenEntities.Unlock();
   wo_cenAllEntities.Unlock();
   // unlock the brush archive
@@ -428,63 +413,53 @@ void CWorld::UnlockAll(void)
   wo_taTerrains.ta_atrTerrains.Unlock();
 }
 
-// Get background color for this world. 
-COLOR CWorld::GetBackgroundColor(void)
-{
+// Get background color for this world.
+COLOR CWorld::GetBackgroundColor(void) {
   return wo_colBackground;
 }
 
-// Set background color for this world. 
-void CWorld::SetBackgroundColor(COLOR colBackground)
-{
+// Set background color for this world.
+void CWorld::SetBackgroundColor(COLOR colBackground) {
   wo_colBackground = colBackground;
 }
 
-// Set background viewer entity for this world. 
-void CWorld::SetBackgroundViewer(CEntity *penEntity)
-{
+// Set background viewer entity for this world.
+void CWorld::SetBackgroundViewer(CEntity *penEntity) {
   wo_penBackgroundViewer = penEntity;
 }
 
-// Get background viewer entity for this world. 
-CEntity *CWorld::GetBackgroundViewer(void)
-{
+// Get background viewer entity for this world.
+CEntity *CWorld::GetBackgroundViewer(void) {
   // if the background viewer entity is deleted
-  if (wo_penBackgroundViewer != NULL && wo_penBackgroundViewer->en_ulFlags&ENF_DELETED) {
+  if (wo_penBackgroundViewer != NULL && wo_penBackgroundViewer->en_ulFlags & ENF_DELETED) {
     // clear the pointer
     wo_penBackgroundViewer = NULL;
   }
   return wo_penBackgroundViewer;
 }
 
-// Set description for this world. 
-void CWorld::SetDescription(const CTString &strDescription)
-{
+// Set description for this world.
+void CWorld::SetDescription(const CTString &strDescription) {
   wo_strDescription = strDescription;
 }
-// Get description for this world. 
-const CTString &CWorld::GetDescription(void)
-{
+// Get description for this world.
+const CTString &CWorld::GetDescription(void) {
   return wo_strDescription;
 }
 
 // get/set name of the world
-void CWorld::SetName(const CTString &strName)
-{
+void CWorld::SetName(const CTString &strName) {
   wo_strName = strName;
 }
-const CTString &CWorld::GetName(void)
-{
+const CTString &CWorld::GetName(void) {
   return wo_strName;
 }
 
 // get/set spawn flags for the world
-void CWorld::SetSpawnFlags(ULONG ulFlags)
-{
+void CWorld::SetSpawnFlags(ULONG ulFlags) {
   wo_ulSpawnFlags = ulFlags;
 }
-ULONG CWorld::GetSpawnFlags(void)
-{
+ULONG CWorld::GetSpawnFlags(void) {
   return wo_ulSpawnFlags;
 }
 
@@ -494,49 +469,38 @@ ULONG CWorld::GetSpawnFlags(void)
 /*
  * Recalculate all shadow maps that are not valid or of smaller precision.
  */
-void CWorld::CalculateDirectionalShadows(void)
-{
+void CWorld::CalculateDirectionalShadows(void) {
   extern INDEX _ctShadowLayers;
   extern INDEX _ctShadowClusters;
   CTimerValue tvStart;
 
   // clear shadow rendering stats
   tvStart = _pTimer->GetHighPrecisionTimer();
-  _ctShadowLayers=0;
-  _ctShadowClusters=0;
+  _ctShadowLayers = 0;
+  _ctShadowClusters = 0;
 
   // for each shadow map that is queued for calculation
-  FORDELETELIST(CBrushShadowMap, bsm_lnInUncalculatedShadowMaps,
-    wo_baBrushes.ba_lhUncalculatedShadowMaps, itbsm) {
+  FORDELETELIST(CBrushShadowMap, bsm_lnInUncalculatedShadowMaps, wo_baBrushes.ba_lhUncalculatedShadowMaps, itbsm) {
     // calculate shadows on it
     itbsm->GetBrushPolygon()->MakeShadowMap(this, TRUE);
   }
 
   // report shadow rendering stats
   CTimerValue tvStop = _pTimer->GetHighPrecisionTimer();
-  CPrintF("Shadow calculation: total %d clusters in %d layers, %fs\n",
-    _ctShadowClusters,
-    _ctShadowLayers,
-    (tvStop-tvStart).GetSeconds());
+  CPrintF("Shadow calculation: total %d clusters in %d layers, %fs\n", _ctShadowClusters, _ctShadowLayers,
+          (tvStop - tvStart).GetSeconds());
 }
 
-void CWorld::CalculateNonDirectionalShadows(void)
-{
+void CWorld::CalculateNonDirectionalShadows(void) {
   // for each shadow map that is queued for calculation
-  FORDELETELIST(CBrushShadowMap, bsm_lnInUncalculatedShadowMaps,
-    wo_baBrushes.ba_lhUncalculatedShadowMaps, itbsm) {
+  FORDELETELIST(CBrushShadowMap, bsm_lnInUncalculatedShadowMaps, wo_baBrushes.ba_lhUncalculatedShadowMaps, itbsm) {
     // calculate shadows on it
     itbsm->GetBrushPolygon()->MakeShadowMap(this, FALSE);
   }
 }
 
-
-// Find all shadow layers near a certain position. 
-void CWorld::FindShadowLayers(
-  const FLOATaabbox3D &boxNear,
-  BOOL bSelectedOnly /*=FALSE*/,
-  BOOL bDirectional /*= TRUE*/)
-{
+// Find all shadow layers near a certain position.
+void CWorld::FindShadowLayers(const FLOATaabbox3D &boxNear, BOOL bSelectedOnly /*=FALSE*/, BOOL bDirectional /*= TRUE*/) {
   _pfWorldEditingProfile.StartTimer(CWorldEditingProfile::PTI_FINDSHADOWLAYERS);
   // for each entity in the world
   FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
@@ -544,8 +508,7 @@ void CWorld::FindShadowLayers(
     CLightSource *pls = iten->GetLightSource();
     if (pls != NULL) {
       FLOATaabbox3D boxLight(iten->en_plPlacement.pl_PositionVector, pls->ls_rFallOff);
-      if (bDirectional && (pls->ls_ulFlags &LSF_DIRECTIONAL)
-        ||boxLight.HasContactWith(boxNear)) {
+      if (bDirectional && (pls->ls_ulFlags & LSF_DIRECTIONAL) || boxLight.HasContactWith(boxNear)) {
         // find layers for that light source
         pls->FindShadowLayers(bSelectedOnly);
       }
@@ -553,9 +516,8 @@ void CWorld::FindShadowLayers(
   }
   _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_FINDSHADOWLAYERS);
 }
-// Discard shadows on all brush polygons in the world. 
-void CWorld::DiscardAllShadows(void)
-{
+// Discard shadows on all brush polygons in the world.
+void CWorld::DiscardAllShadows(void) {
   FLOATaabbox3D box;
   // for each entity in the world
   FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
@@ -563,7 +525,7 @@ void CWorld::DiscardAllShadows(void)
     if (iten->en_RenderType == CEntity::RT_BRUSH) {
       // for each mip in its brush
       FOREACHINLIST(CBrushMip, bm_lnInBrush, iten->en_pbrBrush->br_lhBrushMips, itbm) {
-        box|=itbm->bm_boxBoundingBox;
+        box |= itbm->bm_boxBoundingBox;
         // for all sectors in this mip
         FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
           // for each polygon in the sector
@@ -584,13 +546,10 @@ void CWorld::DiscardAllShadows(void)
 /*
  * Hide entities contained in given selection.
  */
-void CWorld::HideSelectedEntities(CEntitySelection &selenEntitiesToHide)
-{
+void CWorld::HideSelectedEntities(CEntitySelection &selenEntitiesToHide) {
   // for all entities in the selection
   FOREACHINDYNAMICCONTAINER(selenEntitiesToHide, CEntity, iten) {
-    if (iten->IsSelected(ENF_SELECTED) &&
-        !((iten->en_RenderType == CEntity::RT_BRUSH) && (iten->en_ulFlags&ENF_ZONING)) )
-    {
+    if (iten->IsSelected(ENF_SELECTED) && !((iten->en_RenderType == CEntity::RT_BRUSH) && (iten->en_ulFlags & ENF_ZONING))) {
       // hide the entity
       iten->en_ulFlags |= ENF_HIDDEN;
     }
@@ -600,14 +559,10 @@ void CWorld::HideSelectedEntities(CEntitySelection &selenEntitiesToHide)
 /*
  * Hide all unselected entities.
  */
-void CWorld::HideUnselectedEntities(void)
-{
+void CWorld::HideUnselectedEntities(void) {
   // for each entity in the world
-  FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten)
-  {
-    if (!iten->IsSelected(ENF_SELECTED) &&
-        !((iten->en_RenderType == CEntity::RT_BRUSH)&&(iten->en_ulFlags&ENF_ZONING)) )
-    {
+  FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
+    if (!iten->IsSelected(ENF_SELECTED) && !((iten->en_RenderType == CEntity::RT_BRUSH) && (iten->en_ulFlags & ENF_ZONING))) {
       // hide it
       iten->en_ulFlags |= ENF_HIDDEN;
     }
@@ -617,11 +572,9 @@ void CWorld::HideUnselectedEntities(void)
 /*
  * Show all entities.
  */
-void CWorld::ShowAllEntities(void)
-{
+void CWorld::ShowAllEntities(void) {
   // for each entity in the world
-  FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten)
-  {
+  FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     iten->en_ulFlags &= ~ENF_HIDDEN;
   }
 }
@@ -629,8 +582,7 @@ void CWorld::ShowAllEntities(void)
 /*
  * Hide sectors contained in given selection.
  */
-void CWorld::HideSelectedSectors(CBrushSectorSelection &selbscSectorsToHide)
-{
+void CWorld::HideSelectedSectors(CBrushSectorSelection &selbscSectorsToHide) {
   // for all sectors in the selection
   FOREACHINDYNAMICCONTAINER(selbscSectorsToHide, CBrushSector, itbsc) {
     // hide the sector
@@ -641,8 +593,7 @@ void CWorld::HideSelectedSectors(CBrushSectorSelection &selbscSectorsToHide)
 /*
  * Hide all unselected sectors.
  */
-void CWorld::HideUnselectedSectors(void)
-{
+void CWorld::HideUnselectedSectors(void) {
   // for each entity in the world
   FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     // if it is brush entity
@@ -665,8 +616,7 @@ void CWorld::HideUnselectedSectors(void)
 /*
  * Show all sectors.
  */
-void CWorld::ShowAllSectors(void)
-{
+void CWorld::ShowAllSectors(void) {
   // for each entity in the world
   FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     // if it is brush entity
@@ -686,9 +636,7 @@ void CWorld::ShowAllSectors(void)
 /*
  * Select all polygons in selected sectors with same texture.
  */
-void CWorld::SelectByTextureInSelectedSectors(
-         CTFileName fnTexture, CBrushPolygonSelection &selbpoSimilar, INDEX iTexture)
-{
+void CWorld::SelectByTextureInSelectedSectors(CTFileName fnTexture, CBrushPolygonSelection &selbpoSimilar, INDEX iTexture) {
   // for each entity in the world
   FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     // if it is brush entity
@@ -700,16 +648,13 @@ void CWorld::SelectByTextureInSelectedSectors(
           // if sector is selected
           if (itbsc->IsSelected(BSCF_SELECTED)) {
             // for all polygons in sector
-            FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo)
-            {
+            FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
               // if it is not portal and is not selected and has same texture
-              if ((!(itbpo->bpo_ulFlags&BPOF_PORTAL) || (itbpo->bpo_ulFlags&(BPOF_TRANSLUCENT|BPOF_TRANSPARENT))) &&
-                  !itbpo->IsSelected(BPOF_SELECTED) &&
-                  (itbpo->bpo_abptTextures[iTexture].bpt_toTexture.GetData() != NULL) &&
-                  (itbpo->bpo_abptTextures[iTexture].bpt_toTexture.GetData()->GetName()
-                  == fnTexture) )
-              // select this polygon
-              selbpoSimilar.Select(*itbpo);
+              if ((!(itbpo->bpo_ulFlags & BPOF_PORTAL) || (itbpo->bpo_ulFlags & (BPOF_TRANSLUCENT | BPOF_TRANSPARENT)))
+                  && !itbpo->IsSelected(BPOF_SELECTED) && (itbpo->bpo_abptTextures[iTexture].bpt_toTexture.GetData() != NULL)
+                  && (itbpo->bpo_abptTextures[iTexture].bpt_toTexture.GetData()->GetName() == fnTexture))
+                // select this polygon
+                selbpoSimilar.Select(*itbpo);
             }
           }
         }
@@ -721,9 +666,7 @@ void CWorld::SelectByTextureInSelectedSectors(
 /*
  * Select all polygons in world with same texture.
  */
-void CWorld::SelectByTextureInWorld(
-         CTFileName fnTexture, CBrushPolygonSelection &selbpoSimilar, INDEX iTexture)
-{
+void CWorld::SelectByTextureInWorld(CTFileName fnTexture, CBrushPolygonSelection &selbpoSimilar, INDEX iTexture) {
   // for each entity in the world
   FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     // if it is brush entity
@@ -733,16 +676,13 @@ void CWorld::SelectByTextureInWorld(
         // for all sectors in this mip
         FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
           // for all polygons in sector
-          FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo)
-          {
+          FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
             // if it is not non translucent portal and is not selected and has same texture
-            if ((!(itbpo->bpo_ulFlags&BPOF_PORTAL) || (itbpo->bpo_ulFlags&(BPOF_TRANSLUCENT|BPOF_TRANSPARENT))) &&
-                !itbpo->IsSelected(BPOF_SELECTED) &&
-                (itbpo->bpo_abptTextures[iTexture].bpt_toTexture.GetData() != NULL) &&
-                (itbpo->bpo_abptTextures[iTexture].bpt_toTexture.GetData()->GetName()
-                == fnTexture) )
-            // select this polygon
-            selbpoSimilar.Select(*itbpo);
+            if ((!(itbpo->bpo_ulFlags & BPOF_PORTAL) || (itbpo->bpo_ulFlags & (BPOF_TRANSLUCENT | BPOF_TRANSPARENT)))
+                && !itbpo->IsSelected(BPOF_SELECTED) && (itbpo->bpo_abptTextures[iTexture].bpt_toTexture.GetData() != NULL)
+                && (itbpo->bpo_abptTextures[iTexture].bpt_toTexture.GetData()->GetName() == fnTexture))
+              // select this polygon
+              selbpoSimilar.Select(*itbpo);
           }
         }
       }
@@ -753,8 +693,7 @@ void CWorld::SelectByTextureInWorld(
 /*
  * Reinitialize entities from their properties. (use only in WEd!)
  */
-void CWorld::ReinitializeEntities(void)
-{
+void CWorld::ReinitializeEntities(void) {
   _pfWorldEditingProfile.StartTimer(CWorldEditingProfile::PTI_REINITIALIZEENTITIES);
 
   // must be in 24bit mode when managing entities
@@ -770,22 +709,20 @@ void CWorld::ReinitializeEntities(void)
 
   _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_REINITIALIZEENTITIES);
 }
-// Precache data needed by entities. 
-void CWorld::PrecacheEntities_t(void)
-{
+// Precache data needed by entities.
+void CWorld::PrecacheEntities_t(void) {
   // for each entity in the world
   INDEX ctEntities = wo_cenEntities.Count();
   INDEX iEntity = 0;
   FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     // precache
-    CallProgressHook_t(FLOAT(iEntity)/ctEntities);
+    CallProgressHook_t(FLOAT(iEntity) / ctEntities);
     iten->Precache();
     iEntity++;
   }
 }
 // delete all entities that don't fit given spawn flags
-void CWorld::FilterEntitiesBySpawnFlags(ULONG ulFlags)
-{
+void CWorld::FilterEntitiesBySpawnFlags(ULONG ulFlags) {
   // must be in 24bit mode when managing entities
   CSetFPUPrecision FPUPrecision(FPT_24BIT);
 
@@ -795,30 +732,29 @@ void CWorld::FilterEntitiesBySpawnFlags(ULONG ulFlags)
   // create an empty selection of entities
   CEntitySelection senToDestroy;
   // for each entity in the world
-  {FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
-    // if brush
-    if (iten->en_RenderType == CEntity::RT_BRUSH
-      ||iten->en_RenderType == CEntity::RT_FIELDBRUSH) {
-      // skip it (brushes must not be deleted on the fly)
-      continue;
-    }
+  {
+    FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
+      // if brush
+      if (iten->en_RenderType == CEntity::RT_BRUSH || iten->en_RenderType == CEntity::RT_FIELDBRUSH) {
+        // skip it (brushes must not be deleted on the fly)
+        continue;
+      }
 
-    // if it shouldn't exist
-    ULONG ulEntityFlags = iten->GetSpawnFlags();
-    if (!(ulEntityFlags&ulFlags&SPF_MASK_DIFFICULTY)
-      ||!(ulEntityFlags&ulFlags&SPF_MASK_GAMEMODE)) {
-      // add it to the selection
-      senToDestroy.Select(*iten);
+      // if it shouldn't exist
+      ULONG ulEntityFlags = iten->GetSpawnFlags();
+      if (!(ulEntityFlags & ulFlags & SPF_MASK_DIFFICULTY) || !(ulEntityFlags & ulFlags & SPF_MASK_GAMEMODE)) {
+        // add it to the selection
+        senToDestroy.Select(*iten);
+      }
     }
-  }}
+  }
   // destroy all selected entities
   DestroyEntities(senToDestroy);
   _pNetwork->ga_sesSessionState.ses_bAllowRandom = bOldAllowRandom;
 }
 
 // create links between zoning-brush sectors and non-zoning entities in sectors
-void CWorld::LinkEntitiesToSectors(void)
-{
+void CWorld::LinkEntitiesToSectors(void) {
   _pfWorldEditingProfile.StartTimer(CWorldEditingProfile::PTI_LINKENTITIESTOSECTORS);
   // must be in 24bit mode when managing entities
   CSetFPUPrecision FPUPrecision(FPT_24BIT);
@@ -835,124 +771,124 @@ void CWorld::LinkEntitiesToSectors(void)
   }
   // NOTE: this is here to force relinking for all moving zoning brushes after loading!
   // for each entity in the world
-  {FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
-    CEntity &en = *iten;
-    if (en.en_RenderType == CEntity::RT_BRUSH && 
-      (en.en_ulFlags&ENF_ZONING) && (en.en_ulPhysicsFlags&EPF_MOVABLE)) {
-      // recalculate all bounding boxes relative to new position
-      extern BOOL _bDontDiscardLinks;
-      _bDontDiscardLinks = TRUE;
-      en.en_pbrBrush->CalculateBoundingBoxes();
-      _bDontDiscardLinks = FALSE;
-      // FPU must be in 53-bit mode
-      CSetFPUPrecision FPUPrecision(FPT_53BIT);
+  {
+    FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
+      CEntity &en = *iten;
+      if (en.en_RenderType == CEntity::RT_BRUSH && (en.en_ulFlags & ENF_ZONING) && (en.en_ulPhysicsFlags & EPF_MOVABLE)) {
+        // recalculate all bounding boxes relative to new position
+        extern BOOL _bDontDiscardLinks;
+        _bDontDiscardLinks = TRUE;
+        en.en_pbrBrush->CalculateBoundingBoxes();
+        _bDontDiscardLinks = FALSE;
+        // FPU must be in 53-bit mode
+        CSetFPUPrecision FPUPrecision(FPT_53BIT);
 
-      // for all brush mips
-      FOREACHINLIST(CBrushMip, bm_lnInBrush, en.en_pbrBrush->br_lhBrushMips, itbm) {
-        // for all sectors in the mip
-        {FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
-          // find entities in sector
-          itbsc->FindEntitiesInSector();
-        }}
+        // for all brush mips
+        FOREACHINLIST(CBrushMip, bm_lnInBrush, en.en_pbrBrush->br_lhBrushMips, itbm) {
+          // for all sectors in the mip
+          {
+            FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
+              // find entities in sector
+              itbsc->FindEntitiesInSector();
+            }
+          }
+        }
       }
     }
-  }}
+  }
   _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_LINKENTITIESTOSECTORS);
 }
 
 // rebuild all links in world
-void CWorld::RebuildLinks(void)
-{
+void CWorld::RebuildLinks(void) {
   wo_baBrushes.LinkPortalsAndSectors();
   _bEntitySectorLinksPreLoaded = FALSE;
   LinkEntitiesToSectors();
 }
 
-// Update sectors during brush vertex moving 
-void CWorld::UpdateSectorsDuringVertexChange( CBrushVertexSelection &selVertex)
-{
+// Update sectors during brush vertex moving
+void CWorld::UpdateSectorsDuringVertexChange(CBrushVertexSelection &selVertex) {
   // create container of sectors that will need to be updated
   CDynamicContainer<CBrushSector> cbscToUpdate;
 
-  {FOREACHINDYNAMICCONTAINER( selVertex, CBrushVertex, itbvx)
-  {
-    // add the sector of that vertex to list for updating
-    if (!cbscToUpdate.IsMember(itbvx->bvx_pbscSector)) {
-      cbscToUpdate.Add(itbvx->bvx_pbscSector);
-    }
-  }}
+  {FOREACHINDYNAMICCONTAINER(selVertex, CBrushVertex,
+                             itbvx) {// add the sector of that vertex to list for updating
+                                     if (!cbscToUpdate.IsMember(itbvx->bvx_pbscSector)) {cbscToUpdate.Add(itbvx->bvx_pbscSector);
+}
+}
+}
 
-  // for each sector to be updated
-  {FOREACHINDYNAMICCONTAINER( cbscToUpdate, CBrushSector, itbsc) {
+// for each sector to be updated
+{
+  FOREACHINDYNAMICCONTAINER(cbscToUpdate, CBrushSector, itbsc) {
     // recalculate planes for polygons from their vertices
     itbsc->MakePlanesFromVertices();
-  }}
+  }
+}
 }
 
-// Update sectors after brush vertex moving 
-void CWorld::UpdateSectorsAfterVertexChange( CBrushVertexSelection &selVertex)
-{
+// Update sectors after brush vertex moving
+void CWorld::UpdateSectorsAfterVertexChange(CBrushVertexSelection &selVertex) {
   // create container of sectors that will need to be updated
   CDynamicContainer<CBrushSector> cbscToUpdate;
 
-  {FOREACHINDYNAMICCONTAINER( selVertex, CBrushVertex, itbvx)
-  {
-    // add the sector of that vertex to list for updating
-    if (!cbscToUpdate.IsMember(itbvx->bvx_pbscSector)) {
-      cbscToUpdate.Add(itbvx->bvx_pbscSector);
-    }
-  }}
-
-  // for each sector to be updated
-  {FOREACHINDYNAMICCONTAINER( cbscToUpdate, CBrushSector, itbsc) {
-    // update it
-    itbsc->UpdateVertexChanges();
-  }}
+  {FOREACHINDYNAMICCONTAINER(selVertex, CBrushVertex,
+                             itbvx) {// add the sector of that vertex to list for updating
+                                     if (!cbscToUpdate.IsMember(itbvx->bvx_pbscSector)) {cbscToUpdate.Add(itbvx->bvx_pbscSector);
+}
+}
 }
 
-// Triangularize polygons that contain vertices from given selection 
-void CWorld::TriangularizeForVertices( CBrushVertexSelection &selVertex)
+// for each sector to be updated
 {
+  FOREACHINDYNAMICCONTAINER(cbscToUpdate, CBrushSector, itbsc) {
+    // update it
+    itbsc->UpdateVertexChanges();
+  }
+}
+}
+
+// Triangularize polygons that contain vertices from given selection
+void CWorld::TriangularizeForVertices(CBrushVertexSelection &selVertex) {
   // create container of sectors that contain polygons that need to be triangularized
   CDynamicContainer<CBrushSector> cbscToTriangularize;
 
-  {FOREACHINDYNAMICCONTAINER( selVertex, CBrushVertex, itbvx)
-  {
+  {FOREACHINDYNAMICCONTAINER(selVertex, CBrushVertex, itbvx) {
     // add the sector of that vertex to list for triangularizing
-    if (!cbscToTriangularize.IsMember(itbvx->bvx_pbscSector)) {
-      cbscToTriangularize.Add(itbvx->bvx_pbscSector);
-    }
-  }}
+    if (!cbscToTriangularize.IsMember(itbvx->bvx_pbscSector)) {cbscToTriangularize.Add(itbvx->bvx_pbscSector);
+}
+}
+}
 
-  // for each sector to be updated
-  {FOREACHINDYNAMICCONTAINER( cbscToTriangularize, CBrushSector, itbsc) {
+// for each sector to be updated
+{
+  FOREACHINDYNAMICCONTAINER(cbscToTriangularize, CBrushSector, itbsc) {
     // update it
     itbsc->TriangularizeForVertices(selVertex);
-  }}
+  }
+}
 }
 
 // add this entity to prediction
-void CEntity::AddToPrediction(void)
-{
+void CEntity::AddToPrediction(void) {
   // this function may be called even for NULLs - so ignore it
   if (this == NULL) {
     return;
   }
   // if already added
-  if (en_ulFlags&ENF_WILLBEPREDICTED) {
+  if (en_ulFlags & ENF_WILLBEPREDICTED) {
     // do nothing
     return;
   }
   // mark as added
-  en_ulFlags|=ENF_WILLBEPREDICTED;
+  en_ulFlags |= ENF_WILLBEPREDICTED;
   en_pwoWorld->wo_cenWillBePredicted.Add(this);
   // add your dependents
   AddDependentsToPrediction();
 }
 
 // mark all predictable entities that will be predicted using user-set criterions
-void CWorld::MarkForPrediction(void)
-{
+void CWorld::MarkForPrediction(void) {
   extern INDEX cli_bPredictIfServer;
   extern INDEX cli_bPredictLocalPlayers;
   extern INDEX cli_bPredictRemotePlayers;
@@ -961,15 +897,14 @@ void CWorld::MarkForPrediction(void)
   avLocalPlayers.PopAll();
 
   // for each player
-  for (INDEX iPlayer=0; iPlayer<CEntity::GetMaxPlayers(); iPlayer++) {
+  for (INDEX iPlayer = 0; iPlayer < CEntity::GetMaxPlayers(); iPlayer++) {
     CEntity *pen = CEntity::GetPlayerEntity(iPlayer);
     // if it exists
     if (pen != NULL) {
       // find whether it is local
       BOOL bLocal = _pNetwork->IsPlayerLocal(pen);
       // if allowed for prediction
-      if (bLocal && cli_bPredictLocalPlayers
-        || !bLocal && cli_bPredictRemotePlayers) {
+      if (bLocal && cli_bPredictLocalPlayers || !bLocal && cli_bPredictRemotePlayers) {
         // add it
         pen->AddToPrediction();
       }
@@ -985,83 +920,85 @@ void CWorld::MarkForPrediction(void)
   TICK llTickNow = _pNetwork->ga_sesSessionState.ses_llPredictionHeadTick;
 
   // for each predictable entity
-  {FOREACHINDYNAMICCONTAINER(wo_cenPredictable, CEntity, iten) {
-    CEntity &en = *iten;
-    // it must not be void (so that its coordinates are relevant)
-    ASSERT(en.GetRenderType() != CEntity::RT_VOID);
+  {
+    FOREACHINDYNAMICCONTAINER(wo_cenPredictable, CEntity, iten) {
+      CEntity &en = *iten;
+      // it must not be void (so that its coordinates are relevant)
+      ASSERT(en.GetRenderType() != CEntity::RT_VOID);
 
-    // get its upper time limit for prediction
-    TICK llLimit = en.GetPredictionTime();
-    // if now inside time prediction interval
-    if (llTickNow < llLimit) {
-      // add it to prediction
-      iten->AddToPrediction();
-      continue;
-    }
-
-    // if predicting entities by range
-    if (cli_fPredictEntitiesRange>0) {
-      FLOAT fRange = en.GetPredictionRange();
-      if (fRange <= 0) {
+      // get its upper time limit for prediction
+      TICK llLimit = en.GetPredictionTime();
+      // if now inside time prediction interval
+      if (llTickNow < llLimit) {
+        // add it to prediction
+        iten->AddToPrediction();
         continue;
       }
-      fRange = Min(fRange, cli_fPredictEntitiesRange);
 
-      // get its coordinates and maximal prediction range
-      const FLOAT3D &v = en.GetPlacement().pl_PositionVector;
-      // check if it is within range of any local player
-      BOOL bInRange = FALSE;
-      for (INDEX i=0; i<avLocalPlayers.Count(); i++) {
-        if ((avLocalPlayers[i]-v).Length()<fRange) {
-          bInRange = TRUE;
-          break;
+      // if predicting entities by range
+      if (cli_fPredictEntitiesRange > 0) {
+        FLOAT fRange = en.GetPredictionRange();
+        if (fRange <= 0) {
+          continue;
+        }
+        fRange = Min(fRange, cli_fPredictEntitiesRange);
+
+        // get its coordinates and maximal prediction range
+        const FLOAT3D &v = en.GetPlacement().pl_PositionVector;
+        // check if it is within range of any local player
+        BOOL bInRange = FALSE;
+        for (INDEX i = 0; i < avLocalPlayers.Count(); i++) {
+          if ((avLocalPlayers[i] - v).Length() < fRange) {
+            bInRange = TRUE;
+            break;
+          }
+        }
+        // if it is within the range
+        if (bInRange) {
+          // add it
+          iten->AddToPrediction();
         }
       }
-      // if it is within the range
-      if (bInRange) {
-        // add it
-        iten->AddToPrediction();
-      }
     }
-
-  }}
+  }
 }
 
 // unmark all predictable entities marked for prediction
-void CWorld::UnmarkForPrediction(void)
-{
+void CWorld::UnmarkForPrediction(void) {
   // for each entity marked
-  {FOREACHINDYNAMICCONTAINER(wo_cenWillBePredicted, CEntity, iten) {
-    // unmark for prediction
-    iten->en_ulFlags&=~ENF_WILLBEPREDICTED;
-  }}
+  {
+    FOREACHINDYNAMICCONTAINER(wo_cenWillBePredicted, CEntity, iten) {
+      // unmark for prediction
+      iten->en_ulFlags &= ~ENF_WILLBEPREDICTED;
+    }
+  }
   wo_cenWillBePredicted.Clear();
 }
 
 // create predictors for predictable entities that are marked for prediction
-void CWorld::CreatePredictors(void)
-{
+void CWorld::CreatePredictors(void) {
   CDynamicContainer<CEntity> cenForPrediction;
   // for each entity marked
-  {FOREACHINDYNAMICCONTAINER(wo_cenWillBePredicted, CEntity, iten) {
-    // if not deleted
-    if (!(iten->en_ulFlags&ENF_DELETED)) {
-      // add to container
-      cenForPrediction.Add(iten);
+  {
+    FOREACHINDYNAMICCONTAINER(wo_cenWillBePredicted, CEntity, iten) {
+      // if not deleted
+      if (!(iten->en_ulFlags & ENF_DELETED)) {
+        // add to container
+        cenForPrediction.Add(iten);
+      }
+      // unmark
+      iten->en_ulFlags &= ~ENF_WILLBEPREDICTED;
     }
-    // unmark
-    iten->en_ulFlags&=~ENF_WILLBEPREDICTED;
-  }}
+  }
   wo_cenWillBePredicted.Clear();
-//  CPrintF("for prediction: %d\n", cenForPrediction.Count());
+  //  CPrintF("for prediction: %d\n", cenForPrediction.Count());
 
   // create copies of those entities as predictors
   CopyEntitiesToPredictors(cenForPrediction);
 }
 
 // delete all predictor entities
-void CWorld::DeletePredictors(void)
-{
+void CWorld::DeletePredictors(void) {
   // must be in 24bit mode when managing entities
   CSetFPUPrecision FPUPrecision(FPT_24BIT);
 
@@ -1071,38 +1008,39 @@ void CWorld::DeletePredictors(void)
   // make a copy of predictor container (for safe iteration)
   CDynamicContainer<CEntity> cenPredictor = wo_cenPredictor;
   // for each predictor
-  {FOREACHINDYNAMICCONTAINER( cenPredictor, CEntity, iten) {
-    CEntity &en = *iten;
-    ASSERT(en.IsPredictor());
-    // destroy it
-    en.Destroy();
-  }}
+  {FOREACHINDYNAMICCONTAINER(cenPredictor, CEntity, iten) {CEntity &en = *iten;
+  ASSERT(en.IsPredictor());
+  // destroy it
+  en.Destroy();
+}
+}
 
-  // for each predicted
-  {FOREACHINDYNAMICCONTAINER( wo_cenPredicted, CEntity, iten) {
+// for each predicted
+{
+  FOREACHINDYNAMICCONTAINER(wo_cenPredicted, CEntity, iten) {
     CEntity &en = *iten;
     ASSERT(en.IsPredicted());
     // kill its pointer to predictor
     en.SetPredictionPair(NULL);
     // mark as not predicted
-    en.en_ulFlags&=~ENF_PREDICTED;
-  }}
-
-  ASSERT(_ctPredictorEntities == 0);
-
-  wo_cenPredictor.Clear();
-  wo_cenPredicted.Clear();
-
-  // for each entity in the world
-  FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
-    CEntity &en = *iten;
-    ASSERT(!en.IsPredictor());
+    en.en_ulFlags &= ~ENF_PREDICTED;
   }
 }
 
+ASSERT(_ctPredictorEntities == 0);
+
+wo_cenPredictor.Clear();
+wo_cenPredicted.Clear();
+
+// for each entity in the world
+FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
+  CEntity &en = *iten;
+  ASSERT(!en.IsPredictor());
+}
+}
+
 // get entity by its ID
-CEntity *CWorld::EntityFromID(ULONG ulID)
-{
+CEntity *CWorld::EntityFromID(ULONG ulID) {
   FOREACHINDYNAMICCONTAINER(wo_cenAllEntities, CEntity, iten) {
     if (iten->en_ulID == ulID) {
       return iten;
@@ -1112,33 +1050,28 @@ CEntity *CWorld::EntityFromID(ULONG ulID)
   return NULL;
 }
 
-// Triangularize selected polygons. 
-void CWorld::TriangularizePolygons(CDynamicContainer<CBrushPolygon> &dcPolygons)
-{
+// Triangularize selected polygons.
+void CWorld::TriangularizePolygons(CDynamicContainer<CBrushPolygon> &dcPolygons) {
   ClearMarkedForUseFlag();
   CDynamicContainer<CBrushSector> cbscToProcess;
   // for each polyon in selection
-  FOREACHINDYNAMICCONTAINER(dcPolygons, CBrushPolygon, itbpo)
-  {
-    CBrushPolygon &bp=*itbpo;
+  FOREACHINDYNAMICCONTAINER(dcPolygons, CBrushPolygon, itbpo) {
+    CBrushPolygon &bp = *itbpo;
     bp.bpo_ulFlags |= BPOF_MARKED_FOR_USE;
-    CBrushSector *pbsc=bp.bpo_pbscSector;
-    if (!cbscToProcess.IsMember( pbsc))
-    {
-      cbscToProcess.Add( pbsc);
+    CBrushSector *pbsc = bp.bpo_pbscSector;
+    if (!cbscToProcess.IsMember(pbsc)) {
+      cbscToProcess.Add(pbsc);
     }
   }
 
-  FOREACHINDYNAMICCONTAINER(cbscToProcess, CBrushSector, itbsc)
-  {
+  FOREACHINDYNAMICCONTAINER(cbscToProcess, CBrushSector, itbsc) {
     itbsc->TriangularizeMarkedPolygons();
     itbsc->UpdateVertexChanges();
   }
 }
 
 // Clear marked for use flag on all polygons in world
-void CWorld::ClearMarkedForUseFlag(void)
-{
+void CWorld::ClearMarkedForUseFlag(void) {
   // for each entity in the world
   FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     // if it is brush entity

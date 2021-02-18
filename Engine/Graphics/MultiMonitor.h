@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_MULTIMONITOR_H
 #define SE_INCL_MULTIMONITOR_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 // turn secondary monitors off if neccessary
@@ -24,7 +24,4 @@ extern void MonitorsOff(void);
 // turn secondary monitors on if they were turned off
 extern void MonitorsOn(void);
 
-
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

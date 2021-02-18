@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -38,18 +38,17 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define FLOAT_RIPPLES   2
 #define FLOAT_FREQUENCY 3
 
-SHADER_MAIN(LavaDisplace)
-{
+SHADER_MAIN(LavaDisplace) {
   shaSetTexture(BASE_TEXTURE);
-  shaSetTextureWrapping( GFX_REPEAT, GFX_REPEAT);
+  shaSetTextureWrapping(GFX_REPEAT, GFX_REPEAT);
   shaSetUVMap(BASE_UVMAP);
   shaSetColor(BASE_COLOR);
   shaEnableDepthTest();
   shaDepthFunc(GFX_LESS_EQUAL);
 
   COLOR &colModelColor = shaGetModelColor();
-  BOOL bDoubleSided = shaGetFlags()&BASE_DOUBLE_SIDED;
-  BOOL bOpaque = (colModelColor&0xFF) == 0xFF;
+  BOOL bDoubleSided = shaGetFlags() & BASE_DOUBLE_SIDED;
+  BOOL bOpaque = (colModelColor & 0xFF) == 0xFF;
 
   if (bDoubleSided) {
     shaCullFace(GFX_NONE);
@@ -64,7 +63,7 @@ SHADER_MAIN(LavaDisplace)
     // shaEnableAlphaTest(TRUE);
     shaDisableBlend();
     shaEnableDepthWrite();
-  // if translucent
+    // if translucent
   } else {
     // shaEnableAlphaTest(FALSE);
     shaEnableBlend();
@@ -73,34 +72,37 @@ SHADER_MAIN(LavaDisplace)
     shaModifyColorForFog();
   }
 
-  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
-  
+  if (shaOverBrightningEnabled())
+    shaSetTextureModulation(2);
+
   // displace geometry
   GFXVertex4 *paVertices = shaGetVertexArray();
   GFXVertex4 *paNewVertices = shaGetNewVertexArray();
   INDEX ctVertices = shaGetVertexCount();
   // get some values, but clamp them
   FLOAT fAmplitude = Clamp(shaGetFloat(FLOAT_AMPLITUDE), 0.0f, 0.75f);
-  FLOAT fRipples   = shaGetFloat(FLOAT_RIPPLES);  
-  FLOAT fFrequency = shaGetFloat(FLOAT_FREQUENCY);  
+  FLOAT fRipples = shaGetFloat(FLOAT_RIPPLES);
+  FLOAT fFrequency = shaGetFloat(FLOAT_FREQUENCY);
   Matrix12 &mInvAbsToViewer = *shaGetObjToAbsMatrix();
   Matrix12 mAbsToView;
   MatrixTranspose(mAbsToView, mInvAbsToViewer);
-   
+
   // for each vertex
-  for (INDEX ivx=0; ivx<ctVertices; ivx++) {
+  for (INDEX ivx = 0; ivx < ctVertices; ivx++) {
     paNewVertices[ivx] = paVertices[ivx];
-    
-    TransformVertex(paNewVertices[ivx],mInvAbsToViewer);
-    paNewVertices[ivx].x *= 1.0f + fAmplitude * sin((paNewVertices[ivx].y+(_pTimer->GetLerpedCurrentTick()*fFrequency))*fRipples);
-    paNewVertices[ivx].z *= 1.0f + fAmplitude * sin((paNewVertices[ivx].y+(_pTimer->GetLerpedCurrentTick()*fFrequency))*fRipples);
-    //paNewVertices[ivx].x += fAmplitude * sin((paNewVertices[ivx].y+(_pTimer->GetLerpedCurrentTick()*fFrequency))*fRipples);
-    //paNewVertices[ivx].y += vDisplace.y;
-    //paNewVertices[ivx].z += vDisplace.z;
-    TransformVertex(paNewVertices[ivx],mAbsToView);
+
+    TransformVertex(paNewVertices[ivx], mInvAbsToViewer);
+    paNewVertices[ivx].x
+      *= 1.0f + fAmplitude * sin((paNewVertices[ivx].y + (_pTimer->GetLerpedCurrentTick() * fFrequency)) * fRipples);
+    paNewVertices[ivx].z
+      *= 1.0f + fAmplitude * sin((paNewVertices[ivx].y + (_pTimer->GetLerpedCurrentTick() * fFrequency)) * fRipples);
+    // paNewVertices[ivx].x += fAmplitude * sin((paNewVertices[ivx].y+(_pTimer->GetLerpedCurrentTick()*fFrequency))*fRipples);
+    // paNewVertices[ivx].y += vDisplace.y;
+    // paNewVertices[ivx].z += vDisplace.z;
+    TransformVertex(paNewVertices[ivx], mAbsToView);
   }
   shaSetVertexArray(paNewVertices, ctVertices);
-  
+
   shaRender();
 
   if (bOpaque) {
@@ -109,7 +111,7 @@ SHADER_MAIN(LavaDisplace)
 
   // do detail pass
   FLOAT fMul = shaGetFloat(DETAIL_TILING);
-  shaBlendFunc( GFX_DST_COLOR, GFX_SRC_COLOR);
+  shaBlendFunc(GFX_DST_COLOR, GFX_SRC_COLOR);
   shaSetTexture(DETAIL_TEXTURE);
   shaSetUVMap(DETAIL_UVMAP);
   shaSetColor(DETAIL_COLOR);
@@ -120,9 +122,8 @@ SHADER_MAIN(LavaDisplace)
   GFXTexCoord *ptxcOld = shaGetUVMap(0);
   GFXTexCoord *ptxcNew = shaGetNewTexCoordArray();
   INDEX ctTexCoords = shaGetVertexCount();
-  if (ctTexCoords>0) {
-    for (INDEX itxc=0;itxc<ctTexCoords;itxc++)
-    {
+  if (ctTexCoords > 0) {
+    for (INDEX itxc = 0; itxc < ctTexCoords; itxc++) {
       ptxcNew[itxc].u = ptxcOld[itxc].u * fMul;
       ptxcNew[itxc].v = ptxcOld[itxc].v * fMul;
     }
@@ -131,11 +132,11 @@ SHADER_MAIN(LavaDisplace)
   shaRender();
   shaDisableBlend();
 
-  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled())
+    shaSetTextureModulation(1);
 }
 
-SHADER_DESC(LavaDisplace, ShaderDesc &shDesc)
-{
+SHADER_DESC(LavaDisplace, ShaderDesc &shDesc) {
   shDesc.sd_astrTextureNames.New(TEXTURE_COUNT);
   shDesc.sd_astrTexCoordNames.New(UVMAPS_COUNT);
   shDesc.sd_astrColorNames.New(COLOR_COUNT);
@@ -152,7 +153,6 @@ SHADER_DESC(LavaDisplace, ShaderDesc &shDesc)
   shDesc.sd_astrFlagNames[1] = "Full bright";
   shDesc.sd_strShaderInfo = "Detail shader";
   shDesc.sd_astrFloatNames[FLOAT_AMPLITUDE] = "Amp (max 0.75)";
-  shDesc.sd_astrFloatNames[FLOAT_RIPPLES]   = "Ripple density";
-  shDesc.sd_astrFloatNames[FLOAT_FREQUENCY]    = "Ripple speed";
+  shDesc.sd_astrFloatNames[FLOAT_RIPPLES] = "Ripple density";
+  shDesc.sd_astrFloatNames[FLOAT_FREQUENCY] = "Ripple speed";
 }
- 

@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -31,10 +31,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Terrain/Terrain.h>
 
 #define WORLDSTATEVERSION_NOCLASSCONTAINER 9
-#define WORLDSTATEVERSION_MULTITEXTURING 8
-#define WORLDSTATEVERSION_SHADOWSPERMIP 7
-#define WORLDSTATEVERSION_CURRENT WORLDSTATEVERSION_NOCLASSCONTAINER
-extern CWorld *_pwoCurrentLoading = NULL;  // world that is currently loading
+#define WORLDSTATEVERSION_MULTITEXTURING   8
+#define WORLDSTATEVERSION_SHADOWSPERMIP    7
+#define WORLDSTATEVERSION_CURRENT          WORLDSTATEVERSION_NOCLASSCONTAINER
+extern CWorld *_pwoCurrentLoading = NULL; // world that is currently loading
 extern BOOL _bPortalSectorLinksPreLoaded;
 extern BOOL _bEntitySectorLinksPreLoaded;
 extern BOOL _bFileReplacingApplied;
@@ -118,7 +118,6 @@ void CWorld::Write_t(CTStream *postrm) // throw char *
   UnlockAll();
 }
 
-
 /*
  * Read entire world (both brushes and current state).
  */
@@ -174,13 +173,13 @@ void CWorld::LoadBrushes_t(const CTFileName &fnmWorld) // throw char *
 /*
  * Read world brushes from stream.
  */
-void CWorld::ReadBrushes_t( CTStream *istrm)// throw char *
+void CWorld::ReadBrushes_t(CTStream *istrm) // throw char *
 {
   _pfWorldEditingProfile.StartTimer(CWorldEditingProfile::PTI_READBRUSHES);
 
   // must be in 53bit mode when managing brushes
   CSetFPUPrecision FPUPrecision(FPT_53BIT);
-  
+
   ReadInfo_t(istrm, FALSE);
 
   SetProgressDescription(TRANS("loading world textures"));
@@ -211,7 +210,7 @@ void CWorld::ReadBrushes_t( CTStream *istrm)// throw char *
 /*
  * Write world brushes to stream.
  */
-void CWorld::WriteBrushes_t( CTStream *ostrm) // throw char *
+void CWorld::WriteBrushes_t(CTStream *ostrm) // throw char *
 {
   WriteInfo_t(ostrm);
 
@@ -225,7 +224,7 @@ void CWorld::WriteBrushes_t( CTStream *ostrm) // throw char *
 /*
  * Read current world state from stream.
  */
-void CWorld::ReadState_t( CTStream *istr) // throw char *
+void CWorld::ReadState_t(CTStream *istr) // throw char *
 {
   _pfWorldEditingProfile.StartTimer(CWorldEditingProfile::PTI_READSTATE);
   // must be in 24bit mode when managing entities
@@ -249,33 +248,30 @@ void CWorld::ReadState_t( CTStream *istr) // throw char *
     // read current version
     ReadState_new_t(istr);
 
-  // if the version number is not the newest
+    // if the version number is not the newest
   } else {
-
     // if the version can be converted
-    if (iSavedVersion == WORLDSTATEVERSION_CURRENT-1) {
+    if (iSavedVersion == WORLDSTATEVERSION_CURRENT - 1) {
       // show warning
-//      WarningMessage(
-//        "World state version was %d (old).\n"
-//        "Auto-converting to version %d.",
-//        iSavedVersion, WORLDSTATEVERSION_CURRENT);
+      //      WarningMessage(
+      //        "World state version was %d (old).\n"
+      //        "Auto-converting to version %d.",
+      //        iSavedVersion, WORLDSTATEVERSION_CURRENT);
       // read previous version
       ReadState_old_t(istr);
-    // if the version can be converted
-    } else if (iSavedVersion == WORLDSTATEVERSION_CURRENT-2) {
+      // if the version can be converted
+    } else if (iSavedVersion == WORLDSTATEVERSION_CURRENT - 2) {
       // show warning
-      WarningMessage(
-        TRANS("World state version was %d (very old).\n"
-        "Auto-converting to version %d."),
-        iSavedVersion, WORLDSTATEVERSION_CURRENT);
+      WarningMessage(TRANS("World state version was %d (very old).\n"
+                           "Auto-converting to version %d."),
+                     iSavedVersion, WORLDSTATEVERSION_CURRENT);
       // read previous version
       ReadState_veryold_t(istr);
     } else {
       // report error
-      ThrowF_t(
-        TRANS("World state version is %d (unsupported).\n"
-        "Current supported version is %d."),
-        iSavedVersion, WORLDSTATEVERSION_CURRENT);
+      ThrowF_t(TRANS("World state version is %d (unsupported).\n"
+                     "Current supported version is %d."),
+               iSavedVersion, WORLDSTATEVERSION_CURRENT);
     }
   }
   istr->DictionaryReadEnd_t();
@@ -294,7 +290,7 @@ void CWorld::ReadState_t( CTStream *istr) // throw char *
 /*
  * Read current world state from stream -- preprevious version.
  */
-void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
+void CWorld::ReadState_veryold_t(CTStream *istr) // throw char *
 {
   // read the world description
   (*istr) >> wo_strDescription;
@@ -313,11 +309,10 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
 
     // read the world background texture name
     CTString strBackgroundTexture;
-    (*istr) >> strBackgroundTexture;   // saved as string to bypass dependency catcher
+    (*istr) >> strBackgroundTexture; // saved as string to bypass dependency catcher
     // skip the 6 dummy texture names used for dependencies
     CTFileName fnmDummy;
-    (*istr) >> fnmDummy >> fnmDummy >> fnmDummy
-            >> fnmDummy >> fnmDummy >> fnmDummy;
+    (*istr) >> fnmDummy >> fnmDummy >> fnmDummy >> fnmDummy >> fnmDummy >> fnmDummy;
   }
 
   // if backdrop image data is saved here
@@ -348,11 +343,13 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
 
   istr->ExpectID_t("SHAN"); // shadow animations
   // for all anim objects
-  {for (INDEX iao=0; iao<256; iao++) {
-    // skip animation object
-    CAnimObject ao;
-    ao.Read_t(istr);
-  }}
+  {
+    for (INDEX iao = 0; iao < 256; iao++) {
+      // skip animation object
+      CAnimObject ao;
+      ao.Read_t(istr);
+    }
+  }
 
   istr->ExpectID_t("ECLs"); // entity classes
   // read number of entity classes
@@ -362,10 +359,12 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
   CStaticArray<CTFileName> cecClasses;
   cecClasses.New(ctEntityClasses);
   // for each entity class
-  {for (INDEX iEntityClass=0; iEntityClass<ctEntityClasses; iEntityClass++) {
-    // load filename
-    (*istr) >> cecClasses[iEntityClass];
-  }}
+  {
+    for (INDEX iEntityClass = 0; iEntityClass < ctEntityClasses; iEntityClass++) {
+      // load filename
+      (*istr) >> cecClasses[iEntityClass];
+    }
+  }
 
   /* NOTE: Entities must be loaded in two passes, since all entities must be created
    * before any entity pointer properties can be loaded.
@@ -376,20 +375,24 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
   (*istr) >> ctEntities;
 
   // for each entity
-  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
-    INDEX iEntityClass;
-    CPlacement3D plPlacement;
-    // read entity class index and entity placement
-    (*istr) >> iEntityClass >> plPlacement;
-    // create an entity of that class
-    CEntity *penNew = CreateEntity_t(plPlacement, cecClasses[iEntityClass]);
-  }}
+  {
+    for (INDEX iEntity = 0; iEntity < ctEntities; iEntity++) {
+      INDEX iEntityClass;
+      CPlacement3D plPlacement;
+      // read entity class index and entity placement
+      (*istr) >> iEntityClass >> plPlacement;
+      // create an entity of that class
+      CEntity *penNew = CreateEntity_t(plPlacement, cecClasses[iEntityClass]);
+    }
+  }
 
   // for each entity
-  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
-    // deserialize entity from stream
-    wo_cenAllEntities[iEntity].Read_t(istr);
-  }}
+  {
+    for (INDEX iEntity = 0; iEntity < ctEntities; iEntity++) {
+      // deserialize entity from stream
+      wo_cenAllEntities[iEntity].Read_t(istr);
+    }
+  }
 
   // after all entities have been read, set the background viewer entity
   if (ienBackgroundViewer == -1) {
@@ -399,16 +402,18 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
   }
 
   // for each entity
-  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
-    CEntity &en = wo_cenAllEntities[iEntity];
-    // if the entity is destroyed
-    if (en.en_ulFlags&ENF_DELETED) {
-      // remove the reference made by itself
-      ASSERT(en.en_ctReferences>1); // must be referenced by someone else too
-      en.RemReference();
-      wo_cenEntities.Remove(&en);
+  {
+    for (INDEX iEntity = 0; iEntity < ctEntities; iEntity++) {
+      CEntity &en = wo_cenAllEntities[iEntity];
+      // if the entity is destroyed
+      if (en.en_ulFlags & ENF_DELETED) {
+        // remove the reference made by itself
+        ASSERT(en.en_ctReferences > 1); // must be referenced by someone else too
+        en.RemReference();
+        wo_cenEntities.Remove(&en);
+      }
     }
-  }}
+  }
 
   // after all entities have been read and brushes are connected to entities,
   // calculate bounding boxes of all brushes
@@ -424,7 +429,7 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
 /*
  * Read current world state from stream -- previous version.
  */
-void CWorld::ReadState_old_t( CTStream *istr) // throw char *
+void CWorld::ReadState_old_t(CTStream *istr) // throw char *
 {
   // read the world description
   (*istr) >> wo_strDescription;
@@ -462,11 +467,13 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
 
   istr->ExpectID_t("SHAN"); // shadow animations
   // for all anim objects
-  {for (INDEX iao=0; iao<256; iao++) {
-    // skip animation object
-    CAnimObject ao;
-    ao.Read_t(istr);
-  }}
+  {
+    for (INDEX iao = 0; iao < 256; iao++) {
+      // skip animation object
+      CAnimObject ao;
+      ao.Read_t(istr);
+    }
+  }
 
   istr->ExpectID_t("ECLs"); // entity classes
   // read number of entity classes
@@ -476,10 +483,12 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
   CStaticArray<CTFileName> cecClasses;
   cecClasses.New(ctEntityClasses);
   // for each entity class
-  {for (INDEX iEntityClass=0; iEntityClass<ctEntityClasses; iEntityClass++) {
-    // load filename
-    (*istr) >> cecClasses[iEntityClass];
-  }}
+  {
+    for (INDEX iEntityClass = 0; iEntityClass < ctEntityClasses; iEntityClass++) {
+      // load filename
+      (*istr) >> cecClasses[iEntityClass];
+    }
+  }
 
   /* NOTE: Entities must be loaded in two passes, since all entities must be created
    * before any entity pointer properties can be loaded.
@@ -490,20 +499,24 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
   (*istr) >> ctEntities;
 
   // for each entity
-  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
-    INDEX iEntityClass;
-    CPlacement3D plPlacement;
-    // read entity class index and entity placement
-    (*istr) >> iEntityClass >> plPlacement;
-    // create an entity of that class
-    CEntity *penNew = CreateEntity_t(plPlacement, cecClasses[iEntityClass]);
-  }}
+  {
+    for (INDEX iEntity = 0; iEntity < ctEntities; iEntity++) {
+      INDEX iEntityClass;
+      CPlacement3D plPlacement;
+      // read entity class index and entity placement
+      (*istr) >> iEntityClass >> plPlacement;
+      // create an entity of that class
+      CEntity *penNew = CreateEntity_t(plPlacement, cecClasses[iEntityClass]);
+    }
+  }
 
   // for each entity
-  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
-    // deserialize entity from stream
-    wo_cenAllEntities[iEntity].Read_t(istr);
-  }}
+  {
+    for (INDEX iEntity = 0; iEntity < ctEntities; iEntity++) {
+      // deserialize entity from stream
+      wo_cenAllEntities[iEntity].Read_t(istr);
+    }
+  }
 
   // after all entities have been read, set the background viewer entity
   if (ienBackgroundViewer == -1) {
@@ -513,16 +526,18 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
   }
 
   // for each entity
-  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
-    CEntity &en = wo_cenAllEntities[iEntity];
-    // if the entity is destroyed
-    if (en.en_ulFlags&ENF_DELETED) {
-      // remove the reference made by itself
-      ASSERT(en.en_ctReferences>1); // must be referenced by someone else too
-      en.RemReference();
-      wo_cenEntities.Remove(&en);
+  {
+    for (INDEX iEntity = 0; iEntity < ctEntities; iEntity++) {
+      CEntity &en = wo_cenAllEntities[iEntity];
+      // if the entity is destroyed
+      if (en.en_ulFlags & ENF_DELETED) {
+        // remove the reference made by itself
+        ASSERT(en.en_ctReferences > 1); // must be referenced by someone else too
+        en.RemReference();
+        wo_cenEntities.Remove(&en);
+      }
     }
-  }}
+  }
 
   // after all entities have been read and brushes are connected to entities,
   // calculate bounding boxes of all brushes
@@ -541,7 +556,7 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
 /*
  * Read current world state from stream -- current version.
  */
-void CWorld::ReadState_new_t( CTStream *istr) // throw char *
+void CWorld::ReadState_new_t(CTStream *istr) // throw char *
 {
   // read the world info
   ReadInfo_t(istr, TRUE);
@@ -602,35 +617,39 @@ void CWorld::ReadState_new_t( CTStream *istr) // throw char *
   SetProgressDescription(TRANS("creating entities"));
   CallProgressHook_t(0.0f);
   // for each entity
-  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
-    // read entity id if needed
-    ULONG ulID = 0;
-    if (_bReadEntitiesByID) {
-      (*istr) >> ulID;
+  {
+    for (INDEX iEntity = 0; iEntity < ctEntities; iEntity++) {
+      // read entity id if needed
+      ULONG ulID = 0;
+      if (_bReadEntitiesByID) {
+        (*istr) >> ulID;
+      }
+      // read entity class and entity placement
+      CTFileName fnmClass;
+      CPlacement3D plPlacement;
+      (*istr) >> fnmClass >> plPlacement;
+      // create an entity of that class
+      CEntity *penNew = CreateEntity_t(plPlacement, fnmClass);
+      // adjust id if needed
+      if (_bReadEntitiesByID) {
+        wo_ulNextEntityID--;
+        penNew->en_ulID = ulID;
+      }
+      CallProgressHook_t(FLOAT(iEntity) / ctEntities);
     }
-    // read entity class and entity placement
-    CTFileName fnmClass;
-    CPlacement3D plPlacement;
-    (*istr) >> fnmClass >> plPlacement;
-    // create an entity of that class
-    CEntity *penNew = CreateEntity_t(plPlacement, fnmClass);
-    // adjust id if needed
-    if (_bReadEntitiesByID) {
-      wo_ulNextEntityID--;
-      penNew->en_ulID = ulID;
-    }
-    CallProgressHook_t(FLOAT(iEntity)/ctEntities);
-  }}
+  }
   CallProgressHook_t(1.0f);
 
   SetProgressDescription(TRANS("loading entities"));
   CallProgressHook_t(0.0f);
   // for each entity
-  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
-    // deserialize entity from stream
-    wo_cenAllEntities[iEntity].Read_t(istr);
-    CallProgressHook_t(FLOAT(iEntity)/ctEntities);
-  }}
+  {
+    for (INDEX iEntity = 0; iEntity < ctEntities; iEntity++) {
+      // deserialize entity from stream
+      wo_cenAllEntities[iEntity].Read_t(istr);
+      CallProgressHook_t(FLOAT(iEntity) / ctEntities);
+    }
+  }
   CallProgressHook_t(1.0f);
 
   // after all entities have been read, set the background viewer entity
@@ -648,26 +667,28 @@ void CWorld::ReadState_new_t( CTStream *istr) // throw char *
 
   wo_cenEntities.Unlock();
   // for each entity
-  {for (INDEX iEntity=0; iEntity<ctEntities; iEntity++) {
-    CEntity &en = wo_cenAllEntities[iEntity];
-    // if the entity is destroyed
-    if (en.en_ulFlags&ENF_DELETED) {
-      // remove the reference made by itself
-      ASSERT(en.en_ctReferences>1); // must be referenced by someone else too
-      en.RemReference();
-      wo_cenEntities.Remove(&en);
+  {
+    for (INDEX iEntity = 0; iEntity < ctEntities; iEntity++) {
+      CEntity &en = wo_cenAllEntities[iEntity];
+      // if the entity is destroyed
+      if (en.en_ulFlags & ENF_DELETED) {
+        // remove the reference made by itself
+        ASSERT(en.en_ctReferences > 1); // must be referenced by someone else too
+        en.RemReference();
+        wo_cenEntities.Remove(&en);
+      }
     }
-  }}
+  }
   wo_cenEntities.Lock();
 
   // if version with entity order
   if (istr->PeekID_t() == CChunkID("ENOR")) { // entity order
-    istr->ExpectID_t(CChunkID("ENOR")); // entity order
+    istr->ExpectID_t(CChunkID("ENOR"));       // entity order
     INDEX ctEntities;
     *istr >> ctEntities;
     wo_cenEntities.Clear();
     // for each non-deleted entity
-    for (INDEX i=0; i<ctEntities; i++) {
+    for (INDEX i = 0; i < ctEntities; i++) {
       ULONG ulID;
       *istr >> ulID;
       wo_cenEntities.Add(EntityFromID(ulID));
@@ -701,16 +722,13 @@ void CWorld::ReadState_new_t( CTStream *istr) // throw char *
 /*
  * Write current world state to stream.
  */
-void CWorld::WriteState_t( CTStream *ostr, BOOL bImportDictionary /* = FALSE */) // throw char *
+void CWorld::WriteState_t(CTStream *ostr, BOOL bImportDictionary /* = FALSE */) // throw char *
 {
   // must be in 24bit mode when managing entities
   CSetFPUPrecision FPUPrecision(FPT_24BIT);
 
   // all predictors must be deleted
-  ASSERT(
-    wo_cenPredicted.Count() == 0 && 
-    wo_cenPredictor.Count() == 0 && 
-    wo_cenWillBePredicted.Count() == 0);
+  ASSERT(wo_cenPredicted.Count() == 0 && wo_cenPredictor.Count() == 0 && wo_cenWillBePredicted.Count() == 0);
 
   if (bImportDictionary) {
     ostr->DictionaryWriteBegin_t(wo_fnmFileName, wo_slStateDictionaryOffset);
@@ -769,35 +787,39 @@ void CWorld::WriteState_t( CTStream *ostr, BOOL bImportDictionary /* = FALSE */)
   // write number of entities
   (*ostr) << wo_cenAllEntities.Count();
   // for each entity
-  {FOREACHINDYNAMICCONTAINER(wo_cenAllEntities, CEntity, iten) {
-    CEntity &en = *iten;
-    // write the id, class and its placement
-    (*ostr) << en.en_ulID << en.en_pecClass->GetName() << en.en_plPlacement;
-  }}
-  // for each entity
-  {FOREACHINDYNAMICCONTAINER(wo_cenAllEntities, CEntity, iten) {
+  {FOREACHINDYNAMICCONTAINER(wo_cenAllEntities, CEntity, iten) {CEntity &en = *iten;
+  // write the id, class and its placement
+  (*ostr) << en.en_ulID << en.en_pecClass->GetName() << en.en_plPlacement;
+}
+}
+// for each entity
+{
+  FOREACHINDYNAMICCONTAINER(wo_cenAllEntities, CEntity, iten) {
     // remember stream position
     SLONG slOffset = ostr->GetPos_t();
     // serialize entity into stream
     iten->Write_t(ostr);
     // save the size of data in start chunk, after chunkid and entity id
     SLONG slOffsetAfter = ostr->GetPos_t();
-    ostr->SetPos_t(slOffset+2*sizeof(SLONG));
-    *ostr << SLONG(slOffsetAfter-slOffset-3*sizeof(SLONG));
+    ostr->SetPos_t(slOffset + 2 * sizeof(SLONG));
+    *ostr << SLONG(slOffsetAfter - slOffset - 3 * sizeof(SLONG));
     ostr->SetPos_t(slOffsetAfter);
-  }}
+  }
+}
 
-  ostr->WriteID_t(CChunkID("ENOR")); // entity order
-  *ostr << wo_cenEntities.Count();
-  // for each non-deleted entity
-  {FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
+ostr->WriteID_t(CChunkID("ENOR")); // entity order
+*ostr << wo_cenEntities.Count();
+// for each non-deleted entity
+{
+  FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     // write its id
     *ostr << iten->en_ulID;
-  }}
+  }
+}
 
-  wo_baBrushes.WriteEntitySectorLinks_t(*ostr);
+wo_baBrushes.WriteEntitySectorLinks_t(*ostr);
 
-  ostr->DictionaryWriteEnd_t();
+ostr->DictionaryWriteEnd_t();
 }
 
 // read/write world information (description, name, flags...)
@@ -805,7 +827,7 @@ void CWorld::ReadInfo_t(CTStream *strm, BOOL bMaybeDescription) // throw char *
 {
   // if version with world info
   if (strm->PeekID_t() == CChunkID("WLIF")) { // world info
-    strm->ExpectID_t(CChunkID("WLIF")); // world info
+    strm->ExpectID_t(CChunkID("WLIF"));       // world info
 
     // skip eventual translation chunk
     if (strm->PeekID_t() == CChunkID("DTRS")) {
@@ -818,7 +840,7 @@ void CWorld::ReadInfo_t(CTStream *strm, BOOL bMaybeDescription) // throw char *
     // read the world description
     (*strm) >> wo_strDescription;
 
-  // if version with description only
+    // if version with description only
   } else if (bMaybeDescription) {
     // read the world description
     (*strm) >> wo_strDescription;
@@ -827,7 +849,7 @@ void CWorld::ReadInfo_t(CTStream *strm, BOOL bMaybeDescription) // throw char *
 
 void CWorld::WriteInfo_t(CTStream *strm) // throw char *
 {
-  strm->WriteID_t(CChunkID("WLIF"));  // world info
+  strm->WriteID_t(CChunkID("WLIF")); // world info
   // write the name
   strm->WriteID_t(CChunkID("DTRS"));
   (*strm) << wo_strName;

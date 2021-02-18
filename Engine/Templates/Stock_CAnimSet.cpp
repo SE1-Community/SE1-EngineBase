@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -17,9 +17,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Templates/Stock_CAnimSet.h>
 
-#define TYPE CAnimSet
-#define CStock_TYPE CStock_CAnimSet
-#define CNameTable_TYPE CNameTable_CAnimSet
+#define TYPE                CAnimSet
+#define CStock_TYPE         CStock_CAnimSet
+#define CNameTable_TYPE     CNameTable_CAnimSet
 #define CNameTableSlot_TYPE CNameTableSlot_CAnimSet
 
 #include <Engine/Templates/NameTable.cpp>

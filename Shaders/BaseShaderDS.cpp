@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -25,8 +25,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define BASE_COLOR   0
 #define BASE_FLOAT   0
 
-SHADER_MAIN(BaseDS)
-{
+SHADER_MAIN(BaseDS) {
 #if 0
   shaSetTexture(BASE_TEXTURE);
   shaSetTextureWrapping( GFX_REPEAT, GFX_REPEAT);
@@ -65,8 +64,7 @@ SHADER_MAIN(BaseDS)
 #endif
 }
 
-SHADER_DESC(BaseDS,ShaderDesc &shDesc)
-{
+SHADER_DESC(BaseDS, ShaderDesc &shDesc) {
   shDesc.sd_astrTextureNames.New(TEXTURE_COUNT);
   shDesc.sd_astrTexCoordNames.New(UVMAPS_COUNT);
   shDesc.sd_astrColorNames.New(COLOR_COUNT);

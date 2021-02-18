@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_TERRAIN_ARCHIVE_H
 #define SE_INCL_TERRAIN_ARCHIVE_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 #include <Engine/Base/Serial.h>
@@ -29,16 +29,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  * Terrain archive class -- a collection of terrains used by a level.
  */
 class ENGINE_API CTerrainArchive : public CSerial {
-public:
-  CDynamicArray<CTerrain> ta_atrTerrains; // all the terrains in archive
-  CWorld *ta_pwoWorld;  // the world
+  public:
+    CDynamicArray<CTerrain> ta_atrTerrains; // all the terrains in archive
+    CWorld *ta_pwoWorld;                    // the world
 
-  // overrides from CSerial
-  // Read/write to/from stream. 
-  void Read_t( CTStream *istrFile);  // throw char *
-  void Write_t( CTStream *ostrFile); // throw char *
+    // overrides from CSerial
+    // Read/write to/from stream.
+    void Read_t(CTStream *istrFile);  // throw char *
+    void Write_t(CTStream *ostrFile); // throw char *
 };
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

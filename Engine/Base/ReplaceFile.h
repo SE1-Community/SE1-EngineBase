@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,13 +16,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_REPLACEFILE_H
 #define SE_INCL_REPLACEFILE_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 extern BOOL _bFileReplacingApplied;
 
-BOOL GetReplacingFile(CTFileName fnSourceTexture, CTFileName &fnReplacingTexture,
-                      char *pFilter);
+BOOL GetReplacingFile(CTFileName fnSourceTexture, CTFileName &fnReplacingTexture, char *pFilter);
 void SetTextureWithPossibleReplacing_t(CTextureObject &to, CTFileName &fnmTexture);
 
 // read/write a texture object
@@ -40,7 +39,6 @@ void WriteModelInstance_t(CTStream &strm, CModelInstance &mi);
 void ReadModelInstance_t(CTStream &strm, CModelInstance &mi);
 void SkipModelInstance_t(CTStream &strm);
 
-
 // read/write an anim object from a file
 void ReadAnimObject_t(CTStream &strm, CAnimObject &mo);
 void SkipAnimObject_t(CTStream &strm);
@@ -51,6 +49,4 @@ void ReadSoundObject_t(CTStream &strm, CSoundObject &mo);
 void SkipSoundObject_t(CTStream &strm);
 void WriteSoundObject_t(CTStream &strm, CSoundObject &mo);
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

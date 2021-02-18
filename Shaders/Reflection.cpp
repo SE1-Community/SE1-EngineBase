@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -23,33 +23,32 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define FLOAT_COUNT   0
 #define FLAGS_COUNT   2
 
-#define BASE_TEXTURE 0
-#define BASE_UVMAP   0
-#define BASE_COLOR   0
-#define BASE_FLOAT   0
+#define BASE_TEXTURE       0
+#define BASE_UVMAP         0
+#define BASE_COLOR         0
+#define BASE_FLOAT         0
 #define REFLECTION_TEXTURE 1
 #define REFLECTION_COLOR   1
 
-SHADER_MAIN(Reflection)
-{
+SHADER_MAIN(Reflection) {
   shaSetTexture(BASE_TEXTURE);
-  shaSetTextureWrapping( GFX_REPEAT, GFX_REPEAT);
+  shaSetTextureWrapping(GFX_REPEAT, GFX_REPEAT);
   shaSetUVMap(BASE_UVMAP);
   shaSetColor(BASE_COLOR);
   shaEnableDepthTest();
   shaDepthFunc(GFX_LESS_EQUAL);
   shaCullFace(GFX_BACK);
   shaCalculateLight();
-  BOOL bFullBright = shaGetFlags()&BASE_FULL_BRIGHT;
+  BOOL bFullBright = shaGetFlags() & BASE_FULL_BRIGHT;
 
-  COLOR colModelColor = MulColors(shaGetModelColor(),shaGetCurrentColor());
-  BOOL bOpaque = (colModelColor&0xFF) == 0xFF;
+  COLOR colModelColor = MulColors(shaGetModelColor(), shaGetCurrentColor());
+  BOOL bOpaque = (colModelColor & 0xFF) == 0xFF;
   // if fully opaque
   if (bOpaque) {
     shaDisableAlphaTest();
     shaDisableBlend();
     shaEnableDepthWrite();
-  // if translucent
+    // if translucent
   } else {
     shaEnableBlend();
     shaBlendFunc(GFX_SRC_ALPHA, GFX_INV_SRC_ALPHA);
@@ -57,19 +56,19 @@ SHADER_MAIN(Reflection)
     shaModifyColorForFog();
   }
 
-  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled())
+    shaSetTextureModulation(2);
   shaRender();
-  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
-  DoReflectionLayer(REFLECTION_TEXTURE,REFLECTION_COLOR,bFullBright);
+  if (shaOverBrightningEnabled())
+    shaSetTextureModulation(1);
+  DoReflectionLayer(REFLECTION_TEXTURE, REFLECTION_COLOR, bFullBright);
 
   if (bOpaque) {
     shaDoFogPass();
   }
-
 }
 
-SHADER_DESC(Reflection,ShaderDesc &shDesc)
-{
+SHADER_DESC(Reflection, ShaderDesc &shDesc) {
   shDesc.sd_astrTextureNames.New(TEXTURE_COUNT);
   shDesc.sd_astrTexCoordNames.New(UVMAPS_COUNT);
   shDesc.sd_astrColorNames.New(COLOR_COUNT);

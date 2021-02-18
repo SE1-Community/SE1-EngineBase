@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -24,9 +24,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Templates/StaticStackArray.cpp>
 
-#define DIFF_OLD  0   // copy from old file
-#define DIFF_NEW  1   // copy from new file
-#define DIFF_XOR  2   // xor between an old block and a new block
+#define DIFF_OLD 0 // copy from old file
+#define DIFF_NEW 1 // copy from new file
+#define DIFF_XOR 2 // xor between an old block and a new block
 
 UBYTE *_pubOld = NULL;
 SLONG _slSizeOld = 0;
@@ -37,28 +37,25 @@ ULONG _ulCRC;
 CTStream *_pstrmOut;
 
 // emit one block copied from old file
-void EmitOld_t(SLONG slOffsetOld, SLONG slSizeOld)
-{
+void EmitOld_t(SLONG slOffsetOld, SLONG slSizeOld) {
   (*_pstrmOut) << UBYTE(DIFF_OLD);
   (*_pstrmOut) << slOffsetOld;
   (*_pstrmOut) << slSizeOld;
 }
 // emit one block copied from new file
-void EmitNew_t(SLONG slOffsetNew, SLONG slSizeNew)
-{
+void EmitNew_t(SLONG slOffsetNew, SLONG slSizeNew) {
   (*_pstrmOut) << UBYTE(DIFF_NEW);
   (*_pstrmOut) << slSizeNew;
-  (*_pstrmOut).Write_t(_pubNew+slOffsetNew, slSizeNew);
+  (*_pstrmOut).Write_t(_pubNew + slOffsetNew, slSizeNew);
 }
 
 // emit one block xor-ed between new and old file
-void EmitXor_t(SLONG slOffsetOld, SLONG slSizeOld, SLONG slOffsetNew, SLONG slSizeNew)
-{
+void EmitXor_t(SLONG slOffsetOld, SLONG slSizeOld, SLONG slOffsetNew, SLONG slSizeNew) {
   // xor it
   SLONG slSizeXor = Min(slSizeOld, slSizeNew);
-  UBYTE *pub0 = _pubOld+slOffsetOld;
-  UBYTE *pub1 = _pubNew+slOffsetNew;
-  for (INDEX i=0; i<slSizeXor; i++) {
+  UBYTE *pub0 = _pubOld + slOffsetOld;
+  UBYTE *pub1 = _pubNew + slOffsetNew;
+  for (INDEX i = 0; i < slSizeXor; i++) {
     *pub1++ ^= *pub0++;
   }
 
@@ -67,7 +64,7 @@ void EmitXor_t(SLONG slOffsetOld, SLONG slSizeOld, SLONG slOffsetNew, SLONG slSi
   (*_pstrmOut) << slOffsetOld;
   (*_pstrmOut) << slSizeOld;
   (*_pstrmOut) << slSizeNew;
-  (*_pstrmOut).Write_t(_pubNew+slOffsetNew, slSizeNew);
+  (*_pstrmOut).Write_t(_pubNew + slOffsetNew, slSizeNew);
 }
 
 struct EntityBlockInfo {
@@ -80,52 +77,49 @@ CStaticStackArray<EntityBlockInfo> _aebiOld;
 CStaticStackArray<EntityBlockInfo> _aebiNew;
 
 // make array of entity offsets in a block
-void MakeInfos(CStaticStackArray<EntityBlockInfo> &aebi, 
-               UBYTE *pubBlock, SLONG slSize, UBYTE *pubFirst, UBYTE *&pubEnd)
-{
+void MakeInfos(CStaticStackArray<EntityBlockInfo> &aebi, UBYTE *pubBlock, SLONG slSize, UBYTE *pubFirst, UBYTE *&pubEnd) {
   // clear all offsets
   aebi.PopAll();
 
   // until end of block
   UBYTE *pub = pubFirst;
-  while (pub<pubBlock+slSize) {
+  while (pub < pubBlock + slSize) {
     // if no more entities
-    if (*(ULONG*)pub != '4TNE') {
+    if (*(ULONG *)pub != '4TNE') {
       pubEnd = pub;
       // stop
       return;
     }
     // remember it
     EntityBlockInfo &ebi = aebi.Push();
-    ebi.ebi_slOffset = pub-pubBlock;
-    pub+=sizeof(ULONG);
+    ebi.ebi_slOffset = pub - pubBlock;
+    pub += sizeof(ULONG);
 
     // get id and size
-    ULONG ulID = *(ULONG*)pub;
-    ebi.ebi_ulID     = ulID;
-    pub+=sizeof(ULONG);
+    ULONG ulID = *(ULONG *)pub;
+    ebi.ebi_ulID = ulID;
+    pub += sizeof(ULONG);
 
-    SLONG slSizeChunk = *(SLONG*)pub;
-    pub+=sizeof(ULONG);
-    ebi.ebi_slSize   = slSizeChunk+sizeof(SLONG)*3;
+    SLONG slSizeChunk = *(SLONG *)pub;
+    pub += sizeof(ULONG);
+    ebi.ebi_slSize = slSizeChunk + sizeof(SLONG) * 3;
 
-    pub+=slSizeChunk;
+    pub += slSizeChunk;
   }
 }
 
 // find first entity in given block
-UBYTE *FindFirstEntity(UBYTE *pubBlock, SLONG slSize)
-{
+UBYTE *FindFirstEntity(UBYTE *pubBlock, SLONG slSize) {
   UBYTE *pub = pubBlock;
-  while (pub<pubBlock+slSize) {
-    if (*(ULONG*)pub == '4TNE') {
+  while (pub < pubBlock + slSize) {
+    if (*(ULONG *)pub == '4TNE') {
       UBYTE *pubTmp = pub;
-      pubTmp+=sizeof(ULONG);
-      ULONG ulID = *(ULONG*)pubTmp;
-      pubTmp+=sizeof(ULONG);
-      SLONG slSizeChunk = *(SLONG*)pubTmp;
-      pubTmp+=sizeof(ULONG);
-      if (*(ULONG*)(pubTmp+slSizeChunk) == '4TNE') {
+      pubTmp += sizeof(ULONG);
+      ULONG ulID = *(ULONG *)pubTmp;
+      pubTmp += sizeof(ULONG);
+      SLONG slSizeChunk = *(SLONG *)pubTmp;
+      pubTmp += sizeof(ULONG);
+      if (*(ULONG *)(pubTmp + slSizeChunk) == '4TNE') {
         return pub;
       }
     }
@@ -134,8 +128,7 @@ UBYTE *FindFirstEntity(UBYTE *pubBlock, SLONG slSize)
   return NULL;
 }
 
-void MakeDiff_t(void)
-{
+void MakeDiff_t(void) {
   // write header with size of files
   (*_pstrmOut).WriteID_t("DIFF");
   (*_pstrmOut) << _slSizeOld << _slSizeNew << _ulCRC;
@@ -154,14 +147,14 @@ void MakeDiff_t(void)
   MakeInfos(_aebiNew, _pubNew, _slSizeNew, pubNewEnts, pubEntEndNew);
 
   // emit chunk before entities by xor
-  EmitXor_t(0, pubOldEnts-_pubOld, 0, pubNewEnts-_pubNew);
+  EmitXor_t(0, pubOldEnts - _pubOld, 0, pubNewEnts - _pubNew);
 
   // for each entity in new
-  for (INDEX ieibNew = 0; ieibNew<_aebiNew.Count(); ieibNew++) {
+  for (INDEX ieibNew = 0; ieibNew < _aebiNew.Count(); ieibNew++) {
     EntityBlockInfo &ebiNew = _aebiNew[ieibNew];
     // find same in old file
     INDEX ieibOld = -1;
-    for (INDEX i=0; i<_aebiOld.Count(); i++) {
+    for (INDEX i = 0; i < _aebiOld.Count(); i++) {
       if (_aebiOld[i].ebi_ulID == ebiNew.ebi_ulID) {
         ieibOld = i;
         break;
@@ -175,31 +168,27 @@ void MakeDiff_t(void)
 
       // if same
       if (ebiOld.ebi_slSize == ebiNew.ebi_slSize) {
-        if (memcmp(_pubOld+ebiOld.ebi_slOffset, 
-        _pubNew+ebiNew.ebi_slOffset, ebiNew.ebi_slSize) == 0) {
-          //CPrintF("Same blocks\n");
+        if (memcmp(_pubOld + ebiOld.ebi_slOffset, _pubNew + ebiNew.ebi_slOffset, ebiNew.ebi_slSize) == 0) {
+          // CPrintF("Same blocks\n");
           // emit copy from old
           EmitOld_t(ebiOld.ebi_slOffset, ebiOld.ebi_slSize);
           bDone = TRUE;
         } else {
-          //CPrintF("Different blocks\n");
+          // CPrintF("Different blocks\n");
         }
       } else {
-        //CPrintF("Different sizes\n");
+        // CPrintF("Different sizes\n");
       }
 
       if (!bDone) {
         // emit xor
-        EmitXor_t(
-          ebiOld.ebi_slOffset, ebiOld.ebi_slSize,
-          ebiNew.ebi_slOffset, ebiNew.ebi_slSize);
+        EmitXor_t(ebiOld.ebi_slOffset, ebiOld.ebi_slSize, ebiNew.ebi_slOffset, ebiNew.ebi_slSize);
         bDone = TRUE;
       }
     } else {
-      //CPrintF("Not found\n");
+      // CPrintF("Not found\n");
     }
-    if (!bDone) 
-    {
+    if (!bDone) {
       // emit from new
       EmitNew_t(ebiNew.ebi_slOffset, ebiNew.ebi_slSize);
       bDone = TRUE;
@@ -207,26 +196,27 @@ void MakeDiff_t(void)
   }
 
   // emit chunk after entities by xor
-  EmitXor_t(
-    pubEntEndOld-_pubOld, _pubOld+_slSizeOld-pubEntEndOld,
-    pubEntEndNew-_pubNew, _pubNew+_slSizeNew-pubEntEndNew);
+  EmitXor_t(pubEntEndOld - _pubOld, _pubOld + _slSizeOld - pubEntEndOld, pubEntEndNew - _pubNew,
+            _pubNew + _slSizeNew - pubEntEndNew);
 }
 
-void UnDiff_t(void)
-{
+void UnDiff_t(void) {
   // start at beginning
   UBYTE *pubOld = _pubOld;
   UBYTE *pubNew = _pubNew;
   SLONG slSizeOldStream = 0;
   SLONG slSizeOutStream = 0;
   // get header with size of files
-  if (*(SLONG*)pubNew != 'FFID') {
+  if (*(SLONG *)pubNew != 'FFID') {
     ThrowF_t(TRANS("Not a DIFF stream!"));
   }
-  pubNew+=sizeof(SLONG);
-  slSizeOldStream = *(SLONG*)pubNew; pubNew+=sizeof(SLONG);
-  slSizeOutStream = *(SLONG*)pubNew; pubNew+=sizeof(SLONG);
-  ULONG ulCRC =  *(ULONG*)pubNew; pubNew+=sizeof(ULONG);
+  pubNew += sizeof(SLONG);
+  slSizeOldStream = *(SLONG *)pubNew;
+  pubNew += sizeof(SLONG);
+  slSizeOutStream = *(SLONG *)pubNew;
+  pubNew += sizeof(SLONG);
+  ULONG ulCRC = *(ULONG *)pubNew;
+  pubNew += sizeof(ULONG);
 
   CRC_Start(_ulCRC);
 
@@ -234,50 +224,55 @@ void UnDiff_t(void)
     ThrowF_t(TRANS("Invalid DIFF stream!"));
   }
   // while not end of diff file
-  while (pubNew<_pubNew+_slSizeNew) {
+  while (pubNew < _pubNew + _slSizeNew) {
     // read block type
     UBYTE ubType = *pubNew++;
     switch (ubType) {
-    // if block type is 'copy from old file'
-    case DIFF_OLD: {
-      // get data offset and size
-      SLONG slOffsetOld = *(SLONG*)pubNew;  pubNew+=sizeof(SLONG);
-      SLONG slSizeOld = *(SLONG*)pubNew;    pubNew+=sizeof(SLONG);
-      // copy it from there
-      (*_pstrmOut).Write_t(_pubOld+slOffsetOld, slSizeOld);
-      CRC_AddBlock(_ulCRC, _pubOld+slOffsetOld, slSizeOld);
-                   } break;
-    // if block type is 'copy from new file'
-    case DIFF_NEW: {
-      // get data size
-      SLONG slSizeNew = *(SLONG*)pubNew;    pubNew+=sizeof(SLONG);
-      // copy it from there
-      (*_pstrmOut).Write_t(pubNew, slSizeNew);
-      CRC_AddBlock(_ulCRC, pubNew, slSizeNew);
-      pubNew+=slSizeNew;
-                   } break;
-    // if block type is 'xor between an old block and a new block'
-    case DIFF_XOR: {
-      // get data offset and sizes
-      SLONG slOffsetOld = *(SLONG*)pubNew;  pubNew+=sizeof(SLONG);
-      SLONG slSizeOld = *(SLONG*)pubNew;    pubNew+=sizeof(SLONG);
-      SLONG slSizeNew = *(SLONG*)pubNew;    pubNew+=sizeof(SLONG);
+      // if block type is 'copy from old file'
+      case DIFF_OLD: {
+        // get data offset and size
+        SLONG slOffsetOld = *(SLONG *)pubNew;
+        pubNew += sizeof(SLONG);
+        SLONG slSizeOld = *(SLONG *)pubNew;
+        pubNew += sizeof(SLONG);
+        // copy it from there
+        (*_pstrmOut).Write_t(_pubOld + slOffsetOld, slSizeOld);
+        CRC_AddBlock(_ulCRC, _pubOld + slOffsetOld, slSizeOld);
+      } break;
+      // if block type is 'copy from new file'
+      case DIFF_NEW: {
+        // get data size
+        SLONG slSizeNew = *(SLONG *)pubNew;
+        pubNew += sizeof(SLONG);
+        // copy it from there
+        (*_pstrmOut).Write_t(pubNew, slSizeNew);
+        CRC_AddBlock(_ulCRC, pubNew, slSizeNew);
+        pubNew += slSizeNew;
+      } break;
+      // if block type is 'xor between an old block and a new block'
+      case DIFF_XOR: {
+        // get data offset and sizes
+        SLONG slOffsetOld = *(SLONG *)pubNew;
+        pubNew += sizeof(SLONG);
+        SLONG slSizeOld = *(SLONG *)pubNew;
+        pubNew += sizeof(SLONG);
+        SLONG slSizeNew = *(SLONG *)pubNew;
+        pubNew += sizeof(SLONG);
 
-      // xor it
-      SLONG slSizeXor = Min(slSizeOld, slSizeNew);
-      UBYTE *pub0 = _pubOld+slOffsetOld;
-      UBYTE *pub1 = pubNew;
-      for (INDEX i=0; i<slSizeXor; i++) {
-        *pub1++ ^= *pub0++;
-      }
+        // xor it
+        SLONG slSizeXor = Min(slSizeOld, slSizeNew);
+        UBYTE *pub0 = _pubOld + slOffsetOld;
+        UBYTE *pub1 = pubNew;
+        for (INDEX i = 0; i < slSizeXor; i++) {
+          *pub1++ ^= *pub0++;
+        }
 
-      // copy the xor-ed data
-      (*_pstrmOut).Write_t(pubNew, slSizeNew);
-      CRC_AddBlock(_ulCRC, pubNew, slSizeNew);
-      pubNew+=slSizeNew;
-                   } break;
-    default:
-      ThrowF_t(TRANS("Invalid DIFF block type!"));
+        // copy the xor-ed data
+        (*_pstrmOut).Write_t(pubNew, slSizeNew);
+        CRC_AddBlock(_ulCRC, pubNew, slSizeNew);
+        pubNew += slSizeNew;
+      } break;
+      default: ThrowF_t(TRANS("Invalid DIFF block type!"));
     }
   }
 
@@ -287,8 +282,7 @@ void UnDiff_t(void)
   }
 }
 
-static void Cleanup(void)
-{
+static void Cleanup(void) {
   if (_pubOld != NULL) {
     FreeMemory(_pubOld);
   }
@@ -301,17 +295,16 @@ static void Cleanup(void)
 }
 
 // make a difference file from two saved games
-void DIFF_Diff_t(CTStream *pstrmOld, CTStream *pstrmNew, CTStream *pstrmDiff)
-{
+void DIFF_Diff_t(CTStream *pstrmOld, CTStream *pstrmNew, CTStream *pstrmDiff) {
   try {
     CTimerValue tv0 = _pTimer->GetHighPrecisionTimer();
 
-    _slSizeOld = pstrmOld->GetStreamSize()-pstrmOld->GetPos_t();
-    _pubOld = (UBYTE*)AllocMemory(_slSizeOld);
+    _slSizeOld = pstrmOld->GetStreamSize() - pstrmOld->GetPos_t();
+    _pubOld = (UBYTE *)AllocMemory(_slSizeOld);
     pstrmOld->Read_t(_pubOld, _slSizeOld);
 
-    _slSizeNew = pstrmNew->GetStreamSize()-pstrmNew->GetPos_t();
-    _pubNew = (UBYTE*)AllocMemory(_slSizeNew);
+    _slSizeNew = pstrmNew->GetStreamSize() - pstrmNew->GetPos_t();
+    _pubNew = (UBYTE *)AllocMemory(_slSizeNew);
     pstrmNew->Read_t(_pubNew, _slSizeNew);
 
     CRC_Start(_ulCRC);
@@ -323,7 +316,7 @@ void DIFF_Diff_t(CTStream *pstrmOld, CTStream *pstrmNew, CTStream *pstrmDiff)
     MakeDiff_t();
 
     CTimerValue tv1 = _pTimer->GetHighPrecisionTimer();
-    //CPrintF("diff encoded in %.2gs\n", (tv1-tv0).GetSeconds());
+    // CPrintF("diff encoded in %.2gs\n", (tv1-tv0).GetSeconds());
 
     Cleanup();
 
@@ -334,17 +327,16 @@ void DIFF_Diff_t(CTStream *pstrmOld, CTStream *pstrmNew, CTStream *pstrmDiff)
 }
 
 // make a new saved game from difference file and old saved game
-void DIFF_Undiff_t(CTStream *pstrmOld, CTStream *pstrmDiff, CTStream *pstrmNew)
-{
+void DIFF_Undiff_t(CTStream *pstrmOld, CTStream *pstrmDiff, CTStream *pstrmNew) {
   try {
     CTimerValue tv0 = _pTimer->GetHighPrecisionTimer();
 
-    _slSizeOld = pstrmOld->GetStreamSize()-pstrmOld->GetPos_t();
-    _pubOld = (UBYTE*)AllocMemory(_slSizeOld);
+    _slSizeOld = pstrmOld->GetStreamSize() - pstrmOld->GetPos_t();
+    _pubOld = (UBYTE *)AllocMemory(_slSizeOld);
     pstrmOld->Read_t(_pubOld, _slSizeOld);
 
-    _slSizeNew = pstrmDiff->GetStreamSize()-pstrmDiff->GetPos_t();
-    _pubNew = (UBYTE*)AllocMemory(_slSizeNew);
+    _slSizeNew = pstrmDiff->GetStreamSize() - pstrmDiff->GetPos_t();
+    _pubNew = (UBYTE *)AllocMemory(_slSizeNew);
     pstrmDiff->Read_t(_pubNew, _slSizeNew);
 
     _pstrmOut = pstrmNew;
@@ -352,7 +344,7 @@ void DIFF_Undiff_t(CTStream *pstrmOld, CTStream *pstrmDiff, CTStream *pstrmNew)
     UnDiff_t();
 
     CTimerValue tv1 = _pTimer->GetHighPrecisionTimer();
-    //CPrintF("diff decoded in %.2gs\n", (tv1-tv0).GetSeconds());
+    // CPrintF("diff decoded in %.2gs\n", (tv1-tv0).GetSeconds());
 
     Cleanup();
 

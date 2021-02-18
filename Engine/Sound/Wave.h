@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,52 +16,52 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_WAVE_H
 #define SE_INCL_WAVE_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 /*
  *  PCM Wave Input
  */
 class PCMWaveInput {
-private:
-  // Wave data
-  WAVEFORMATEX pwi_wfeWave;
-  WAVEFORMATEX pwi_wfeDesired;
-  ULONG  pwi_ulRiffLength, pwi_ulDataLength;
-  BOOL   pwi_bInfoLoaded,  pwi_bDataLoaded; // Status
-  SWORD *pwi_pswMemory; // Memory
+  private:
+    // Wave data
+    WAVEFORMATEX pwi_wfeWave;
+    WAVEFORMATEX pwi_wfeDesired;
+    ULONG pwi_ulRiffLength, pwi_ulDataLength;
+    BOOL pwi_bInfoLoaded, pwi_bDataLoaded; // Status
+    SWORD *pwi_pswMemory;                  // Memory
 
-  // Conversion 
-  DOUBLE pwi_dRatio;
-  // get and store data
-  inline ULONG GetData_t( CTStream *pCstrInput);
-  inline void  StoreData( ULONG ulData);
-  void CopyData_t(   CTStream *pCstrInput);
-  void ShrinkData_t( CTStream *pCstrInput);
+    // Conversion
+    DOUBLE pwi_dRatio;
+    // get and store data
+    inline ULONG GetData_t(CTStream *pCstrInput);
+    inline void StoreData(ULONG ulData);
+    void CopyData_t(CTStream *pCstrInput);
+    void ShrinkData_t(CTStream *pCstrInput);
 
-public:
-  // Check wave format
-  static void CheckWaveFormat_t( WAVEFORMATEX SwfeCheck, char *pcErrorString);
+  public:
+    // Check wave format
+    static void CheckWaveFormat_t(WAVEFORMATEX SwfeCheck, char *pcErrorString);
 
-  // Constructor 
-  inline PCMWaveInput(void) { pwi_bInfoLoaded = FALSE; pwi_bDataLoaded = FALSE; };
-  // Load Wave info 
-  WAVEFORMATEX LoadInfo_t( CTStream *pCstrInput);
-  // Load and convert Wave data 
-  void LoadData_t( CTStream *pCstrInput, SWORD *pswMemory, WAVEFORMATEX &SwfeDesired);
+    // Constructor
+    inline PCMWaveInput(void) {
+      pwi_bInfoLoaded = FALSE;
+      pwi_bDataLoaded = FALSE;
+    };
+    // Load Wave info
+    WAVEFORMATEX LoadInfo_t(CTStream *pCstrInput);
+    // Load and convert Wave data
+    void LoadData_t(CTStream *pCstrInput, SWORD *pswMemory, WAVEFORMATEX &SwfeDesired);
 
-  // Length in bytes / blocks / seconds 
-  ULONG  GetByteLength(void);
-  ULONG  GetDataLength(void);
-  ULONG  GetDataLength( WAVEFORMATEX SwfeDesired);
-  DOUBLE GetSecondsLength(void);
+    // Length in bytes / blocks / seconds
+    ULONG GetByteLength(void);
+    ULONG GetDataLength(void);
+    ULONG GetDataLength(WAVEFORMATEX SwfeDesired);
+    DOUBLE GetSecondsLength(void);
 
-  // Buffer length in bytes 
-  ULONG DetermineBufferSize(void);
-  ULONG DetermineBufferSize( WAVEFORMATEX SwfeDesired);
+    // Buffer length in bytes
+    ULONG DetermineBufferSize(void);
+    ULONG DetermineBufferSize(WAVEFORMATEX SwfeDesired);
 };
 
-
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

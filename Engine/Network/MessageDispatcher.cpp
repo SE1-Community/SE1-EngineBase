@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -37,21 +37,20 @@ extern BOOL _bTempNetwork;
 
 // class for holding received messages (thread locally)
 class CMessageBuffer {
-public:
-  // size of message buffer for one message
-  ULONG mb_ulMessageBufferSize;
-  // pointer to message buffer for one message
-  void *mb_pvMessageBuffer;
+  public:
+    // size of message buffer for one message
+    ULONG mb_ulMessageBufferSize;
+    // pointer to message buffer for one message
+    void *mb_pvMessageBuffer;
 
-  void Allocate(void);
-  void Free(void);
+    void Allocate(void);
+    void Free(void);
 };
 
 // the thread's local buffer
-static _declspec(thread) CMessageBuffer mbReceivedMessage = { 0,0 };
+static _declspec(thread) CMessageBuffer mbReceivedMessage = {0, 0};
 
-void CMessageBuffer::Allocate(void)
-{
+void CMessageBuffer::Allocate(void) {
   if (mb_ulMessageBufferSize == 0) {
     ASSERT(mb_pvMessageBuffer == NULL);
     // allocate message buffer
@@ -60,8 +59,7 @@ void CMessageBuffer::Allocate(void)
   }
 }
 
-void CMessageBuffer::Free(void)
-{
+void CMessageBuffer::Free(void) {
   // if message buffer is allocated
   if (mb_ulMessageBufferSize != 0) {
     ASSERT(mb_pvMessageBuffer != NULL);
@@ -78,18 +76,14 @@ void CMessageBuffer::Free(void)
 /*
  * Default constructor.
  */
-CNetworkProvider::CNetworkProvider(void)
-{
-}
+CNetworkProvider::CNetworkProvider(void) {}
 
 /*
  * Create a human description of driver.
  */
-const CTString &CNetworkProvider::GetDescription(void) const
-{
+const CTString &CNetworkProvider::GetDescription(void) const {
   return np_Description;
 }
-
 
 /////////////////////////////////////////////////////////////////////
 // CNetworkSession implementation
@@ -97,25 +91,21 @@ const CTString &CNetworkProvider::GetDescription(void) const
 /*
  * Default constructor.
  */
-CNetworkSession::CNetworkSession(void)
-{
-}
-// Construct a session for connecting to certain server. 
-CNetworkSession::CNetworkSession(const CTString &strAddress)
-{
+CNetworkSession::CNetworkSession(void) {}
+// Construct a session for connecting to certain server.
+CNetworkSession::CNetworkSession(const CTString &strAddress) {
   ns_strAddress = strAddress;
 }
-void CNetworkSession::Copy(const CNetworkSession &nsOriginal)
-{
-  ns_strAddress     = nsOriginal.ns_strAddress     ;
-  ns_strSession     = nsOriginal.ns_strSession     ;
-  ns_strWorld       = nsOriginal.ns_strWorld       ;
-  ns_tmPing         = nsOriginal.ns_tmPing         ;
-  ns_ctPlayers      = nsOriginal.ns_ctPlayers      ;
-  ns_ctMaxPlayers   = nsOriginal.ns_ctMaxPlayers   ;
-  ns_strGameType    = nsOriginal.ns_strGameType    ;
-  ns_strMod         = nsOriginal.ns_strMod         ;
-  ns_strVer         = nsOriginal.ns_strVer         ;
+void CNetworkSession::Copy(const CNetworkSession &nsOriginal) {
+  ns_strAddress = nsOriginal.ns_strAddress;
+  ns_strSession = nsOriginal.ns_strSession;
+  ns_strWorld = nsOriginal.ns_strWorld;
+  ns_tmPing = nsOriginal.ns_tmPing;
+  ns_ctPlayers = nsOriginal.ns_ctPlayers;
+  ns_ctMaxPlayers = nsOriginal.ns_ctMaxPlayers;
+  ns_strGameType = nsOriginal.ns_strGameType;
+  ns_strMod = nsOriginal.ns_strMod;
+  ns_strVer = nsOriginal.ns_strVer;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -135,8 +125,7 @@ CMessageDispatcher::CMessageDispatcher(void) {
 /*
  * Destructor.
  */
-CMessageDispatcher::~CMessageDispatcher(void)
-{
+CMessageDispatcher::~CMessageDispatcher(void) {
   if (!_bTempNetwork) {
     _cmiComm.Close();
   }
@@ -149,8 +138,7 @@ CMessageDispatcher::~CMessageDispatcher(void)
 /*
  * Initialize for a given game.
  */
-void CMessageDispatcher::Init(const CTString &strGameID)
-{
+void CMessageDispatcher::Init(const CTString &strGameID) {
   md_strGameID = strGameID;
 }
 
@@ -160,8 +148,7 @@ void CMessageDispatcher::Init(const CTString &strGameID)
 /*
  * Enumerate all providers at startup (later enumeration just copies this list).
  */
-void CMessageDispatcher::EnumNetworkProviders_startup(CListHead &lh)
-{
+void CMessageDispatcher::EnumNetworkProviders_startup(CListHead &lh) {
   // create local connection provider
   CNetworkProvider *pnpLocal = new CNetworkProvider;
   pnpLocal->np_Description = "Local";
@@ -179,8 +166,7 @@ void CMessageDispatcher::EnumNetworkProviders_startup(CListHead &lh)
 /*
  * Enumerate all providers.
  */
-void CMessageDispatcher::EnumNetworkProviders(CListHead &lh)
-{
+void CMessageDispatcher::EnumNetworkProviders(CListHead &lh) {
   // for each provider enumerated at startup
   FOREACHINLIST(CNetworkProvider, np_Node, md_lhProviders, litProvider) {
     // create a copy
@@ -193,8 +179,7 @@ void CMessageDispatcher::EnumNetworkProviders(CListHead &lh)
 /*
  * Start using a service provider.
  */
-void CMessageDispatcher::StartProvider_t(const CNetworkProvider &npProvider)
-{
+void CMessageDispatcher::StartProvider_t(const CNetworkProvider &npProvider) {
   if (npProvider.np_Description == "Local") {
     _cmiComm.PrepareForUse(FALSE, FALSE);
   } else if (npProvider.np_Description == "TCP/IP Server") {
@@ -207,67 +192,57 @@ void CMessageDispatcher::StartProvider_t(const CNetworkProvider &npProvider)
 /*
  * Stop using current service provider.
  */
-void CMessageDispatcher::StopProvider(void)
-{
+void CMessageDispatcher::StopProvider(void) {
   _cmiComm.Unprepare();
 }
 
 /////////////////////////////////////////////////////////////////////
 // CMessageDispatcher -- network message management
-static void UpdateSentMessageStats(const CNetworkMessage &nmMessage)
-{
+static void UpdateSentMessageStats(const CNetworkMessage &nmMessage) {
   // increment profile counters
   _pfNetworkProfile.IncrementCounter(CNetworkProfile::PCI_MESSAGESSENT);
   _pfNetworkProfile.IncrementCounter(CNetworkProfile::PCI_BYTESSENT, nmMessage.nm_slSize);
   switch (nmMessage.GetType()) {
-  case MSG_GAMESTREAMBLOCKS:
-    _pfNetworkProfile.IncrementCounter(CNetworkProfile::PCI_GAMESTREAM_BYTES_SENT, nmMessage.nm_slSize);
-    break;
-  case MSG_ACTION:
-    _pfNetworkProfile.IncrementCounter(CNetworkProfile::PCI_ACTION_BYTES_SENT, nmMessage.nm_slSize);
-    break;
+    case MSG_GAMESTREAMBLOCKS:
+      _pfNetworkProfile.IncrementCounter(CNetworkProfile::PCI_GAMESTREAM_BYTES_SENT, nmMessage.nm_slSize);
+      break;
+    case MSG_ACTION: _pfNetworkProfile.IncrementCounter(CNetworkProfile::PCI_ACTION_BYTES_SENT, nmMessage.nm_slSize); break;
   }
   if (net_bReportTraffic) {
     CPrintF("Sent: %d\n", nmMessage.nm_slSize);
   }
 }
-static void UpdateSentStreamStats(SLONG slSize)
-{
+static void UpdateSentStreamStats(SLONG slSize) {
   if (net_bReportTraffic) {
     CPrintF("STREAM Sent: %d\n", slSize);
   }
 }
-static void UpdateReceivedMessageStats(const CNetworkMessage &nmMessage)
-{
+static void UpdateReceivedMessageStats(const CNetworkMessage &nmMessage) {
   // increment profile counters
   _pfNetworkProfile.IncrementCounter(CNetworkProfile::PCI_MESSAGESRECEIVED);
   _pfNetworkProfile.IncrementCounter(CNetworkProfile::PCI_BYTESRECEIVED, nmMessage.nm_slSize);
   switch (nmMessage.GetType()) {
-  case MSG_GAMESTREAMBLOCKS:
-    _pfNetworkProfile.IncrementCounter(CNetworkProfile::PCI_GAMESTREAM_BYTES_RECEIVED, nmMessage.nm_slSize);
-    break;
-  case MSG_ACTION:
-    _pfNetworkProfile.IncrementCounter(CNetworkProfile::PCI_ACTION_BYTES_RECEIVED, nmMessage.nm_slSize);
-    break;
+    case MSG_GAMESTREAMBLOCKS:
+      _pfNetworkProfile.IncrementCounter(CNetworkProfile::PCI_GAMESTREAM_BYTES_RECEIVED, nmMessage.nm_slSize);
+      break;
+    case MSG_ACTION: _pfNetworkProfile.IncrementCounter(CNetworkProfile::PCI_ACTION_BYTES_RECEIVED, nmMessage.nm_slSize); break;
   }
   if (net_bReportTraffic) {
     CPrintF("Rcvd: %d\n", nmMessage.nm_slSize);
   }
 }
-static void UpdateReceivedStreamStats(SLONG slSize)
-{
+static void UpdateReceivedStreamStats(SLONG slSize) {
   if (net_bReportTraffic) {
     CPrintF("STREAM Rcvd: %d\n", slSize);
   }
 }
 
-// Send a message from server to client. 
-void CMessageDispatcher::SendToClient(INDEX iClient, const CNetworkMessage &nmMessage)
-{
+// Send a message from server to client.
+void CMessageDispatcher::SendToClient(INDEX iClient, const CNetworkMessage &nmMessage) {
 // if testing for packet-loss recovery
 #ifdef LOSEPACKETS_THRESHOLD
   // every once a while
-  if (rand()<LOSEPACKETS_THRESHOLD) {
+  if (rand() < LOSEPACKETS_THRESHOLD) {
     // don't send it
     return;
   }
@@ -275,22 +250,20 @@ void CMessageDispatcher::SendToClient(INDEX iClient, const CNetworkMessage &nmMe
 
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_SENDMESSAGE);
   // send the message
-  _cmiComm.Server_Send_Unreliable(iClient, (void*)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
-  
+  _cmiComm.Server_Send_Unreliable(iClient, (void *)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
+
   UpdateSentMessageStats(nmMessage);
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_SENDMESSAGE);
 }
-void CMessageDispatcher::SendToClientReliable(INDEX iClient, const CNetworkMessage &nmMessage)
-{
+void CMessageDispatcher::SendToClientReliable(INDEX iClient, const CNetworkMessage &nmMessage) {
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_SENDMESSAGE);
-  
+
   // send the message
-  _cmiComm.Server_Send_Reliable(iClient, (void*)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
+  _cmiComm.Server_Send_Reliable(iClient, (void *)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
   UpdateSentMessageStats(nmMessage);
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_SENDMESSAGE);
 }
-void CMessageDispatcher::SendToClientReliable(INDEX iClient, CTMemoryStream &strmMessage)
-{
+void CMessageDispatcher::SendToClientReliable(INDEX iClient, CTMemoryStream &strmMessage) {
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_SENDMESSAGE);
 
   // get size and buffer from the stream
@@ -304,33 +277,29 @@ void CMessageDispatcher::SendToClientReliable(INDEX iClient, CTMemoryStream &str
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_SENDMESSAGE);
 }
 
-// Send a message from client to server. 
-void CMessageDispatcher::SendToServer(const CNetworkMessage &nmMessage)
-{
+// Send a message from client to server.
+void CMessageDispatcher::SendToServer(const CNetworkMessage &nmMessage) {
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_SENDMESSAGE);
   // send the message
-  _cmiComm.Client_Send_Unreliable((void*)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
+  _cmiComm.Client_Send_Unreliable((void *)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
   UpdateSentMessageStats(nmMessage);
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_SENDMESSAGE);
 }
 
-void CMessageDispatcher::SendToServerReliable(const CNetworkMessage &nmMessage)
-{
+void CMessageDispatcher::SendToServerReliable(const CNetworkMessage &nmMessage) {
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_SENDMESSAGE);
   // send the message
-  _cmiComm.Client_Send_Reliable((void*)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
+  _cmiComm.Client_Send_Reliable((void *)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
   UpdateSentMessageStats(nmMessage);
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_SENDMESSAGE);
 }
 
-// Receive next message from server to client. 
-BOOL CMessageDispatcher::ReceiveFromServer(CNetworkMessage &nmMessage)
-{
+// Receive next message from server to client.
+BOOL CMessageDispatcher::ReceiveFromServer(CNetworkMessage &nmMessage) {
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_RECEIVEMESSAGE);
   // receive message in static buffer
   nmMessage.nm_slSize = nmMessage.nm_slMaxSize;
-  BOOL bReceived = _cmiComm.Client_Receive_Unreliable(
-    (void*)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
+  BOOL bReceived = _cmiComm.Client_Receive_Unreliable((void *)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
 
   // if there is message
   if (bReceived) {
@@ -347,13 +316,11 @@ BOOL CMessageDispatcher::ReceiveFromServer(CNetworkMessage &nmMessage)
   return bReceived;
 }
 
-BOOL CMessageDispatcher::ReceiveFromServerReliable(CNetworkMessage &nmMessage)
-{
+BOOL CMessageDispatcher::ReceiveFromServerReliable(CNetworkMessage &nmMessage) {
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_RECEIVEMESSAGE);
   // receive message in static buffer
   nmMessage.nm_slSize = nmMessage.nm_slMaxSize;
-  BOOL bReceived = _cmiComm.Client_Receive_Reliable(
-    (void*)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
+  BOOL bReceived = _cmiComm.Client_Receive_Reliable((void *)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
 
   // if there is message
   if (bReceived) {
@@ -364,18 +331,16 @@ BOOL CMessageDispatcher::ReceiveFromServerReliable(CNetworkMessage &nmMessage)
     nmMessage.Read(&ubType, sizeof(ubType));
     nmMessage.nm_mtType = (MESSAGETYPE)ubType;
     UpdateReceivedMessageStats(nmMessage);
-
   }
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_RECEIVEMESSAGE);
   return bReceived;
 }
 
-BOOL CMessageDispatcher::ReceiveFromServerReliable(CTMemoryStream &strmMessage)
-{
+BOOL CMessageDispatcher::ReceiveFromServerReliable(CTMemoryStream &strmMessage) {
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_RECEIVEMESSAGE);
   // receive message in stream
   BOOL bReceived = _cmiComm.Client_Receive_Reliable(strmMessage);
-  
+
   // if there is message
   if (bReceived) {
     try {
@@ -387,14 +352,12 @@ BOOL CMessageDispatcher::ReceiveFromServerReliable(CTMemoryStream &strmMessage)
   return bReceived;
 }
 
-// Receive next message from client to server. 
-BOOL CMessageDispatcher::ReceiveFromClient(INDEX iClient, CNetworkMessage &nmMessage)
-{
+// Receive next message from client to server.
+BOOL CMessageDispatcher::ReceiveFromClient(INDEX iClient, CNetworkMessage &nmMessage) {
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_RECEIVEMESSAGE);
   // receive message in static buffer
   nmMessage.nm_slSize = nmMessage.nm_slMaxSize;
-  BOOL bReceived = _cmiComm.Server_Receive_Unreliable(iClient,
-    (void*)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
+  BOOL bReceived = _cmiComm.Server_Receive_Unreliable(iClient, (void *)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
 
   // if there is message
   if (bReceived) {
@@ -411,13 +374,11 @@ BOOL CMessageDispatcher::ReceiveFromClient(INDEX iClient, CNetworkMessage &nmMes
   return bReceived;
 }
 
-BOOL CMessageDispatcher::ReceiveFromClientReliable(INDEX iClient, CNetworkMessage &nmMessage)
-{
-//  _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_RECEIVEMESSAGE);  // profile this!!!!
+BOOL CMessageDispatcher::ReceiveFromClientReliable(INDEX iClient, CNetworkMessage &nmMessage) {
+  //  _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_RECEIVEMESSAGE);  // profile this!!!!
   // receive message in static buffer
   nmMessage.nm_slSize = nmMessage.nm_slMaxSize;
-  BOOL bReceived = _cmiComm.Server_Receive_Reliable(iClient,
-    (void*)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
+  BOOL bReceived = _cmiComm.Server_Receive_Reliable(iClient, (void *)nmMessage.nm_pubMessage, nmMessage.nm_slSize);
 
   // if there is a message
   if (bReceived) {
@@ -430,30 +391,27 @@ BOOL CMessageDispatcher::ReceiveFromClientReliable(INDEX iClient, CNetworkMessag
 
     UpdateReceivedMessageStats(nmMessage);
   }
-//  _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_RECEIVEMESSAGE);
+  //  _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_RECEIVEMESSAGE);
   return bReceived;
 }
 
-// Send/receive broadcast messages. 
-void CMessageDispatcher::SendBroadcast(const CNetworkMessage &nmMessage, ULONG ulAddr, UWORD uwPort)
-{
+// Send/receive broadcast messages.
+void CMessageDispatcher::SendBroadcast(const CNetworkMessage &nmMessage, ULONG ulAddr, UWORD uwPort) {
   CAddress adrDestination;
   adrDestination.adr_ulAddress = ulAddr;
   adrDestination.adr_uwPort = uwPort;
   adrDestination.adr_uwID = '//';
   // send the message
-  _cmiComm.Broadcast_Send((void*)nmMessage.nm_pubMessage, nmMessage.nm_slSize,adrDestination);
+  _cmiComm.Broadcast_Send((void *)nmMessage.nm_pubMessage, nmMessage.nm_slSize, adrDestination);
 
   UpdateSentMessageStats(nmMessage);
 }
 
-BOOL CMessageDispatcher::ReceiveBroadcast(CNetworkMessage &nmMessage, ULONG &ulAddr, UWORD &uwPort)
-{
-  CAddress adrSource = {0,0,0};
+BOOL CMessageDispatcher::ReceiveBroadcast(CNetworkMessage &nmMessage, ULONG &ulAddr, UWORD &uwPort) {
+  CAddress adrSource = {0, 0, 0};
   // receive message in static buffer
   nmMessage.nm_slSize = nmMessage.nm_slMaxSize;
-  BOOL bReceived = _cmiComm.Broadcast_Receive(
-    (void*)nmMessage.nm_pubMessage, nmMessage.nm_slSize,adrSource);
+  BOOL bReceived = _cmiComm.Broadcast_Receive((void *)nmMessage.nm_pubMessage, nmMessage.nm_slSize, adrSource);
 
   // if there is message
   if (bReceived) {
@@ -467,6 +425,6 @@ BOOL CMessageDispatcher::ReceiveBroadcast(CNetworkMessage &nmMessage, ULONG &ulA
     ulAddr = adrSource.adr_ulAddress;
     uwPort = adrSource.adr_uwPort;
   }
-//  _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_RECEIVEMESSAGE);
+  //  _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_RECEIVEMESSAGE);
   return bReceived;
 }

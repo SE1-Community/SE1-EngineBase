@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_UNZIP_H
 #define SE_INCL_UNZIP_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 // add one zip archive to current active set
@@ -36,9 +36,8 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen);
 // close a zip file entry
 void UNZIPClose(INDEX iHandle);
 // get info on a zip file entry
-void UNZIPGetFileInfo(INDEX iHandle, CTFileName &fnmZip,
-  SLONG &slOffset, SLONG &slSizeCompressed, SLONG &slSizeUncompressed, 
-  BOOL &bCompressed);
+void UNZIPGetFileInfo(INDEX iHandle, CTFileName &fnmZip, SLONG &slOffset, SLONG &slSizeCompressed, SLONG &slSizeUncompressed,
+                      BOOL &bCompressed);
 // enumeration for all files in all zips
 INDEX UNZIPGetFileCount(void);
 const CTFileName &UNZIPGetFileAtIndex(INDEX i);
@@ -48,6 +47,4 @@ INDEX UNZIPGetFileIndex(const CTFileName &fnm);
 // check if a file is from a mod's zip
 BOOL UNZIPIsFileAtIndexMod(INDEX i);
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

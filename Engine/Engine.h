@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -17,9 +17,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define CHECKARRAYLOCKING 0
 
 #ifdef _WIN32
-  #ifndef PLATFORM_WIN32
-    #define PLATFORM_WIN32 1
-  #endif
+#ifndef PLATFORM_WIN32
+#define PLATFORM_WIN32 1
+#endif
 #endif
 
 #include <stdlib.h>
@@ -30,10 +30,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <stddef.h>
 #include <time.h>
 #include <math.h>
-#include <search.h>   // for qsort
-#include <float.h>    // for FPU control
+#include <search.h> // for qsort
+#include <float.h>  // for FPU control
 
-// rcg10042001 !!! FIXME: Move these somewhere. 
+// rcg10042001 !!! FIXME: Move these somewhere.
 #if (defined PLATFORM_WIN32)
 #include <conio.h>
 #include <crtdbg.h>
@@ -108,7 +108,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Brushes/BrushTransformed.h>
 #include <Engine/Brushes/BrushArchive.h>
 
-
 #pragma message(">> Uncomment include to terrain.h")
 //#include <Engine/Terrain/Terrain.h>
 
@@ -168,15 +167,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/Selection.h>
 #include <Engine/Templates/Selection.cpp>
 
-
 // some global stuff
-ENGINE_API void SE_InitEngine( CTString strGameID);
+ENGINE_API void SE_InitEngine(CTString strGameID);
 ENGINE_API void SE_EndEngine(void);
 ENGINE_API void SE_LoadDefaultFonts(void);
-ENGINE_API void SE_UpdateWindowHandle( HWND hwndWindowed);
+ENGINE_API void SE_UpdateWindowHandle(HWND hwndWindowed);
 ENGINE_API void SE_PretouchIfNeeded(void);
 
-extern ENGINE_API CTString _strEngineBuild;  // not valid before InitEngine()!
+extern ENGINE_API CTString _strEngineBuild; // not valid before InitEngine()!
 extern ENGINE_API ULONG _ulEngineBuildMajor;
 extern ENGINE_API ULONG _ulEngineBuildMinor;
 

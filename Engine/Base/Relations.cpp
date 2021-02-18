@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -19,22 +19,17 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/ListIterator.inl>
 
-
 /////////////////////////////////////////////////////////////////////
 // CRelationSrc
 
 // Construction/destruction.
-CRelationSrc::CRelationSrc(void)
-{
-}
+CRelationSrc::CRelationSrc(void) {}
 
-CRelationSrc::~CRelationSrc(void)
-{
+CRelationSrc::~CRelationSrc(void) {
   Clear();
 }
 
-void CRelationSrc::Clear(void)
-{
+void CRelationSrc::Clear(void) {
   // just delete all links, they will unlink on destruction
   FORDELETELIST(CRelationLnk, rl_lnSrc, *this, itlnk) {
     delete &*itlnk;
@@ -45,17 +40,13 @@ void CRelationSrc::Clear(void)
 // CRelationDst
 
 // Construction/destruction.
-CRelationDst::CRelationDst(void)
-{
-}
+CRelationDst::CRelationDst(void) {}
 
-CRelationDst::~CRelationDst(void)
-{
+CRelationDst::~CRelationDst(void) {
   Clear();
 }
 
-void CRelationDst::Clear(void)
-{
+void CRelationDst::Clear(void) {
   // just delete all links, they will unlink on destruction
   FORDELETELIST(CRelationLnk, rl_lnDst, *this, itlnk) {
     delete &*itlnk;
@@ -66,32 +57,26 @@ void CRelationDst::Clear(void)
 // CRelationLnk
 
 // Construction/destruction.
-CRelationLnk::CRelationLnk(void)
-{
-}
+CRelationLnk::CRelationLnk(void) {}
 
-CRelationLnk::~CRelationLnk(void)
-{
+CRelationLnk::~CRelationLnk(void) {
   // unlink from both domain and codomain members
   rl_lnSrc.Remove();
   rl_lnDst.Remove();
 }
 
 // Get the domain member of this pair.
-CRelationSrc &CRelationLnk::GetSrc(void)
-{
+CRelationSrc &CRelationLnk::GetSrc(void) {
   return *rl_prsSrc;
 }
 
 // Get the codomain member of this pair.
-CRelationDst &CRelationLnk::GetDst(void)
-{
+CRelationDst &CRelationLnk::GetDst(void) {
   return *rl_prdDst;
 }
 
 // Global functions for creating relations.
-void AddRelationPair(CRelationSrc &rsSrc, CRelationDst &rdDst)
-{
+void AddRelationPair(CRelationSrc &rsSrc, CRelationDst &rdDst) {
   // create a new link
   CRelationLnk &lnk = *new CRelationLnk;
   lnk.rl_prsSrc = &rsSrc;
@@ -100,8 +85,7 @@ void AddRelationPair(CRelationSrc &rsSrc, CRelationDst &rdDst)
   rsSrc.AddTail(lnk.rl_lnSrc);
   rdDst.AddTail(lnk.rl_lnDst);
 }
-void AddRelationPairTailTail(CRelationSrc &rsSrc, CRelationDst &rdDst)
-{
+void AddRelationPairTailTail(CRelationSrc &rsSrc, CRelationDst &rdDst) {
   // create a new link
   CRelationLnk &lnk = *new CRelationLnk;
   lnk.rl_prsSrc = &rsSrc;
@@ -110,8 +94,7 @@ void AddRelationPairTailTail(CRelationSrc &rsSrc, CRelationDst &rdDst)
   rsSrc.AddTail(lnk.rl_lnSrc);
   rdDst.AddTail(lnk.rl_lnDst);
 }
-void  AddRelationPairHeadHead(CRelationSrc &rsSrc, CRelationDst &rdDst)
-{
+void AddRelationPairHeadHead(CRelationSrc &rsSrc, CRelationDst &rdDst) {
   // create a new link
   CRelationLnk &lnk = *new CRelationLnk;
   lnk.rl_prsSrc = &rsSrc;

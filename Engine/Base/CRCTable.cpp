@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -25,19 +25,20 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 extern INDEX net_bReportCRC;
 
 class CCRCEntry {
-public:
-  CTFileName ce_fnmFile;    // the file that CRC is for
-  ULONG ce_ulCRC;           // CRC of the file
-  BOOL ce_bActive;          // set if the file is now active for CRC checking
+  public:
+    CTFileName ce_fnmFile; // the file that CRC is for
+    ULONG ce_ulCRC;        // CRC of the file
+    BOOL ce_bActive;       // set if the file is now active for CRC checking
 
-  // filename is its name (used for storing in nametable)
-  inline const CTFileName &GetName(void) { return ce_fnmFile; };
-  void Clear(void) 
-  {
-    ce_fnmFile.Clear(); 
-    ce_ulCRC = 0;
-    ce_bActive = FALSE;
-  }
+    // filename is its name (used for storing in nametable)
+    inline const CTFileName &GetName(void) {
+      return ce_fnmFile;
+    };
+    void Clear(void) {
+      ce_fnmFile.Clear();
+      ce_ulCRC = 0;
+      ce_bActive = FALSE;
+    }
 };
 
 extern CDynamicStackArray<CTFileName> _afnmNoCRC;
@@ -46,11 +47,11 @@ extern BOOL FileMatchesList(CDynamicStackArray<CTFileName> &afnm, const CTFileNa
 #ifndef SE_INCL_CRCTABLE_CPP
 #define SE_INCL_CRCTABLE_CPP
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
-#define TYPE CCRCEntry
-#define CNameTable_TYPE CNameTable_CCRCEntry
+#define TYPE                CCRCEntry
+#define CNameTable_TYPE     CNameTable_CCRCEntry
 #define CNameTableSlot_TYPE CNameTableSlot_CCRCEntry
 #include <Engine/Templates/NameTable.h>
 #include <Engine/Templates/NameTable.cpp>
@@ -61,22 +62,20 @@ extern BOOL FileMatchesList(CDynamicStackArray<CTFileName> &afnm, const CTFileNa
 static CDynamicStackArray<CCRCEntry> _aceEntries;
 static CNameTable_CCRCEntry _ntEntries;
 
-extern BOOL CRCT_bGatherCRCs = FALSE;  // set while gathering CRCs of all loaded files
+extern BOOL CRCT_bGatherCRCs = FALSE; // set while gathering CRCs of all loaded files
 
 // init CRC table
-void CRCT_Init(void)
-{
+void CRCT_Init(void) {
   _ntEntries.SetAllocationParameters(50, 10, 10);
 }
 
 // check if a file is added
-BOOL CRCT_IsFileAdded(const CTFileName &fnm)
-{
+BOOL CRCT_IsFileAdded(const CTFileName &fnm) {
   return _ntEntries.Find(fnm) != NULL;
 }
 
 // add one file to active list and get its crc
-void CRCT_AddFile_t(const CTFileName &fnm, ULONG ulCRC/*=0*/) // throw char *
+void CRCT_AddFile_t(const CTFileName &fnm, ULONG ulCRC /*=0*/) // throw char *
 {
   // if not gathering CRCs now
   if (!CRCT_bGatherCRCs) {
@@ -98,11 +97,10 @@ void CRCT_AddFile_t(const CTFileName &fnm, ULONG ulCRC/*=0*/) // throw char *
       // force it
       pce->ce_ulCRC = ulCRC;
     }
-  // if not found
+    // if not found
   } else {
     // calculate checksum
     if (ulCRC == 0) {
-      
       if (FileMatchesList(_afnmNoCRC, fnm)) {
         ulCRC = 0x12345678;
       } else {
@@ -118,30 +116,26 @@ void CRCT_AddFile_t(const CTFileName &fnm, ULONG ulCRC/*=0*/) // throw char *
     bNew = TRUE;
   }
   if (bNew && net_bReportCRC) {
-    CPrintF("CRC %08x: '%s'\n", pce->ce_ulCRC, (const char*)pce->ce_fnmFile);
+    CPrintF("CRC %08x: '%s'\n", pce->ce_ulCRC, (const char *)pce->ce_fnmFile);
   }
 }
 
 // free all memory used by the crc cache
-void CRCT_Clear(void)
-{
+void CRCT_Clear(void) {
   _ntEntries.Clear();
   _aceEntries.Clear();
 }
 
 // reset all files to not active
-void CRCT_ResetActiveList(void)
-{
-  for (INDEX ice=0; ice<_aceEntries.Count(); ice++) {
+void CRCT_ResetActiveList(void) {
+  for (INDEX ice = 0; ice < _aceEntries.Count(); ice++) {
     _aceEntries[ice].ce_bActive = FALSE;
   }
 }
 
-
-static INDEX GetNumberOfActiveEntries(void)
-{
+static INDEX GetNumberOfActiveEntries(void) {
   INDEX ctActive = 0;
-  for (INDEX ice=0; ice<_aceEntries.Count(); ice++) {
+  for (INDEX ice = 0; ice < _aceEntries.Count(); ice++) {
     if (_aceEntries[ice].ce_bActive) {
       ctActive++;
     }
@@ -150,24 +144,24 @@ static INDEX GetNumberOfActiveEntries(void)
 }
 
 // dump list of all active files to the stream
-void CRCT_MakeFileList_t(CTStream &strmFiles)  // throw char *
+void CRCT_MakeFileList_t(CTStream &strmFiles) // throw char *
 {
   // save number of active entries
   INDEX ctActive = GetNumberOfActiveEntries();
   strmFiles << ctActive;
   // for each active entry
-  for (INDEX ice=0; ice<_aceEntries.Count(); ice++) {
+  for (INDEX ice = 0; ice < _aceEntries.Count(); ice++) {
     CCRCEntry &ce = _aceEntries[ice];
     if (!ce.ce_bActive) {
       continue;
     }
     // save name to stream
-    strmFiles << (CTString&)ce.ce_fnmFile;
+    strmFiles << (CTString &)ce.ce_fnmFile;
   }
 }
 
 // dump checksums for all files from the list
-ULONG CRCT_MakeCRCForFiles_t(CTStream &strmFiles)  // throw char *
+ULONG CRCT_MakeCRCForFiles_t(CTStream &strmFiles) // throw char *
 {
   BOOL bOld = CRCT_bGatherCRCs;
   CRCT_bGatherCRCs = TRUE;
@@ -178,7 +172,7 @@ ULONG CRCT_MakeCRCForFiles_t(CTStream &strmFiles)  // throw char *
   INDEX ctFiles;
   strmFiles >> ctFiles;
   // for each one
-  for (INDEX i=0; i<ctFiles; i++) {
+  for (INDEX i = 0; i < ctFiles; i++) {
     // read the name
     CTString strName;
     strmFiles >> strName;
@@ -198,6 +192,4 @@ ULONG CRCT_MakeCRCForFiles_t(CTStream &strmFiles)  // throw char *
   return ulCRC;
 }
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

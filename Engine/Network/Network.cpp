@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -34,7 +34,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/Stock_CTextureData.h>
 #include <Engine/Templates/Stock_CSoundData.h>
 #include <Engine/Templates/Stock_CEntityClass.h>
-
 
 #include <Engine/Base/Statistics_internal.h>
 #include <Engine/Graphics/DrawPort.h>
@@ -73,16 +72,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/GameAgent/GameAgent.h>
 
-
 // pointer to global instance of the only game object in the application
-CNetworkLibrary *_pNetwork= NULL;
+CNetworkLibrary *_pNetwork = NULL;
 
 extern BOOL _bNeedPretouch;
 extern BOOL _bMultiPlayer = FALSE;
 extern INDEX _ctEntities = 0;
 extern INDEX _ctPredictorEntities = 0;
 extern LevelChangePhase _lphCurrent = LCP_NOCHANGE;
-extern BOOL _bTempNetwork = FALSE;  // set while using temporary second network object
+extern BOOL _bTempNetwork = FALSE; // set while using temporary second network object
 extern BOOL con_bCapture;
 extern CTString con_strCapture;
 
@@ -93,8 +91,8 @@ static FLOAT _bStopDemoRecordingNextTime = FALSE;
 static INDEX dem_iRecordedNumber = 0;
 
 // network control
-extern INDEX ser_bReportSyncOK   = FALSE;
-extern INDEX ser_bReportSyncBad  = TRUE;
+extern INDEX ser_bReportSyncOK = FALSE;
+extern INDEX ser_bReportSyncBad = TRUE;
 extern INDEX ser_bReportSyncLate = FALSE;
 extern INDEX ser_bReportSyncEarly = FALSE;
 extern INDEX ser_bPauseOnSyncBad = FALSE;
@@ -105,7 +103,7 @@ extern INDEX ser_iExtensiveSyncCheck = 0;
 extern INDEX ser_bClientsMayPause = TRUE;
 extern FLOAT ser_tmSyncCheckFrequency = 1.0f;
 extern INDEX ser_iSyncCheckBuffer = 60;
-extern INDEX ser_bEnumeration  = TRUE;
+extern INDEX ser_bEnumeration = TRUE;
 extern INDEX ser_bPingGameAgent = TRUE;
 extern FLOAT ser_tmKeepAlive = 0.1f;
 extern FLOAT ser_tmPingUpdate = 3.0f;
@@ -116,8 +114,8 @@ extern CTString ser_strNameMask = "";
 extern INDEX ser_bInverseBanning = FALSE;
 extern CTString ser_strMOTD = "";
 
-extern INDEX cli_bEmulateDesync  = FALSE;
-extern INDEX cli_bDumpSync       = FALSE;
+extern INDEX cli_bEmulateDesync = FALSE;
+extern INDEX cli_bDumpSync = FALSE;
 extern INDEX cli_bDumpSyncEachTick = FALSE;
 extern INDEX cli_bAutoAdjustSettings = FALSE;
 extern FLOAT cli_tmAutoAdjustThreshold = 2.0f;
@@ -144,7 +142,7 @@ extern FLOAT net_fSendRetryWait = 0.5f;
 extern INDEX net_bReportTraffic = FALSE;
 extern INDEX net_bReportICMPErrors = FALSE;
 extern INDEX net_bReportMiscErrors = FALSE;
-extern INDEX net_bLerping       = TRUE;
+extern INDEX net_bLerping = TRUE;
 extern INDEX net_iGraphBuffer = 100;
 extern INDEX net_iExactTimer = 2;
 extern INDEX net_bDumpStreamBlocks = 0;
@@ -161,7 +159,7 @@ extern INDEX net_iMaxObservers = 16;
 extern INDEX net_iMaxClients = 0;
 extern FLOAT net_tmConnectionTimeout = 30.0f;
 extern FLOAT net_tmProblemsTimeout = 5.0f;
-extern FLOAT net_tmDisconnectTimeout = 300.0f;  // must be higher for level changing
+extern FLOAT net_tmDisconnectTimeout = 300.0f; // must be higher for level changing
 extern INDEX net_bReportCRC = FALSE;
 extern FLOAT net_fDropPackets = 0.0f;
 extern FLOAT net_tmLatency = 0.0f;
@@ -173,7 +171,7 @@ extern CTString cmd_cmdOnTick = "";
 extern CTString cmd_strChatSender = "";
 extern CTString cmd_strChatMessage = "";
 extern CTString cmd_cmdOnChat = "";
-extern INDEX net_ctChatMessages = 0;  // counter for incoming chat messages
+extern INDEX net_ctChatMessages = 0; // counter for incoming chat messages
 
 extern CPacketBufferStats _pbsSend;
 extern CPacketBufferStats _pbsRecv;
@@ -181,10 +179,10 @@ extern CPacketBufferStats _pbsRecv;
 extern BOOL _bPredictionActive = FALSE;
 
 class CGatherCRC {
-public:
-  BOOL bOld;
-  CGatherCRC();
-  ~CGatherCRC();
+  public:
+    BOOL bOld;
+    CGatherCRC();
+    ~CGatherCRC();
 };
 
 CGatherCRC::CGatherCRC() {
@@ -195,25 +193,24 @@ CGatherCRC::~CGatherCRC() {
 }
 
 // precache control
-extern INDEX _precache_NONE      = PRECACHE_NONE;
-extern INDEX _precache_SMART     = PRECACHE_SMART;
-extern INDEX _precache_ALL       = PRECACHE_ALL;
-extern INDEX _precache_PARANOIA  = PRECACHE_PARANOIA;
+extern INDEX _precache_NONE = PRECACHE_NONE;
+extern INDEX _precache_SMART = PRECACHE_SMART;
+extern INDEX _precache_ALL = PRECACHE_ALL;
+extern INDEX _precache_PARANOIA = PRECACHE_PARANOIA;
 extern INDEX gam_iPrecachePolicy = _precache_SMART;
 extern INDEX _precache_bNowPrecaching = FALSE;
 
 extern INDEX dbg_bBreak = FALSE;
 extern INDEX gam_bPretouch = FALSE;
 
-extern FLOAT phy_fCollisionCacheAhead  = 5.0f;
+extern FLOAT phy_fCollisionCacheAhead = 5.0f;
 extern FLOAT phy_fCollisionCacheAround = 1.5f;
 extern FLOAT cli_fPredictionFilter = 0.5f;
 
 extern INDEX shd_bCacheAll;
 
-
 // input
-extern INDEX inp_iKeyboardReadingMethod = 2;  // 0=getasynckey, 1=virtkeytrap, 2=scancodetrap
+extern INDEX inp_iKeyboardReadingMethod = 2; // 0=getasynckey, 1=virtkeytrap, 2=scancodetrap
 extern INDEX inp_bAllowMouseAcceleration = TRUE;
 extern FLOAT inp_fMouseSensitivity = 1.0f;
 extern INDEX inp_bMousePrecision = FALSE;
@@ -247,26 +244,25 @@ extern INDEX wed_bUseGenericTextureReplacement = FALSE;
 extern void RendererInfo(void);
 extern void ClearRenderer(void);
 
-
 // cache all shadowmaps now
-extern void CacheShadows(void)
-{
+extern void CacheShadows(void) {
   // mute all sounds
   _pSound->Mute();
-  CWorld *pwo = (CWorld*)_pShell->GetINDEX("pwoCurrentWorld");
+  CWorld *pwo = (CWorld *)_pShell->GetINDEX("pwoCurrentWorld");
   if (pwo != NULL) {
     pwo->wo_baBrushes.CacheAllShadowmaps();
-    CPrintF( TRANS("All shadows recached"));
-    if (shd_bCacheAll) CPrintF(".\n");
-    else CPrintF( TRANS(", but not for long.\n(precache all shadows function is disabled)\n"));
+    CPrintF(TRANS("All shadows recached"));
+    if (shd_bCacheAll)
+      CPrintF(".\n");
+    else
+      CPrintF(TRANS(", but not for long.\n(precache all shadows function is disabled)\n"));
   }
   // mark that we need pretouching
   _bNeedPretouch = TRUE;
 }
 
 // check if a name or IP matches a mask
-extern BOOL MatchesBanMask(const CTString &strString, const CTString &strMask)
-{
+extern BOOL MatchesBanMask(const CTString &strString, const CTString &strMask) {
   CTString strRest = strMask;
   CTString strLine;
 
@@ -285,41 +281,32 @@ extern BOOL MatchesBanMask(const CTString &strString, const CTString &strMask)
 
 extern CTString RemoveSubstring(const CTString &strFull, const CTString &strSub);
 
-static void AddIPMask(void* pArgs)
-{
-  CTString strIP = *NEXTARGUMENT(CTString*);
-  ser_strIPMask+= strIP+"\n";
+static void AddIPMask(void *pArgs) {
+  CTString strIP = *NEXTARGUMENT(CTString *);
+  ser_strIPMask += strIP + "\n";
 }
-static void RemIPMask(void* pArgs)
-{
-  CTString strIP = *NEXTARGUMENT(CTString*);
-  ser_strIPMask = RemoveSubstring(ser_strIPMask, strIP+"\n");
+static void RemIPMask(void *pArgs) {
+  CTString strIP = *NEXTARGUMENT(CTString *);
+  ser_strIPMask = RemoveSubstring(ser_strIPMask, strIP + "\n");
 }
-static void AddNameMask(void* pArgs)
-{
-  CTString strName = *NEXTARGUMENT(CTString*);
-  ser_strNameMask += strName+"\n";
+static void AddNameMask(void *pArgs) {
+  CTString strName = *NEXTARGUMENT(CTString *);
+  ser_strNameMask += strName + "\n";
 }
-static void RemNameMask(void* pArgs)
-{
-  CTString strName = *NEXTARGUMENT(CTString*);
-  ser_strNameMask = RemoveSubstring(ser_strNameMask, strName+"\n");
+static void RemNameMask(void *pArgs) {
+  CTString strName = *NEXTARGUMENT(CTString *);
+  ser_strNameMask = RemoveSubstring(ser_strNameMask, strName + "\n");
 }
 
-static void StartDemoRecording(void)
-{
+static void StartDemoRecording(void) {
   _bStartDemoRecordingNextTime = TRUE;
 }
 
-
-static void StopDemoRecording(void)
-{
+static void StopDemoRecording(void) {
   _bStopDemoRecordingNextTime = TRUE;
 }
 
-
-static void NetworkInfo(void)
-{
+static void NetworkInfo(void) {
   CPrintF("*Network library information:\n");
   CPrintF("Entities existing: %d\n", _ctEntities);
   CPrintF("Predictor entities existing: %d\n", _ctPredictorEntities);
@@ -328,24 +315,21 @@ static void NetworkInfo(void)
     CPrintF("  last processed tick: %g\n", CTimer::InSeconds(_pNetwork->ga_srvServer.srv_llLastProcessedTick));
     CPrintF("  last processed sequence: %d\n", _pNetwork->ga_srvServer.srv_iLastProcessedSequence);
     CPrintF("  players:\n");
-    for (INDEX iplb=0; iplb<_pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
+    for (INDEX iplb = 0; iplb < _pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
       CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iplb];
       if (plb.plb_Active) {
-        CPrintF("    %2d(%2d):'%s'@client%2d: (%dact)\n",
-          iplb, plb.plb_Index, plb.plb_pcCharacter.GetNameForPrinting(),
-          plb.plb_iClient, plb.plb_abReceived.GetCount());
+        CPrintF("    %2d(%2d):'%s'@client%2d: (%dact)\n", iplb, plb.plb_Index, plb.plb_pcCharacter.GetNameForPrinting(),
+                plb.plb_iClient, plb.plb_abReceived.GetCount());
       }
     }
     CPrintF("  clients:\n");
-    for (INDEX iSession=0; iSession<_pNetwork->ga_srvServer.srv_assoSessions.Count(); iSession++) {
+    for (INDEX iSession = 0; iSession < _pNetwork->ga_srvServer.srv_assoSessions.Count(); iSession++) {
       CSessionSocket &sso = _pNetwork->ga_srvServer.srv_assoSessions[iSession];
       if (sso.sso_bActive) {
         CPrintF("  %2d:'%s'\n", iSession, _cmiComm.Server_GetClientName(iSession)),
-        CPrintF("    buffer: %dblk=%dk\n",
-          sso.sso_nsBuffer.GetUsedBlocks(),
-          sso.sso_nsBuffer.GetUsedMemory()/1024);
+          CPrintF("    buffer: %dblk=%dk\n", sso.sso_nsBuffer.GetUsedBlocks(), sso.sso_nsBuffer.GetUsedMemory() / 1024);
         CPrintF("    state:");
-        if (sso.sso_iDisconnectedState>0) {
+        if (sso.sso_iDisconnectedState > 0) {
           CPrintF("    disconnecting");
         } else if (sso.sso_bSendStream) {
           CPrintF("    connected");
@@ -359,13 +343,12 @@ static void NetworkInfo(void)
     CPrintF("  not a server\n");
   }
   CPrintF("Session state:\n");
-  CPrintF("  buffer: (%dblk)%dk\n",
-    _pNetwork->ga_sesSessionState.ses_nsGameStream.GetUsedBlocks(),
-    _pNetwork->ga_sesSessionState.ses_nsGameStream.GetUsedMemory()/1024);
+  CPrintF("  buffer: (%dblk)%dk\n", _pNetwork->ga_sesSessionState.ses_nsGameStream.GetUsedBlocks(),
+          _pNetwork->ga_sesSessionState.ses_nsGameStream.GetUsedMemory() / 1024);
   CPrintF("  last processed tick: %g\n", CTimer::InSeconds(_pNetwork->ga_sesSessionState.ses_llLastProcessedTick));
   CPrintF("  last processed sequence: %d\n", _pNetwork->ga_sesSessionState.ses_iLastProcessedSequence);
   CPrintF("  level change: %d\n", _pNetwork->ga_sesSessionState.ses_iLevel);
-  for (INDEX iplt=0; iplt<_pNetwork->ga_sesSessionState.ses_apltPlayers.Count(); iplt++) {
+  for (INDEX iplt = 0; iplt < _pNetwork->ga_sesSessionState.ses_apltPlayers.Count(); iplt++) {
     CPlayerTarget &plt = _pNetwork->ga_sesSessionState.ses_apltPlayers[iplt];
     if (plt.plt_bActive) {
       ULONG ulID = -1;
@@ -376,16 +359,14 @@ static void NetworkInfo(void)
     }
   }
 
-
-    if (TIMER_PROFILING) {
-        CTString strNetProfile;
-        _pfNetworkProfile.Report(strNetProfile);
-        CPrintF(strNetProfile);
-    }
+  if (TIMER_PROFILING) {
+    CTString strNetProfile;
+    _pfNetworkProfile.Report(strNetProfile);
+    CPrintF(strNetProfile);
+  }
 }
 
-static void ListPlayers(void)
-{
+static void ListPlayers(void) {
   CPrintF("player list:\n");
   if (!_pNetwork->ga_srvServer.srv_bActive) {
     CPrintF("  <not a server>\n");
@@ -394,7 +375,7 @@ static void ListPlayers(void)
 
   CPrintF("  client# name\n");
   CPrintF("  ----------------------\n");
-  for (INDEX iplb=0; iplb<_pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
+  for (INDEX iplb = 0; iplb < _pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
     CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iplb];
     if (plb.plb_Active) {
       CPrintF("     %-2d   %s\n", plb.plb_iClient, plb.plb_pcCharacter.GetNameForPrinting());
@@ -403,10 +384,9 @@ static void ListPlayers(void)
   CPrintF("  ----------------------\n");
 }
 
-static void KickClient(INDEX iClient, const CTString &strReason)
-{
+static void KickClient(INDEX iClient, const CTString &strReason) {
   if (!_pNetwork->IsServer()) {
-    CPrintF( TRANS("Only server can kick people!\n"));
+    CPrintF(TRANS("Only server can kick people!\n"));
     return;
   }
   iClient = Clamp(iClient, INDEX(0), INDEX(NET_MAXGAMECOMPUTERS));
@@ -418,169 +398,177 @@ static void KickClient(INDEX iClient, const CTString &strReason)
     CPrintF(TRANS("Can't kick local client!\n"));
     return;
   }
-  CPrintF( TRANS("Kicking %d with explanation '%s'...\n"), iClient, strReason);
-  _pNetwork->ga_srvServer.SendDisconnectMessage(iClient, "Admin: "+strReason);
+  CPrintF(TRANS("Kicking %d with explanation '%s'...\n"), iClient, strReason);
+  _pNetwork->ga_srvServer.SendDisconnectMessage(iClient, "Admin: " + strReason);
 }
-static void KickClientCfunc(void* pArgs)
-{
+static void KickClientCfunc(void *pArgs) {
   INDEX iClient = NEXTARGUMENT(INDEX);
-  CTString strReason = *NEXTARGUMENT(CTString*);
+  CTString strReason = *NEXTARGUMENT(CTString *);
   KickClient(iClient, strReason);
 }
-static void KickByName(const CTString &strName, const CTString &strReason)
-{
+static void KickByName(const CTString &strName, const CTString &strReason) {
   if (!_pNetwork->IsServer()) {
-    CPrintF( TRANS("Only server can kick people!\n"));
+    CPrintF(TRANS("Only server can kick people!\n"));
     return;
   }
-  for (INDEX iplb=0; iplb<_pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
+  for (INDEX iplb = 0; iplb < _pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
     CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iplb];
     if (plb.plb_Active && plb.plb_pcCharacter.GetNameForPrinting().Undecorated().Matches(strName)) {
       KickClient(plb.plb_iClient, strReason);
     }
   }
 }
-static void KickByNameCfunc(void* pArgs)
-{
-  CTString strName = *NEXTARGUMENT(CTString*);
-  CTString strReason = *NEXTARGUMENT(CTString*);
+static void KickByNameCfunc(void *pArgs) {
+  CTString strName = *NEXTARGUMENT(CTString *);
+  CTString strReason = *NEXTARGUMENT(CTString *);
   KickByName(strName, strReason);
 }
 
-static void Admin(void* pArgs)
-{
-  CTString strCommand = *NEXTARGUMENT(CTString*);
+static void Admin(void *pArgs) {
+  CTString strCommand = *NEXTARGUMENT(CTString *);
 
   CNetworkMessage nm(MSG_ADMIN_COMMAND);
   nm << net_strAdminPassword << strCommand;
   _pNetwork->SendToServerReliable(nm);
 }
 
-static void StockInfo(void)
-{
+static void StockInfo(void) {
   // find memory used by shadowmap (both cached and uploaded)
-  INDEX ctCachedShadows=0, ctDynamicShadows=0, ctFlatShadows=0;
-  SLONG slStaticMemory=0,  slDynamicMemory=0,  slUploadMemory=0;
-  SLONG slShdBytes=0,  slSlackMemory=0,    slFlatMemory=0;
-  INDEX ct256=0, ct128=0, ct64=0, ct32=0, ct16=0;
-  SLONG sl256Memory=0, sl128Memory=0, sl64Memory=0, sl32Memory=0, sl16Memory=0;
+  INDEX ctCachedShadows = 0, ctDynamicShadows = 0, ctFlatShadows = 0;
+  SLONG slStaticMemory = 0, slDynamicMemory = 0, slUploadMemory = 0;
+  SLONG slShdBytes = 0, slSlackMemory = 0, slFlatMemory = 0;
+  INDEX ct256 = 0, ct128 = 0, ct64 = 0, ct32 = 0, ct16 = 0;
+  SLONG sl256Memory = 0, sl128Memory = 0, sl64Memory = 0, sl32Memory = 0, sl16Memory = 0;
 
-  if (_pGfx != NULL)
-  {
+  if (_pGfx != NULL) {
     FLOAT fSlackRatio;
-    FOREACHINLIST( CShadowMap, sm_lnInGfx, _pGfx->gl_lhCachedShadows, itsm)
-    { // get polygon size in pixels (used portion of shadowmap)
+    FOREACHINLIST(CShadowMap, sm_lnInGfx, _pGfx->gl_lhCachedShadows,
+                  itsm) { // get polygon size in pixels (used portion of shadowmap)
       SLONG slStaticSize, slDynamicSize, slUploadSize;
-      BOOL bIsFlat = itsm->GetUsedMemory( slStaticSize, slDynamicSize, slUploadSize, fSlackRatio);
-      SLONG slTotalSize = slDynamicSize+slUploadSize;
+      BOOL bIsFlat = itsm->GetUsedMemory(slStaticSize, slDynamicSize, slUploadSize, fSlackRatio);
+      SLONG slTotalSize = slDynamicSize + slUploadSize;
       if (bIsFlat) {
         slStaticMemory += 4;
-        slTotalSize    += 4;
-        slFlatMemory   += slStaticSize;
+        slTotalSize += 4;
+        slFlatMemory += slStaticSize;
         ctFlatShadows++;
       } else {
         slStaticMemory += slStaticSize;
-        slTotalSize    += slStaticSize;
-        if (slTotalSize>0) ctCachedShadows++;
+        slTotalSize += slStaticSize;
+        if (slTotalSize > 0)
+          ctCachedShadows++;
       }
-      if (slDynamicSize>0) {
+      if (slDynamicSize > 0) {
         slDynamicMemory += slDynamicSize;
         ctDynamicShadows++;
       }
-      slUploadMemory  += slUploadSize;
-      slShdBytes  += slTotalSize + sizeof(CShadowMap);
-      slSlackMemory   += slTotalSize*fSlackRatio;
+      slUploadMemory += slUploadSize;
+      slShdBytes += slTotalSize + sizeof(CShadowMap);
+      slSlackMemory += slTotalSize * fSlackRatio;
 
       if (!bIsFlat) { // by size ...
-        if (slStaticSize>128*1024) { ct256++; sl256Memory+=slTotalSize; }
-        else if (slStaticSize> 64*1024) { ct128++; sl128Memory+=slTotalSize; }
-        else if (slStaticSize> 32*1024) { ct64++;  sl64Memory +=slTotalSize; }
-        else if (slStaticSize> 16*1024) { ct32++;  sl32Memory +=slTotalSize; }
-        else if (slStaticSize> 0)       { ct16++;  sl16Memory +=slTotalSize; }
+        if (slStaticSize > 128 * 1024) {
+          ct256++;
+          sl256Memory += slTotalSize;
+        } else if (slStaticSize > 64 * 1024) {
+          ct128++;
+          sl128Memory += slTotalSize;
+        } else if (slStaticSize > 32 * 1024) {
+          ct64++;
+          sl64Memory += slTotalSize;
+        } else if (slStaticSize > 16 * 1024) {
+          ct32++;
+          sl32Memory += slTotalSize;
+        } else if (slStaticSize > 0) {
+          ct16++;
+          sl16Memory += slTotalSize;
+        }
       }
     }
     // report shadowmap memory usage (if any)
-    if (slShdBytes>0) {
-      CPrintF( "\nCached shadowmaps:\n");
-      CPrintF( "    Total: %d in %d KB with %d%% (%d KB) of slack space\n", ctCachedShadows, slShdBytes/1024, slSlackMemory*100/slShdBytes, slSlackMemory/1024);
-      CPrintF( "   Static: %d KB\n", slStaticMemory/1024);
-      CPrintF( "   Upload: %d KB\n", slUploadMemory/1024);
-      CPrintF( "  Dynamic: %d in %d KB\n", ctDynamicShadows, slDynamicMemory/1024);
-      if (ctCachedShadows<1) ctCachedShadows=1; // for percentage calc
-      CPrintF( "    Flats: %d (%d%%) with %d KB saved\n", ctFlatShadows, ctFlatShadows*100/ctCachedShadows, slFlatMemory/1024);
+    if (slShdBytes > 0) {
+      CPrintF("\nCached shadowmaps:\n");
+      CPrintF("    Total: %d in %d KB with %d%% (%d KB) of slack space\n", ctCachedShadows, slShdBytes / 1024,
+              slSlackMemory * 100 / slShdBytes, slSlackMemory / 1024);
+      CPrintF("   Static: %d KB\n", slStaticMemory / 1024);
+      CPrintF("   Upload: %d KB\n", slUploadMemory / 1024);
+      CPrintF("  Dynamic: %d in %d KB\n", ctDynamicShadows, slDynamicMemory / 1024);
+      if (ctCachedShadows < 1)
+        ctCachedShadows = 1; // for percentage calc
+      CPrintF("    Flats: %d (%d%%) with %d KB saved\n", ctFlatShadows, ctFlatShadows * 100 / ctCachedShadows,
+              slFlatMemory / 1024);
       CPrintF("of size:\n");
-      CPrintF( "    >128K: %4d in %d KB\n", ct256, sl256Memory/1024);
-      CPrintF( "  128-64K: %4d in %d KB\n", ct128, sl128Memory/1024);
-      CPrintF( "   64-32K: %4d in %d KB\n", ct64,  sl64Memory /1024);
-      CPrintF( "   32-16K: %4d in %d KB\n", ct32,  sl32Memory /1024);
-      CPrintF( "    <= 16K: %4d in %d KB\n", ct16,  sl16Memory /1024);
+      CPrintF("    >128K: %4d in %d KB\n", ct256, sl256Memory / 1024);
+      CPrintF("  128-64K: %4d in %d KB\n", ct128, sl128Memory / 1024);
+      CPrintF("   64-32K: %4d in %d KB\n", ct64, sl64Memory / 1024);
+      CPrintF("   32-16K: %4d in %d KB\n", ct32, sl32Memory / 1024);
+      CPrintF("    <= 16K: %4d in %d KB\n", ct16, sl16Memory / 1024);
     }
   }
 
   // report world stats
-  INDEX ctEntities=0, ctShadowLayers=0, ctPolys=0,    ctPlanes=0,   ctEdges=0,    ctVertices=0, ctSectors=0;
-  SLONG slEntBytes=0, slLyrBytes=0,     slPlyBytes=0, slPlnBytes=0, slEdgBytes=0, slVtxBytes=0, slSecBytes=0;
-  SLONG slCgrBytes=0;
-  CWorld *pwo = (CWorld*)_pShell->GetINDEX("pwoCurrentWorld");
+  INDEX ctEntities = 0, ctShadowLayers = 0, ctPolys = 0, ctPlanes = 0, ctEdges = 0, ctVertices = 0, ctSectors = 0;
+  SLONG slEntBytes = 0, slLyrBytes = 0, slPlyBytes = 0, slPlnBytes = 0, slEdgBytes = 0, slVtxBytes = 0, slSecBytes = 0;
+  SLONG slCgrBytes = 0;
+  CWorld *pwo = (CWorld *)_pShell->GetINDEX("pwoCurrentWorld");
 
-  if (pwo != NULL)
-  {
+  if (pwo != NULL) {
     // report count of and memory used by entities
-    FOREACHINDYNAMICCONTAINER( pwo->wo_cenEntities, CEntity, iten) {
+    FOREACHINDYNAMICCONTAINER(pwo->wo_cenEntities, CEntity, iten) {
       ctEntities++;
       slEntBytes += iten->GetUsedMemory();
     }
 
     // report shadow layers and world geometry memory usage
-    FOREACHINDYNAMICARRAY( pwo->wo_baBrushes.ba_abrBrushes, CBrush3D, itbr) // for all brush entities in the world
+    FOREACHINDYNAMICARRAY(pwo->wo_baBrushes.ba_abrBrushes, CBrush3D, itbr) // for all brush entities in the world
     {
       // skip brush without entity
-      if (itbr->br_penEntity == NULL) continue;
+      if (itbr->br_penEntity == NULL)
+        continue;
 
       // for each mip
-      FOREACHINLIST( CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm)
-      {
+      FOREACHINLIST(CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) {
         // for each sector in the brush mip
-        FOREACHINDYNAMICARRAY( itbm->bm_abscSectors, CBrushSector, itbsc)
-        {
+        FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
           // add sector class memory usage to polygons memory
           ctSectors++;
           slSecBytes += itbsc->GetUsedMemory();
 
           // add each vertex and working vertex in sector
           ctVertices += itbsc->bsc_abvxVertices.Count();
-          FOREACHINSTATICARRAY( itbsc->bsc_abvxVertices, CBrushVertex,   itbvx) slVtxBytes += itbvx->GetUsedMemory();
-          FOREACHINSTATICARRAY( itbsc->bsc_awvxVertices, CWorkingVertex, itwvx) slVtxBytes += 32; // aligned to 32 bytes!
+          FOREACHINSTATICARRAY(itbsc->bsc_abvxVertices, CBrushVertex, itbvx) slVtxBytes += itbvx->GetUsedMemory();
+          FOREACHINSTATICARRAY(itbsc->bsc_awvxVertices, CWorkingVertex, itwvx) slVtxBytes += 32; // aligned to 32 bytes!
 
           // add each plane and working plane in sector
           ctPlanes += itbsc->bsc_abplPlanes.Count();
-          FOREACHINSTATICARRAY( itbsc->bsc_abplPlanes, CBrushPlane,   itbpl) slPlnBytes += itbpl->GetUsedMemory();
-          FOREACHINSTATICARRAY( itbsc->bsc_awplPlanes, CWorkingPlane, itwpl) slPlnBytes += sizeof(CWorkingPlane);
+          FOREACHINSTATICARRAY(itbsc->bsc_abplPlanes, CBrushPlane, itbpl) slPlnBytes += itbpl->GetUsedMemory();
+          FOREACHINSTATICARRAY(itbsc->bsc_awplPlanes, CWorkingPlane, itwpl) slPlnBytes += sizeof(CWorkingPlane);
 
           // add each edge and working edge in sector
           ctEdges += itbsc->bsc_abedEdges.Count();
-          FOREACHINSTATICARRAY( itbsc->bsc_abedEdges, CBrushEdge,   itbed) slEdgBytes += itbed->GetUsedMemory();
-          FOREACHINSTATICARRAY( itbsc->bsc_awedEdges, CWorkingEdge, itwed) slEdgBytes += sizeof(CWorkingEdge);
+          FOREACHINSTATICARRAY(itbsc->bsc_abedEdges, CBrushEdge, itbed) slEdgBytes += itbed->GetUsedMemory();
+          FOREACHINSTATICARRAY(itbsc->bsc_awedEdges, CWorkingEdge, itwed) slEdgBytes += sizeof(CWorkingEdge);
 
           // for each polygon in sector
           ctPolys += itbsc->bsc_abpoPolygons.Count();
-          FOREACHINSTATICARRAY( itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
+          FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
             CBrushPolygon &bpo = *itbpo;
             slPlyBytes += bpo.GetUsedMemory();
             // count in the shadow layers (if any)
-            if (bpo.bpo_smShadowMap.bsm_lhLayers.IsEmpty()) continue; // skip polygon without shadowmap
+            if (bpo.bpo_smShadowMap.bsm_lhLayers.IsEmpty())
+              continue; // skip polygon without shadowmap
             ctShadowLayers += bpo.bpo_smShadowMap.GetShadowLayersCount();
             slLyrBytes += bpo.bpo_smShadowMap.GetUsedMemory();
           }
         }
       }
     } // add in memory used by collision grid
-    extern SLONG  GetCollisionGridMemory( CCollisionGrid *pcg);
-    slCgrBytes += GetCollisionGridMemory( pwo->wo_pcgCollisionGrid);
+    extern SLONG GetCollisionGridMemory(CCollisionGrid * pcg);
+    slCgrBytes += GetCollisionGridMemory(pwo->wo_pcgCollisionGrid);
   }
 
   // stock info
-  const DOUBLE dToMB = 1.0/1024.0/1024.0;
+  const DOUBLE dToMB = 1.0 / 1024.0 / 1024.0;
   const FLOAT fTexBytes = dToMB * _pTextureStock->CalculateUsedMemory();
   const FLOAT fMdlBytes = dToMB * _pModelStock->CalculateUsedMemory();
   const FLOAT fSndBytes = dToMB * _pSoundStock->CalculateUsedMemory();
@@ -591,33 +579,33 @@ static void StockInfo(void)
 
   CPrintF("\nStock information:\n");
   CPrintF("     Textures: %5d (%5.2f MB)\n", _pTextureStock->GetTotalCount(), fTexBytes);
-  CPrintF("   ShadowMaps: %5d (%5.2f MB)\n", ctCachedShadows, slShdBytes*dToMB);
-  CPrintF("     Entities: %5d (%5.2f MB)\n", ctEntities,      slEntBytes*dToMB);
+  CPrintF("   ShadowMaps: %5d (%5.2f MB)\n", ctCachedShadows, slShdBytes * dToMB);
+  CPrintF("     Entities: %5d (%5.2f MB)\n", ctEntities, slEntBytes * dToMB);
   CPrintF("       Sounds: %5d (%5.2f MB)\n", _pSoundStock->GetTotalCount(), fSndBytes);
   CPrintF("\n");
-  CPrintF("      Sectors: %5d (%5.2f MB)\n", ctSectors,  slSecBytes*dToMB);
-  CPrintF("       Planes: %5d (%5.2f MB)\n", ctPlanes,   slPlnBytes*dToMB);
-  CPrintF("        Edges: %5d (%5.2f MB)\n", ctEdges,    slEdgBytes*dToMB);
-  CPrintF("     Polygons: %5d (%5.2f MB)\n", ctPolys,    slPlyBytes*dToMB);
-  CPrintF("     Vertices: %5d (%5.2f MB)\n", ctVertices, slVtxBytes*dToMB);
-  CPrintF(" ShadowLayers: %5d (%5.2f MB)\n", ctShadowLayers, slLyrBytes*dToMB);
+  CPrintF("      Sectors: %5d (%5.2f MB)\n", ctSectors, slSecBytes * dToMB);
+  CPrintF("       Planes: %5d (%5.2f MB)\n", ctPlanes, slPlnBytes * dToMB);
+  CPrintF("        Edges: %5d (%5.2f MB)\n", ctEdges, slEdgBytes * dToMB);
+  CPrintF("     Polygons: %5d (%5.2f MB)\n", ctPolys, slPlyBytes * dToMB);
+  CPrintF("     Vertices: %5d (%5.2f MB)\n", ctVertices, slVtxBytes * dToMB);
+  CPrintF(" ShadowLayers: %5d (%5.2f MB)\n", ctShadowLayers, slLyrBytes * dToMB);
   CPrintF("\n");
-  CPrintF("       Models: %5d (%5.2f MB)\n", _pModelStock->GetTotalCount(),    fMdlBytes);
-  CPrintF("       Meshes: %5d (%5.2f MB)\n", _pMeshStock->GetTotalCount(),     fMshBytes);
+  CPrintF("       Models: %5d (%5.2f MB)\n", _pModelStock->GetTotalCount(), fMdlBytes);
+  CPrintF("       Meshes: %5d (%5.2f MB)\n", _pMeshStock->GetTotalCount(), fMshBytes);
   CPrintF("    Skeletons: %5d (%5.2f MB)\n", _pSkeletonStock->GetTotalCount(), fSkaBytes);
-  CPrintF("     AnimSets: %5d (%5.2f MB)\n", _pAnimSetStock->GetTotalCount(),  fAstBytes);
-  CPrintF("      Shaders: %5d (%5.2f MB)\n", _pShaderStock->GetTotalCount(),   fShaBytes);
+  CPrintF("     AnimSets: %5d (%5.2f MB)\n", _pAnimSetStock->GetTotalCount(), fAstBytes);
+  CPrintF("      Shaders: %5d (%5.2f MB)\n", _pShaderStock->GetTotalCount(), fShaBytes);
   CPrintF("\n");
-  CPrintF("CollisionGrid: %.2f MB\n", slCgrBytes*dToMB);
+  CPrintF("CollisionGrid: %.2f MB\n", slCgrBytes * dToMB);
   CPrintF("--------------\n");
-  CPrintF("        Total: %.2f MB\n", fTexBytes+fSndBytes+fMdlBytes+fMshBytes+fSkaBytes+fAstBytes+fShaBytes
-  + (slShdBytes+slEntBytes+slSecBytes+slPlnBytes+slEdgBytes+slPlyBytes+slVtxBytes+slLyrBytes+slCgrBytes)*dToMB);
+  CPrintF("        Total: %.2f MB\n",
+          fTexBytes + fSndBytes + fMdlBytes + fMshBytes + fSkaBytes + fAstBytes + fShaBytes
+            + (slShdBytes + slEntBytes + slSecBytes + slPlnBytes + slEdgBytes + slPlyBytes + slVtxBytes + slLyrBytes + slCgrBytes)
+                * dToMB);
   CPrintF("\n");
 }
 
-
-static void StockDump(void)
-{
+static void StockDump(void) {
   try {
     CTFileStream strm;
     CTFileName fnm = CTString("Temp\\StockDump.txt");
@@ -638,10 +626,8 @@ static void StockDump(void)
   }
 }
 
-
 // free all unused stocks
-extern void FreeUnusedStock(void)
-{
+extern void FreeUnusedStock(void) {
   // free all unused stocks
   _pEntityClassStock->FreeUnused();
   _pModelStock->FreeUnused();
@@ -650,12 +636,10 @@ extern void FreeUnusedStock(void)
   _pAnimStock->FreeUnused();
 }
 
-
 /*
  * This is called every TickQuantum seconds.
  */
-void CNetworkTimerHandler::HandleTimer(void)
-{
+void CNetworkTimerHandler::HandleTimer(void) {
   if (this == NULL || _bTempNetwork) {
     return; // this can happen during NET_MakeDefaultState_t()!
   }
@@ -663,20 +647,20 @@ void CNetworkTimerHandler::HandleTimer(void)
   CTSTREAM_BEGIN {
     // do the timer loop
     _pNetwork->TimerLoop();
-  } CTSTREAM_END;
+  }
+  CTSTREAM_END;
 }
 
 /*
  * Default constructor.
  */
 CNetworkLibrary::CNetworkLibrary(void) :
-  ga_IsServer(FALSE),               // is not server
-  ga_bDemoRec(FALSE),               // not recording demo
-  ga_bDemoPlay(FALSE),              // not playing demo
-  ga_bDemoPlayFinished(FALSE),      // demo not finished
-  ga_srvServer(*new CServer),
-  ga_sesSessionState(*new CSessionState)
-{
+ga_IsServer(FALSE),          // is not server
+ga_bDemoRec(FALSE),          // not recording demo
+ga_bDemoPlay(FALSE),         // not playing demo
+ga_bDemoPlayFinished(FALSE), // demo not finished
+ga_srvServer(*new CServer),
+ga_sesSessionState(*new CSessionState) {
   ga_aplsPlayers.New(NET_MAXLOCALPLAYERS);
 
   // default demo syncronization is real-time, with 1:1 playback speed
@@ -700,8 +684,7 @@ CNetworkLibrary::CNetworkLibrary(void) :
 /*
  * Destructor.
  */
-CNetworkLibrary::~CNetworkLibrary(void)
-{
+CNetworkLibrary::~CNetworkLibrary(void) {
   // clear the global world
   ga_World.DeletePredictors();
   ga_World.Clear();
@@ -716,12 +699,10 @@ CNetworkLibrary::~CNetworkLibrary(void)
   delete &ga_srvServer;
 }
 
-
 /*
  * Initialize game management.
  */
-void CNetworkLibrary::Init(const CTString &strGameID)
-{
+void CNetworkLibrary::Init(const CTString &strGameID) {
   // remember the game ID
   CMessageDispatcher::Init(strGameID);
 
@@ -729,15 +710,15 @@ void CNetworkLibrary::Init(const CTString &strGameID)
   _pShell->DeclareSymbol("user INDEX dbg_bBreak;", &dbg_bBreak);
   _pShell->DeclareSymbol("persistent user INDEX gam_bPretouch;", &gam_bPretouch);
 
-  _pShell->DeclareSymbol("user INDEX dem_iRecordedNumber;",     &dem_iRecordedNumber);
+  _pShell->DeclareSymbol("user INDEX dem_iRecordedNumber;", &dem_iRecordedNumber);
   _pShell->DeclareSymbol("user void StartDemoRecording(void);", &StartDemoRecording);
-  _pShell->DeclareSymbol("user void StopDemoRecording(void);",  &StopDemoRecording);
-  _pShell->DeclareSymbol("user void NetworkInfo(void);",  &NetworkInfo);
-  _pShell->DeclareSymbol("user void StockInfo(void);",    &StockInfo);
-  _pShell->DeclareSymbol("user void StockDump(void);",    &StockDump);
+  _pShell->DeclareSymbol("user void StopDemoRecording(void);", &StopDemoRecording);
+  _pShell->DeclareSymbol("user void NetworkInfo(void);", &NetworkInfo);
+  _pShell->DeclareSymbol("user void StockInfo(void);", &StockInfo);
+  _pShell->DeclareSymbol("user void StockDump(void);", &StockDump);
   _pShell->DeclareSymbol("user void RendererInfo(void);", &RendererInfo);
-  _pShell->DeclareSymbol("user void ClearRenderer(void);",   &ClearRenderer);
-  _pShell->DeclareSymbol("user void CacheShadows(void);",    &CacheShadows);
+  _pShell->DeclareSymbol("user void ClearRenderer(void);", &ClearRenderer);
+  _pShell->DeclareSymbol("user void CacheShadows(void);", &CacheShadows);
   _pShell->DeclareSymbol("user void KickClient(INDEX, CTString);", &KickClientCfunc);
   _pShell->DeclareSymbol("user void KickByName(CTString, CTString);", &KickByNameCfunc);
   _pShell->DeclareSymbol("user void ListPlayers(void);", &ListPlayers);
@@ -748,16 +729,15 @@ void CNetworkLibrary::Init(const CTString &strGameID)
   _pShell->DeclareSymbol("user void AddNameMask(CTString);", &AddNameMask);
   _pShell->DeclareSymbol("user void RemNameMask(CTString);", &RemNameMask);
 
-
-  _pShell->DeclareSymbol("user FLOAT dem_tmTimer;",         &ga_fDemoTimer);
-  _pShell->DeclareSymbol("user FLOAT dem_fSyncRate;",       &ga_fDemoSyncRate);
+  _pShell->DeclareSymbol("user FLOAT dem_tmTimer;", &ga_fDemoTimer);
+  _pShell->DeclareSymbol("user FLOAT dem_fSyncRate;", &ga_fDemoSyncRate);
   _pShell->DeclareSymbol("user FLOAT dem_fRealTimeFactor;", &ga_fDemoRealTimeFactor);
   _pShell->DeclareSymbol("user FLOAT gam_fRealTimeFactor;", &ga_fGameRealTimeFactor);
 
   _pShell->DeclareSymbol("user const FLOAT net_tmLatency;", &net_tmLatency);
   //_pShell->DeclareSymbol("user const FLOAT cmd_tmTick;", &cmd_llTick);
   _pShell->DeclareSymbol("persistent user CTString cmd_cmdOnTick;", &cmd_cmdOnTick);
-  _pShell->DeclareSymbol("user CTString cmd_strChatSender ;", &cmd_strChatSender );
+  _pShell->DeclareSymbol("user CTString cmd_strChatSender ;", &cmd_strChatSender);
   _pShell->DeclareSymbol("user CTString cmd_strChatMessage;", &cmd_strChatMessage);
   _pShell->DeclareSymbol("persistent user CTString cmd_cmdOnChat;", &cmd_cmdOnChat);
 
@@ -765,19 +745,19 @@ void CNetworkLibrary::Init(const CTString &strGameID)
 
   _pShell->DeclareSymbol("persistent user INDEX ent_bReportSpawnInWall;", &ent_bReportSpawnInWall);
 
-  _pShell->DeclareSymbol("user INDEX ser_bReportSyncOK;",    &ser_bReportSyncOK);
-  _pShell->DeclareSymbol("user INDEX ser_bReportSyncBad;",   &ser_bReportSyncBad);
-  _pShell->DeclareSymbol("user INDEX ser_bReportSyncLate;",  &ser_bReportSyncLate);
+  _pShell->DeclareSymbol("user INDEX ser_bReportSyncOK;", &ser_bReportSyncOK);
+  _pShell->DeclareSymbol("user INDEX ser_bReportSyncBad;", &ser_bReportSyncBad);
+  _pShell->DeclareSymbol("user INDEX ser_bReportSyncLate;", &ser_bReportSyncLate);
   _pShell->DeclareSymbol("user INDEX ser_bReportSyncEarly;", &ser_bReportSyncEarly);
-  _pShell->DeclareSymbol("user INDEX ser_bPauseOnSyncBad;",  &ser_bPauseOnSyncBad);
-  _pShell->DeclareSymbol("user INDEX ser_iKickOnSyncBad;",   &ser_iKickOnSyncBad);
-  _pShell->DeclareSymbol("user INDEX ser_bKickOnSyncLate;",  &ser_bKickOnSyncLate);
+  _pShell->DeclareSymbol("user INDEX ser_bPauseOnSyncBad;", &ser_bPauseOnSyncBad);
+  _pShell->DeclareSymbol("user INDEX ser_iKickOnSyncBad;", &ser_iKickOnSyncBad);
+  _pShell->DeclareSymbol("user INDEX ser_bKickOnSyncLate;", &ser_bKickOnSyncLate);
   _pShell->DeclareSymbol("persistent user FLOAT ser_tmSyncCheckFrequency;", &ser_tmSyncCheckFrequency);
   _pShell->DeclareSymbol("persistent user INDEX ser_iSyncCheckBuffer;", &ser_iSyncCheckBuffer);
   _pShell->DeclareSymbol("persistent user INDEX cli_bLerpActions;", &cli_bLerpActions);
   _pShell->DeclareSymbol("persistent user INDEX cli_bReportPredicted;", &cli_bReportPredicted);
   _pShell->DeclareSymbol("persistent user INDEX net_iExactTimer;", &net_iExactTimer);
-  _pShell->DeclareSymbol("user INDEX net_bDumpStreamBlocks;",   &net_bDumpStreamBlocks);
+  _pShell->DeclareSymbol("user INDEX net_bDumpStreamBlocks;", &net_bDumpStreamBlocks);
   _pShell->DeclareSymbol("user INDEX net_bDumpConnectionInfo;", &net_bDumpConnectionInfo);
   _pShell->DeclareSymbol("user INDEX net_iPort;", &net_iPort);
   _pShell->DeclareSymbol("persistent user CTString net_strLocalHost;", &net_strLocalHost);
@@ -794,21 +774,21 @@ void CNetworkLibrary::Init(const CTString &strGameID)
   _pShell->DeclareSymbol("user FLOAT net_tmDisconnectTimeout;", &net_tmDisconnectTimeout);
   _pShell->DeclareSymbol("user INDEX net_bReportCRC;", &net_bReportCRC);
   _pShell->DeclareSymbol("user INDEX ser_iRememberBehind;", &ser_iRememberBehind);
-  _pShell->DeclareSymbol("user INDEX cli_bEmulateDesync;",  &cli_bEmulateDesync);
-  _pShell->DeclareSymbol("user INDEX cli_bDumpSync;",       &cli_bDumpSync);
-  _pShell->DeclareSymbol("user INDEX cli_bDumpSyncEachTick;",&cli_bDumpSyncEachTick);
+  _pShell->DeclareSymbol("user INDEX cli_bEmulateDesync;", &cli_bEmulateDesync);
+  _pShell->DeclareSymbol("user INDEX cli_bDumpSync;", &cli_bDumpSync);
+  _pShell->DeclareSymbol("user INDEX cli_bDumpSyncEachTick;", &cli_bDumpSyncEachTick);
   _pShell->DeclareSymbol("persistent user INDEX ser_iExtensiveSyncCheck;", &ser_iExtensiveSyncCheck);
-  _pShell->DeclareSymbol("persistent user INDEX net_bLookupHostNames;",    &net_bLookupHostNames);
-  _pShell->DeclareSymbol("persistent user INDEX net_iCompression ;",       &net_iCompression);
+  _pShell->DeclareSymbol("persistent user INDEX net_bLookupHostNames;", &net_bLookupHostNames);
+  _pShell->DeclareSymbol("persistent user INDEX net_iCompression ;", &net_iCompression);
   _pShell->DeclareSymbol("persistent user INDEX net_bReportPackets;", &net_bReportPackets);
   _pShell->DeclareSymbol("persistent user INDEX net_iMaxSendRetries;", &net_iMaxSendRetries);
   _pShell->DeclareSymbol("persistent user FLOAT net_fSendRetryWait;", &net_fSendRetryWait);
   _pShell->DeclareSymbol("persistent user INDEX net_bReportTraffic;", &net_bReportTraffic);
   _pShell->DeclareSymbol("persistent user INDEX net_bReportICMPErrors;", &net_bReportICMPErrors);
   _pShell->DeclareSymbol("persistent user INDEX net_bReportMiscErrors;", &net_bReportMiscErrors);
-  _pShell->DeclareSymbol("persistent user INDEX net_bLerping;",       &net_bLerping);
+  _pShell->DeclareSymbol("persistent user INDEX net_bLerping;", &net_bLerping);
   _pShell->DeclareSymbol("persistent user INDEX ser_bClientsMayPause;", &ser_bClientsMayPause);
-  _pShell->DeclareSymbol("persistent user INDEX ser_bEnumeration;",      &ser_bEnumeration);
+  _pShell->DeclareSymbol("persistent user INDEX ser_bEnumeration;", &ser_bEnumeration);
   _pShell->DeclareSymbol("persistent user INDEX ser_bPingGameAgent;", &ser_bPingGameAgent);
   _pShell->DeclareSymbol("persistent user FLOAT ser_tmKeepAlive;", &ser_tmKeepAlive);
   _pShell->DeclareSymbol("persistent user FLOAT ser_tmPingUpdate;", &ser_tmPingUpdate);
@@ -820,24 +800,24 @@ void CNetworkLibrary::Init(const CTString &strGameID)
   _pShell->DeclareSymbol("persistent user INDEX ser_bInverseBanning;", &ser_bInverseBanning);
   _pShell->DeclareSymbol("persistent user CTString ser_strMOTD;", &ser_strMOTD);
 
-  _pShell->DeclareSymbol("persistent user INDEX cli_bAutoAdjustSettings;",   &cli_bAutoAdjustSettings);
+  _pShell->DeclareSymbol("persistent user INDEX cli_bAutoAdjustSettings;", &cli_bAutoAdjustSettings);
   _pShell->DeclareSymbol("persistent user FLOAT cli_tmAutoAdjustThreshold;", &cli_tmAutoAdjustThreshold);
-  _pShell->DeclareSymbol("persistent user INDEX cli_bPrediction;",           &cli_bPrediction);
-  _pShell->DeclareSymbol("persistent user INDEX cli_iMaxPredictionSteps;",   &cli_iMaxPredictionSteps);
-  _pShell->DeclareSymbol("persistent user INDEX cli_bPredictIfServer;",      &cli_bPredictIfServer);
-  _pShell->DeclareSymbol("persistent user INDEX cli_bPredictLocalPlayers;",  &cli_bPredictLocalPlayers);
+  _pShell->DeclareSymbol("persistent user INDEX cli_bPrediction;", &cli_bPrediction);
+  _pShell->DeclareSymbol("persistent user INDEX cli_iMaxPredictionSteps;", &cli_iMaxPredictionSteps);
+  _pShell->DeclareSymbol("persistent user INDEX cli_bPredictIfServer;", &cli_bPredictIfServer);
+  _pShell->DeclareSymbol("persistent user INDEX cli_bPredictLocalPlayers;", &cli_bPredictLocalPlayers);
   _pShell->DeclareSymbol("persistent user INDEX cli_bPredictRemotePlayers;", &cli_bPredictRemotePlayers);
   _pShell->DeclareSymbol("persistent user FLOAT cli_fPredictEntitiesRange;", &cli_fPredictEntitiesRange);
   _pShell->DeclareSymbol("persistent user FLOAT cli_fPredictionFilter;", &cli_fPredictionFilter);
   _pShell->DeclareSymbol("persistent user INDEX cli_iSendBehind;", &cli_iSendBehind);
   _pShell->DeclareSymbol("persistent user INDEX cli_iPredictionFlushing;", &cli_iPredictionFlushing);
 
-  _pShell->DeclareSymbol("persistent user INDEX cli_iBufferActions;",  &cli_iBufferActions);
-  _pShell->DeclareSymbol("persistent user INDEX cli_iMaxBPS;",     &cli_iMaxBPS);
-  _pShell->DeclareSymbol("persistent user INDEX cli_iMinBPS;",     &cli_iMinBPS);
+  _pShell->DeclareSymbol("persistent user INDEX cli_iBufferActions;", &cli_iBufferActions);
+  _pShell->DeclareSymbol("persistent user INDEX cli_iMaxBPS;", &cli_iMaxBPS);
+  _pShell->DeclareSymbol("persistent user INDEX cli_iMinBPS;", &cli_iMinBPS);
 
-  _pShell->DeclareSymbol("user FLOAT net_fLimitLatencySend;",   &_pbsSend.pbs_fLatencyLimit);
-  _pShell->DeclareSymbol("user FLOAT net_fLimitLatencyRecv;",   &_pbsRecv.pbs_fLatencyLimit);
+  _pShell->DeclareSymbol("user FLOAT net_fLimitLatencySend;", &_pbsSend.pbs_fLatencyLimit);
+  _pShell->DeclareSymbol("user FLOAT net_fLimitLatencyRecv;", &_pbsRecv.pbs_fLatencyLimit);
   _pShell->DeclareSymbol("user FLOAT net_fLatencyVariationSend;", &_pbsSend.pbs_fLatencyVariation);
   _pShell->DeclareSymbol("user FLOAT net_fLatencyVariationRecv;", &_pbsRecv.pbs_fLatencyVariation);
   _pShell->DeclareSymbol("user FLOAT net_fLimitBandwidthSend;", &_pbsSend.pbs_fBandwidthLimit);
@@ -846,41 +826,41 @@ void CNetworkLibrary::Init(const CTString &strGameID)
 
   _pShell->DeclareSymbol("persistent user INDEX net_iGraphBuffer;", &net_iGraphBuffer);
 
-  _pShell->DeclareSymbol("user const INDEX precache_NONE;",     &_precache_NONE);
-  _pShell->DeclareSymbol("user const INDEX precache_SMART;",    &_precache_SMART);
-  _pShell->DeclareSymbol("user const INDEX precache_ALL;",      &_precache_ALL);
+  _pShell->DeclareSymbol("user const INDEX precache_NONE;", &_precache_NONE);
+  _pShell->DeclareSymbol("user const INDEX precache_SMART;", &_precache_SMART);
+  _pShell->DeclareSymbol("user const INDEX precache_ALL;", &_precache_ALL);
   _pShell->DeclareSymbol("user const INDEX precache_PARANOIA;", &_precache_PARANOIA);
   _pShell->DeclareSymbol("persistent user INDEX gam_iPrecachePolicy;", &gam_iPrecachePolicy);
 
-  _pShell->DeclareSymbol("user FLOAT phy_fCollisionCacheAhead;",  &phy_fCollisionCacheAhead);
+  _pShell->DeclareSymbol("user FLOAT phy_fCollisionCacheAhead;", &phy_fCollisionCacheAhead);
   _pShell->DeclareSymbol("user FLOAT phy_fCollisionCacheAround;", &phy_fCollisionCacheAround);
 
-  _pShell->DeclareSymbol("persistent user INDEX inp_iKeyboardReadingMethod;",   &inp_iKeyboardReadingMethod);
-  _pShell->DeclareSymbol("persistent user INDEX inp_bAllowMouseAcceleration;",  &inp_bAllowMouseAcceleration);
-  _pShell->DeclareSymbol("persistent user FLOAT inp_fMouseSensitivity;",        &inp_fMouseSensitivity);
-  _pShell->DeclareSymbol("persistent user INDEX inp_bMousePrecision;",          &inp_bMousePrecision);
-  _pShell->DeclareSymbol("persistent user FLOAT inp_fMousePrecisionFactor;",    &inp_fMousePrecisionFactor);
+  _pShell->DeclareSymbol("persistent user INDEX inp_iKeyboardReadingMethod;", &inp_iKeyboardReadingMethod);
+  _pShell->DeclareSymbol("persistent user INDEX inp_bAllowMouseAcceleration;", &inp_bAllowMouseAcceleration);
+  _pShell->DeclareSymbol("persistent user FLOAT inp_fMouseSensitivity;", &inp_fMouseSensitivity);
+  _pShell->DeclareSymbol("persistent user INDEX inp_bMousePrecision;", &inp_bMousePrecision);
+  _pShell->DeclareSymbol("persistent user FLOAT inp_fMousePrecisionFactor;", &inp_fMousePrecisionFactor);
   _pShell->DeclareSymbol("persistent user FLOAT inp_fMousePrecisionThreshold;", &inp_fMousePrecisionThreshold);
-  _pShell->DeclareSymbol("persistent user FLOAT inp_fMousePrecisionTimeout;",   &inp_fMousePrecisionTimeout);
-  _pShell->DeclareSymbol("persistent user INDEX inp_bInvertMouse;",    &inp_bInvertMouse);
-  _pShell->DeclareSymbol("persistent user INDEX inp_bFilterMouse;",    &inp_bFilterMouse);
-  _pShell->DeclareSymbol("persistent user INDEX inp_bAllowPrescan;",   &inp_bAllowPrescan);
+  _pShell->DeclareSymbol("persistent user FLOAT inp_fMousePrecisionTimeout;", &inp_fMousePrecisionTimeout);
+  _pShell->DeclareSymbol("persistent user INDEX inp_bInvertMouse;", &inp_bInvertMouse);
+  _pShell->DeclareSymbol("persistent user INDEX inp_bFilterMouse;", &inp_bFilterMouse);
+  _pShell->DeclareSymbol("persistent user INDEX inp_bAllowPrescan;", &inp_bAllowPrescan);
 
-  _pShell->DeclareSymbol("persistent user INDEX inp_i2ndMousePort;",   &inp_i2ndMousePort);
+  _pShell->DeclareSymbol("persistent user INDEX inp_i2ndMousePort;", &inp_i2ndMousePort);
   _pShell->DeclareSymbol("persistent user INDEX inp_bInvert2ndMouse;", &inp_bInvert2ndMouse);
   _pShell->DeclareSymbol("persistent user INDEX inp_bFilter2ndMouse;", &inp_bFilter2ndMouse);
-  _pShell->DeclareSymbol("persistent user FLOAT inp_f2ndMouseSensitivity;",        &inp_f2ndMouseSensitivity);
-  _pShell->DeclareSymbol("persistent user INDEX inp_b2ndMousePrecision;",          &inp_b2ndMousePrecision);
-  _pShell->DeclareSymbol("persistent user FLOAT inp_f2ndMousePrecisionFactor;",    &inp_f2ndMousePrecisionFactor);
+  _pShell->DeclareSymbol("persistent user FLOAT inp_f2ndMouseSensitivity;", &inp_f2ndMouseSensitivity);
+  _pShell->DeclareSymbol("persistent user INDEX inp_b2ndMousePrecision;", &inp_b2ndMousePrecision);
+  _pShell->DeclareSymbol("persistent user FLOAT inp_f2ndMousePrecisionFactor;", &inp_f2ndMousePrecisionFactor);
   _pShell->DeclareSymbol("persistent user FLOAT inp_f2ndMousePrecisionThreshold;", &inp_f2ndMousePrecisionThreshold);
-  _pShell->DeclareSymbol("persistent user FLOAT inp_f2ndMousePrecisionTimeout;",   &inp_f2ndMousePrecisionTimeout);
+  _pShell->DeclareSymbol("persistent user FLOAT inp_f2ndMousePrecisionTimeout;", &inp_f2ndMousePrecisionTimeout);
 
-  _pShell->DeclareSymbol("persistent user INDEX inp_bMsgDebugger;",    &inp_bMsgDebugger);
+  _pShell->DeclareSymbol("persistent user INDEX inp_bMsgDebugger;", &inp_bMsgDebugger);
   _pShell->DeclareSymbol("persistent user INDEX inp_iMButton4Up;", &inp_iMButton4Up);
   _pShell->DeclareSymbol("persistent user INDEX inp_iMButton4Dn;", &inp_iMButton4Dn);
   _pShell->DeclareSymbol("persistent user INDEX inp_iMButton5Up;", &inp_iMButton5Up);
   _pShell->DeclareSymbol("persistent user INDEX inp_iMButton5Dn;", &inp_iMButton5Dn);
-  _pShell->DeclareSymbol("persistent user INDEX inp_ctJoysticksAllowed;",    &inp_ctJoysticksAllowed);
+  _pShell->DeclareSymbol("persistent user INDEX inp_ctJoysticksAllowed;", &inp_ctJoysticksAllowed);
   _pShell->DeclareSymbol("persistent user INDEX inp_bForceJoystickPolling;", &inp_bForceJoystickPolling);
   _pShell->DeclareSymbol("persistent user INDEX inp_bAutoDisableJoysticks;", &inp_bAutoDisableJoysticks);
 
@@ -896,8 +876,7 @@ void CNetworkLibrary::Init(const CTString &strGameID)
 /*
  * Add the timer handler.
  */
-void CNetworkLibrary::AddTimerHandler(void)
-{
+void CNetworkLibrary::AddTimerHandler(void) {
   if (this == NULL || _bTempNetwork) {
     return; // this can happen during NET_MakeDefaultState_t()!
   }
@@ -906,8 +885,7 @@ void CNetworkLibrary::AddTimerHandler(void)
 /*
  * Remove the timer handler.
  */
-void CNetworkLibrary::RemoveTimerHandler(void)
-{
+void CNetworkLibrary::RemoveTimerHandler(void) {
   if (this == NULL || _bTempNetwork) {
     return; // this can happen during NET_MakeDefaultState_t()!
   }
@@ -919,44 +897,43 @@ void CNetworkLibrary::RemoveTimerHandler(void)
  *
  * remember to keep this routine up to date with CNetworkLibrary::Read()
  */
-void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName,
-  const CTFileName &fnmWorld, ULONG ulSpawnFlags,
-  INDEX ctMaxPlayers, BOOL bWaitAllPlayers,
-  void *pvSessionProperties) // throw char *
+void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName, const CTFileName &fnmWorld, ULONG ulSpawnFlags,
+                                        INDEX ctMaxPlayers, BOOL bWaitAllPlayers,
+                                        void *pvSessionProperties) // throw char *
 {
   // mute all sounds
   _pSound->Mute();
 
   // go on
-  CPrintF( TRANS("Starting session: '%s'\n"), strSessionName);
-  CPrintF( TRANS("  level: '%s'\n"), (const char*) fnmWorld);
-  CPrintF( TRANS("  spawnflags: %08x\n"), ulSpawnFlags);
-  CPrintF( TRANS("  max players: %d\n"), ctMaxPlayers);
-  CPrintF( TRANS("  waiting: %d\n"), bWaitAllPlayers);
+  CPrintF(TRANS("Starting session: '%s'\n"), strSessionName);
+  CPrintF(TRANS("  level: '%s'\n"), (const char *)fnmWorld);
+  CPrintF(TRANS("  spawnflags: %08x\n"), ulSpawnFlags);
+  CPrintF(TRANS("  max players: %d\n"), ctMaxPlayers);
+  CPrintF(TRANS("  waiting: %d\n"), bWaitAllPlayers);
 
   CGatherCRC gc;
 
   // if starting in network
   if (_cmiComm.IsNetworkEnabled()) {
-    CPrintF( TRANS("  network is on\n"));
+    CPrintF(TRANS("  network is on\n"));
     // start gathering CRCs
     InitCRCGather();
 
     // make default state data for creating deltas
     MakeDefaultState(fnmWorld, ulSpawnFlags, pvSessionProperties);
   } else {
-    CPrintF( TRANS("  network is off\n"));
+    CPrintF(TRANS("  network is off\n"));
   }
 
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
-  ga_ctTimersPending = -1;    // disable timer pending
+  ga_ctTimersPending = -1; // disable timer pending
 
   ga_strSessionName = strSessionName;
   ga_bLocalPause = FALSE;
-  ga_sesSessionState.ses_iLevel+=1;
+  ga_sesSessionState.ses_iLevel += 1;
   ga_sesSessionState.ses_ulSpawnFlags = ulSpawnFlags;
   ga_sesSessionState.ses_tmSyncCheckFrequency = ser_tmSyncCheckFrequency;
   ga_sesSessionState.ses_iExtensiveSyncCheck = ser_iExtensiveSyncCheck;
@@ -968,11 +945,11 @@ void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName,
   ga_fnmNextLevel = CTString("");
   try {
     // load the world
-    _pTimer->SetGameTick(0);  // must have timer at 0 while loading
+    _pTimer->SetGameTick(0); // must have timer at 0 while loading
     ga_World.Load_t(fnmWorld);
     // delete all entities that don't fit given spawn flags
     ga_World.FilterEntitiesBySpawnFlags(ga_sesSessionState.ses_ulSpawnFlags);
-  } catch(char *) {
+  } catch (char *) {
     ga_fnmWorld = CTString("");
     _cmiComm.Server_Close();
     _cmiComm.Client_Close();
@@ -1021,7 +998,8 @@ void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName,
   ga_sesSessionState.ses_fRealTimeFactor = 1.0f;
 
   // eventually cache all shadowmaps in world (memory eater!)
-  if (shd_bCacheAll) ga_World.wo_baBrushes.CacheAllShadowmaps();
+  if (shd_bCacheAll)
+    ga_World.wo_baBrushes.CacheAllShadowmaps();
   // flush stale caches
   FreeUnusedStock();
   // mark that pretouching is required
@@ -1030,7 +1008,7 @@ void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName,
   // start timer sync anew
   ga_ctTimersPending = 0;
   FinishCRCGather();
-  CPrintF( TRANS("  started.\n"));
+  CPrintF(TRANS("  started.\n"));
 }
 
 /*
@@ -1053,7 +1031,7 @@ void CNetworkLibrary::Save_t(const CTFileName &fnmGame) // throw char *
   // write game to stream
   strmFile.WriteID_t("GAME");
   ga_sesSessionState.Write_t(&strmFile);
-  strmFile.WriteID_t("GEND");   // game end
+  strmFile.WriteID_t("GEND"); // game end
 }
 
 /*
@@ -1070,7 +1048,7 @@ void CNetworkLibrary::Load_t(const CTFileName &fnmGame) // throw char *
   CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
-  ga_ctTimersPending = -1;    // disable timer pending
+  ga_ctTimersPending = -1; // disable timer pending
   CGatherCRC gc;
 
   ga_bLocalPause = FALSE;
@@ -1103,14 +1081,13 @@ void CNetworkLibrary::Load_t(const CTFileName &fnmGame) // throw char *
     // if starting in network
     if (_cmiComm.IsNetworkEnabled()) {
       // make default state data for creating deltas
-      MakeDefaultState(ga_fnmWorld, ga_sesSessionState.ses_ulSpawnFlags,
-        ga_aubProperties);
+      MakeDefaultState(ga_fnmWorld, ga_sesSessionState.ses_ulSpawnFlags, ga_aubProperties);
     }
     // players will be connected later
     ga_sesSessionState.ses_apltPlayers.Clear();
     ga_sesSessionState.ses_apltPlayers.New(NET_MAXGAMEPLAYERS);
-    strmFile.ExpectID_t("GEND");   // game end
-  } catch(char *) {
+    strmFile.ExpectID_t("GEND"); // game end
+  } catch (char *) {
     RemoveTimerHandler();
     ga_srvServer.Stop();
     ga_IsServer = FALSE;
@@ -1118,7 +1095,7 @@ void CNetworkLibrary::Load_t(const CTFileName &fnmGame) // throw char *
   }
 
   // set time and pause for server from the saved game
-  ga_sesSessionState.ses_iLevel+=1;
+  ga_sesSessionState.ses_iLevel += 1;
   ga_srvServer.srv_llLastProcessedTick = ga_sesSessionState.ses_llLastProcessedTick;
   ga_srvServer.srv_iLastProcessedSequence = ga_sesSessionState.ses_iLastProcessedSequence;
   ga_srvServer.srv_bPause = ga_sesSessionState.ses_bPause;
@@ -1129,7 +1106,8 @@ void CNetworkLibrary::Load_t(const CTFileName &fnmGame) // throw char *
   ga_srvServer.srv_assoSessions[0].sso_iLastSentSequence = ga_srvServer.srv_iLastProcessedSequence;
 
   // eventually cache all shadowmaps in world (memory eater!)
-  if (shd_bCacheAll) ga_World.wo_baBrushes.CacheAllShadowmaps();
+  if (shd_bCacheAll)
+    ga_World.wo_baBrushes.CacheAllShadowmaps();
   // flush stale caches
   FreeUnusedStock();
   // mark that pretouching is required
@@ -1143,20 +1121,18 @@ void CNetworkLibrary::Load_t(const CTFileName &fnmGame) // throw char *
 /*
  * Save a debugging game.
  */
-void CNetworkLibrary::DebugSave(void)
-{
+void CNetworkLibrary::DebugSave(void) {
   // try to save game
   try {
     Save_t(CTString("Save\\Debug.sav"));
-  // if not successful
+    // if not successful
   } catch (char *strError) {
     FatalError("Cannot save debug game:\n%s", strError);
   }
 }
 
-// Enumerate existing sessions. 
-void CNetworkLibrary::EnumSessions(BOOL bInternet)
-{
+// Enumerate existing sessions.
+void CNetworkLibrary::EnumSessions(BOOL bInternet) {
   // clear old list
   FORDELETELIST(CNetworkSession, ns_lnNode, ga_lhEnumeratedSessions, itns) {
     delete &*itns;
@@ -1164,7 +1140,7 @@ void CNetworkLibrary::EnumSessions(BOOL bInternet)
 
   // make sure network is on
   if (!_cmiComm.IsNetworkEnabled()) {
-    _cmiComm.PrepareForUse(/*network*/TRUE, /*client*/FALSE); // have to enumerate as server
+    _cmiComm.PrepareForUse(/*network*/ TRUE, /*client*/ FALSE); // have to enumerate as server
   }
 
   // request enumeration
@@ -1180,7 +1156,7 @@ void CNetworkLibrary::JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctL
   _pSound->Mute();
 
   // report session addres
-  CPrintF( TRANS("Joining session at: '%s'\n"), nsSesssion.ns_strAddress);
+  CPrintF(TRANS("Joining session at: '%s'\n"), nsSesssion.ns_strAddress);
 
   ga_bLocalPause = FALSE;
 
@@ -1188,7 +1164,7 @@ void CNetworkLibrary::JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctL
   CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
-  ga_ctTimersPending = -1;    // disable timer pending
+  ga_ctTimersPending = -1; // disable timer pending
   // start gathering CRCs
   CGatherCRC gc;
   InitCRCGather();
@@ -1210,7 +1186,7 @@ void CNetworkLibrary::JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctL
   // initialize session state
   try {
     ga_sesSessionState.Start_t(ctLocalPlayers);
-  } catch(char *) {
+  } catch (char *) {
     RemoveTimerHandler();
     throw;
   }
@@ -1219,7 +1195,8 @@ void CNetworkLibrary::JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctL
   _pShell->SetINDEX("pwoCurrentWorld", (INDEX)&ga_World);
 
   // eventually cache all shadowmaps in world (memory eater!)
-  if (shd_bCacheAll) ga_World.wo_baBrushes.CacheAllShadowmaps();
+  if (shd_bCacheAll)
+    ga_World.wo_baBrushes.CacheAllShadowmaps();
   // flush stale caches
   FreeUnusedStock();
   // mark that pretouching is required
@@ -1231,12 +1208,12 @@ void CNetworkLibrary::JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctL
   ga_ctTimersPending = 0;
 
   // initially auto adjust prediction on
-//  AdjustPredictionOn();
+  //  AdjustPredictionOn();
   CPrintF("  joined\n");
 }
 
-// Start playing a demo. 
-void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo)  // throw char *
+// Start playing a demo.
+void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo) // throw char *
 {
   // mute all sounds
   _pSound->Mute();
@@ -1245,7 +1222,7 @@ void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo)  // throw char *
   CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
-  ga_ctTimersPending = -1;    // disable timer pending
+  ga_ctTimersPending = -1; // disable timer pending
   ga_bLocalPause = FALSE;
 
   // open the file
@@ -1256,7 +1233,7 @@ void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo)  // throw char *
   ga_bDemoPlayFinished = FALSE;
 
   // create session name from demo name
-  CTString strSessionName = CTString("Demo: ")+fnDemo;
+  CTString strSessionName = CTString("Demo: ") + fnDemo;
   ga_strSessionName = strSessionName;
 
   ga_IsServer = FALSE;
@@ -1273,7 +1250,7 @@ void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo)  // throw char *
       ga_ulDemoMinorVersion = 2;
     }
     ga_sesSessionState.Read_t(&ga_strmDemoPlay);
-  } catch(char *) {
+  } catch (char *) {
     RemoveTimerHandler();
     ga_strmDemoPlay.Close();
     ga_bDemoPlay = FALSE;
@@ -1281,7 +1258,8 @@ void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo)  // throw char *
   }
 
   // eventually cache all shadowmaps in world (memory eater!)
-  if (shd_bCacheAll) ga_World.wo_baBrushes.CacheAllShadowmaps();
+  if (shd_bCacheAll)
+    ga_World.wo_baBrushes.CacheAllShadowmaps();
   // flush stale caches
   FreeUnusedStock();
   // mark that pretouching is required
@@ -1303,36 +1281,30 @@ void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo)  // throw char *
   ga_ctTimersPending = 0;
 }
 
-// Test if currently playing demo has finished. 
-BOOL CNetworkLibrary::IsDemoPlayFinished(void)
-{
+// Test if currently playing demo has finished.
+BOOL CNetworkLibrary::IsDemoPlayFinished(void) {
   return ga_bDemoPlay && ga_bDemoPlayFinished;
 }
 
-// Test if currently playing a demo. 
-BOOL CNetworkLibrary::IsPlayingDemo(void)
-{
+// Test if currently playing a demo.
+BOOL CNetworkLibrary::IsPlayingDemo(void) {
   return ga_bDemoPlay;
 }
 
-// Test if currently recording a demo. 
-BOOL CNetworkLibrary::IsRecordingDemo(void)
-{
+// Test if currently recording a demo.
+BOOL CNetworkLibrary::IsRecordingDemo(void) {
   return ga_bDemoRec;
 }
-BOOL CNetworkLibrary::IsNetworkEnabled(void)
-{
+BOOL CNetworkLibrary::IsNetworkEnabled(void) {
   return _cmiComm.IsNetworkEnabled();
 }
 // pause/unpause game
-void CNetworkLibrary::TogglePause(void)
-{
+void CNetworkLibrary::TogglePause(void) {
   ga_sesSessionState.ses_bWantPause = !ga_sesSessionState.ses_bWantPause;
 }
 
 // test if game is paused
-BOOL CNetworkLibrary::IsPaused(void)
-{
+BOOL CNetworkLibrary::IsPaused(void) {
   if (this == NULL || _bTempNetwork) {
     return TRUE; // this can happen during NET_MakeDefaultState_t()!
   }
@@ -1340,8 +1312,7 @@ BOOL CNetworkLibrary::IsPaused(void)
 }
 
 // test if having connnection problems (not getting messages from server regulary)
-BOOL CNetworkLibrary::IsConnectionStable(void)
-{
+BOOL CNetworkLibrary::IsConnectionStable(void) {
   // if network is not enabled
   if (!_cmiComm.IsNetworkEnabled()) {
     // it is always stable
@@ -1349,27 +1320,23 @@ BOOL CNetworkLibrary::IsConnectionStable(void)
   }
 
   // check when last message was received.
-  return (_pTimer->GetHighPrecisionTimer()-ga_sesSessionState.ses_tvMessageReceived).GetSeconds()<net_tmProblemsTimeout;
+  return (_pTimer->GetHighPrecisionTimer() - ga_sesSessionState.ses_tvMessageReceived).GetSeconds() < net_tmProblemsTimeout;
 }
 // test if completely disconnected and why
-BOOL CNetworkLibrary::IsDisconnected(void)
-{
+BOOL CNetworkLibrary::IsDisconnected(void) {
   return ga_sesSessionState.ses_strDisconnected != "";
 }
 
-const CTString &CNetworkLibrary::WhyDisconnected(void)
-{
+const CTString &CNetworkLibrary::WhyDisconnected(void) {
   return ga_sesSessionState.ses_strDisconnected;
 }
 
 // set/get server side pause (for single player only)
-void CNetworkLibrary::SetLocalPause(BOOL bPause)
-{
+void CNetworkLibrary::SetLocalPause(BOOL bPause) {
   ga_bLocalPause = bPause;
 }
 
-BOOL CNetworkLibrary::GetLocalPause(void)
-{
+BOOL CNetworkLibrary::GetLocalPause(void) {
   if (this == NULL || _bTempNetwork) {
     return TRUE; // this can happen during NET_MakeDefaultState_t()!
   }
@@ -1377,38 +1344,32 @@ BOOL CNetworkLibrary::GetLocalPause(void)
 }
 
 // get server/client name and address
-void CNetworkLibrary::GetHostName(CTString &strName, CTString &strAddress)
-{
+void CNetworkLibrary::GetHostName(CTString &strName, CTString &strAddress) {
   _cmiComm.GetHostName(strName, strAddress);
 }
 
 // mark that the game has finished -- called from AI
-void CNetworkLibrary::SetGameFinished(void)
-{
+void CNetworkLibrary::SetGameFinished(void) {
   ga_sesSessionState.ses_bGameFinished = TRUE;
   if (IsServer()) {
     ga_srvServer.srv_bGameFinished = TRUE;
   }
 }
-BOOL CNetworkLibrary::IsGameFinished(void)
-{
+BOOL CNetworkLibrary::IsGameFinished(void) {
   return ga_sesSessionState.ses_bGameFinished;
 }
 
 // manipulation with realtime factor for slower/faster time -- called from AI
-void CNetworkLibrary::SetRealTimeFactor(FLOAT fSpeed)
-{
+void CNetworkLibrary::SetRealTimeFactor(FLOAT fSpeed) {
   ga_sesSessionState.ses_fRealTimeFactor = fSpeed;
 }
 
-FLOAT CNetworkLibrary::GetRealTimeFactor(void)
-{
+FLOAT CNetworkLibrary::GetRealTimeFactor(void) {
   return ga_sesSessionState.ses_fRealTimeFactor;
 }
 
 // test if game is waiting for more players to connect
-BOOL CNetworkLibrary::IsWaitingForPlayers(void)
-{
+BOOL CNetworkLibrary::IsWaitingForPlayers(void) {
   // if game mode does not include waiting for players
   if (!ga_sesSessionState.ses_bWaitAllPlayers) {
     // not waiting
@@ -1417,39 +1378,36 @@ BOOL CNetworkLibrary::IsWaitingForPlayers(void)
   // if server
   if (IsServer()) {
     // check number of players on server
-    return ga_srvServer.GetPlayersCount()<ga_sesSessionState.ses_ctMaxPlayers;
-  // if not server
+    return ga_srvServer.GetPlayersCount() < ga_sesSessionState.ses_ctMaxPlayers;
+    // if not server
   } else {
     // check number of players in session
-    return ga_sesSessionState.GetPlayersCount()<ga_sesSessionState.ses_ctMaxPlayers;
+    return ga_sesSessionState.GetPlayersCount() < ga_sesSessionState.ses_ctMaxPlayers;
   }
 }
 // test if game is waiting for server
-BOOL CNetworkLibrary::IsWaitingForServer(void)
-{
+BOOL CNetworkLibrary::IsWaitingForServer(void) {
   return ga_sesSessionState.ses_bWaitingForServer;
 }
 
 // test if game session is currently doing prediction
-BOOL CNetworkLibrary::IsPredicting(void)
-{
+BOOL CNetworkLibrary::IsPredicting(void) {
   return ga_sesSessionState.ses_bPredicting;
 }
 
 /*
  * Stop currently running game.
  */
-void CNetworkLibrary::StopGame(void)
-{
+void CNetworkLibrary::StopGame(void) {
   // mute all sounds
   _pSound->Mute();
 
-  CPrintF( TRANS("stopping game.\n"));
+  CPrintF(TRANS("stopping game.\n"));
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
-  ga_ctTimersPending = -1;    // disable timer pending
+  ga_ctTimersPending = -1; // disable timer pending
 
   // stop demo recording if active
   StopDemoRec();
@@ -1504,9 +1462,7 @@ void CNetworkLibrary::StopGame(void)
 }
 
 // initiate level change
-void CNetworkLibrary::ChangeLevel(
-  const CTFileName &fnmNextLevel, BOOL bRemember, INDEX iUserData)
-{
+void CNetworkLibrary::ChangeLevel(const CTFileName &fnmNextLevel, BOOL bRemember, INDEX iUserData) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
 
@@ -1523,8 +1479,7 @@ void CNetworkLibrary::ChangeLevel(
 }
 
 // really do the level change
-void CNetworkLibrary::ChangeLevel_internal(void)
-{
+void CNetworkLibrary::ChangeLevel_internal(void) {
   CSetFPUPrecision FPUPrecision(FPT_24BIT);
 
   extern BOOL _bReinitEntitiesWhileCopying;
@@ -1538,33 +1493,36 @@ void CNetworkLibrary::ChangeLevel_internal(void)
 
   // find all entities that are to cross to next level
   CEntitySelection senToCross;
-  {FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
-    if (iten->en_ulFlags&ENF_CROSSESLEVELS) {
-      senToCross.Select(*iten);
+  {
+    FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
+      if (iten->en_ulFlags & ENF_CROSSESLEVELS) {
+        senToCross.Select(*iten);
+      }
     }
-  }}
+  }
 
   // copy them to a temporary world
   CWorld wldTemp;
   CEntitySelection senInTemp;
-  wldTemp.CopyEntities(ga_World, senToCross,
-    senInTemp, CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f)));
+  wldTemp.CopyEntities(ga_World, senToCross, senInTemp, CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f)));
 
   // remember characters for all player targets and disable them
   CPlayerCharacter apc[NET_MAXGAMEPLAYERS];
   BOOL abWasActive[NET_MAXGAMEPLAYERS];
   CPlayerAction apaActions[NET_MAXGAMEPLAYERS][2];
-  {for (INDEX i=0; i<NET_MAXGAMEPLAYERS; i++) {
-    CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[i];
-    abWasActive[i] = plt.IsActive();
-    if (plt.IsActive()) {
-      apc[i] = plt.plt_penPlayerEntity->en_pcCharacter;
-      apaActions[i][0] = plt.plt_paLastAction;
-      apaActions[i][1] = plt.plt_paPreLastAction;
-      plt.plt_penPlayerEntity = NULL;
-      plt.Deactivate();
+  {
+    for (INDEX i = 0; i < NET_MAXGAMEPLAYERS; i++) {
+      CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[i];
+      abWasActive[i] = plt.IsActive();
+      if (plt.IsActive()) {
+        apc[i] = plt.plt_penPlayerEntity->en_pcCharacter;
+        apaActions[i][0] = plt.plt_paLastAction;
+        apaActions[i][1] = plt.plt_paPreLastAction;
+        plt.plt_penPlayerEntity = NULL;
+        plt.Deactivate();
+      }
     }
-  }}
+  }
 
   // destroy all entities that will cross level
   ga_World.DestroyEntities(senToCross);
@@ -1594,12 +1552,12 @@ void CNetworkLibrary::ChangeLevel_internal(void)
     // try to
     try {
       // load the new world
-      _pTimer->SetGameTick(0);  // must have timer at 0 while loading
+      _pTimer->SetGameTick(0); // must have timer at 0 while loading
       ga_World.Load_t(ga_fnmNextLevel);
       // delete all entities that don't fit given spawn flags
       ga_World.FilterEntitiesBySpawnFlags(ga_sesSessionState.ses_ulSpawnFlags);
-    // if failed
-    } catch(char *strError) {
+      // if failed
+    } catch (char *strError) {
       // report error
       CPrintF(TRANS("Cannot change level:\n%s"), strError);
       // try to
@@ -1609,12 +1567,12 @@ void CNetworkLibrary::ChangeLevel_internal(void)
         ga_World.Load_t(ga_fnmNextLevel);
         // delete all entities that don't fit given spawn flags
         ga_World.FilterEntitiesBySpawnFlags(ga_sesSessionState.ses_ulSpawnFlags);
-      // if that fails
+        // if that fails
       } catch (char *strError2) {
         // fatal error
-        FatalError(
-          TRANS("Cannot change level because:\n%s\n"
-          "and cannot go back to original one because:\n%s"), strError, strError2);
+        FatalError(TRANS("Cannot change level because:\n%s\n"
+                         "and cannot go back to original one because:\n%s"),
+                   strError, strError2);
         return;
       }
     }
@@ -1622,7 +1580,7 @@ void CNetworkLibrary::ChangeLevel_internal(void)
     ga_fnmWorld = ga_fnmNextLevel;
     // remember the world pointer
     _pShell->SetINDEX("pwoCurrentWorld", (INDEX)&ga_World);
-  // if there is remembered level
+    // if there is remembered level
   } else {
     // restore it
     ga_sesSessionState.RestoreOldLevel(ga_fnmNextLevel);
@@ -1633,19 +1591,20 @@ void CNetworkLibrary::ChangeLevel_internal(void)
 
   // copy entities from temporary world into new one
   CEntitySelection senCrossed;
-  ga_World.CopyEntities(wldTemp, senInTemp,
-    senCrossed, CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f)));
+  ga_World.CopyEntities(wldTemp, senInTemp, senCrossed, CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f)));
 
   // restore pointers to entities for all active player targets
-  {for (INDEX i=0; i<NET_MAXGAMEPLAYERS; i++) {
-    CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[i];
-    if (abWasActive[i]) {
-      plt.Activate();
-      plt.plt_paLastAction    = apaActions[i][0];
-      plt.plt_paPreLastAction = apaActions[i][1];
-      plt.AttachEntity(ga_World.FindEntityWithCharacter(apc[i]));
+  {
+    for (INDEX i = 0; i < NET_MAXGAMEPLAYERS; i++) {
+      CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[i];
+      if (abWasActive[i]) {
+        plt.Activate();
+        plt.plt_paLastAction = apaActions[i][0];
+        plt.plt_paPreLastAction = apaActions[i][1];
+        plt.AttachEntity(ga_World.FindEntityWithCharacter(apc[i]));
+      }
     }
-  }}
+  }
 
   _bReinitEntitiesWhileCopying = TRUE;
 
@@ -1659,33 +1618,37 @@ void CNetworkLibrary::ChangeLevel_internal(void)
   if (!IsServer()) {
     // start waiting for server
     ga_sesSessionState.ses_bWaitingForServer = TRUE;
-  // if server
+    // if server
   } else {
     // flush sync check buffer
     ga_srvServer.srv_ascChecks.Clear();
 
     // for each client
-    {for (INDEX iClient=0; iClient<NET_MAXGAMECOMPUTERS; iClient++) {
-      CSessionSocket &sso = ga_srvServer.srv_assoSessions[iClient];
-      // reset message timer
-      sso.sso_tvMessageReceived = -1I64;
-      // reset sync timer
-      sso.sso_llLastSyncReceived = -1;
-    }}
-    // for each player
-    {for (INDEX iPlayer=0; iPlayer<NET_MAXGAMEPLAYERS; iPlayer++) {
-      CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iPlayer];
-      if (plb.plb_Active) {
-        // add one dummy action
-        CPlayerAction pa;
-        pa.Clear();
-        pa.pa_aRotation = plb.plb_paLastAction.pa_aRotation;
-        pa.pa_aViewRotation = plb.plb_paLastAction.pa_aViewRotation;
-        plb.plb_abReceived.AddAction(pa);
+    {
+      for (INDEX iClient = 0; iClient < NET_MAXGAMECOMPUTERS; iClient++) {
+        CSessionSocket &sso = ga_srvServer.srv_assoSessions[iClient];
+        // reset message timer
+        sso.sso_tvMessageReceived = -1I64;
+        // reset sync timer
+        sso.sso_llLastSyncReceived = -1;
       }
-    }}
+    }
+    // for each player
+    {
+      for (INDEX iPlayer = 0; iPlayer < NET_MAXGAMEPLAYERS; iPlayer++) {
+        CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iPlayer];
+        if (plb.plb_Active) {
+          // add one dummy action
+          CPlayerAction pa;
+          pa.Clear();
+          pa.pa_aRotation = plb.plb_paLastAction.pa_aRotation;
+          pa.pa_aViewRotation = plb.plb_paLastAction.pa_aViewRotation;
+          plb.plb_abReceived.AddAction(pa);
+        }
+      }
+    }
   }
-  ga_sesSessionState.ses_iLevel+=1;
+  ga_sesSessionState.ses_iLevel += 1;
 
   // flush stale caches
   FreeUnusedStock();
@@ -1697,7 +1660,7 @@ void CNetworkLibrary::ChangeLevel_internal(void)
   FinishCRCGather();
 }
 
-// Start recording a demo. 
+// Start recording a demo.
 void CNetworkLibrary::StartDemoRec_t(const CTFileName &fnDemo) // throw char *
 {
   // synchronize access to network
@@ -1722,9 +1685,8 @@ void CNetworkLibrary::StartDemoRec_t(const CTFileName &fnDemo) // throw char *
   ga_bDemoRec = TRUE;
 }
 
-// Stop recording a demo. 
-void CNetworkLibrary::StopDemoRec(void)
-{
+// Stop recording a demo.
+void CNetworkLibrary::StopDemoRec(void) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
 
@@ -1734,7 +1696,7 @@ void CNetworkLibrary::StopDemoRec(void)
     return;
   }
   // write terminal info to the stream
-  ga_strmDemoRec.WriteID_t("DEND");   // game end
+  ga_strmDemoRec.WriteID_t("DEND"); // game end
   // close the file
   ga_strmDemoRec.Close();
   // remember that not recording demo
@@ -1742,8 +1704,7 @@ void CNetworkLibrary::StopDemoRec(void)
 }
 
 // split the rcon response string into lines and send one by one to the client
-static void SendAdminResponse(ULONG ulAdr, UWORD uwPort, ULONG ulCode, const CTString &strResponse)
-{
+static void SendAdminResponse(ULONG ulAdr, UWORD uwPort, ULONG ulCode, const CTString &strResponse) {
   CTString str = strResponse;
   INDEX iLineCt = 0;
 
@@ -1752,7 +1713,7 @@ static void SendAdminResponse(ULONG ulAdr, UWORD uwPort, ULONG ulCode, const CTS
     strLine.OnlyFirstLine();
     str.RemovePrefix(strLine);
     str.DeleteChar(0);
-    if (strLine.Length()>0) {
+    if (strLine.Length() > 0) {
       CNetworkMessage nm(MSG_EXTRA);
       nm << CTString(0, "log %u %d %s\n", ulCode, iLineCt++, strLine);
       _pNetwork->SendBroadcast(nm, ulAdr, uwPort);
@@ -1763,8 +1724,7 @@ static void SendAdminResponse(ULONG ulAdr, UWORD uwPort, ULONG ulCode, const CTS
 /*
  * Main loop.
  */
-void CNetworkLibrary::MainLoop(void)
-{
+void CNetworkLibrary::MainLoop(void) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
 
@@ -1775,7 +1735,7 @@ void CNetworkLibrary::MainLoop(void)
   if (_lphCurrent == LCP_SIGNALLED) {
     // really do the level change here
     ChangeLevel_internal();
-    _lphCurrent=LCP_CHANGED;
+    _lphCurrent = LCP_CHANGED;
   }
 
   if (_bStartDemoRecordingNextTime) {
@@ -1785,8 +1745,8 @@ void CNetworkLibrary::MainLoop(void)
         CTString strName;
         strName.PrintF("Temp\\Recorded%02d.dem", (INDEX)dem_iRecordedNumber);
         StartDemoRec_t(strName);
-        dem_iRecordedNumber+=1;
-      } catch(char *strError) {
+        dem_iRecordedNumber += 1;
+      } catch (char *strError) {
         CPrintF(TRANS("Demo recording error: %s\n"), strError);
       }
     }
@@ -1823,17 +1783,16 @@ void CNetworkLibrary::MainLoop(void)
   TICK llBefore = _pTimer->GetTimeTick();
   _pTimer->SetLerp(0.0f);
 
-
-/*
-  // automatically adjust network settings
-  if (cli_bAutoAdjustSettings) {
-    AutoAdjustSettings();
-  }
-  */
+  /*
+    // automatically adjust network settings
+    if (cli_bAutoAdjustSettings) {
+      AutoAdjustSettings();
+    }
+    */
 
   // determine whether to use prediction
   BOOL bUsePrediction = cli_bPrediction && (cli_bPredictIfServer || !IsServer());
-  _bPredictionActive = bUsePrediction;    // memeber this for other misc code
+  _bPredictionActive = bUsePrediction; // memeber this for other misc code
 
   // mark all predictable entities that will be predicted using user-set criterions
   if (bUsePrediction) {
@@ -1856,7 +1815,7 @@ void CNetworkLibrary::MainLoop(void)
   ga_sesSessionState.ses_llLastUpdated = _pTimer->GetTimeTick();
 
   TICK llAfter = _pTimer->GetTimeTick();
-  ga_sesSessionState.ses_bKeepingUpWithTime = (llAfter-llBefore) <= /*_pTimer->TickQuantum* */2;
+  ga_sesSessionState.ses_bKeepingUpWithTime = (llAfter - llBefore) <= /*_pTimer->TickQuantum* */ 2;
 
   CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
   // set the lerping factor for current frame
@@ -1873,17 +1832,17 @@ void CNetworkLibrary::MainLoop(void)
       // if server is keeping up
       if (ga_sesSessionState.ses_bKeepingUpWithTime) {
         // add passed time with slow/fast factor
-        ga_fDemoTimer += FLOAT((tvNow-ga_tvDemoTimerLastTime).GetSeconds())
-          *ga_fDemoRealTimeFactor*ga_sesSessionState.ses_fRealTimeFactor;
+        ga_fDemoTimer += FLOAT((tvNow - ga_tvDemoTimerLastTime).GetSeconds()) * ga_fDemoRealTimeFactor
+                         * ga_sesSessionState.ses_fRealTimeFactor;
       }
-    // if synchronizing is stopped
+      // if synchronizing is stopped
     } else if (ga_fDemoSyncRate == DEMOSYNC_STOP) {
       // don't step
       NOTHING;
-    // if synchronizing by given steps
+      // if synchronizing by given steps
     } else {
       // just add the step
-      ga_fDemoTimer += 1.0f/ga_fDemoSyncRate;
+      ga_fDemoTimer += 1.0f / ga_fDemoSyncRate;
     }
   }
   // remember the demo timer
@@ -1891,17 +1850,16 @@ void CNetworkLibrary::MainLoop(void)
 
   // if network
   if (_cmiComm.IsNetworkEnabled()) {
-
     // do services for gameagent querying
     GameAgent_ServerUpdate();
 
-//    _cmiComm.Broadcast_Update();
+    //    _cmiComm.Broadcast_Update();
 
     // repeat
     FOREVER {
       CNetworkMessage nmReceived;
 
-//      _cmiComm.Broadcast_Update();
+      //      _cmiComm.Broadcast_Update();
       ULONG ulFrom;
       UWORD uwPort;
       BOOL bHasMsg = ReceiveBroadcast(nmReceived, ulFrom, uwPort);
@@ -1933,17 +1891,17 @@ void CNetworkLibrary::MainLoop(void)
         CTString strAdr = AddressToString(ulFrom);
 
         if (net_strAdminPassword == "" || net_strAdminPassword != strPass) {
-          CPrintF(TRANS("Server: Client '%s', Wrong password for remote administration.\n"), (const char*)strAdr);
+          CPrintF(TRANS("Server: Client '%s', Wrong password for remote administration.\n"), (const char *)strAdr);
           continue;
         }
 
-        CPrintF(TRANS("Server: Client '%s', Admin cmd: %s\n"), (const char*)strAdr, strCmd);
+        CPrintF(TRANS("Server: Client '%s', Admin cmd: %s\n"), (const char *)strAdr, strCmd);
 
         con_bCapture = TRUE;
         con_strCapture = "";
-        _pShell->Execute(CTString(strCmd)+";");
+        _pShell->Execute(CTString(strCmd) + ";");
 
-        CTString strResponse = CTString(">")+strCmd+"\n"+con_strCapture;
+        CTString strResponse = CTString(">") + strCmd + "\n" + con_strCapture;
         SendAdminResponse(ulFrom, uwPort, ulCode, strResponse);
         con_bCapture = FALSE;
         con_strCapture = "";
@@ -1956,13 +1914,12 @@ void CNetworkLibrary::MainLoop(void)
 }
 
 // make actions packet for local players and send to server
-void CNetworkLibrary::SendActionsToServer(void)
-{
+void CNetworkLibrary::SendActionsToServer(void) {
   // make the packet
   CNetworkMessage nmAction(MSG_ACTION);
 
   // for all local players on this machine
-  for (INDEX ipls=0; ipls<ga_aplsPlayers.Count(); ipls++) {
+  for (INDEX ipls = 0; ipls < ga_aplsPlayers.Count(); ipls++) {
     CPlayerSource &pls = ga_aplsPlayers[ipls];
     // create action packet if the player exists
     pls.WriteActionPacket(nmAction);
@@ -1974,8 +1931,7 @@ void CNetworkLibrary::SendActionsToServer(void)
 /*
  * Client loop.
  */
-void CNetworkLibrary::TimerLoop(void)
-{
+void CNetworkLibrary::TimerLoop(void) {
   if (this == NULL || _bTempNetwork) {
     return; // this can happen during NET_MakeDefaultState_t()!
   }
@@ -1996,14 +1952,14 @@ void CNetworkLibrary::TimerLoop(void)
     slNetwork.Lock();
     // execute exactly one
     ct = 1;
-  // if timer exactness level is partial
+    // if timer exactness level is partial
   } else if (net_iExactTimer == 1) {
     // if network mutex can be locked
     if (slNetwork.TryToLock()) {
       // execute all pending
       ct = ga_ctTimersPending;
     }
-  // if timer exactness level is low
+    // if timer exactness level is low
   } else if (net_iExactTimer == 0) {
     // if network mutex can be locked
     if (slNetwork.TryToLock()) {
@@ -2016,7 +1972,7 @@ void CNetworkLibrary::TimerLoop(void)
     ct--;
     ga_ctTimersPending--;
     // if not disconnected
-//    if (!IsDisconnected()) {
+    //    if (!IsDisconnected()) {
     if (_cmiComm.cci_bClientInitialized) {
       // make actions packet for all local players and send to server
       SendActionsToServer();
@@ -2035,19 +1991,18 @@ void CNetworkLibrary::TimerLoop(void)
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_TIMERLOOP);
 }
 
-// Get player entity for a given local player. 
-CEntity *CNetworkLibrary::GetLocalPlayerEntity(CPlayerSource *ppls)
-{
+// Get player entity for a given local player.
+CEntity *CNetworkLibrary::GetLocalPlayerEntity(CPlayerSource *ppls) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
 
   // get the index of the player target in game state
   INDEX iPlayerTarget = ppls->pls_Index;
   // if player is not added
-  if (iPlayerTarget<0) {
+  if (iPlayerTarget < 0) {
     // no entity
     return NULL;
-  // if player is added
+    // if player is added
   } else {
     // get the entity from player target
     CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[iPlayerTarget];
@@ -2056,18 +2011,16 @@ CEntity *CNetworkLibrary::GetLocalPlayerEntity(CPlayerSource *ppls)
   }
 }
 
-// Get player entity for a given player by name. 
-CEntity *CNetworkLibrary::GetPlayerEntityByName(const CTString &strName)
-{
+// Get player entity for a given player by name.
+CEntity *CNetworkLibrary::GetPlayerEntityByName(const CTString &strName) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
 
   // for each player in game
   CStaticArray<CPlayerTarget> &aplt = ga_sesSessionState.ses_apltPlayers;
-  for (INDEX iplt = 0; iplt<aplt.Count(); iplt++) {
+  for (INDEX iplt = 0; iplt < aplt.Count(); iplt++) {
     // if it is active and has that name
-    if (aplt[iplt].IsActive()
-      &&aplt[iplt].plt_penPlayerEntity->en_pcCharacter.GetName() == strName) {
+    if (aplt[iplt].IsActive() && aplt[iplt].plt_penPlayerEntity->en_pcCharacter.GetName() == strName) {
       // return it
       return aplt[iplt].plt_penPlayerEntity;
     }
@@ -2076,79 +2029,80 @@ CEntity *CNetworkLibrary::GetPlayerEntityByName(const CTString &strName)
   return NULL;
 }
 
-// Get number of entities with given name. 
-INDEX CNetworkLibrary::GetNumberOfEntitiesWithName(const CTString &strName)
-{
+// Get number of entities with given name.
+INDEX CNetworkLibrary::GetNumberOfEntitiesWithName(const CTString &strName) {
   INDEX ctEntities = 0;
-  {FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
-    if (iten->GetName() == strName) {
-      ctEntities++;
+  {
+    FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
+      if (iten->GetName() == strName) {
+        ctEntities++;
+      }
     }
-  }}
+  }
   return ctEntities;
 }
 
-// Get n-th entity with given name. 
-CEntity *CNetworkLibrary::GetEntityWithName(const CTString &strName, INDEX iEntityWithThatName)
-{
+// Get n-th entity with given name.
+CEntity *CNetworkLibrary::GetEntityWithName(const CTString &strName, INDEX iEntityWithThatName) {
   INDEX ctEntities = 0;
   CEntity *pen = NULL;
-  {FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
-    if (iten->GetName() == strName) {
-      pen = iten;
-      if (ctEntities == iEntityWithThatName) {
-        break;
+  {
+    FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
+      if (iten->GetName() == strName) {
+        pen = iten;
+        if (ctEntities == iEntityWithThatName) {
+          break;
+        }
+        ctEntities++;
       }
-      ctEntities++;
     }
-  }}
+  }
   return pen;
 }
-// Test if a given player is local to this computer. 
-BOOL CNetworkLibrary::IsPlayerLocal(CEntity *pen)
-{
+// Test if a given player is local to this computer.
+BOOL CNetworkLibrary::IsPlayerLocal(CEntity *pen) {
   return GetPlayerSource(pen) != NULL;
 }
 // get player source for a given player if it is local to this computer
-CPlayerSource *CNetworkLibrary::GetPlayerSource(CEntity *pen)
-{
+CPlayerSource *CNetworkLibrary::GetPlayerSource(CEntity *pen) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
 
   // for all local player on this machine
-  {FOREACHINSTATICARRAY(ga_aplsPlayers, CPlayerSource, itpls) {
-    // get the index of the player target in game state
-    INDEX iPlayerTarget = itpls->pls_Index;
-    // if player is added
-    if (iPlayerTarget >= 0) {
-      // get the player target
-      CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[iPlayerTarget];
-      // if it is that one
-      if (plt.plt_penPlayerEntity == pen) {
-        // return it
-        return itpls;
+  {
+    FOREACHINSTATICARRAY(ga_aplsPlayers, CPlayerSource, itpls) {
+      // get the index of the player target in game state
+      INDEX iPlayerTarget = itpls->pls_Index;
+      // if player is added
+      if (iPlayerTarget >= 0) {
+        // get the player target
+        CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[iPlayerTarget];
+        // if it is that one
+        if (plt.plt_penPlayerEntity == pen) {
+          // return it
+          return itpls;
+        }
       }
     }
-  }}
+  }
 
   // if not found, it is not local
   return NULL;
 }
 
 // get game time in currently running game
-TICK CNetworkLibrary::NetworkGameTime(void)
-{
+TICK CNetworkLibrary::NetworkGameTime(void) {
   return ga_sesSessionState.ses_llLastProcessedTick;
 }
 
 /*
  * Add a new client to game.
  */
-CPlayerSource *CNetworkLibrary::AddPlayer_t(CPlayerCharacter &pcCharacter)  // throw char *
+CPlayerSource *CNetworkLibrary::AddPlayer_t(CPlayerCharacter &pcCharacter) // throw char *
 {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
-  CPrintF( TRANS("Adding player: '%s'\n"), pcCharacter.GetNameForPrinting());
+  CPrintF(TRANS("Adding player: '%s'\n"), pcCharacter.GetNameForPrinting());
 
   // for all local clients on this machine
   FOREACHINSTATICARRAY(ga_aplsPlayers, CPlayerSource, itcls) {
@@ -2156,7 +2110,7 @@ CPlayerSource *CNetworkLibrary::AddPlayer_t(CPlayerCharacter &pcCharacter)  // t
     if (!itcls->IsActive()) {
       // activate it
       itcls->Start_t(pcCharacter);
-      CPrintF( TRANS("  done.\n"));
+      CPrintF(TRANS("  done.\n"));
       return &itcls.Current();
     }
   }
@@ -2166,20 +2120,18 @@ CPlayerSource *CNetworkLibrary::AddPlayer_t(CPlayerCharacter &pcCharacter)  // t
   return NULL;
 }
 
-// Get session properties for current game. 
-void *CNetworkLibrary::GetSessionProperties(void)
-{
+// Get session properties for current game.
+void *CNetworkLibrary::GetSessionProperties(void) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
 
   return ga_aubProperties;
 }
 
-// Send chat message from some players to some other players. 
-void CNetworkLibrary::SendChat(ULONG ulFrom, ULONG ulTo, const CTString &strMessage)
-{
+// Send chat message from some players to some other players.
+void CNetworkLibrary::SendChat(ULONG ulFrom, ULONG ulTo, const CTString &strMessage) {
   // if the string is too long and we're not server
-  if (strlen(strMessage)>256 && !_pNetwork->IsServer()) {
+  if (strlen(strMessage) > 256 && !_pNetwork->IsServer()) {
     // refuse it
     return;
   }
@@ -2193,14 +2145,12 @@ void CNetworkLibrary::SendChat(ULONG ulFrom, ULONG ulTo, const CTString &strMess
 }
 
 // save current version of engine
-void CNetworkLibrary::WriteVersion_t(CTStream &strm)
-{
+void CNetworkLibrary::WriteVersion_t(CTStream &strm) {
   strm.WriteID_t("BUIV"); // build version
   strm << INDEX(_SE_BUILD_MAJOR);
 }
 // load version of engine saved in file and check against current
-void CNetworkLibrary::CheckVersion_t(CTStream &strm, BOOL bAllowReinit, BOOL &bNeedsReinit)
-{
+void CNetworkLibrary::CheckVersion_t(CTStream &strm, BOOL bAllowReinit, BOOL &bNeedsReinit) {
   // if not saved
   if (strm.PeekID_t() != CChunkID("BUIV")) { // build version
     // behave as if everything is ok (for old versions)
@@ -2221,10 +2171,9 @@ void CNetworkLibrary::CheckVersion_t(CTStream &strm, BOOL bAllowReinit, BOOL &bN
   }
 
   // if current version is older than the saved one
-  if (iCurrent<iSaved) {
+  if (iCurrent < iSaved) {
     // it cannot be reinitialized
-    ThrowF_t(TRANS("File '%s' was saved by a newer version of engine, it cannot be loaded"),
-      strm.GetDescription());
+    ThrowF_t(TRANS("File '%s' was saved by a newer version of engine, it cannot be loaded"), strm.GetDescription());
     return;
   }
 
@@ -2236,14 +2185,13 @@ void CNetworkLibrary::CheckVersion_t(CTStream &strm, BOOL bAllowReinit, BOOL &bN
   }
 
   // if current version is newer than the saved one
-  if (iCurrent>iSaved) {
+  if (iCurrent > iSaved) {
     // it should be reinitialized
     bNeedsReinit = TRUE;
 
     // if it may not be reinitialized
     if (!bAllowReinit) {
-      ThrowF_t(TRANS("File '%s' was saved by an older version of engine, it cannot be loaded"),
-        strm.GetDescription());
+      ThrowF_t(TRANS("File '%s' was saved by an older version of engine, it cannot be loaded"), strm.GetDescription());
     }
     return;
   }
@@ -2254,19 +2202,18 @@ void CNetworkLibrary::CheckVersion_t(CTStream &strm, BOOL bAllowReinit, BOOL &bN
 }
 
 // add a value to the netgraph
-void CNetworkLibrary::AddNetGraphValue(enum NetGraphEntryType nget, FLOAT fLatency)
-{
+void CNetworkLibrary::AddNetGraphValue(enum NetGraphEntryType nget, FLOAT fLatency) {
   net_iGraphBuffer = Clamp(net_iGraphBuffer, INDEX(20), INDEX(1000));
 
   // make sure the netgraph has wanted number of values
   if (ga_angeNetGraph.Count() != net_iGraphBuffer) {
     ga_angeNetGraph.Clear();
     ga_angeNetGraph.New(net_iGraphBuffer);
-    memset(&ga_angeNetGraph[0], 0, ga_angeNetGraph.Count()*sizeof(ga_angeNetGraph[0]));
+    memset(&ga_angeNetGraph[0], 0, ga_angeNetGraph.Count() * sizeof(ga_angeNetGraph[0]));
   }
 
   // scroll the values in the netgraph by one value
-  memmove(&ga_angeNetGraph[1], &ga_angeNetGraph[0], (ga_angeNetGraph.Count()-1)*sizeof(ga_angeNetGraph[0]));
+  memmove(&ga_angeNetGraph[1], &ga_angeNetGraph[0], (ga_angeNetGraph.Count() - 1) * sizeof(ga_angeNetGraph[0]));
 
   // add the new value
   ga_angeNetGraph[0].nge_ngetType = nget;
@@ -2274,9 +2221,8 @@ void CNetworkLibrary::AddNetGraphValue(enum NetGraphEntryType nget, FLOAT fLaten
 }
 
 // make default state for a network game
-extern void NET_MakeDefaultState_t(
-  const CTFileName &fnmWorld, ULONG ulSpawnFlags, void *pvSessionProperties,
-  CTStream &strmState) // throw char *
+extern void NET_MakeDefaultState_t(const CTFileName &fnmWorld, ULONG ulSpawnFlags, void *pvSessionProperties,
+                                   CTStream &strmState) // throw char *
 {
   // mute all sounds
   _pSound->Mute();
@@ -2300,7 +2246,7 @@ extern void NET_MakeDefaultState_t(
 
     // lock the new network access
     CTSingleLock slNetwork(&pNewNet->ga_csNetwork, TRUE);
-    pNewNet->ga_ctTimersPending = -1;    // disable timer pending
+    pNewNet->ga_ctTimersPending = -1; // disable timer pending
     // only after locking it, we may allow the new pointer to be remembered
     // otherwise, the other thread can jump in between
     _pNetwork = pNewNet;
@@ -2315,11 +2261,11 @@ extern void NET_MakeDefaultState_t(
 
     try {
       // load the world
-      _pTimer->SetGameTick(0);  // must have timer at 0 while loading
+      _pTimer->SetGameTick(0); // must have timer at 0 while loading
       _pNetwork->ga_World.Load_t(fnmWorld);
       // delete all entities that don't fit given spawn flags
       _pNetwork->ga_World.FilterEntitiesBySpawnFlags(_pNetwork->ga_sesSessionState.ses_ulSpawnFlags);
-    } catch(char *) {
+    } catch (char *) {
       throw;
     }
     // remember the world filename
@@ -2339,7 +2285,7 @@ extern void NET_MakeDefaultState_t(
     // save the session state to the stream
     _pNetwork->ga_sesSessionState.Write_t(&strmState);
 
-  // if any error
+    // if any error
   } catch (char *) {
     // restore original network pointer
     CNetworkLibrary *pnlTemp = _pNetwork;
@@ -2360,8 +2306,7 @@ extern void NET_MakeDefaultState_t(
 }
 
 // handle broadcast messages (server enumeration)
-void CNetworkLibrary::GameInactive(void)
-{
+void CNetworkLibrary::GameInactive(void) {
   GameAgent_EnumUpdate();
 
   // if no network
@@ -2370,13 +2315,13 @@ void CNetworkLibrary::GameInactive(void)
     return;
   }
 
-//  _cmiComm.Broadcast_Update();
+  //  _cmiComm.Broadcast_Update();
 
   // repeat
   FOREVER {
     CNetworkMessage nmReceived;
 
-//  _cmiComm.Broadcast_Update();
+    //  _cmiComm.Broadcast_Update();
     ULONG ulFrom;
     UWORD uwPort;
     BOOL bHasMsg = ReceiveBroadcast(nmReceived, ulFrom, uwPort);
@@ -2386,7 +2331,7 @@ void CNetworkLibrary::GameInactive(void)
       break;
     }
 
-    /* This is handled by GameAgent. 
+    /* This is handled by GameAgent.
 
     // if requesting enumeration and this is server and enumeration is allowed
     if (nmReceived.GetType() == MSG_REQ_ENUMSERVERS
@@ -2416,16 +2361,14 @@ void CNetworkLibrary::GameInactive(void)
   }
 }
 
-void CNetworkLibrary::InitCRCGather(void)
-{
+void CNetworkLibrary::InitCRCGather(void) {
   CRCT_ResetActiveList();
   CRCT_bGatherCRCs = TRUE;
   CRCT_AddFile_t(CTString("Classes\\Player.ecl"));
 }
 
 // finish gathering of file CRCs to CRC table (call for server only!)
-void CNetworkLibrary::FinishCRCGather(void)
-{
+void CNetworkLibrary::FinishCRCGather(void) {
   try {
     // make the list
     CTMemoryStream strmCRC;
@@ -2434,7 +2377,7 @@ void CNetworkLibrary::FinishCRCGather(void)
     // remember it
     strmCRC.SetPos_t(0);
     ga_slCRCList = strmCRC.GetStreamSize();
-    ga_pubCRCList = (UBYTE*)AllocMemory(ga_slCRCList);
+    ga_pubCRCList = (UBYTE *)AllocMemory(ga_slCRCList);
     strmCRC.Read_t(ga_pubCRCList, ga_slCRCList);
 
     // remember its CRC
@@ -2447,11 +2390,10 @@ void CNetworkLibrary::FinishCRCGather(void)
 }
 
 // make default state data for creating deltas
-void CNetworkLibrary::MakeDefaultState(const CTFileName &fnmWorld,
-  ULONG ulSpawnFlags, void *pvSessionProperties)
-{
+void CNetworkLibrary::MakeDefaultState(const CTFileName &fnmWorld, ULONG ulSpawnFlags, void *pvSessionProperties) {
   // prepare file or memory stream for state
-  CTFileStream strmStateFile; CTMemoryStream strmStateMem;
+  CTFileStream strmStateFile;
+  CTMemoryStream strmStateMem;
   CTStream *pstrmState;
   extern INDEX net_bDumpConnectionInfo;
   if (net_bDumpConnectionInfo) {
@@ -2465,7 +2407,7 @@ void CNetworkLibrary::MakeDefaultState(const CTFileName &fnmWorld,
   pstrmState->SetPos_t(0);
 
   ga_slDefaultStateSize = pstrmState->GetStreamSize();
-  ga_pubDefaultState = (UBYTE*)AllocMemory(ga_slDefaultStateSize);
+  ga_pubDefaultState = (UBYTE *)AllocMemory(ga_slDefaultStateSize);
   pstrmState->Read_t(ga_pubDefaultState, ga_slDefaultStateSize);
   memcpy(ga_aubDefaultProperties, pvSessionProperties, sizeof(ga_aubDefaultProperties));
 }

@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_PLAYERTARGET_H
 #define SE_INCL_PLAYERTARGET_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 #include <Engine/Base/Synchronization.h>
@@ -27,48 +27,47 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  * Player target, located in each session state; receiving actions
  */
 class CPlayerTarget {
-public:
-  BOOL plt_bActive;                     // set if this player exists
-  CPlayerEntity *plt_penPlayerEntity;   // player entity used by this player
-  CTCriticalSection plt_csAction;       // access to player action
-  CPlayerAction plt_paPreLastAction;
-  CPlayerAction plt_paLastAction;       // last action received (used for delta-unpacking)
-  CActionBuffer plt_abPrediction;       // buffer of sent actions (used for prediction)
-  FLOAT3D plt_vPredictorPos;            // last position of predictor - for range calculations
-public:
+  public:
+    BOOL plt_bActive;                   // set if this player exists
+    CPlayerEntity *plt_penPlayerEntity; // player entity used by this player
+    CTCriticalSection plt_csAction;     // access to player action
+    CPlayerAction plt_paPreLastAction;
+    CPlayerAction plt_paLastAction; // last action received (used for delta-unpacking)
+    CActionBuffer plt_abPrediction; // buffer of sent actions (used for prediction)
+    FLOAT3D plt_vPredictorPos;      // last position of predictor - for range calculations
+  public:
+    // Default constructor.
+    CPlayerTarget(void);
+    // Destructor.
+    ~CPlayerTarget(void);
 
-  // Default constructor. 
-  CPlayerTarget(void);
-  // Destructor. 
-  ~CPlayerTarget(void);
+    // Activate player target for a new player.
+    void Activate(void);
+    // Deactivate player target for removed player.
+    void Deactivate(void);
+    // Check if this player is active.
+    BOOL IsActive(void) {
+      return plt_bActive;
+    };
+    // Attach an entity to this player.
+    void AttachEntity(CPlayerEntity *penClientEntity);
 
-  // Activate player target for a new player. 
-  void Activate(void);
-  // Deactivate player target for removed player. 
-  void Deactivate(void);
-  // Check if this player is active. 
-  BOOL IsActive(void) { return plt_bActive; };
-  // Attach an entity to this player. 
-  void AttachEntity(CPlayerEntity *penClientEntity);
+    // Apply action packet to current actions.
+    void ApplyActionPacket(const CPlayerAction &paDelta);
 
-  // Apply action packet to current actions. 
-  void ApplyActionPacket(const CPlayerAction &paDelta);
+    // Remember prediction action.
+    void PrebufferActionPacket(const CPlayerAction &paPrediction);
+    // flush prediction actions that were already processed
+    void FlushProcessedPredictions(void);
+    // get maximum number of actions that can be predicted
+    INDEX GetNumberOfPredictions(void);
+    // Apply predicted action with given index.
+    void ApplyPredictedAction(INDEX iAction, FLOAT fFactor);
 
-  // Remember prediction action. 
-  void PrebufferActionPacket(const CPlayerAction &paPrediction);
-  // flush prediction actions that were already processed
-  void FlushProcessedPredictions(void);
-  // get maximum number of actions that can be predicted
-  INDEX GetNumberOfPredictions(void);
-  // Apply predicted action with given index. 
-  void ApplyPredictedAction(INDEX iAction, FLOAT fFactor);
-
-  // Read player information from a stream. 
-  void Read_t(CTStream *pstr);   // throw char *
-  // Write player information into a stream. 
-  void Write_t(CTStream *pstr);  // throw char *
+    // Read player information from a stream.
+    void Read_t(CTStream *pstr); // throw char *
+    // Write player information into a stream.
+    void Write_t(CTStream *pstr); // throw char *
 };
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -33,9 +33,9 @@ template CDynamicArray<CBrush3D>;
 /*
  * Read from stream.
  */
-void CTerrainArchive::Read_t( CTStream *istrFile) // throw char *
+void CTerrainArchive::Read_t(CTStream *istrFile) // throw char *
 {
-  istrFile->ExpectID_t("TRAR");   // terrain archive
+  istrFile->ExpectID_t("TRAR"); // terrain archive
 
   INDEX ctTerrains;
   // read number of terrains
@@ -46,22 +46,22 @@ void CTerrainArchive::Read_t( CTStream *istrFile) // throw char *
     // create that much terrains
     CTerrain *atrBrushes = ta_atrTerrains.New(ctTerrains);
     // for each of the new terrains
-    for (INDEX iTerrain=0; iTerrain<ctTerrains; iTerrain++) {
+    for (INDEX iTerrain = 0; iTerrain < ctTerrains; iTerrain++) {
       // read it from stream
-      CallProgressHook_t(FLOAT(iTerrain)/ctTerrains);
+      CallProgressHook_t(FLOAT(iTerrain) / ctTerrains);
       ta_atrTerrains[iTerrain].Read_t(istrFile);
     }
   }
 
-  istrFile->ExpectID_t("EOTA");   // end of terrain archive
+  istrFile->ExpectID_t("EOTA"); // end of terrain archive
 }
 
 /*
  * Write to stream.
  */
-void CTerrainArchive::Write_t( CTStream *ostrFile) // throw char *
+void CTerrainArchive::Write_t(CTStream *ostrFile) // throw char *
 {
-  ostrFile->WriteID_t("TRAR");   // terrain archive
+  ostrFile->WriteID_t("TRAR"); // terrain archive
 
   // write the number of terrains
   (*ostrFile) << ta_atrTerrains.Count();
@@ -71,5 +71,5 @@ void CTerrainArchive::Write_t( CTStream *ostrFile) // throw char *
     ittr->Write_t(ostrFile);
   }
 
-  ostrFile->WriteID_t("EOTA");   // end of terrain archive
+  ostrFile->WriteID_t("EOTA"); // end of terrain archive
 }

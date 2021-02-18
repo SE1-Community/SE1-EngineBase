@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -36,8 +36,7 @@ static int _iLine;
 #define CHAR_SRC -2
 #define CHAR_DST -3
 
-static int ReadOneChar_t(CTStream &strm)
-{
+static int ReadOneChar_t(CTStream &strm) {
   // skip line breaks and count them
   unsigned char c;
   do {
@@ -53,37 +52,36 @@ static int ReadOneChar_t(CTStream &strm)
     strm >> c;
     // decode token
     switch (c) {
-    case '\\': return '\\';
-    // eol
-    case 'n': return '\n';
-    // string end
-    case '0': return 0;
-    // source string
-    case '<': return CHAR_SRC;
-    // destination string
-    case '>': return CHAR_DST;
-    // file end
-    case '$': return CHAR_EOF;
-    // other
-    default:
-      if (isprint(c)) {
-        ThrowF_t(TRANS("%d: unknown token '%c'"), _iLine, c);
-      } else {
-        ThrowF_t(TRANS("%d: unknown token ascii: 0x%02x"), _iLine, c);
-      }
+      case '\\': return '\\';
+      // eol
+      case 'n': return '\n';
+      // string end
+      case '0': return 0;
+      // source string
+      case '<': return CHAR_SRC;
+      // destination string
+      case '>': return CHAR_DST;
+      // file end
+      case '$': return CHAR_EOF;
+      // other
+      default:
+        if (isprint(c)) {
+          ThrowF_t(TRANS("%d: unknown token '%c'"), _iLine, c);
+        } else {
+          ThrowF_t(TRANS("%d: unknown token ascii: 0x%02x"), _iLine, c);
+        }
     }
   }
 
   return c;
 }
 // read one translation string from file
-static CTString ReadOneString_t(CTStream &strm)
-{
+static CTString ReadOneString_t(CTStream &strm) {
   // start with empty string
   CTString str;
 
   // read characters
-  FOREVER{
+  FOREVER {
     int i = ReadOneChar_t(strm);
     if (i == 0) {
       return str;
@@ -91,22 +89,20 @@ static CTString ReadOneString_t(CTStream &strm)
       char c[2];
       c[1] = 0;
       c[0] = i;
-      str+=c;
+      str += c;
     }
   }
 }
 
 // init translation routines with given translation table
-ENGINE_API void InitTranslation(void)
-{
+ENGINE_API void InitTranslation(void) {
   // init tables
   _atpPairs.Clear();
   _nttpPairs.Clear();
   _nttpPairs.SetAllocationParameters(100, 5, 5);
 }
 
-ENGINE_API void ReadTranslationTable_t(
-  CDynamicArray<CTranslationPair> &atpPairs, const CTFileName &fnmTable) // throw char *
+ENGINE_API void ReadTranslationTable_t(CDynamicArray<CTranslationPair> &atpPairs, const CTFileName &fnmTable) // throw char *
 {
   _iLine = 0;
 
@@ -122,18 +118,17 @@ ENGINE_API void ReadTranslationTable_t(
   CTranslationPair *atp = atpPairs.New(ctPairs);
 
   // for each pair
-  for (INDEX iPair=0; iPair<ctPairs; iPair++) {
+  for (INDEX iPair = 0; iPair < ctPairs; iPair++) {
     CTranslationPair &tp = atp[iPair];
     // read one token
     int iToken = ReadOneChar_t(strm);
     // otherwise it must be source
     if (iToken != CHAR_SRC) {
       if (iToken == CHAR_EOF) {
-        ThrowF_t(TRANS("error in file <%s>, premature EOF in line #%d!"),
-          (const char *)fnmTable, _iLine);
+        ThrowF_t(TRANS("error in file <%s>, premature EOF in line #%d!"), (const char *)fnmTable, _iLine);
       } else {
-        ThrowF_t(TRANS("error in file <%s>, line #%d (pair #%d): expected '<' but found '%c'"),
-          (const char *)fnmTable, _iLine, iPair, iToken);
+        ThrowF_t(TRANS("error in file <%s>, line #%d (pair #%d): expected '<' but found '%c'"), (const char *)fnmTable, _iLine,
+                 iPair, iToken);
       }
     }
     // read source
@@ -141,11 +136,10 @@ ENGINE_API void ReadTranslationTable_t(
     // next token must be destination
     if (ReadOneChar_t(strm) != CHAR_DST) {
       if (iToken == CHAR_EOF) {
-        ThrowF_t(TRANS("error in file <%s>, premature EOF in line #%d!"),
-          (const char *)fnmTable, _iLine);
+        ThrowF_t(TRANS("error in file <%s>, premature EOF in line #%d!"), (const char *)fnmTable, _iLine);
       } else {
-        ThrowF_t(TRANS("error in file <%s>, line #%d (pair #%d): expected '>' but found '%c'"),
-          (const char *)fnmTable, _iLine, iPair, iToken);
+        ThrowF_t(TRANS("error in file <%s>, line #%d (pair #%d): expected '>' but found '%c'"), (const char *)fnmTable, _iLine,
+                 iPair, iToken);
       }
     }
     // read destination
@@ -158,12 +152,11 @@ ENGINE_API void ReadTranslationTable_t(
 }
 
 // finish translation table building
-ENGINE_API void FinishTranslationTable(void)
-{
+ENGINE_API void FinishTranslationTable(void) {
   INDEX ctPairs = _atpPairs.Count();
   // for each pair
   _atpPairs.Lock();
-  for (INDEX iPair=0; iPair<ctPairs; iPair++) {
+  for (INDEX iPair = 0; iPair < ctPairs; iPair++) {
     // add pair to name table
     _nttpPairs.Add(&_atpPairs[iPair]);
   };
@@ -185,35 +178,33 @@ ENGINE_API void AddTranslationTablesDir_t(const CTFileName &fnmDir, const CTFile
   // list the translation tables matching given pattern
   CDynamicStackArray<CTFileName> afnmTables;
   MakeDirList(afnmTables, fnmDir, fnmPattern, 0);
-  for (INDEX i=0; i<afnmTables.Count(); i++) {
+  for (INDEX i = 0; i < afnmTables.Count(); i++) {
     ReadTranslationTable_t(_atpPairs, afnmTables[i]);
   }
 }
 
 // translate a string
-ENGINE_API char *Translate(char *str, INDEX iOffset)
-{
-  return (char*)TranslateConst((const char*)str, iOffset);
+ENGINE_API char *Translate(char *str, INDEX iOffset) {
+  return (char *)TranslateConst((const char *)str, iOffset);
 }
 
-ENGINE_API const char *TranslateConst(const char *str, INDEX iOffset)
-{
+ENGINE_API const char *TranslateConst(const char *str, INDEX iOffset) {
   // skip first bytes
   if (strlen(str) >= iOffset) {
-    str+=iOffset;
+    str += iOffset;
   } else {
     ASSERT(FALSE);
   }
   // find translation pair
   CTranslationPair *ptp = NULL;
-  if (_atpPairs.Count()>0) {
+  if (_atpPairs.Count() > 0) {
     ptp = _nttpPairs.Find(str);
   }
   // if not found
   if (ptp == NULL) {
     // return original string
     return str;
-  // if found
+    // if found
   } else {
     // return translation
     return ptp->tp_strDst;

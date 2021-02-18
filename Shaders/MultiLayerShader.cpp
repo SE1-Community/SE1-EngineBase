@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -34,22 +34,21 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define BASE_DOUBLE_SIDED (1UL << 0) // Double sided
 #define BASE_FULL_BRIGHT  (1UL << 1) // Full bright
 
-SHADER_MAIN(MultiLayer)
-{
+SHADER_MAIN(MultiLayer) {
   // this will be reused for all layers
   FLOAT fLayerTiling = 1.0f;
 
   // do 0th layer pass - base layer
   shaSetTexture(LAYER0_TEXTURE);
-  shaSetTextureWrapping( GFX_REPEAT, GFX_REPEAT);
+  shaSetTextureWrapping(GFX_REPEAT, GFX_REPEAT);
   shaSetUVMap(LAYER0_UVMAP);
   shaSetColor(LAYER0_COLOR);
   shaEnableDepthTest();
   shaDepthFunc(GFX_LESS_EQUAL);
 
   COLOR &colModelColor = shaGetModelColor();
-  BOOL bDoubleSided = shaGetFlags()&BASE_DOUBLE_SIDED;
-  BOOL bOpaque = (colModelColor&0xFF) == 0xFF;
+  BOOL bDoubleSided = shaGetFlags() & BASE_DOUBLE_SIDED;
+  BOOL bOpaque = (colModelColor & 0xFF) == 0xFF;
 
   if (bDoubleSided) {
     shaCullFace(GFX_NONE);
@@ -64,7 +63,7 @@ SHADER_MAIN(MultiLayer)
     // shaEnableAlphaTest(TRUE);
     shaDisableBlend();
     shaEnableDepthWrite();
-  // if translucent
+    // if translucent
   } else {
     // shaEnableAlphaTest(FALSE);
     shaEnableBlend();
@@ -73,16 +72,16 @@ SHADER_MAIN(MultiLayer)
     shaModifyColorForFog();
   }
 
-  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled())
+    shaSetTextureModulation(2);
 
   fLayerTiling = shaGetFloat(LAYER0_TILING);
   if (fLayerTiling != 1.0f) {
     GFXTexCoord *ptxcOld = shaGetUVMap(LAYER0_UVMAP);
     GFXTexCoord *ptxcNew = shaGetNewTexCoordArray();
     INDEX ctTexCoords = shaGetVertexCount();
-    if (ctTexCoords>0 && ptxcOld != NULL) {
-      for (INDEX itxc=0;itxc<ctTexCoords;itxc++)
-      {
+    if (ctTexCoords > 0 && ptxcOld != NULL) {
+      for (INDEX itxc = 0; itxc < ctTexCoords; itxc++) {
         ptxcNew[itxc].u = ptxcOld[itxc].u * fLayerTiling;
         ptxcNew[itxc].v = ptxcOld[itxc].v * fLayerTiling;
       }
@@ -95,23 +94,22 @@ SHADER_MAIN(MultiLayer)
   }
 
   // do 1st layer pass
-  
+
   fLayerTiling = shaGetFloat(LAYER1_TILING);
-  shaBlendFunc( GFX_SRC_ALPHA, GFX_INV_SRC_ALPHA);  
+  shaBlendFunc(GFX_SRC_ALPHA, GFX_INV_SRC_ALPHA);
   shaSetTexture(LAYER1_TEXTURE);
   shaSetUVMap(LAYER1_UVMAP);
   shaSetColor(LAYER1_COLOR);
   shaCalculateLight();
-  
+
   shaEnableBlend();
-  
+
   if (fLayerTiling != 1.0f) {
     GFXTexCoord *ptxcOld = shaGetUVMap(LAYER1_UVMAP);
     GFXTexCoord *ptxcNew = shaGetNewTexCoordArray();
     INDEX ctTexCoords = shaGetVertexCount();
-    if (ctTexCoords>0 && ptxcOld != NULL) {
-      for (INDEX itxc=0; itxc<ctTexCoords; itxc++)
-      {
+    if (ctTexCoords > 0 && ptxcOld != NULL) {
+      for (INDEX itxc = 0; itxc < ctTexCoords; itxc++) {
         ptxcNew[itxc].u = ptxcOld[itxc].u * fLayerTiling;
         ptxcNew[itxc].v = ptxcOld[itxc].v * fLayerTiling;
       }
@@ -121,30 +119,30 @@ SHADER_MAIN(MultiLayer)
   shaRender();
   shaDisableBlend();
 
-  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled())
+    shaSetTextureModulation(1);
 }
 
-SHADER_DESC(MultiLayer, ShaderDesc &shDesc)
-{
-  shDesc.sd_astrTextureNames .New(TEXTURE_COUNT);
+SHADER_DESC(MultiLayer, ShaderDesc &shDesc) {
+  shDesc.sd_astrTextureNames.New(TEXTURE_COUNT);
   shDesc.sd_astrTexCoordNames.New(UVMAPS_COUNT);
-  shDesc.sd_astrColorNames   .New(COLOR_COUNT);
-  shDesc.sd_astrFloatNames   .New(FLOAT_COUNT);
-  shDesc.sd_astrFlagNames    .New(FLAGS_COUNT);
+  shDesc.sd_astrColorNames.New(COLOR_COUNT);
+  shDesc.sd_astrFloatNames.New(FLOAT_COUNT);
+  shDesc.sd_astrFlagNames.New(FLAGS_COUNT);
 
   // layer 0 - base
-  shDesc.sd_astrTextureNames [0] = "Layer0* texture";
+  shDesc.sd_astrTextureNames[0] = "Layer0* texture";
   shDesc.sd_astrTexCoordNames[0] = "Layer0* UVMap";
-  shDesc.sd_astrColorNames   [0] = "Layer0* color";
-  shDesc.sd_astrFloatNames   [0] = "Layer0* tiling factor";
+  shDesc.sd_astrColorNames[0] = "Layer0* color";
+  shDesc.sd_astrFloatNames[0] = "Layer0* tiling factor";
   // layer 1
-  shDesc.sd_astrTextureNames [1] = "Layer1 texture";
+  shDesc.sd_astrTextureNames[1] = "Layer1 texture";
   shDesc.sd_astrTexCoordNames[1] = "Layer1 UVMap";
-  shDesc.sd_astrColorNames   [1] = "Layer1 color";
-  shDesc.sd_astrFloatNames   [1] = "Layer1 tiling factor";
-  
+  shDesc.sd_astrColorNames[1] = "Layer1 color";
+  shDesc.sd_astrFloatNames[1] = "Layer1 tiling factor";
+
   shDesc.sd_astrFlagNames[0] = "Double sided";
   shDesc.sd_astrFlagNames[1] = "Full bright";
-   
+
   shDesc.sd_strShaderInfo = "Multi Layer shader";
 }

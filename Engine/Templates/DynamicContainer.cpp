@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_DYNAMICCONTAINER_CPP
 #define SE_INCL_DYNAMICCONTAINER_CPP
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 #include <Engine/Templates/DynamicContainer.h>
@@ -26,8 +26,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 /*
  * Default constructor.
  */
-template<class Type>
-CDynamicContainer<Type>::CDynamicContainer(void) {
+template<class Type> CDynamicContainer<Type>::CDynamicContainer(void) {
 #if CHECKARRAYLOCKING
   // not locked
   dc_LockCt = 0;
@@ -37,9 +36,7 @@ CDynamicContainer<Type>::CDynamicContainer(void) {
 /*
  * Copy constructor.
  */
-template<class Type>
-CDynamicContainer<Type>::CDynamicContainer(CDynamicContainer<Type> &dcOriginal)
-{
+template<class Type> CDynamicContainer<Type>::CDynamicContainer(CDynamicContainer<Type> &dcOriginal) {
 #if CHECKARRAYLOCKING
   // not locked
   dc_LockCt = 0;
@@ -51,16 +48,14 @@ CDynamicContainer<Type>::CDynamicContainer(CDynamicContainer<Type> &dcOriginal)
 /*
  * Destructor -- removes all objects.
  */
-template<class Type>
-CDynamicContainer<Type>::~CDynamicContainer(void) {
+template<class Type> CDynamicContainer<Type>::~CDynamicContainer(void) {
   Clear();
 }
 
 /*
  * Remove all objects, and reset the array to initial (empty) state.
  */
-template<class Type>
-void CDynamicContainer<Type>::Clear(void) {
+template<class Type> void CDynamicContainer<Type>::Clear(void) {
   ASSERT(this != NULL);
   CStaticStackArray<Type *>::Clear();
 }
@@ -68,9 +63,7 @@ void CDynamicContainer<Type>::Clear(void) {
 /*
  * Add a given object to container.
  */
-template<class Type>
-void CDynamicContainer<Type>::Add(Type *ptNewObject)
-{
+template<class Type> void CDynamicContainer<Type>::Add(Type *ptNewObject) {
   // set the new pointer
   Push() = ptNewObject;
 }
@@ -78,16 +71,14 @@ void CDynamicContainer<Type>::Add(Type *ptNewObject)
 /*
  * Insert a given object to container at specified index.
  */
-template<class Type>
-void CDynamicContainer<Type>::Insert(Type *ptNewObject, const INDEX iPos/*=0*/)
-{
+template<class Type> void CDynamicContainer<Type>::Insert(Type *ptNewObject, const INDEX iPos /*=0*/) {
   // get number of member that need moving and add new one
-  const INDEX ctMovees = CStaticStackArray<Type*>::Count() - iPos;
-  CStaticStackArray<Type*>::Push();
+  const INDEX ctMovees = CStaticStackArray<Type *>::Count() - iPos;
+  CStaticStackArray<Type *>::Push();
   // move all members after insert position one place up
-  Type **pptInsertAt = this->sa_Array+iPos;
-  Type **pptMoveTo   = pptInsertAt +1;
-  memmove( pptMoveTo, pptInsertAt, sizeof(Type*)*ctMovees);
+  Type **pptInsertAt = this->sa_Array + iPos;
+  Type **pptMoveTo = pptInsertAt + 1;
+  memmove(pptMoveTo, pptInsertAt, sizeof(Type *) * ctMovees);
   // store pointer to newly inserted member at specified position
   *pptInsertAt = ptNewObject;
 }
@@ -95,9 +86,7 @@ void CDynamicContainer<Type>::Insert(Type *ptNewObject, const INDEX iPos/*=0*/)
 /*
  * Remove a given object from container.
  */
-template<class Type>
-void CDynamicContainer<Type>::Remove(Type *ptOldObject)
-{
+template<class Type> void CDynamicContainer<Type>::Remove(Type *ptOldObject) {
   ASSERT(this != NULL);
 #if CHECKARRAYLOCKING
   // check that not locked for indices
@@ -105,20 +94,18 @@ void CDynamicContainer<Type>::Remove(Type *ptOldObject)
 #endif
 
   // find its index
-  INDEX iMember=GetIndex(ptOldObject);
+  INDEX iMember = GetIndex(ptOldObject);
   // move last pointer here
-  sa_Array[iMember]=sa_Array[Count()-1];
+  sa_Array[iMember] = sa_Array[Count() - 1];
   Pop();
 }
 
-// Test if a given object is in the container. 
-template<class Type>
-BOOL CDynamicContainer<Type>::IsMember(Type *ptOldObject)
-{
+// Test if a given object is in the container.
+template<class Type> BOOL CDynamicContainer<Type>::IsMember(Type *ptOldObject) {
   ASSERT(this != NULL);
   // slow !!!!
   // check all members
-  for (INDEX iMember=0; iMember<Count(); iMember++) {
+  for (INDEX iMember = 0; iMember < Count(); iMember++) {
     if (sa_Array[iMember] == ptOldObject) {
       return TRUE;
     }
@@ -129,25 +116,23 @@ BOOL CDynamicContainer<Type>::IsMember(Type *ptOldObject)
 /*
  * Get pointer to a member from it's index.
  */
-template<class Type>
-Type *CDynamicContainer<Type>::Pointer(INDEX iMember) {
+template<class Type> Type *CDynamicContainer<Type>::Pointer(INDEX iMember) {
   ASSERT(this != NULL);
   // check that index is currently valid
-  ASSERT(iMember >= 0 && iMember<Count());
+  ASSERT(iMember >= 0 && iMember < Count());
 #if CHECKARRAYLOCKING
   // check that locked for indices
-  ASSERT(dc_LockCt>0);
+  ASSERT(dc_LockCt > 0);
 #endif
   return sa_Array[iMember];
 }
-template<class Type>
-const Type *CDynamicContainer<Type>::Pointer(INDEX iMember) const {
+template<class Type> const Type *CDynamicContainer<Type>::Pointer(INDEX iMember) const {
   ASSERT(this != NULL);
   // check that index is currently valid
-  ASSERT(iMember >= 0 && iMember<Count());
+  ASSERT(iMember >= 0 && iMember < Count());
 #if CHECKARRAYLOCKING
   // check that locked for indices
-  ASSERT(dc_LockCt>0);
+  ASSERT(dc_LockCt > 0);
 #endif
   return sa_Array[iMember];
 }
@@ -155,8 +140,7 @@ const Type *CDynamicContainer<Type>::Pointer(INDEX iMember) const {
 /*
  * Lock for getting indices.
  */
-template<class Type>
-void CDynamicContainer<Type>::Lock(void) {
+template<class Type> void CDynamicContainer<Type>::Lock(void) {
   ASSERT(this != NULL);
 #if CHECKARRAYLOCKING
   ASSERT(dc_LockCt >= 0);
@@ -168,8 +152,7 @@ void CDynamicContainer<Type>::Lock(void) {
 /*
  * Unlock after getting indices.
  */
-template<class Type>
-void CDynamicContainer<Type>::Unlock(void) {
+template<class Type> void CDynamicContainer<Type>::Unlock(void) {
   ASSERT(this != NULL);
 #if CHECKARRAYLOCKING
   dc_LockCt--;
@@ -180,12 +163,11 @@ void CDynamicContainer<Type>::Unlock(void) {
 /*
  * Get index of a member from it's pointer.
  */
-template<class Type>
-INDEX CDynamicContainer<Type>::Index(Type *ptMember) {
+template<class Type> INDEX CDynamicContainer<Type>::Index(Type *ptMember) {
   ASSERT(this != NULL);
   // check that locked for indices
 #if CHECKARRAYLOCKING
-  ASSERT(dc_LockCt>0);
+  ASSERT(dc_LockCt > 0);
 #endif
   return GetIndex(ptMember);
 }
@@ -193,12 +175,11 @@ INDEX CDynamicContainer<Type>::Index(Type *ptMember) {
 /*
  * Get index of a member from it's pointer without locking.
  */
-template<class Type>
-INDEX CDynamicContainer<Type>::GetIndex(Type *ptMember) {
+template<class Type> INDEX CDynamicContainer<Type>::GetIndex(Type *ptMember) {
   ASSERT(this != NULL);
   // slow !!!!
   // check all members
-  for (INDEX iMember=0; iMember<Count(); iMember++) {
+  for (INDEX iMember = 0; iMember < Count(); iMember++) {
     if (sa_Array[iMember] == ptMember) {
       return iMember;
     }
@@ -207,10 +188,8 @@ INDEX CDynamicContainer<Type>::GetIndex(Type *ptMember) {
   return 0;
 }
 
-// Get first object in container (there must be at least one when calling this). 
-template<class Type>
-Type &CDynamicContainer<Type>::GetFirst(void)
-{
+// Get first object in container (there must be at least one when calling this).
+template<class Type> Type &CDynamicContainer<Type>::GetFirst(void) {
   ASSERT(Count() >= 1);
   return *sa_Array[0];
 }
@@ -218,9 +197,7 @@ Type &CDynamicContainer<Type>::GetFirst(void)
 /*
  * Assignment operator.
  */
-template<class Type>
-CDynamicContainer<Type> &CDynamicContainer<Type>::operator=(CDynamicContainer<Type> &coOriginal)
-{
+template<class Type> CDynamicContainer<Type> &CDynamicContainer<Type>::operator=(CDynamicContainer<Type> &coOriginal) {
   CStaticStackArray<Type *>::operator=(coOriginal);
   return *this;
 }
@@ -228,15 +205,13 @@ CDynamicContainer<Type> &CDynamicContainer<Type>::operator=(CDynamicContainer<Ty
 /*
  * Move all elements of another array into this one.
  */
-template<class Type>
-void CDynamicContainer<Type>::MoveContainer(CDynamicContainer<Type> &coOther)
-{
+template<class Type> void CDynamicContainer<Type>::MoveContainer(CDynamicContainer<Type> &coOther) {
   ASSERT(this != NULL && &coOther != NULL);
   // check that not locked for indices
 #if CHECKARRAYLOCKING
   ASSERT(dc_LockCt == 0 && coOther.dc_LockCt == 0);
 #endif
-  CStaticStackArray<Type*>::MoveArray(coOther);
+  CStaticStackArray<Type *>::MoveArray(coOther);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -245,35 +220,41 @@ void CDynamicContainer<Type>::MoveContainer(CDynamicContainer<Type> &coOther)
 /*
  * Template class for iterating dynamic array.
  */
-template<class Type>
-class CDynamicContainerIterator {
-private:
-  INDEX dci_Index;               // index of current element
-  CDynamicContainer<Type> &dci_Array;   // reference to array
-public:
-  // Constructor for given array. 
-  inline CDynamicContainerIterator(CDynamicContainer<Type> &da);
-  // Destructor. 
-  inline ~CDynamicContainerIterator(void);
+template<class Type> class CDynamicContainerIterator {
+  private:
+    INDEX dci_Index;                    // index of current element
+    CDynamicContainer<Type> &dci_Array; // reference to array
+  public:
+    // Constructor for given array.
+    inline CDynamicContainerIterator(CDynamicContainer<Type> &da);
+    // Destructor.
+    inline ~CDynamicContainerIterator(void);
 
-  // Move to next object. 
-  inline void MoveToNext(void);
-  // Check if finished. 
-  inline BOOL IsPastEnd(void);
-  
-  // Get current element. 
-  Type &Current(void) { return *dci_Array.Pointer(dci_Index); }
-  Type &operator*(void) { return *dci_Array.Pointer(dci_Index); }
-  operator Type *(void) { return dci_Array.Pointer(dci_Index); }
-  Type *operator->(void) { return dci_Array.Pointer(dci_Index); }
+    // Move to next object.
+    inline void MoveToNext(void);
+    // Check if finished.
+    inline BOOL IsPastEnd(void);
+
+    // Get current element.
+    Type &Current(void) {
+      return *dci_Array.Pointer(dci_Index);
+    }
+    Type &operator*(void) {
+      return *dci_Array.Pointer(dci_Index);
+    }
+    operator Type *(void) {
+      return dci_Array.Pointer(dci_Index);
+    }
+    Type *operator->(void) {
+      return dci_Array.Pointer(dci_Index);
+    }
 };
-
 
 /*
  * Constructor for given array.
  */
-template<class Type>
-inline CDynamicContainerIterator<Type>::CDynamicContainerIterator(CDynamicContainer<Type> &da) : dci_Array(da) {
+template<class Type> inline CDynamicContainerIterator<Type>::CDynamicContainerIterator(CDynamicContainer<Type> &da) :
+dci_Array(da) {
   // lock indices
   dci_Array.Lock();
   dci_Index = 0;
@@ -282,8 +263,7 @@ inline CDynamicContainerIterator<Type>::CDynamicContainerIterator(CDynamicContai
 /*
  * Destructor.
  */
-template<class Type>
-inline CDynamicContainerIterator<Type>::~CDynamicContainerIterator(void) {
+template<class Type> inline CDynamicContainerIterator<Type>::~CDynamicContainerIterator(void) {
   // unlock indices
   dci_Array.Unlock();
   dci_Index = -1;
@@ -292,8 +272,7 @@ inline CDynamicContainerIterator<Type>::~CDynamicContainerIterator(void) {
 /*
  * Move to next object.
  */
-template<class Type>
-inline void CDynamicContainerIterator<Type>::MoveToNext(void) {
+template<class Type> inline void CDynamicContainerIterator<Type>::MoveToNext(void) {
   ASSERT(this != NULL);
   dci_Index++;
 }
@@ -301,8 +280,7 @@ inline void CDynamicContainerIterator<Type>::MoveToNext(void) {
 /*
  * Check if finished.
  */
-template<class Type>
-inline BOOL CDynamicContainerIterator<Type>::IsPastEnd(void) {
+template<class Type> inline BOOL CDynamicContainerIterator<Type>::IsPastEnd(void) {
   ASSERT(this != NULL);
   return dci_Index >= dci_Array.Count();
 }
@@ -312,8 +290,6 @@ inline BOOL CDynamicContainerIterator<Type>::IsPastEnd(void) {
  * elements in the container. To do so, embed the for loop in additional curly braces.
  */
 #define FOREACHINDYNAMICCONTAINER(container, type, iter) \
-  for (CDynamicContainerIterator<type> iter(container); !iter.IsPastEnd(); iter.MoveToNext() )
+  for (CDynamicContainerIterator<type> iter(container); !iter.IsPastEnd(); iter.MoveToNext())
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

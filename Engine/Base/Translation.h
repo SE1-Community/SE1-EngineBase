@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_TRANSLATION_H
 #define SE_INCL_TRANSLATION_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 // init translation routines with given translation table
@@ -29,18 +29,16 @@ ENGINE_API void AddTranslationTablesDir_t(const CTFileName &fnmDir, const CTFile
 ENGINE_API void FinishTranslationTable(void);
 
 // read given translation table from file - for internal use
-ENGINE_API void ReadTranslationTable_t(
-  CDynamicArray<class CTranslationPair> &atpPairs, const CTFileName &fnmTable); // throw char *
+ENGINE_API void ReadTranslationTable_t(CDynamicArray<class CTranslationPair> &atpPairs,
+                                       const CTFileName &fnmTable); // throw char *
 
 // translate a string
-ENGINE_API char * Translate(char *str, INDEX iOffset=0);
-ENGINE_API const char * TranslateConst(const char *str, INDEX iOffset=0);
+ENGINE_API char *Translate(char *str, INDEX iOffset = 0);
+ENGINE_API const char *TranslateConst(const char *str, INDEX iOffset = 0);
 
 // macro for inserting a string for translation into executables
 #define TRANS(str) Translate("ETRS" str, 4)
 // macro for translating a variable string (usually can be CTString)
 #define TRANSV(str) TranslateConst(str, 0)
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_TIMER_H
 #define SE_INCL_TIMER_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 #ifndef _MT
@@ -33,127 +33,134 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  * Class that holds and manipulates with high-precision timer values.
  */
 class CTimerValue {
-public:
-  __int64 tv_llValue;       // 64 bit integer (MSVC specific!)
-  // Constructor from quad integer. 
-  inline CTimerValue(__int64 llValue) : tv_llValue(llValue) {};
-public:
-  // Constructor. 
-  inline CTimerValue(void) {};
-  // Constructor from seconds. 
-  inline CTimerValue(double dSeconds);
-  // Clear timer value (set it to zero). 
-  inline void Clear(void);
-  // Addition. 
-  inline CTimerValue &operator+=(const CTimerValue &tvOther);
-  inline CTimerValue operator+(const CTimerValue &tvOther) const;
-  // Substraction. 
-  inline CTimerValue &operator-=(const CTimerValue &tvOther);
-  inline CTimerValue operator-(const CTimerValue &tvOther) const;
-  // Comparisons. 
-  inline BOOL operator<(const CTimerValue &tvOther) const;
-  inline BOOL operator>(const CTimerValue &tvOther) const;
-  inline BOOL operator <= (const CTimerValue &tvOther) const;
-  inline BOOL operator >= (const CTimerValue &tvOther) const;
-  // Get the timer value in seconds. - use for time spans only! 
-  inline double GetSeconds(void);
-  // Get the timer value in milliseconds as integral value. 
-  inline __int64 GetMilliseconds(void);
+  public:
+    __int64 tv_llValue; // 64 bit integer (MSVC specific!)
+    // Constructor from quad integer.
+    inline CTimerValue(__int64 llValue) : tv_llValue(llValue) {};
+
+  public:
+    // Constructor.
+    inline CTimerValue(void) {};
+    // Constructor from seconds.
+    inline CTimerValue(double dSeconds);
+    // Clear timer value (set it to zero).
+    inline void Clear(void);
+    // Addition.
+    inline CTimerValue &operator+=(const CTimerValue &tvOther);
+    inline CTimerValue operator+(const CTimerValue &tvOther) const;
+    // Substraction.
+    inline CTimerValue &operator-=(const CTimerValue &tvOther);
+    inline CTimerValue operator-(const CTimerValue &tvOther) const;
+    // Comparisons.
+    inline BOOL operator<(const CTimerValue &tvOther) const;
+    inline BOOL operator>(const CTimerValue &tvOther) const;
+    inline BOOL operator<=(const CTimerValue &tvOther) const;
+    inline BOOL operator>=(const CTimerValue &tvOther) const;
+    // Get the timer value in seconds. - use for time spans only!
+    inline double GetSeconds(void);
+    // Get the timer value in milliseconds as integral value.
+    inline __int64 GetMilliseconds(void);
 };
 // a base class for hooking on timer interrupt
 class CTimerHandler {
-public:
-  CListNode th_Node;
-public:
-  virtual ~CTimerHandler(void) {}  // rcg10042001 
-  // This is called every TickQuantum seconds. 
-  ENGINE_API virtual void HandleTimer(void)=0;
+  public:
+    CListNode th_Node;
+
+  public:
+    virtual ~CTimerHandler(void) {} // rcg10042001
+    // This is called every TickQuantum seconds.
+    ENGINE_API virtual void HandleTimer(void) = 0;
 };
 
 // class for an object that maintains global timer(s)
 class ENGINE_API CTimer {
-// implementation:
-public:
+  // implementation:
+  public:
+    __int64 tm_llPerformanceCounterFrequency; // frequency of Win32 performance counter
+    __int64 tm_llCPUSpeedHZ;                  // CPU speed in HZ
 
-  __int64 tm_llPerformanceCounterFrequency; // frequency of Win32 performance counter
-  __int64 tm_llCPUSpeedHZ;  // CPU speed in HZ
+    CTimerValue tm_tvLastTimeOnTime; // last time when timer was on time
 
-  CTimerValue tm_tvLastTimeOnTime;  // last time when timer was on time
+    TICK tm_llRealTime;    // this really ticks at 1/TickQuantum frequency
+    FLOAT tm_fLerpFactor;  // factor used for lerping between frames
+    FLOAT tm_fLerpFactor2; // secondary lerp-factor used for unpredicted movement
 
-  TICK tm_llRealTime;  // this really ticks at 1/TickQuantum frequency
-  FLOAT tm_fLerpFactor;   // factor used for lerping between frames
-  FLOAT tm_fLerpFactor2;  // secondary lerp-factor used for unpredicted movement
+    ULONG tm_TimerID; // windows timer ID
 
-  ULONG tm_TimerID;       // windows timer ID
+    CTCriticalSection tm_csHooks; // access to timer hooks
+    CListHead tm_lhHooks;         // a list head for timer hooks
+    BOOL tm_bInterrupt;           // set if interrupt is added
 
-  CTCriticalSection tm_csHooks;   // access to timer hooks
-  CListHead         tm_lhHooks;   // a list head for timer hooks
-  BOOL tm_bInterrupt;       // set if interrupt is added
+  // interface:
+  public:
+    // interval defining frequency of the game ticker
+    static const TIME TickQuantum; // 20 ticks per second
 
-// interface:
-public:
-  // interval defining frequency of the game ticker
-  static const TIME TickQuantum;     // 20 ticks per second
+    // Constructor.
+    CTimer(BOOL bInterrupt = TRUE);
+    // Destructor.
+    ~CTimer(void);
+    // Add a timer handler.
+    void AddHandler(CTimerHandler *pthNew);
+    // Remove a timer handler.
+    void RemHandler(CTimerHandler *pthOld);
+    // Handle timer handlers manually.
+    void HandleTimerHandlers(void);
 
-  // Constructor. 
-  CTimer(BOOL bInterrupt=TRUE);
-  // Destructor. 
-  ~CTimer(void);
-  // Add a timer handler. 
-  void AddHandler(CTimerHandler *pthNew);
-  // Remove a timer handler. 
-  void RemHandler(CTimerHandler *pthOld);
-  // Handle timer handlers manually. 
-  void HandleTimerHandlers(void);
+    // Get the real time tick value.
+    TICK GetTimeTick(void) const;
 
-  // Get the real time tick value.
-  TICK GetTimeTick(void) const;
+    /* NOTE: CurrentTick is local to each thread, and every thread must take
+       care to increment the current tick or copy it from real time tick if
+       it wants to make animations and similar to work. */
 
-  /* NOTE: CurrentTick is local to each thread, and every thread must take
-     care to increment the current tick or copy it from real time tick if
-     it wants to make animations and similar to work. */
+    // Set the current game tick used for time dependent tasks (animations etc.).
+    void SetGameTick(TICK llTick);
+    // Get current game time, always valid for the currently active task.
+    TICK GetGameTick(void) const;
+    // Get lerped game time.
+    FTICK LerpedGameTick(void) const;
 
-  // Set the current game tick used for time dependent tasks (animations etc.).
-  void SetGameTick(TICK llTick);
-  // Get current game time, always valid for the currently active task.
-  TICK GetGameTick(void) const;
-  // Get lerped game time.
-  FTICK LerpedGameTick(void) const;
+    // Set factor for lerping between ticks.
+    void SetLerp(FLOAT fLerp);  // sets both primary and secondary
+    void SetLerp2(FLOAT fLerp); // sets only secondary
+    // Disable lerping factor (set both factors to 1)
+    void DisableLerp(void);
+    // Get current factor used for lerping between game ticks.
+    inline FLOAT GetLerpFactor(void) const {
+      return tm_fLerpFactor;
+    };
+    // Get current factor used for lerping between game ticks.
+    inline FLOAT GetLerpFactor2(void) const {
+      return tm_fLerpFactor2;
+    };
 
-  // Set factor for lerping between ticks.
-  void SetLerp(FLOAT fLerp);    // sets both primary and secondary
-  void SetLerp2(FLOAT fLerp);   // sets only secondary
-  // Disable lerping factor (set both factors to 1)
-  void DisableLerp(void);
-  // Get current factor used for lerping between game ticks.
-  inline FLOAT GetLerpFactor(void) const { return tm_fLerpFactor; };
-  // Get current factor used for lerping between game ticks.
-  inline FLOAT GetLerpFactor2(void) const { return tm_fLerpFactor2; };
+    // Get current timer value of high precision timer.
+    inline CTimerValue GetHighPrecisionTimer(void) {
+      __int64 mmRet;
+      __asm {
+        rdtsc
+        mov dword ptr[mmRet + 0], eax
+        mov dword ptr[mmRet + 4], edx
+      }
+      return mmRet;
+    };
 
-  // Get current timer value of high precision timer. 
-  inline CTimerValue GetHighPrecisionTimer(void) {
-   __int64 mmRet;
-    _asm rdtsc
-    _asm mov dword ptr [mmRet+0],eax
-    _asm mov dword ptr [mmRet+4],edx
-    return mmRet;
-  };
+    // [Cecil] New timer: Seconds to ticks
+    static TICK InTicks(FLOAT fTime);
 
-  // [Cecil] New timer: Seconds to ticks
-  static TICK InTicks(FLOAT fTime);
+    // [Cecil] New timer: Ticks to seconds
+    static FLOAT InSeconds(FTICK ftTime);
 
-  // [Cecil] New timer: Ticks to seconds
-  static FLOAT InSeconds(FTICK ftTime);
+    // [Cecil] TEMP: Game tick in seconds
+    inline TIME CurrentTick(void) {
+      return CTimer::InSeconds(GetGameTick());
+    };
 
-  // [Cecil] TEMP: Game tick in seconds
-  inline TIME CurrentTick(void) {
-    return CTimer::InSeconds(GetGameTick());
-  };
-
-  // [Cecil] TEMP: Lerped game tick in seconds
-  inline TIME GetLerpedCurrentTick(void) {
-    return CTimer::InSeconds(LerpedGameTick());
-  };
+    // [Cecil] TEMP: Lerped game tick in seconds
+    inline TIME GetLerpedCurrentTick(void) {
+      return CTimer::InSeconds(LerpedGameTick());
+    };
 };
 
 // pointer to global timer object
@@ -164,6 +171,4 @@ ENGINE_API CTString TimeToString(FLOAT fTime);
 
 #include <Engine/Base/Timer.inl>
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

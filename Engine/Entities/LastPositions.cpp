@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -20,11 +20,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Timer.h>
 #include <Engine/Templates/StaticArray.cpp>
 
-CLastPositions::CLastPositions(const CLastPositions &lpOrg)
-{
+CLastPositions::CLastPositions(const CLastPositions &lpOrg) {
   lp_avPositions = lpOrg.lp_avPositions;
-  lp_iLast       = lpOrg.lp_iLast;
-  lp_ctUsed      = lpOrg.lp_ctUsed;
+  lp_iLast = lpOrg.lp_iLast;
+  lp_ctUsed = lpOrg.lp_ctUsed;
   lp_llLastAdded = lpOrg.lp_llLastAdded;
 }
 
@@ -32,18 +31,18 @@ CLastPositions::CLastPositions(const CLastPositions &lpOrg)
 void CLastPositions::AddPosition(const FLOAT3D &vPos) {
   lp_iLast++;
   if (lp_iLast >= lp_avPositions.Count()) {
-    lp_iLast=0;
+    lp_iLast = 0;
   }
-  lp_ctUsed = Min(INDEX(lp_ctUsed+1), lp_avPositions.Count());
+  lp_ctUsed = Min(INDEX(lp_ctUsed + 1), lp_avPositions.Count());
   lp_avPositions[lp_iLast] = vPos;
   lp_llLastAdded = _pTimer->GetGameTick();
 }
 
 // get a position
 const FLOAT3D &CLastPositions::GetPosition(INDEX iPre) {
-  INDEX iPos = lp_iLast-iPre;
-  if (iPos<0) {
-    iPos+=lp_avPositions.Count();
+  INDEX iPos = lp_iLast - iPre;
+  if (iPos < 0) {
+    iPos += lp_avPositions.Count();
   }
   return lp_avPositions[iPos];
 }

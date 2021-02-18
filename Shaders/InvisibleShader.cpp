@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -26,12 +26,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define COLOR_COUNT   0
 #define FLOAT_COUNT   0
 
-SHADER_MAIN(Invisible)
-{
-}
+SHADER_MAIN(Invisible) {}
 
-SHADER_DESC(Invisible,ShaderDesc &shDesc)
-{
+SHADER_DESC(Invisible, ShaderDesc &shDesc) {
   shDesc.sd_astrTextureNames.New(TEXTURE_COUNT);
   shDesc.sd_astrTexCoordNames.New(UVMAPS_COUNT);
   shDesc.sd_astrColorNames.New(COLOR_COUNT);

@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_TIMERTICK_H
 #define SE_INCL_TIMERTICK_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 #include "Engine/Base/Types.h"
@@ -31,8 +31,8 @@ struct FTICK {
   FLOAT fFrac;
 
   // Constructors
-  FTICK()                 : llTick(0),  fFrac(0.0f) {};
-  FTICK(TICK ll)          : llTick(ll), fFrac(0.0f) {};
+  FTICK() : llTick(0), fFrac(0.0f) {};
+  FTICK(TICK ll) : llTick(ll), fFrac(0.0f) {};
   FTICK(TICK ll, FLOAT f) : llTick(ll), fFrac(f) {};
 
   // Type conversion
@@ -43,7 +43,7 @@ struct FTICK {
   operator FLOAT() {
     return FLOAT(llTick) + fFrac;
   };
-  
+
   // Operations (FTICK)
   FTICK operator+(FTICK ft) {
     llTick += ft.llTick;
@@ -117,7 +117,7 @@ struct FTICK {
     fFrac /= f;
     return *this;
   };
-  
+
   // Conditions (FTICK)
   BOOL operator>(FTICK ft) {
     if (llTick == ft.llTick) {
@@ -133,21 +133,21 @@ struct FTICK {
     return (llTick < ft.llTick);
   };
 
-  BOOL operator >= (FTICK ft) {
+  BOOL operator>=(FTICK ft) {
     if (llTick == ft.llTick) {
       return (fFrac >= ft.fFrac);
     }
     return (llTick >= ft.llTick);
   };
 
-  BOOL operator <= (FTICK ft) {
+  BOOL operator<=(FTICK ft) {
     if (llTick == ft.llTick) {
       return (fFrac <= ft.fFrac);
     }
     return (llTick <= ft.llTick);
   };
 
-  BOOL operator == (FTICK ft) {
+  BOOL operator==(FTICK ft) {
     if (llTick == ft.llTick) {
       return (fFrac == ft.fFrac);
     }
@@ -155,18 +155,38 @@ struct FTICK {
   };
 
   // Conditions (TICK)
-  BOOL operator> (TICK ll) { return (llTick >  ll); };
-  BOOL operator< (TICK ll) { return (llTick <  ll); };
-  BOOL operator >= (TICK ll) { return (llTick >= ll); };
-  BOOL operator <= (TICK ll) { return (llTick <= ll); };
-  BOOL operator == (TICK ll) { return (llTick == ll); };
-  
+  BOOL operator>(TICK ll) {
+    return (llTick > ll);
+  };
+  BOOL operator<(TICK ll) {
+    return (llTick < ll);
+  };
+  BOOL operator>=(TICK ll) {
+    return (llTick >= ll);
+  };
+  BOOL operator<=(TICK ll) {
+    return (llTick <= ll);
+  };
+  BOOL operator==(TICK ll) {
+    return (llTick == ll);
+  };
+
   // Conditions (int)
-  BOOL operator> (int i) { return (llTick >  i); };
-  BOOL operator< (int i) { return (llTick <  i); };
-  BOOL operator >= (int i) { return (llTick >= i); };
-  BOOL operator <= (int i) { return (llTick <= i); };
-  BOOL operator == (int i) { return (llTick == i); };
+  BOOL operator>(int i) {
+    return (llTick > i);
+  };
+  BOOL operator<(int i) {
+    return (llTick < i);
+  };
+  BOOL operator>=(int i) {
+    return (llTick >= i);
+  };
+  BOOL operator<=(int i) {
+    return (llTick <= i);
+  };
+  BOOL operator==(int i) {
+    return (llTick == i);
+  };
 };
 
 #endif

@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,14 +16,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_STOCK_CENTITYCLASS_H
 #define SE_INCL_STOCK_CENTITYCLASS_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 #include <Engine/Entities/EntityClass.h>
 
-#define TYPE CEntityClass
-#define CStock_TYPE CStock_CEntityClass
-#define CNameTable_TYPE CNameTable_CEntityClass
+#define TYPE                CEntityClass
+#define CStock_TYPE         CStock_CEntityClass
+#define CNameTable_TYPE     CNameTable_CEntityClass
 #define CNameTableSlot_TYPE CNameTableSlot_CEntityClass
 
 #include <Engine/Templates/NameTable.h>
@@ -36,6 +36,4 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 ENGINE_API extern CStock_CEntityClass *_pEntityClassStock;
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

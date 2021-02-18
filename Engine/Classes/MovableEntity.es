@@ -213,16 +213,16 @@ static void InitTryToMove(void)
 
 // array of forces for current entity
 class CEntityForce {
-public:
-  CEntityPointer ef_penEntity;
-  INDEX ef_iForceType;
-  FLOAT ef_fRatio;    // how much of entity this force gets [0-1]
-  inline void Clear(void) {
-    ef_penEntity = NULL;
-  };
-  ~CEntityForce(void) {
-    Clear();
-  };
+  public:
+    CEntityPointer ef_penEntity;
+    INDEX ef_iForceType;
+    FLOAT ef_fRatio;    // how much of entity this force gets [0-1]
+    inline void Clear(void) {
+      ef_penEntity = NULL;
+    };
+    ~CEntityForce(void) {
+      Clear();
+    };
 };
 static CStaticStackArray<CEntityForce> _aefForces;
 

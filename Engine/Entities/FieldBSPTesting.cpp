@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -31,8 +31,7 @@ static CEntity *penField;
 static CBrushSector *_pbsc;
 static CStaticStackArray<CEntity *> _apenActive;
 
-static BOOL EntityIsInside(CEntity *pen)
-{
+static BOOL EntityIsInside(CEntity *pen) {
   // get bounding sphere
   FLOAT fSphereRadius = pen->en_fSpatialClassificationRadius;
   const FLOAT3D &vSphereCenter = pen->en_plPlacement.pl_PositionVector;
@@ -46,17 +45,14 @@ static BOOL EntityIsInside(CEntity *pen)
     DOUBLEobbox3D boxdEntity = FLOATtoDOUBLE(boxEntity);
 
     // if the box touches the sector's BSP
-    if (boxEntity.HasContactWith(FLOATobbox3D(_pbsc->bsc_boxBoundingBox)) &&
-      _pbsc->bsc_bspBSPTree.TestBox(boxdEntity) <= 0) {
-
+    if (boxEntity.HasContactWith(FLOATobbox3D(_pbsc->bsc_boxBoundingBox)) && _pbsc->bsc_bspBSPTree.TestBox(boxdEntity) <= 0) {
       // for each collision sphere
       CStaticArray<CMovingSphere> &absSpheres = pen->en_pciCollisionInfo->ci_absSpheres;
-      for (INDEX iSphere=0; iSphere<absSpheres.Count(); iSphere++) {
+      for (INDEX iSphere = 0; iSphere < absSpheres.Count(); iSphere++) {
         CMovingSphere &ms = absSpheres[iSphere];
-        ms.ms_vRelativeCenter0 = ms.ms_vCenter*m+v;
+        ms.ms_vRelativeCenter0 = ms.ms_vCenter * m + v;
         // if the sphere is in the sector
-        if (_pbsc->bsc_bspBSPTree.TestSphere(
-          FLOATtoDOUBLE(ms.ms_vRelativeCenter0), ms.ms_fR) <= 0) {
+        if (_pbsc->bsc_bspBSPTree.TestSphere(FLOATtoDOUBLE(ms.ms_vRelativeCenter0), ms.ms_fR) <= 0) {
           return TRUE;
         }
       }
@@ -68,8 +64,7 @@ static BOOL EntityIsInside(CEntity *pen)
 }
 
 // find first entity touching a field (this entity must be a field brush)
-CEntity *CEntity::TouchingEntity(BOOL (*ConsiderEntity)(CEntity *), CEntity *penHintMaybeInside)
-{
+CEntity *CEntity::TouchingEntity(BOOL (*ConsiderEntity)(CEntity *), CEntity *penHintMaybeInside) {
   // if not a field brush
   if (en_RenderType != RT_FIELDBRUSH) {
     // error
@@ -81,12 +76,14 @@ CEntity *CEntity::TouchingEntity(BOOL (*ConsiderEntity)(CEntity *), CEntity *pen
   penField = this;
   CBrushMip *pbm = en_pbrBrush->GetBrushMipByDistance(0.0f);
   _pbsc = NULL;
-  {FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbsc) {
-    _pbsc = itbsc;
-    break;
-  }}
+  {
+    FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbsc) {
+      _pbsc = itbsc;
+      break;
+    }
+  }
   // if illegal number of sectors
-  if (_pbsc == NULL || pbm->bm_abscSectors.Count()>1) {
+  if (_pbsc == NULL || pbm->bm_abscSectors.Count() > 1) {
     // error
     CPrintF("Field doesn't have exactly one sector - ignoring!\n");
     return NULL;
@@ -105,16 +102,17 @@ CEntity *CEntity::TouchingEntity(BOOL (*ConsiderEntity)(CEntity *), CEntity *pen
   // no entities active initially
   _apenActive.PopAll();
   // for each zoning sector that this entity is in
-  {FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+  {
+    FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     // for all movable model entities that should be considered in the sector
-    {FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
-      if (!(pen->en_ulPhysicsFlags&EPF_MOVABLE)
-        || (pen->en_RenderType != RT_MODEL&&pen->en_RenderType != RT_EDITORMODEL)
-        || (!ConsiderEntity(pen))) {
+    {
+      FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
+      if (!(pen->en_ulPhysicsFlags & EPF_MOVABLE) || (pen->en_RenderType != RT_MODEL && pen->en_RenderType != RT_EDITORMODEL)
+          || (!ConsiderEntity(pen))) {
         continue;
       }
       // if already active
-      if (pen->en_ulFlags&ENF_FOUNDINGRIDSEARCH) {
+      if (pen->en_ulFlags & ENF_FOUNDINGRIDSEARCH) {
         // skip it
         continue;
       }
@@ -127,16 +125,20 @@ CEntity *CEntity::TouchingEntity(BOOL (*ConsiderEntity)(CEntity *), CEntity *pen
       // add it to active
       _apenActive.Push() = pen;
       pen->en_ulFlags |= ENF_FOUNDINGRIDSEARCH;
-    }}
-  ENDFOR}
+    }
+  }
+  ENDFOR
+}
 
-  // mark all as inactive
-  {for (INDEX ien=0; ien<_apenActive.Count(); ien++) {
+// mark all as inactive
+{
+  for (INDEX ien = 0; ien < _apenActive.Count(); ien++) {
     CEntity *pen = _apenActive[ien];
     pen->en_ulFlags &= ~ENF_FOUNDINGRIDSEARCH;
-  }}
+  }
+}
 
-  _apenActive.PopAll();
+_apenActive.PopAll();
 
-  return penTouched;
+return penTouched;
 }

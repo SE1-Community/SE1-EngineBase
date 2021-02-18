@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_CONSOLE_H
 #define SE_INCL_CONSOLE_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 // Print formated text to the main console.
@@ -34,6 +34,4 @@ ENGINE_API void CON_DiscardLastLineTimes(void);
 ENGINE_API const char *CON_GetBuffer(void);
 ENGINE_API INDEX CON_GetBufferSize(void);
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

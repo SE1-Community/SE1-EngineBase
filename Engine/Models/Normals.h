@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,17 +16,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_NORMALS_H
 #define SE_INCL_NORMALS_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 #define MAX_GOURAUDNORMALS 256
-extern FLOAT3D  avGouraudNormals[MAX_GOURAUDNORMALS];
+extern FLOAT3D avGouraudNormals[MAX_GOURAUDNORMALS];
 
-// Find nearest Gouraud normal for a vector. 
-INDEX GouraudNormal(    const FLOAT3D &vNormal);
-void CompressNormal_HQ( const FLOAT3D &vNormal, UBYTE &ubH, UBYTE &ubP);
-void DecompressNormal_HQ(     FLOAT3D &vNormal, UBYTE  ubH, UBYTE  ubP);
+// Find nearest Gouraud normal for a vector.
+INDEX GouraudNormal(const FLOAT3D &vNormal);
+void CompressNormal_HQ(const FLOAT3D &vNormal, UBYTE &ubH, UBYTE &ubP);
+void DecompressNormal_HQ(FLOAT3D &vNormal, UBYTE ubH, UBYTE ubP);
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

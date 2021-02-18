@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -18,13 +18,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/FileName.h>
 #include <Engine/Base/Registry.h>
 
-static void ParseKeyName(const CTString &strKey, HKEY &hKeyRoot, CTString &strKeyPath, CTString &strKeyName)
-{
+static void ParseKeyName(const CTString &strKey, HKEY &hKeyRoot, CTString &strKeyPath, CTString &strKeyName) {
   CTString strRemain = strKey;
   // separate key into the value part and path
   strKeyName = CTFileName(strRemain).FileName();
   strRemain = CTFileName(strRemain).FileDir();
-  strRemain.TrimRight(strlen(strRemain)-1); // removes trailing backslash
+  strRemain.TrimRight(strlen(strRemain) - 1); // removes trailing backslash
   // try to find root key value
 
   if (strRemain.RemovePrefix("HKEY_CLASSES_ROOT\\")) {
@@ -45,10 +44,11 @@ static void ParseKeyName(const CTString &strKey, HKEY &hKeyRoot, CTString &strKe
   strKeyPath = strRemain;
 }
 
-ENGINE_API BOOL REG_GetString(const CTString &strKey, CTString &strString)
-{
+ENGINE_API BOOL REG_GetString(const CTString &strKey, CTString &strString) {
   // parse the key name
-  HKEY hKeyRoot; CTString strKeyPath; CTString strKeyName;
+  HKEY hKeyRoot;
+  CTString strKeyPath;
+  CTString strKeyName;
   ParseKeyName(strKey, hKeyRoot, strKeyPath, strKeyName);
 
   // open the key
@@ -70,14 +70,15 @@ ENGINE_API BOOL REG_GetString(const CTString &strKey, CTString &strString)
   // close the key
   RegCloseKey(hkey);
 
-  strString = CTString( achrKeyValue);
+  strString = CTString(achrKeyValue);
   return TRUE;
 }
 
-ENGINE_API BOOL REG_GetLong(const CTString &strKey, ULONG &ulLong)
-{
+ENGINE_API BOOL REG_GetLong(const CTString &strKey, ULONG &ulLong) {
   // parse the key name
-  HKEY hKeyRoot; CTString strKeyPath; CTString strKeyName;
+  HKEY hKeyRoot;
+  CTString strKeyPath;
+  CTString strKeyName;
   ParseKeyName(strKey, hKeyRoot, strKeyPath, strKeyName);
 
   // open the key
@@ -103,27 +104,27 @@ ENGINE_API BOOL REG_GetLong(const CTString &strKey, ULONG &ulLong)
   return TRUE;
 }
 
-ENGINE_API BOOL REG_SetString(const CTString &strKey, const CTString &strString)
-{
+ENGINE_API BOOL REG_SetString(const CTString &strKey, const CTString &strString) {
   // parse the key name
-  HKEY hKeyRoot; CTString strKeyPath; CTString strKeyName;
+  HKEY hKeyRoot;
+  CTString strKeyPath;
+  CTString strKeyName;
   ParseKeyName(strKey, hKeyRoot, strKeyPath, strKeyName);
 
   // create the registry key
   HKEY hkey;
   DWORD dwDisposition;
-  LONG lRes = RegCreateKeyExA(hKeyRoot, (const char*)strKeyPath, 0,
-    "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &dwDisposition);
+  LONG lRes = RegCreateKeyExA(hKeyRoot, (const char *)strKeyPath, 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey,
+                              &dwDisposition);
   if (lRes != ERROR_SUCCESS) {
     return FALSE;
   }
 
   // set the value
-  lRes = RegSetValueExA(hkey, strKeyName, 0, REG_SZ, (const UBYTE*)(const char*)strString, strlen(strString));
+  lRes = RegSetValueExA(hkey, strKeyName, 0, REG_SZ, (const UBYTE *)(const char *)strString, strlen(strString));
 
   // close the key
   RegCloseKey(hkey);
 
   return lRes == ERROR_SUCCESS;
 }
-

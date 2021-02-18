@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -65,7 +65,6 @@ extern INDEX d3d_bAlternateDepthReads;
 // general coordinate stack referenced by the scene polygons
 extern CStaticStackArray<GFXVertex3> _avtxScene;
 
-
 //#pragma optimize ("gt", on)
 #pragma inline_depth(255)
 #pragma inline_recursion(on)
@@ -93,41 +92,38 @@ extern BOOL _bMultiPlayer;
 extern CBrushVertexSelection *_pselbvxtSelectOnRender = NULL;
 extern CStaticStackArray<PIX2D> *_pavpixSelectLasso = NULL;
 extern CEntitySelection *_pselenSelectOnRender = NULL;
-extern PIX2D _vpixSelectNearPoint = PIX2D(0,0);
-extern BOOL _bSelectAlternative   = FALSE;
-extern PIX _pixDeltaAroundVertex  = 10;
+extern PIX2D _vpixSelectNearPoint = PIX2D(0, 0);
+extern BOOL _bSelectAlternative = FALSE;
+extern PIX _pixDeltaAroundVertex = 10;
 
 // shading info for viewer of last rendered view
 FLOAT3D _vViewerLightDirection;
 COLOR _colViewerLight;
 COLOR _colViewerAmbient;
 
-
 // handy statistic helper routines
 
-static enum CStatForm::StatTimerIndex _stiLastStatsMode = (enum CStatForm::StatTimerIndex)-1;
+static enum CStatForm::StatTimerIndex _stiLastStatsMode = (enum CStatForm::StatTimerIndex) - 1;
 
-void StopStatsMode(void)
-{
-  ASSERT( (INDEX)_stiLastStatsMode != -1);
-  if (_stiLastStatsMode >= 0) _sfStats.StopTimer(_stiLastStatsMode);
-  _stiLastStatsMode = (enum CStatForm::StatTimerIndex)-1;
+void StopStatsMode(void) {
+  ASSERT((INDEX)_stiLastStatsMode != -1);
+  if (_stiLastStatsMode >= 0)
+    _sfStats.StopTimer(_stiLastStatsMode);
+  _stiLastStatsMode = (enum CStatForm::StatTimerIndex) - 1;
 }
 
-void StartStatsMode( enum CStatForm::StatTimerIndex sti)
-{
-  ASSERT( (INDEX)sti != -1);
-  ASSERT( (INDEX)_stiLastStatsMode == -1);
-  if (sti >= 0) _sfStats.StartTimer(sti);
+void StartStatsMode(enum CStatForm::StatTimerIndex sti) {
+  ASSERT((INDEX)sti != -1);
+  ASSERT((INDEX)_stiLastStatsMode == -1);
+  if (sti >= 0)
+    _sfStats.StartTimer(sti);
   _stiLastStatsMode = sti;
 }
 
-void ChangeStatsMode( enum CStatForm::StatTimerIndex sti)
-{
+void ChangeStatsMode(enum CStatForm::StatTimerIndex sti) {
   StopStatsMode();
   StartStatsMode(sti);
 }
-
 
 // screen edges, polygons and trapezoids used in rasterizing
 CDynamicStackArray<CAddEdge> CRenderer::re_aadeAddEdges;
@@ -143,66 +139,64 @@ CStaticStackArray<INDEX> CRenderer::re_aiEdgeVxClipDst;
 
 // add and remove lists for each scan line
 CStaticArray<CListHead> CRenderer::re_alhAddLists;
-CStaticArray<INDEX> CRenderer::re_actAddCounts;   // count of edges in given add list
+CStaticArray<INDEX> CRenderer::re_actAddCounts; // count of edges in given add list
 CStaticArray<CScreenEdge *> CRenderer::re_apsedRemoveFirst;
-CStaticStackArray<CActiveEdge>  CRenderer::re_aaceActiveEdgesTmp;
-CStaticStackArray<CActiveEdge>  CRenderer::re_aaceActiveEdges;
+CStaticStackArray<CActiveEdge> CRenderer::re_aaceActiveEdgesTmp;
+CStaticStackArray<CActiveEdge> CRenderer::re_aaceActiveEdges;
 
 // container for sorting translucent polygons
 CDynamicStackArray<CTranslucentPolygon> CRenderer::re_atcTranslucentPolygons;
 
 // container for all light influencing current model
 struct ModelLight {
-  CLightSource *ml_plsLight;  // the light source
-  FLOAT3D ml_vDirection;      // direction from light to the model position (normalized)
-  FLOAT ml_fShadowIntensity;  // intensity at the model position (for shadow)
-  FLOAT ml_fR, ml_fG, ml_fB;  // light components at light source (0..255)
+  CLightSource *ml_plsLight; // the light source
+  FLOAT3D ml_vDirection;     // direction from light to the model position (normalized)
+  FLOAT ml_fShadowIntensity; // intensity at the model position (for shadow)
+  FLOAT ml_fR, ml_fG, ml_fB; // light components at light source (0..255)
   inline void Clear(void) {};
 };
 static CDynamicStackArray<struct ModelLight> _amlLights;
 
-static INDEX _ctMaxAddEdges=0;
-static INDEX _ctMaxActiveEdges=0;
+static INDEX _ctMaxAddEdges = 0;
+static INDEX _ctMaxActiveEdges = 0;
 
-void RendererInfo(void)
-{
+void RendererInfo(void) {
   CPrintF("Renderer information:\n");
 
   SLONG slMem = 0;
 
-  slMem += CRenderer::re_aadeAddEdges.da_Count*sizeof(CAddEdge);
-  slMem += CRenderer::re_asedScreenEdges.da_Count*sizeof(CScreenEdge);
+  slMem += CRenderer::re_aadeAddEdges.da_Count * sizeof(CAddEdge);
+  slMem += CRenderer::re_asedScreenEdges.da_Count * sizeof(CScreenEdge);
 
-  slMem += CRenderer::re_aspSpans.da_Count*sizeof(CSpan);
+  slMem += CRenderer::re_aspSpans.da_Count * sizeof(CSpan);
 
-  slMem += CRenderer::re_aiClipBuffer.sa_Count*sizeof(INDEX);
-  slMem += CRenderer::re_aiEdgeVxClipSrc.sa_Count*sizeof(INDEX);
-  slMem += CRenderer::re_aiEdgeVxClipDst.sa_Count*sizeof(INDEX);
+  slMem += CRenderer::re_aiClipBuffer.sa_Count * sizeof(INDEX);
+  slMem += CRenderer::re_aiEdgeVxClipSrc.sa_Count * sizeof(INDEX);
+  slMem += CRenderer::re_aiEdgeVxClipDst.sa_Count * sizeof(INDEX);
 
-  slMem += CRenderer::re_alhAddLists.sa_Count*sizeof(CListHead);
-  slMem += CRenderer::re_actAddCounts.sa_Count*sizeof(INDEX);
-  slMem += CRenderer::re_apsedRemoveFirst.sa_Count*sizeof(CScreenEdge *);
+  slMem += CRenderer::re_alhAddLists.sa_Count * sizeof(CListHead);
+  slMem += CRenderer::re_actAddCounts.sa_Count * sizeof(INDEX);
+  slMem += CRenderer::re_apsedRemoveFirst.sa_Count * sizeof(CScreenEdge *);
 
-  slMem += CRenderer::re_atcTranslucentPolygons.da_Count*sizeof(CTranslucentPolygon);
-  slMem += CRenderer::re_aaceActiveEdges.sa_Count*sizeof(CActiveEdge);
-  slMem += CRenderer::re_aaceActiveEdgesTmp.sa_Count*sizeof(CActiveEdge);
+  slMem += CRenderer::re_atcTranslucentPolygons.da_Count * sizeof(CTranslucentPolygon);
+  slMem += CRenderer::re_aaceActiveEdges.sa_Count * sizeof(CActiveEdge);
+  slMem += CRenderer::re_aaceActiveEdgesTmp.sa_Count * sizeof(CActiveEdge);
 
-  for (INDEX ire = 0; ire<MAX_RENDERERS; ire++) {
+  for (INDEX ire = 0; ire < MAX_RENDERERS; ire++) {
     CRenderer &re = _areRenderers[ire];
-    slMem += re.re_aspoScreenPolygons.da_Count*sizeof(CScreenPolygon);
-    slMem += re.re_admDelayedModels.da_Count*sizeof(CDelayedModel);
-    slMem += re.re_cenDrawn.sa_Count*sizeof(CEntity*);
-    slMem += re.re_alfiLensFlares.sa_Count*sizeof(CLensFlareInfo);
-    slMem += re.re_amiMirrors.da_Count*sizeof(CMirror);
-    slMem += re.re_avvxViewVertices.sa_Count*sizeof(CViewVertex);
-    slMem += re.re_aiEdgeVxMain.sa_Count*sizeof(INDEX);
+    slMem += re.re_aspoScreenPolygons.da_Count * sizeof(CScreenPolygon);
+    slMem += re.re_admDelayedModels.da_Count * sizeof(CDelayedModel);
+    slMem += re.re_cenDrawn.sa_Count * sizeof(CEntity *);
+    slMem += re.re_alfiLensFlares.sa_Count * sizeof(CLensFlareInfo);
+    slMem += re.re_amiMirrors.da_Count * sizeof(CMirror);
+    slMem += re.re_avvxViewVertices.sa_Count * sizeof(CViewVertex);
+    slMem += re.re_aiEdgeVxMain.sa_Count * sizeof(INDEX);
   }
 
-  CPrintF("Temporary memory used: %dk\n", slMem/1024);
+  CPrintF("Temporary memory used: %dk\n", slMem / 1024);
 }
 
-void ClearRenderer(void)
-{
+void ClearRenderer(void) {
   CRenderer::re_aadeAddEdges.Clear();
   CRenderer::re_asedScreenEdges.Clear();
   CRenderer::re_aspSpans.Clear();
@@ -218,7 +212,7 @@ void ClearRenderer(void)
   CRenderer::re_aaceActiveEdges.Clear();
   CRenderer::re_aaceActiveEdgesTmp.Clear();
 
-  for (INDEX ire = 0; ire<MAX_RENDERERS; ire++) {
+  for (INDEX ire = 0; ire < MAX_RENDERERS; ire++) {
     CRenderer &re = _areRenderers[ire];
 
     re.re_aspoScreenPolygons.Clear();
@@ -238,10 +232,10 @@ void ClearRenderer(void)
  * This can be used to test clipping or to add an epsilon value for it.
  */
 //#define CLIPMARGIN 10.0f    // used for debugging clipping
-#define CLIPMARGIN 0.0f
-#define CLIPEPSILON 0.5f
-#define CLIPMARGADD (CLIPMARGIN-CLIPEPSILON)
-#define CLIPMARGSUB (CLIPMARGIN+CLIPEPSILON)
+#define CLIPMARGIN           0.0f
+#define CLIPEPSILON          0.5f
+#define CLIPMARGADD          (CLIPMARGIN - CLIPEPSILON)
+#define CLIPMARGSUB          (CLIPMARGIN + CLIPEPSILON)
 #define SENTINELEDGE_EPSILON 0.4f
 
 #include "RendMisc.cpp"
@@ -256,14 +250,13 @@ extern FLOAT wld_fEdgeOffsetI;
 extern FLOAT wld_fEdgeAdjustK;
 
 // initialize all rendering structures
-void CRenderer::Initialize(void)
-{
+void CRenderer::Initialize(void) {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_INITIALIZATION);
 
   // used for fixing problems with extra trapezoids generated on t-junctions
   if (!re_bRenderingShadows) {
-    re_fEdgeOffsetI = wld_fEdgeOffsetI;  //0.125f;
-    re_fEdgeAdjustK = wld_fEdgeAdjustK;  //1.0001f;
+    re_fEdgeOffsetI = wld_fEdgeOffsetI; // 0.125f;
+    re_fEdgeAdjustK = wld_fEdgeAdjustK; // 1.0001f;
   } else {
     re_fEdgeOffsetI = 0.0f;
     re_fEdgeAdjustK = 1.0f;
@@ -274,7 +267,7 @@ void CRenderer::Initialize(void)
   re_prProjection->ObjectFaceForwardL() = FALSE;
   re_prProjection->ObjectStretchL() = FLOAT3D(1.0f, 1.0f, 1.0f);
   re_prProjection->DepthBufferNearL() = 0.0f;
-  re_prProjection->DepthBufferFarL()  = 0.9f;
+  re_prProjection->DepthBufferFarL() = 0.9f;
   re_prProjection->Prepare();
 
   re_asedScreenEdges.PopAll();
@@ -284,7 +277,7 @@ void CRenderer::Initialize(void)
   re_aiEdgeVxMain.PopAll();
 
   // if more scan lines are needed than last time
-  if (re_alhAddLists.Count()<re_ctScanLines) {
+  if (re_alhAddLists.Count() < re_ctScanLines) {
     re_alhAddLists.Clear();
     re_alhAddLists.New(re_ctScanLines);
     re_actAddCounts.Clear();
@@ -294,7 +287,7 @@ void CRenderer::Initialize(void)
     re_apsedRemoveFirst.New(re_ctScanLines);
   }
   // clear all add/remove lists
-  for (INDEX iScan=0; iScan<re_ctScanLines; iScan++) {
+  for (INDEX iScan = 0; iScan < re_ctScanLines; iScan++) {
     re_actAddCounts[iScan] = 0;
     re_apsedRemoveFirst[iScan] = NULL;
   }
@@ -316,13 +309,12 @@ void CRenderer::Initialize(void)
 
   // no fog or haze initially
   re_bCurrentSectorHasHaze = FALSE;
-  re_bCurrentSectorHasFog  = FALSE;
+  re_bCurrentSectorHasFog = FALSE;
 
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_INITIALIZATION);
 }
 // add initial sectors to active lists
-void CRenderer::AddInitialSectors(void)
-{
+void CRenderer::AddInitialSectors(void) {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_ADDINITIAL);
 
   re_bViewerInHaze = FALSE;
@@ -332,14 +324,14 @@ void CRenderer::AddInitialSectors(void)
   // if showing vis tweaks
   if (_wrpWorldRenderPrefs.wrp_bShowVisTweaksOn && _pselbscVisTweaks != NULL) {
     // add flags for selected flags
-    if (_pselbscVisTweaks->Count()>0) {
+    if (_pselbscVisTweaks->Count() > 0) {
       re_ulVisExclude = VISM_INCLUDEEXCLUDE;
     }
     FOREACHINDYNAMICCONTAINER(*_pselbscVisTweaks, CBrushSector, itbsc) {
-      if (itbsc->bsc_ulFlags2&BSCF2_VISIBILITYINCLUDE) {
-        re_ulVisInclude = itbsc->bsc_ulVisFlags&VISM_INCLUDEEXCLUDE;
+      if (itbsc->bsc_ulFlags2 & BSCF2_VISIBILITYINCLUDE) {
+        re_ulVisInclude = itbsc->bsc_ulVisFlags & VISM_INCLUDEEXCLUDE;
       } else {
-        re_ulVisExclude &= itbsc->bsc_ulVisFlags&VISM_INCLUDEEXCLUDE;
+        re_ulVisExclude &= itbsc->bsc_ulVisFlags & VISM_INCLUDEEXCLUDE;
       }
     }
   }
@@ -363,8 +355,8 @@ void CRenderer::AddInitialSectors(void)
       re_prBackgroundProjection->ObjectPlacementL() = CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));
       re_prBackgroundProjection->FarClipDistanceL() = -1.0f;
       re_prBackgroundProjection->DepthBufferNearL() = 0.9f;
-      re_prBackgroundProjection->DepthBufferFarL()  = 1.0f;
-      re_prBackgroundProjection->TurnOffWarpPlane();  // background never needs warp-plane clipping
+      re_prBackgroundProjection->DepthBufferFarL() = 1.0f;
+      re_prBackgroundProjection->TurnOffWarpPlane(); // background never needs warp-plane clipping
       re_prBackgroundProjection->Prepare();
     }
   }
@@ -374,11 +366,10 @@ void CRenderer::AddInitialSectors(void)
     // add all zoning sectors near the entity
     AddZoningSectorsAroundEntity(re_penViewer, re_prProjection->ViewerPlacementR().pl_PositionVector);
     // make sure the viewer is always added (if model)
-    if (re_penViewer->en_RenderType == CEntity::RT_MODEL ||
-       re_penViewer->en_RenderType == CEntity::RT_EDITORMODEL) {
+    if (re_penViewer->en_RenderType == CEntity::RT_MODEL || re_penViewer->en_RenderType == CEntity::RT_EDITORMODEL) {
       AddModelEntity(re_penViewer);
     }
-  // if a viewer polygons are given
+    // if a viewer polygons are given
   } else if (re_pcspoViewPolygons != NULL) {
     // for each polygon
     FOREACHINDYNAMICCONTAINER(*re_pcspoViewPolygons, CScreenPolygon, itspo) {
@@ -390,25 +381,25 @@ void CRenderer::AddInitialSectors(void)
       ASSERT(pbrBrush != NULL);
       CEntity *penBrush = pbrBrush->br_penEntity;
       // if the brush is zoning
-      if (penBrush->en_ulFlags&ENF_ZONING) {
+      if (penBrush->en_ulFlags & ENF_ZONING) {
         // add the sector that the polygon is in
         AddGivenZoningSector(pbsc);
-      // if the brush is non-zoning
+        // if the brush is non-zoning
       } else {
         // add sectors around it
         AddZoningSectorsAroundEntity(penBrush, penBrush->GetPlacement().pl_PositionVector);
       }
     }
-  // if there is no viewer entity/polygon
+    // if there is no viewer entity/polygon
   } else {
     // set up viewer bounding box as box of minimum redraw range around viewer position
     if (re_bRenderingShadows) {
       // NOTE: when rendering shadows, this is set in ::RenderShadows()
-      //re_boxViewer = FLOATaabbox3D(re_prProjection->ViewerPlacementR().pl_PositionVector,
+      // re_boxViewer = FLOATaabbox3D(re_prProjection->ViewerPlacementR().pl_PositionVector,
       //  1.0f);
     } else {
-      re_boxViewer = FLOATaabbox3D(re_prProjection->ViewerPlacementR().pl_PositionVector,
-        _wrpWorldRenderPrefs.wrp_fMinimumRenderRange);
+      re_boxViewer
+        = FLOATaabbox3D(re_prProjection->ViewerPlacementR().pl_PositionVector, _wrpWorldRenderPrefs.wrp_fMinimumRenderRange);
     }
     // add all zoning sectors near viewer box
     AddZoningSectorsAroundBox(re_boxViewer);
@@ -433,81 +424,83 @@ void CRenderer::AddInitialSectors(void)
 
   // add the background if needed
   if (re_bBackgroundEnabled) {
-    AddZoningSectorsAroundEntity(re_penBackgroundViewer, 
-      re_penBackgroundViewer->GetPlacement().pl_PositionVector);
+    AddZoningSectorsAroundEntity(re_penBackgroundViewer, re_penBackgroundViewer->GetPlacement().pl_PositionVector);
   }
 
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDINITIAL);
 }
 // scan through portals for other sectors
-void CRenderer::ScanForOtherSectors(void)
-{
+void CRenderer::ScanForOtherSectors(void) {
   ChangeStatsMode(CStatForm::STI_WORLDVISIBILITY);
   // if shadows or polygons should be drawn
-  if (re_bRenderingShadows
-    ||_wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
+  if (re_bRenderingShadows || _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
     // rasterize edges into spans
     ScanEdges();
   }
   // for each of models that were kept for delayed rendering
-  for (INDEX iModel=0; iModel<re_admDelayedModels.Count(); iModel++) {
+  for (INDEX iModel = 0; iModel < re_admDelayedModels.Count(); iModel++) {
     // mark the entity as not active in rendering anymore
     re_admDelayedModels[iModel].dm_penModel->en_ulFlags &= ~ENF_INRENDERING;
   }
   ChangeStatsMode(CStatForm::STI_WORLDTRANSFORM);
 }
 // cleanup after scanning
-void CRenderer::CleanupScanning(void)
-{
+void CRenderer::CleanupScanning(void) {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_CLEANUP);
 
   // for all active sectors
-  {FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, re_lhActiveSectors, itbsc) {
-    // remove it from list
-    itbsc->bsc_lnInActiveSectors.Remove();
+  {
+    FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, re_lhActiveSectors, itbsc) {
+      // remove it from list
+      itbsc->bsc_lnInActiveSectors.Remove();
 
-    // for all polygons in sector
-    FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itpo) {
-      CBrushPolygon &bpo = *itpo;
-      // clear screen polygon pointers
-      bpo.bpo_pspoScreenPolygon = NULL;
+      // for all polygons in sector
+      FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itpo) {
+        CBrushPolygon &bpo = *itpo;
+        // clear screen polygon pointers
+        bpo.bpo_pspoScreenPolygon = NULL;
+      }
     }
-  }}
+  }
   ASSERT(re_lhActiveSectors.IsEmpty());
 
   // for all active brushes
-  {FORDELETELIST(CBrush3D, br_lnInActiveBrushes, re_lhActiveBrushes, itbr) {
-    // remove it from list
-    itbr->br_lnInActiveBrushes.Remove();
-  }}
+  {
+    FORDELETELIST(CBrush3D, br_lnInActiveBrushes, re_lhActiveBrushes, itbr) {
+      // remove it from list
+      itbr->br_lnInActiveBrushes.Remove();
+    }
+  }
   ASSERT(re_lhActiveBrushes.IsEmpty());
 
   // for all active terrains
-  {FORDELETELIST(CTerrain, tr_lnInActiveTerrains, re_lhActiveTerrains, ittr) {
-    // remove it from list
-    ittr->tr_lnInActiveTerrains.Remove();
-  }}
+  {
+    FORDELETELIST(CTerrain, tr_lnInActiveTerrains, re_lhActiveTerrains, ittr) {
+      // remove it from list
+      ittr->tr_lnInActiveTerrains.Remove();
+    }
+  }
   ASSERT(re_lhActiveTerrains.IsEmpty());
 
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_CLEANUP);
 }
 
 // Render active terrains
-void CRenderer::RenderTerrains(void)
-{
+void CRenderer::RenderTerrains(void) {
   CAnyProjection3D *papr;
   papr = &re_prProjection;
 
   // for all active terrains
-  {FORDELETELIST(CTerrain, tr_lnInActiveTerrains, re_lhActiveTerrains, ittr) {
-    // render terrain
-    ittr->Render(*papr, re_pdpDrawPort);
-  }}
+  {
+    FORDELETELIST(CTerrain, tr_lnInActiveTerrains, re_lhActiveTerrains, ittr) {
+      // render terrain
+      ittr->Render(*papr, re_pdpDrawPort);
+    }
+  }
 }
 
 // Render active terrains in wireframe mode
-void CRenderer::RenderWireFrameTerrains(void)
-{
+void CRenderer::RenderWireFrameTerrains(void) {
   CAnyProjection3D *papr;
   papr = &re_prProjection;
 
@@ -515,91 +508,85 @@ void CRenderer::RenderWireFrameTerrains(void)
   BOOL bShowVertices = _wrpWorldRenderPrefs.wrp_ftVertices != CWorldRenderPrefs::FT_NONE;
   // BOOL bForceRegenerate = _wrpWorldRenderPrefs.wrp_ftPolygons
 
-  COLOR colEdges    = _wrpWorldRenderPrefs.wrp_colEdges;
+  COLOR colEdges = _wrpWorldRenderPrefs.wrp_colEdges;
   COLOR colVertices = 0xFF0000FF;
   // for all active terrains
-  {FORDELETELIST(CTerrain, tr_lnInActiveTerrains, re_lhActiveTerrains, ittr) {
-    // render terrain
-    if (bShowEdges) {
-      ittr->RenderWireFrame(*papr, re_pdpDrawPort,colEdges);
+  {
+    FORDELETELIST(CTerrain, tr_lnInActiveTerrains, re_lhActiveTerrains, ittr) {
+      // render terrain
+      if (bShowEdges) {
+        ittr->RenderWireFrame(*papr, re_pdpDrawPort, colEdges);
+      }
+      if (bShowVertices) {
+        // ittr->RenderVertices(*papr, re_pdpDrawPort,colVertices);
+      }
     }
-    if (bShowVertices) {
-      //ittr->RenderVertices(*papr, re_pdpDrawPort,colVertices);
-    }
-  }}
+  }
 }
 // draw the prepared things to screen
-void CRenderer::DrawToScreen(void)
-{
+void CRenderer::DrawToScreen(void) {
   ChangeStatsMode(CStatForm::STI_WORLDRENDERING);
-  
+
   //------------------------------------------------- first render background
   // if polygons should be drawn
-  if (!re_bRenderingShadows &&
-    _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
+  if (!re_bRenderingShadows && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
     _pfRenderProfile.StartTimer(CRenderProfile::PTI_RENDERSCENE);
     if (re_bBackgroundEnabled) {
       // render the polygons to screen
-      CPerspectiveProjection3D *pprPerspective =
-          (CPerspectiveProjection3D *)(CProjection3D *)(re_prBackgroundProjection);
+      CPerspectiveProjection3D *pprPerspective = (CPerspectiveProjection3D *)(CProjection3D *)(re_prBackgroundProjection);
       pprPerspective->Prepare();
-      RenderScene( re_pdpDrawPort, re_pspoFirstBackground, re_prBackgroundProjection, re_colSelection, FALSE);
+      RenderScene(re_pdpDrawPort, re_pspoFirstBackground, re_prBackgroundProjection, re_colSelection, FALSE);
     } else {
       // this is just for far sentinel
-      RenderSceneBackground( re_pdpDrawPort, re_spoFarSentinel.spo_spoScenePolygon.spo_cColor);
+      RenderSceneBackground(re_pdpDrawPort, re_spoFarSentinel.spo_spoScenePolygon.spo_cColor);
     }
     _pfRenderProfile.StopTimer(CRenderProfile::PTI_RENDERSCENE);
   }
-  
+
   if (re_bBackgroundEnabled) {
     // render models that were kept for delayed rendering.
     ChangeStatsMode(CStatForm::STI_MODELSETUP);
-    RenderModels(TRUE);   // render background models
+    RenderModels(TRUE); // render background models
     ChangeStatsMode(CStatForm::STI_WORLDRENDERING);
   }
-  
+
   // if polygons should be drawn
-  if (!re_bRenderingShadows &&
-    re_bBackgroundEnabled
-    &&_wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
+  if (!re_bRenderingShadows && re_bBackgroundEnabled && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
     // render translucent portals
     _pfRenderProfile.StartTimer(CRenderProfile::PTI_RENDERSCENE);
-    CPerspectiveProjection3D *pprPerspective = (CPerspectiveProjection3D*)(CProjection3D*)(re_prBackgroundProjection);
-    RenderScene( re_pdpDrawPort, SortTranslucentPolygons(re_pspoFirstBackgroundTranslucent),
-                 re_prBackgroundProjection, re_colSelection, TRUE);
+    CPerspectiveProjection3D *pprPerspective = (CPerspectiveProjection3D *)(CProjection3D *)(re_prBackgroundProjection);
+    RenderScene(re_pdpDrawPort, SortTranslucentPolygons(re_pspoFirstBackgroundTranslucent), re_prBackgroundProjection,
+                re_colSelection, TRUE);
     _pfRenderProfile.StopTimer(CRenderProfile::PTI_RENDERSCENE);
   }
-  
+
   if (re_bBackgroundEnabled) {
     ChangeStatsMode(CStatForm::STI_PARTICLERENDERING);
     RenderParticles(TRUE); // render background particless
     ChangeStatsMode(CStatForm::STI_WORLDRENDERING);
   }
-  
+
   //------------------------------------------------- second render non-background
   // if polygons should be drawn
-  if (!re_bRenderingShadows
-   && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
+  if (!re_bRenderingShadows && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
     // render the spans to screen
     re_prProjection->Prepare();
     _pfRenderProfile.StartTimer(CRenderProfile::PTI_RENDERSCENE);
-    CPerspectiveProjection3D *pprPerspective = (CPerspectiveProjection3D*)(CProjection3D*)re_prProjection;
-    RenderScene( re_pdpDrawPort, re_pspoFirst, re_prProjection, re_colSelection, FALSE);
+    CPerspectiveProjection3D *pprPerspective = (CPerspectiveProjection3D *)(CProjection3D *)re_prProjection;
+    RenderScene(re_pdpDrawPort, re_pspoFirst, re_prProjection, re_colSelection, FALSE);
     _pfRenderProfile.StopTimer(CRenderProfile::PTI_RENDERSCENE);
   }
 
   // Render active terrains
-  if (!re_bRenderingShadows
-    && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
+  if (!re_bRenderingShadows && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
     RenderTerrains();
   }
 
   // if wireframe should be drawn
-  if (!re_bRenderingShadows &&
-    ( _wrpWorldRenderPrefs.wrp_ftEdges     != CWorldRenderPrefs::FT_NONE
-   || _wrpWorldRenderPrefs.wrp_ftVertices  != CWorldRenderPrefs::FT_NONE
-   || _wrpWorldRenderPrefs.wrp_stSelection == CWorldRenderPrefs::ST_VERTICES
-   || _wrpWorldRenderPrefs.IsFieldBrushesOn())) {
+  if (!re_bRenderingShadows
+      && (_wrpWorldRenderPrefs.wrp_ftEdges != CWorldRenderPrefs::FT_NONE
+          || _wrpWorldRenderPrefs.wrp_ftVertices != CWorldRenderPrefs::FT_NONE
+          || _wrpWorldRenderPrefs.wrp_stSelection == CWorldRenderPrefs::ST_VERTICES || _wrpWorldRenderPrefs.IsFieldBrushesOn())) {
     // render in wireframe all brushes that were added (in orthographic projection!)
     re_pdpDrawPort->SetOrtho();
     RenderWireFrameBrushes();
@@ -612,16 +599,14 @@ void CRenderer::DrawToScreen(void)
   ChangeStatsMode(CStatForm::STI_PARTICLERENDERING);
   RenderParticles(FALSE); // render non-background particles
   ChangeStatsMode(CStatForm::STI_WORLDRENDERING);
-  
+
   // if polygons should be drawn
-  if (!re_bRenderingShadows
-    &&_wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
+  if (!re_bRenderingShadows && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
     // render translucent portals
     _pfRenderProfile.StartTimer(CRenderProfile::PTI_RENDERSCENE);
-    CPerspectiveProjection3D *pprPerspective = (CPerspectiveProjection3D*)(CProjection3D*)re_prProjection;
+    CPerspectiveProjection3D *pprPerspective = (CPerspectiveProjection3D *)(CProjection3D *)re_prProjection;
     pprPerspective->Prepare();
-    RenderScene( re_pdpDrawPort, SortTranslucentPolygons(re_pspoFirstTranslucent),
-                 re_prProjection, re_colSelection, TRUE);
+    RenderScene(re_pdpDrawPort, SortTranslucentPolygons(re_pspoFirstTranslucent), re_prProjection, re_colSelection, TRUE);
     _pfRenderProfile.StopTimer(CRenderProfile::PTI_RENDERSCENE);
   }
 
@@ -650,10 +635,8 @@ void CRenderer::DrawToScreen(void)
   re_avvxViewVertices.PopAll();
 }
 
-
 // draw mirror polygons to z-buffer to enable drawing of mirror
-void CRenderer::FillMirrorDepth(CMirror &mi)
-{
+void CRenderer::FillMirrorDepth(CMirror &mi) {
   // create a list of scene polygons for mirror
   ScenePolygon *pspoFirst = NULL;
   // for each polygon
@@ -675,14 +658,11 @@ void CRenderer::FillMirrorDepth(CMirror &mi)
   }
 
   // render all those polygons just to clear z-buffer
-  RenderSceneZOnly( re_pdpDrawPort, pspoFirst, re_prProjection);
+  RenderSceneZOnly(re_pdpDrawPort, pspoFirst, re_prProjection);
 }
 
-
-
 // do the rendering
-void CRenderer::Render(void)
-{
+void CRenderer::Render(void) {
   // if the world doesn't have all portal-sector links updated
   if (!re_pwoWorld->wo_bPortalLinksUpToDate) {
     // update the links
@@ -701,8 +681,9 @@ void CRenderer::Render(void)
   // initialize all rendering structures
   Initialize();
   // init select-on-render functionality if not rendering shadows
-  extern void InitSelectOnRender( PIX pixSizeI, PIX pixSizeJ);
-  if (re_pdpDrawPort != NULL) InitSelectOnRender( re_pdpDrawPort->GetWidth(), re_pdpDrawPort->GetHeight());
+  extern void InitSelectOnRender(PIX pixSizeI, PIX pixSizeJ);
+  if (re_pdpDrawPort != NULL)
+    InitSelectOnRender(re_pdpDrawPort->GetWidth(), re_pdpDrawPort->GetHeight());
   // add initial sectors to active lists
   AddInitialSectors();
   // scan through portals for other sectors
@@ -710,14 +691,16 @@ void CRenderer::Render(void)
 
   // force finishing of all OpenGL pending operations, if required
   ChangeStatsMode(CStatForm::STI_SWAPBUFFERS);
-  extern INDEX ogl_iFinish;  ogl_iFinish = Clamp( ogl_iFinish, 0L, 3L);
-  extern INDEX d3d_iFinish;  d3d_iFinish = Clamp( d3d_iFinish, 0L, 3L);
-  if ((ogl_iFinish == 1 && _pGfx->gl_eCurrentAPI == GAT_OGL) 
+  extern INDEX ogl_iFinish;
+  ogl_iFinish = Clamp(ogl_iFinish, 0L, 3L);
+  extern INDEX d3d_iFinish;
+  d3d_iFinish = Clamp(d3d_iFinish, 0L, 3L);
+  if ((ogl_iFinish == 1 && _pGfx->gl_eCurrentAPI == GAT_OGL)
 #ifdef SE1_D3D
-   || (d3d_iFinish == 1 && _pGfx->gl_eCurrentAPI == GAT_D3D)
+      || (d3d_iFinish == 1 && _pGfx->gl_eCurrentAPI == GAT_D3D)
 #endif // SE1_D3D
-   ) 
-   gfxFinish();
+  )
+    gfxFinish();
 
   // check any eventual delayed depth points outside the mirror (if API and time allows)
   if (!re_bRenderingShadows && re_iIndex == 0) {
@@ -725,7 +708,7 @@ void CRenderer::Render(void)
     // Direct3D is, of course, totally different story. :(
     if (_pGfx->gl_eCurrentAPI == GAT_OGL || d3d_bAlternateDepthReads) {
       ChangeStatsMode(CStatForm::STI_FLARESRENDERING);
-      extern void CheckDelayedDepthPoints( const CDrawPort *pdp, INDEX iMirrorLevel=0);
+      extern void CheckDelayedDepthPoints(const CDrawPort *pdp, INDEX iMirrorLevel = 0);
       CheckDelayedDepthPoints(re_pdpDrawPort);
     }
     // in 1st pass - mirrors are not drawn
@@ -734,34 +717,31 @@ void CRenderer::Render(void)
 
   // if may render one more mirror recursion
   ChangeStatsMode(CStatForm::STI_WORLDTRANSFORM);
-  if (!re_bRenderingShadows
-    &&  re_prProjection.IsPerspective()
-    &&  re_iIndex<MAX_RENDERERS-1
-    &&  re_amiMirrors.Count()>0
-    && !re_pdpDrawPort->IsOverlappedRendering())
-  {
+  if (!re_bRenderingShadows && re_prProjection.IsPerspective() && re_iIndex < MAX_RENDERERS - 1 && re_amiMirrors.Count() > 0
+      && !re_pdpDrawPort->IsOverlappedRendering()) {
     // cleanup after scanning
     CleanupScanning();
 
     // take next renderer
-    CRenderer &re = _areRenderers[re_iIndex+1];
+    CRenderer &re = _areRenderers[re_iIndex + 1];
     // for each mirror
-    for (INDEX i=0; i<re_amiMirrors.Count(); i++)
-    {
+    for (INDEX i = 0; i < re_amiMirrors.Count(); i++) {
       // skip invalid mirrors
       CMirror &mi = re_amiMirrors[i];
-      if (mi.mi_iMirrorType<0) continue;
+      if (mi.mi_iMirrorType < 0)
+        continue;
 
       // calculate all needed data for the mirror
       mi.FinishAdding();
       // skip mirror that has no significant area
-      if (mi.mi_fpixMaxPolygonArea<5) continue;
+      if (mi.mi_fpixMaxPolygonArea < 5)
+        continue;
 
       // expand mirror in each direction, but keep it inside drawport
       PIX pixDPSizeI = re_pdpDrawPort->GetWidth();
       PIX pixDPSizeJ = re_pdpDrawPort->GetHeight();
       mi.mi_boxOnScreen.Expand(1);
-      mi.mi_boxOnScreen &= PIXaabbox2D( PIX2D(0,0), PIX2D(pixDPSizeI,pixDPSizeJ));
+      mi.mi_boxOnScreen &= PIXaabbox2D(PIX2D(0, 0), PIX2D(pixDPSizeI, pixDPSizeJ));
 
       // get drawport and mirror coordinates
       PIX pixMirrorMinI = mi.mi_boxOnScreen.Min()(1);
@@ -770,12 +750,12 @@ void CRenderer::Render(void)
       PIX pixMirrorMaxJ = mi.mi_boxOnScreen.Max()(2);
 
       // calculate mirror size
-      PIX pixMirrorSizeI = pixMirrorMaxI-pixMirrorMinI;
-      PIX pixMirrorSizeJ = pixMirrorMaxJ-pixMirrorMinJ;
+      PIX pixMirrorSizeI = pixMirrorMaxI - pixMirrorMinI;
+      PIX pixMirrorSizeJ = pixMirrorMaxJ - pixMirrorMinJ;
       // clone drawport (must specify doubles here, to keep the precision)
       re_pdpDrawPort->Unlock();
-      CDrawPort dpMirror( re_pdpDrawPort, pixMirrorMinI /(DOUBLE)pixDPSizeI, pixMirrorMinJ /(DOUBLE)pixDPSizeJ,
-                                          pixMirrorSizeI/(DOUBLE)pixDPSizeI, pixMirrorSizeJ/(DOUBLE)pixDPSizeJ);
+      CDrawPort dpMirror(re_pdpDrawPort, pixMirrorMinI / (DOUBLE)pixDPSizeI, pixMirrorMinJ / (DOUBLE)pixDPSizeJ,
+                         pixMirrorSizeI / (DOUBLE)pixDPSizeI, pixMirrorSizeJ / (DOUBLE)pixDPSizeJ);
       // skip if cannot be locked
       if (!dpMirror.Lock()) {
         // lock back the original drawport
@@ -784,31 +764,31 @@ void CRenderer::Render(void)
       }
 
       // recalculate mirror size to compensate for possible lost precision
-      pixMirrorMinI  = dpMirror.dp_MinI - re_pdpDrawPort->dp_MinI;
-      pixMirrorMinJ  = dpMirror.dp_MinJ - re_pdpDrawPort->dp_MinJ;
-      pixMirrorMaxI  = dpMirror.dp_MaxI - re_pdpDrawPort->dp_MinI +1;
-      pixMirrorMaxJ  = dpMirror.dp_MaxJ - re_pdpDrawPort->dp_MinJ +1;
-      pixMirrorSizeI = pixMirrorMaxI-pixMirrorMinI;
-      pixMirrorSizeJ = pixMirrorMaxJ-pixMirrorMinJ;
-      ASSERT( pixMirrorSizeI == dpMirror.dp_Width && pixMirrorSizeJ == dpMirror.dp_Height);
+      pixMirrorMinI = dpMirror.dp_MinI - re_pdpDrawPort->dp_MinI;
+      pixMirrorMinJ = dpMirror.dp_MinJ - re_pdpDrawPort->dp_MinJ;
+      pixMirrorMaxI = dpMirror.dp_MaxI - re_pdpDrawPort->dp_MinI + 1;
+      pixMirrorMaxJ = dpMirror.dp_MaxJ - re_pdpDrawPort->dp_MinJ + 1;
+      pixMirrorSizeI = pixMirrorMaxI - pixMirrorMinI;
+      pixMirrorSizeJ = pixMirrorMaxJ - pixMirrorMinJ;
+      ASSERT(pixMirrorSizeI == dpMirror.dp_Width && pixMirrorSizeJ == dpMirror.dp_Height);
 
       // set it up for rendering
-      re.re_pwoWorld     = re_pwoWorld;
+      re.re_pwoWorld = re_pwoWorld;
       re.re_prProjection = re_prProjection;
-      re.re_pdpDrawPort  = &dpMirror;
+      re.re_pdpDrawPort = &dpMirror;
       // initialize clipping rectangle around the mirror size
-      re.InitClippingRectangle( 0, 0, pixMirrorSizeI, pixMirrorSizeJ);
+      re.InitClippingRectangle(0, 0, pixMirrorSizeI, pixMirrorSizeJ);
       // setup projection to use the mirror drawport and keep same perspective as before
-      re.re_prProjection->ScreenBBoxL() = FLOATaabbox2D( FLOAT2D(0,0), FLOAT2D(pixDPSizeI, pixDPSizeJ));
-      ((CPerspectiveProjection3D&)(*re.re_prProjection)).ppr_boxSubScreen =
-        FLOATaabbox2D( FLOAT2D(pixMirrorMinI, pixMirrorMinJ), FLOAT2D(pixMirrorMaxI, pixMirrorMaxJ));
+      re.re_prProjection->ScreenBBoxL() = FLOATaabbox2D(FLOAT2D(0, 0), FLOAT2D(pixDPSizeI, pixDPSizeJ));
+      ((CPerspectiveProjection3D &)(*re.re_prProjection)).ppr_boxSubScreen
+        = FLOATaabbox2D(FLOAT2D(pixMirrorMinI, pixMirrorMinJ), FLOAT2D(pixMirrorMaxI, pixMirrorMaxJ));
 
       // warp?
-      if (mi.mi_mp.mp_ulFlags&MPF_WARP) {
+      if (mi.mi_mp.mp_ulFlags & MPF_WARP) {
         // warp clip plane is parallel to view plane and contains the closest point
         re.re_penViewer = mi.mi_mp.mp_penWarpViewer;
         re.re_pcspoViewPolygons = NULL;
-        re.re_prProjection->WarpPlaneL() = FLOATplane3D(FLOAT3D(0,0,-1), mi.mi_vClosest);
+        re.re_prProjection->WarpPlaneL() = FLOATplane3D(FLOAT3D(0, 0, -1), mi.mi_vClosest);
         // create new viewer placement
         CPlacement3D pl = re.re_prProjection->ViewerPlacementR();
         FLOATmatrix3D m;
@@ -817,9 +797,9 @@ void CRenderer::Render(void)
         pl.RelativeToAbsoluteSmooth(mi.mi_mp.mp_plWarpOut);
         re.re_prProjection->ViewerPlacementL() = pl;
         if (re.re_prProjection.IsPerspective() && mi.mi_mp.mp_fWarpFOV >= 1 && mi.mi_mp.mp_fWarpFOV <= 170) {
-          ((CPerspectiveProjection3D&)*re.re_prProjection).FOVL() = mi.mi_mp.mp_fWarpFOV;
+          ((CPerspectiveProjection3D &)*re.re_prProjection).FOVL() = mi.mi_mp.mp_fWarpFOV;
         }
-      // mirror!
+        // mirror!
       } else {
         re.re_penViewer = NULL;
         re.re_pcspoViewPolygons = &mi.mi_cspoPolygons;
@@ -831,7 +811,8 @@ void CRenderer::Render(void)
 
       // just flat-fill if mirrors are disabled
       extern INDEX wld_bRenderMirrors;
-      if (!wld_bRenderMirrors) dpMirror.Fill(C_GRAY|CT_OPAQUE);
+      if (!wld_bRenderMirrors)
+        dpMirror.Fill(C_GRAY | CT_OPAQUE);
       else {
         // render the view inside mirror
         StopStatsMode();
@@ -839,7 +820,7 @@ void CRenderer::Render(void)
         re.Render();
         _pfRenderProfile.StartTimer(CRenderProfile::PTI_RENDERING);
         StartStatsMode(CStatForm::STI_WORLDTRANSFORM);
-      } 
+      }
       // unlock mirror's and lock back the original drawport
       dpMirror.Unlock();
       re_pdpDrawPort->Lock();
@@ -847,16 +828,15 @@ void CRenderer::Render(void)
       re_pdpDrawPort->FillZBuffer(ZBUF_BACK);
       // fill depth buffer of the mirror, so that scene cannot be drawn through it
       FillMirrorDepth(mi);
-     _bMirrorDrawn = TRUE;
+      _bMirrorDrawn = TRUE;
     }
 
     // flush all mirrors
     re_amiMirrors.PopAll();
 
     // fill z-buffer only if no mirrors have been drawn, not rendering second layer in world editor and not in wireframe mode
-    if (!_bMirrorDrawn
-      && !re_pdpDrawPort->IsOverlappedRendering()
-      && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
+    if (!_bMirrorDrawn && !re_pdpDrawPort->IsOverlappedRendering()
+        && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
       re_pdpDrawPort->FillZBuffer(ZBUF_BACK);
     }
     // draw the prepared things to screen
@@ -864,15 +844,13 @@ void CRenderer::Render(void)
   }
 
   // no mirrors
-  else
-  {
+  else {
     // if rendering a mirror
     // or not rendering second layer in world editor
     // and not in wireframe mode
-    if (re_iIndex>0 
-     || !re_bRenderingShadows
-     && !re_pdpDrawPort->IsOverlappedRendering()
-     && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
+    if (re_iIndex > 0
+        || !re_bRenderingShadows && !re_pdpDrawPort->IsOverlappedRendering()
+             && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
       re_pdpDrawPort->FillZBuffer(ZBUF_BACK);
     }
     // draw the prepared things to screen and finish
@@ -883,80 +861,68 @@ void CRenderer::Render(void)
   // disable fog/haze
   StopFog();
   StopHaze();
-  // reset vertex arrays if this is the last renderer  
-  if (re_iIndex == 0) _avtxScene.PopAll();
+  // reset vertex arrays if this is the last renderer
+  if (re_iIndex == 0)
+    _avtxScene.PopAll();
 
-  // for D3D (or mirror) we have to check depth points now, because we need back (not depth!) buffer for it,
-  // and D3D can't guarantee that it won't be discarded upon swapbuffers (especially if multisampling is on!) :(
+    // for D3D (or mirror) we have to check depth points now, because we need back (not depth!) buffer for it,
+    // and D3D can't guarantee that it won't be discarded upon swapbuffers (especially if multisampling is on!) :(
 #ifdef SE1_D3D
-  if (!re_bRenderingShadows && ((_pGfx->gl_eCurrentAPI == GAT_D3D && !d3d_bAlternateDepthReads) || re_iIndex>0)) {
-    extern void CheckDelayedDepthPoints( const CDrawPort *pdp, INDEX iMirrorLevel=0);
-    CheckDelayedDepthPoints( re_pdpDrawPort, re_iIndex);
+  if (!re_bRenderingShadows && ((_pGfx->gl_eCurrentAPI == GAT_D3D && !d3d_bAlternateDepthReads) || re_iIndex > 0)) {
+    extern void CheckDelayedDepthPoints(const CDrawPort *pdp, INDEX iMirrorLevel = 0);
+    CheckDelayedDepthPoints(re_pdpDrawPort, re_iIndex);
   }
 #endif // SE1_D3D
-  
+
   // end select-on-render functionality
   extern void EndSelectOnRender(void);
   EndSelectOnRender();
 
   // assure that FPU precision was low all the rendering time
-  ASSERT( GetFPUPrecision() == FPT_24BIT);
+  ASSERT(GetFPUPrecision() == FPT_24BIT);
   StopStatsMode();
 }
-
 
 /*
  * Constructor.
  */
-CRenderer::CRenderer(void)
-{
+CRenderer::CRenderer(void) {
   // setup self index
-  INDEX i = this-_areRenderers;
-  ASSERT(i >= 0 && i<MAX_RENDERERS);
+  INDEX i = this - _areRenderers;
+  ASSERT(i >= 0 && i < MAX_RENDERERS);
   re_iIndex = i;
 }
 /*
  * Destructor.
  */
-CRenderer::~CRenderer(void)
-{
-}
+CRenderer::~CRenderer(void) {}
 
 // initialize clipping rectangle
-void CRenderer::InitClippingRectangle(PIX pixMinI, PIX pixMinJ, PIX pixSizeI, PIX pixSizeJ)
-{
+void CRenderer::InitClippingRectangle(PIX pixMinI, PIX pixMinJ, PIX pixSizeI, PIX pixSizeJ) {
   re_pspoFirst = NULL;
   re_pspoFirstTranslucent = NULL;
   re_pspoFirstBackground = NULL;
   re_pspoFirstBackgroundTranslucent = NULL;
 
-  re_fMinJ = (FLOAT) pixMinJ;
-  re_fMaxJ = (FLOAT) pixSizeJ+pixMinJ;
+  re_fMinJ = (FLOAT)pixMinJ;
+  re_fMaxJ = (FLOAT)pixSizeJ + pixMinJ;
   re_pixSizeI = pixSizeI;
-  re_fbbClipBox =
-    FLOATaabbox2D( FLOAT2D((FLOAT) pixMinI+CLIPMARGADD,
-                           (FLOAT) pixMinJ+CLIPMARGADD),
-                   FLOAT2D((FLOAT) pixMinI+pixSizeI-CLIPMARGSUB,
-                           (FLOAT) pixMinJ+pixSizeJ-CLIPMARGSUB));
-  re_pixTopScanLineJ = PIXCoord(pixMinJ+CLIPMARGADD);
-  re_ctScanLines =
-    PIXCoord(pixSizeJ-CLIPMARGSUB) - PIXCoord(CLIPMARGADD)/* +1*/;
-  re_pixBottomScanLineJ = re_pixTopScanLineJ+re_ctScanLines;
+  re_fbbClipBox = FLOATaabbox2D(FLOAT2D((FLOAT)pixMinI + CLIPMARGADD, (FLOAT)pixMinJ + CLIPMARGADD),
+                                FLOAT2D((FLOAT)pixMinI + pixSizeI - CLIPMARGSUB, (FLOAT)pixMinJ + pixSizeJ - CLIPMARGSUB));
+  re_pixTopScanLineJ = PIXCoord(pixMinJ + CLIPMARGADD);
+  re_ctScanLines = PIXCoord(pixSizeJ - CLIPMARGSUB) - PIXCoord(CLIPMARGADD) /* +1*/;
+  re_pixBottomScanLineJ = re_pixTopScanLineJ + re_ctScanLines;
 }
 
 // render a 3D view to a drawport
-void RenderView(CWorld &woWorld, CEntity &enViewer,
-  CAnyProjection3D &prProjection, CDrawPort &dpDrawport)
-{
+void RenderView(CWorld &woWorld, CEntity &enViewer, CAnyProjection3D &prProjection, CDrawPort &dpDrawport) {
   // let the worldbase execute its render function
-  if (woWorld.wo_pecWorldBaseClass != NULL
-    &&woWorld.wo_pecWorldBaseClass->ec_pdecDLLClass != NULL
-    &&woWorld.wo_pecWorldBaseClass->ec_pdecDLLClass->dec_OnWorldRender != NULL) {
+  if (woWorld.wo_pecWorldBaseClass != NULL && woWorld.wo_pecWorldBaseClass->ec_pdecDLLClass != NULL
+      && woWorld.wo_pecWorldBaseClass->ec_pdecDLLClass->dec_OnWorldRender != NULL) {
     woWorld.wo_pecWorldBaseClass->ec_pdecDLLClass->dec_OnWorldRender(&woWorld);
   }
 
-  if (_wrpWorldRenderPrefs.GetShadowsType() == CWorldRenderPrefs::SHT_FULL)
-  {
+  if (_wrpWorldRenderPrefs.GetShadowsType() == CWorldRenderPrefs::SHT_FULL) {
     // calculate all non directional shadows that are not up to date
     woWorld.CalculateNonDirectionalShadows();
   }
@@ -971,28 +937,22 @@ void RenderView(CWorld &woWorld, CEntity &enViewer,
   re.re_pdpDrawPort = &dpDrawport;
   // initialize clipping rectangle around the drawport
   re.InitClippingRectangle(0, 0, dpDrawport.GetWidth(), dpDrawport.GetHeight());
-  prProjection->ScreenBBoxL() = FLOATaabbox2D(
-    FLOAT2D(0.0f, 0.0f),
-    FLOAT2D((float)dpDrawport.GetWidth(), (float)dpDrawport.GetHeight())
-  );
+  prProjection->ScreenBBoxL()
+    = FLOATaabbox2D(FLOAT2D(0.0f, 0.0f), FLOAT2D((float)dpDrawport.GetWidth(), (float)dpDrawport.GetHeight()));
   re.re_bRenderingShadows = FALSE;
   re.re_ubLightIllumination = 0;
 
   // render the view (with eventuall t-buffer effect)
-  extern void SetTBufferEffect( BOOL bEnable);
+  extern void SetTBufferEffect(BOOL bEnable);
   SetTBufferEffect(TRUE);
   re.Render();
   SetTBufferEffect(FALSE);
 }
 
-
 // Render a world with some viewer, projection and drawport. (viewer may be NULL)
 // internal version used for rendering shadows
-ULONG RenderShadows(CWorld &woWorld, CEntity &enViewer,
-  CAnyProjection3D &prProjection, const FLOATaabbox3D &boxViewer,
-  UBYTE *pubShadowMask, SLONG slShadowWidth, SLONG slShadowHeight,
-  UBYTE ubIllumination)
-{
+ULONG RenderShadows(CWorld &woWorld, CEntity &enViewer, CAnyProjection3D &prProjection, const FLOATaabbox3D &boxViewer,
+                    UBYTE *pubShadowMask, SLONG slShadowWidth, SLONG slShadowHeight, UBYTE ubIllumination) {
   _pfWorldEditingProfile.StartTimer(CWorldEditingProfile::PTI_RENDERSHADOWS);
 
   // take a renderer object
@@ -1006,7 +966,7 @@ ULONG RenderShadows(CWorld &woWorld, CEntity &enViewer,
   re.re_boxViewer = boxViewer;
   // initialize clipping rectangle around the drawport
   const FLOATaabbox2D &box = prProjection->ScreenBBoxR();
-  //re.InitClippingRectangle(box.Min()(1), box.Min()(2), box.Size()(1), box.Size()(2));
+  // re.InitClippingRectangle(box.Min()(1), box.Min()(2), box.Size()(1), box.Size()(2));
   re.InitClippingRectangle(0, 0, box.Size()(1), box.Size()(2));
 
   re.re_bRenderingShadows = TRUE;
@@ -1015,7 +975,7 @@ ULONG RenderShadows(CWorld &woWorld, CEntity &enViewer,
   re.re_bSomeDarkExists = FALSE;
   _bSomeDarkExists = FALSE;
   re.re_pubShadow = pubShadowMask;
-  re.re_slShadowWidth  = slShadowWidth;
+  re.re_slShadowWidth = slShadowWidth;
   re.re_slShadowHeight = slShadowHeight;
   re.re_ubLightIllumination = ubIllumination;
   // render the view
@@ -1023,10 +983,10 @@ ULONG RenderShadows(CWorld &woWorld, CEntity &enViewer,
 
   ULONG ulFlags = 0;
   if (!re.re_bSomeLightExists) {
-    ulFlags|=BSLF_ALLDARK;
+    ulFlags |= BSLF_ALLDARK;
   }
-  if (!(re.re_bSomeDarkExists|_bSomeDarkExists)) {
-    ulFlags|=BSLF_ALLLIGHT;
+  if (!(re.re_bSomeDarkExists | _bSomeDarkExists)) {
+    ulFlags |= BSLF_ALLLIGHT;
   }
 
   _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_RENDERSHADOWS);

@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -30,42 +30,39 @@ template CStaticStackArray<long>;
 /*
  * Get directory part of a filename.
  */
-CTFileName CTFileName::FileDir() const
-{
+CTFileName CTFileName::FileDir() const {
   ASSERT(IsValid());
 
   // make a temporary copy of string
   CTFileName strPath(*this);
   // find last backlash in it
-  char *pPathBackSlash = strrchr( strPath.str_String, '\\');
+  char *pPathBackSlash = strrchr(strPath.str_String, '\\');
   // if there is no backslash
   if (pPathBackSlash == NULL) {
     // return emptystring as directory
-    return( CTFileName(""));
+    return (CTFileName(""));
   }
   // set end of string after where the backslash was
   pPathBackSlash[1] = 0;
   // return a copy of temporary string
-  return( CTFileName( strPath));
+  return (CTFileName(strPath));
 }
 
-CTFileName &CTFileName::operator=(const char *strCharString)
-{
-  ASSERTALWAYS( "Use CTFILENAME for conversion from char *!");
+CTFileName &CTFileName::operator=(const char *strCharString) {
+  ASSERTALWAYS("Use CTFILENAME for conversion from char *!");
   return *this;
 }
 
 /*
  * Get name part of a filename.
  */
-CTFileName CTFileName::FileName() const
-{
+CTFileName CTFileName::FileName() const {
   ASSERT(IsValid());
 
   // make a temporary copy of string
   CTFileName strPath(*this);
   // find last dot in it
-  char *pDot = strrchr( strPath.str_String, '.');
+  char *pDot = strrchr(strPath.str_String, '.');
   // if there is a dot
   if (pDot != NULL) {
     // set end of string there
@@ -73,41 +70,38 @@ CTFileName CTFileName::FileName() const
   }
 
   // find last backlash in what's left
-  char *pBackSlash = strrchr( strPath.str_String, '\\');
+  char *pBackSlash = strrchr(strPath.str_String, '\\');
   // if there is no backslash
   if (pBackSlash == NULL) {
     // return it all as filename
-    return( CTFileName(strPath));
+    return (CTFileName(strPath));
   }
   // return a copy of temporary string, starting after the backslash
-  return( CTFileName( pBackSlash+1));
+  return (CTFileName(pBackSlash + 1));
 }
 
 /*
  * Get extension part of a filename.
  */
-CTFileName CTFileName::FileExt() const
-{
+CTFileName CTFileName::FileExt() const {
   ASSERT(IsValid());
 
   // find last dot in the string
-  char *pExtension = strrchr( str_String, '.');
+  char *pExtension = strrchr(str_String, '.');
   // if there is no dot
   if (pExtension == NULL) {
     // return no extension
-    return( CTFileName(""));
+    return (CTFileName(""));
   }
   // return a copy of the extension part, together with the dot
-  return( CTFileName( pExtension));
+  return (CTFileName(pExtension));
 }
 
-CTFileName CTFileName::NoExt() const
-{
-  return FileDir()+FileName();
+CTFileName CTFileName::NoExt() const {
+  return FileDir() + FileName();
 }
 
-static INDEX GetSlashPosition(const CHAR* pszString)
-{
+static INDEX GetSlashPosition(const CHAR *pszString) {
   for (INDEX iPos = 0; '\0' != *pszString; ++iPos, ++pszString) {
     if (('\\' == *pszString) || ('/' == *pszString)) {
       return iPos;
@@ -119,8 +113,7 @@ static INDEX GetSlashPosition(const CHAR* pszString)
 /*
  * Set path to the absolute path, taking \.. and /.. into account.
  */
-void CTFileName::SetAbsolutePath(void)
-{
+void CTFileName::SetAbsolutePath(void) {
   // Collect path parts
   CTString strRemaining(*this);
   CStaticStackArray<CTString> astrParts;
@@ -185,7 +178,7 @@ BOOL CTFileName::RemoveApplicationPath_t(void) // throws char *
   // remove the path string from beginning of the string
   BOOL bIsRelative = RemovePrefix(fnmApp);
   if (_fnmMod != "") {
-    RemovePrefix(_fnmApplicationPath+_fnmMod);
+    RemovePrefix(_fnmApplicationPath + _fnmMod);
   }
   return bIsRelative;
 }
@@ -193,8 +186,7 @@ BOOL CTFileName::RemoveApplicationPath_t(void) // throws char *
 /*
  * Read from stream.
  */
- CTStream &operator>>(CTStream &strmStream, CTFileName &fnmFileName)
-{
+CTStream &operator>>(CTStream &strmStream, CTFileName &fnmFileName) {
   // if dictionary is enabled
   if (strmStream.strm_dmDictionaryMode == CTStream::DM_ENABLED) {
     // read the index in dictionary
@@ -203,11 +195,12 @@ BOOL CTFileName::RemoveApplicationPath_t(void) // throws char *
     // get that file from the dictionary
     fnmFileName = strmStream.strm_afnmDictionary[iFileName];
 
-  // if dictionary is processing or not active
+    // if dictionary is processing or not active
   } else {
-    char strTag[] = "_FNM"; strTag[0] = 'D';  // must create tag at run-time!
+    char strTag[] = "_FNM";
+    strTag[0] = 'D'; // must create tag at run-time!
     // skip dependency catcher header
-    strmStream.ExpectID_t(strTag);    // data filename
+    strmStream.ExpectID_t(strTag); // data filename
     // read the string
     strmStream >> (CTString &)fnmFileName;
     fnmFileName.fnm_pserPreloaded = NULL;
@@ -219,8 +212,7 @@ BOOL CTFileName::RemoveApplicationPath_t(void) // throws char *
 /*
  * Write to stream.
  */
- CTStream &operator<<(CTStream &strmStream, const CTFileName &fnmFileName)
-{
+CTStream &operator<<(CTStream &strmStream, const CTFileName &fnmFileName) {
   // if dictionary is enabled
   if (strmStream.strm_dmDictionaryMode == CTStream::DM_ENABLED) {
     // try to find the filename in dictionary
@@ -235,11 +227,12 @@ BOOL CTFileName::RemoveApplicationPath_t(void) // throws char *
     // write its index
     strmStream << strmStream.strm_afnmDictionary.Index(pfnmExisting);
 
-  // if dictionary is processing or not active
+    // if dictionary is processing or not active
   } else {
-    char strTag[] = "_FNM"; strTag[0] = 'D';  // must create tag at run-time!
+    char strTag[] = "_FNM";
+    strTag[0] = 'D'; // must create tag at run-time!
     // write dependency catcher header
-    strmStream.WriteID_t(strTag);     // data filename
+    strmStream.WriteID_t(strTag); // data filename
     // write the string
     strmStream << (CTString &)fnmFileName;
   }
@@ -252,7 +245,8 @@ void CTFileName::ReadFromText_t(CTStream &strmStream,
 {
   ASSERT(IsValid());
 
-  char strTag[] = "_FNM "; strTag[0] = 'T';  // must create tag at run-time!
+  char strTag[] = "_FNM ";
+  strTag[0] = 'T'; // must create tag at run-time!
   // keyword must be present
   strmStream.ExpectKeyword_t(strKeyword);
   // after the user keyword, dependency keyword must be present
@@ -264,5 +258,5 @@ void CTFileName::ReadFromText_t(CTStream &strmStream,
   fnm_pserPreloaded = NULL;
 
   // copy it here
-  (*this) = CTString( (const char *)str);
+  (*this) = CTString((const char *)str);
 }

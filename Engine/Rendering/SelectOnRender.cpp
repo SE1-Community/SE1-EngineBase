@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -27,14 +27,12 @@ static PIX _pixSizeJ;
 UBYTE *_pubLassoBuffer = NULL;
 
 // init select-on-render functionality
-void InitSelectOnRender(PIX pixSizeI, PIX pixSizeJ)
-{
+void InitSelectOnRender(PIX pixSizeI, PIX pixSizeJ) {
   _pixSizeI = pixSizeI;
   _pixSizeJ = pixSizeJ;
 
   // if entity selecting not required
-  if (_pselenSelectOnRender == NULL)
-  {
+  if (_pselenSelectOnRender == NULL) {
     // if vertex selecting not requred
     if (_pselbvxtSelectOnRender == NULL) {
       // do nothing
@@ -48,33 +46,32 @@ void InitSelectOnRender(PIX pixSizeI, PIX pixSizeJ)
   }
 
   // if lasso selection is not on, or is invalid
-  if (_pavpixSelectLasso == NULL || _pavpixSelectLasso->Count()<3
-    || pixSizeI<2 || pixSizeJ<2) {
+  if (_pavpixSelectLasso == NULL || _pavpixSelectLasso->Count() < 3 || pixSizeI < 2 || pixSizeJ < 2) {
     // do nothing
     return;
   }
 
-  SLONG slMaxOffset = pixSizeI*pixSizeJ-1;
+  SLONG slMaxOffset = pixSizeI * pixSizeJ - 1;
 
   // allocate lasso buffer
-  _pubLassoBuffer = (UBYTE*)AllocMemory(_pixSizeI*_pixSizeJ);
+  _pubLassoBuffer = (UBYTE *)AllocMemory(_pixSizeI * _pixSizeJ);
   // clear it
-  memset(_pubLassoBuffer, 0, _pixSizeI*_pixSizeJ);
+  memset(_pubLassoBuffer, 0, _pixSizeI * _pixSizeJ);
 
   // for each line in lasso
   INDEX ctpt = _pavpixSelectLasso->Count();
-  for (INDEX ipt=0; ipt<ctpt; ipt++) {
+  for (INDEX ipt = 0; ipt < ctpt; ipt++) {
     // get its points
     INDEX ipt0 = ipt;
-    INDEX ipt1 = (ipt+1)%ctpt;
+    INDEX ipt1 = (ipt + 1) % ctpt;
     // get their coordinates
     PIX pixI0 = (*_pavpixSelectLasso)[ipt0](1);
     PIX pixJ0 = (*_pavpixSelectLasso)[ipt0](2);
     PIX pixI1 = (*_pavpixSelectLasso)[ipt1](1);
     PIX pixJ1 = (*_pavpixSelectLasso)[ipt1](2);
     // if any of the coordinates is outside of window
-    if (pixI0<0 || pixI0 >= _pixSizeI || pixI1<0 || pixI1 >= _pixSizeI ||
-      pixJ0<0 || pixJ0 >= _pixSizeJ || pixJ1<0 || pixJ1 >= _pixSizeJ) {
+    if (pixI0 < 0 || pixI0 >= _pixSizeI || pixI1 < 0 || pixI1 >= _pixSizeI || pixJ0 < 0 || pixJ0 >= _pixSizeJ || pixJ1 < 0
+        || pixJ1 >= _pixSizeJ) {
       // skip this line
       continue;
     }
@@ -83,47 +80,46 @@ void InitSelectOnRender(PIX pixSizeI, PIX pixSizeJ)
     if (pixJ0 == pixJ1) {
       // skip it
       continue;
-    // if line goes upwards
-    } else if (pixJ0>pixJ1) {
+      // if line goes upwards
+    } else if (pixJ0 > pixJ1) {
       // make it go downwards
       Swap(pixI0, pixI1);
       Swap(pixJ0, pixJ1);
     }
 
     // calculate step
-    FIX16_16 xStep = FIX16_16(FLOAT(pixI1-pixI0)/(pixJ1-pixJ0));
+    FIX16_16 xStep = FIX16_16(FLOAT(pixI1 - pixI0) / (pixJ1 - pixJ0));
     // start in first row
     FIX16_16 xI = FIX16_16(pixI0);
-    
+
     // for each row
-    for (PIX pixJ = pixJ0; pixJ<pixJ1; pixJ++) {
+    for (PIX pixJ = pixJ0; pixJ < pixJ1; pixJ++) {
       // get offset
-      SLONG slOffset = pixJ*_pixSizeI+PIX(xI);
+      SLONG slOffset = pixJ * _pixSizeI + PIX(xI);
       // if offset is valid
       if (slOffset >= 0 && slOffset <= slMaxOffset) {
         // invert the pixel in that row
         _pubLassoBuffer[slOffset] ^= 0xFF;
       }
       // step the line
-      xI+=xStep;
+      xI += xStep;
     }
   }
 
   // for each row in lasso buffer
-  for (PIX pixJ = 0; pixJ<_pixSizeJ; pixJ++) {
+  for (PIX pixJ = 0; pixJ < _pixSizeJ; pixJ++) {
     // for each pixel in the row, except the last one
-    UBYTE *pub = _pubLassoBuffer+pixJ*_pixSizeI;
-    for (PIX pixI = 0; pixI<_pixSizeI-1; pixI++) {
+    UBYTE *pub = _pubLassoBuffer + pixJ * _pixSizeI;
+    for (PIX pixI = 0; pixI < _pixSizeI - 1; pixI++) {
       // xor it to the next one
-      pub[1]^=pub[0];
+      pub[1] ^= pub[0];
       pub++;
     }
   }
 }
 
 // end select-on-render functionality
-void EndSelectOnRender(void)
-{
+void EndSelectOnRender(void) {
   // free lasso buffer
   if (_pubLassoBuffer != NULL) {
     FreeMemory(_pubLassoBuffer);
@@ -132,8 +128,7 @@ void EndSelectOnRender(void)
 }
 
 // check if a vertex is influenced by current select-on-render selection
-void SelectVertexOnRender(CBrushVertex &bvx, const PIX2D &vpix)
-{
+void SelectVertexOnRender(CBrushVertex &bvx, const PIX2D &vpix) {
   // if not selecting
   if (_pselbvxtSelectOnRender == NULL) {
     // do nothing
@@ -141,8 +136,7 @@ void SelectVertexOnRender(CBrushVertex &bvx, const PIX2D &vpix)
   }
 
   // if the vertex is out of screen
-  if (vpix(1)<0 || vpix(1) >= _pixSizeI
-     || vpix(2)<0 || vpix(2) >= _pixSizeJ) {
+  if (vpix(1) < 0 || vpix(1) >= _pixSizeI || vpix(2) < 0 || vpix(2) >= _pixSizeJ) {
     // do nothing
     return;
   }
@@ -150,31 +144,28 @@ void SelectVertexOnRender(CBrushVertex &bvx, const PIX2D &vpix)
   // if selecting without lasso
   if (_pubLassoBuffer == NULL) {
     // if vertex is near point
-    if ((vpix-_vpixSelectNearPoint).Length()<_pixDeltaAroundVertex) {
-
+    if ((vpix - _vpixSelectNearPoint).Length() < _pixDeltaAroundVertex) {
       // if selected
       if (bvx.IsSelected(BVXF_SELECTED)) {
         // deselect it
         _pselbvxtSelectOnRender->Deselect(bvx);
-      // if not selected
+        // if not selected
       } else {
         // select it
         _pselbvxtSelectOnRender->Select(bvx);
       }
     }
-  // if selecting with lasso
+    // if selecting with lasso
   } else {
     // if the vertex is set in lasso buffer
-    if (_pubLassoBuffer != NULL
-      &&_pubLassoBuffer[vpix(2)*_pixSizeI+vpix(1)]) {
-
+    if (_pubLassoBuffer != NULL && _pubLassoBuffer[vpix(2) * _pixSizeI + vpix(1)]) {
       // if alternative
       if (_bSelectAlternative) {
         // deselect
         if (bvx.IsSelected(BVXF_SELECTED)) {
           _pselbvxtSelectOnRender->Deselect(bvx);
         }
-      // if normal
+        // if normal
       } else {
         // select
         if (!bvx.IsSelected(BVXF_SELECTED)) {
@@ -186,60 +177,52 @@ void SelectVertexOnRender(CBrushVertex &bvx, const PIX2D &vpix)
 }
 
 // check if given vertice is selected by lasso
-BOOL IsVertexInLasso( CProjection3D &prProjection, const FLOAT3D &vtx, FLOATmatrix3D *pmR, FLOAT3D &vOffset)
-{
+BOOL IsVertexInLasso(CProjection3D &prProjection, const FLOAT3D &vtx, FLOATmatrix3D *pmR, FLOAT3D &vOffset) {
   // convert from relative to absolute space
-  FLOAT3D vAbsolute = vOffset+vtx*(*pmR);
-  
+  FLOAT3D vAbsolute = vOffset + vtx * (*pmR);
+
   FLOAT3D vtxProjected;
-  prProjection.ProjectCoordinate( vAbsolute, vtxProjected);
+  prProjection.ProjectCoordinate(vAbsolute, vtxProjected);
 
   PIX2D vpix;
   vpix(1) = vtxProjected(1);
   // convert coordinate into screen representation
-  vpix(2) = _pixSizeJ-vtxProjected(2);
+  vpix(2) = _pixSizeJ - vtxProjected(2);
 
   // if the vertex is out of screen
-  if (vpix(1)<0 || vpix(1) >= _pixSizeI
-     || vpix(2)<0 || vpix(2) >= _pixSizeJ) {
+  if (vpix(1) < 0 || vpix(1) >= _pixSizeI || vpix(2) < 0 || vpix(2) >= _pixSizeJ) {
     // no selecting
     return FALSE;
   }
 
   // if the vertex is set in lasso buffer
-  if (_pubLassoBuffer != NULL
-    &&_pubLassoBuffer[vpix(2)*_pixSizeI+vpix(1)])
-  {
+  if (_pubLassoBuffer != NULL && _pubLassoBuffer[vpix(2) * _pixSizeI + vpix(1)]) {
     return TRUE;
   }
   return FALSE;
 }
 
 // check if given bounding box is selected by lasso
-BOOL IsBoundingBoxInLasso( CProjection3D &prProjection, const FLOATaabbox3D &box, FLOATmatrix3D *pmR, FLOAT3D &vOffset)
-{
+BOOL IsBoundingBoxInLasso(CProjection3D &prProjection, const FLOATaabbox3D &box, FLOATmatrix3D *pmR, FLOAT3D &vOffset) {
   FLOAT3D vMin = box.Min();
   FLOAT3D vMax = box.Max();
 
   // test lasso influence for all of bounding box's vertices
-  if (
-    IsVertexInLasso( prProjection, FLOAT3D(vMin(1), vMin(2), vMin(3)), pmR, vOffset) &&
-    IsVertexInLasso( prProjection, FLOAT3D(vMax(1), vMin(2), vMin(3)), pmR, vOffset) &&
-    IsVertexInLasso( prProjection, FLOAT3D(vMin(1), vMax(2), vMin(3)), pmR, vOffset) &&
-    IsVertexInLasso( prProjection, FLOAT3D(vMax(1), vMax(2), vMin(3)), pmR, vOffset) &&
-    IsVertexInLasso( prProjection, FLOAT3D(vMin(1), vMin(2), vMax(3)), pmR, vOffset) &&
-    IsVertexInLasso( prProjection, FLOAT3D(vMax(1), vMin(2), vMax(3)), pmR, vOffset) &&
-    IsVertexInLasso( prProjection, FLOAT3D(vMin(1), vMax(2), vMax(3)), pmR, vOffset) &&
-    IsVertexInLasso( prProjection, FLOAT3D(vMax(1), vMax(2), vMax(3)), pmR, vOffset) )
-  {
+  if (IsVertexInLasso(prProjection, FLOAT3D(vMin(1), vMin(2), vMin(3)), pmR, vOffset)
+      && IsVertexInLasso(prProjection, FLOAT3D(vMax(1), vMin(2), vMin(3)), pmR, vOffset)
+      && IsVertexInLasso(prProjection, FLOAT3D(vMin(1), vMax(2), vMin(3)), pmR, vOffset)
+      && IsVertexInLasso(prProjection, FLOAT3D(vMax(1), vMax(2), vMin(3)), pmR, vOffset)
+      && IsVertexInLasso(prProjection, FLOAT3D(vMin(1), vMin(2), vMax(3)), pmR, vOffset)
+      && IsVertexInLasso(prProjection, FLOAT3D(vMax(1), vMin(2), vMax(3)), pmR, vOffset)
+      && IsVertexInLasso(prProjection, FLOAT3D(vMin(1), vMax(2), vMax(3)), pmR, vOffset)
+      && IsVertexInLasso(prProjection, FLOAT3D(vMax(1), vMax(2), vMax(3)), pmR, vOffset)) {
     return TRUE;
   }
   return FALSE;
 }
 
 // check if all of the corners of entity's bounding box are influenced by current select-on-render selection
-void SelectEntityOnRender(CProjection3D &prProjection, CEntity &en)
-{
+void SelectEntityOnRender(CProjection3D &prProjection, CEntity &en) {
   FLOATaabbox3D bbox;
 
   FLOATmatrix3D mOne = FLOATmatrix3D(0.0f);
@@ -248,24 +231,21 @@ void SelectEntityOnRender(CProjection3D &prProjection, CEntity &en)
   FLOAT3D vOffset;
 
   // if this entity is model
-  if (en.en_RenderType == CEntity::RT_MODEL || en.en_RenderType == CEntity::RT_EDITORMODEL)
-  {
+  if (en.en_RenderType == CEntity::RT_MODEL || en.en_RenderType == CEntity::RT_EDITORMODEL) {
     // get bbox of current frame
     CModelObject *pmo = en.GetModelObject();
-    pmo->GetCurrentFrameBBox( bbox);
+    pmo->GetCurrentFrameBBox(bbox);
     pmR = &en.en_mRotation;
     vOffset = en.GetPlacement().pl_PositionVector;
   }
   // if it is ska model
-  else if (en.en_RenderType == CEntity::RT_SKAMODEL || en.en_RenderType == CEntity::RT_SKAEDITORMODEL)
-  {
-    en.GetModelInstance()->GetCurrentColisionBox( bbox);
+  else if (en.en_RenderType == CEntity::RT_SKAMODEL || en.en_RenderType == CEntity::RT_SKAEDITORMODEL) {
+    en.GetModelInstance()->GetCurrentColisionBox(bbox);
     pmR = &en.en_mRotation;
     vOffset = en.GetPlacement().pl_PositionVector;
   }
   // if it is brush
-  else
-  {
+  else {
     // get bbox of brush's first mip
     CBrush3D *pbr = en.GetBrush();
     CBrushMip *pbrmip = pbr->GetFirstMip();
@@ -274,21 +254,15 @@ void SelectEntityOnRender(CProjection3D &prProjection, CEntity &en)
     vOffset = FLOAT3D(0.0f, 0.0f, 0.0f);
   }
 
-  if (IsBoundingBoxInLasso( prProjection, bbox, pmR, vOffset))
-  {
-    if (_bSelectAlternative)
-    {
+  if (IsBoundingBoxInLasso(prProjection, bbox, pmR, vOffset)) {
+    if (_bSelectAlternative) {
       // deselect
-      if (en.IsSelected(ENF_SELECTED))
-      {
+      if (en.IsSelected(ENF_SELECTED)) {
         _pselenSelectOnRender->Deselect(en);
       }
-    }
-    else
-    {
+    } else {
       // select
-      if (!en.IsSelected(ENF_SELECTED))
-      {
+      if (!en.IsSelected(ENF_SELECTED)) {
         _pselenSelectOnRender->Select(en);
       }
     }

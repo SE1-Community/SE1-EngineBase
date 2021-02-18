@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,8 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 /*
  * Add all edges in add list to active list.
  */
-void CRenderer::AddAddListToActiveList(INDEX iScanLine)
-{
+void CRenderer::AddAddListToActiveList(INDEX iScanLine) {
   INDEX ctAddEdges = re_actAddCounts[iScanLine];
   // if the add list is empty
   if (ctAddEdges == 0) {
@@ -33,10 +32,10 @@ void CRenderer::AddAddListToActiveList(INDEX iScanLine)
 
   // allocate space in destination for sum of source and add
   INDEX ctActiveEdges = re_aaceActiveEdges.Count();
-  re_aaceActiveEdgesTmp.Push(ctAddEdges+ctActiveEdges);
+  re_aaceActiveEdgesTmp.Push(ctAddEdges + ctActiveEdges);
 
-  // check that the add list is sorted right
-  #if ASER_EXTREME_CHECKING
+// check that the add list is sorted right
+#if ASER_EXTREME_CHECKING
   {
     LISTITER(CAddEdge, ade_lnInAdd) itadeAdd(lhAdd);
     FIX16_16 xLastI;
@@ -49,28 +48,28 @@ void CRenderer::AddAddListToActiveList(INDEX iScanLine)
       itadeAdd.MoveToNext();
     }
   }
-  #endif
+#endif
 
-  // check that the active list is sorted right
-  #if ASER_EXTREME_CHECKING
+// check that the active list is sorted right
+#if ASER_EXTREME_CHECKING
   {
-    CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count()-1];
+    CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count() - 1];
     CActiveEdge *paceSrc = &re_aaceActiveEdges[0];
-    while (paceSrc<paceEnd) {
+    while (paceSrc < paceEnd) {
       ASSERT(paceSrc[0].ace_xI.slHolder <= paceSrc[1].ace_xI.slHolder);
       paceSrc++;
     };
   }
-  #endif
+#endif
 
   // start at begining of add list, source active list and destination active list
   LISTITER(CAddEdge, ade_lnInAdd) itadeAdd(lhAdd);
   CActiveEdge *paceSrc = &re_aaceActiveEdges[0];
   CActiveEdge *paceDst = &re_aaceActiveEdgesTmp[0];
 
-  IFDEBUG(INDEX ctNewActive=0);
-  IFDEBUG(INDEX ctOldActive1=0);
-  IFDEBUG(INDEX ctOldActive2=0);
+  IFDEBUG(INDEX ctNewActive = 0);
+  IFDEBUG(INDEX ctOldActive1 = 0);
+  IFDEBUG(INDEX ctOldActive2 = 0);
 
   // for each edge in add list
   while (!itadeAdd.IsPastEnd()) {
@@ -79,8 +78,8 @@ void CRenderer::AddAddListToActiveList(INDEX iScanLine)
     // while the edge in active list is left of the edge in add list
     while (paceSrc->ace_xI.slHolder < itadeAdd->ade_xI.slHolder) {
       // copy the active edge
-      ASSERT(paceSrc <= &re_aaceActiveEdges[ctActiveEdges-1]);
-      *paceDst++=*paceSrc++;
+      ASSERT(paceSrc <= &re_aaceActiveEdges[ctActiveEdges - 1]);
+      *paceDst++ = *paceSrc++;
       IFDEBUG(ctOldActive1++);
     }
 
@@ -89,7 +88,7 @@ void CRenderer::AddAddListToActiveList(INDEX iScanLine)
     ASSERT(ade.ade_xI.slHolder == ade.ade_psedEdge->sed_xI.slHolder);
     ASSERT(paceDst[-1].ace_xI.slHolder <= ade.ade_xI.slHolder);
 
-    *paceDst++=CActiveEdge(itadeAdd->ade_psedEdge);
+    *paceDst++ = CActiveEdge(itadeAdd->ade_psedEdge);
     IFDEBUG(ctNewActive++);
     // advance iterator in add list
     itadeAdd.MoveToNext();
@@ -98,35 +97,35 @@ void CRenderer::AddAddListToActiveList(INDEX iScanLine)
   lhAdd.Clear();
   re_actAddCounts[iScanLine] = 0;
   // copy all edges left in the active list
-  while (paceSrc <= &re_aaceActiveEdges[ctActiveEdges-1]) {
-    *paceDst++=*paceSrc++;
+  while (paceSrc <= &re_aaceActiveEdges[ctActiveEdges - 1]) {
+    *paceDst++ = *paceSrc++;
     IFDEBUG(ctOldActive2++);
   }
 
   // swap the lists
-  Swap(re_aaceActiveEdges.sa_Count    , re_aaceActiveEdgesTmp.sa_Count    );
-  Swap(re_aaceActiveEdges.sa_Array    , re_aaceActiveEdgesTmp.sa_Array    );
+  Swap(re_aaceActiveEdges.sa_Count, re_aaceActiveEdgesTmp.sa_Count);
+  Swap(re_aaceActiveEdges.sa_Array, re_aaceActiveEdgesTmp.sa_Array);
   Swap(re_aaceActiveEdges.sa_UsedCount, re_aaceActiveEdgesTmp.sa_UsedCount);
   re_aaceActiveEdgesTmp.PopAll();
 
-  if (ctAddEdges>_ctMaxAddEdges) {
-    _ctMaxAddEdges=ctAddEdges;
+  if (ctAddEdges > _ctMaxAddEdges) {
+    _ctMaxAddEdges = ctAddEdges;
   }
-  if (re_aaceActiveEdges.Count()>_ctMaxActiveEdges) {
-    _ctMaxActiveEdges=re_aaceActiveEdges.Count();
+  if (re_aaceActiveEdges.Count() > _ctMaxActiveEdges) {
+    _ctMaxActiveEdges = re_aaceActiveEdges.Count();
   }
 
-  // check that the active list is sorted right
-  #if ASER_EXTREME_CHECKING
+// check that the active list is sorted right
+#if ASER_EXTREME_CHECKING
   {
-    CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count()-1];
+    CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count() - 1];
     CActiveEdge *paceSrc = &re_aaceActiveEdges[0];
-    while (paceSrc<paceEnd) {
+    while (paceSrc < paceEnd) {
       ASSERT(paceSrc[0].ace_xI.slHolder <= paceSrc[1].ace_xI.slHolder);
       paceSrc++;
     };
   }
-  #endif
+#endif
 
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDADDLIST);
 }
@@ -134,8 +133,7 @@ void CRenderer::AddAddListToActiveList(INDEX iScanLine)
 /*
  * Remove all edges in remove list from active list and from other lists.
  */
-void CRenderer::RemRemoveListFromActiveList(CScreenEdge *psedFirst)
-{
+void CRenderer::RemRemoveListFromActiveList(CScreenEdge *psedFirst) {
   // if the remove list is empty
   if (psedFirst == NULL) {
     // do nothing
@@ -154,7 +152,7 @@ void CRenderer::RemRemoveListFromActiveList(CScreenEdge *psedFirst)
   } while (psed != NULL);
 
   // for each active edge
-  CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count()-1];
+  CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count() - 1];
   CActiveEdge *paceSrc = &re_aaceActiveEdges[1];
   CActiveEdge *paceDst = paceSrc;
   do {
@@ -167,36 +165,34 @@ void CRenderer::RemRemoveListFromActiveList(CScreenEdge *psedFirst)
     paceSrc++;
   } while (paceSrc <= paceEnd);
   // trim the end of active list
-  re_aaceActiveEdges.PopUntil(paceDst-&re_aaceActiveEdges[0]-1);
+  re_aaceActiveEdges.PopUntil(paceDst - &re_aaceActiveEdges[0] - 1);
 
-  // check that the active list is sorted right
-  #if ASER_EXTREME_CHECKING
+// check that the active list is sorted right
+#if ASER_EXTREME_CHECKING
   {
-    CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count()-1];
+    CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count() - 1];
     CActiveEdge *paceSrc = &re_aaceActiveEdges[0];
-    while (paceSrc<paceEnd) {
+    while (paceSrc < paceEnd) {
       ASSERT(paceSrc[0].ace_xI.slHolder <= paceSrc[1].ace_xI.slHolder);
       paceSrc++;
     };
   }
-  #endif
+#endif
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_REMREMLIST);
 }
 
 /*
  * Step all edges in active list by one scan line and resort them.
  */
-void CRenderer::StepAndResortActiveList(void)
-{
+void CRenderer::StepAndResortActiveList(void) {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_STEPANDRESORT);
 
   // start after the left sentinel
   CActiveEdge *pace = &re_aaceActiveEdges[1];
 
   // for all edges before right sentinel
-  CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count()-1];
+  CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count() - 1];
   do {
-
     // step the edge by one scan line
     pace->ace_xI.slHolder += pace->ace_xIStep.slHolder;
 
@@ -214,11 +210,11 @@ void CRenderer::StepAndResortActiveList(void)
       // remember the current one
       CActiveEdge aceCurrent = *pace;
       // move all of the edges between one place forward
-      CActiveEdge *paceMove=pace-1;
+      CActiveEdge *paceMove = pace - 1;
       do {
-        paceMove[1]=paceMove[0];
+        paceMove[1] = paceMove[0];
         paceMove--;
-      } while (paceMove>pacePred);
+      } while (paceMove > pacePred);
       // insert the current to its new place
       paceMove[1] = aceCurrent;
     }
@@ -226,25 +222,24 @@ void CRenderer::StepAndResortActiveList(void)
     pace++;
   } while (pace < paceEnd);
 
-  // check that the active list is sorted right
-  #if ASER_EXTREME_CHECKING
+// check that the active list is sorted right
+#if ASER_EXTREME_CHECKING
   {
-    CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count()-1];
+    CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count() - 1];
     CActiveEdge *paceSrc = &re_aaceActiveEdges[0];
-    while (paceSrc<paceEnd) {
+    while (paceSrc < paceEnd) {
       ASSERT(paceSrc[0].ace_xI.slHolder <= paceSrc[1].ace_xI.slHolder);
       paceSrc++;
     };
   }
-  #endif
+#endif
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_STEPANDRESORT);
 }
 
-// Copy I coordinates from active list to edge data. 
-void CRenderer::CopyActiveCoordinates(void)
-{
+// Copy I coordinates from active list to edge data.
+void CRenderer::CopyActiveCoordinates(void) {
   // for all active edges
-  CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count()-1];
+  CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count() - 1];
   CActiveEdge *pace = &re_aaceActiveEdges[1];
   do {
     // copy active coordinates
@@ -256,14 +251,13 @@ void CRenderer::CopyActiveCoordinates(void)
 /*
  * Remove an active portal from rendering
  */
-void CRenderer::RemovePortal(CScreenPolygon &spo)
-{
+void CRenderer::RemovePortal(CScreenPolygon &spo) {
   ASSERT(spo.IsPortal());
   ASSERT(spo.spo_bActive);
   spo.spo_bActive = FALSE;
 
   // if it is a translucent portal
-  if (spo.spo_pbpoBrushPolygon->bpo_ulFlags & (BPOF_RENDERTRANSLUCENT|BPOF_TRANSPARENT)) {
+  if (spo.spo_pbpoBrushPolygon->bpo_ulFlags & (BPOF_RENDERTRANSLUCENT | BPOF_TRANSPARENT)) {
     _pfRenderProfile.StartTimer(CRenderProfile::PTI_PROCESSTRANSPORTAL);
     // add polygon to scene polygons for rendering
     AddPolygonToScene(&spo);
@@ -281,17 +275,17 @@ void CRenderer::RemovePortal(CScreenPolygon &spo)
 /*
  * Add sector(s) adjoined to a portal to rendering and remove the portal.
  */
-void CRenderer::PassPortal(CScreenPolygon &spo)
-{
+void CRenderer::PassPortal(CScreenPolygon &spo) {
   ChangeStatsMode(CStatForm::STI_WORLDTRANSFORM);
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_PASSPORTAL);
   // remove the portal from rendering
   RemovePortal(spo);
 
   // for all sectors related to the portal
-  {FOREACHDSTOFSRC(spo.spo_pbpoBrushPolygon->bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbsc)
+  {
+    FOREACHDSTOFSRC(spo.spo_pbpoBrushPolygon->bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbsc)
     // if the sector is hidden when not rendering shadows
-    if ((pbsc->bsc_ulFlags&BSCF_HIDDEN) && !re_bRenderingShadows) {
+    if ((pbsc->bsc_ulFlags & BSCF_HIDDEN) && !re_bRenderingShadows) {
       // skip it
       continue;
     }
@@ -302,19 +296,19 @@ void CRenderer::PassPortal(CScreenPolygon &spo)
     PrepareBrush(brBrush.br_penEntity);
     // get relevant mip factor for that brush and current rendering prefs
     CBrushMip *pbmRelevantMip;
-    if (brBrush.br_ulFlags&BRF_DRAWFIRSTMIP) {
-      pbmRelevantMip = brBrush.GetBrushMipByDistance(
-        _wrpWorldRenderPrefs.GetCurrentMipBrushingFactor(0.0f));
+    if (brBrush.br_ulFlags & BRF_DRAWFIRSTMIP) {
+      pbmRelevantMip = brBrush.GetBrushMipByDistance(_wrpWorldRenderPrefs.GetCurrentMipBrushingFactor(0.0f));
     } else {
-      pbmRelevantMip = brBrush.GetBrushMipByDistance(
-        _wrpWorldRenderPrefs.GetCurrentMipBrushingFactor(brBrush.br_prProjection->MipFactor()));
+      pbmRelevantMip
+        = brBrush.GetBrushMipByDistance(_wrpWorldRenderPrefs.GetCurrentMipBrushingFactor(brBrush.br_prProjection->MipFactor()));
     }
     // if relevant brush mip is same as the sector's brush mip
     if (pbmSectorMip == pbmRelevantMip) {
       // add that sector to active sectors
       AddActiveSector(*pbsc);
     }
-  ENDFOR}
+    ENDFOR
+  }
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_PASSPORTAL);
   ChangeStatsMode(CStatForm::STI_WORLDVISIBILITY);
 }
@@ -322,8 +316,7 @@ void CRenderer::PassPortal(CScreenPolygon &spo)
 /*
  * Add a sector of a brush to rendering queues.
  */
-void CRenderer::AddActiveSector(CBrushSector &bscSector)
-{
+void CRenderer::AddActiveSector(CBrushSector &bscSector) {
   // if already active
   if (bscSector.bsc_lnInActiveSectors.IsLinked()) {
     // do nothing;
@@ -334,20 +327,19 @@ void CRenderer::AddActiveSector(CBrushSector &bscSector)
   // add it to active sectors list
   re_lhActiveSectors.AddTail(bscSector.bsc_lnInActiveSectors);
 
-  ASSERT((_controlfp(0, 0)&_MCW_RC) == _RC_NEAR);
+  ASSERT((_controlfp(0, 0) & _MCW_RC) == _RC_NEAR);
 
   CBrush3D &br = *bscSector.bsc_pbmBrushMip->bm_pbrBrush;
   // if should render field brush sector
-  if (br.br_penEntity->en_RenderType == CEntity::RT_FIELDBRUSH 
-      && !_wrpWorldRenderPrefs.IsFieldBrushesOn()) {
+  if (br.br_penEntity->en_RenderType == CEntity::RT_FIELDBRUSH && !_wrpWorldRenderPrefs.IsFieldBrushesOn()) {
     // skip it
-    bscSector.bsc_ulFlags|=BSCF_INVISIBLE;
+    bscSector.bsc_ulFlags |= BSCF_INVISIBLE;
     _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDSECTOR);
     return;
   }
 
   // test sector visibility
-  const INDEX iFrustrumTest = IsSectorVisible( br, bscSector);
+  const INDEX iFrustrumTest = IsSectorVisible(br, bscSector);
   if (iFrustrumTest == -1) {
     // outside of frustrum - skip it
     bscSector.bsc_ulFlags |= BSCF_INVISIBLE;
@@ -379,14 +371,14 @@ void CRenderer::AddActiveSector(CBrushSector &bscSector)
   PreClipPlanes();
 
   // if polygons should be drawn
-  if (_wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE
-    ||re_bRenderingShadows) {
+  if (_wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE || re_bRenderingShadows) {
     // find which portals should be rendered as portals or as pretenders
     FindPretenders();
     // make screen polygons for nondetail polygons in current sector
     MakeNonDetailScreenPolygons();
     // clip all polygons to all clip planes
-    if (bscSector.bsc_ulFlags&BSCF_NEEDSCLIPPING) ClipToAllPlanes( br.br_prProjection);
+    if (bscSector.bsc_ulFlags & BSCF_NEEDSCLIPPING)
+      ClipToAllPlanes(br.br_prProjection);
     // project vertices to 2d
     PostClipVertices();
     // make final edges for all polygons in current sector
@@ -411,24 +403,25 @@ void CRenderer::AddActiveSector(CBrushSector &bscSector)
 /*
  * Initialize list of active edges.
  */
-void CRenderer::InitScanEdges(void)
-{
+void CRenderer::InitScanEdges(void) {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_INITSCANEDGES);
 
   // empty active lists
-  re_aaceActiveEdges.PopAll();    re_aaceActiveEdges.SetAllocationStep(256);
-  re_aaceActiveEdgesTmp.PopAll(); re_aaceActiveEdgesTmp.SetAllocationStep(256);
+  re_aaceActiveEdges.PopAll();
+  re_aaceActiveEdges.SetAllocationStep(256);
+  re_aaceActiveEdgesTmp.PopAll();
+  re_aaceActiveEdgesTmp.SetAllocationStep(256);
 
   // set up left sentinel as left edge of screen and add it to head of active list
-  re_sedLeftSentinel.sed_xI = FIX16_16(re_fbbClipBox.Min()(1)-SENTINELEDGE_EPSILON);
+  re_sedLeftSentinel.sed_xI = FIX16_16(re_fbbClipBox.Min()(1) - SENTINELEDGE_EPSILON);
   re_sedLeftSentinel.sed_xIStep = FIX16_16(0);
   re_sedLeftSentinel.sed_pspo = &re_spoFarSentinel;
   re_aaceActiveEdges.Push() = CActiveEdge(&re_sedLeftSentinel);
 
   // set up right sentinel as right edge of screen and add it to tail of active list
-  re_sedRightSentinel.sed_xI = FIX16_16(re_fbbClipBox.Max()(1)+SENTINELEDGE_EPSILON);
+  re_sedRightSentinel.sed_xI = FIX16_16(re_fbbClipBox.Max()(1) + SENTINELEDGE_EPSILON);
   re_sedRightSentinel.sed_xIStep = FIX16_16(0);
-  re_sedRightSentinel.sed_pspo  = &re_spoFarSentinel;
+  re_sedRightSentinel.sed_pspo = &re_spoFarSentinel;
   re_aaceActiveEdges.Push() = CActiveEdge(&re_sedRightSentinel);
 
   // set up far sentinel as infinitely far polygon
@@ -460,8 +453,7 @@ void CRenderer::InitScanEdges(void)
 /*
  * Clean up list of active edges.
  */
-void CRenderer::EndScanEdges(void)
-{
+void CRenderer::EndScanEdges(void) {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_ENDSCANEDGES);
 
   // remove far sentinel from surface stack
@@ -475,8 +467,7 @@ void CRenderer::EndScanEdges(void)
 /*
  * Add a polygon to surface stack.
  */
-BOOL CRenderer::AddPolygonToSurfaceStack(CScreenPolygon &spo)
-{
+BOOL CRenderer::AddPolygonToSurfaceStack(CScreenPolygon &spo) {
   // increment in-stack counter
   spo.spo_iInStack++;
 
@@ -487,20 +478,20 @@ BOOL CRenderer::AddPolygonToSurfaceStack(CScreenPolygon &spo)
   }
 
 #define BIAS (1)
-//#define BIAS (0)
+  //#define BIAS (0)
 
-  FLOAT fScanI = FLOAT(re_xCurrentScanI)+BIAS;
-  FLOAT fScanJ = re_fCurrentScanJ;//+re_fMinJ;
+  FLOAT fScanI = FLOAT(re_xCurrentScanI) + BIAS;
+  FLOAT fScanJ = re_fCurrentScanJ; //+re_fMinJ;
 
   // calculate 1/k for new polygon
-  CPlanarGradients &pg = spo.spo_pgOoK; 
-  FLOAT fOoK = pg.pg_f00 + pg.pg_fDOverDI*fScanI + pg.pg_fDOverDJ*fScanJ;
+  CPlanarGradients &pg = spo.spo_pgOoK;
+  FLOAT fOoK = pg.pg_f00 + pg.pg_fDOverDI * fScanI + pg.pg_fDOverDJ * fScanJ;
 
   // bias for right edges - fix against generating extra trapezoids
-  fOoK*=re_fEdgeAdjustK;
+  fOoK *= re_fEdgeAdjustK;
 
   // must not be infinitely far, except if background polygon
-  //ASSERT(fOneOverK>0.0f || fOneOverK == -9999.0f); 
+  // ASSERT(fOneOverK>0.0f || fOneOverK == -9999.0f);
   // cannot assert on this, because of +1 bias
 
   // start at top surface in stack
@@ -509,21 +500,14 @@ BOOL CRenderer::AddPolygonToSurfaceStack(CScreenPolygon &spo)
   // if the projection is not perspective
   if (!re_prProjection.IsPerspective()) {
     // while new polygon is further than polygon in stack
-    while (
-     ((fOoK - 
-      itspo->spo_pgOoK.pg_f00 -
-      itspo->spo_pgOoK.pg_fDOverDI*fScanI -
-      itspo->spo_pgOoK.pg_fDOverDJ*fScanJ)<0)
-      && (&*itspo != &re_spoFarSentinel)) {
+    while (((fOoK - itspo->spo_pgOoK.pg_f00 - itspo->spo_pgOoK.pg_fDOverDI * fScanI - itspo->spo_pgOoK.pg_fDOverDJ * fScanJ) < 0)
+           && (&*itspo != &re_spoFarSentinel)) {
       // move to next polygon in stack
       itspo.MoveToNext();
     }
   } else {
     // while new polygon is further than polygon in stack
-    FLOAT fDelta = fOoK -
-      itspo->spo_pgOoK.pg_f00 -
-      itspo->spo_pgOoK.pg_fDOverDI*fScanI -
-      itspo->spo_pgOoK.pg_fDOverDJ*fScanJ;
+    FLOAT fDelta = fOoK - itspo->spo_pgOoK.pg_f00 - itspo->spo_pgOoK.pg_fDOverDI * fScanI - itspo->spo_pgOoK.pg_fDOverDJ * fScanJ;
 
     if (((SLONG &)fDelta) < 0) {
       do {
@@ -531,10 +515,7 @@ BOOL CRenderer::AddPolygonToSurfaceStack(CScreenPolygon &spo)
         ASSERT(&*itspo != &re_spoFarSentinel);
         // move to next polygon in stack
         itspo.MoveToNext();
-        fDelta = fOoK -
-          itspo->spo_pgOoK.pg_f00 -
-          itspo->spo_pgOoK.pg_fDOverDI*fScanI -
-          itspo->spo_pgOoK.pg_fDOverDJ*fScanJ;
+        fDelta = fOoK - itspo->spo_pgOoK.pg_f00 - itspo->spo_pgOoK.pg_fDOverDI * fScanI - itspo->spo_pgOoK.pg_fDOverDJ * fScanJ;
       } while (((SLONG &)fDelta) < 0);
     }
   }
@@ -549,8 +530,7 @@ BOOL CRenderer::AddPolygonToSurfaceStack(CScreenPolygon &spo)
 /*
  * Remove a polygon from surface stack.
  */
-BOOL CRenderer::RemPolygonFromSurfaceStack(CScreenPolygon &spo)
-{
+BOOL CRenderer::RemPolygonFromSurfaceStack(CScreenPolygon &spo) {
   // decrement in-stack counter
   spo.spo_iInStack--;
 
@@ -567,7 +547,7 @@ BOOL CRenderer::RemPolygonFromSurfaceStack(CScreenPolygon &spo)
     // return that this was top
     return TRUE;
 
-  // if the polygon is not top of stack
+    // if the polygon is not top of stack
   } else {
     // remove the polygon from stack
     spo.spo_lnInStack.Remove();
@@ -579,8 +559,7 @@ BOOL CRenderer::RemPolygonFromSurfaceStack(CScreenPolygon &spo)
 /*
  * Swap two polygons in surface stack.
  */
-BOOL CRenderer::SwapPolygonsInSurfaceStack(CScreenPolygon &spoOld, CScreenPolygon &spoNew)
-{
+BOOL CRenderer::SwapPolygonsInSurfaceStack(CScreenPolygon &spoOld, CScreenPolygon &spoNew) {
   // !!!!! fix the problems with surfaces beeing multiple times added
   // to the stack before reenabling this feature!
 
@@ -600,7 +579,7 @@ BOOL CRenderer::SwapPolygonsInSurfaceStack(CScreenPolygon &spoOld, CScreenPolygo
     lnBefore.IterationInsertAfter(spoNew.spo_lnInStack);
     return TRUE;
 
-  // if the polygon is not top of stack
+    // if the polygon is not top of stack
   } else {
     // swap them
     CListNode &lnBefore = spoOld.spo_lnInStack.IterationPred();
@@ -614,13 +593,10 @@ BOOL CRenderer::SwapPolygonsInSurfaceStack(CScreenPolygon &spoOld, CScreenPolygo
 /*
  * Remove all polygons from surface stack.
  */
-void CRenderer::FlushSurfaceStack(void)
-{
+void CRenderer::FlushSurfaceStack(void) {
   // while there is some polygon above far sentinel in surface stack
   CScreenPolygon *pspoTop;
-  while ((pspoTop = LIST_HEAD(re_lhSurfaceStack, CScreenPolygon, spo_lnInStack))
-    != &re_spoFarSentinel) {
-
+  while ((pspoTop = LIST_HEAD(re_lhSurfaceStack, CScreenPolygon, spo_lnInStack)) != &re_spoFarSentinel) {
     // it must be linked in stack
 #if 0
     if (pspoTop->spo_iInStack <= 0) {
@@ -639,8 +615,7 @@ void CRenderer::FlushSurfaceStack(void)
 /*
  * Scan list of active edges into spans.
  */
-CScreenPolygon *CRenderer::ScanOneLine(void)
-{
+CScreenPolygon *CRenderer::ScanOneLine(void) {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_SCANONELINE);
   IFDEBUG(FIX16_16 xCurrentI = FIX16_16(-10));
 
@@ -653,7 +628,7 @@ CScreenPolygon *CRenderer::ScanOneLine(void)
 
   // if left and right sentinels are sorted wrong
   if (re_aaceActiveEdges[0].ace_psedEdge != &re_sedLeftSentinel
-    ||re_aaceActiveEdges[re_aaceActiveEdges.Count()-1].ace_psedEdge != &re_sedRightSentinel) {
+      || re_aaceActiveEdges[re_aaceActiveEdges.Count() - 1].ace_psedEdge != &re_sedRightSentinel) {
     // skip entire line (this patches some extremely rare crash situations)
     _pfRenderProfile.StopTimer(CRenderProfile::PTI_SCANONELINE);
     return NULL;
@@ -661,8 +636,8 @@ CScreenPolygon *CRenderer::ScanOneLine(void)
 
   // for all edges in the line
   CActiveEdge *pace = &re_aaceActiveEdges[1];
-  CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count()-1];
-  while (pace<paceEnd) {
+  CActiveEdge *paceEnd = &re_aaceActiveEdges[re_aaceActiveEdges.Count() - 1];
+  while (pace < paceEnd) {
     CScreenEdge &sed = *pace->ace_psedEdge;
     ASSERT(&sed != &re_sedLeftSentinel);
     ASSERT(&sed != &re_sedRightSentinel);
@@ -682,15 +657,13 @@ CScreenPolygon *CRenderer::ScanOneLine(void)
       CScreenPolygon &spo = *sed.sed_pspo;
       // if it is right edge of the polygon
       if (sed.sed_ldtDirection == LDT_ASCENDING) {
-
         // remove the left polygon from stack
         BOOL bWasTop = RemPolygonFromSurfaceStack(spo);
 
         // if that was top polygon in surface stack
         if (bWasTop) {
           // if it is portal
-          if (spo.IsPortal() && 
-             (re_ubLightIllumination == 0||re_ubLightIllumination != spo.spo_ubIllumination)) {
+          if (spo.IsPortal() && (re_ubLightIllumination == 0 || re_ubLightIllumination != spo.spo_ubIllumination)) {
             // fail scanning and add that portal
             _pfRenderProfile.StopTimer(CRenderProfile::PTI_SCANONELINE);
             return &spo;
@@ -699,12 +672,11 @@ CScreenPolygon *CRenderer::ScanOneLine(void)
           MakeSpan(spo, spo.spo_psedSpanStart, &sed);
 
           // mark that span of new top starts here
-          CScreenPolygon *pspoNewTop =
-            LIST_HEAD(re_lhSurfaceStack, CScreenPolygon, spo_lnInStack);
+          CScreenPolygon *pspoNewTop = LIST_HEAD(re_lhSurfaceStack, CScreenPolygon, spo_lnInStack);
           pspoNewTop->spo_psedSpanStart = &sed;
         }
 
-      // if it is left edge of the polygon
+        // if it is left edge of the polygon
       } else {
         ASSERT(sed.sed_ldtDirection == LDT_DESCENDING);
 
@@ -716,15 +688,14 @@ CScreenPolygon *CRenderer::ScanOneLine(void)
           // get the old top
           CScreenPolygon &spoOldTop = *LIST_SUCC(spo, CScreenPolygon, spo_lnInStack);
           // if it is portal
-          if (spoOldTop.IsPortal() &&
-             (re_ubLightIllumination == 0||re_ubLightIllumination != spoOldTop.spo_ubIllumination)) {
+          if (spoOldTop.IsPortal() && (re_ubLightIllumination == 0 || re_ubLightIllumination != spoOldTop.spo_ubIllumination)) {
             // if its span has at least one pixel in length
-            if (PIXCoord(re_xCurrentScanI)-PIXCoord(spoOldTop.spo_psedSpanStart->sed_xI)>0) {
+            if (PIXCoord(re_xCurrentScanI) - PIXCoord(spoOldTop.spo_psedSpanStart->sed_xI) > 0) {
               // fail scanning and add that portal
               _pfRenderProfile.StopTimer(CRenderProfile::PTI_SCANONELINE);
               return &spoOldTop;
             }
-          // if it is not portal
+            // if it is not portal
           } else {
             // generate span for old top
             MakeSpan(spoOldTop, spoOldTop.spo_psedSpanStart, &sed);
@@ -736,7 +707,7 @@ CScreenPolygon *CRenderer::ScanOneLine(void)
       }
 
       IFDEBUG(xCurrentI = pace->ace_xI);
-    // if this edge has no active polygon
+      // if this edge has no active polygon
     } else {
       // mark it for removal
       sed.sed_xI.slHolder = ACE_REMOVED;
@@ -754,8 +725,7 @@ CScreenPolygon *CRenderer::ScanOneLine(void)
     // ASSERTALWAYS("Bug in ASER: Surface stack not empty!");
     CScreenPolygon &spo = *pspoTop;
     // generate span of the top polygon to the right border
-    if (!(spo.IsPortal()
-       && (re_ubLightIllumination == 0 || re_ubLightIllumination != spo.spo_ubIllumination))) {
+    if (!(spo.IsPortal() && (re_ubLightIllumination == 0 || re_ubLightIllumination != spo.spo_ubIllumination))) {
       MakeSpan(spo, spo.spo_psedSpanStart, &re_sedRightSentinel);
     }
     // remove all left-over polygons from stack
@@ -778,8 +748,7 @@ CScreenPolygon *CRenderer::ScanOneLine(void)
 /*
  * Rasterize edges into spans.
  */
-void CRenderer::ScanEdges(void)
-{
+void CRenderer::ScanEdges(void) {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_SCANEDGES);
   // set up the list of active edges, surface stack and the sentinels
   InitScanEdges();
@@ -788,13 +757,13 @@ void CRenderer::ScanEdges(void)
   re_bCoherentScanLine = 0;
 
   // for each scan line, top to bottom
-  for (re_iCurrentScan = 0; re_iCurrentScan<re_ctScanLines; re_iCurrentScan++) {
+  for (re_iCurrentScan = 0; re_iCurrentScan < re_ctScanLines; re_iCurrentScan++) {
     re_pixCurrentScanJ = re_iCurrentScan + re_pixTopScanLineJ;
     re_fCurrentScanJ = FLOAT(re_pixCurrentScanJ);
 
     _pfRenderProfile.IncrementCounter(CRenderProfile::PCI_OVERALLSCANLINES);
 
-    CScreenPolygon *pspoPortal;     // pointer to portal encountered while scanning
+    CScreenPolygon *pspoPortal; // pointer to portal encountered while scanning
 
     // add all edges that start on this scan line to active list
     AddAddListToActiveList(re_iCurrentScan);
@@ -807,8 +776,8 @@ void CRenderer::ScanEdges(void)
       CopyActiveCoordinates();
 
     // if scan-line is not coherent with the last one
-    } else/**/ {
-
+    } else/**/
+    {
       // scan list of active edges into spans
       pspoPortal = ScanOneLine();
 
@@ -835,26 +804,25 @@ void CRenderer::ScanEdges(void)
 
     // surface stack must contain only background
     ASSERT(&re_spoFarSentinel == LIST_HEAD(re_lhSurfaceStack, CScreenPolygon, spo_lnInStack)
-        && &re_spoFarSentinel == LIST_TAIL(re_lhSurfaceStack, CScreenPolygon, spo_lnInStack));
+           && &re_spoFarSentinel == LIST_TAIL(re_lhSurfaceStack, CScreenPolygon, spo_lnInStack));
 
     // add spans in this line to the scene
     AddSpansToScene();
 
-    // uncomment this for extreme checking of surface stack management -- very slow
-    #if 0
+// uncomment this for extreme checking of surface stack management -- very slow
+#if 0
       // all surfaces must have in-stack counter of zero
       FOREACHINDYNAMICARRAY(re_aspoScreenPolygons, CScreenPolygon, itspo) {
         CScreenPolygon &spo = itspo.Current();
         ASSERT(spo.spo_iInStack == 0);
       }
-    #endif
+#endif
 
     // remove all edges that stop on this scan from active list and from other lists.
     RemRemoveListFromActiveList(re_apsedRemoveFirst[re_iCurrentScan]);
 
     // step all remaining edges by one scan line and resort the active list
     StepAndResortActiveList();
-
   }
 
   // clean up the list of active edges, surface stack and the sentinels

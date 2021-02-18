@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -22,15 +22,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define COLOR_COUNT   2
 #define FLOAT_COUNT   0
 
-#define BASE_TEXTURE 0
-#define BASE_UVMAP   0
-#define BASE_COLOR   0
-#define BASE_FLOAT   0
+#define BASE_TEXTURE     0
+#define BASE_UVMAP       0
+#define BASE_COLOR       0
+#define BASE_FLOAT       0
 #define SPECULAR_TEXTURE 1
 #define SPECULAR_COLOR   1
 
-SHADER_MAIN(SpecularDS)
-{
+SHADER_MAIN(SpecularDS) {
 #if 0
   shaSetTexture(BASE_TEXTURE);
   shaSetTextureWrapping( GFX_REPEAT, GFX_REPEAT);
@@ -67,8 +66,7 @@ SHADER_MAIN(SpecularDS)
 #endif
 }
 
-SHADER_DESC(SpecularDS,ShaderDesc &shDesc)
-{
+SHADER_DESC(SpecularDS, ShaderDesc &shDesc) {
   shDesc.sd_astrTextureNames.New(TEXTURE_COUNT);
   shDesc.sd_astrTexCoordNames.New(UVMAPS_COUNT);
   shDesc.sd_astrColorNames.New(COLOR_COUNT);

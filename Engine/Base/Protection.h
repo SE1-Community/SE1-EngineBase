@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_PROTECTION_H
 #define SE_INCL_PROTECTION_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 typedef struct {
@@ -27,6 +27,4 @@ typedef struct {
 extern void Blowfish_Init(BLOWFISH_CTX *ctx, unsigned char *key, int keyLen);
 extern void Blowfish_Decrypt(BLOWFISH_CTX *ctx, unsigned long *xl, unsigned long *xr);
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -23,24 +23,22 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 /*
  * Default constructor.
  */
-CSerial::CSerial( void) : ser_ctUsed(0) // not used initially
-{
-}
+CSerial::CSerial(void) :
+ser_ctUsed(0) // not used initially
+{}
 
 /*
  * Destructor.
  */
-CSerial::~CSerial( void)
-{
+CSerial::~CSerial(void) {
   // must not be used at all
-  ASSERT(ser_ctUsed == 0);    // look at _strLastCleared for possible name
+  ASSERT(ser_ctUsed == 0); // look at _strLastCleared for possible name
 }
 
 /*
  * Clear the object.
  */
-void CSerial::Clear(void)
-{
+void CSerial::Clear(void) {
   // mark that you have changed
   MarkChanged();
 
@@ -48,16 +46,15 @@ void CSerial::Clear(void)
   ser_FileName.Clear();
 }
 
-// Get the description of this object. 
-CTString CSerial::GetDescription(void)
-{
+// Get the description of this object.
+CTString CSerial::GetDescription(void) {
   return "<no description>";
 }
 
 /*
  * Load from file.
  */
-void CSerial::Load_t(const CTFileName fnFileName)  // throw char *
+void CSerial::Load_t(const CTFileName fnFileName) // throw char *
 {
   ASSERT(!IsUsed());
   // mark that you have changed
@@ -76,25 +73,24 @@ void CSerial::Load_t(const CTFileName fnFileName)  // throw char *
 /*
  * Reload from file.
  */
-void CSerial::Reload(void)
-{
+void CSerial::Reload(void) {
   // mark that you have changed
   MarkChanged();
 
   CTFileName fnmOldName = ser_FileName;
   Clear();
   // try to
-  //try {
-    // open a stream
-    CTFileStream istrFile;
-    istrFile.Open_t(fnmOldName);
-    // read object from stream
-    Read_t(&istrFile);
+  // try {
+  // open a stream
+  CTFileStream istrFile;
+  istrFile.Open_t(fnmOldName);
+  // read object from stream
+  Read_t(&istrFile);
 
   // if there is some error while reloading
   //} catch (char *strError) {
-    // quit the application with error explanation
-    //FatalError(TRANS("Cannot reload file '%s':\n%s"), (CTString&)fnmOldName, strError);
+  // quit the application with error explanation
+  // FatalError(TRANS("Cannot reload file '%s':\n%s"), (CTString&)fnmOldName, strError);
   //}
 
   // if still here (no exceptions raised)
@@ -105,7 +101,7 @@ void CSerial::Reload(void)
 /*
  * Save to file.
  */
-void CSerial::Save_t(const CTFileName fnFileName)  // throw char *
+void CSerial::Save_t(const CTFileName fnFileName) // throw char *
 {
   // open a stream
   CTFileStream ostrFile;
@@ -120,8 +116,7 @@ void CSerial::Save_t(const CTFileName fnFileName)  // throw char *
 /*
  * Mark that object is used once more.
  */
-void CSerial::MarkUsed(void)
-{
+void CSerial::MarkUsed(void) {
   // use count must not have dropped below zero
   ASSERT(ser_ctUsed >= 0);
   // increment use count
@@ -131,8 +126,7 @@ void CSerial::MarkUsed(void)
 /*
  * Mark that object is used once less.
  */
-void CSerial::MarkUnused(void)
-{
+void CSerial::MarkUnused(void) {
   // decrement use count
   ser_ctUsed--;
   // use count must not have dropped below zero
@@ -142,21 +136,18 @@ void CSerial::MarkUnused(void)
 /*
  * Check if object is used at least once.
  */
-BOOL CSerial::IsUsed(void)
-{
+BOOL CSerial::IsUsed(void) {
   // use count must not have dropped below zero
   ASSERT(ser_ctUsed >= 0);
 
-  return ser_ctUsed>0;
+  return ser_ctUsed > 0;
 }
-INDEX CSerial::GetUsedCount(void)
-{
+INDEX CSerial::GetUsedCount(void) {
   return ser_ctUsed;
 }
 
 // gather the CRC of the file
-void CSerial::AddToCRCTable(void)
-{
+void CSerial::AddToCRCTable(void) {
   // add the file to CRC table
   CRCT_AddFile_t(ser_FileName);
 }

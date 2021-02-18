@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -20,20 +20,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/ListIterator.inl>
 
 class CActionEntry {
-public:
-  CListNode ae_ln;
-  CPlayerAction ae_pa;
+  public:
+    CListNode ae_ln;
+    CPlayerAction ae_pa;
 };
 
-CActionBuffer::CActionBuffer(void)
-{
-}
-CActionBuffer::~CActionBuffer(void)
-{
+CActionBuffer::CActionBuffer(void) {}
+CActionBuffer::~CActionBuffer(void) {
   Clear();
 }
-void CActionBuffer::Clear(void)
-{
+void CActionBuffer::Clear(void) {
   // for each buffered action
   FORDELETELIST(CActionEntry, ae_ln, ab_lhActions, itae) {
     // delete it
@@ -41,16 +37,14 @@ void CActionBuffer::Clear(void)
   }
 }
 
-int qsort_CompareActions(const void *elem1, const void *elem2 )
-{
+int qsort_CompareActions(const void *elem1, const void *elem2) {
   const CActionEntry &ae1 = **(CActionEntry **)elem1;
   const CActionEntry &ae2 = **(CActionEntry **)elem2;
-  return ae1.ae_pa.pa_llCreated-ae2.ae_pa.pa_llCreated;
+  return ae1.ae_pa.pa_llCreated - ae2.ae_pa.pa_llCreated;
 }
 
 // add a new action to the buffer
-void CActionBuffer::AddAction(const CPlayerAction &pa)
-{
+void CActionBuffer::AddAction(const CPlayerAction &pa) {
   // search all buffered actions
   FOREACHINLIST(CActionEntry, ae_ln, ab_lhActions, itae) {
     CActionEntry &ae = *itae;
@@ -69,12 +63,11 @@ void CActionBuffer::AddAction(const CPlayerAction &pa)
   // sort the list
   ab_lhActions.Sort(&qsort_CompareActions, offsetof(CActionEntry, ae_ln));
 
-  //CPrintF("Buffered: %d (after add)\n", ab_lhActions.Count());
+  // CPrintF("Buffered: %d (after add)\n", ab_lhActions.Count());
 }
 
 // flush all actions up to given time tag
-void CActionBuffer::FlushUntilTime(__int64 llNewest)
-{
+void CActionBuffer::FlushUntilTime(__int64 llNewest) {
   // for each buffered action
   FORDELETELIST(CActionEntry, ae_ln, ab_lhActions, itae) {
     CActionEntry &ae = *itae;
@@ -88,8 +81,7 @@ void CActionBuffer::FlushUntilTime(__int64 llNewest)
 }
 
 // remove oldest buffered action
-void CActionBuffer::RemoveOldest(void)
-{
+void CActionBuffer::RemoveOldest(void) {
   // for each buffered action
   FORDELETELIST(CActionEntry, ae_ln, ab_lhActions, itae) {
     CActionEntry &ae = *itae;
@@ -97,20 +89,18 @@ void CActionBuffer::RemoveOldest(void)
     delete &*itae;
     break;
   }
-  //CPrintF("Buffered: %d (after remove)\n", ab_lhActions.Count());
+  // CPrintF("Buffered: %d (after remove)\n", ab_lhActions.Count());
 }
 
 // get number of actions buffered
-INDEX CActionBuffer::GetCount(void)
-{
+INDEX CActionBuffer::GetCount(void) {
   return ab_lhActions.Count();
 }
 
 // get an action by its index (0=oldest)
-void CActionBuffer::GetActionByIndex(INDEX i, CPlayerAction &pa)
-{
+void CActionBuffer::GetActionByIndex(INDEX i, CPlayerAction &pa) {
   // for each buffered action
-  INDEX iInList=0;
+  INDEX iInList = 0;
   FOREACHINLIST(CActionEntry, ae_ln, ab_lhActions, itae) {
     if (iInList == i) {
       pa = itae->ae_pa;
@@ -123,8 +113,7 @@ void CActionBuffer::GetActionByIndex(INDEX i, CPlayerAction &pa)
 }
 
 // get last action older than given timetag
-CPlayerAction *CActionBuffer::GetLastOlderThan(__int64 llTime)
-{
+CPlayerAction *CActionBuffer::GetLastOlderThan(__int64 llTime) {
   CPlayerAction *ppa = NULL;
   FOREACHINLIST(CActionEntry, ae_ln, ab_lhActions, itae) {
     CActionEntry &ae = *itae;

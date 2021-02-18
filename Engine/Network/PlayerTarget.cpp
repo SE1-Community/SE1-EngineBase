@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -38,8 +38,7 @@ CPlayerTarget::CPlayerTarget(void) {
 /*
  *  Destructor.
  */
-CPlayerTarget::~CPlayerTarget(void) {
-}
+CPlayerTarget::~CPlayerTarget(void) {}
 
 /*
  * Read player information from a stream.
@@ -90,21 +89,18 @@ void CPlayerTarget::Write_t(CTStream *pstr) // throw char *
 /*
  * Activate client data for a new client.
  */
-void CPlayerTarget::Activate(void)
-{
+void CPlayerTarget::Activate(void) {
   ASSERT(!plt_bActive);
   plt_bActive = TRUE;
   plt_abPrediction.Clear();
   plt_paPreLastAction.Clear();
   plt_paLastAction.Clear();
-
 }
 
 /*
  * Deactivate client data for removed client.
  */
-void CPlayerTarget::Deactivate(void)
-{
+void CPlayerTarget::Deactivate(void) {
   ASSERT(plt_bActive);
   plt_bActive = FALSE;
   plt_penPlayerEntity = NULL;
@@ -116,8 +112,7 @@ void CPlayerTarget::Deactivate(void)
 /*
  * Attach an entity to this client.
  */
-void CPlayerTarget::AttachEntity(CPlayerEntity *penClientEntity)
-{
+void CPlayerTarget::AttachEntity(CPlayerEntity *penClientEntity) {
   ASSERT(plt_bActive);
   plt_penPlayerEntity = penClientEntity;
 }
@@ -125,8 +120,7 @@ void CPlayerTarget::AttachEntity(CPlayerEntity *penClientEntity)
 /*
  * Apply action packet to current actions.
  */
-void CPlayerTarget::ApplyActionPacket(const CPlayerAction &paDelta)
-{
+void CPlayerTarget::ApplyActionPacket(const CPlayerAction &paDelta) {
   ASSERT(plt_bActive);
   ASSERT(plt_penPlayerEntity != NULL);
   // synchronize access to actions
@@ -135,8 +129,8 @@ void CPlayerTarget::ApplyActionPacket(const CPlayerAction &paDelta)
   // create a new action packet from last received packet and given delta
   plt_paPreLastAction = plt_paLastAction;
   __int64 llTag = plt_paLastAction.pa_llCreated += paDelta.pa_llCreated;
-  for (INDEX i=0; i<sizeof(CPlayerAction); i++) {
-    ((UBYTE*)&plt_paLastAction)[i] ^= ((UBYTE*)&paDelta)[i];
+  for (INDEX i = 0; i < sizeof(CPlayerAction); i++) {
+    ((UBYTE *)&plt_paLastAction)[i] ^= ((UBYTE *)&paDelta)[i];
   }
   plt_paLastAction.pa_llCreated = llTag;
 
@@ -146,7 +140,7 @@ void CPlayerTarget::ApplyActionPacket(const CPlayerAction &paDelta)
     // calculate latency
     __int64 llmsNow = _pTimer->GetHighPrecisionTimer().GetMilliseconds();
     __int64 llmsCreated = plt_paLastAction.pa_llCreated;
-    fLatency = FLOAT(DOUBLE(llmsNow-llmsCreated)/1000.0f);
+    fLatency = FLOAT(DOUBLE(llmsNow - llmsCreated) / 1000.0f);
     if (plt_paLastAction.pa_llCreated == plt_paPreLastAction.pa_llCreated) {
       _pNetwork->AddNetGraphValue(NGET_REPLICATEDACTION, fLatency);
     } else {
@@ -161,7 +155,7 @@ void CPlayerTarget::ApplyActionPacket(const CPlayerAction &paDelta)
   }
 
   // if the entity is not deleted
-  if (!(plt_penPlayerEntity->en_ulFlags&ENF_DELETED)) {
+  if (!(plt_penPlayerEntity->en_ulFlags & ENF_DELETED)) {
     // call the player DLL class to apply the new action to the entity
     plt_penPlayerEntity->ApplyAction(plt_paLastAction, fLatency);
   }
@@ -172,9 +166,8 @@ void CPlayerTarget::ApplyActionPacket(const CPlayerAction &paDelta)
   }
 }
 
-// Remember prediction action. 
-void CPlayerTarget::PrebufferActionPacket(const CPlayerAction &paPrediction)
-{
+// Remember prediction action.
+void CPlayerTarget::PrebufferActionPacket(const CPlayerAction &paPrediction) {
   ASSERT(plt_bActive);
   // synchronize access to actions
   CTSingleLock slActions(&plt_csAction, TRUE);
@@ -184,8 +177,7 @@ void CPlayerTarget::PrebufferActionPacket(const CPlayerAction &paPrediction)
 }
 
 // flush prediction actions that were already processed
-void CPlayerTarget::FlushProcessedPredictions(void)
-{
+void CPlayerTarget::FlushProcessedPredictions(void) {
   CTSingleLock slActions(&plt_csAction, TRUE);
   extern INDEX cli_iPredictionFlushing;
   if (cli_iPredictionFlushing == 1) {
@@ -198,16 +190,14 @@ void CPlayerTarget::FlushProcessedPredictions(void)
 }
 
 // get maximum number of actions that can be predicted
-INDEX CPlayerTarget::GetNumberOfPredictions(void)
-{
+INDEX CPlayerTarget::GetNumberOfPredictions(void) {
   CTSingleLock slActions(&plt_csAction, TRUE);
   // return current count
   return plt_abPrediction.GetCount();
 }
-  
-// Apply predicted action with given index. 
-void CPlayerTarget::ApplyPredictedAction(INDEX iAction, FLOAT fFactor)
-{
+
+// Apply predicted action with given index.
+void CPlayerTarget::ApplyPredictedAction(INDEX iAction, FLOAT fFactor) {
   // synchronize access to actions
   CTSingleLock slActions(&plt_csAction, TRUE);
 
@@ -218,7 +208,7 @@ void CPlayerTarget::ApplyPredictedAction(INDEX iAction, FLOAT fFactor)
     // get the action from buffer
     plt_abPrediction.GetActionByIndex(iAction, pa);
 
-  // if the player is not local
+    // if the player is not local
   } else {
     // reuse last action
     if (cli_bLerpActions) {
@@ -239,5 +229,5 @@ void CPlayerTarget::ApplyPredictedAction(INDEX iAction, FLOAT fFactor)
   }
 
   // apply a prediction action packet to the entity's predictor
-  ((CPlayerEntity*)penPredictor)->ApplyAction(pa, 0.0f);
+  ((CPlayerEntity *)penPredictor)->ApplyAction(pa, 0.0f);
 }

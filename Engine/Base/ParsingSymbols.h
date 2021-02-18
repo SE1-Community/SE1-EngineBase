@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -34,15 +34,14 @@ extern int _bExecNextBlock;
 
 // used for communication between CShell and parser
 // value for declaring external symbol (defined in exe or dll code)
-extern void *_pvNextToDeclare; 
+extern void *_pvNextToDeclare;
 
-extern const char * _shell_strFileName;
+extern const char *_shell_strFileName;
 // temporary values for parsing
 extern CDynamicStackArray<CTString> _shell_astrTempStrings;
 // values for extern declarations
 extern CDynamicStackArray<CTString> _shell_astrExtStrings;
 extern CDynamicStackArray<FLOAT> _shell_afExtFloats;
-
 
 // all types are allocated here
 extern CAllocationArray<ShellType> _shell_ast;
@@ -89,14 +88,14 @@ struct LValue {
 
 struct value {
   enum ShellTypeType sttType;
-  float fFloat;               // for float constants
-  INDEX iIndex;               // for index constants
-  const char *strString;      // for string constants
+  float fFloat;          // for float constants
+  INDEX iIndex;          // for index constants
+  const char *strString; // for string constants
 };
 
 struct arguments {
-  INDEX istType;    // type of arguments
-  INDEX ctBytes;    // total number of bytes taken by arguments on stack
+  INDEX istType; // type of arguments
+  INDEX ctBytes; // total number of bytes taken by arguments on stack
 };
 
 void ShellPushBuffer(const char *strName, const char *strBuffer, BOOL bParserEnd);

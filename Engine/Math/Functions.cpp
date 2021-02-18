@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -21,20 +21,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Snapping functions
 
 // does "snap to grid" for given coordinate
-void Snap( FLOAT &fDest, FLOAT fStep)
-{
+void Snap(FLOAT &fDest, FLOAT fStep) {
   // this must use floor() to get proper snapping of negative values.
-  FLOAT fDiv = fDest/fStep;
+  FLOAT fDiv = fDest / fStep;
   FLOAT fRound = fDiv + 0.5f;
   FLOAT fSnap = FLOAT(floor(fRound));
   FLOAT fRes = fSnap * fStep;
   fDest = fRes;
 }
 // does "snap to grid" for given coordinate
-void Snap( DOUBLE &fDest, DOUBLE fStep)
-{
+void Snap(DOUBLE &fDest, DOUBLE fStep) {
   // this must use floor() to get proper snapping of negative values.
-  DOUBLE fDiv = fDest/fStep;
+  DOUBLE fDiv = fDest / fStep;
   DOUBLE fRound = fDiv + 0.5f;
   DOUBLE fSnap = DOUBLE(floor(fRound));
   DOUBLE fRes = fSnap * fStep;
@@ -55,40 +53,33 @@ void Snap( ANGLE &angDest, ANGLE angStep)
 }
 #endif
 
-double adSinQuadrants[4][2] =
-{
+double adSinQuadrants[4][2] = {
   {1.0, 0.0},
   {-1.0, -90.0},
   {-1.0, 0.0},
   {1.0, -90.0},
 };
-double adCosQuadrants[4][2] =
-{
+double adCosQuadrants[4][2] = {
   {-1.0, -90.0},
   {-1.0, 0.0},
   {1.0, -90.0},
   {1.0, 0.0},
 };
 
-FLOAT Sin(ANGLE a)
-{
+FLOAT Sin(ANGLE a) {
   double aWrapped = WrapAngle(a);
   double aIn90 = fmod(aWrapped, 90.0);
-  int iQuadrant = int(aWrapped/90.0);
-  double fSin = adSinQuadrants[iQuadrant][0]*
-    sin((aIn90+adSinQuadrants[iQuadrant][1])*PI/ANGLE_180);
-  return FLOAT (fSin);
+  int iQuadrant = int(aWrapped / 90.0);
+  double fSin = adSinQuadrants[iQuadrant][0] * sin((aIn90 + adSinQuadrants[iQuadrant][1]) * PI / ANGLE_180);
+  return FLOAT(fSin);
 }
-FLOAT Cos(ANGLE a)
-{
+FLOAT Cos(ANGLE a) {
   double aWrapped = WrapAngle(a);
   double aIn90 = fmod(aWrapped, 90.0);
-  int iQuadrant = int(aWrapped/90.0);
-  double fCos = adCosQuadrants[iQuadrant][0]*
-    sin((aIn90+adCosQuadrants[iQuadrant][1])*PI/ANGLE_180);
-  return FLOAT (fCos);
+  int iQuadrant = int(aWrapped / 90.0);
+  double fCos = adCosQuadrants[iQuadrant][0] * sin((aIn90 + adCosQuadrants[iQuadrant][1]) * PI / ANGLE_180);
+  return FLOAT(fCos);
 }
-FLOAT Tan(ANGLE a)
-{
-  return Sin(a)/Cos(a);
+FLOAT Tan(ANGLE a) {
+  return Sin(a) / Cos(a);
 }

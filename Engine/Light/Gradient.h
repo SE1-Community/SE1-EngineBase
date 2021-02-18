@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,20 +16,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_GRADIENT_H
 #define SE_INCL_GRADIENT_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 class CGradientParameters {
-public:
-  FLOAT3D gp_vGradientDir;   // gradient direction in absolute space
-  FLOAT gp_fH0; // position of color 0
-  FLOAT gp_fH1; // position of color 1
-  BOOL gp_bDark; // if dark light
+  public:
+    FLOAT3D gp_vGradientDir; // gradient direction in absolute space
+    FLOAT gp_fH0;            // position of color 0
+    FLOAT gp_fH1;            // position of color 1
+    BOOL gp_bDark;           // if dark light
 
-  COLOR gp_col0;      // color 0
-  COLOR gp_col1;      // color 1
+    COLOR gp_col0; // color 0
+    COLOR gp_col1; // color 1
 };
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

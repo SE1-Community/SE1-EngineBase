@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -31,10 +31,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/GameAgent/GameAgent.h>
 
-
 #pragma comment(lib, "wsock32.lib")
 
-#define SERVER_LOCAL_CLIENT     0
+#define SERVER_LOCAL_CLIENT 0
 extern INDEX net_iPort;
 extern CTString net_strLocalHost;
 extern INDEX net_bLookupHostNames;
@@ -44,64 +43,63 @@ extern FLOAT net_tmConnectionTimeout;
 extern INDEX net_bReportPackets;
 
 static struct ErrorCode ErrorCodes[] = {
-  ERRORCODE(WSAEINTR          , "WSAEINTR"),
-  ERRORCODE(WSAEBADF          , "WSAEBADF"),
-  ERRORCODE(WSAEACCES         , "WSAEACCES"),
-  ERRORCODE(WSAEFAULT         , "WSAEFAULT"),
-  ERRORCODE(WSAEINVAL         , "WSAEINVAL"),
-  ERRORCODE(WSAEMFILE         , "WSAEMFILE"),
-  ERRORCODE(WSAEWOULDBLOCK    , "WSAEWOULDBLOCK"),
-  ERRORCODE(WSAEINPROGRESS    , "WSAEINPROGRESS"),
-  ERRORCODE(WSAEALREADY       , "WSAEALREADY"),
-  ERRORCODE(WSAENOTSOCK       , "WSAENOTSOCK"),
-  ERRORCODE(WSAEDESTADDRREQ   , "WSAEDESTADDRREQ"),
-  ERRORCODE(WSAEMSGSIZE       , "WSAEMSGSIZE"),
-  ERRORCODE(WSAEPROTOTYPE     , "WSAEPROTOTYPE"),
-  ERRORCODE(WSAENOPROTOOPT    , "WSAENOPROTOOPT"),
+  ERRORCODE(WSAEINTR, "WSAEINTR"),
+  ERRORCODE(WSAEBADF, "WSAEBADF"),
+  ERRORCODE(WSAEACCES, "WSAEACCES"),
+  ERRORCODE(WSAEFAULT, "WSAEFAULT"),
+  ERRORCODE(WSAEINVAL, "WSAEINVAL"),
+  ERRORCODE(WSAEMFILE, "WSAEMFILE"),
+  ERRORCODE(WSAEWOULDBLOCK, "WSAEWOULDBLOCK"),
+  ERRORCODE(WSAEINPROGRESS, "WSAEINPROGRESS"),
+  ERRORCODE(WSAEALREADY, "WSAEALREADY"),
+  ERRORCODE(WSAENOTSOCK, "WSAENOTSOCK"),
+  ERRORCODE(WSAEDESTADDRREQ, "WSAEDESTADDRREQ"),
+  ERRORCODE(WSAEMSGSIZE, "WSAEMSGSIZE"),
+  ERRORCODE(WSAEPROTOTYPE, "WSAEPROTOTYPE"),
+  ERRORCODE(WSAENOPROTOOPT, "WSAENOPROTOOPT"),
   ERRORCODE(WSAEPROTONOSUPPORT, "WSAEPROTONOSUPPORT"),
   ERRORCODE(WSAESOCKTNOSUPPORT, "WSAESOCKTNOSUPPORT"),
-  ERRORCODE(WSAEOPNOTSUPP     , "WSAEOPNOTSUPP"),
-  ERRORCODE(WSAEPFNOSUPPORT   , "WSAEPFNOSUPPORT"),
-  ERRORCODE(WSAEAFNOSUPPORT   , "WSAEAFNOSUPPORT"),
-  ERRORCODE(WSAEADDRINUSE     , "WSAEADDRINUSE"),
-  ERRORCODE(WSAEADDRNOTAVAIL  , "WSAEADDRNOTAVAIL"),
-  ERRORCODE(WSAENETDOWN       , "WSAENETDOWN"),
-  ERRORCODE(WSAENETUNREACH    , "WSAENETUNREACH"),
-  ERRORCODE(WSAENETRESET      , "WSAENETRESET"),
-  ERRORCODE(WSAECONNABORTED   , "WSAECONNABORTED"),
-  ERRORCODE(WSAECONNRESET     , "WSAECONNRESET"),
-  ERRORCODE(WSAENOBUFS        , "WSAENOBUFS"),
-  ERRORCODE(WSAEISCONN        , "WSAEISCONN"),
-  ERRORCODE(WSAENOTCONN       , "WSAENOTCONN"),
-  ERRORCODE(WSAESHUTDOWN      , "WSAESHUTDOWN"),
-  ERRORCODE(WSAETOOMANYREFS   , "WSAETOOMANYREFS"),
-  ERRORCODE(WSAETIMEDOUT      , "WSAETIMEDOUT"),
-  ERRORCODE(WSAECONNREFUSED   , "WSAECONNREFUSED"),
-  ERRORCODE(WSAELOOP          , "WSAELOOP"),
-  ERRORCODE(WSAENAMETOOLONG   , "WSAENAMETOOLONG"),
-  ERRORCODE(WSAEHOSTDOWN      , "WSAEHOSTDOWN"),
-  ERRORCODE(WSAEHOSTUNREACH   , "WSAEHOSTUNREACH"),
-  ERRORCODE(WSASYSNOTREADY    , "WSASYSNOTREADY"),
+  ERRORCODE(WSAEOPNOTSUPP, "WSAEOPNOTSUPP"),
+  ERRORCODE(WSAEPFNOSUPPORT, "WSAEPFNOSUPPORT"),
+  ERRORCODE(WSAEAFNOSUPPORT, "WSAEAFNOSUPPORT"),
+  ERRORCODE(WSAEADDRINUSE, "WSAEADDRINUSE"),
+  ERRORCODE(WSAEADDRNOTAVAIL, "WSAEADDRNOTAVAIL"),
+  ERRORCODE(WSAENETDOWN, "WSAENETDOWN"),
+  ERRORCODE(WSAENETUNREACH, "WSAENETUNREACH"),
+  ERRORCODE(WSAENETRESET, "WSAENETRESET"),
+  ERRORCODE(WSAECONNABORTED, "WSAECONNABORTED"),
+  ERRORCODE(WSAECONNRESET, "WSAECONNRESET"),
+  ERRORCODE(WSAENOBUFS, "WSAENOBUFS"),
+  ERRORCODE(WSAEISCONN, "WSAEISCONN"),
+  ERRORCODE(WSAENOTCONN, "WSAENOTCONN"),
+  ERRORCODE(WSAESHUTDOWN, "WSAESHUTDOWN"),
+  ERRORCODE(WSAETOOMANYREFS, "WSAETOOMANYREFS"),
+  ERRORCODE(WSAETIMEDOUT, "WSAETIMEDOUT"),
+  ERRORCODE(WSAECONNREFUSED, "WSAECONNREFUSED"),
+  ERRORCODE(WSAELOOP, "WSAELOOP"),
+  ERRORCODE(WSAENAMETOOLONG, "WSAENAMETOOLONG"),
+  ERRORCODE(WSAEHOSTDOWN, "WSAEHOSTDOWN"),
+  ERRORCODE(WSAEHOSTUNREACH, "WSAEHOSTUNREACH"),
+  ERRORCODE(WSASYSNOTREADY, "WSASYSNOTREADY"),
   ERRORCODE(WSAVERNOTSUPPORTED, "WSAVERNOTSUPPORTED"),
-  ERRORCODE(WSANOTINITIALISED , "WSANOTINITIALISED"),
-  ERRORCODE(WSAEDISCON        , "WSAEDISCON"),
-  ERRORCODE(WSAHOST_NOT_FOUND , "WSAHOST_NOT_FOUND"),
-  ERRORCODE(WSATRY_AGAIN      , "WSATRY_AGAIN"),
-  ERRORCODE(WSANO_RECOVERY    , "WSANO_RECOVERY"),
-  ERRORCODE(WSANO_DATA        , "WSANO_DATA"),
+  ERRORCODE(WSANOTINITIALISED, "WSANOTINITIALISED"),
+  ERRORCODE(WSAEDISCON, "WSAEDISCON"),
+  ERRORCODE(WSAHOST_NOT_FOUND, "WSAHOST_NOT_FOUND"),
+  ERRORCODE(WSATRY_AGAIN, "WSATRY_AGAIN"),
+  ERRORCODE(WSANO_RECOVERY, "WSANO_RECOVERY"),
+  ERRORCODE(WSANO_DATA, "WSANO_DATA"),
 };
 static struct ErrorTable SocketErrors = ERRORTABLE(ErrorCodes);
 
-
-//structures used to emulate bandwidth and latency parameters - shared by all client interfaces
+// structures used to emulate bandwidth and latency parameters - shared by all client interfaces
 CPacketBufferStats _pbsSend;
 CPacketBufferStats _pbsRecv;
 
-ULONG cm_ulLocalHost;      // configured local host address
-CTString cm_strAddress;   // local address
-CTString cm_strName;      // local address
+ULONG cm_ulLocalHost;   // configured local host address
+CTString cm_strAddress; // local address
+CTString cm_strName;    // local address
 
-CTCriticalSection cm_csComm;  // critical section for access to communication data
+CTCriticalSection cm_csComm; // critical section for access to communication data
 
 BOOL cm_bNetworkInitialized;
 
@@ -117,16 +115,14 @@ CClientInterface cm_ciLocalClient;
 // global communication interface object (there is only one for the entire engine)
 CCommunicationInterface _cmiComm;
 
-
 /*
-*
-*  Two helper functions - conversion from IP to words
-*
-*/
+ *
+ *  Two helper functions - conversion from IP to words
+ *
+ */
 
 // convert address to a printable string
-CTString AddressToString(ULONG ulHost)
-{
+CTString AddressToString(ULONG ulHost) {
   ULONG ulHostNet = htonl(ulHost);
 
   // initially not converted
@@ -135,14 +131,14 @@ CTString AddressToString(ULONG ulHost)
   // if DNS lookup is allowed
   if (net_bLookupHostNames) {
     // lookup the host
-    hostentry = gethostbyaddr ((char *)&ulHostNet, sizeof(ulHostNet), AF_INET);
+    hostentry = gethostbyaddr((char *)&ulHostNet, sizeof(ulHostNet), AF_INET);
   }
 
   // if DNS lookup succeeded
   if (hostentry != NULL) {
     // return its ascii name
     return (char *)hostentry->h_name;
-  // if DNS lookup failed
+    // if DNS lookup failed
   } else {
     // just convert to dotted number format
     return inet_ntoa((const in_addr &)ulHostNet);
@@ -150,8 +146,7 @@ CTString AddressToString(ULONG ulHost)
 };
 
 // convert string address to a number
-ULONG StringToAddress(const CTString &strAddress)
-{
+ULONG StringToAddress(const CTString &strAddress) {
   // first try to convert numeric address
   ULONG ulAddress = ntohl(inet_addr(strAddress));
   // if not a valid numeric address
@@ -161,7 +156,7 @@ ULONG StringToAddress(const CTString &strAddress)
     // if succeeded
     if (phe != NULL) {
       // get that address
-      ulAddress = ntohl(*(ULONG*)phe->h_addr_list[0]);
+      ulAddress = ntohl(*(ULONG *)phe->h_addr_list[0]);
     }
   }
 
@@ -169,10 +164,7 @@ ULONG StringToAddress(const CTString &strAddress)
   return ulAddress;
 };
 
-
-
-CCommunicationInterface::CCommunicationInterface(void)
-{
+CCommunicationInterface::CCommunicationInterface(void) {
   cm_csComm.cs_iIndex = -1;
   CTSingleLock slComm(&cm_csComm, TRUE);
 
@@ -183,14 +175,11 @@ CCommunicationInterface::CCommunicationInterface(void)
   cci_bClientInitialized = FALSE;
   cm_ciLocalClient.ci_bClientLocal = FALSE;
 
-  cci_hSocket=INVALID_SOCKET;
-
+  cci_hSocket = INVALID_SOCKET;
 };
 
-
 // initialize
-void CCommunicationInterface::Init(void) 
-{
+void CCommunicationInterface::Init(void) {
   CTSingleLock slComm(&cm_csComm, TRUE);
 
   cci_bWinSockOpen = FALSE;
@@ -201,12 +190,10 @@ void CCommunicationInterface::Init(void)
 
   cci_pbMasterInput.Clear();
   cci_pbMasterOutput.Clear();
-
 };
 
 // close
-void CCommunicationInterface::Close(void) 
-{
+void CCommunicationInterface::Close(void) {
   CTSingleLock slComm(&cm_csComm, TRUE);
 
   ASSERT(cci_bInitialized);
@@ -220,17 +207,15 @@ void CCommunicationInterface::Close(void)
 
   cci_pbMasterInput.Clear();
   cci_pbMasterOutput.Clear();
-
 };
 
-void CCommunicationInterface::InitWinsock(void)
-{
+void CCommunicationInterface::InitWinsock(void) {
   if (cci_bWinSockOpen) {
     return;
   }
 
   // start winsock
-  WSADATA  winsockdata;
+  WSADATA winsockdata;
   WORD wVersionRequested;
   wVersionRequested = MAKEWORD(1, 1);
   int iResult = WSAStartup(wVersionRequested, &winsockdata);
@@ -242,8 +227,7 @@ void CCommunicationInterface::InitWinsock(void)
   }
 };
 
-void CCommunicationInterface::EndWinsock(void)
-{
+void CCommunicationInterface::EndWinsock(void) {
   if (!cci_bWinSockOpen) {
     return;
   }
@@ -253,11 +237,8 @@ void CCommunicationInterface::EndWinsock(void)
   cci_bWinSockOpen = FALSE;
 };
 
-
 // prepares the comm interface for use - MUST be invoked before any data can be sent/received
-void CCommunicationInterface::PrepareForUse(BOOL bUseNetwork, BOOL bClient)
-{
-
+void CCommunicationInterface::PrepareForUse(BOOL bUseNetwork, BOOL bClient) {
   // clear the network conditions emulation data
   _pbsSend.Clear();
   _pbsRecv.Clear();
@@ -286,13 +267,13 @@ void CCommunicationInterface::PrepareForUse(BOOL bUseNetwork, BOOL bClient)
     cm_ulLocalHost = 0;
     // if there is a desired local address
     if (net_strLocalHost != "") {
-      CPrintF(TRANS("  user forced local address: %s\n"), (const char*)net_strLocalHost);
+      CPrintF(TRANS("  user forced local address: %s\n"), (const char *)net_strLocalHost);
       // use that address
       cm_strName = net_strLocalHost;
       cm_ulLocalHost = StringToAddress(cm_strName);
       // if invalid
       if (cm_ulLocalHost == 0 || cm_ulLocalHost == -1) {
-        cm_ulLocalHost=0;
+        cm_ulLocalHost = 0;
         // report it
         CPrintF(TRANS("  requested local address is invalid\n"));
       }
@@ -302,7 +283,7 @@ void CCommunicationInterface::PrepareForUse(BOOL bUseNetwork, BOOL bClient)
     CPrintF(TRANS("  getting local addresses\n"));
     // get default
     char hostname[256];
-    gethostname(hostname, sizeof(hostname)-1);
+    gethostname(hostname, sizeof(hostname) - 1);
     cm_strName = hostname;
     // lookup the host
     HOSTENT *phe = gethostbyname(cm_strName);
@@ -310,8 +291,8 @@ void CCommunicationInterface::PrepareForUse(BOOL bUseNetwork, BOOL bClient)
     if (phe != NULL) {
       // get the addresses
       cm_strAddress = "";
-      for (INDEX i=0; phe->h_addr_list[i] != NULL; i++) {
-        if (i>0) {
+      for (INDEX i = 0; phe->h_addr_list[i] != NULL; i++) {
+        if (i > 0) {
           cm_strAddress += ", ";
         }
         cm_strAddress += inet_ntoa(*(const in_addr *)phe->h_addr_list[i]);
@@ -323,7 +304,7 @@ void CCommunicationInterface::PrepareForUse(BOOL bUseNetwork, BOOL bClient)
 
     // try to open master UDP socket
     try {
-      OpenSocket_t(cm_ulLocalHost, bClient?0:net_iPort);
+      OpenSocket_t(cm_ulLocalHost, bClient ? 0 : net_iPort);
       cci_pbMasterInput.pb_ppbsStats = NULL;
       cci_pbMasterOutput.pb_ppbsStats = NULL;
       cm_ciBroadcast.SetLocal(NULL);
@@ -332,14 +313,12 @@ void CCommunicationInterface::PrepareForUse(BOOL bUseNetwork, BOOL bClient)
       CPrintF(TRANS("  cannot open UDP socket: %s\n"), strError);
     }
   }
-  
+
   cm_bNetworkInitialized = cci_bWinSockOpen;
 };
 
-
 // shut down the communication interface
-void CCommunicationInterface::Unprepare(void)
-{
+void CCommunicationInterface::Unprepare(void) {
   // close winsock
   if (cci_bWinSockOpen) {
     // if socket is open
@@ -351,57 +330,46 @@ void CCommunicationInterface::Unprepare(void)
 
     cm_ciBroadcast.Clear();
     EndWinsock();
-    cci_bBound=FALSE;
+    cci_bBound = FALSE;
   }
 
   cci_pbMasterInput.Clear();
   cci_pbMasterOutput.Clear();
 
-
   cm_bNetworkInitialized = cci_bWinSockOpen;
-  
 };
 
-
-BOOL CCommunicationInterface::IsNetworkEnabled(void)
-{
+BOOL CCommunicationInterface::IsNetworkEnabled(void) {
   return cm_bNetworkInitialized;
 };
 
 // get address of local machine
-void CCommunicationInterface::GetHostName(CTString &strName, CTString &strAddress)
-{
+void CCommunicationInterface::GetHostName(CTString &strName, CTString &strAddress) {
   strName = cm_strName;
   strAddress = cm_strAddress;
 };
 
-
-
 /*
-*
-*
-*  Socket functions - creating, binding...
-*
-*
-*/
-
+ *
+ *
+ *  Socket functions - creating, binding...
+ *
+ *
+ */
 
 // create an inet-family socket
-void CCommunicationInterface::CreateSocket_t()
-{
+void CCommunicationInterface::CreateSocket_t() {
   ASSERT(cci_hSocket == INVALID_SOCKET);
   // open the socket
   cci_hSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
   cci_bBound = FALSE;
   if (cci_hSocket == INVALID_SOCKET) {
-    ThrowF_t(TRANS("Cannot open socket. %s"), (const char*)GetSocketError(WSAGetLastError()));
+    ThrowF_t(TRANS("Cannot open socket. %s"), (const char *)GetSocketError(WSAGetLastError()));
   }
-
 };
 
 // bind socket to the given address
-void CCommunicationInterface::Bind_t(ULONG ulLocalHost, ULONG ulLocalPort)
-{
+void CCommunicationInterface::Bind_t(ULONG ulLocalHost, ULONG ulLocalPort) {
   if (cci_hSocket == INVALID_SOCKET) {
     ASSERT(FALSE);
     return;
@@ -413,16 +381,14 @@ void CCommunicationInterface::Bind_t(ULONG ulLocalHost, ULONG ulLocalPort)
   sin.sin_addr.s_addr = htonl(ulLocalHost);
 
   // bind socket to server address/port
-  if (bind(cci_hSocket, (sockaddr*)&sin, sizeof(sin)) == SOCKET_ERROR) {
-    ThrowF_t(TRANS("Cannot bind socket. %s"), (const char*)GetSocketError(WSAGetLastError()));
+  if (bind(cci_hSocket, (sockaddr *)&sin, sizeof(sin)) == SOCKET_ERROR) {
+    ThrowF_t(TRANS("Cannot bind socket. %s"), (const char *)GetSocketError(WSAGetLastError()));
   }
   cci_bBound = TRUE;
 };
 
-
 // set socket to non-blocking mode
-void CCommunicationInterface::SetNonBlocking_t(void)
-{
+void CCommunicationInterface::SetNonBlocking_t(void) {
   if (cci_hSocket == INVALID_SOCKET) {
     ASSERT(FALSE);
     return;
@@ -430,25 +396,19 @@ void CCommunicationInterface::SetNonBlocking_t(void)
 
   ULONG ulArgNonBlocking = 1;
   if (ioctlsocket(cci_hSocket, FIONBIO, &ulArgNonBlocking) == SOCKET_ERROR) {
-    ThrowF_t(TRANS("Cannot set socket to non-blocking mode. %s"), 
-      (const char*)GetSocketError(WSAGetLastError()));
+    ThrowF_t(TRANS("Cannot set socket to non-blocking mode. %s"), (const char *)GetSocketError(WSAGetLastError()));
   }
 };
 
-
 // get generic socket error info string about last error
-CTString CCommunicationInterface::GetSocketError(INDEX iError)
-{
+CTString CCommunicationInterface::GetSocketError(INDEX iError) {
   CTString strError;
-  strError.PrintF(TRANS("Socket %d, Error %d (%s)"),
-    cci_hSocket, iError, ErrorDescription(&SocketErrors, iError));
+  strError.PrintF(TRANS("Socket %d, Error %d (%s)"), cci_hSocket, iError, ErrorDescription(&SocketErrors, iError));
   return strError;
 };
 
-
 // open an UDP socket at given port
-void CCommunicationInterface::OpenSocket_t(ULONG ulLocalHost, ULONG ulLocalPort)
-{
+void CCommunicationInterface::OpenSocket_t(ULONG ulLocalHost, ULONG ulLocalPort) {
   // create the socket as UDP
   CreateSocket_t();
   // bind it to that address/port
@@ -460,13 +420,10 @@ void CCommunicationInterface::OpenSocket_t(ULONG ulLocalHost, ULONG ulLocalPort)
 
   // mark as open
   cci_bSocketOpen = TRUE;
-
-
 };
 
 // get address of this host
-void CCommunicationInterface::GetLocalAddress_t(ULONG &ulHost, ULONG &ulPort)
-{
+void CCommunicationInterface::GetLocalAddress_t(ULONG &ulHost, ULONG &ulPort) {
   ulHost = 0;
   ulPort = 0;
   if (cci_hSocket == INVALID_SOCKET) {
@@ -477,17 +434,15 @@ void CCommunicationInterface::GetLocalAddress_t(ULONG &ulHost, ULONG &ulPort)
   // get socket local port and address
   sockaddr_in sin;
   int iSize = sizeof(sin);
-  if (getsockname(cci_hSocket, (sockaddr*)&sin, &iSize) == SOCKET_ERROR) {
-    ThrowF_t(TRANS("Cannot get local address on socket. %s"), 
-      (const char*)GetSocketError(WSAGetLastError()));
+  if (getsockname(cci_hSocket, (sockaddr *)&sin, &iSize) == SOCKET_ERROR) {
+    ThrowF_t(TRANS("Cannot get local address on socket. %s"), (const char *)GetSocketError(WSAGetLastError()));
   }
   ulHost = ntohl(sin.sin_addr.S_un.S_addr);
   ulPort = ntohs(sin.sin_port);
 }
 
 // get address of the peer host connected to this socket
-void CCommunicationInterface::GetRemoteAddress_t(ULONG &ulHost, ULONG &ulPort)
-{
+void CCommunicationInterface::GetRemoteAddress_t(ULONG &ulHost, ULONG &ulPort) {
   ulHost = 0;
   ulPort = 0;
   if (cci_hSocket == INVALID_SOCKET) {
@@ -498,80 +453,78 @@ void CCommunicationInterface::GetRemoteAddress_t(ULONG &ulHost, ULONG &ulPort)
   // get socket local port
   sockaddr_in sin;
   int iSize = sizeof(sin);
-  if (getpeername(cci_hSocket, (sockaddr*)&sin, &iSize) == SOCKET_ERROR) {
-    ThrowF_t(TRANS("Cannot get remote address on socket. %s"), 
-      (const char*)GetSocketError(WSAGetLastError()));
+  if (getpeername(cci_hSocket, (sockaddr *)&sin, &iSize) == SOCKET_ERROR) {
+    ThrowF_t(TRANS("Cannot get remote address on socket. %s"), (const char *)GetSocketError(WSAGetLastError()));
   }
   ulHost = ntohl(sin.sin_addr.S_un.S_addr);
   ulPort = ntohs(sin.sin_port);
 }
-
 
 /*
  *  ---->>>>  BROADCAST INTERFACE   <<<<----
  */
 
 // broadcast communication
-void CCommunicationInterface::Broadcast_Send(const void *pvSend, SLONG slSendSize,CAddress &adrDestination)
-{
+void CCommunicationInterface::Broadcast_Send(const void *pvSend, SLONG slSendSize, CAddress &adrDestination) {
   CTSingleLock slComm(&cm_csComm, TRUE);
 
   cm_ciBroadcast.ci_adrAddress.adr_ulAddress = adrDestination.adr_ulAddress;
   cm_ciBroadcast.ci_adrAddress.adr_uwPort = adrDestination.adr_uwPort;
   cm_ciBroadcast.ci_adrAddress.adr_uwID = adrDestination.adr_uwID;
 
-  cm_ciBroadcast.Send(pvSend, slSendSize,FALSE);
+  cm_ciBroadcast.Send(pvSend, slSendSize, FALSE);
 }
 
-BOOL CCommunicationInterface::Broadcast_Receive(void *pvReceive, SLONG &slReceiveSize,CAddress &adrAddress)
-{
+BOOL CCommunicationInterface::Broadcast_Receive(void *pvReceive, SLONG &slReceiveSize, CAddress &adrAddress) {
   CTSingleLock slComm(&cm_csComm, TRUE);
-  return cm_ciBroadcast.ReceiveFrom(pvReceive, slReceiveSize,&adrAddress,FALSE);
+  return cm_ciBroadcast.ReceiveFrom(pvReceive, slReceiveSize, &adrAddress, FALSE);
 }
-
 
 // update the broadcast input buffer - handle any incoming connection requests
 void CCommunicationInterface::Broadcast_Update_t() {
-  CPacket* ppaConnectionRequest;
+  CPacket *ppaConnectionRequest;
   BOOL bIsAlready;
   BOOL bFoundEmpty;
   ULONG iClient;
-  UBYTE ubDummy=65;
+  UBYTE ubDummy = 65;
 
-  
   // while there is a connection request packet in the input buffer
   while ((ppaConnectionRequest = cm_ciBroadcast.ci_pbReliableInputBuffer.GetConnectRequestPacket()) != NULL) {
     // see if there is a client already connected at that address and port
     bIsAlready = FALSE;
-    for (iClient=1;iClient<SERVER_CLIENTS;iClient++) {
-      if (cm_aciClients[iClient].ci_adrAddress.adr_ulAddress == ppaConnectionRequest->pa_adrAddress.adr_ulAddress &&
-          cm_aciClients[iClient].ci_adrAddress.adr_uwPort == ppaConnectionRequest->pa_adrAddress.adr_uwPort) {
-          bIsAlready = TRUE;
-          break;
+    for (iClient = 1; iClient < SERVER_CLIENTS; iClient++) {
+      if (cm_aciClients[iClient].ci_adrAddress.adr_ulAddress == ppaConnectionRequest->pa_adrAddress.adr_ulAddress
+          && cm_aciClients[iClient].ci_adrAddress.adr_uwPort == ppaConnectionRequest->pa_adrAddress.adr_uwPort) {
+        bIsAlready = TRUE;
+        break;
       }
     }
     // if the client is already connected then just ignore the packet - else, connect it
     if (!bIsAlready) {
       // find an empty client structure
       bFoundEmpty = FALSE;
-      for (iClient=1;iClient<SERVER_CLIENTS;iClient++) {
+      for (iClient = 1; iClient < SERVER_CLIENTS; iClient++) {
         if (cm_aciClients[iClient].ci_bUsed == FALSE) {
           bFoundEmpty = TRUE;
           // we have an empty slot, so fill it for the client
           cm_aciClients[iClient].ci_adrAddress.adr_ulAddress = ppaConnectionRequest->pa_adrAddress.adr_ulAddress;
           cm_aciClients[iClient].ci_adrAddress.adr_uwPort = ppaConnectionRequest->pa_adrAddress.adr_uwPort;
           // generate the ID
-          UWORD uwID = _pTimer->GetHighPrecisionTimer().tv_llValue&0x0FFF;
+          UWORD uwID = _pTimer->GetHighPrecisionTimer().tv_llValue & 0x0FFF;
           if (uwID == 0 || uwID == '//') {
-            uwID+=1;
-          }                    
-          cm_aciClients[iClient].ci_adrAddress.adr_uwID = (uwID << 4)+iClient;
+            uwID += 1;
+          }
+          cm_aciClients[iClient].ci_adrAddress.adr_uwID = (uwID << 4) + iClient;
           // form the connection response packet
           ppaConnectionRequest->pa_adrAddress.adr_uwID = '//';
-          ppaConnectionRequest->pa_ubReliable = UDP_PACKET_RELIABLE | UDP_PACKET_RELIABLE_HEAD | UDP_PACKET_RELIABLE_TAIL | UDP_PACKET_CONNECT_RESPONSE;
+          ppaConnectionRequest->pa_ubReliable
+            = UDP_PACKET_RELIABLE | UDP_PACKET_RELIABLE_HEAD | UDP_PACKET_RELIABLE_TAIL | UDP_PACKET_CONNECT_RESPONSE;
           // return it to the client
-          ppaConnectionRequest->WriteToPacket(&(cm_aciClients[iClient].ci_adrAddress.adr_uwID),sizeof(cm_aciClients[iClient].ci_adrAddress.adr_uwID),ppaConnectionRequest->pa_ubReliable,cm_ciBroadcast.ci_ulSequence++,ppaConnectionRequest->pa_adrAddress.adr_uwID,sizeof(cm_aciClients[iClient].ci_adrAddress.adr_uwID));
-          cm_ciBroadcast.ci_pbOutputBuffer.AppendPacket(*ppaConnectionRequest,TRUE);
+          ppaConnectionRequest->WriteToPacket(
+            &(cm_aciClients[iClient].ci_adrAddress.adr_uwID), sizeof(cm_aciClients[iClient].ci_adrAddress.adr_uwID),
+            ppaConnectionRequest->pa_ubReliable, cm_ciBroadcast.ci_ulSequence++, ppaConnectionRequest->pa_adrAddress.adr_uwID,
+            sizeof(cm_aciClients[iClient].ci_adrAddress.adr_uwID));
+          cm_ciBroadcast.ci_pbOutputBuffer.AppendPacket(*ppaConnectionRequest, TRUE);
           cm_aciClients[iClient].ci_bUsed = TRUE;
           return;
         }
@@ -582,13 +535,9 @@ void CCommunicationInterface::Broadcast_Update_t() {
         // error
         ThrowF_t(TRANS("Server: Cannot accept new clients, all slots used!\n"));
       }
-  
     }
   }
-
-
 };
-
 
 /*
  *  ---->>>>  SERVER  <<<<----
@@ -597,17 +546,14 @@ void CCommunicationInterface::Broadcast_Update_t() {
 /*
  *  Initialize server
  */
-void CCommunicationInterface::Server_Init_t(void) 
-{
+void CCommunicationInterface::Server_Init_t(void) {
   CTSingleLock slComm(&cm_csComm, TRUE);
 
   ASSERT(cci_bInitialized);
   ASSERT(!cci_bServerInitialized);
-  
-
 
   // for each client
-  for (INDEX iClient=0; iClient<SERVER_CLIENTS; iClient++) {
+  for (INDEX iClient = 0; iClient < SERVER_CLIENTS; iClient++) {
     // clear its status
     cm_aciClients[iClient].Clear();
     cm_aciClients[iClient].ci_pbOutputBuffer.pb_ppbsStats = &_pbsSend;
@@ -618,14 +564,12 @@ void CCommunicationInterface::Server_Init_t(void)
   cm_aciClients[SERVER_LOCAL_CLIENT].ci_bClientLocal = TRUE;
   cm_aciClients[SERVER_LOCAL_CLIENT].ci_bUsed = TRUE;
 
-  // prepare the client part of the local client 
+  // prepare the client part of the local client
   cm_ciLocalClient.Clear();
   cm_ciLocalClient.ci_bUsed = TRUE;
   cm_ciLocalClient.ci_bClientLocal = TRUE;
   cm_ciLocalClient.ci_pbOutputBuffer.pb_ppbsStats = &_pbsSend;
   cm_ciLocalClient.ci_pbInputBuffer.pb_ppbsStats = &_pbsRecv;
-
-
 
   // mark that the server was initialized
   cci_bServerInitialized = TRUE;
@@ -634,12 +578,11 @@ void CCommunicationInterface::Server_Init_t(void)
 /*
  *  Close server
  */
-void CCommunicationInterface::Server_Close(void) 
-{
+void CCommunicationInterface::Server_Close(void) {
   CTSingleLock slComm(&cm_csComm, TRUE);
 
   // close all clients
-  for (INDEX iClient=0; iClient<SERVER_CLIENTS; iClient++) {
+  for (INDEX iClient = 0; iClient < SERVER_CLIENTS; iClient++) {
     cm_aciClients[iClient].Clear();
   }
 
@@ -647,39 +590,33 @@ void CCommunicationInterface::Server_Close(void)
   cci_bServerInitialized = FALSE;
 };
 
-
-
 /*
  *  Server clear client and prepare for new connection
  */
-void CCommunicationInterface::Server_ClearClient(INDEX iClient)
-{
+void CCommunicationInterface::Server_ClearClient(INDEX iClient) {
   // synchronize access to communication data
   CTSingleLock slComm(&cm_csComm, TRUE);
 
-  ASSERT(iClient >= 0 && iClient<SERVER_CLIENTS);
+  ASSERT(iClient >= 0 && iClient < SERVER_CLIENTS);
   cm_aciClients[iClient].Clear();
 };
 
-BOOL CCommunicationInterface::Server_IsClientLocal(INDEX iClient)
-{
+BOOL CCommunicationInterface::Server_IsClientLocal(INDEX iClient) {
   CTSingleLock slComm(&cm_csComm, TRUE);
-  ASSERT(iClient >= 0 && iClient<SERVER_CLIENTS);
+  ASSERT(iClient >= 0 && iClient < SERVER_CLIENTS);
   return iClient == SERVER_LOCAL_CLIENT;
 };
 
-BOOL CCommunicationInterface::Server_IsClientUsed(INDEX iClient)
-{
+BOOL CCommunicationInterface::Server_IsClientUsed(INDEX iClient) {
   CTSingleLock slComm(&cm_csComm, TRUE);
 
-  ASSERT(iClient >= 0 && iClient<SERVER_CLIENTS);
+  ASSERT(iClient >= 0 && iClient < SERVER_CLIENTS);
   return cm_aciClients[iClient].ci_bUsed;
 };
 
-CTString CCommunicationInterface::Server_GetClientName(INDEX iClient)
-{
+CTString CCommunicationInterface::Server_GetClientName(INDEX iClient) {
   CTSingleLock slComm(&cm_csComm, TRUE);
-  ASSERT(iClient >= 0 && iClient<SERVER_CLIENTS);
+  ASSERT(iClient >= 0 && iClient < SERVER_CLIENTS);
 
   if (iClient == SERVER_LOCAL_CLIENT) {
     return TRANS("Local machine");
@@ -693,41 +630,34 @@ CTString CCommunicationInterface::Server_GetClientName(INDEX iClient)
 /*
  *  Server Send/Receive Reliable
  */
-void CCommunicationInterface::Server_Send_Reliable(INDEX iClient, const void *pvSend, SLONG slSendSize)
-{
+void CCommunicationInterface::Server_Send_Reliable(INDEX iClient, const void *pvSend, SLONG slSendSize) {
   CTSingleLock slComm(&cm_csComm, TRUE);
-  ASSERT(iClient >= 0 && iClient<SERVER_CLIENTS);
-  cm_aciClients[iClient].Send(pvSend, slSendSize,TRUE);
+  ASSERT(iClient >= 0 && iClient < SERVER_CLIENTS);
+  cm_aciClients[iClient].Send(pvSend, slSendSize, TRUE);
 };
 
-BOOL CCommunicationInterface::Server_Receive_Reliable(INDEX iClient, void *pvReceive, SLONG &slReceiveSize)
-{
+BOOL CCommunicationInterface::Server_Receive_Reliable(INDEX iClient, void *pvReceive, SLONG &slReceiveSize) {
   CTSingleLock slComm(&cm_csComm, TRUE);
-  ASSERT(iClient >= 0 && iClient<SERVER_CLIENTS);
-  return cm_aciClients[iClient].Receive(pvReceive, slReceiveSize,TRUE);
+  ASSERT(iClient >= 0 && iClient < SERVER_CLIENTS);
+  return cm_aciClients[iClient].Receive(pvReceive, slReceiveSize, TRUE);
 };
 
 /*
  *  Server Send/Receive Unreliable
  */
-void CCommunicationInterface::Server_Send_Unreliable(INDEX iClient, const void *pvSend, SLONG slSendSize)
-{
+void CCommunicationInterface::Server_Send_Unreliable(INDEX iClient, const void *pvSend, SLONG slSendSize) {
   CTSingleLock slComm(&cm_csComm, TRUE);
-  ASSERT(iClient >= 0 && iClient<SERVER_CLIENTS);
-  cm_aciClients[iClient].Send(pvSend, slSendSize,FALSE);
+  ASSERT(iClient >= 0 && iClient < SERVER_CLIENTS);
+  cm_aciClients[iClient].Send(pvSend, slSendSize, FALSE);
 };
 
-BOOL CCommunicationInterface::Server_Receive_Unreliable(INDEX iClient, void *pvReceive, SLONG &slReceiveSize)
-{
+BOOL CCommunicationInterface::Server_Receive_Unreliable(INDEX iClient, void *pvReceive, SLONG &slReceiveSize) {
   CTSingleLock slComm(&cm_csComm, TRUE);
-  ASSERT(iClient >= 0 && iClient<SERVER_CLIENTS);
-  return cm_aciClients[iClient].Receive(pvReceive, slReceiveSize,FALSE);
+  ASSERT(iClient >= 0 && iClient < SERVER_CLIENTS);
+  return cm_aciClients[iClient].Receive(pvReceive, slReceiveSize, FALSE);
 };
 
-
-BOOL CCommunicationInterface::Server_Update()
-{
-
+BOOL CCommunicationInterface::Server_Update() {
   CTSingleLock slComm(&cm_csComm, TRUE);
   CPacket *ppaPacket;
   CPacket *ppaPacketCopy;
@@ -745,7 +675,7 @@ BOOL CCommunicationInterface::Server_Update()
   if (cci_bServerInitialized) {
     Broadcast_Update_t();
     // for each client transfer packets from the output buffer to the master output buffer
-    for (iClient=1; iClient<SERVER_CLIENTS; iClient++) {
+    for (iClient = 1; iClient < SERVER_CLIENTS; iClient++) {
       CClientInterface &ci = cm_aciClients[iClient];
       // if not connected
       if (!ci.ci_bUsed) {
@@ -763,18 +693,18 @@ BOOL CCommunicationInterface::Server_Update()
             if (ppaPacket->pa_ubReliable & UDP_PACKET_RELIABLE) {
               ppaPacketCopy = new CPacket;
               *ppaPacketCopy = *ppaPacket;
-              ci.ci_pbWaitAckBuffer.AppendPacket(*ppaPacketCopy,FALSE);
+              ci.ci_pbWaitAckBuffer.AppendPacket(*ppaPacketCopy, FALSE);
             }
-            cci_pbMasterOutput.AppendPacket(*ppaPacket,FALSE);
+            cci_pbMasterOutput.AppendPacket(*ppaPacket, FALSE);
           } else {
             break;
           }
         }
       } else {
-        CPrintF(TRANS("Unable to deliver data to client '%s', disconnecting.\n"),AddressToString(cm_aciClients[iClient].ci_adrAddress.adr_ulAddress));
+        CPrintF(TRANS("Unable to deliver data to client '%s', disconnecting.\n"),
+                AddressToString(cm_aciClients[iClient].ci_adrAddress.adr_ulAddress));
         Server_ClearClient(iClient);
         _pNetwork->ga_srvServer.HandleClientDisconected(iClient);
-
       }
     }
 
@@ -786,7 +716,7 @@ BOOL CCommunicationInterface::Server_Update()
       ppaPacket = cm_ciBroadcast.ci_pbOutputBuffer.PeekFirstPacket();
       if (ppaPacket->pa_tvSendWhen < tvNow) {
         cm_ciBroadcast.ci_pbOutputBuffer.RemoveFirstPacket(FALSE);
-        cci_pbMasterOutput.AppendPacket(*ppaPacket,FALSE);
+        cci_pbMasterOutput.AppendPacket(*ppaPacket, FALSE);
       } else {
         break;
       }
@@ -801,12 +731,12 @@ BOOL CCommunicationInterface::Server_Update()
       ppaPacket = cci_pbMasterInput.GetFirstPacket();
       bClientFound = FALSE;
       if (ppaPacket->pa_adrAddress.adr_uwID == '//' || ppaPacket->pa_adrAddress.adr_uwID == 0) {
-        cm_ciBroadcast.ci_pbInputBuffer.AppendPacket(*ppaPacket,FALSE);
+        cm_ciBroadcast.ci_pbInputBuffer.AppendPacket(*ppaPacket, FALSE);
         bClientFound = TRUE;
       } else {
-        for (iClient=0; iClient<SERVER_CLIENTS; iClient++) {
+        for (iClient = 0; iClient < SERVER_CLIENTS; iClient++) {
           if (ppaPacket->pa_adrAddress.adr_uwID == cm_aciClients[iClient].ci_adrAddress.adr_uwID) {
-            cm_aciClients[iClient].ci_pbInputBuffer.AppendPacket(*ppaPacket,FALSE);
+            cm_aciClients[iClient].ci_pbInputBuffer.AppendPacket(*ppaPacket, FALSE);
             bClientFound = TRUE;
             break;
           }
@@ -819,13 +749,11 @@ BOOL CCommunicationInterface::Server_Update()
           CPrintF(TRANS("WARNING: Invalid message from: %s\n"), AddressToString(ppaPacket->pa_adrAddress.adr_ulAddress));
         }
       }
-     }
-
-    for (iClient=1; iClient<SERVER_CLIENTS; iClient++) {
-      cm_aciClients[iClient].UpdateInputBuffers();
     }
 
-    
+    for (iClient = 1; iClient < SERVER_CLIENTS; iClient++) {
+      cm_aciClients[iClient].UpdateInputBuffers();
+    }
   }
   cm_aciClients[0].UpdateInputBuffers();
   cm_ciLocalClient.UpdateInputBuffers();
@@ -835,7 +763,6 @@ BOOL CCommunicationInterface::Server_Update()
   return TRUE;
 };
 
-
 /*
  *  ---->>>>  CLIENT  <<<<----
  */
@@ -843,8 +770,7 @@ BOOL CCommunicationInterface::Server_Update()
 /*
  *  Initialize client
  */
-void CCommunicationInterface::Client_Init_t(char* strServerName)
-{
+void CCommunicationInterface::Client_Init_t(char *strServerName) {
   CTSingleLock slComm(&cm_csComm, TRUE);
 
   ASSERT(cci_bInitialized);
@@ -861,8 +787,7 @@ void CCommunicationInterface::Client_Init_t(char* strServerName)
   Client_Init_t(ulServerAddress);
 };
 
-void CCommunicationInterface::Client_Init_t(ULONG ulServerAddress)
-{
+void CCommunicationInterface::Client_Init_t(ULONG ulServerAddress) {
   CTSingleLock slComm(&cm_csComm, TRUE);
 
   ASSERT(cci_bInitialized);
@@ -875,10 +800,10 @@ void CCommunicationInterface::Client_Init_t(ULONG ulServerAddress)
   // if this computer is not the server
   if (!cci_bServerInitialized) {
     // open with connecting to remote server
-    cm_ciLocalClient.ci_bClientLocal= FALSE;
+    cm_ciLocalClient.ci_bClientLocal = FALSE;
     Client_OpenNet_t(ulServerAddress);
 
-  // if this computer is server
+    // if this computer is server
   } else {
     // open local client
     cm_ciLocalClient.ci_bClientLocal = TRUE;
@@ -891,20 +816,18 @@ void CCommunicationInterface::Client_Init_t(ULONG ulServerAddress)
 /*
  *  Close client
  */
-void CCommunicationInterface::Client_Close(void)
-{
+void CCommunicationInterface::Client_Close(void) {
   CTSingleLock slComm(&cm_csComm, TRUE);
 
   ASSERT(cci_bInitialized);
 
   // dispatch remaining packets (keep trying for half a second - 10 attempts)
-  for (TIME tmWait=0; tmWait<500;
-    Sleep(NET_WAITMESSAGE_DELAY), tmWait+=NET_WAITMESSAGE_DELAY) {
+  for (TIME tmWait = 0; tmWait < 500; Sleep(NET_WAITMESSAGE_DELAY), tmWait += NET_WAITMESSAGE_DELAY) {
     // if all packets are successfully sent, exit loop
-    if  ((cm_ciLocalClient.ci_pbOutputBuffer.pb_ulNumOfPackets == 0) 
-      && (cm_ciLocalClient.ci_pbWaitAckBuffer.pb_ulNumOfPackets == 0)) {
-        break;
-      }
+    if ((cm_ciLocalClient.ci_pbOutputBuffer.pb_ulNumOfPackets == 0)
+        && (cm_ciLocalClient.ci_pbWaitAckBuffer.pb_ulNumOfPackets == 0)) {
+      break;
+    }
     if (Client_Update() == FALSE) {
       break;
     }
@@ -912,37 +835,33 @@ void CCommunicationInterface::Client_Close(void)
 
   cm_ciLocalClient.Clear();
 
-  cm_ciLocalClient.ci_bClientLocal= FALSE;
+  cm_ciLocalClient.ci_bClientLocal = FALSE;
   cci_bClientInitialized = FALSE;
 };
-
 
 /*
  *  Open client local
  */
-void CCommunicationInterface::Client_OpenLocal(void)
-{
+void CCommunicationInterface::Client_OpenLocal(void) {
   CTSingleLock slComm(&cm_csComm, TRUE);
 
   CClientInterface &ci0 = cm_ciLocalClient;
   CClientInterface &ci1 = cm_aciClients[SERVER_LOCAL_CLIENT];
-    
+
   ci0.ci_bUsed = TRUE;
   ci0.SetLocal(&ci1);
   ci1.ci_bUsed = TRUE;
   ci1.SetLocal(&ci0);
 };
 
-
 /*
  *  Open client remote
  */
-void CCommunicationInterface::Client_OpenNet_t(ULONG ulServerAddress)
-{
+void CCommunicationInterface::Client_OpenNet_t(ULONG ulServerAddress) {
   CTSingleLock slComm(&cm_csComm, TRUE);
-  CPacket* ppaInfoPacket;
-  CPacket* ppaReadPacket;
-  UBYTE ubDummy=65;
+  CPacket *ppaInfoPacket;
+  CPacket *ppaReadPacket;
+  UBYTE ubDummy = 65;
   UBYTE ubReliable;
 
   // check for reconnection
@@ -952,15 +871,13 @@ void CCommunicationInterface::Client_OpenNet_t(ULONG ulServerAddress)
 
   const INDEX iRefresh = 100; // (in miliseconds)
   // determine connection timeout
-  INDEX ctRetries = bReconnecting?(180*1000/iRefresh):3;
+  INDEX ctRetries = bReconnecting ? (180 * 1000 / iRefresh) : 3;
 
   // start waiting for server's response
-  if (ctRetries>1) {
+  if (ctRetries > 1) {
     SetProgressDescription(TRANS("waiting for server"));
     CallProgressHook_t(0.0f);
   }
-
-  
 
   // form the connection request packet
   ppaInfoPacket = new CPacket;
@@ -968,16 +885,16 @@ void CCommunicationInterface::Client_OpenNet_t(ULONG ulServerAddress)
   ppaInfoPacket->pa_adrAddress.adr_ulAddress = ulServerAddress;
   ppaInfoPacket->pa_adrAddress.adr_uwPort = net_iPort;
   ppaInfoPacket->pa_ubRetryNumber = 0;
-  ppaInfoPacket->WriteToPacket(&ubDummy,1,ubReliable,cm_ciLocalClient.ci_ulSequence++,'//',1);
+  ppaInfoPacket->WriteToPacket(&ubDummy, 1, ubReliable, cm_ciLocalClient.ci_ulSequence++, '//', 1);
 
-  cm_ciLocalClient.ci_pbOutputBuffer.AppendPacket(*ppaInfoPacket,TRUE);
+  cm_ciLocalClient.ci_pbOutputBuffer.AppendPacket(*ppaInfoPacket, TRUE);
 
   // set client destination address to server address
   cm_ciLocalClient.ci_adrAddress.adr_ulAddress = ulServerAddress;
   cm_ciLocalClient.ci_adrAddress.adr_uwPort = net_iPort;
-  
+
   // for each retry
-  for (INDEX iRetry=0; iRetry<ctRetries; iRetry++) {
+  for (INDEX iRetry = 0; iRetry < ctRetries; iRetry++) {
     // send/receive and juggle the buffers
     if (Client_Update() == FALSE) {
       break;
@@ -987,11 +904,11 @@ void CCommunicationInterface::Client_OpenNet_t(ULONG ulServerAddress)
     if (cm_ciLocalClient.ci_pbReliableInputBuffer.pb_ulNumOfPackets > 0) {
       ppaReadPacket = cm_ciLocalClient.ci_pbReliableInputBuffer.GetFirstPacket();
       // and it is a connection confirmation
-      if (ppaReadPacket->pa_ubReliable &&  UDP_PACKET_CONNECT_RESPONSE) {
+      if (ppaReadPacket->pa_ubReliable && UDP_PACKET_CONNECT_RESPONSE) {
         // the client has succedeed to connect, so read the uwID from the packet
         cm_ciLocalClient.ci_adrAddress.adr_ulAddress = ulServerAddress;
         cm_ciLocalClient.ci_adrAddress.adr_uwPort = net_iPort;
-        cm_ciLocalClient.ci_adrAddress.adr_uwID = *((UWORD*) (ppaReadPacket->pa_pubPacketData + MAX_HEADER_SIZE));
+        cm_ciLocalClient.ci_adrAddress.adr_uwID = *((UWORD *)(ppaReadPacket->pa_pubPacketData + MAX_HEADER_SIZE));
         cm_ciLocalClient.ci_bUsed = TRUE;
         cm_ciLocalClient.ci_bClientLocal = FALSE;
         cm_ciLocalClient.ci_pciOther = NULL;
@@ -1001,26 +918,24 @@ void CCommunicationInterface::Client_OpenNet_t(ULONG ulServerAddress)
         delete ppaReadPacket;
 
         // finish waiting
-        CallProgressHook_t(1.0f);        
+        CallProgressHook_t(1.0f);
         return;
       }
     }
 
     Sleep(iRefresh);
-    CallProgressHook_t(FLOAT(iRetry%10)/10);
+    CallProgressHook_t(FLOAT(iRetry % 10) / 10);
   }
-  
+
   cci_bBound = FALSE;
   ThrowF_t(TRANS("Client: Timeout receiving UDP port"));
 };
-
 
 /*
  *  Clear local client
  */
 
-void CCommunicationInterface::Client_Clear(void)
-{
+void CCommunicationInterface::Client_Clear(void) {
   // synchronize access to communication data
   CTSingleLock slComm(&cm_csComm, TRUE);
 
@@ -1030,8 +945,7 @@ void CCommunicationInterface::Client_Clear(void)
 /*
  *  Client get status
  */
-BOOL CCommunicationInterface::Client_IsConnected(void)
-{
+BOOL CCommunicationInterface::Client_IsConnected(void) {
   // synchronize access to communication data
   CTSingleLock slComm(&cm_csComm, TRUE);
 
@@ -1041,50 +955,40 @@ BOOL CCommunicationInterface::Client_IsConnected(void)
 /*
  *  Client Send/Receive Reliable
  */
-void CCommunicationInterface::Client_Send_Reliable(const void *pvSend, SLONG slSendSize)
-{
+void CCommunicationInterface::Client_Send_Reliable(const void *pvSend, SLONG slSendSize) {
   CTSingleLock slComm(&cm_csComm, TRUE);
-  cm_ciLocalClient.Send(pvSend, slSendSize,TRUE);
+  cm_ciLocalClient.Send(pvSend, slSendSize, TRUE);
 };
 
-BOOL CCommunicationInterface::Client_Receive_Reliable(void *pvReceive, SLONG &slReceiveSize)
-{
+BOOL CCommunicationInterface::Client_Receive_Reliable(void *pvReceive, SLONG &slReceiveSize) {
   CTSingleLock slComm(&cm_csComm, TRUE);
-  return cm_ciLocalClient.Receive(pvReceive, slReceiveSize,TRUE);
+  return cm_ciLocalClient.Receive(pvReceive, slReceiveSize, TRUE);
 };
 
-BOOL CCommunicationInterface::Client_Receive_Reliable(CTStream &strmReceive)
-{
+BOOL CCommunicationInterface::Client_Receive_Reliable(CTStream &strmReceive) {
   CTSingleLock slComm(&cm_csComm, TRUE);
-  return cm_ciLocalClient.Receive(strmReceive,TRUE);
+  return cm_ciLocalClient.Receive(strmReceive, TRUE);
 };
 
-void CCommunicationInterface::Client_PeekSize_Reliable(SLONG &slExpectedSize,SLONG &slReceivedSize)
-{
+void CCommunicationInterface::Client_PeekSize_Reliable(SLONG &slExpectedSize, SLONG &slReceivedSize) {
   slExpectedSize = cm_ciLocalClient.GetExpectedReliableSize();
   slReceivedSize = cm_ciLocalClient.GetCurrentReliableSize();
 }
 
-
 /*
  *  Client Send/Receive Unreliable
  */
-void CCommunicationInterface::Client_Send_Unreliable(const void *pvSend, SLONG slSendSize)
-{
+void CCommunicationInterface::Client_Send_Unreliable(const void *pvSend, SLONG slSendSize) {
   CTSingleLock slComm(&cm_csComm, TRUE);
-  cm_ciLocalClient.Send(pvSend, slSendSize,FALSE);
+  cm_ciLocalClient.Send(pvSend, slSendSize, FALSE);
 };
 
-BOOL CCommunicationInterface::Client_Receive_Unreliable(void *pvReceive, SLONG &slReceiveSize)
-{
+BOOL CCommunicationInterface::Client_Receive_Unreliable(void *pvReceive, SLONG &slReceiveSize) {
   CTSingleLock slComm(&cm_csComm, TRUE);
-  return cm_ciLocalClient.Receive(pvReceive, slReceiveSize,FALSE);
+  return cm_ciLocalClient.Receive(pvReceive, slReceiveSize, FALSE);
 };
 
-
-
-BOOL CCommunicationInterface::Client_Update(void)
-{
+BOOL CCommunicationInterface::Client_Update(void) {
   CTSingleLock slComm(&cm_csComm, TRUE);
   CPacket *ppaPacket;
   CPacket *ppaPacketCopy;
@@ -1105,9 +1009,9 @@ BOOL CCommunicationInterface::Client_Update(void)
         if (ppaPacket->pa_ubReliable & UDP_PACKET_RELIABLE) {
           ppaPacketCopy = new CPacket;
           *ppaPacketCopy = *ppaPacket;
-          cm_ciLocalClient.ci_pbWaitAckBuffer.AppendPacket(*ppaPacketCopy,FALSE);
+          cm_ciLocalClient.ci_pbWaitAckBuffer.AppendPacket(*ppaPacketCopy, FALSE);
         }
-        cci_pbMasterOutput.AppendPacket(*ppaPacket,FALSE);
+        cci_pbMasterOutput.AppendPacket(*ppaPacket, FALSE);
 
       } else {
         break;
@@ -1122,7 +1026,7 @@ BOOL CCommunicationInterface::Client_Update(void)
       ppaPacket = cm_ciBroadcast.ci_pbOutputBuffer.PeekFirstPacket();
       if (ppaPacket->pa_tvSendWhen < tvNow) {
         cm_ciBroadcast.ci_pbOutputBuffer.RemoveFirstPacket(FALSE);
-        cci_pbMasterOutput.AppendPacket(*ppaPacket,FALSE);
+        cci_pbMasterOutput.AppendPacket(*ppaPacket, FALSE);
       } else {
         break;
       }
@@ -1138,14 +1042,14 @@ BOOL CCommunicationInterface::Client_Update(void)
       bClientFound = FALSE;
 
       // if the packet address is broadcast and it's an unreliable transfer, put it in the broadcast buffer
-      if ((ppaPacket->pa_adrAddress.adr_uwID == '//' || ppaPacket->pa_adrAddress.adr_uwID == 0) && 
-           ppaPacket->pa_ubReliable == UDP_PACKET_UNRELIABLE) {
-        cm_ciBroadcast.ci_pbInputBuffer.AppendPacket(*ppaPacket,FALSE);
+      if ((ppaPacket->pa_adrAddress.adr_uwID == '//' || ppaPacket->pa_adrAddress.adr_uwID == 0)
+          && ppaPacket->pa_ubReliable == UDP_PACKET_UNRELIABLE) {
+        cm_ciBroadcast.ci_pbInputBuffer.AppendPacket(*ppaPacket, FALSE);
         bClientFound = TRUE;
-      // if the packet is for this client, accept it
-      } else if ((ppaPacket->pa_adrAddress.adr_uwID == cm_ciLocalClient.ci_adrAddress.adr_uwID) || 
-                  ppaPacket->pa_adrAddress.adr_uwID == '//' || ppaPacket->pa_adrAddress.adr_uwID == 0) { 
-        cm_ciLocalClient.ci_pbInputBuffer.AppendPacket(*ppaPacket,FALSE);
+        // if the packet is for this client, accept it
+      } else if ((ppaPacket->pa_adrAddress.adr_uwID == cm_ciLocalClient.ci_adrAddress.adr_uwID)
+                 || ppaPacket->pa_adrAddress.adr_uwID == '//' || ppaPacket->pa_adrAddress.adr_uwID == 0) {
+        cm_ciLocalClient.ci_pbInputBuffer.AppendPacket(*ppaPacket, FALSE);
         bClientFound = TRUE;
       }
       if (!bClientFound) {
@@ -1155,8 +1059,7 @@ BOOL CCommunicationInterface::Client_Update(void)
           CPrintF(TRANS("WARNING: Invalid message from: %s\n"), AddressToString(ppaPacket->pa_adrAddress.adr_ulAddress));
         }
       }
-     }
-
+    }
   }
 
   cm_ciLocalClient.UpdateInputBuffers();
@@ -1165,12 +1068,8 @@ BOOL CCommunicationInterface::Client_Update(void)
   return TRUE;
 };
 
-
-
 // update master UDP socket and route its messages
-void CCommunicationInterface::UpdateMasterBuffers() 
-{
-
+void CCommunicationInterface::UpdateMasterBuffers() {
   UBYTE aub[MAX_PACKET_SIZE];
   CAddress adrIncomingAddress;
   SOCKADDR_IN sa;
@@ -1178,62 +1077,60 @@ void CCommunicationInterface::UpdateMasterBuffers()
   SLONG slSizeReceived;
   SLONG slSizeSent;
   BOOL bSomethingDone;
-  CPacket* ppaNewPacket;
+  CPacket *ppaNewPacket;
   CTimerValue tvNow;
 
   if (cci_bBound) {
     // read from the socket while there is incoming data
     do {
-
       // initially, nothing is done
       bSomethingDone = FALSE;
-      slSizeReceived = recvfrom(cci_hSocket,(char*)aub,MAX_PACKET_SIZE,0,(SOCKADDR *)&sa,&size);
+      slSizeReceived = recvfrom(cci_hSocket, (char *)aub, MAX_PACKET_SIZE, 0, (SOCKADDR *)&sa, &size);
       tvNow = _pTimer->GetHighPrecisionTimer();
 
       adrIncomingAddress.adr_ulAddress = ntohl(sa.sin_addr.s_addr);
       adrIncomingAddress.adr_uwPort = ntohs(sa.sin_port);
 
-      //On error, report it to the console (if error is not a no data to read message)
+      // On error, report it to the console (if error is not a no data to read message)
       if (slSizeReceived == SOCKET_ERROR) {
         int iResult = WSAGetLastError();
         if (iResult != WSAEWOULDBLOCK) {
           // report it
           if (iResult != WSAECONNRESET || net_bReportICMPErrors) {
-            CPrintF(TRANS("Socket error during UDP receive. %s\n"), 
-              (const char*)GetSocketError(iResult));
+            CPrintF(TRANS("Socket error during UDP receive. %s\n"), (const char *)GetSocketError(iResult));
             return;
           }
         }
 
-      // if block received
+        // if block received
       } else {
         // if there is not at least one byte more in the packet than the header size
         if (slSizeReceived <= MAX_HEADER_SIZE) {
           // the packet is in error
-          extern INDEX net_bReportMiscErrors;          
+          extern INDEX net_bReportMiscErrors;
           if (net_bReportMiscErrors) {
             CPrintF(TRANS("WARNING: Bad UDP packet from '%s'\n"), AddressToString(adrIncomingAddress.adr_ulAddress));
           }
           // there might be more to do
           bSomethingDone = TRUE;
-        } else if (net_fDropPackets <= 0  || (FLOAT(rand())/RAND_MAX) > net_fDropPackets) {
-          // if no packet drop emulation (or the packet is not dropped), form the packet 
+        } else if (net_fDropPackets <= 0 || (FLOAT(rand()) / RAND_MAX) > net_fDropPackets) {
+          // if no packet drop emulation (or the packet is not dropped), form the packet
           // and add it to the end of the UDP Master's input buffer
           ppaNewPacket = new CPacket;
-          ppaNewPacket->WriteToPacketRaw(aub,slSizeReceived);
+          ppaNewPacket->WriteToPacketRaw(aub, slSizeReceived);
           ppaNewPacket->pa_adrAddress.adr_ulAddress = adrIncomingAddress.adr_ulAddress;
-          ppaNewPacket->pa_adrAddress.adr_uwPort = adrIncomingAddress.adr_uwPort;            
+          ppaNewPacket->pa_adrAddress.adr_uwPort = adrIncomingAddress.adr_uwPort;
 
           if (net_bReportPackets == TRUE) {
-            CPrintF("%lu: Received sequence: %d from ID: %d, reliable flag: %d\n",(ULONG) tvNow.GetMilliseconds(),ppaNewPacket->pa_ulSequence,ppaNewPacket->pa_adrAddress.adr_uwID,ppaNewPacket->pa_ubReliable);
+            CPrintF("%lu: Received sequence: %d from ID: %d, reliable flag: %d\n", (ULONG)tvNow.GetMilliseconds(),
+                    ppaNewPacket->pa_ulSequence, ppaNewPacket->pa_adrAddress.adr_uwID, ppaNewPacket->pa_ubReliable);
           }
 
-          cci_pbMasterInput.AppendPacket(*ppaNewPacket,FALSE);
+          cci_pbMasterInput.AppendPacket(*ppaNewPacket, FALSE);
           // there might be more to do
           bSomethingDone = TRUE;
-        
         }
-      }  
+      }
 
     } while (bSomethingDone);
   }
@@ -1245,9 +1142,10 @@ void CCommunicationInterface::UpdateMasterBuffers()
     sa.sin_family = AF_INET;
     sa.sin_addr.s_addr = htonl(ppaNewPacket->pa_adrAddress.adr_ulAddress);
     sa.sin_port = htons(ppaNewPacket->pa_adrAddress.adr_uwPort);
-    
-    slSizeSent = sendto(cci_hSocket, (char*) ppaNewPacket->pa_pubPacketData, (int) ppaNewPacket->pa_slSize, 0, (SOCKADDR *)&sa, sizeof(sa));
-    cci_bBound = TRUE;   // UDP socket that did a send is considered bound
+
+    slSizeSent
+      = sendto(cci_hSocket, (char *)ppaNewPacket->pa_pubPacketData, (int)ppaNewPacket->pa_slSize, 0, (SOCKADDR *)&sa, sizeof(sa));
+    cci_bBound = TRUE; // UDP socket that did a send is considered bound
     tvNow = _pTimer->GetHighPrecisionTimer();
 
     // if some error
@@ -1256,28 +1154,20 @@ void CCommunicationInterface::UpdateMasterBuffers()
       // if output UDP buffer full, stop sending
       if (iResult == WSAEWOULDBLOCK) {
         return;
-      // report it
+        // report it
       } else if (iResult != WSAECONNRESET || net_bReportICMPErrors) {
-        CPrintF(TRANS("Socket error during UDP send. %s\n"), 
-          (const char*)GetSocketError(iResult));
+        CPrintF(TRANS("Socket error during UDP send. %s\n"), (const char *)GetSocketError(iResult));
       }
-      return;    
-    // if all sent ok
+      return;
+      // if all sent ok
     } else {
-      
-      if (net_bReportPackets == TRUE)  {
-        CPrintF("%lu: Sent sequence: %d to ID: %d, reliable flag: %d\n",(ULONG)tvNow.GetMilliseconds(),ppaNewPacket->pa_ulSequence,ppaNewPacket->pa_adrAddress.adr_uwID,ppaNewPacket->pa_ubReliable);
+      if (net_bReportPackets == TRUE) {
+        CPrintF("%lu: Sent sequence: %d to ID: %d, reliable flag: %d\n", (ULONG)tvNow.GetMilliseconds(),
+                ppaNewPacket->pa_ulSequence, ppaNewPacket->pa_adrAddress.adr_uwID, ppaNewPacket->pa_ubReliable);
       }
 
       cci_pbMasterOutput.RemoveFirstPacket(TRUE);
-      bSomethingDone=TRUE;
+      bSomethingDone = TRUE;
     }
-
   }
-
-
-
-
 };
-
-

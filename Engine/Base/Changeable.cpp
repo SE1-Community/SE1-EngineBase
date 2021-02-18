@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -24,48 +24,41 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 /*
  * Constructor.
  */
-CChangeable::CChangeable(void)
-{
+CChangeable::CChangeable(void) {
   ch_llLastChange = -1;
 }
 
 /*
  * Mark that something has changed in this object.
  */
-void CChangeable::MarkChanged(void)
-{
+void CChangeable::MarkChanged(void) {
   ch_llLastChange = _pTimer->GetGameTick();
 }
 
 /*
  * Test if some updateable object is up to date with this changeable.
  */
-BOOL CChangeable::IsUpToDate(const CUpdateable &ud) const
-{
+BOOL CChangeable::IsUpToDate(const CUpdateable &ud) const {
   return ch_llLastChange < ud.LastUpdateTime();
 }
 
 /*
  * Constructor.
  */
-CChangeableRT::CChangeableRT(void)
-{
+CChangeableRT::CChangeableRT(void) {
   ch_llLastChange = -1;
 }
 
 /*
  * Mark that something has changed in this object.
  */
-void CChangeableRT::MarkChanged(void)
-{
+void CChangeableRT::MarkChanged(void) {
   ch_llLastChange = _pTimer->GetTimeTick();
 }
 
 /*
  * Test if some updateable object is up to date with this changeable.
  */
-BOOL CChangeableRT::IsUpToDate(const CUpdateableRT &ud) const
-{
+BOOL CChangeableRT::IsUpToDate(const CUpdateableRT &ud) const {
   return ch_llLastChange < ud.LastUpdateTime();
 }
-

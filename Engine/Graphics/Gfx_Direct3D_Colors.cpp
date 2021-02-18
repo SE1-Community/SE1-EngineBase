@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -26,47 +26,40 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define O offset
 #define Q qword ptr
 #define D dword ptr
-#define W  word ptr
-#define B  byte ptr
-
+#define W word ptr
+#define B byte ptr
 
 static ULONG _ulAlphaMask = 0;
-static void (*pConvertMipmap)( ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch);
-
-
+static void (*pConvertMipmap)(ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch);
 
 // convert to any D3DFormat (thru D3DX functions - slow!)
-static void ConvertAny( ULONG *pulSrc, LPDIRECT3DTEXTURE8 ptexDst, PIX pixWidth, PIX pixHeight, INDEX iMip)
-{
+static void ConvertAny(ULONG *pulSrc, LPDIRECT3DTEXTURE8 ptexDst, PIX pixWidth, PIX pixHeight, INDEX iMip) {
   // alloc temporary memory and flip colors there
-  const PIX pixSize = pixWidth*pixHeight;
-  ULONG *pulFlipped = (ULONG*)AllocMemory( pixSize*4);
-  abgr2argb( pulSrc, pulFlipped, pixSize);
+  const PIX pixSize = pixWidth * pixHeight;
+  ULONG *pulFlipped = (ULONG *)AllocMemory(pixSize * 4);
+  abgr2argb(pulSrc, pulFlipped, pixSize);
 
   // get mipmap surface
   HRESULT hr;
   LPDIRECT3DSURFACE8 pd3dSurf;
-  hr = ptexDst->GetSurfaceLevel( iMip, &pd3dSurf);
+  hr = ptexDst->GetSurfaceLevel(iMip, &pd3dSurf);
   D3D_CHECKERROR(hr);
 
   // prepare and upload surface
-  const RECT rect = { 0,0, pixWidth, pixHeight };
-  const SLONG slPitch = pixWidth*4;
-  hr = D3DXLoadSurfaceFromMemory( pd3dSurf, NULL, NULL, pulFlipped, D3DFMT_A8R8G8B8, slPitch, NULL, &rect, D3DX_FILTER_NONE, 0);
+  const RECT rect = {0, 0, pixWidth, pixHeight};
+  const SLONG slPitch = pixWidth * 4;
+  hr = D3DXLoadSurfaceFromMemory(pd3dSurf, NULL, NULL, pulFlipped, D3DFMT_A8R8G8B8, slPitch, NULL, &rect, D3DX_FILTER_NONE, 0);
   D3D_CHECKERROR(hr);
 
   // done
-  pd3dSurf->Release();  // must not use D3DRELEASE, because freeing all istances will free texture also when using DXTC!? (Bravo MS!)
-  FreeMemory( pulFlipped);
+  pd3dSurf
+    ->Release(); // must not use D3DRELEASE, because freeing all istances will free texture also when using DXTC!? (Bravo MS!)
+  FreeMemory(pulFlipped);
 }
-
-
 
 // fast conversion from RGBA memory format to one of D3D color formats
 
-
-static void ConvARGB8( ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch)
-{
+static void ConvARGB8(ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch) {
   const ULONG slRowModulo = slPitch - (pixWidth << 2);
   __asm {
     mov     esi,D [pulSrc]
@@ -90,9 +83,7 @@ pixLoop:
   }
 }
 
-
-static void ConvARGB5( ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch)
-{
+static void ConvARGB5(ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch) {
   const ULONG slRowModulo = slPitch - (pixWidth << 1);
   __asm {
     mov     esi,D [pulSrc]
@@ -133,9 +124,7 @@ pixLoop:
   }
 }
 
-
-static void ConvARGB4( ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch)
-{
+static void ConvARGB4(ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch) {
   const ULONG slRowModulo = slPitch - (pixWidth << 1);
   __asm {
     mov     esi,D [pulSrc]
@@ -176,9 +165,7 @@ pixLoop:
   }
 }
 
-
-static void ConvRGB5( ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch)
-{
+static void ConvRGB5(ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch) {
   const ULONG slRowModulo = slPitch - (pixWidth << 1);
   __asm {
     mov     esi,D [pulSrc]
@@ -212,9 +199,7 @@ pixLoop:
   }
 }
 
-
-static void ConvAL8( ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch)
-{
+static void ConvAL8(ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch) {
   const ULONG slRowModulo = slPitch - (pixWidth << 1);
   __asm {
     mov     esi,D [pulSrc]
@@ -237,10 +222,7 @@ pixLoop:
   }
 }
 
-
-
-static void ConvL8( ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch)
-{
+static void ConvL8(ULONG *pulSrc, void *pulDst, PIX pixWidth, PIX pixHeight, SLONG slPitch) {
   const ULONG slRowModulo = slPitch - (pixWidth << 0);
   __asm {
     mov     esi,D [pulSrc]
@@ -261,97 +243,118 @@ pixLoop:
   }
 }
 
-
-
-
 // set color conversion routine
-extern void SetInternalFormat_D3D( D3DFORMAT d3dFormat)
-{
+extern void SetInternalFormat_D3D(D3DFORMAT d3dFormat) {
   // by default, go thru D3DX :(
-  pConvertMipmap = NULL; 
+  pConvertMipmap = NULL;
   extern INDEX d3d_bFastUpload;
-  if (!d3d_bFastUpload) return; // done here if fast upload is not allowed
+  if (!d3d_bFastUpload)
+    return; // done here if fast upload is not allowed
 
   // try to set corresponding fast-upload routine
   switch (d3dFormat) {
-  case D3DFMT_A8R8G8B8: _ulAlphaMask=0x00000000;  pConvertMipmap=ConvARGB8;  break;
-  case D3DFMT_X8R8G8B8: _ulAlphaMask=0xFF000000;  pConvertMipmap=ConvARGB8;  break;
-  case D3DFMT_A1R5G5B5: _ulAlphaMask=0x00000000;  pConvertMipmap=ConvARGB5;  break;
-  case D3DFMT_X1R5G5B5: _ulAlphaMask=0xFF000000;  pConvertMipmap=ConvARGB5;  break;
-  case D3DFMT_A4R4G4B4: _ulAlphaMask=0x00000000;  pConvertMipmap=ConvARGB4;  break;
-  case D3DFMT_X4R4G4B4: _ulAlphaMask=0xFF000000;  pConvertMipmap=ConvARGB4;  break;
-  case D3DFMT_R5G6B5: pConvertMipmap=ConvRGB5;  break;
-  case D3DFMT_A8L8:   pConvertMipmap=ConvAL8;   break;
-  case D3DFMT_L8:     pConvertMipmap=ConvL8;    break;
-  default:  break; 
+    case D3DFMT_A8R8G8B8:
+      _ulAlphaMask = 0x00000000;
+      pConvertMipmap = ConvARGB8;
+      break;
+    case D3DFMT_X8R8G8B8:
+      _ulAlphaMask = 0xFF000000;
+      pConvertMipmap = ConvARGB8;
+      break;
+    case D3DFMT_A1R5G5B5:
+      _ulAlphaMask = 0x00000000;
+      pConvertMipmap = ConvARGB5;
+      break;
+    case D3DFMT_X1R5G5B5:
+      _ulAlphaMask = 0xFF000000;
+      pConvertMipmap = ConvARGB5;
+      break;
+    case D3DFMT_A4R4G4B4:
+      _ulAlphaMask = 0x00000000;
+      pConvertMipmap = ConvARGB4;
+      break;
+    case D3DFMT_X4R4G4B4:
+      _ulAlphaMask = 0xFF000000;
+      pConvertMipmap = ConvARGB4;
+      break;
+    case D3DFMT_R5G6B5: pConvertMipmap = ConvRGB5; break;
+    case D3DFMT_A8L8: pConvertMipmap = ConvAL8; break;
+    case D3DFMT_L8: pConvertMipmap = ConvL8; break;
+    default: break;
   }
 }
 
-
 // convert one mipmap from memory to surface
-extern void UploadMipmap_D3D( ULONG *pulSrc, LPDIRECT3DTEXTURE8 ptexDst, PIX pixWidth, PIX pixHeight, INDEX iMip)
-{
+extern void UploadMipmap_D3D(ULONG *pulSrc, LPDIRECT3DTEXTURE8 ptexDst, PIX pixWidth, PIX pixHeight, INDEX iMip) {
   // general case thru D3DX approach
   if (pConvertMipmap == NULL) {
-    ConvertAny( pulSrc, ptexDst, pixWidth, pixHeight, iMip);
+    ConvertAny(pulSrc, ptexDst, pixWidth, pixHeight, iMip);
     return;
   }
   // yeah! - optimized case :)
   HRESULT hr;
   D3DLOCKED_RECT rectLocked;
-  hr = ptexDst->LockRect( iMip, &rectLocked, NULL, NONE);
+  hr = ptexDst->LockRect(iMip, &rectLocked, NULL, NONE);
   D3D_CHECKERROR(hr);
-  pConvertMipmap( pulSrc, rectLocked.pBits, pixWidth, pixHeight, rectLocked.Pitch);
+  pConvertMipmap(pulSrc, rectLocked.pBits, pixWidth, pixHeight, rectLocked.Pitch);
   hr = ptexDst->UnlockRect(iMip);
   D3D_CHECKERROR(hr);
 }
 
-
 // unpack from some of D3D color formats to COLOR
-extern COLOR UnpackColor_D3D( UBYTE *pd3dColor, D3DFORMAT d3dFormat, SLONG &slColorSize)
-{
+extern COLOR UnpackColor_D3D(UBYTE *pd3dColor, D3DFORMAT d3dFormat, SLONG &slColorSize) {
   UWORD uw;
-  UBYTE ubR,ubG,ubB;
+  UBYTE ubR, ubG, ubB;
   switch (d3dFormat) {
-  case D3DFMT_R8G8B8:
-  case D3DFMT_X8R8G8B8:
-  case D3DFMT_A8R8G8B8:
-    ubB = pd3dColor[0];
-    ubG = pd3dColor[1];
-    ubR = pd3dColor[2];
-    slColorSize = 4;
-    if (d3dFormat == D3DFMT_R8G8B8) slColorSize = 3;
-    break; 
-  case D3DFMT_R5G6B5:
-    uw  = (UWORD&)*pd3dColor;
-    ubR = (uw&0xF800) >> 8;  ubR |= ubR >> 5;
-    ubG = (uw&0x07E0) >> 3;  ubG |= ubG >> 6;
-    ubB = (uw&0x001F) << 3;  ubB |= ubB >> 5;
-    slColorSize = 2;
-    break;
-  case D3DFMT_X1R5G5B5:
-  case D3DFMT_A1R5G5B5:
-    uw  = (UWORD&)*pd3dColor;
-    ubR = (uw&0x7C00) >> 7;  ubR |= ubR >> 5;
-    ubG = (uw&0x03E0) >> 2;  ubG |= ubG >> 5;
-    ubB = (uw&0x001F) << 3;  ubB |= ubB >> 5;
-    slColorSize = 2;
-    break;
-  case D3DFMT_X4R4G4B4:
-  case D3DFMT_A4R4G4B4:
-    uw  = (UWORD&)*pd3dColor;
-    ubR = (uw&0x0F00) >> 4;  ubR |= ubR >> 4;
-    ubG = (uw&0x00F0) >> 0;  ubG |= ubG >> 4;
-    ubB = (uw&0x000F) << 4;  ubB |= ubB >> 4;
-    slColorSize = 2;
-    break;
-  default: // unsupported format
-    ubR = ubG = ubB = 0;
-    slColorSize = 0;
-    break;
+    case D3DFMT_R8G8B8:
+    case D3DFMT_X8R8G8B8:
+    case D3DFMT_A8R8G8B8:
+      ubB = pd3dColor[0];
+      ubG = pd3dColor[1];
+      ubR = pd3dColor[2];
+      slColorSize = 4;
+      if (d3dFormat == D3DFMT_R8G8B8)
+        slColorSize = 3;
+      break;
+    case D3DFMT_R5G6B5:
+      uw = (UWORD &)*pd3dColor;
+      ubR = (uw & 0xF800) >> 8;
+      ubR |= ubR >> 5;
+      ubG = (uw & 0x07E0) >> 3;
+      ubG |= ubG >> 6;
+      ubB = (uw & 0x001F) << 3;
+      ubB |= ubB >> 5;
+      slColorSize = 2;
+      break;
+    case D3DFMT_X1R5G5B5:
+    case D3DFMT_A1R5G5B5:
+      uw = (UWORD &)*pd3dColor;
+      ubR = (uw & 0x7C00) >> 7;
+      ubR |= ubR >> 5;
+      ubG = (uw & 0x03E0) >> 2;
+      ubG |= ubG >> 5;
+      ubB = (uw & 0x001F) << 3;
+      ubB |= ubB >> 5;
+      slColorSize = 2;
+      break;
+    case D3DFMT_X4R4G4B4:
+    case D3DFMT_A4R4G4B4:
+      uw = (UWORD &)*pd3dColor;
+      ubR = (uw & 0x0F00) >> 4;
+      ubR |= ubR >> 4;
+      ubG = (uw & 0x00F0) >> 0;
+      ubG |= ubG >> 4;
+      ubB = (uw & 0x000F) << 4;
+      ubB |= ubB >> 4;
+      slColorSize = 2;
+      break;
+    default: // unsupported format
+      ubR = ubG = ubB = 0;
+      slColorSize = 0;
+      break;
   }
   // done
-  return RGBToColor(ubR,ubG,ubB);
+  return RGBToColor(ubR, ubG, ubB);
 }
 
 #endif // SE1_D3D

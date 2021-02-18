@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -22,68 +22,64 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/Stock_CTextureData.h>
 #include <Engine/Graphics/ImageInfo.h>
 
-CTerrainLayer::CTerrainLayer()
-{
-  tl_ptdTexture  = NULL;
-  tl_aubColors   = NULL;
-  tl_iMaskWidth  = 0;
+CTerrainLayer::CTerrainLayer() {
+  tl_ptdTexture = NULL;
+  tl_aubColors = NULL;
+  tl_iMaskWidth = 0;
   tl_iMaskHeight = 0;
   ResetLayerParams();
 }
 
-CTerrainLayer::~CTerrainLayer()
-{
+CTerrainLayer::~CTerrainLayer() {
   Clear();
 }
 
-CTextureData *CTerrainLayer::GetThumbnail(INDEX iWidth, INDEX iHeight)
-{
+CTextureData *CTerrainLayer::GetThumbnail(INDEX iWidth, INDEX iHeight) {
   tl_tdThumbNail.Clear();
   tl_tdThumbNail.DefaultAnimation();
 
-  INDEX iMaskWidth = tl_iMaskWidth-1;
-  INDEX iMaskHeight = tl_iMaskHeight-1;
+  INDEX iMaskWidth = tl_iMaskWidth - 1;
+  INDEX iMaskHeight = tl_iMaskHeight - 1;
 
-  if (iWidth>iMaskWidth) {
+  if (iWidth > iMaskWidth) {
     // ASSERT(FALSE);
     iWidth = iMaskWidth;
   }
-  if (iHeight>iMaskHeight) {
+  if (iHeight > iMaskHeight) {
     // ASSERT(FALSE);
     iHeight = iMaskHeight;
   }
 
-  CreateTexture(tl_tdThumbNail,iWidth,iHeight,TEX_STATIC);
+  CreateTexture(tl_tdThumbNail, iWidth, iHeight, TEX_STATIC);
 
-  INDEX iStepX = iMaskWidth/iWidth;
-  INDEX iStepY = iMaskHeight/iHeight - 1;
-  
+  INDEX iStepX = iMaskWidth / iWidth;
+  INDEX iStepY = iMaskHeight / iHeight - 1;
+
   UBYTE *paubMask = tl_aubColors;
-  GFXColor *pcolTexture = (GFXColor*)tl_tdThumbNail.td_pulFrames;
+  GFXColor *pcolTexture = (GFXColor *)tl_tdThumbNail.td_pulFrames;
 
-  for (INDEX iy=0;iy<iHeight;iy++) {
-    for (INDEX ix=0;ix<iWidth;ix++) {
+  for (INDEX iy = 0; iy < iHeight; iy++) {
+    for (INDEX ix = 0; ix < iWidth; ix++) {
       pcolTexture->r = *paubMask;
       pcolTexture->g = *paubMask;
       pcolTexture->b = *paubMask;
       pcolTexture->a = 0xFF;
       pcolTexture++;
-      paubMask+=iStepX;
+      paubMask += iStepX;
     }
-    paubMask+=(tl_iMaskWidth*iStepY)+1;
+    paubMask += (tl_iMaskWidth * iStepY) + 1;
   }
 
   // make mipmaps
-  INDEX ctMips = GetNoOfMipmaps(iWidth,iHeight);
+  INDEX ctMips = GetNoOfMipmaps(iWidth, iHeight);
   MakeMipmaps(ctMips, tl_tdThumbNail.td_pulFrames, iWidth, iHeight);
 
-  tl_tdThumbNail.SetAsCurrent(0,TRUE);
+  tl_tdThumbNail.SetAsCurrent(0, TRUE);
   return &tl_tdThumbNail;
 }
 
 // Set layer size
-void CTerrainLayer::SetLayerSize(INDEX iTerrainWidth, INDEX iTerrainHeight)
-{
+void CTerrainLayer::SetLayerSize(INDEX iTerrainWidth, INDEX iTerrainHeight) {
   // if array of vertex colors was initialized
   if (tl_aubColors != NULL) {
     // free array
@@ -91,12 +87,12 @@ void CTerrainLayer::SetLayerSize(INDEX iTerrainWidth, INDEX iTerrainHeight)
     tl_aubColors = NULL;
   }
   // if size of mask is greater than 0
-  INDEX iSize = iTerrainWidth*iTerrainHeight;
-  if (iSize>0) {
+  INDEX iSize = iTerrainWidth * iTerrainHeight;
+  if (iSize > 0) {
     // Allocate new memory for vertex colors
-    tl_aubColors = (UBYTE*)AllocMemory(iSize);
+    tl_aubColors = (UBYTE *)AllocMemory(iSize);
     // Reset color values
-    memset(&tl_aubColors[0],0,sizeof(UBYTE)*iSize);
+    memset(&tl_aubColors[0], 0, sizeof(UBYTE) * iSize);
   }
 
   tl_iMaskWidth = iTerrainWidth;
@@ -104,9 +100,8 @@ void CTerrainLayer::SetLayerSize(INDEX iTerrainWidth, INDEX iTerrainHeight)
 }
 
 // Set base texture this layer will be using
-void CTerrainLayer::SetLayerTexture_t(CTFileName fnTexture)
-{
-  // if layer has valid texture 
+void CTerrainLayer::SetLayerTexture_t(CTFileName fnTexture) {
+  // if layer has valid texture
   if (tl_ptdTexture != NULL) {
     // release texture from stock
     _pTextureStock->Release(tl_ptdTexture);
@@ -115,7 +110,7 @@ void CTerrainLayer::SetLayerTexture_t(CTFileName fnTexture)
   // get reguested texture
   tl_ptdTexture = _pTextureStock->Obtain_t(fnTexture);
   tl_ptdTexture->Force(TEX_STATIC);
-  
+
   // if this is tile layer
   if (tl_ltType == LT_TILE) {
     // Update tile widht and height
@@ -124,11 +119,10 @@ void CTerrainLayer::SetLayerTexture_t(CTFileName fnTexture)
 }
 
 // Set num of tiles in one row
-void CTerrainLayer::SetTilesPerRow(INDEX ctTilesInRow)
-{
+void CTerrainLayer::SetTilesPerRow(INDEX ctTilesInRow) {
   ASSERT(tl_ltType == LT_TILE);
   tl_ctTilesInRow = ctTilesInRow;
-  // Calc one tile widht 
+  // Calc one tile widht
   tl_pixTileWidth = tl_ptdTexture->GetPixWidth() / ctTilesInRow;
   // Calc num of tiles in texture col
   tl_ctTilesInCol = tl_ptdTexture->GetPixHeight() / tl_pixTileWidth;
@@ -137,54 +131,52 @@ void CTerrainLayer::SetTilesPerRow(INDEX ctTilesInRow)
   tl_fTileV = 1.0f / tl_ctTilesInCol;
 }
 
-INDEX CTerrainLayer::GetTilesPerRow()
-{
+INDEX CTerrainLayer::GetTilesPerRow() {
   ASSERT(tl_ltType == LT_TILE);
   return tl_ctTilesInRow;
 }
 
 // Import layer mask from targa file
-void CTerrainLayer::ImportLayerMask_t(CTFileName fnLayerMask)
-{
-  // Load targa file 
+void CTerrainLayer::ImportLayerMask_t(CTFileName fnLayerMask) {
+  // Load targa file
   CImageInfo iiLayerMask;
   iiLayerMask.LoadAnyGfxFormat_t(fnLayerMask);
   if (iiLayerMask.ii_Width != tl_iMaskWidth) {
-    ThrowF_t(TRANS("Layer mask width is %d, but it must be same size as terrain width %d"),iiLayerMask.ii_Width,tl_iMaskWidth);
+    ThrowF_t(TRANS("Layer mask width is %d, but it must be same size as terrain width %d"), iiLayerMask.ii_Width, tl_iMaskWidth);
   }
   if (iiLayerMask.ii_Height != tl_iMaskHeight) {
-    ThrowF_t(TRANS("Layer mask height is %d, but it must be same size as terrain height %d"),iiLayerMask.ii_Height,tl_iMaskHeight);
+    ThrowF_t(TRANS("Layer mask height is %d, but it must be same size as terrain height %d"), iiLayerMask.ii_Height,
+             tl_iMaskHeight);
   }
 
   UBYTE *pubSrc = &iiLayerMask.ii_Picture[0];
   UBYTE *pubDst = &tl_aubColors[0];
-  INDEX iBpp = iiLayerMask.ii_BitsPerPixel/8;
+  INDEX iBpp = iiLayerMask.ii_BitsPerPixel / 8;
 
   // for each byte in loaded image
   INDEX iMaskSize = tl_iMaskWidth * tl_iMaskHeight;
-  for (INDEX ib=0;ib<iMaskSize;ib++) {
+  for (INDEX ib = 0; ib < iMaskSize; ib++) {
     // copy red value from image
-    *pubDst = *(UBYTE*)pubSrc;
+    *pubDst = *(UBYTE *)pubSrc;
     pubDst++;
-    pubSrc+=iBpp;
+    pubSrc += iBpp;
   }
 }
 
 // Export layer mask to targa file
-void CTerrainLayer::ExportLayerMask_t(CTFileName fnLayerMask)
-{
+void CTerrainLayer::ExportLayerMask_t(CTFileName fnLayerMask) {
   ASSERT(tl_aubColors != NULL);
-  INDEX iSize = tl_iMaskWidth*tl_iMaskHeight;
+  INDEX iSize = tl_iMaskWidth * tl_iMaskHeight;
 
   CImageInfo iiHeightMap;
-  iiHeightMap.ii_Width  = tl_iMaskWidth;
+  iiHeightMap.ii_Width = tl_iMaskWidth;
   iiHeightMap.ii_Height = tl_iMaskHeight;
   iiHeightMap.ii_BitsPerPixel = 32;
-  iiHeightMap.ii_Picture = (UBYTE*)AllocMemory(iSize*iiHeightMap.ii_BitsPerPixel/8);
+  iiHeightMap.ii_Picture = (UBYTE *)AllocMemory(iSize * iiHeightMap.ii_BitsPerPixel / 8);
 
-  GFXColor *pacolImage = (GFXColor*)&iiHeightMap.ii_Picture[0];
-  UBYTE    *pubMask    = &tl_aubColors[0];
-  for (INDEX ipix=0;ipix<iSize;ipix++) {
+  GFXColor *pacolImage = (GFXColor *)&iiHeightMap.ii_Picture[0];
+  UBYTE *pubMask = &tl_aubColors[0];
+  for (INDEX ipix = 0; ipix < iSize; ipix++) {
     pacolImage->abgr = 0x00000000;
     pacolImage->r = *pubMask;
     pacolImage++;
@@ -195,77 +187,73 @@ void CTerrainLayer::ExportLayerMask_t(CTFileName fnLayerMask)
 }
 
 // Reset layer mask
-void CTerrainLayer::ResetLayerMask(UBYTE ubMaskFill)
-{
-  memset(&tl_aubColors[0],ubMaskFill,sizeof(UBYTE) * tl_iMaskWidth * tl_iMaskHeight);
+void CTerrainLayer::ResetLayerMask(UBYTE ubMaskFill) {
+  memset(&tl_aubColors[0], ubMaskFill, sizeof(UBYTE) * tl_iMaskWidth * tl_iMaskHeight);
 }
 
 // Reset layer params
-void CTerrainLayer::ResetLayerParams()
-{
-  tl_iMaskWidth  = 0;
+void CTerrainLayer::ResetLayerParams() {
+  tl_iMaskWidth = 0;
   tl_iMaskHeight = 0;
-  tl_strName   = "NoName";
-  tl_bVisible  = TRUE;
+  tl_strName = "NoName";
+  tl_bVisible = TRUE;
 
-  tl_colMultiply = C_GRAY|CT_OPAQUE;
+  tl_colMultiply = C_GRAY | CT_OPAQUE;
   tl_fSmoothness = 1.0f;
-  tl_ltType      = LT_NORMAL;
-  
-  tl_fRotateX=0.0f;
-  tl_fRotateY=0.0f;
-  tl_fStretchX=1.0f;
-  tl_fStretchY=1.0f;
-  tl_fOffsetX=0;
-  tl_fOffsetY=0;
+  tl_ltType = LT_NORMAL;
 
-  tl_bAutoRegenerated=FALSE;
-  tl_fCoverage=1.0f;
-  tl_fCoverageNoise=0.5f;
-  tl_fCoverageRandom=0.0f;
-  
-  tl_bApplyMinAltitude=TRUE;
-  tl_fMinAltitude=0.0f;
-  tl_fMinAltitudeFade=0.25f;
-  tl_fMinAltitudeNoise=0.25f;
-  tl_fMinAltitudeRandom=0;
+  tl_fRotateX = 0.0f;
+  tl_fRotateY = 0.0f;
+  tl_fStretchX = 1.0f;
+  tl_fStretchY = 1.0f;
+  tl_fOffsetX = 0;
+  tl_fOffsetY = 0;
 
-  tl_bApplyMaxAltitude=TRUE;
-  tl_fMaxAltitude=1.0f;
-  tl_fMaxAltitudeFade=0.25f;
-  tl_fMaxAltitudeNoise=0.25f;
-  tl_fMaxAltitudeRandom=0;
+  tl_bAutoRegenerated = FALSE;
+  tl_fCoverage = 1.0f;
+  tl_fCoverageNoise = 0.5f;
+  tl_fCoverageRandom = 0.0f;
 
-  tl_bApplyMinSlope=TRUE;
-  tl_fMinSlope=0.0f;
-  tl_fMinSlopeFade=0.25f;
-  tl_fMinSlopeNoise=0.25f;
-  tl_fMinSlopeRandom=0;
+  tl_bApplyMinAltitude = TRUE;
+  tl_fMinAltitude = 0.0f;
+  tl_fMinAltitudeFade = 0.25f;
+  tl_fMinAltitudeNoise = 0.25f;
+  tl_fMinAltitudeRandom = 0;
 
-  tl_bApplyMaxSlope=TRUE;
-  tl_fMaxSlope=1.0f;
-  tl_fMaxSlopeFade=0.25f;
-  tl_fMaxSlopeNoise=0.25f;
-  tl_fMaxSlopeRandom=0;
+  tl_bApplyMaxAltitude = TRUE;
+  tl_fMaxAltitude = 1.0f;
+  tl_fMaxAltitudeFade = 0.25f;
+  tl_fMaxAltitudeNoise = 0.25f;
+  tl_fMaxAltitudeRandom = 0;
+
+  tl_bApplyMinSlope = TRUE;
+  tl_fMinSlope = 0.0f;
+  tl_fMinSlopeFade = 0.25f;
+  tl_fMinSlopeNoise = 0.25f;
+  tl_fMinSlopeRandom = 0;
+
+  tl_bApplyMaxSlope = TRUE;
+  tl_fMaxSlope = 1.0f;
+  tl_fMaxSlopeFade = 0.25f;
+  tl_fMaxSlopeNoise = 0.25f;
+  tl_fMaxSlopeRandom = 0;
 
   // Tile layer properties
-  tl_ctTilesInRow  = 1;
-  tl_ctTilesInCol  = 1;
+  tl_ctTilesInRow = 1;
+  tl_ctTilesInCol = 1;
   tl_iSelectedTile = 0;
-  tl_pixTileWidth  = 128;
+  tl_pixTileWidth = 128;
   tl_pixTileHeight = 128;
-  tl_fTileU        = 1.0f;
-  tl_fTileV        = 1.0f;
+  tl_fTileU = 1.0f;
+  tl_fTileV = 1.0f;
 }
 
-void CTerrainLayer::operator=(const CTerrainLayer &tlOther)
-{
+void CTerrainLayer::operator=(const CTerrainLayer &tlOther) {
   Copy(tlOther);
 }
 
 // Copy terrain data from other terrain
-void CTerrainLayer::Copy(const CTerrainLayer &tlOther)
-{
+void CTerrainLayer::Copy(const CTerrainLayer &tlOther) {
   // clear current layer data
   Clear();
 
@@ -276,83 +264,82 @@ void CTerrainLayer::Copy(const CTerrainLayer &tlOther)
   }
 
   // Allocate memory for vertex colors
-  SetLayerSize(tlOther.tl_iMaskWidth,tlOther.tl_iMaskHeight);
+  SetLayerSize(tlOther.tl_iMaskWidth, tlOther.tl_iMaskHeight);
   // Copy vertex colors
-  memcpy(tl_aubColors,tlOther.tl_aubColors,sizeof(UBYTE) * tl_iMaskWidth * tl_iMaskHeight);
+  memcpy(tl_aubColors, tlOther.tl_aubColors, sizeof(UBYTE) * tl_iMaskWidth * tl_iMaskHeight);
 
   // Copy reast of params
-  tl_strName      = tlOther.tl_strName;
-  tl_bVisible     = tlOther.tl_bVisible;
-  tl_colMultiply  = tlOther.tl_colMultiply;
-  tl_fSmoothness  = tlOther.tl_fSmoothness;
-  tl_ltType       = tlOther.tl_ltType;
+  tl_strName = tlOther.tl_strName;
+  tl_bVisible = tlOther.tl_bVisible;
+  tl_colMultiply = tlOther.tl_colMultiply;
+  tl_fSmoothness = tlOther.tl_fSmoothness;
+  tl_ltType = tlOther.tl_ltType;
 
-  tl_fRotateX  = tlOther.tl_fRotateX;
-  tl_fRotateY  = tlOther.tl_fRotateY;
+  tl_fRotateX = tlOther.tl_fRotateX;
+  tl_fRotateY = tlOther.tl_fRotateY;
   tl_fStretchX = tlOther.tl_fStretchX;
   tl_fStretchY = tlOther.tl_fStretchY;
-  tl_fOffsetX  = tlOther.tl_fOffsetX;
-  tl_fOffsetY  = tlOther.tl_fOffsetY;
+  tl_fOffsetX = tlOther.tl_fOffsetX;
+  tl_fOffsetY = tlOther.tl_fOffsetY;
 
   tl_bAutoRegenerated = tlOther.tl_bAutoRegenerated;
-  tl_fCoverage        = tlOther.tl_fCoverage;
-  tl_fCoverageNoise   = tlOther.tl_fCoverageNoise;
-  tl_fCoverageRandom  = tlOther.tl_fCoverageRandom;
-  
-  tl_bApplyMinAltitude  = tlOther.tl_bApplyMinAltitude;
-  tl_fMinAltitude       = tlOther.tl_fMinAltitude;
-  tl_fMinAltitudeFade   = tlOther.tl_fMinAltitudeFade;
-  tl_fMinAltitudeNoise  = tlOther.tl_fMinAltitudeNoise;
+  tl_fCoverage = tlOther.tl_fCoverage;
+  tl_fCoverageNoise = tlOther.tl_fCoverageNoise;
+  tl_fCoverageRandom = tlOther.tl_fCoverageRandom;
+
+  tl_bApplyMinAltitude = tlOther.tl_bApplyMinAltitude;
+  tl_fMinAltitude = tlOther.tl_fMinAltitude;
+  tl_fMinAltitudeFade = tlOther.tl_fMinAltitudeFade;
+  tl_fMinAltitudeNoise = tlOther.tl_fMinAltitudeNoise;
   tl_fMinAltitudeRandom = tlOther.tl_fMinAltitudeRandom;
 
-  tl_bApplyMaxAltitude  = tlOther.tl_bApplyMaxAltitude;
-  tl_fMaxAltitude       = tlOther.tl_fMaxAltitude;
-  tl_fMaxAltitudeFade   = tlOther.tl_fMaxAltitudeFade;
-  tl_fMaxAltitudeNoise  = tlOther.tl_fMaxAltitudeNoise;
+  tl_bApplyMaxAltitude = tlOther.tl_bApplyMaxAltitude;
+  tl_fMaxAltitude = tlOther.tl_fMaxAltitude;
+  tl_fMaxAltitudeFade = tlOther.tl_fMaxAltitudeFade;
+  tl_fMaxAltitudeNoise = tlOther.tl_fMaxAltitudeNoise;
   tl_fMaxAltitudeRandom = tlOther.tl_fMaxAltitudeRandom;
 
-  tl_bApplyMinSlope     = tlOther.tl_bApplyMinSlope;
-  tl_fMinSlope          = tlOther.tl_fMinSlope;
-  tl_fMinSlopeFade      = tlOther.tl_fMinSlopeFade;
-  tl_fMinSlopeNoise     = tlOther.tl_fMinSlopeNoise;
-  tl_fMinSlopeRandom    = tlOther.tl_fMinSlopeRandom;
+  tl_bApplyMinSlope = tlOther.tl_bApplyMinSlope;
+  tl_fMinSlope = tlOther.tl_fMinSlope;
+  tl_fMinSlopeFade = tlOther.tl_fMinSlopeFade;
+  tl_fMinSlopeNoise = tlOther.tl_fMinSlopeNoise;
+  tl_fMinSlopeRandom = tlOther.tl_fMinSlopeRandom;
 
-  tl_bApplyMaxSlope     = tlOther.tl_bApplyMaxSlope;
-  tl_fMaxSlope          = tlOther.tl_fMaxSlope;
-  tl_fMaxSlopeFade      = tlOther.tl_fMaxSlopeFade;
-  tl_fMaxSlopeNoise     = tlOther.tl_fMaxSlopeNoise;
-  tl_fMaxSlopeRandom    = tlOther.tl_fMaxSlopeRandom;
+  tl_bApplyMaxSlope = tlOther.tl_bApplyMaxSlope;
+  tl_fMaxSlope = tlOther.tl_fMaxSlope;
+  tl_fMaxSlopeFade = tlOther.tl_fMaxSlopeFade;
+  tl_fMaxSlopeNoise = tlOther.tl_fMaxSlopeNoise;
+  tl_fMaxSlopeRandom = tlOther.tl_fMaxSlopeRandom;
 
   // Tile layer properties
-  tl_ctTilesInRow       = tlOther.tl_ctTilesInRow;
-  tl_ctTilesInCol       = tlOther.tl_ctTilesInCol;
-  tl_iSelectedTile      = tlOther.tl_iSelectedTile;
-  tl_pixTileWidth       = tlOther.tl_pixTileWidth;
-  tl_pixTileHeight      = tlOther.tl_pixTileHeight;
-  tl_fTileU             = tlOther.tl_fTileU;
-  tl_fTileV             = tlOther.tl_fTileV;
+  tl_ctTilesInRow = tlOther.tl_ctTilesInRow;
+  tl_ctTilesInCol = tlOther.tl_ctTilesInCol;
+  tl_iSelectedTile = tlOther.tl_iSelectedTile;
+  tl_pixTileWidth = tlOther.tl_pixTileWidth;
+  tl_pixTileHeight = tlOther.tl_pixTileHeight;
+  tl_fTileU = tlOther.tl_fTileU;
+  tl_fTileV = tlOther.tl_fTileV;
 }
 
 // Read from stream.
-void CTerrainLayer::Read_t(CTStream *istrFile,INDEX iSavedVersion)
-{
+void CTerrainLayer::Read_t(CTStream *istrFile, INDEX iSavedVersion) {
   CTFileName fn;
   INDEX iMaskWidth;
   INDEX iMaskHeight;
 
   // Read terrain layer texture
-  (*istrFile).ExpectID_t("TLTX");  // 'Terrain layer texture'
+  (*istrFile).ExpectID_t("TLTX"); // 'Terrain layer texture'
   (*istrFile) >> fn;
   // Add texture to layer
-  SetLayerTexture_t(fn);  
+  SetLayerTexture_t(fn);
   // Read terrain layer mask
   (*istrFile).ExpectID_t("TLMA"); // 'Terrain layer mask'
   (*istrFile) >> iMaskWidth;
   (*istrFile) >> iMaskHeight;
   // Set layer size
-  SetLayerSize(iMaskWidth,iMaskHeight);
-  (*istrFile).Read_t(&tl_aubColors[0],sizeof(UBYTE) * tl_iMaskWidth * tl_iMaskHeight);
-  
+  SetLayerSize(iMaskWidth, iMaskHeight);
+  (*istrFile).Read_t(&tl_aubColors[0], sizeof(UBYTE) * tl_iMaskWidth * tl_iMaskHeight);
+
   if (istrFile->PeekID_t() == CChunkID("TLPA")) { // 'Terrain edge map'
     // Read terrain layer params
     (*istrFile).ExpectID_t("TLPA"); // 'Terrain layer params'
@@ -419,7 +406,7 @@ void CTerrainLayer::Read_t(CTStream *istrFile,INDEX iSavedVersion)
     (*istrFile) >> tl_fMaxSlopeFade;
     (*istrFile) >> tl_fMaxSlopeNoise;
     (*istrFile) >> tl_fMaxSlopeRandom;
-    
+
     if (iSavedVersion >= 9) {
       INDEX iType;
       (*istrFile) >> tl_colMultiply;
@@ -440,8 +427,7 @@ void CTerrainLayer::Read_t(CTStream *istrFile,INDEX iSavedVersion)
 }
 
 // Write to stream.
-void CTerrainLayer::Write_t( CTStream *ostrFile)
-{
+void CTerrainLayer::Write_t(CTStream *ostrFile) {
   (*ostrFile).WriteID_t("TLTX"); // 'Terrain layer texture'
   const CTFileName &fn = tl_ptdTexture->GetName();
   (*ostrFile) << fn;
@@ -449,13 +435,13 @@ void CTerrainLayer::Write_t( CTStream *ostrFile)
   (*ostrFile).WriteID_t("TLMA"); // 'Terrain layer mask'
   (*ostrFile) << tl_iMaskWidth;
   (*ostrFile) << tl_iMaskHeight;
-  (*ostrFile).Write_t(&tl_aubColors[0],sizeof(UBYTE) * tl_iMaskWidth * tl_iMaskHeight);
+  (*ostrFile).Write_t(&tl_aubColors[0], sizeof(UBYTE) * tl_iMaskWidth * tl_iMaskHeight);
 
   // Write terrain layer params
   (*ostrFile).WriteID_t("TLPR"); // 'Terrain layer params'
   (*ostrFile) << tl_strName;
   (*ostrFile) << tl_bVisible;
-  
+
   (*ostrFile) << tl_fRotateX;
   (*ostrFile) << tl_fRotateY;
   (*ostrFile) << tl_fStretchX;
@@ -507,15 +493,14 @@ void CTerrainLayer::Write_t( CTStream *ostrFile)
 }
 
 // Clear terrain layer
-void CTerrainLayer::Clear()
-{
+void CTerrainLayer::Clear() {
   // if array of vertex colors was initialized
   if (tl_aubColors != NULL) {
     // free array
     FreeMemory(tl_aubColors);
     tl_aubColors = NULL;
   }
-  // if layer has valid texture 
+  // if layer has valid texture
   if (tl_ptdTexture != NULL) {
     // release texture from stock
     _pTextureStock->Release(tl_ptdTexture);
@@ -527,10 +512,9 @@ void CTerrainLayer::Clear()
 }
 
 // Count used memory
-SLONG CTerrainLayer::GetUsedMemory(void)
-{
-  SLONG slUsedMemory=0;
+SLONG CTerrainLayer::GetUsedMemory(void) {
+  SLONG slUsedMemory = 0;
   slUsedMemory += sizeof(CTerrainLayer);
-  slUsedMemory += sizeof(UBYTE)*tl_iMaskWidth*tl_iMaskHeight;
+  slUsedMemory += sizeof(UBYTE) * tl_iMaskWidth * tl_iMaskHeight;
   return slUsedMemory;
 }

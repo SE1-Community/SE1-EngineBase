@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -75,7 +75,7 @@ CBrushSector *CBrushMip::AddFromObject3D_t(CObject3D &ob) // throw char *
 // turn this on to dump result of all CSG operations
 #ifndef NDEBUG
 //  ob.DebugDump();
-#endif //NDEBUG
+#endif // NDEBUG
 
   // create as much new sectors in brush mip as there are sectors in object
   CBrushSector *pbscSectors = bm_abscSectors.New(ob.ob_aoscSectors.Count());
@@ -101,19 +101,19 @@ CBrushSector *CBrushMip::AddFromObject3D_t(CObject3D &ob) // throw char *
 void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
 {
   // copy sector color
-  bsc_colColor   = osc.osc_colColor;
+  bsc_colColor = osc.osc_colColor;
   bsc_colAmbient = osc.osc_colAmbient;
-  bsc_ulFlags    = osc.osc_ulFlags[0] & ~(BSCF_SELECTED|BSCF_SELECTEDFORCSG);
-  bsc_ulFlags2   = osc.osc_ulFlags[1];
+  bsc_ulFlags = osc.osc_ulFlags[0] & ~(BSCF_SELECTED | BSCF_SELECTEDFORCSG);
+  bsc_ulFlags2 = osc.osc_ulFlags[1];
   bsc_ulVisFlags = osc.osc_ulFlags[2];
-  bsc_strName    = osc.osc_strName;
+  bsc_strName = osc.osc_strName;
 
   // lock the object elements
   osc.LockAll();
   // lock the brush elements
   LockAll();
 
-  // Copy vertices. 
+  // Copy vertices.
 
   // get the number of vertices in object
   INDEX ctVertices = osc.osc_aovxVertices.Count();
@@ -121,13 +121,13 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
   bsc_abvxVertices.New(ctVertices);
   bsc_awvxVertices.New(ctVertices);
   // copy all vertices and set their indices
-  for (INDEX iVertex=0; iVertex<ctVertices; iVertex++) {
+  for (INDEX iVertex = 0; iVertex < ctVertices; iVertex++) {
     bsc_abvxVertices[iVertex].bvx_vdPreciseRelative = osc.osc_aovxVertices[iVertex];
     bsc_abvxVertices[iVertex].bvx_pbscSector = this;
     osc.osc_aovxVertices[iVertex].ovx_Index = iVertex;
   }
 
-  // Copy planes. 
+  // Copy planes.
 
   // get the number of planes in object
   INDEX ctPlanes = osc.osc_aoplPlanes.Count();
@@ -135,12 +135,12 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
   bsc_abplPlanes.New(ctPlanes);
   bsc_awplPlanes.New(ctPlanes);
   // copy all planes and set their indices
-  for (INDEX iPlane=0; iPlane<ctPlanes; iPlane++) {
+  for (INDEX iPlane = 0; iPlane < ctPlanes; iPlane++) {
     bsc_abplPlanes[iPlane].bpl_pldPreciseRelative = osc.osc_aoplPlanes[iPlane];
     osc.osc_aoplPlanes[iPlane].opl_Index = iPlane;
   }
 
-  // Copy edges. 
+  // Copy edges.
 
   // get the number of edges in object
   INDEX ctEdges = osc.osc_aoedEdges.Count();
@@ -148,8 +148,8 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
   bsc_abedEdges.New(ctEdges);
   bsc_awedEdges.New(ctEdges);
   // for all edges in object
-  for (INDEX iEdge=0; iEdge<ctEdges; iEdge++) {
-    CObjectEdge &oed = osc.osc_aoedEdges[iEdge];  // object edge alias
+  for (INDEX iEdge = 0; iEdge < ctEdges; iEdge++) {
+    CObjectEdge &oed = osc.osc_aoedEdges[iEdge]; // object edge alias
     CBrushEdge &bed = bsc_abedEdges[iEdge];      // brush edge alias
     CWorkingEdge &wed = bsc_awedEdges[iEdge];
     // set the brush edge
@@ -163,7 +163,7 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
     oed.oed_Index = iEdge;
   }
 
-  // Copy polygons. 
+  // Copy polygons.
 
   // get the number of polygons in object
   INDEX ctPolygons = osc.osc_aopoPolygons.Count();
@@ -171,9 +171,9 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
   bsc_abpoPolygons.New(ctPolygons);
 
   // copy all polygons and set their indices
-  for (INDEX iPolygon=0; iPolygon<ctPolygons; iPolygon++) {
-    CBrushPolygon  &bpo =    bsc_abpoPolygons[iPolygon];  // brush polygon alias
-    CObjectPolygon &opo = osc.osc_aopoPolygons[iPolygon];  // object polygon alias
+  for (INDEX iPolygon = 0; iPolygon < ctPolygons; iPolygon++) {
+    CBrushPolygon &bpo = bsc_abpoPolygons[iPolygon];      // brush polygon alias
+    CObjectPolygon &opo = osc.osc_aopoPolygons[iPolygon]; // object polygon alias
 
     // get plane
     bpo.bpo_pbplPlane = &bsc_abplPlanes[opo.opo_Plane->opl_Index];
@@ -189,67 +189,64 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
     bpo.bpo_abptTextures[0].bpt_mdMapping = opo.opo_amdMappings[0];
     bpo.bpo_abptTextures[1].bpt_mdMapping = opo.opo_amdMappings[1];
     bpo.bpo_abptTextures[2].bpt_mdMapping = opo.opo_amdMappings[2];
-    bpo.bpo_mdShadow                      = opo.opo_amdMappings[3];
+    bpo.bpo_mdShadow = opo.opo_amdMappings[3];
     // set sector pointer
     bpo.bpo_pbscSector = this;
 
     // copy polygon properties
     const int sizeTextureProperties = sizeof(bpo.bpo_abptTextures[0].bpt_auProperties);
     const int sizePolygonProperties = sizeof(CBrushPolygonProperties);
-    ASSERT(sizeof(opo.opo_ubUserData) >= sizePolygonProperties+3*sizeTextureProperties);
-    UBYTE *pubUserData = (UBYTE*)&opo.opo_ubUserData;
+    ASSERT(sizeof(opo.opo_ubUserData) >= sizePolygonProperties + 3 * sizeTextureProperties);
+    UBYTE *pubUserData = (UBYTE *)&opo.opo_ubUserData;
     memcpy(&bpo.bpo_bppProperties, pubUserData, sizePolygonProperties);
-    memcpy(&bpo.bpo_abptTextures[0].bpt_auProperties,
-      pubUserData+sizePolygonProperties+0*sizeTextureProperties,
-      sizeTextureProperties);
-    memcpy(&bpo.bpo_abptTextures[1].bpt_auProperties,
-      pubUserData+sizePolygonProperties+1*sizeTextureProperties,
-      sizeTextureProperties);
-    memcpy(&bpo.bpo_abptTextures[2].bpt_auProperties,
-      pubUserData+sizePolygonProperties+2*sizeTextureProperties,
-      sizeTextureProperties);
-    bpo.bpo_colShadow = *(ULONG*)(pubUserData+sizePolygonProperties+3*sizeTextureProperties),
+    memcpy(&bpo.bpo_abptTextures[0].bpt_auProperties, pubUserData + sizePolygonProperties + 0 * sizeTextureProperties,
+           sizeTextureProperties);
+    memcpy(&bpo.bpo_abptTextures[1].bpt_auProperties, pubUserData + sizePolygonProperties + 1 * sizeTextureProperties,
+           sizeTextureProperties);
+    memcpy(&bpo.bpo_abptTextures[2].bpt_auProperties, pubUserData + sizePolygonProperties + 2 * sizeTextureProperties,
+           sizeTextureProperties);
+    bpo.bpo_colShadow = *(ULONG *)(pubUserData + sizePolygonProperties + 3 * sizeTextureProperties),
 
     // set polygon flags
-    bpo.bpo_ulFlags = opo.opo_ulFlags & ~(OPOF_IGNOREDBYCSG|BPOF_SELECTED);
+      bpo.bpo_ulFlags = opo.opo_ulFlags & ~(OPOF_IGNOREDBYCSG | BPOF_SELECTED);
 
     // if the polygon was just created
-    if (!(bpo.bpo_ulFlags&BPOF_WASBRUSHPOLYGON)) {
+    if (!(bpo.bpo_ulFlags & BPOF_WASBRUSHPOLYGON)) {
       // initialize its textures and properties properly
       bpo.bpo_bppProperties.bpp_ubShadowBlend = 1;
-      bpo.bpo_colShadow = C_WHITE|CT_OPAQUE;
+      bpo.bpo_colShadow = C_WHITE | CT_OPAQUE;
 
-      bpo.bpo_abptTextures[0].s.bpt_colColor = C_WHITE|CT_OPAQUE;
+      bpo.bpo_abptTextures[0].s.bpt_colColor = C_WHITE | CT_OPAQUE;
       bpo.bpo_abptTextures[0].s.bpt_ubFlags = BPTF_DISCARDABLE;
       bpo.bpo_abptTextures[0].s.bpt_ubScroll = 0;
       bpo.bpo_abptTextures[0].s.bpt_ubBlend = BPT_BLEND_OPAQUE;
 
-      bpo.bpo_abptTextures[1].s.bpt_colColor = C_WHITE|CT_OPAQUE;
+      bpo.bpo_abptTextures[1].s.bpt_colColor = C_WHITE | CT_OPAQUE;
       bpo.bpo_abptTextures[1].s.bpt_ubFlags = BPTF_DISCARDABLE;
       bpo.bpo_abptTextures[1].s.bpt_ubScroll = 0;
       bpo.bpo_abptTextures[1].s.bpt_ubBlend = BPT_BLEND_SHADE;
 
-      bpo.bpo_abptTextures[2].s.bpt_colColor = C_WHITE|CT_OPAQUE;
+      bpo.bpo_abptTextures[2].s.bpt_colColor = C_WHITE | CT_OPAQUE;
       bpo.bpo_abptTextures[2].s.bpt_ubFlags = BPTF_DISCARDABLE;
       bpo.bpo_abptTextures[2].s.bpt_ubScroll = 0;
       bpo.bpo_abptTextures[2].s.bpt_ubBlend = BPT_BLEND_SHADE;
 
-      bpo.bpo_ulFlags|=BPOF_WASBRUSHPOLYGON;
+      bpo.bpo_ulFlags |= BPOF_WASBRUSHPOLYGON;
     }
 
     // if it was a wall, but it became a portal now
-    if (!(bpo.bpo_ulFlags&BPOF_WASPORTAL) && (bpo.bpo_ulFlags&OPOF_PORTAL)) {
+    if (!(bpo.bpo_ulFlags & BPOF_WASPORTAL) && (bpo.bpo_ulFlags & OPOF_PORTAL)) {
       // turn on usual portal flags
-      bpo.bpo_ulFlags |= (BPOF_PASSABLE|BPOF_PORTAL);
+      bpo.bpo_ulFlags |= (BPOF_PASSABLE | BPOF_PORTAL);
       // make its first texture translucent
       bpo.bpo_abptTextures[0].s.bpt_ubBlend = BPT_BLEND_BLEND;
       // make its shadow additive
       bpo.bpo_bppProperties.bpp_ubShadowBlend = BPT_BLEND_ADD;
 
-    // if it was a portal, but it became a wall now
-    } else if ((bpo.bpo_ulFlags&BPOF_WASPORTAL) && !(bpo.bpo_ulFlags&OPOF_PORTAL)) {
+      // if it was a portal, but it became a wall now
+    } else if ((bpo.bpo_ulFlags & BPOF_WASPORTAL) && !(bpo.bpo_ulFlags & OPOF_PORTAL)) {
       // turn off usual portal flags
-      bpo.bpo_ulFlags &= ~(BPOF_PASSABLE|BPOF_PORTAL);
+      bpo.bpo_ulFlags &= ~(BPOF_PASSABLE | BPOF_PORTAL);
       // make its first texture opaque
       bpo.bpo_abptTextures[0].s.bpt_ubBlend = BPT_BLEND_OPAQUE;
       // make its shadow shading
@@ -262,7 +259,7 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
     // if the brush is field
     if (pbr->br_pfsFieldSettings != NULL) {
       // set polygon flags for fields
-      bpo.bpo_ulFlags|=BPOF_PORTAL|BPOF_PASSABLE;
+      bpo.bpo_ulFlags |= BPOF_PORTAL | BPOF_PASSABLE;
     }
 
     // get the number of edges in object polygon
@@ -271,7 +268,7 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
     bpo.bpo_abpePolygonEdges.New(ctPolygonEdges);
 
     // for all edges in object polygon
-    INDEX iPolygonEdge=0;
+    INDEX iPolygonEdge = 0;
     FOREACHINDYNAMICARRAY(opo.opo_PolygonEdges, CObjectPolygonEdge, itope) {
       // get corresponding polygon edge in brush polygon
       CBrushPolygonEdge &bpe = bpo.bpo_abpePolygonEdges[iPolygonEdge];

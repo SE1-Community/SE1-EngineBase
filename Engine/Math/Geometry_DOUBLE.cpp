@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -22,7 +22,5 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Math/Placement.h>
 #include <Engine/Math/Projection.h>
 
-
 /////////////////////////////////////////////////////////////////////
 //  CSimpleProjection3D_DOUBLE
-

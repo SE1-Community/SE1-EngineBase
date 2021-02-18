@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -47,11 +47,11 @@ struct LocalFileHeader {
   SWORD lfh_swFileNameLen;
   SWORD lfh_swExtraFieldLen;
 
-// follows:
-//  filename (variable size)
-//  extra field (variable size)
+  // follows:
+  //  filename (variable size)
+  //  extra field (variable size)
 };
-  
+
 // after file data, only if compressed from a non-seekable stream
 // this exists only if bit 3 in GPB flag is set
 #define SIGNATURE_DD 0x08074b50
@@ -81,10 +81,10 @@ struct FileHeader {
   SLONG fh_swExternalFileAttributes;
   SLONG fh_slLocalHeaderOffset;
 
-// follows:
-//  filename (variable size)
-//  extra field (variable size)
-//  file comment (variable size)
+  // follows:
+  //  filename (variable size)
+  //  extra field (variable size)
+  //  file comment (variable size)
 };
 
 // at the end of entire zip file
@@ -97,80 +97,76 @@ struct EndOfDir {
   SLONG eod_slSizeOfDir;
   SLONG eod_slDirOffsetInFile;
   SWORD eod_swCommentLenght;
-// follows: 
-//  zipfile comment (variable size)
+  // follows:
+  //  zipfile comment (variable size)
 };
 
 #pragma pack()
 
 // one entry (a zipped file) in a zip archive
 class CZipEntry {
-public:
-  CTFileName *ze_pfnmArchive;   // path of the archive
-  CTFileName ze_fnm;            // file name with path inside archive
-  SLONG ze_slCompressedSize;    // size of file in the archive
-  SLONG ze_slUncompressedSize;  // size when uncompressed
-  SLONG ze_slDataOffset;        // position of compressed data inside archive
-  ULONG ze_ulCRC;               // checksum of the file
-  BOOL ze_bStored;              // set if file is not compressed, but stored
-  BOOL ze_bMod;                 // set if from a mod's archive
+  public:
+    CTFileName *ze_pfnmArchive;  // path of the archive
+    CTFileName ze_fnm;           // file name with path inside archive
+    SLONG ze_slCompressedSize;   // size of file in the archive
+    SLONG ze_slUncompressedSize; // size when uncompressed
+    SLONG ze_slDataOffset;       // position of compressed data inside archive
+    ULONG ze_ulCRC;              // checksum of the file
+    BOOL ze_bStored;             // set if file is not compressed, but stored
+    BOOL ze_bMod;                // set if from a mod's archive
 
-  void Clear(void)
-  {
-    ze_pfnmArchive = NULL;
-    ze_fnm.Clear();
-  }
+    void Clear(void) {
+      ze_pfnmArchive = NULL;
+      ze_fnm.Clear();
+    }
 };
 
 // an open instance of a file inside a zip
 class CZipHandle {
-public:
-  BOOL zh_bOpen;          // set if the handle is used
-  CZipEntry zh_zeEntry;   // the entry itself
-  z_stream zh_zstream;    // zlib filestream for decompression
-  FILE *zh_fFile;         // open handle of the archive
-#define BUF_SIZE  1024
-  UBYTE *zh_pubBufIn;     // input buffer
+  public:
+    BOOL zh_bOpen;        // set if the handle is used
+    CZipEntry zh_zeEntry; // the entry itself
+    z_stream zh_zstream;  // zlib filestream for decompression
+    FILE *zh_fFile;       // open handle of the archive
+    #define BUF_SIZE 1024
+    UBYTE *zh_pubBufIn; // input buffer
 
-  CZipHandle(void);
-  void Clear(void);
-  void ThrowZLIBError_t(int ierr, const CTString &strDescription);
+    CZipHandle(void);
+    void Clear(void);
+    void ThrowZLIBError_t(int ierr, const CTString &strDescription);
 };
 
 // get error string for a zlib error
-CTString GetZlibError(int ierr)
-{
+CTString GetZlibError(int ierr) {
   switch (ierr) {
-  case Z_OK           : return TRANS("Z_OK           "); break;
-  case Z_STREAM_END   : return TRANS("Z_STREAM_END   "); break;   
-  case Z_NEED_DICT    : return TRANS("Z_NEED_DICT    "); break;
-  case Z_STREAM_ERROR : return TRANS("Z_STREAM_ERROR "); break;
-  case Z_DATA_ERROR   : return TRANS("Z_DATA_ERROR   "); break;
-  case Z_MEM_ERROR    : return TRANS("Z_MEM_ERROR    "); break; 
-  case Z_BUF_ERROR    : return TRANS("Z_BUF_ERROR    "); break;
-  case Z_VERSION_ERROR: return TRANS("Z_VERSION_ERROR"); break;
-  case Z_ERRNO        : {
-    CTString strError;
-    strError.PrintF(TRANS("Z_ERRNO: %s"), strerror(errno));
-    return strError; 
-                        } break;
-  default: {
-    CTString strError;
-    strError.PrintF(TRANS("Unknown ZLIB error: %d"), ierr);
-    return strError; 
-           } break;
+    case Z_OK: return TRANS("Z_OK           "); break;
+    case Z_STREAM_END: return TRANS("Z_STREAM_END   "); break;
+    case Z_NEED_DICT: return TRANS("Z_NEED_DICT    "); break;
+    case Z_STREAM_ERROR: return TRANS("Z_STREAM_ERROR "); break;
+    case Z_DATA_ERROR: return TRANS("Z_DATA_ERROR   "); break;
+    case Z_MEM_ERROR: return TRANS("Z_MEM_ERROR    "); break;
+    case Z_BUF_ERROR: return TRANS("Z_BUF_ERROR    "); break;
+    case Z_VERSION_ERROR: return TRANS("Z_VERSION_ERROR"); break;
+    case Z_ERRNO: {
+      CTString strError;
+      strError.PrintF(TRANS("Z_ERRNO: %s"), strerror(errno));
+      return strError;
+    } break;
+    default: {
+      CTString strError;
+      strError.PrintF(TRANS("Unknown ZLIB error: %d"), ierr);
+      return strError;
+    } break;
   }
 }
 
-CZipHandle::CZipHandle(void) 
-{
+CZipHandle::CZipHandle(void) {
   zh_bOpen = FALSE;
   zh_fFile = NULL;
   zh_pubBufIn = NULL;
   memset(&zh_zstream, 0, sizeof(zh_zstream));
 }
-void CZipHandle::Clear(void) 
-{
+void CZipHandle::Clear(void) {
   zh_bOpen = FALSE;
   zh_zeEntry.Clear();
 
@@ -190,24 +186,20 @@ void CZipHandle::Clear(void)
     zh_fFile = NULL;
   }
 }
-void CZipHandle::ThrowZLIBError_t(int ierr, const CTString &strDescription)
-{
-  ThrowF_t(TRANS("(%s/%s) %s - ZLIB error: %s - %s"), 
-    (const CTString&)*zh_zeEntry.ze_pfnmArchive, 
-    (const CTString&)zh_zeEntry.ze_fnm,
-    strDescription, GetZlibError(ierr), zh_zstream.msg);
+void CZipHandle::ThrowZLIBError_t(int ierr, const CTString &strDescription) {
+  ThrowF_t(TRANS("(%s/%s) %s - ZLIB error: %s - %s"), (const CTString &)*zh_zeEntry.ze_pfnmArchive,
+           (const CTString &)zh_zeEntry.ze_fnm, strDescription, GetZlibError(ierr), zh_zstream.msg);
 }
 
 // all files in all active zip archives
-static CStaticStackArray<CZipEntry>  _azeFiles;
+static CStaticStackArray<CZipEntry> _azeFiles;
 // handles for currently open files
 static CStaticStackArray<CZipHandle> _azhHandles;
 // filenames of all archives
 static CStaticStackArray<CTFileName> _afnmArchives;
 
 // convert slashes to backslashes in a file path
-void ConvertSlashes(char *p)
-{
+void ConvertSlashes(char *p) {
   while (*p != 0) {
     if (*p == '/') {
       *p = '\\';
@@ -217,26 +209,24 @@ void ConvertSlashes(char *p)
 }
 
 // read directory of a zip archive and add all files in it to active set
-void ReadZIPDirectory_t(CTFileName *pfnmZip)
-{
-
+void ReadZIPDirectory_t(CTFileName *pfnmZip) {
   FILE *f = fopen(*pfnmZip, "rb");
   if (f == NULL) {
-    ThrowF_t(TRANS("%s: Cannot open file (%s)"), (CTString&)*pfnmZip, strerror(errno));
+    ThrowF_t(TRANS("%s: Cannot open file (%s)"), (CTString &)*pfnmZip, strerror(errno));
   }
   // start at the end of file, minus expected minimum overhead
   fseek(f, 0, SEEK_END);
-  int iPos = ftell(f)-sizeof(long)-sizeof(EndOfDir)+2;
+  int iPos = ftell(f) - sizeof(long) - sizeof(EndOfDir) + 2;
   // do not search more than 128k (should be around 65k at most)
-  int iMinPos = iPos-128*1024;
-  if (iMinPos<0) {
+  int iMinPos = iPos - 128 * 1024;
+  if (iMinPos < 0) {
     iMinPos = 0;
   }
 
   EndOfDir eod;
   BOOL bEODFound = FALSE;
   // while not at beginning
-  for (; iPos>iMinPos; iPos--) {
+  for (; iPos > iMinPos; iPos--) {
     // read signature
     fseek(f, iPos, SEEK_SET);
     int slSig;
@@ -246,16 +236,15 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
       // read directory end
       fread(&eod, sizeof(eod), 1, f);
       // if multi-volume zip
-      if (eod.eod_swDiskNo != 0||eod.eod_swDirStartDiskNo != 0
-        ||eod.eod_swEntriesInDirOnThisDisk != eod.eod_swEntriesInDir) {
+      if (eod.eod_swDiskNo != 0 || eod.eod_swDirStartDiskNo != 0 || eod.eod_swEntriesInDirOnThisDisk != eod.eod_swEntriesInDir) {
         // fail
-        ThrowF_t(TRANS("%s: Multi-volume zips are not supported"), (CTString&)*pfnmZip);
-      }                                                     
+        ThrowF_t(TRANS("%s: Multi-volume zips are not supported"), (CTString &)*pfnmZip);
+      }
       // check against empty zips
       if (eod.eod_swEntriesInDir <= 0) {
         // fail
-        ThrowF_t(TRANS("%s: Empty zip"), (CTString&)*pfnmZip);
-      }                                                     
+        ThrowF_t(TRANS("%s: Empty zip"), (CTString &)*pfnmZip);
+      }
       // all ok
       bEODFound = TRUE;
       break;
@@ -264,58 +253,53 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
   // if eod not found
   if (!bEODFound) {
     // fail
-    ThrowF_t(TRANS("%s: Cannot find 'end of central directory'"), (CTString&)*pfnmZip);
+    ThrowF_t(TRANS("%s: Cannot find 'end of central directory'"), (CTString &)*pfnmZip);
   }
 
   // check if the zip is from a mod
-  BOOL bMod = 
-    pfnmZip->HasPrefix(_fnmApplicationPath+"Mods\\") || 
-    pfnmZip->HasPrefix(_fnmCDPath+"Mods\\");
+  BOOL bMod = pfnmZip->HasPrefix(_fnmApplicationPath + "Mods\\") || pfnmZip->HasPrefix(_fnmCDPath + "Mods\\");
 
   // go to the beginning of the central dir
   fseek(f, eod.eod_slDirOffsetInFile, SEEK_SET);
   INDEX ctFiles = 0;
   // for each file
-  for (INDEX iFile=0; iFile<eod.eod_swEntriesInDir; iFile++) {
+  for (INDEX iFile = 0; iFile < eod.eod_swEntriesInDir; iFile++) {
     // read the sig
     int slSig;
     fread(&slSig, sizeof(slSig), 1, f);
     // if this is not the expected sig
     if (slSig != SIGNATURE_FH) {
       // fail
-      ThrowF_t(TRANS("%s: Wrong signature for 'file header' number %d'"), 
-        (CTString&)*pfnmZip, iFile);
+      ThrowF_t(TRANS("%s: Wrong signature for 'file header' number %d'"), (CTString &)*pfnmZip, iFile);
     }
     // read its header
     FileHeader fh;
     fread(&fh, sizeof(fh), 1, f);
     // read the filename
     const SLONG slMaxFileName = 512;
-    char strBuffer[slMaxFileName+1];
+    char strBuffer[slMaxFileName + 1];
     memset(strBuffer, 0, sizeof(strBuffer));
-    if (fh.fh_swFileNameLen>slMaxFileName) {
-      ThrowF_t(TRANS("%s: Too long filepath in zip"), (CTString&)*pfnmZip);
+    if (fh.fh_swFileNameLen > slMaxFileName) {
+      ThrowF_t(TRANS("%s: Too long filepath in zip"), (CTString &)*pfnmZip);
     }
     if (fh.fh_swFileNameLen <= 0) {
-      ThrowF_t(TRANS("%s: Invalid filepath length in zip"), (CTString&)*pfnmZip);
+      ThrowF_t(TRANS("%s: Invalid filepath length in zip"), (CTString &)*pfnmZip);
     }
     fread(strBuffer, fh.fh_swFileNameLen, 1, f);
 
     // skip eventual comment and extra fields
-    if (fh.fh_swFileCommentLen+fh.fh_swExtraFieldLen>0) {
-      fseek(f, fh.fh_swFileCommentLen+fh.fh_swExtraFieldLen, SEEK_CUR);
+    if (fh.fh_swFileCommentLen + fh.fh_swExtraFieldLen > 0) {
+      fseek(f, fh.fh_swFileCommentLen + fh.fh_swExtraFieldLen, SEEK_CUR);
     }
 
     // if the file is directory
-    if (strBuffer[strlen(strBuffer)-1] == '/') {
+    if (strBuffer[strlen(strBuffer) - 1] == '/') {
       // check size
-      if (fh.fh_slUncompressedSize != 0
-        ||fh.fh_slCompressedSize != 0) {
-        ThrowF_t(TRANS("%s/%s: Invalid directory"), 
-          (CTString&)*pfnmZip, strBuffer);
+      if (fh.fh_slUncompressedSize != 0 || fh.fh_slCompressedSize != 0) {
+        ThrowF_t(TRANS("%s/%s: Invalid directory"), (CTString &)*pfnmZip, strBuffer);
       }
 
-    // if the file is real file
+      // if the file is real file
     } else {
       ctFiles++;
       // convert filename
@@ -336,8 +320,7 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
       } else if (fh.fh_swCompressionMethod == 8) {
         ze.ze_bStored = FALSE;
       } else {
-        ThrowF_t(TRANS("%s/%s: Only 'deflate' compression is supported"),
-          (CTString&)*ze.ze_pfnmArchive, ze.ze_fnm);
+        ThrowF_t(TRANS("%s/%s: Only 'deflate' compression is supported"), (CTString &)*ze.ze_pfnmArchive, ze.ze_fnm);
       }
     }
   }
@@ -345,24 +328,22 @@ void ReadZIPDirectory_t(CTFileName *pfnmZip)
   // if error reading
   if (ferror(f)) {
     // fail
-    ThrowF_t(TRANS("%s: Error reading central directory"), (CTString&)*pfnmZip);
+    ThrowF_t(TRANS("%s: Error reading central directory"), (CTString &)*pfnmZip);
   }
 
   // report that file was read
-  CPrintF(TRANS("  %s: %d files\n"), (CTString&)*pfnmZip, ctFiles++);
+  CPrintF(TRANS("  %s: %d files\n"), (CTString &)*pfnmZip, ctFiles++);
 }
 
 // add one zip archive to current active set
-void UNZIPAddArchive(const CTFileName &fnm)
-{
+void UNZIPAddArchive(const CTFileName &fnm) {
   // remember its filename
   CTFileName &fnmNew = _afnmArchives.Push();
   fnmNew = fnm;
-} 
+}
 
 // read directory of an archive
-void ReadOneArchiveDir_t(CTFileName &fnm)
-{
+void ReadOneArchiveDir_t(CTFileName &fnm) {
   // remember current number of files
   INDEX ctOrgFiles = _azeFiles.Count();
 
@@ -370,15 +351,15 @@ void ReadOneArchiveDir_t(CTFileName &fnm)
   try {
     // read the directory and add all files
     ReadZIPDirectory_t(&fnm);
-  // if failed
+    // if failed
   } catch (char *) {
     // if some files were added
-    if (ctOrgFiles<_azeFiles.Count()) {
+    if (ctOrgFiles < _azeFiles.Count()) {
       // remove them
       if (ctOrgFiles == 0) {
         _azeFiles.PopAll();
       } else {
-        _azeFiles.PopUntil(ctOrgFiles-1);
+        _azeFiles.PopUntil(ctOrgFiles - 1);
       }
     }
     // cascade the error
@@ -386,18 +367,17 @@ void ReadOneArchiveDir_t(CTFileName &fnm)
   }
 }
 
-int qsort_ArchiveCTFileName_reverse(const void *elem1, const void *elem2 )
-{                   
+int qsort_ArchiveCTFileName_reverse(const void *elem1, const void *elem2) {
   // get the filenames
   const CTFileName &fnm1 = *(CTFileName *)elem1;
   const CTFileName &fnm2 = *(CTFileName *)elem2;
   // find if any is in a mod or on CD
-  BOOL bMod1 = fnm1.HasPrefix(_fnmApplicationPath+"Mods\\");
+  BOOL bMod1 = fnm1.HasPrefix(_fnmApplicationPath + "Mods\\");
   BOOL bCD1 = fnm1.HasPrefix(_fnmCDPath);
-  BOOL bModCD1 = fnm1.HasPrefix(_fnmCDPath+"Mods\\");
-  BOOL bMod2 = fnm2.HasPrefix(_fnmApplicationPath+"Mods\\");
+  BOOL bModCD1 = fnm1.HasPrefix(_fnmCDPath + "Mods\\");
+  BOOL bMod2 = fnm2.HasPrefix(_fnmApplicationPath + "Mods\\");
   BOOL bCD2 = fnm2.HasPrefix(_fnmCDPath);
-  BOOL bModCD2 = fnm2.HasPrefix(_fnmCDPath+"Mods\\");
+  BOOL bModCD2 = fnm2.HasPrefix(_fnmCDPath + "Mods\\");
 
   // calculate priorities based on location of gro file
   INDEX iPriority1 = 0;
@@ -423,17 +403,16 @@ int qsort_ArchiveCTFileName_reverse(const void *elem1, const void *elem2 )
   }
 
   // find sorting order
-  if (iPriority1<iPriority2) {
+  if (iPriority1 < iPriority2) {
     return +1;
-  } else if (iPriority1>iPriority2) {
+  } else if (iPriority1 > iPriority2) {
     return -1;
   } else {
     return -stricmp(fnm1, fnm2);
   }
 }
 // read directories of all currently added archives, in reverse alphabetical order
-void UNZIPReadDirectoriesReverse_t(void)
-{
+void UNZIPReadDirectoriesReverse_t(void) {
   // if no archives
   if (_afnmArchives.Count() == 0) {
     // do nothing
@@ -441,17 +420,16 @@ void UNZIPReadDirectoriesReverse_t(void)
   }
 
   // sort the archive filenames reversely
-  qsort(&_afnmArchives[0], _afnmArchives.Count(), sizeof(CTFileName), 
-    qsort_ArchiveCTFileName_reverse);
+  qsort(&_afnmArchives[0], _afnmArchives.Count(), sizeof(CTFileName), qsort_ArchiveCTFileName_reverse);
 
   CTString strAllErrors = "";
   // for each archive
-  for (INDEX iArchive=0; iArchive<_afnmArchives.Count(); iArchive++) {
-    //try to
+  for (INDEX iArchive = 0; iArchive < _afnmArchives.Count(); iArchive++) {
+    // try to
     try {
       // read its directory
       ReadOneArchiveDir_t(_afnmArchives[iArchive]);
-    // if failed
+      // if failed
     } catch (char *strError) {
       // remember the error
       strAllErrors += strError;
@@ -467,10 +445,9 @@ void UNZIPReadDirectoriesReverse_t(void)
 }
 
 // check if a zip file entry exists
-BOOL UNZIPFileExists(const CTFileName &fnm)
-{
+BOOL UNZIPFileExists(const CTFileName &fnm) {
   // for each file
-  for (INDEX iFile=0; iFile<_azeFiles.Count(); iFile++) {
+  for (INDEX iFile = 0; iFile < _azeFiles.Count(); iFile++) {
     // if it is that one
     if (_azeFiles[iFile].ze_fnm == fnm) {
       return TRUE;
@@ -480,25 +457,21 @@ BOOL UNZIPFileExists(const CTFileName &fnm)
 }
 
 // enumeration for all files in all zips
-INDEX UNZIPGetFileCount(void)
-{
+INDEX UNZIPGetFileCount(void) {
   return _azeFiles.Count();
 }
-const CTFileName &UNZIPGetFileAtIndex(INDEX i)
-{
+const CTFileName &UNZIPGetFileAtIndex(INDEX i) {
   return _azeFiles[i].ze_fnm;
 }
 
-BOOL UNZIPIsFileAtIndexMod(INDEX i)
-{
+BOOL UNZIPIsFileAtIndexMod(INDEX i) {
   return _azeFiles[i].ze_bMod;
 }
 
 // get index of a file (-1 for no file)
-INDEX UNZIPGetFileIndex(const CTFileName &fnm)
-{
+INDEX UNZIPGetFileIndex(const CTFileName &fnm) {
   // for each file
-  for (INDEX iFile=0; iFile<_azeFiles.Count(); iFile++) {
+  for (INDEX iFile = 0; iFile < _azeFiles.Count(); iFile++) {
     // if it is that one
     if (_azeFiles[iFile].ze_fnm == fnm) {
       return iFile;
@@ -508,12 +481,10 @@ INDEX UNZIPGetFileIndex(const CTFileName &fnm)
 }
 
 // get info on a zip file entry
-void UNZIPGetFileInfo(INDEX iHandle, CTFileName &fnmZip, 
-  SLONG &slOffset, SLONG &slSizeCompressed, SLONG &slSizeUncompressed, 
-  BOOL &bCompressed)
-{
+void UNZIPGetFileInfo(INDEX iHandle, CTFileName &fnmZip, SLONG &slOffset, SLONG &slSizeCompressed, SLONG &slSizeUncompressed,
+                      BOOL &bCompressed) {
   // check handle number
-  if (iHandle<0 || iHandle >= _azhHandles.Count()) {
+  if (iHandle < 0 || iHandle >= _azhHandles.Count()) {
     ASSERT(FALSE);
     return;
   }
@@ -534,11 +505,10 @@ void UNZIPGetFileInfo(INDEX iHandle, CTFileName &fnmZip,
 }
 
 // open a zip file entry for reading
-INDEX UNZIPOpen_t(const CTFileName &fnm)
-{
+INDEX UNZIPOpen_t(const CTFileName &fnm) {
   CZipEntry *pze = NULL;
   // for each file
-  for (INDEX iFile=0; iFile<_azeFiles.Count(); iFile++) {
+  for (INDEX iFile = 0; iFile < _azeFiles.Count(); iFile++) {
     // if it is that one
     if (_azeFiles[iFile].ze_fnm == fnm) {
       // stop searching
@@ -550,13 +520,13 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
   // if not found
   if (pze == NULL) {
     // fail
-    ThrowF_t(TRANS("File not found: %s"), (const CTString&)fnm);
+    ThrowF_t(TRANS("File not found: %s"), (const CTString &)fnm);
   }
 
   // for each existing handle
   BOOL bHandleFound = FALSE;
-  INDEX iHandle=1;
-  for (; iHandle<_azhHandles.Count(); iHandle++) {
+  INDEX iHandle = 1;
+  for (; iHandle < _azhHandles.Count(); iHandle++) {
     // if unused
     if (!_azhHandles[iHandle].zh_bOpen) {
       // use that one
@@ -570,7 +540,7 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
     iHandle = _azhHandles.Count();
     _azhHandles.Push(1);
   }
-  
+
   // get the handle
   CZipHandle &zh = _azhHandles[iHandle];
   ASSERT(!zh.zh_bOpen);
@@ -583,8 +553,7 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
     // clear the handle
     zh.Clear();
     // fail
-    ThrowF_t(TRANS("Cannot open '%s': %s"), (const CTString&)*pze->ze_pfnmArchive,
-      strerror(errno));
+    ThrowF_t(TRANS("Cannot open '%s': %s"), (const CTString &)*pze->ze_pfnmArchive, strerror(errno));
   }
   // seek to the local header of the entry
   fseek(zh.zh_fFile, zh.zh_zeEntry.ze_slDataOffset, SEEK_SET);
@@ -594,35 +563,34 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
   // if this is not the expected sig
   if (slSig != SIGNATURE_LFH) {
     // fail
-    ThrowF_t(TRANS("%s/%s: Wrong signature for 'local file header'"), 
-      (CTString&)*zh.zh_zeEntry.ze_pfnmArchive, zh.zh_zeEntry.ze_fnm);
+    ThrowF_t(TRANS("%s/%s: Wrong signature for 'local file header'"), (CTString &)*zh.zh_zeEntry.ze_pfnmArchive,
+             zh.zh_zeEntry.ze_fnm);
   }
   // read the header
   LocalFileHeader lfh;
   fread(&lfh, sizeof(lfh), 1, zh.zh_fFile);
   // determine exact compressed data position
-  zh.zh_zeEntry.ze_slDataOffset = 
-    ftell(zh.zh_fFile)+lfh.lfh_swFileNameLen+lfh.lfh_swExtraFieldLen;
+  zh.zh_zeEntry.ze_slDataOffset = ftell(zh.zh_fFile) + lfh.lfh_swFileNameLen + lfh.lfh_swExtraFieldLen;
   // seek there
   fseek(zh.zh_fFile, zh.zh_zeEntry.ze_slDataOffset, SEEK_SET);
 
   // allocate buffers
-  zh.zh_pubBufIn  = (UBYTE*)AllocMemory(BUF_SIZE);
+  zh.zh_pubBufIn = (UBYTE *)AllocMemory(BUF_SIZE);
 
   // initialize zlib stream
   CTSingleLock slZip(&zip_csLock, TRUE);
-  zh.zh_zstream.next_out  = NULL;
+  zh.zh_zstream.next_out = NULL;
   zh.zh_zstream.avail_out = 0;
-  zh.zh_zstream.next_in   = NULL;
-  zh.zh_zstream.avail_in  = 0;
+  zh.zh_zstream.next_in = NULL;
+  zh.zh_zstream.avail_in = 0;
   zh.zh_zstream.zalloc = (alloc_func)Z_NULL;
   zh.zh_zstream.zfree = (free_func)Z_NULL;
-  int err = inflateInit2(&zh.zh_zstream, -15);  // 32k windows
+  int err = inflateInit2(&zh.zh_zstream, -15); // 32k windows
   // if failed
   if (err != Z_OK) {
     // clean up what is possible
-    FreeMemory(zh.zh_pubBufIn );
-    zh.zh_pubBufIn  = NULL;
+    FreeMemory(zh.zh_pubBufIn);
+    zh.zh_pubBufIn = NULL;
     fclose(zh.zh_fFile);
     zh.zh_fFile = NULL;
     // throw error
@@ -635,10 +603,9 @@ INDEX UNZIPOpen_t(const CTFileName &fnm)
 }
 
 // get uncompressed size of a file
-SLONG UNZIPGetSize(INDEX iHandle)
-{
+SLONG UNZIPGetSize(INDEX iHandle) {
   // check handle number
-  if (iHandle<0 || iHandle >= _azhHandles.Count()) {
+  if (iHandle < 0 || iHandle >= _azhHandles.Count()) {
     ASSERT(FALSE);
     return 0;
   }
@@ -654,10 +621,9 @@ SLONG UNZIPGetSize(INDEX iHandle)
 }
 
 // get CRC of a file
-ULONG UNZIPGetCRC(INDEX iHandle)
-{
+ULONG UNZIPGetCRC(INDEX iHandle) {
   // check handle number
-  if (iHandle<0 || iHandle >= _azhHandles.Count()) {
+  if (iHandle < 0 || iHandle >= _azhHandles.Count()) {
     ASSERT(FALSE);
     return 0;
   }
@@ -673,10 +639,9 @@ ULONG UNZIPGetCRC(INDEX iHandle)
 }
 
 // read a block from zip file
-void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
-{
+void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen) {
   // check handle number
-  if (iHandle<0 || iHandle >= _azhHandles.Count()) {
+  if (iHandle < 0 || iHandle >= _azhHandles.Count()) {
     ASSERT(FALSE);
     return;
   }
@@ -695,12 +660,12 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
   }
 
   // clamp length to end of the entry data
-  slLen = Min(slLen, zh.zh_zeEntry.ze_slUncompressedSize-slStart);
+  slLen = Min(slLen, zh.zh_zeEntry.ze_slUncompressedSize - slStart);
 
   // if not compressed
   if (zh.zh_zeEntry.ze_bStored) {
     // just read from file
-    fseek(zh.zh_fFile, zh.zh_zeEntry.ze_slDataOffset+slStart, SEEK_SET);
+    fseek(zh.zh_fFile, zh.zh_zeEntry.ze_slDataOffset + slStart, SEEK_SET);
     fread(pub, 1, slLen, zh.zh_fFile);
     return;
   }
@@ -708,7 +673,7 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
   CTSingleLock slZip(&zip_csLock, TRUE);
 
   // if behind the current pointer
-  if (slStart<zh.zh_zstream.total_out) {
+  if (slStart < zh.zh_zstream.total_out) {
     // reset the zlib stream to beginning
     inflateReset(&zh.zh_zstream);
     zh.zh_zstream.avail_in = 0;
@@ -718,7 +683,7 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
   }
 
   // while ahead of the current pointer
-  while (slStart>zh.zh_zstream.total_out) {
+  while (slStart > zh.zh_zstream.total_out) {
     // if zlib has no more input
     while (zh.zh_zstream.avail_in == 0) {
       // read more to it
@@ -728,13 +693,13 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
       }
       // tell zlib that there is more to read
       zh.zh_zstream.next_in = zh.zh_pubBufIn;
-      zh.zh_zstream.avail_in  = slRead;
+      zh.zh_zstream.avail_in = slRead;
     }
-    // read dummy data from the output
-    #define DUMMY_SIZE 256
+// read dummy data from the output
+#define DUMMY_SIZE 256
     UBYTE aubDummy[DUMMY_SIZE];
     // decode to output
-    zh.zh_zstream.avail_out = Min(SLONG(slStart-zh.zh_zstream.total_out), SLONG(DUMMY_SIZE));
+    zh.zh_zstream.avail_out = Min(SLONG(slStart - zh.zh_zstream.total_out), SLONG(DUMMY_SIZE));
     zh.zh_zstream.next_out = aubDummy;
     int ierr = inflate(&zh.zh_zstream, Z_SYNC_FLUSH);
     if (ierr != Z_OK && ierr != Z_STREAM_END) {
@@ -756,7 +721,7 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
   zh.zh_zstream.next_out = pub;
 
   // while there is something to write to given block
-  while (zh.zh_zstream.avail_out>0) {
+  while (zh.zh_zstream.avail_out > 0) {
     // if zlib has no more input
     while (zh.zh_zstream.avail_in == 0) {
       // read more to it
@@ -766,7 +731,7 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
       }
       // tell zlib that there is more to read
       zh.zh_zstream.next_in = zh.zh_pubBufIn;
-      zh.zh_zstream.avail_in  = slRead;
+      zh.zh_zstream.avail_in = slRead;
     }
     // decode to output
     int ierr = inflate(&zh.zh_zstream, Z_SYNC_FLUSH);
@@ -777,10 +742,9 @@ void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen)
 }
 
 // close a zip file entry
-void UNZIPClose(INDEX iHandle)
-{
+void UNZIPClose(INDEX iHandle) {
   // check handle number
-  if (iHandle<0 || iHandle >= _azhHandles.Count()) {
+  if (iHandle < 0 || iHandle >= _azhHandles.Count()) {
     ASSERT(FALSE);
     return;
   }

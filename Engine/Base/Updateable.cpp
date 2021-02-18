@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -22,59 +22,51 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 /*
  * Constructor.
  */
-CUpdateable::CUpdateable(void)
-{
+CUpdateable::CUpdateable(void) {
   ud_llLastUpdate = -1;
 }
 
 /*
  * Mark that the object has been updated.
  */
-void CUpdateable::MarkUpdated(void)
-{
+void CUpdateable::MarkUpdated(void) {
   ud_llLastUpdate = _pTimer->GetTimeTick();
 }
 
 /*
  * Get time when last updated.
  */
-TICK CUpdateable::LastUpdateTime(void) const
-{
+TICK CUpdateable::LastUpdateTime(void) const {
   return ud_llLastUpdate;
 }
 
-// Mark that the object has become invalid in spite of its time stamp. 
-void CUpdateable::Invalidate(void)
-{
+// Mark that the object has become invalid in spite of its time stamp.
+void CUpdateable::Invalidate(void) {
   ud_llLastUpdate = -1;
 }
 
 /*
  * Constructor.
  */
-CUpdateableRT::CUpdateableRT(void)
-{
+CUpdateableRT::CUpdateableRT(void) {
   ud_llLastUpdate = -1;
 }
 
 /*
  * Mark that the object has been updated.
  */
-void CUpdateableRT::MarkUpdated(void)
-{
+void CUpdateableRT::MarkUpdated(void) {
   ud_llLastUpdate = _pTimer->GetTimeTick();
 }
 
 /*
  * Get time when last updated.
  */
-TICK CUpdateableRT::LastUpdateTime(void) const
-{
+TICK CUpdateableRT::LastUpdateTime(void) const {
   return ud_llLastUpdate;
 }
 
-// Mark that the object has become invalid in spite of its time stamp. 
-void CUpdateableRT::Invalidate(void)
-{
+// Mark that the object has become invalid in spite of its time stamp.
+void CUpdateableRT::Invalidate(void) {
   ud_llLastUpdate = -1;
 }

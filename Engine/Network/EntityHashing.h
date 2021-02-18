@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_ENTITYHASHING_H
 #define SE_INCL_ENTITYHASHING_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 #include <Engine\Math\Types.h>
@@ -24,9 +24,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine\Templates\CommunicationInterface.h>
 #include <Engine\Classes\MovableEntity.h>
 
-struct CClientEntry {  
-//implementation
-  TIME  ce_tmLastUpdated;
+struct CClientEntry {
+  // implementation
+  TIME ce_tmLastUpdated;
   CPlacement3D ce_plLastSentPlacement;
   CPlacement3D ce_plLastSentSpeed;
 
@@ -41,52 +41,52 @@ struct CClientEntry {
 }
 
 class CEntityHashItem {
-// implementation
-public:
-  ULONG ehi_ulEntityID;
-  CEntityPointer ehi_epEntityPointer;
-  CClientEntry ehi_ceClientEntries[SERVER_CLIENTS];
+  // implementation
+  public:
+    ULONG ehi_ulEntityID;
+    CEntityPointer ehi_epEntityPointer;
+    CClientEntry ehi_ceClientEntries[SERVER_CLIENTS];
 
-  CEntityHashItem() {ehi_ulEntityID = -1;} // entity pointer will initialize itself to NULL
+    CEntityHashItem() {
+      ehi_ulEntityID = -1;
+    } // entity pointer will initialize itself to NULL
 
-  ~CEntityItem() {}; // entity poiner will destroy itself and remove the reference
-     
-  void WritePackedPlacement(CClientEntry &ceEntry,CNetworkMessage &nmMessage);
+    ~CEntityItem() {}; // entity poiner will destroy itself and remove the reference
 
-// interface
-public:
-  BOOL ClientNeedsUpdate(INDEX iClient,CNetworkMessage &nmMessage);
+    void WritePackedPlacement(CClientEntry &ceEntry, CNetworkMessage &nmMessage);
+
+  // interface
+  public:
+    BOOL ClientNeedsUpdate(INDEX iClient, CNetworkMessage &nmMessage);
 };
 
-
-#define VALUE_TYPE ULONG
-#define TYPE CEntityHashItem
+#define VALUE_TYPE          ULONG
+#define TYPE                CEntityHashItem
 #define CHashTableSlot_TYPE CEntityHashTableSlot
 #define CHashTable_TYPE     CEntityHashTable
 #include <Engine\Templates\HashTable.h>
 
-
-
 class ENGINE_API CEntityHash {
-// implementation
-public:
-  CEntityHashTable eh_ehtHashTable;
+  // implementation
+  public:
+    CEntityHashTable eh_ehtHashTable;
 
-  CEntityHash();
-  ~CEntityHash();
+    CEntityHash();
+    ~CEntityHash();
 
-  ULONG GetItemKey(ULONG ulEntityID) {return ulEntityID;}
-  ULONG GetItemValue(CEntityHashItem* ehiItem) {return ehiItem->ehi_ulUntityID;}
+    ULONG GetItemKey(ULONG ulEntityID) {
+      return ulEntityID;
+    }
+    ULONG GetItemValue(CEntityHashItem *ehiItem) {
+      return ehiItem->ehi_ulUntityID;
+    }
 
+  // interface
+  public:
+    BOOL ClientNeedsUpdate(INDEX iClient, ULONG ulEntityID, CNetworkMessage &nmMessage);
 
-// interface
-public:
-  BOOL ClientNeedsUpdate(INDEX iClient,ULONG ulEntityID,CNetworkMessage &nmMessage);
-
-  void AddEntity(CEntityPointer* penEntity);
-  void RemoveEntity(CEntityPointer* penEntity);
-
+    void AddEntity(CEntityPointer *penEntity);
+    void RemoveEntity(CEntityPointer *penEntity);
 }
-
 
 #endif // include

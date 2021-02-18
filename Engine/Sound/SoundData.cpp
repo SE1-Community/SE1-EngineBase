@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -27,7 +27,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Templates/Stock_CSoundData.h>
 
-/* == == == == == == == == == == == == == == == == == == == == == == == == == == 
+/* == == == == == == == == == == == == == == == == == == == == == == == == == ==
  *
  *  Sound data awareness functions
  */
@@ -35,8 +35,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 /*
  *  Pause all playing
  */
-void CSoundData::PausePlayingObjects(void)
-{
+void CSoundData::PausePlayingObjects(void) {
   // for all objects linked to data pause playing
   FOREACHINLIST(CSoundObject, so_Node, sd_ClhLinkList, itCsoPause) {
     // pause playing
@@ -47,8 +46,7 @@ void CSoundData::PausePlayingObjects(void)
 /*
  *  For all objects resume play
  */
-void CSoundData::ResumePlayingObjects(void)
-{
+void CSoundData::ResumePlayingObjects(void) {
   // for all objects resume play
   FOREACHINLIST(CSoundObject, so_Node, sd_ClhLinkList, itCsoResume) {
     // call play method again
@@ -56,12 +54,10 @@ void CSoundData::ResumePlayingObjects(void)
   }
 }
 
-
 /*
  *  Add object in sound aware list
  */
-void CSoundData::AddObjectLink(CSoundObject &CsoAdd)
-{
+void CSoundData::AddObjectLink(CSoundObject &CsoAdd) {
   // add object to list tail
   sd_ClhLinkList.AddTail(CsoAdd.so_Node);
 }
@@ -69,51 +65,43 @@ void CSoundData::AddObjectLink(CSoundObject &CsoAdd)
 /*
  *  Remove a object from aware list
  */
-void CSoundData::RemoveObjectLink(CSoundObject &CsoRemove)
-{
+void CSoundData::RemoveObjectLink(CSoundObject &CsoRemove) {
   // remove it from list
   CsoRemove.so_Node.Remove();
 }
 
-
-/* == == == == == == == == == == == == == == == == == == == == == == == == == == 
+/* == == == == == == == == == == == == == == == == == == == == == == == == == ==
  *
  *  Class global methods
  */
 
 // Constructor
-CSoundData::CSoundData()
-{
+CSoundData::CSoundData() {
   sd_pswBuffer = NULL;
 }
 
 // Destructor
-CSoundData::~CSoundData()
-{
+CSoundData::~CSoundData() {
   Clear();
 }
 
-
 // Free Buffer (and all linked Objects)
-void CSoundData::ClearBuffer(void)
-{
+void CSoundData::ClearBuffer(void) {
   // if buffer exist
   if (sd_pswBuffer != NULL) {
     // release it
-    FreeMemory( sd_pswBuffer);
+    FreeMemory(sd_pswBuffer);
     sd_pswBuffer = NULL;
   }
 }
 
-
 // Get Sound Length in seconds
-double CSoundData::GetSecondsLength(void)
-{
+double CSoundData::GetSecondsLength(void) {
   // if not encoded
-  if (!(sd_ulFlags&SDF_ENCODED) ) {
+  if (!(sd_ulFlags & SDF_ENCODED)) {
     // len is read from wave
     return sd_dSecondsLength;
-  // if encoded
+    // if encoded
   } else {
     // implement this!!!!
     ASSERT(FALSE);
@@ -121,19 +109,18 @@ double CSoundData::GetSecondsLength(void)
   }
 }
 
-
-/* == == == == == == == == == == == == == == == == == == == == == == == == == == 
+/* == == == == == == == == == == == == == == == == == == == == == == == == == ==
  *
  *  Input methods (load sound in SoundData class)
  */
 
 // Read sound in memory
-void CSoundData::Read_t(CTStream *inFile)  // throw char *
+void CSoundData::Read_t(CTStream *inFile) // throw char *
 {
   // synchronize access to sounds
   CTSingleLock slSounds(&_pSound->sl_csSound, TRUE);
 
-  ASSERT( sd_pswBuffer == NULL);
+  ASSERT(sd_pswBuffer == NULL);
   sd_ulFlags = NONE;
 
   // get filename
@@ -146,9 +133,9 @@ void CSoundData::Read_t(CTStream *inFile)  // throw char *
     }
     delete pmpd;
     // mark that this is streaming encoded file
-    sd_ulFlags = SDF_ENCODED|SDF_STREAMING;
+    sd_ulFlags = SDF_ENCODED | SDF_STREAMING;
 
-  // if this is wave file
+    // if this is wave file
   } else {
     // load wave info
     PCMWaveInput CpwiLoad;
@@ -168,11 +155,11 @@ void CSoundData::Read_t(CTStream *inFile)  // throw char *
       // create Buffer
       sd_slBufferSampleSize = CpwiLoad.GetDataLength(sd_wfeFormat);
       SLONG slBufferSize = CpwiLoad.DetermineBufferSize(sd_wfeFormat);
-      sd_pswBuffer = (SWORD*)AllocMemory( slBufferSize+8);
+      sd_pswBuffer = (SWORD *)AllocMemory(slBufferSize + 8);
       // load data into buffer
-      CpwiLoad.LoadData_t( inFile, sd_pswBuffer, sd_wfeFormat);
+      CpwiLoad.LoadData_t(inFile, sd_pswBuffer, sd_wfeFormat);
       // copy first sample to the last one (this is needed for linear interpolation)
-      (ULONG&)(((UBYTE*)sd_pswBuffer)[slBufferSize]) = *(ULONG*)sd_pswBuffer;
+      (ULONG &)(((UBYTE *)sd_pswBuffer)[slBufferSize]) = *(ULONG *)sd_pswBuffer;
     }
   }
 
@@ -180,35 +167,27 @@ void CSoundData::Read_t(CTStream *inFile)  // throw char *
   _pSound->AddSoundAware(*this);
 }
 
-
 // Sound can't be written to file
-void CSoundData::Write_t( CTStream *outFile)
-{
+void CSoundData::Write_t(CTStream *outFile) {
   ASSERTALWAYS("Cannot write sounds!");
   throw TRANS("Cannot write sounds!");
 }
 
-// Get the description of this object. 
-CTString CSoundData::GetDescription(void)
-{
+// Get the description of this object.
+CTString CSoundData::GetDescription(void) {
   CTString str;
-  str.PrintF("%dkHz %dbit %s %.2lfs",
-    sd_wfeFormat.nSamplesPerSec/1000,
-    sd_wfeFormat.wBitsPerSample,
-    sd_wfeFormat.nChannels == 1 ? "mono" : "stereo",
-    sd_dSecondsLength);
+  str.PrintF("%dkHz %dbit %s %.2lfs", sd_wfeFormat.nSamplesPerSec / 1000, sd_wfeFormat.wBitsPerSample,
+             sd_wfeFormat.nChannels == 1 ? "mono" : "stereo", sd_dSecondsLength);
   return str;
 }
 
-
-/* == == == == == == == == == == == == == == == == == == == == == == == == == == 
+/* == == == == == == == == == == == == == == == == == == == == == == == == == ==
  *
  *  Class CLEAR method
  */
 
 // Free memory allocated for sound and Release DXBuffer
-void CSoundData::Clear(void)
-{
+void CSoundData::Clear(void) {
   // synchronize access to sounds
   CTSingleLock slSounds(&_pSound->sl_csSound, TRUE);
 
@@ -224,43 +203,35 @@ void CSoundData::Clear(void)
   }
 }
 
-
 // check if this kind of objects is auto-freed
-BOOL CSoundData::IsAutoFreed(void)
-{
+BOOL CSoundData::IsAutoFreed(void) {
   return FALSE;
 }
 
-
 // get amount of memory used by this object
-SLONG CSoundData::GetUsedMemory(void)
-{
+SLONG CSoundData::GetUsedMemory(void) {
   SLONG slUsed = sizeof(*this);
   if (sd_pswBuffer != NULL) {
-    ASSERT( sd_wfeFormat.nChannels == 1 || sd_wfeFormat.nChannels == 2);
-    slUsed += sd_slBufferSampleSize * sd_wfeFormat.nChannels *2; // all sounds are 16-bit
+    ASSERT(sd_wfeFormat.nChannels == 1 || sd_wfeFormat.nChannels == 2);
+    slUsed += sd_slBufferSampleSize * sd_wfeFormat.nChannels * 2; // all sounds are 16-bit
   }
   return slUsed;
 }
 
-
-/* == == == == == == == == == == == == == == == == == == == == == == == == == == 
+/* == == == == == == == == == == == == == == == == == == == == == == == == == ==
  *
  *  Reference counting functions
  */
 
 // Add one reference
-void CSoundData::AddReference(void)
-{
+void CSoundData::AddReference(void) {
   if (this != NULL) {
     MarkUsed();
   }
 }
 
-
 // Remove one reference
-void CSoundData::RemReference(void)
-{
+void CSoundData::RemReference(void) {
   if (this != NULL) {
     _pSoundStock->Release(this);
   }

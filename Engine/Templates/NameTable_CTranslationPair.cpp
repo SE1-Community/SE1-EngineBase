@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -18,9 +18,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/TranslationPair.h>
 
 #define NAMETABLE_CASESENSITIVE 1
-#define TYPE CTranslationPair
-#define CNameTable_TYPE CNameTable_CTranslationPair
-#define CNameTableSlot_TYPE CNameTableSlot_CTranslationPair
+#define TYPE                    CTranslationPair
+#define CNameTable_TYPE         CNameTable_CTranslationPair
+#define CNameTableSlot_TYPE     CNameTableSlot_CTranslationPair
 
 #include <Engine/Templates/NameTable.h>
 #include <Engine/Templates/NameTable.cpp>
@@ -28,4 +28,3 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #undef CNameTableSlot_TYPE
 #undef CNameTable_TYPE
 #undef TYPE
-

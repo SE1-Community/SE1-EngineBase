@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,14 +16,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_STOCK_CTEXTUREDATA_H
 #define SE_INCL_STOCK_CTEXTUREDATA_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 #include <Engine/Graphics/Texture.h>
 
-#define TYPE CTextureData
-#define CStock_TYPE CStock_CTextureData
-#define CNameTable_TYPE CNameTable_CTextureData
+#define TYPE                CTextureData
+#define CStock_TYPE         CStock_CTextureData
+#define CNameTable_TYPE     CNameTable_CTextureData
 #define CNameTableSlot_TYPE CNameTableSlot_CTextureData
 
 #include <Engine/Templates/NameTable.h>
@@ -36,6 +36,4 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 ENGINE_API extern CStock_CTextureData *_pTextureStock;
 
-
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

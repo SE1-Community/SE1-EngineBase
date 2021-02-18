@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef SE_INCL_SHADER_H
 #define SE_INCL_SHADER_H
 #ifdef PRAGMA_ONCE
-  #pragma once
+#pragma once
 #endif
 
 #include <Engine/Base/CTString.h>
@@ -29,9 +29,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define BASE_DOUBLE_SIDED (1UL << 0) // Double sided
 #define BASE_FULL_BRIGHT  (1UL << 1) // Full bright
 
-
-struct ShaderDesc
-{
+struct ShaderDesc {
   CStaticArray<class CTString> sd_astrTextureNames;
   CStaticArray<class CTString> sd_astrTexCoordNames;
   CStaticArray<class CTString> sd_astrColorNames;
@@ -40,8 +38,7 @@ struct ShaderDesc
   CTString sd_strShaderInfo;
 };
 
-struct ShaderParams
-{
+struct ShaderParams {
   ShaderParams() {
     sp_ulFlags = 0;
   }
@@ -55,27 +52,26 @@ struct ShaderParams
   CStaticArray<INDEX> sp_aiTexCoordsIndex;
   CStaticArray<COLOR> sp_acolColors;
   CStaticArray<FLOAT> sp_afFloats;
-  ULONG               sp_ulFlags;
+  ULONG sp_ulFlags;
 };
 
-class ENGINE_API CShader : public CSerial
-{
-public:
-  CShader();
-  ~CShader();
-  
-  HINSTANCE hLibrary;
-  void (*ShaderFunc)(void);
-  void (*GetShaderDesc)(ShaderDesc &shDesc);
+class ENGINE_API CShader : public CSerial {
+  public:
+    CShader();
+    ~CShader();
 
-  void Read_t( CTStream *istrFile); // throw char *
-  void Write_t( CTStream *ostrFile); // throw char *
-  void Clear(void);
-  SLONG GetUsedMemory(void);
+    HINSTANCE hLibrary;
+    void (*ShaderFunc)(void);
+    void (*GetShaderDesc)(ShaderDesc &shDesc);
+
+    void Read_t(CTStream *istrFile);  // throw char *
+    void Write_t(CTStream *ostrFile); // throw char *
+    void Clear(void);
+    SLONG GetUsedMemory(void);
 };
 
 // Begin shader using
-ENGINE_API void shaBegin(CAnyProjection3D &aprProjection,CShader *pShader);
+ENGINE_API void shaBegin(CAnyProjection3D &aprProjection, CShader *pShader);
 // End shader using
 ENGINE_API void shaEnd(void);
 // Render given model
@@ -91,9 +87,8 @@ ENGINE_API void shaCalculateLightForSpecular(void);
 // Clear temp vars used by shader
 ENGINE_API void shaClean(void);
 
-
 // Set array of vertices
-ENGINE_API void shaSetVertexArray(GFXVertex4 *paVertices,INDEX ctVertices);
+ENGINE_API void shaSetVertexArray(GFXVertex4 *paVertices, INDEX ctVertices);
 // Set array of normals
 ENGINE_API void shaSetNormalArray(GFXNormal *paNormals);
 // Set array of indices
@@ -108,7 +103,7 @@ ENGINE_API void shaSetColorArray(COLOR *paColors, INDEX ctColors);
 ENGINE_API void shaSetFloatArray(FLOAT *paFloats, INDEX ctFloats);
 // Set shading flags
 ENGINE_API void shaSetFlags(ULONG ulFlags);
-// Set base color of model 
+// Set base color of model
 ENGINE_API void shaSetModelColor(COLOR &colModel);
 // Set light direction
 ENGINE_API void shaSetLightDirection(const FLOAT3D &vLightDir);
@@ -118,7 +113,6 @@ ENGINE_API void shaSetLightColor(COLOR colAmbient, COLOR colLight);
 ENGINE_API void shaSetObjToViewMatrix(Matrix12 &mat);
 // Set object to abs matrix
 ENGINE_API void shaSetObjToAbsMatrix(Matrix12 &mat);
-
 
 // Set current texture index
 ENGINE_API void shaSetTexture(INDEX iTexture);
@@ -133,7 +127,6 @@ ENGINE_API void shaSetVertexColors(GFXColor *paColors);
 // Set constant color
 ENGINE_API void shaSetConstantColor(const COLOR colConstant);
 
-
 // Get vertex count
 ENGINE_API INDEX shaGetVertexCount(void);
 // Get index count
@@ -141,7 +134,7 @@ ENGINE_API INDEX shaGetIndexCount(void);
 // Get float from array of floats
 ENGINE_API FLOAT shaGetFloat(INDEX iFloatIndex);
 // Get texture from array of textures
-ENGINE_API CTextureObject *shaGetTexture( INDEX iTextureIndex);
+ENGINE_API CTextureObject *shaGetTexture(INDEX iTextureIndex);
 // Get base color from array of colors
 ENGINE_API COLOR &shaGetColor(INDEX iColorIndex);
 // Get shading flags
@@ -163,7 +156,7 @@ ENGINE_API INDEX *shaGetIndexArray(void);
 // Get normal array
 ENGINE_API GFXNormal *shaGetNormalArray(void);
 // Get uvmap array from array of uvmaps
-ENGINE_API GFXTexCoord *shaGetUVMap( INDEX iUVMapIndex);
+ENGINE_API GFXTexCoord *shaGetUVMap(INDEX iUVMapIndex);
 // Get color array
 ENGINE_API GFXColor *shaGetColorArray(void);
 
@@ -172,7 +165,7 @@ ENGINE_API GFXColor *shaGetNewColorArray(void);
 // Get empty texcoords array for modifying
 ENGINE_API GFXTexCoord *shaGetNewTexCoordArray(void);
 // Get empty v array for modifying
-ENGINE_API GFXVertex   *shaGetNewVertexArray(void);
+ENGINE_API GFXVertex *shaGetNewVertexArray(void);
 
 // Get current projection
 ENGINE_API CAnyProjection3D *shaGetProjection(void);
@@ -180,7 +173,6 @@ ENGINE_API CAnyProjection3D *shaGetProjection(void);
 ENGINE_API Matrix12 *shaGetObjToViewMatrix(void);
 // Get object to abs matrix
 ENGINE_API Matrix12 *shaGetObjToAbsMatrix(void);
-
 
 // Set face culling
 ENGINE_API void shaCullFace(GfxFace eFace);
@@ -202,8 +194,8 @@ ENGINE_API void shaEnableDepthWrite(void);
 ENGINE_API void shaDisableDepthWrite(void);
 // Set depth buffer compare mode
 ENGINE_API void shaDepthFunc(GfxComp eComp);
-// Set texture wrapping 
-ENGINE_API void shaSetTextureWrapping( enum GfxWrap eWrapU, enum GfxWrap eWrapV);
+// Set texture wrapping
+ENGINE_API void shaSetTextureWrapping(enum GfxWrap eWrapU, enum GfxWrap eWrapV);
 
 // Set uvmap for fog
 ENGINE_API void shaSetFogUVMap(GFXTexCoord *paFogUVMap);
@@ -216,20 +208,19 @@ ENGINE_API void shaSetHazeColorArray(GFXColor *paHazeColors);
 ENGINE_API BOOL shaOverBrightningEnabled(void);
 
 #if (defined _MSC_VER)
- #define DECLSPEC_DLLEXPORT _declspec (dllexport)
+#define DECLSPEC_DLLEXPORT _declspec(dllexport)
 #else
- #define DECLSPEC_DLLEXPORT
+#define DECLSPEC_DLLEXPORT
 #endif
 
 #define SHADER_MAIN(name) \
-  extern "C" void DECLSPEC_DLLEXPORT Shader_##name (void);\
-  SYMBOLLOCATOR(Shader_##name);\
-  extern "C" void DECLSPEC_DLLEXPORT Shader_##name (void)
+  extern "C" void DECLSPEC_DLLEXPORT Shader_##name(void); \
+  SYMBOLLOCATOR(Shader_##name); \
+  extern "C" void DECLSPEC_DLLEXPORT Shader_##name(void)
 
-#define SHADER_DESC(name,x) \
-  extern "C" void DECLSPEC_DLLEXPORT Shader_Desc_##name (x);\
-  SYMBOLLOCATOR(Shader_Desc_##name);\
-  extern "C" void DECLSPEC_DLLEXPORT Shader_Desc_##name (x)
+#define SHADER_DESC(name, x) \
+  extern "C" void DECLSPEC_DLLEXPORT Shader_Desc_##name(x); \
+  SYMBOLLOCATOR(Shader_Desc_##name); \
+  extern "C" void DECLSPEC_DLLEXPORT Shader_Desc_##name(x)
 
-#endif  /* include-once check. */
-
+#endif /* include-once check. */

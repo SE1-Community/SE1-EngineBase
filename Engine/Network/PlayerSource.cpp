@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -41,8 +41,7 @@ CPlayerSource::CPlayerSource(void) {
 /*
  *  Destructor.
  */
-CPlayerSource::~CPlayerSource(void) {
-}
+CPlayerSource::~CPlayerSource(void) {}
 
 /*
  * Activate a new player.
@@ -56,19 +55,18 @@ void CPlayerSource::Start_t(CPlayerCharacter &pcCharacter) // throw char *
   // copy the character data
   pls_pcCharacter = pcCharacter;
   // clear actions
-  pls_paAction.Clear();;
-  for (INDEX ipa=0; ipa<PLS_MAXLASTACTIONS; ipa++) {
+  pls_paAction.Clear();
+  ;
+  for (INDEX ipa = 0; ipa < PLS_MAXLASTACTIONS; ipa++) {
     pls_apaLastActions[ipa].Clear();
   }
 
   // request player connection
   CNetworkMessage nmRegisterPlayer(MSG_REQ_CONNECTPLAYER);
-  nmRegisterPlayer << pls_pcCharacter;    // player's character data
+  nmRegisterPlayer << pls_pcCharacter; // player's character data
   _pNetwork->SendToServerReliable(nmRegisterPlayer);
 
-  for (TIME tmWait=0; 
-      tmWait<net_tmConnectionTimeout*1000; 
-      Sleep(NET_WAITMESSAGE_DELAY), tmWait+=NET_WAITMESSAGE_DELAY) {
+  for (TIME tmWait = 0; tmWait < net_tmConnectionTimeout * 1000; Sleep(NET_WAITMESSAGE_DELAY), tmWait += NET_WAITMESSAGE_DELAY) {
     if (_pNetwork->ga_IsServer) {
       _pNetwork->TimerLoop();
     }
@@ -89,10 +87,10 @@ void CPlayerSource::Start_t(CPlayerCharacter &pcCharacter) // throw char *
       // finish waiting
       pls_Active = TRUE;
       return;
-    // if this is disconnect message
+      // if this is disconnect message
     } else if (nmReceived.GetType() == MSG_INF_DISCONNECTED) {
       // confirm disconnect
-      CNetworkMessage nmConfirmDisconnect(MSG_REP_DISCONNECTED);      
+      CNetworkMessage nmConfirmDisconnect(MSG_REP_DISCONNECTED);
       _pNetwork->SendToServerReliable(nmConfirmDisconnect);
 
       // throw exception
@@ -101,7 +99,7 @@ void CPlayerSource::Start_t(CPlayerCharacter &pcCharacter) // throw char *
       _pNetwork->ga_sesSessionState.ses_strDisconnected = strReason;
       ThrowF_t(TRANS("Cannot add player because: %s\n"), strReason);
 
-    // otherwise
+      // otherwise
     } else {
       // it is invalid message
       ThrowF_t(TRANS("Invalid message while waiting for player registration"));
@@ -112,10 +110,9 @@ void CPlayerSource::Start_t(CPlayerCharacter &pcCharacter) // throw char *
       // quit
       ThrowF_t(TRANS("Client disconnected"));
     }
-
   }
 
-    CNetworkMessage nmConfirmDisconnect(MSG_REP_DISCONNECTED);      
+  CNetworkMessage nmConfirmDisconnect(MSG_REP_DISCONNECTED);
   _pNetwork->SendToServerReliable(nmConfirmDisconnect);
 
   ThrowF_t(TRANS("Timeout while waiting for player registration"));
@@ -124,8 +121,7 @@ void CPlayerSource::Start_t(CPlayerCharacter &pcCharacter) // throw char *
 /*
  * Deactivate removed player.
  */
-void CPlayerSource::Stop(void)
-{
+void CPlayerSource::Stop(void) {
   ASSERT(pls_Active);
   pls_Active = FALSE;
   pls_Index = -2;
@@ -133,8 +129,7 @@ void CPlayerSource::Stop(void)
 
 // request character change for a player
 // NOTE: the request is asynchronious and possible failure cannot be detected
-void CPlayerSource::ChangeCharacter(CPlayerCharacter &pcNew)
-{
+void CPlayerSource::ChangeCharacter(CPlayerCharacter &pcNew) {
   // if the requested character has different guid
   if (!(pls_pcCharacter == pcNew)) {
     // fail
@@ -152,8 +147,7 @@ void CPlayerSource::ChangeCharacter(CPlayerCharacter &pcNew)
 /*
  * Set player action.
  */
-void CPlayerSource::SetAction(const CPlayerAction &paAction)
-{
+void CPlayerSource::SetAction(const CPlayerAction &paAction) {
   // synchronize access to action
   CTSingleLock slAction(&pls_csAction, TRUE);
   // set action
@@ -162,14 +156,12 @@ void CPlayerSource::SetAction(const CPlayerAction &paAction)
 }
 
 // get mask of this player for chat messages
-ULONG CPlayerSource::GetChatMask(void)
-{
+ULONG CPlayerSource::GetChatMask(void) {
   return 1UL << pls_Index;
 }
 
-// Create action packet from current player commands and for sending to server. 
-void CPlayerSource::WriteActionPacket(CNetworkMessage &nm)
-{
+// Create action packet from current player commands and for sending to server.
+void CPlayerSource::WriteActionPacket(CNetworkMessage &nm) {
   // synchronize access to actions
   CTSingleLock slActions(&pls_csAction, TRUE);
 
@@ -194,14 +186,14 @@ void CPlayerSource::WriteActionPacket(CNetworkMessage &nm)
 
   // determine ping
   FLOAT tmPing = ppe->en_tmPing;
-  INDEX iPing = (INDEX)ceil(tmPing*1000);
+  INDEX iPing = (INDEX)ceil(tmPing * 1000);
 
   // write all in the message
   BOOL bActive = 1;
   nm.WriteBits(&bActive, 1);
-  nm.WriteBits(&pls_Index, 4);  // your index
-  nm.WriteBits(&iPing, 10);     // your ping
-  nm << pls_paAction;             // action
+  nm.WriteBits(&pls_Index, 4); // your index
+  nm.WriteBits(&iPing, 10);    // your ping
+  nm << pls_paAction;          // action
 
   // get sendbehind parameters
   extern INDEX cli_iSendBehind;
@@ -216,13 +208,13 @@ void CPlayerSource::WriteActionPacket(CNetworkMessage &nm)
 
   // save sendbehind if needed
   nm.WriteBits(&iSendBehind, 2);
-  for (INDEX i=0; i<iSendBehind; i++) {
+  for (INDEX i = 0; i < iSendBehind; i++) {
     nm << pls_apaLastActions[i];
   }
 
   // remember last action
-  for (INDEX ipa=1; ipa<PLS_MAXLASTACTIONS; ipa++) {
-    pls_apaLastActions[ipa] = pls_apaLastActions[ipa-1];
+  for (INDEX ipa = 1; ipa < PLS_MAXLASTACTIONS; ipa++) {
+    pls_apaLastActions[ipa] = pls_apaLastActions[ipa - 1];
   }
   pls_apaLastActions[0] = pls_paAction;
 

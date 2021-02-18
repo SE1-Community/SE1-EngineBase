@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -32,9 +32,9 @@ CProjection3D::CProjection3D(void) {
   pr_bHalfFaceForward = FALSE;
   pr_vObjectHandle = FLOAT3D(0.0f, 0.0f, 0.0f);
   pr_fDepthBufferNear = 0.0f;
-  pr_fDepthBufferFar  = 1.0f;
+  pr_fDepthBufferFar = 1.0f;
   pr_NearClipDistance = 0.25f;
-  pr_FarClipDistance = -9999.0f;  // never used by default
+  pr_FarClipDistance = -9999.0f; // never used by default
   pr_bMirror = FALSE;
   pr_bWarp = FALSE;
   pr_fViewStretch = 1.0f;

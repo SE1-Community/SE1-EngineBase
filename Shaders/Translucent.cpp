@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -26,10 +26,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define BASE_COLOR   0
 #define BASE_FLOAT   0
 
-SHADER_MAIN(Translucent)
-{
+SHADER_MAIN(Translucent) {
   shaSetTexture(BASE_TEXTURE);
-  shaSetTextureWrapping( GFX_REPEAT, GFX_REPEAT);
+  shaSetTextureWrapping(GFX_REPEAT, GFX_REPEAT);
   shaSetUVMap(BASE_UVMAP);
   shaSetColor(BASE_COLOR);
   shaDepthFunc(GFX_LESS_EQUAL);
@@ -42,9 +41,10 @@ SHADER_MAIN(Translucent)
   shaDisableDepthWrite();
 
   shaModifyColorForFog();
-  if (shaOverBrightningEnabled()) shaSetTextureModulation(2);
+  if (shaOverBrightningEnabled())
+    shaSetTextureModulation(2);
 
-  BOOL bDoubleSided = shaGetFlags()&BASE_DOUBLE_SIDED;
+  BOOL bDoubleSided = shaGetFlags() & BASE_DOUBLE_SIDED;
   if (bDoubleSided) {
     shaCullFace(GFX_FRONT);
     shaRender();
@@ -52,11 +52,11 @@ SHADER_MAIN(Translucent)
 
   shaCullFace(GFX_BACK);
   shaRender();
-  if (shaOverBrightningEnabled()) shaSetTextureModulation(1);
+  if (shaOverBrightningEnabled())
+    shaSetTextureModulation(1);
 }
 
-SHADER_DESC(Translucent,ShaderDesc &shDesc)
-{
+SHADER_DESC(Translucent, ShaderDesc &shDesc) {
   shDesc.sd_astrTextureNames.New(TEXTURE_COUNT);
   shDesc.sd_astrTexCoordNames.New(UVMAPS_COUNT);
   shDesc.sd_astrColorNames.New(COLOR_COUNT);

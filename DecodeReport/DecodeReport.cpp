@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -18,21 +18,21 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "stdafx.h"
 
-void SubMain( int argc, char *argv[]);
+void SubMain(int argc, char *argv[]);
 
-int main( int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   CTSTREAM_BEGIN {
     SubMain(argc, argv);
-  } CTSTREAM_END;
+  }
+  CTSTREAM_END;
   return 0;
 }
 
-void FindInMapFile(const CTFileName &fnSymbols, const CTString &strImage, ULONG ulSeg, ULONG ulOff, CTString &strFunction, SLONG &slDelta)
-{
+void FindInMapFile(const CTFileName &fnSymbols, const CTString &strImage, ULONG ulSeg, ULONG ulOff, CTString &strFunction,
+                   SLONG &slDelta) {
   CTFileName fnmImage = strImage;
-  CTFileName fnmMap = fnSymbols+fnmImage.FileName()+".map";
-  strFunction = CTString("<not found in '")+fnmMap+"'>";
+  CTFileName fnmMap = fnSymbols + fnmImage.FileName() + ".map";
+  strFunction = CTString("<not found in '") + fnmMap + "'>";
 
   try {
     CTFileStream strmMap;
@@ -58,18 +58,18 @@ void FindInMapFile(const CTFileName &fnSymbols, const CTString &strImage, ULONG 
       CTString strLine;
       strmMap.GetLine_t(strLine);
       char strFunctionLine[1024];
-      strFunctionLine[0]=0;
-      ULONG ulSegLine=-1;
-      ULONG ulOfsLine=-1;
+      strFunctionLine[0] = 0;
+      ULONG ulSegLine = -1;
+      ULONG ulOfsLine = -1;
       strLine.ScanF("%x:%x %s", &ulSegLine, &ulOfsLine, strFunctionLine);
       if (ulSegLine != ulSeg) {
         continue;
       }
-      if (ulOfsLine>ulOff) {
+      if (ulOfsLine > ulOff) {
         return;
       }
       strFunction = strFunctionLine;
-      slDelta = ulOff-ulOfsLine;
+      slDelta = ulOff - ulOfsLine;
     }
 
   } catch (char *strError) {
@@ -78,28 +78,24 @@ void FindInMapFile(const CTFileName &fnSymbols, const CTString &strImage, ULONG 
   }
 }
 
-void SubMain( int argc, char *argv[])
-{
+void SubMain(int argc, char *argv[]) {
   printf("\nDecodeReport - '.RPT' file decoder V1.0\n");
-  printf(  "           (C)1999 CROTEAM Ltd\n\n");
+  printf("           (C)1999 CROTEAM Ltd\n\n");
 
-  if (argc != 3+1)
-  {
-    printf( "USAGE:\nDecodeReport <infilename> <outfilename> <symbolsdir>\n");
-    exit( EXIT_FAILURE);
+  if (argc != 3 + 1) {
+    printf("USAGE:\nDecodeReport <infilename> <outfilename> <symbolsdir>\n");
+    exit(EXIT_FAILURE);
   }
-  
+
   // initialize engine
   SE_InitEngine("");
   _fnmApplicationPath = CTString("");
-
 
   CTFileName fnSrc = CTString(argv[1]);
   CTFileName fnDst = CTString(argv[2]);
   CTFileName fnSymbols = CTString(argv[3]);
 
-  try
-  {
+  try {
     if (fnSrc == fnDst) {
       throw "Use different files!";
     }
@@ -108,7 +104,7 @@ void SubMain( int argc, char *argv[])
     strmSrc.Open_t(fnSrc, CTStream::OM_READ);
     CTFileStream strmDst;
     strmDst.Create_t(fnDst);
-    
+
     // while there is some line in src
     while (!strmSrc.AtEOF()) {
       // read the line
@@ -122,13 +118,13 @@ void SubMain( int argc, char *argv[])
         // just copy the line
         strmDst.PutLine_t(strLine);
 
-      // if there is marker
+        // if there is marker
       } else {
         // parse the line
         char strImage[1024];
-        strImage[0]=0;
-        ULONG ulSegment=-1;
-        ULONG ulOffset=-1;
+        strImage[0] = 0;
+        ULONG ulSegment = -1;
+        ULONG ulOffset = -1;
         sscanf(strAdr, "$adr: %s %x:%x", strImage, &ulSegment, &ulOffset);
         // find the function
         CTString strFunction;
@@ -140,11 +136,8 @@ void SubMain( int argc, char *argv[])
         strmDst.PutLine_t(strResult);
       }
     }
-  }
-  catch(char *strError)
-  {
+  } catch (char *strError) {
     printf("\nError: %s\n", strError);
     exit(EXIT_FAILURE);
   }
 }
-

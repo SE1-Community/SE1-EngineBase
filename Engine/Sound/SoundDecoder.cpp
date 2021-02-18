@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -29,7 +29,6 @@ static void FailFunction_t(const char *strName) {
   ThrowF_t(TRANS("Function %s not found."), strName);
 }
 
-
 // ------------------------------------ AMP11
 
 // amp11lib vars
@@ -51,132 +50,127 @@ typedef float ALfloat;
 typedef ALsint32 ALhandle;
 
 // define amp11lib function pointers
-#define DLLFUNCTION(dll, output, name, inputs, params, required) \
-  output (__stdcall *p##name) inputs = NULL;
+#define DLLFUNCTION(dll, output, name, inputs, params, required) output(__stdcall *p##name) inputs = NULL;
 #include "al_functions.h"
 #undef DLLFUNCTION
 
 static void AMP11_SetFunctionPointers_t(void) {
   const char *strName;
-  // get amp11lib function pointers
-  #define DLLFUNCTION(dll, output, name, inputs, params, required) \
-    strName = "_" #name "@" #params;  \
-    p##name = (output (__stdcall*) inputs) GetProcAddress( _hAmp11lib, strName); \
-    if (p##name == NULL) FailFunction_t(strName);
-  #include "al_functions.h"
-  #undef DLLFUNCTION
+// get amp11lib function pointers
+#define DLLFUNCTION(dll, output, name, inputs, params, required) \
+  strName = "_" #name "@" #params; \
+  p##name = (output(__stdcall *) inputs)GetProcAddress(_hAmp11lib, strName); \
+  if (p##name == NULL) \
+    FailFunction_t(strName);
+#include "al_functions.h"
+#undef DLLFUNCTION
 }
 
 static void AMP11_ClearFunctionPointers(void) {
-  // clear amp11lib function pointers
-  #define DLLFUNCTION(dll, output, name, inputs, params, required) p##name = NULL;
-  #include "al_functions.h"
-  #undef DLLFUNCTION
+// clear amp11lib function pointers
+#define DLLFUNCTION(dll, output, name, inputs, params, required) p##name = NULL;
+#include "al_functions.h"
+#undef DLLFUNCTION
 }
 
 class CDecodeData_MPEG {
-public:
-  ALhandle mpeg_hMainFile; // mainfile handle if using subfile
-  ALhandle mpeg_hFile;     // file handle
-  ALhandle mpeg_hDecoder;  // the decoder handle
-  FLOAT mpeg_fSecondsLen;  // length of sound in seconds
-  WAVEFORMATEX mpeg_wfeFormat; // format of sound
+  public:
+    ALhandle mpeg_hMainFile;     // mainfile handle if using subfile
+    ALhandle mpeg_hFile;         // file handle
+    ALhandle mpeg_hDecoder;      // the decoder handle
+    FLOAT mpeg_fSecondsLen;      // length of sound in seconds
+    WAVEFORMATEX mpeg_wfeFormat; // format of sound
 };
 
-
 // ------------------------------------ Ogg Vorbis
-#include <vorbis\vorbisfile.h>  // we define needed stuff ourselves, and ignore the rest
+#include <vorbis\vorbisfile.h> // we define needed stuff ourselves, and ignore the rest
 
 // vorbis vars
 extern BOOL _bOVEnabled = FALSE;
 static HINSTANCE _hOV = NULL;
 
 class CDecodeData_OGG {
-public:
-  FILE *ogg_fFile;      // the stdio file that ogg is in
-  SLONG ogg_slOffset;   // offset where the ogg starts in the file ( != 0 for oggs in zip)
-  SLONG ogg_slSize;     // size of ogg in the file ( != filesize for oggs in zip)
-  OggVorbis_File *ogg_vfVorbisFile;  // the decoder file
-  WAVEFORMATEX ogg_wfeFormat; // format of sound
+  public:
+    FILE *ogg_fFile;                  // the stdio file that ogg is in
+    SLONG ogg_slOffset;               // offset where the ogg starts in the file ( != 0 for oggs in zip)
+    SLONG ogg_slSize;                 // size of ogg in the file ( != filesize for oggs in zip)
+    OggVorbis_File *ogg_vfVorbisFile; // the decoder file
+    WAVEFORMATEX ogg_wfeFormat;       // format of sound
 };
 
 // define vorbis function pointers
-#define DLLFUNCTION(dll, output, name, inputs, params, required) \
-  output (__cdecl *p##name) inputs = NULL;
+#define DLLFUNCTION(dll, output, name, inputs, params, required) output(__cdecl *p##name) inputs = NULL;
 #include "ov_functions.h"
 #undef DLLFUNCTION
 
 static void OV_SetFunctionPointers_t(void) {
   const char *strName;
-  // get vo function pointers
-  #define DLLFUNCTION(dll, output, name, inputs, params, required) \
-    strName = #name ;  \
-    p##name = (output (__cdecl *) inputs) GetProcAddress( _hOV, strName); \
-    if (p##name == NULL) FailFunction_t(strName);
-  #include "ov_functions.h"
-  #undef DLLFUNCTION
+// get vo function pointers
+#define DLLFUNCTION(dll, output, name, inputs, params, required) \
+  strName = #name; \
+  p##name = (output(__cdecl *) inputs)GetProcAddress(_hOV, strName); \
+  if (p##name == NULL) \
+    FailFunction_t(strName);
+#include "ov_functions.h"
+#undef DLLFUNCTION
 }
 static void OV_ClearFunctionPointers(void) {
-  // clear vo function pointers
-  #define DLLFUNCTION(dll, output, name, inputs, params, required) p##name = NULL;
-  #include "ov_functions.h"
-  #undef DLLFUNCTION
+// clear vo function pointers
+#define DLLFUNCTION(dll, output, name, inputs, params, required) p##name = NULL;
+#include "ov_functions.h"
+#undef DLLFUNCTION
 }
 
 // ogg file reading callbacks
 //
 
-static size_t ogg_read_func  (void *ptr, size_t size, size_t nmemb, void *datasource)
-{
+static size_t ogg_read_func(void *ptr, size_t size, size_t nmemb, void *datasource) {
   CDecodeData_OGG *pogg = (CDecodeData_OGG *)datasource;
   // calculate how much can be read at most
-  SLONG slToRead = size*nmemb;
-  SLONG slCurrentPos = ftell(pogg->ogg_fFile)-pogg->ogg_slOffset;
-  SLONG slSizeLeft = ClampDn(pogg->ogg_slSize-slCurrentPos, 0L);
+  SLONG slToRead = size * nmemb;
+  SLONG slCurrentPos = ftell(pogg->ogg_fFile) - pogg->ogg_slOffset;
+  SLONG slSizeLeft = ClampDn(pogg->ogg_slSize - slCurrentPos, 0L);
   slToRead = ClampUp(slToRead, slSizeLeft);
 
   // rounded down to the block size
-  slToRead/=size;
-  slToRead*=size;
+  slToRead /= size;
+  slToRead *= size;
   // if there is nothing to read
   if (slToRead <= 0) {
     return 0;
   }
-  return fread(ptr, size, slToRead/size, pogg->ogg_fFile);
+  return fread(ptr, size, slToRead / size, pogg->ogg_fFile);
 }
 
-static int ogg_seek_func  (void *datasource, ogg_int64_t offset, int whence)
-{
+static int ogg_seek_func(void *datasource, ogg_int64_t offset, int whence) {
   return -1;
-/*  !!!! seeking is evil with vorbisfile 1.0RC2
-  CDecodeData_OGG *pogg = (CDecodeData_OGG *)datasource;
-  SLONG slCurrentPos = ftell(pogg->ogg_fFile)-pogg->ogg_slOffset;
-  if (whence == SEEK_CUR) {
-    return fseek(pogg->ogg_fFile, offset, SEEK_CUR);
-  } else if (whence == SEEK_END) {
-    return fseek(pogg->ogg_fFile, pogg->ogg_slOffset+pogg->ogg_slSize-offset, SEEK_SET);
-  } else {
-    ASSERT(whence == SEEK_SET);
-    return fseek(pogg->ogg_fFile, pogg->ogg_slOffset+offset, SEEK_SET);
-  }
-*/
+  /*  !!!! seeking is evil with vorbisfile 1.0RC2
+    CDecodeData_OGG *pogg = (CDecodeData_OGG *)datasource;
+    SLONG slCurrentPos = ftell(pogg->ogg_fFile)-pogg->ogg_slOffset;
+    if (whence == SEEK_CUR) {
+      return fseek(pogg->ogg_fFile, offset, SEEK_CUR);
+    } else if (whence == SEEK_END) {
+      return fseek(pogg->ogg_fFile, pogg->ogg_slOffset+pogg->ogg_slSize-offset, SEEK_SET);
+    } else {
+      ASSERT(whence == SEEK_SET);
+      return fseek(pogg->ogg_fFile, pogg->ogg_slOffset+offset, SEEK_SET);
+    }
+  */
 }
 
-static int ogg_close_func (void *datasource)
-{
+static int ogg_close_func(void *datasource) {
   return 0;
-/* !!!! closing is evil with vorbisfile 1.0RC2
-  CDecodeData_OGG *pogg = (CDecodeData_OGG *)datasource;
-  fclose(pogg->ogg_fFile);
-  */
+  /* !!!! closing is evil with vorbisfile 1.0RC2
+    CDecodeData_OGG *pogg = (CDecodeData_OGG *)datasource;
+    fclose(pogg->ogg_fFile);
+    */
 }
-static long ogg_tell_func  (void *datasource)
-{
+static long ogg_tell_func(void *datasource) {
   return -1;
-/*  !!!! seeking is evil with vorbisfile 1.0RC2
-  CDecodeData_OGG *pogg = (CDecodeData_OGG *)datasource;
-  ftell(pogg->ogg_fFile)-pogg->ogg_slOffset;
-  */
+  /*  !!!! seeking is evil with vorbisfile 1.0RC2
+    CDecodeData_OGG *pogg = (CDecodeData_OGG *)datasource;
+    ftell(pogg->ogg_fFile)-pogg->ogg_slOffset;
+    */
 }
 
 static ov_callbacks ovcCallbacks = {
@@ -186,17 +180,15 @@ static ov_callbacks ovcCallbacks = {
   ogg_tell_func,
 };
 
-
 // initialize/end the decoding support engine(s)
-void CSoundDecoder::InitPlugins(void)
-{
+void CSoundDecoder::InitPlugins(void) {
   try {
     // load vorbis
     if (_hOV == NULL) {
 #ifndef NDEBUG
-  #define VORBISLIB "libvorbisfile.dll"
+#define VORBISLIB "libvorbisfile.dll"
 #else
-  #define VORBISLIB "libvorbisfile.dll"
+#define VORBISLIB "libvorbisfile.dll"
 #endif
       _hOV = ::LoadLibraryA(VORBISLIB);
     }
@@ -217,7 +209,7 @@ void CSoundDecoder::InitPlugins(void)
   try {
     // load amp11lib
     if (_hAmp11lib == NULL) {
-      _hAmp11lib = ::LoadLibraryA( "amp11lib.dll");
+      _hAmp11lib = ::LoadLibraryA("amp11lib.dll");
     }
     if (_hAmp11lib == NULL) {
       ThrowF_t(TRANS("Cannot load amp11lib.dll."));
@@ -237,8 +229,7 @@ void CSoundDecoder::InitPlugins(void)
   }
 }
 
-void CSoundDecoder::EndPlugins(void)
-{
+void CSoundDecoder::EndPlugins(void) {
   // cleanup amp11lib when not needed anymore
   if (_bAMP11Enabled) {
     palEndLibrary();
@@ -258,8 +249,7 @@ void CSoundDecoder::EndPlugins(void)
 }
 
 // decoder that streams from file
-CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
-{
+CSoundDecoder::CSoundDecoder(const CTFileName &fnm) {
   sdc_pogg = NULL;
   sdc_pmpeg = NULL;
 
@@ -300,14 +290,14 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
         sdc_pogg->ogg_fFile = fopen(fnmZip, "rb");
         // if error
         if (sdc_pogg->ogg_fFile == 0) {
-          ThrowF_t(TRANS("cannot open archive '%s'"), (const char*)fnmZip);
+          ThrowF_t(TRANS("cannot open archive '%s'"), (const char *)fnmZip);
         }
         // remember offset and size
         sdc_pogg->ogg_slOffset = slOffset;
         sdc_pogg->ogg_slSize = slSizeUncompressed;
         fseek(sdc_pogg->ogg_fFile, slOffset, SEEK_SET);
 
-      // if not in zip
+        // if not in zip
       } else if (iFileType == EFP_FILE) {
         // open ogg file
         sdc_pogg->ogg_fFile = fopen(fnmExpanded, "rb");
@@ -321,7 +311,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
         fseek(sdc_pogg->ogg_fFile, 0, SEEK_END);
         sdc_pogg->ogg_slSize = ftell(sdc_pogg->ogg_fFile);
         fseek(sdc_pogg->ogg_fFile, 0, SEEK_SET);
-      // if not found
+        // if not found
       } else {
         ThrowF_t(TRANS("file not found"));
       }
@@ -340,23 +330,23 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
 
       // remember it's format
       WAVEFORMATEX form;
-      form.wFormatTag=WAVE_FORMAT_PCM;
-      form.nChannels=pvi->channels;
-      form.nSamplesPerSec=pvi->rate;
-      form.wBitsPerSample=16;
-      form.nBlockAlign=form.nChannels*form.wBitsPerSample/8;
-      form.nAvgBytesPerSec=form.nSamplesPerSec*form.nBlockAlign;
-      form.cbSize=0;
+      form.wFormatTag = WAVE_FORMAT_PCM;
+      form.nChannels = pvi->channels;
+      form.nSamplesPerSec = pvi->rate;
+      form.wBitsPerSample = 16;
+      form.nBlockAlign = form.nChannels * form.wBitsPerSample / 8;
+      form.nAvgBytesPerSec = form.nSamplesPerSec * form.nBlockAlign;
+      form.cbSize = 0;
 
       // check for stereo
       if (pvi->channels != 2) {
         ThrowF_t(TRANS("not stereo"));
       }
-    
+
       sdc_pogg->ogg_wfeFormat = form;
 
-    } catch (char*strError) {
-      CPrintF(TRANS("Cannot open encoded audio '%s' for streaming: %s\n"), (const char*)fnm, (const char*)strError);
+    } catch (char *strError) {
+      CPrintF(TRANS("Cannot open encoded audio '%s' for streaming: %s\n"), (const char *)fnm, (const char *)strError);
       if (sdc_pogg->ogg_vfVorbisFile != NULL) {
         delete sdc_pogg->ogg_vfVorbisFile;
         sdc_pogg->ogg_vfVorbisFile = NULL;
@@ -375,9 +365,8 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
       UNZIPClose(iZipHandle);
     }
 
-  // if mp3
+    // if mp3
   } else if (fnmExpanded.FileExt() == ".mp3") {
-
     if (!_bAMP11Enabled) {
       return;
     }
@@ -409,7 +398,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
         sdc_pmpeg->mpeg_hMainFile = palOpenInputFile(fnmZip);
         // if error
         if (sdc_pmpeg->mpeg_hMainFile == 0) {
-          ThrowF_t(TRANS("cannot open archive '%s'"), (const char*)fnmZip);
+          ThrowF_t(TRANS("cannot open archive '%s'"), (const char *)fnmZip);
         }
         // open the subfile
         sdc_pmpeg->mpeg_hFile = palOpenSubFile(sdc_pmpeg->mpeg_hMainFile, slOffset, slSizeUncompressed);
@@ -418,7 +407,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
           ThrowF_t(TRANS("cannot open encoded audio file"));
         }
 
-      // if not in zip
+        // if not in zip
       } else if (iFileType == EFP_FILE) {
         // open mpx file
         sdc_pmpeg->mpeg_hFile = palOpenInputFile(fnmExpanded);
@@ -426,7 +415,7 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
         if (sdc_pmpeg->mpeg_hFile == 0) {
           ThrowF_t(TRANS("cannot open mpx file"));
         }
-      // if not found
+        // if not found
       } else {
         ThrowF_t(TRANS("file not found"));
       }
@@ -439,19 +428,19 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
 
       // remember it's format
       WAVEFORMATEX form;
-      form.wFormatTag=WAVE_FORMAT_PCM;
-      form.nChannels=stereo?2:1;
-      form.nSamplesPerSec=freq;
-      form.wBitsPerSample=16;
-      form.nBlockAlign=form.nChannels*form.wBitsPerSample/8;
-      form.nAvgBytesPerSec=form.nSamplesPerSec*form.nBlockAlign;
-      form.cbSize=0;
+      form.wFormatTag = WAVE_FORMAT_PCM;
+      form.nChannels = stereo ? 2 : 1;
+      form.nSamplesPerSec = freq;
+      form.wBitsPerSample = 16;
+      form.nBlockAlign = form.nChannels * form.wBitsPerSample / 8;
+      form.nAvgBytesPerSec = form.nSamplesPerSec * form.nBlockAlign;
+      form.cbSize = 0;
 
       // check for stereo
       if (!stereo) {
         ThrowF_t(TRANS("not stereo"));
       }
-    
+
       sdc_pmpeg->mpeg_wfeFormat = form;
 
       // initialize decoder
@@ -461,8 +450,8 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
       if (sdc_pmpeg->mpeg_hDecoder == 0) {
         ThrowF_t(TRANS("cannot open mpx decoder"));
       }
-    } catch (char*strError) {
-      CPrintF(TRANS("Cannot open mpx '%s' for streaming: %s\n"), (const char*)fnm, (const char*)strError);
+    } catch (char *strError) {
+      CPrintF(TRANS("Cannot open mpx '%s' for streaming: %s\n"), (const char *)fnm, (const char *)strError);
       if (iZipHandle != 0) {
         UNZIPClose(iZipHandle);
       }
@@ -477,17 +466,18 @@ CSoundDecoder::CSoundDecoder(const CTFileName &fnm)
   }
 }
 
-CSoundDecoder::~CSoundDecoder(void)
-{
+CSoundDecoder::~CSoundDecoder(void) {
   Clear();
 }
 
-void CSoundDecoder::Clear(void)
-{
+void CSoundDecoder::Clear(void) {
   if (sdc_pmpeg != NULL) {
-    if (sdc_pmpeg->mpeg_hDecoder != 0)  palClose(sdc_pmpeg->mpeg_hDecoder);
-    if (sdc_pmpeg->mpeg_hFile != 0)     palClose(sdc_pmpeg->mpeg_hFile);
-    if (sdc_pmpeg->mpeg_hMainFile != 0) palClose(sdc_pmpeg->mpeg_hMainFile);
+    if (sdc_pmpeg->mpeg_hDecoder != 0)
+      palClose(sdc_pmpeg->mpeg_hDecoder);
+    if (sdc_pmpeg->mpeg_hFile != 0)
+      palClose(sdc_pmpeg->mpeg_hFile);
+    if (sdc_pmpeg->mpeg_hMainFile != 0)
+      palClose(sdc_pmpeg->mpeg_hMainFile);
 
     sdc_pmpeg->mpeg_hMainFile = 0;
     sdc_pmpeg->mpeg_hFile = 0;
@@ -496,7 +486,6 @@ void CSoundDecoder::Clear(void)
     sdc_pmpeg = NULL;
 
   } else if (sdc_pogg != NULL) {
-
     if (sdc_pogg->ogg_vfVorbisFile != NULL) {
       pov_clear(sdc_pogg->ogg_vfVorbisFile);
       delete sdc_pogg->ogg_vfVorbisFile;
@@ -512,8 +501,7 @@ void CSoundDecoder::Clear(void)
 }
 
 // reset decoder to start of sample
-void CSoundDecoder::Reset(void)
-{
+void CSoundDecoder::Reset(void) {
   if (sdc_pmpeg != NULL) {
     palDecSeekAbs(sdc_pmpeg->mpeg_hDecoder, 0.0f);
   } else if (sdc_pogg != NULL) {
@@ -524,8 +512,7 @@ void CSoundDecoder::Reset(void)
   }
 }
 
-BOOL CSoundDecoder::IsOpen(void) 
-{
+BOOL CSoundDecoder::IsOpen(void) {
   if (sdc_pmpeg != NULL && sdc_pmpeg->mpeg_hDecoder != 0) {
     return TRUE;
   } else if (sdc_pogg != NULL && sdc_pogg->ogg_vfVorbisFile != 0) {
@@ -535,8 +522,7 @@ BOOL CSoundDecoder::IsOpen(void)
   }
 }
 
-void CSoundDecoder::GetFormat(WAVEFORMATEX &wfe)
-{
+void CSoundDecoder::GetFormat(WAVEFORMATEX &wfe) {
   if (sdc_pmpeg != NULL) {
     wfe = sdc_pmpeg->mpeg_wfeFormat;
 
@@ -549,31 +535,29 @@ void CSoundDecoder::GetFormat(WAVEFORMATEX &wfe)
 }
 
 // decode a block of bytes
-INDEX CSoundDecoder::Decode(void *pvDestBuffer, INDEX ctBytesToDecode)
-{
+INDEX CSoundDecoder::Decode(void *pvDestBuffer, INDEX ctBytesToDecode) {
   // if ogg
   if (sdc_pogg != NULL && sdc_pogg->ogg_vfVorbisFile != 0) {
     // decode ogg
     static int iCurrrentSection = -1; // we don't care about this
     char *pch = (char *)pvDestBuffer;
     INDEX ctDecoded = 0;
-    while (ctDecoded<ctBytesToDecode) {
-      long iRes = pov_read(sdc_pogg->ogg_vfVorbisFile, pch, ctBytesToDecode-ctDecoded, 
-        0, 2, 1, &iCurrrentSection);
+    while (ctDecoded < ctBytesToDecode) {
+      long iRes = pov_read(sdc_pogg->ogg_vfVorbisFile, pch, ctBytesToDecode - ctDecoded, 0, 2, 1, &iCurrrentSection);
       if (iRes <= 0) {
         return ctDecoded;
       }
-      ctDecoded+=iRes;
-      pch+=iRes;
+      ctDecoded += iRes;
+      pch += iRes;
     }
     return ctDecoded;
 
-  // if mpeg
+    // if mpeg
   } else if (sdc_pmpeg != NULL && sdc_pmpeg->mpeg_hDecoder != 0) {
     // decode mpeg
     return palRead(sdc_pmpeg->mpeg_hDecoder, pvDestBuffer, ctBytesToDecode);
 
-  // if no decoder
+    // if no decoder
   } else {
     // play all zeroes
     memset(pvDestBuffer, 0, ctBytesToDecode);

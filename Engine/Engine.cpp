@@ -1,4 +1,4 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
+/* Copyright (c) 2002-2012 Croteam Ltd.
 This program is free software; you can redistribute it and/or modify
 it under the terms of version 2 of the GNU General Public License as published by
 the Free Software Foundation
@@ -45,12 +45,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/IFeel.h>
 
 // this version string can be referenced from outside the engine
-ENGINE_API CTString _strEngineBuild  = "";
+ENGINE_API CTString _strEngineBuild = "";
 ENGINE_API ULONG _ulEngineBuildMajor = _SE_BUILD_MAJOR;
 ENGINE_API ULONG _ulEngineBuildMinor = _SE_BUILD_MINOR;
 
 ENGINE_API BOOL _bDedicatedServer = FALSE;
-ENGINE_API BOOL _bWorldEditorApp  = FALSE;
+ENGINE_API BOOL _bWorldEditorApp = FALSE;
 ENGINE_API CTString _strLogFile = "";
 
 // global handle for application window
@@ -58,11 +58,10 @@ extern HWND _hwndMain = NULL;
 extern BOOL _bFullScreen = FALSE;
 
 // critical section for access to zlib functions
-CTCriticalSection zip_csLock; 
+CTCriticalSection zip_csLock;
 
 // to keep system gamma table
-static UWORD auwSystemGamma[256*3];
-
+static UWORD auwSystemGamma[256 * 3];
 
 // OS info
 static CTString sys_strOS = "";
@@ -77,10 +76,10 @@ static INDEX sys_iCPUType = 0;
 static INDEX sys_iCPUFamily = 0;
 static INDEX sys_iCPUModel = 0;
 static INDEX sys_iCPUStepping = 0;
-static BOOL  sys_bCPUHasMMX = 0;
-static BOOL  sys_bCPUHasCMOV = 0;
+static BOOL sys_bCPUHasMMX = 0;
+static BOOL sys_bCPUHasCMOV = 0;
 static INDEX sys_iCPUMHz = 0;
-       INDEX sys_iCPUMisc = 0;
+INDEX sys_iCPUMisc = 0;
 
 // RAM info
 static INDEX sys_iRAMPhys = 0;
@@ -97,90 +96,82 @@ static CTString sys_strModName = "";
 // enables paranoia checks for allocation array
 extern BOOL _bAllocationArrayParanoiaCheck = FALSE;
 
-BOOL APIENTRY DllMain( HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
-{
-  switch (ul_reason_for_call)
-  {
-    case DLL_PROCESS_ATTACH:
-      break;
+BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
+  switch (ul_reason_for_call) {
+    case DLL_PROCESS_ATTACH: break;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-      break;
-    default:
-      ASSERT(FALSE);
+    case DLL_PROCESS_DETACH: break;
+    default: ASSERT(FALSE);
   }
   return TRUE;
 }
 
-static void DetectCPU(void)
-{
-  char strVendor[12+1];
+static void DetectCPU(void) {
+  char strVendor[12 + 1];
   strVendor[12] = 0;
   ULONG ulTFMS;
   ULONG ulFeatures;
 
   // test MMX presence and update flag
   __asm {
-    mov     eax,0           ;// request for basic id
+    mov     eax,0           ; // request for basic id
     cpuid
     mov     dword ptr [strVendor+0], ebx
     mov     dword ptr [strVendor+4], edx
     mov     dword ptr [strVendor+8], ecx
-    mov     eax,1           ;// request for TFMS feature flags
+    mov     eax,1           ; // request for TFMS feature flags
     cpuid
-    mov     dword ptr [ulTFMS], eax ;// remember type, family, model and stepping
+    mov     dword ptr [ulTFMS], eax ; // remember type, family, model and stepping
     mov     dword ptr [ulFeatures], edx
   }
 
-  INDEX iType     = (ulTFMS >> 12)&0x3;
-  INDEX iFamily   = (ulTFMS >> 8)&0xF;
-  INDEX iModel    = (ulTFMS >> 4)&0xF;
-  INDEX iStepping = (ulTFMS >> 0)&0xF;
-
+  INDEX iType = (ulTFMS >> 12) & 0x3;
+  INDEX iFamily = (ulTFMS >> 8) & 0xF;
+  INDEX iModel = (ulTFMS >> 4) & 0xF;
+  INDEX iStepping = (ulTFMS >> 0) & 0xF;
 
   CPrintF(TRANS("  Vendor: %s\n"), strVendor);
-  CPrintF(TRANS("  Type: %d, Family: %d, Model: %d, Stepping: %d\n"),
-    iType, iFamily, iModel, iStepping);
+  CPrintF(TRANS("  Type: %d, Family: %d, Model: %d, Stepping: %d\n"), iType, iFamily, iModel, iStepping);
 
-  BOOL bMMX  = ulFeatures & (1 << 23);
+  BOOL bMMX = ulFeatures & (1 << 23);
   BOOL bCMOV = ulFeatures & (1 << 15);
 
   CTString strYes = TRANS("Yes");
   CTString strNo = TRANS("No");
 
-  CPrintF(TRANS("  MMX : %s\n"), bMMX ?strYes:strNo);
-  CPrintF(TRANS("  CMOV: %s\n"), bCMOV?strYes:strNo);
-  CPrintF(TRANS("  Clock: %.0fMHz\n"), _pTimer->tm_llCPUSpeedHZ/1E6);
+  CPrintF(TRANS("  MMX : %s\n"), bMMX ? strYes : strNo);
+  CPrintF(TRANS("  CMOV: %s\n"), bCMOV ? strYes : strNo);
+  CPrintF(TRANS("  Clock: %.0fMHz\n"), _pTimer->tm_llCPUSpeedHZ / 1E6);
 
   sys_strCPUVendor = strVendor;
   sys_iCPUType = iType;
-  sys_iCPUFamily =  iFamily;
+  sys_iCPUFamily = iFamily;
   sys_iCPUModel = iModel;
   sys_iCPUStepping = iStepping;
   sys_bCPUHasMMX = bMMX != 0;
   sys_bCPUHasCMOV = bCMOV != 0;
-  sys_iCPUMHz = INDEX(_pTimer->tm_llCPUSpeedHZ/1E6);
+  sys_iCPUMHz = INDEX(_pTimer->tm_llCPUSpeedHZ / 1E6);
 
-  if (!bMMX) FatalError( TRANS("MMX support required but not present!"));
+  if (!bMMX)
+    FatalError(TRANS("MMX support required but not present!"));
 }
 
-static void DetectCPUWrapper(void)
-{
+static void DetectCPUWrapper(void) {
   __try {
     DetectCPU();
-  } __except(EXCEPTION_EXECUTE_HANDLER) {
-    CPrintF( TRANS("Cannot detect CPU: exception raised.\n"));
+  } __except (EXCEPTION_EXECUTE_HANDLER) {
+    CPrintF(TRANS("Cannot detect CPU: exception raised.\n"));
   }
 }
 
 // reverses string
-void StrRev( char *str) {
+void StrRev(char *str) {
   char ctmp;
   char *pch0 = str;
-  char *pch1 = str+strlen(str)-1;
-  while (pch1>pch0) {
-    ctmp  = *pch0;
+  char *pch1 = str + strlen(str) - 1;
+  while (pch1 > pch0) {
+    ctmp = *pch0;
     *pch0 = *pch1;
     *pch1 = ctmp;
     pch0++;
@@ -191,44 +182,43 @@ void StrRev( char *str) {
 static char strExePath[MAX_PATH] = "";
 static char strDirPath[MAX_PATH] = "";
 
-static void AnalyzeApplicationPath(void)
-{
+static void AnalyzeApplicationPath(void) {
   strcpy(strDirPath, "D:\\");
   strcpy(strExePath, "D:\\TestExe.xbe");
   char strTmpPath[MAX_PATH] = "";
   // get full path to the exe
-  GetModuleFileNameA( NULL, strExePath, sizeof(strExePath)-1);
+  GetModuleFileNameA(NULL, strExePath, sizeof(strExePath) - 1);
   // copy that to the path
-  strncpy(strTmpPath, strExePath, sizeof(strTmpPath)-1);
-  strDirPath[sizeof(strTmpPath)-1] = 0;
+  strncpy(strTmpPath, strExePath, sizeof(strTmpPath) - 1);
+  strDirPath[sizeof(strTmpPath) - 1] = 0;
   // remove name from application path
-  StrRev(strTmpPath);  
+  StrRev(strTmpPath);
   // find last backslash
-  char *pstr = strchr( strTmpPath, '\\');
+  char *pstr = strchr(strTmpPath, '\\');
   if (pstr == NULL) {
     // not found - path is just "\"
-    strcpy( strTmpPath, "\\");
+    strcpy(strTmpPath, "\\");
     pstr = strTmpPath;
-  } 
+  }
   // remove 'debug' from app path if needed
-  if (strnicmp( pstr, "\\gubed", 6) == 0) pstr += 6;
-  if (pstr[0] = '\\') pstr++;
-  char *pstrFin = strchr( pstr, '\\');
+  if (strnicmp(pstr, "\\gubed", 6) == 0)
+    pstr += 6;
+  if (pstr[0] = '\\')
+    pstr++;
+  char *pstrFin = strchr(pstr, '\\');
   if (pstrFin == NULL) {
-    strcpy( pstr, "\\");
+    strcpy(pstr, "\\");
     pstrFin = pstr;
   }
   // copy that to the path
   StrRev(pstrFin);
-  strncpy( strDirPath, pstrFin, sizeof(strDirPath)-1);
-  strDirPath[sizeof(strDirPath)-1] = 0;
+  strncpy(strDirPath, pstrFin, sizeof(strDirPath) - 1);
+  strDirPath[sizeof(strDirPath) - 1] = 0;
 }
 
-
-// startup engine 
-ENGINE_API void SE_InitEngine(CTString strGameID)
-{
-  #pragma message(">> Remove this from SE_InitEngine : _bWorldEditorApp")
+// startup engine
+ENGINE_API void SE_InitEngine(CTString strGameID) {
+#pragma message(">> Remove this from SE_InitEngine : _bWorldEditorApp")
   if (strGameID == "SeriousEditor") {
     _bWorldEditorApp = TRUE;
   }
@@ -239,7 +229,7 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   try {
     _fnmApplicationExe.RemoveApplicationPath_t();
   } catch (char *strError) {
-    (void) strError;
+    (void)strError;
     ASSERT(FALSE);
   }
 
@@ -247,27 +237,27 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   if (_strLogFile == "") {
     _strLogFile = CTFileName(CTString(strExePath)).FileName();
   }
-  _pConsole->Initialize(_fnmApplicationPath+_strLogFile+".log", 90, 512);
+  _pConsole->Initialize(_fnmApplicationPath + _strLogFile + ".log", 90, 512);
 
-  _pAnimStock        = new CStock_CAnimData;
-  _pTextureStock     = new CStock_CTextureData;
-  _pSoundStock       = new CStock_CSoundData;
-  _pModelStock       = new CStock_CModelData;
+  _pAnimStock = new CStock_CAnimData;
+  _pTextureStock = new CStock_CTextureData;
+  _pSoundStock = new CStock_CSoundData;
+  _pModelStock = new CStock_CModelData;
   _pEntityClassStock = new CStock_CEntityClass;
-  _pMeshStock        = new CStock_CMesh;
-  _pSkeletonStock    = new CStock_CSkeleton;
-  _pAnimSetStock     = new CStock_CAnimSet;
-  _pShaderStock      = new CStock_CShader;
+  _pMeshStock = new CStock_CMesh;
+  _pSkeletonStock = new CStock_CSkeleton;
+  _pAnimSetStock = new CStock_CAnimSet;
+  _pShaderStock = new CStock_CShader;
 
   _pTimer = new CTimer;
-  _pGfx   = new CGfxLibrary;
+  _pGfx = new CGfxLibrary;
   _pSound = new CSoundLibrary;
   _pInput = new CInput;
   _pNetwork = new CNetworkLibrary;
 
   CRCT_Init();
 
-  _strEngineBuild.PrintF( TRANS("SeriousEngine Build: %d.%d"), _SE_BUILD_MAJOR, _SE_BUILD_MINOR);
+  _strEngineBuild.PrintF(TRANS("SeriousEngine Build: %d.%d"), _SE_BUILD_MAJOR, _SE_BUILD_MINOR);
 
   // print basic engine info
   CPrintF(TRANS("--- Serious Engine Startup ---\n"));
@@ -286,10 +276,10 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   osv.dwOSVersionInfoSize = sizeof(osv);
   if (GetVersionExA(&osv)) {
     switch (osv.dwPlatformId) {
-    case VER_PLATFORM_WIN32s:         sys_strOS = "Win32s";  break;
-    case VER_PLATFORM_WIN32_WINDOWS:  sys_strOS = "Win9x"; break;
-    case VER_PLATFORM_WIN32_NT:       sys_strOS = "WinNT"; break;
-    default: sys_strOS = "Unknown\n"; break;
+      case VER_PLATFORM_WIN32s: sys_strOS = "Win32s"; break;
+      case VER_PLATFORM_WIN32_WINDOWS: sys_strOS = "Win9x"; break;
+      case VER_PLATFORM_WIN32_NT: sys_strOS = "WinNT"; break;
+      default: sys_strOS = "Unknown\n"; break;
     }
 
     sys_iOSMajor = osv.dwMajorVersion;
@@ -297,12 +287,11 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
     sys_iOSBuild = osv.dwBuildNumber & 0xFFFF;
     sys_strOSMisc = osv.szCSDVersion;
 
-    CPrintF(TRANS("  Type: %s\n"), (const char*)sys_strOS);
-    CPrintF(TRANS("  Version: %d.%d, build %d\n"), 
-      osv.dwMajorVersion, osv.dwMinorVersion, osv.dwBuildNumber & 0xFFFF);
+    CPrintF(TRANS("  Type: %s\n"), (const char *)sys_strOS);
+    CPrintF(TRANS("  Version: %d.%d, build %d\n"), osv.dwMajorVersion, osv.dwMinorVersion, osv.dwBuildNumber & 0xFFFF);
     CPrintF(TRANS("  Misc: %s\n"), osv.szCSDVersion);
   } else {
-    CPrintF(TRANS("Error getting OS info: %s\n"), GetWindowsError(GetLastError()) );
+    CPrintF(TRANS("Error getting OS info: %s\n"), GetWindowsError(GetLastError()));
   }
   CPrintF("\n");
 
@@ -322,13 +311,12 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   MEMORYSTATUS ms;
   GlobalMemoryStatus(&ms);
 
-  #define MB (1024*1024)
-  sys_iRAMPhys = ms.dwTotalPhys    /MB;
-  sys_iRAMSwap = ms.dwTotalPageFile/MB;
+#define MB (1024 * 1024)
+  sys_iRAMPhys = ms.dwTotalPhys / MB;
+  sys_iRAMSwap = ms.dwTotalPageFile / MB;
 
   // initialize zip semaphore
-  zip_csLock.cs_iIndex = -1;  // not checked for locking order
-
+  zip_csLock.cs_iIndex = -1; // not checked for locking order
 
   // get info on the first disk in system
   DWORD dwSerial;
@@ -342,10 +330,10 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
 
   GetVolumeInformationA(strDrive, NULL, 0, &dwSerial, NULL, NULL, NULL, 0);
   GetDiskFreeSpaceA(strDrive, &dwSectors, &dwBytes, &dwFreeClusters, &dwClusters);
-  sys_iHDDSize = __int64(dwSectors)*dwBytes*dwClusters/MB;
-  sys_iHDDFree = __int64(dwSectors)*dwBytes*dwFreeClusters/MB;
+  sys_iHDDSize = __int64(dwSectors) * dwBytes * dwClusters / MB;
+  sys_iHDDFree = __int64(dwSectors) * dwBytes * dwFreeClusters / MB;
   sys_iHDDMisc = dwSerial;
- 
+
   // add console variables
   extern INDEX con_bNoWarnings;
   extern INDEX wld_bFastObjectOptimization;
@@ -363,14 +351,14 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   _pShell->DeclareSymbol("user const CTString sys_strOSMisc;", &sys_strOSMisc);
   // CPU info
   _pShell->DeclareSymbol("user const CTString sys_strCPUVendor;", &sys_strCPUVendor);
-  _pShell->DeclareSymbol("user const INDEX sys_iCPUType       ;", &sys_iCPUType    );
-  _pShell->DeclareSymbol("user const INDEX sys_iCPUFamily     ;", &sys_iCPUFamily  );
-  _pShell->DeclareSymbol("user const INDEX sys_iCPUModel      ;", &sys_iCPUModel   );
+  _pShell->DeclareSymbol("user const INDEX sys_iCPUType       ;", &sys_iCPUType);
+  _pShell->DeclareSymbol("user const INDEX sys_iCPUFamily     ;", &sys_iCPUFamily);
+  _pShell->DeclareSymbol("user const INDEX sys_iCPUModel      ;", &sys_iCPUModel);
   _pShell->DeclareSymbol("user const INDEX sys_iCPUStepping   ;", &sys_iCPUStepping);
-  _pShell->DeclareSymbol("user const INDEX sys_bCPUHasMMX     ;", &sys_bCPUHasMMX  );
-  _pShell->DeclareSymbol("user const INDEX sys_bCPUHasCMOV    ;", &sys_bCPUHasCMOV );
-  _pShell->DeclareSymbol("user const INDEX sys_iCPUMHz        ;", &sys_iCPUMHz     );
-  _pShell->DeclareSymbol("     const INDEX sys_iCPUMisc       ;", &sys_iCPUMisc    );
+  _pShell->DeclareSymbol("user const INDEX sys_bCPUHasMMX     ;", &sys_bCPUHasMMX);
+  _pShell->DeclareSymbol("user const INDEX sys_bCPUHasCMOV    ;", &sys_bCPUHasCMOV);
+  _pShell->DeclareSymbol("user const INDEX sys_iCPUMHz        ;", &sys_iCPUMHz);
+  _pShell->DeclareSymbol("     const INDEX sys_iCPUMisc       ;", &sys_iCPUMisc);
   // RAM info
   _pShell->DeclareSymbol("user const INDEX sys_iRAMPhys;", &sys_iRAMPhys);
   _pShell->DeclareSymbol("user const INDEX sys_iRAMSwap;", &sys_iRAMSwap);
@@ -383,9 +371,9 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   // Stock clearing
   extern void FreeUnusedStock(void);
   _pShell->DeclareSymbol("user void FreeUnusedStock(void);", &FreeUnusedStock);
-  
+
   // Timer tick quantum
-  _pShell->DeclareSymbol("user const FLOAT fTickQuantum;", (FLOAT*)&_pTimer->TickQuantum);
+  _pShell->DeclareSymbol("user const FLOAT fTickQuantum;", (FLOAT *)&_pTimer->TickQuantum);
 
   // init MODs and stuff ...
   extern void InitStreams(void);
@@ -399,13 +387,13 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   SLONG ulCRCExpected = -1;
   try {
     // get the checksum of engine
-    #ifndef NDEBUG
-      #define SELFFILE "Bin\\Debug\\EngineD.dll"
-      #define SELFCRCFILE "Bin\\Debug\\EngineD.crc"
-    #else
-      #define SELFFILE "Bin\\Engine.dll"
-      #define SELFCRCFILE "Bin\\Engine.crc"
-    #endif
+#ifndef NDEBUG
+#define SELFFILE    "Bin\\Debug\\EngineD.dll"
+#define SELFCRCFILE "Bin\\Debug\\EngineD.crc"
+#else
+#define SELFFILE    "Bin\\Engine.dll"
+#define SELFCRCFILE "Bin\\Engine.crc"
+#endif
     ulCRCActual = GetFileCRC32_t(CTString(SELFFILE));
     // load expected checksum from the file on disk
     ulCRCExpected = 0;
@@ -429,10 +417,10 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
     _pNetwork->Init(strGameID);
     // just make classes declare their shell variables
     try {
-      CEntityClass* pec = _pEntityClassStock->Obtain_t(CTString("Classes\\Player.ecl"));
+      CEntityClass *pec = _pEntityClassStock->Obtain_t(CTString("Classes\\Player.ecl"));
       ASSERT(pec != NULL);
-      _pEntityClassStock->Release(pec);  // this must not be a dependency!
-    // if couldn't find player class
+      _pEntityClassStock->Release(pec); // this must not be a dependency!
+      // if couldn't find player class
     } catch (char *strError) {
       FatalError(TRANS("Cannot initialize classes:\n%s"), strError);
     }
@@ -445,29 +433,27 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   _pfdConsoleFont = NULL;
 
   // readout system gamma table
-  HDC  hdc = GetDC(NULL);
-  BOOL bOK = GetDeviceGammaRamp( hdc, &auwSystemGamma[0]);
+  HDC hdc = GetDC(NULL);
+  BOOL bOK = GetDeviceGammaRamp(hdc, &auwSystemGamma[0]);
   _pGfx->gl_ulFlags |= GLF_ADJUSTABLEGAMMA;
   if (!bOK) {
     _pGfx->gl_ulFlags &= ~GLF_ADJUSTABLEGAMMA;
-    CPrintF( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
+    CPrintF(TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
   } // done
-  ReleaseDC( NULL, hdc);
-  
+  ReleaseDC(NULL, hdc);
+
   // init IFeel
-  HWND hwnd = NULL;//GetDesktopWindow();
+  HWND hwnd = NULL; // GetDesktopWindow();
   HINSTANCE hInstance = GetModuleHandle(NULL);
-  if (IFeel_InitDevice(hInstance,hwnd))
-  {
+  if (IFeel_InitDevice(hInstance, hwnd)) {
     CTString strDefaultProject = "Data\\Default.ifr";
     // get project file name for this device
     CTString strIFeel = IFeel_GetProjectFileName();
     // if no file name is returned use default file
-    if (strIFeel.Length() == 0) strIFeel = strDefaultProject;
-    if (!IFeel_LoadFile(strIFeel))
-    {
-      if (strIFeel != strDefaultProject)
-      {
+    if (strIFeel.Length() == 0)
+      strIFeel = strDefaultProject;
+    if (!IFeel_LoadFile(strIFeel)) {
+      if (strIFeel != strDefaultProject) {
         IFeel_LoadFile(strDefaultProject);
       }
     }
@@ -475,110 +461,126 @@ ENGINE_API void SE_InitEngine(CTString strGameID)
   }
 }
 
-
 // shutdown entire engine
-ENGINE_API void SE_EndEngine(void)
-{
+ENGINE_API void SE_EndEngine(void) {
   // restore system gamma table (if needed)
-  if (_pGfx->gl_ulFlags&GLF_ADJUSTABLEGAMMA) {
-    HDC  hdc = GetDC(NULL);
-    BOOL bOK = SetDeviceGammaRamp( hdc, &auwSystemGamma[0]);
-    //ASSERT(bOK);
-    ReleaseDC( NULL, hdc);
+  if (_pGfx->gl_ulFlags & GLF_ADJUSTABLEGAMMA) {
+    HDC hdc = GetDC(NULL);
+    BOOL bOK = SetDeviceGammaRamp(hdc, &auwSystemGamma[0]);
+    // ASSERT(bOK);
+    ReleaseDC(NULL, hdc);
   }
 
   // free stocks
-  delete _pEntityClassStock;  _pEntityClassStock = NULL;
-  delete _pModelStock;        _pModelStock       = NULL; 
-  delete _pSoundStock;        _pSoundStock       = NULL; 
-  delete _pTextureStock;      _pTextureStock     = NULL; 
-  delete _pAnimStock;         _pAnimStock        = NULL; 
-  delete _pMeshStock;         _pMeshStock        = NULL; 
-  delete _pSkeletonStock;     _pSkeletonStock    = NULL; 
-  delete _pAnimSetStock;      _pAnimSetStock     = NULL; 
-  delete _pShaderStock;       _pShaderStock      = NULL; 
+  delete _pEntityClassStock;
+  _pEntityClassStock = NULL;
+  delete _pModelStock;
+  _pModelStock = NULL;
+  delete _pSoundStock;
+  _pSoundStock = NULL;
+  delete _pTextureStock;
+  _pTextureStock = NULL;
+  delete _pAnimStock;
+  _pAnimStock = NULL;
+  delete _pMeshStock;
+  _pMeshStock = NULL;
+  delete _pSkeletonStock;
+  _pSkeletonStock = NULL;
+  delete _pAnimSetStock;
+  _pAnimSetStock = NULL;
+  delete _pShaderStock;
+  _pShaderStock = NULL;
 
   // free all memory used by the crc cache
   CRCT_Clear();
 
   // shutdown
-  if (_pNetwork != NULL) { delete _pNetwork;  _pNetwork=NULL; }
-  delete _pInput;    _pInput   = NULL;  
-  delete _pSound;    _pSound   = NULL;  
-  delete _pGfx;      _pGfx     = NULL;    
-  delete _pTimer;    _pTimer   = NULL;  
-  delete _pShell;    _pShell   = NULL;  
-  delete _pConsole;  _pConsole = NULL;
+  if (_pNetwork != NULL) {
+    delete _pNetwork;
+    _pNetwork = NULL;
+  }
+  delete _pInput;
+  _pInput = NULL;
+  delete _pSound;
+  _pSound = NULL;
+  delete _pGfx;
+  _pGfx = NULL;
+  delete _pTimer;
+  _pTimer = NULL;
+  delete _pShell;
+  _pShell = NULL;
+  delete _pConsole;
+  _pConsole = NULL;
   extern void EndStreams(void);
   EndStreams();
 
   // shutdown profilers
   _sfStats.Clear();
-  _pfGfxProfile           .pf_apcCounters.Clear();
-  _pfGfxProfile           .pf_aptTimers  .Clear();
-  _pfModelProfile         .pf_apcCounters.Clear();
-  _pfModelProfile         .pf_aptTimers  .Clear();
-  _pfSoundProfile         .pf_apcCounters.Clear();
-  _pfSoundProfile         .pf_aptTimers  .Clear();
-  _pfNetworkProfile       .pf_apcCounters.Clear();
-  _pfNetworkProfile       .pf_aptTimers  .Clear();
-  _pfRenderProfile        .pf_apcCounters.Clear();
-  _pfRenderProfile        .pf_aptTimers  .Clear();
-  _pfWorldEditingProfile  .pf_apcCounters.Clear();
-  _pfWorldEditingProfile  .pf_aptTimers  .Clear();
-  _pfPhysicsProfile       .pf_apcCounters.Clear();
-  _pfPhysicsProfile       .pf_aptTimers  .Clear();
+  _pfGfxProfile.pf_apcCounters.Clear();
+  _pfGfxProfile.pf_aptTimers.Clear();
+  _pfModelProfile.pf_apcCounters.Clear();
+  _pfModelProfile.pf_aptTimers.Clear();
+  _pfSoundProfile.pf_apcCounters.Clear();
+  _pfSoundProfile.pf_aptTimers.Clear();
+  _pfNetworkProfile.pf_apcCounters.Clear();
+  _pfNetworkProfile.pf_aptTimers.Clear();
+  _pfRenderProfile.pf_apcCounters.Clear();
+  _pfRenderProfile.pf_aptTimers.Clear();
+  _pfWorldEditingProfile.pf_apcCounters.Clear();
+  _pfWorldEditingProfile.pf_aptTimers.Clear();
+  _pfPhysicsProfile.pf_apcCounters.Clear();
+  _pfPhysicsProfile.pf_aptTimers.Clear();
 
   // remove default fonts if needed
-  if (_pfdDisplayFont != NULL) { delete _pfdDisplayFont;  _pfdDisplayFont=NULL; }
-  if (_pfdConsoleFont != NULL) { delete _pfdConsoleFont;  _pfdConsoleFont=NULL; } 
+  if (_pfdDisplayFont != NULL) {
+    delete _pfdDisplayFont;
+    _pfdDisplayFont = NULL;
+  }
+  if (_pfdConsoleFont != NULL) {
+    delete _pfdConsoleFont;
+    _pfdConsoleFont = NULL;
+  }
 
   // deinit IFeel
   IFeel_DeleteDevice();
 }
 
-
 // prepare and load some default fonts
-ENGINE_API void SE_LoadDefaultFonts(void)
-{
+ENGINE_API void SE_LoadDefaultFonts(void) {
   _pfdDisplayFont = new CFontData;
   _pfdConsoleFont = new CFontData;
 
   // try to load default fonts
   try {
-    _pfdDisplayFont->Load_t( CTFILENAME( "Fonts\\Display3-narrow.fnt"));
-    _pfdConsoleFont->Load_t( CTFILENAME( "Fonts\\Console1.fnt"));
-  }
-  catch (char *strError) {
-    FatalError( TRANS("Error loading font: %s."), strError);
+    _pfdDisplayFont->Load_t(CTFILENAME("Fonts\\Display3-narrow.fnt"));
+    _pfdConsoleFont->Load_t(CTFILENAME("Fonts\\Console1.fnt"));
+  } catch (char *strError) {
+    FatalError(TRANS("Error loading font: %s."), strError);
   }
   // change fonts' default spacing a bit
-  _pfdDisplayFont->SetCharSpacing( 0);
+  _pfdDisplayFont->SetCharSpacing(0);
   _pfdDisplayFont->SetLineSpacing(+1);
   _pfdConsoleFont->SetCharSpacing(-1);
   _pfdConsoleFont->SetLineSpacing(+1);
   _pfdConsoleFont->SetFixedWidth();
 }
 
-
 // updates main windows' handles for windowed mode and fullscreen
-ENGINE_API void SE_UpdateWindowHandle( HWND hwndMain)
-{
-  ASSERT( hwndMain != NULL);
+ENGINE_API void SE_UpdateWindowHandle(HWND hwndMain) {
+  ASSERT(hwndMain != NULL);
   _hwndMain = hwndMain;
-  _bFullScreen = _pGfx != NULL && (_pGfx->gl_ulFlags&GLF_FULLSCREEN);
+  _bFullScreen = _pGfx != NULL && (_pGfx->gl_ulFlags & GLF_FULLSCREEN);
 }
 
-
-static BOOL TouchBlock(UBYTE *pubMemoryBlock, INDEX ctBlockSize)
-{
+static BOOL TouchBlock(UBYTE *pubMemoryBlock, INDEX ctBlockSize) {
   // cannot pretouch block that are smaller than 64KB :(
-  ctBlockSize -= 16*0x1000;
-  if (ctBlockSize<4) return FALSE; 
+  ctBlockSize -= 16 * 0x1000;
+  if (ctBlockSize < 4)
+    return FALSE;
 
   __try {
     // 4 times should be just enough
-    for (INDEX i=0; i<4; i++) {
+    for (INDEX i = 0; i < 4; i++) {
       // must do it in asm - don't know what VC will try to optimize
       __asm {
         // The 16-page skip is to keep Win 95 from thinking we're trying to page ourselves in
@@ -589,78 +591,79 @@ static BOOL TouchBlock(UBYTE *pubMemoryBlock, INDEX ctBlockSize)
 touchLoop:
         mov   eax,dword ptr [esi]
         mov   ebx,dword ptr [esi+16*0x1000]
-        add   eax,ebx     // BLA, BLA, TROOCH, TRUCH
+        add   eax,ebx // BLA, BLA, TROOCH, TRUCH
         add   esi,4
         dec   ecx
         jnz   touchLoop
       }
     }
-  }
-  __except(EXCEPTION_EXECUTE_HANDLER) { 
+  } __except (EXCEPTION_EXECUTE_HANDLER) {
     return FALSE;
   }
   return TRUE;
 }
 
-
 // pretouch all memory commited by process
 extern BOOL _bNeedPretouch = FALSE;
-ENGINE_API extern void SE_PretouchIfNeeded(void)
-{
+ENGINE_API extern void SE_PretouchIfNeeded(void) {
   // only if pretouching is needed?
   extern INDEX gam_bPretouch;
-  if (!_bNeedPretouch || !gam_bPretouch) return;
+  if (!_bNeedPretouch || !gam_bPretouch)
+    return;
   _bNeedPretouch = FALSE;
 
   // set progress bar
-  SetProgressDescription( TRANS("pretouching"));
+  SetProgressDescription(TRANS("pretouching"));
   CallProgressHook_t(0.0f);
 
   // need to do this two times - 1st for numerations, and 2nd for real (progress bar and that shit)
   BOOL bPretouched = TRUE;
   INDEX ctFails, ctBytes, ctBlocks;
   INDEX ctPassBytes, ctTotalBlocks;
-  for (INDEX iPass=1; iPass <= 2; iPass++)
-  { 
+  for (INDEX iPass = 1; iPass <= 2; iPass++) {
     // flush variables
-    ctFails=0; ctBytes=0; ctBlocks=0; ctTotalBlocks=0;
+    ctFails = 0;
+    ctBytes = 0;
+    ctBlocks = 0;
+    ctTotalBlocks = 0;
     void *pvNextBlock = NULL;
     MEMORY_BASIC_INFORMATION mbi;
     // lets walk thru memory blocks
-    while (VirtualQuery( pvNextBlock, &mbi, sizeof(mbi)))
-    { 
-      // don't mess with kernel's memory and zero-sized blocks    
-      if (((ULONG)pvNextBlock)>0x7FFF0000UL || mbi.RegionSize<1) break;
+    while (VirtualQuery(pvNextBlock, &mbi, sizeof(mbi))) {
+      // don't mess with kernel's memory and zero-sized blocks
+      if (((ULONG)pvNextBlock) > 0x7FFF0000UL || mbi.RegionSize < 1)
+        break;
 
       // if this region of memory belongs to our process
-      BOOL bCanAccess = (mbi.Protect == PAGE_READWRITE); // || (mbi.Protect == PAGE_EXECUTE_READWRITE);
+      BOOL bCanAccess = (mbi.Protect == PAGE_READWRITE);                    // || (mbi.Protect == PAGE_EXECUTE_READWRITE);
       if (mbi.State == MEM_COMMIT && bCanAccess && mbi.Type == MEM_PRIVATE) // && !IsBadReadPtr( mbi.BaseAddress, 1)
-      { 
+      {
         // increase counters
         ctBlocks++;
         ctBytes += mbi.RegionSize;
         // in first pass we only count
-        if (iPass == 1) goto nextRegion;
+        if (iPass == 1)
+          goto nextRegion;
         // update progress bar
-        CallProgressHook_t( (FLOAT)ctBytes/ctPassBytes);
+        CallProgressHook_t((FLOAT)ctBytes / ctPassBytes);
         // pretouch
-        ASSERT( mbi.RegionSize>0);
+        ASSERT(mbi.RegionSize > 0);
         BOOL bOK = TouchBlock((UBYTE *)mbi.BaseAddress, mbi.RegionSize);
-        if (!bOK) { 
+        if (!bOK) {
           // whoops!
           ctFails++;
         }
         // for easier debugging (didn't help much, though)
-        //Sleep(5);  
+        // Sleep(5);
       }
-nextRegion:
+    nextRegion:
       // advance to next region
-      pvNextBlock = ((UBYTE*)mbi.BaseAddress) + mbi.RegionSize;
+      pvNextBlock = ((UBYTE *)mbi.BaseAddress) + mbi.RegionSize;
       ctTotalBlocks++;
     }
     // done with one pass
     ctPassBytes = ctBytes;
-    if ((ctPassBytes/1024/1024)>sys_iRAMPhys) {
+    if ((ctPassBytes / 1024 / 1024) > sys_iRAMPhys) {
       // not enough RAM, sorry :(
       bPretouched = FALSE;
       break;
@@ -670,18 +673,17 @@ nextRegion:
   // report
   if (bPretouched) {
     // success
-    CPrintF( TRANS("Pretouched %d KB of memory in %d blocks.\n"), ctBytes/1024, ctBlocks); //, ctTotalBlocks);
+    CPrintF(TRANS("Pretouched %d KB of memory in %d blocks.\n"), ctBytes / 1024, ctBlocks); //, ctTotalBlocks);
   } else {
     // fail
-    CPrintF( TRANS("Cannot pretouch due to lack of physical memory (%d KB of overflow).\n"), ctPassBytes/1024-sys_iRAMPhys*1024);
+    CPrintF(TRANS("Cannot pretouch due to lack of physical memory (%d KB of overflow).\n"),
+            ctPassBytes / 1024 - sys_iRAMPhys * 1024);
   }
   // some blocks failed?
-  if (ctFails>1) CPrintF( TRANS("(%d blocks were skipped)\n"), ctFails);
+  if (ctFails > 1)
+    CPrintF(TRANS("(%d blocks were skipped)\n"), ctFails);
   //_pShell->Execute("StockDump();");
 }
-
-
-
 
 #if 0
 
