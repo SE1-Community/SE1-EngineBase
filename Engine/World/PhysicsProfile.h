@@ -20,7 +20,7 @@ Copyright (c) 1997-1998, CroTeam. */
 #include <Engine/Base/Profiling.h>
 #endif
 
-/* Class for holding profiling information for physics. */
+// Class for holding profiling information for physics. 
 class CPhysicsProfile : public CProfileForm {
 public:
   // indices for profiling counters and timers

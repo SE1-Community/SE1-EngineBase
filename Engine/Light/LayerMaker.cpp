@@ -97,20 +97,20 @@ public:
   // flip shadow mask around V axis (for parallel lights)
   void FlipShadowMask(INDEX iMip);
 
-  /* Spread the shadow towards pixels outside of polygon. */
+  // Spread the shadow towards pixels outside of polygon. 
   void SpreadShadowMaskOutwards(void);
-  /* Spread the shadow towards pixels inside of polygon. */
+  // Spread the shadow towards pixels inside of polygon. 
   void SpreadShadowMaskInwards(void);
 
 public:
 // interface:
-  /* Constructor. */
+  // Constructor. 
   CLayerMaker(void);
-  /* Cast shadows for all layers of a given polygon. */
+  // Cast shadows for all layers of a given polygon. 
   BOOL CreateLayers(CBrushPolygon &bpo, CWorld &woWorld, BOOL bDoDirectionalLights);
 };
 
-/* Make mip-maps of the shadow mask. */
+// Make mip-maps of the shadow mask. 
 static void MakeMipmapsForMask(UBYTE *pubMask, PIX pixSizeU, PIX pixSizeV, SLONG slTotalSize)
 {
   // remember pointer after first mip map
@@ -320,7 +320,7 @@ CLayerMaker::CLayerMaker(void)
 {
 }
 
-/* Spread the shadow towards pixels outside of polygon. */
+// Spread the shadow towards pixels outside of polygon. 
 void CLayerMaker::SpreadShadowMaskOutwards(void)
 {
   // for each mip map of the layer
@@ -410,7 +410,7 @@ void CLayerMaker::SpreadShadowMaskOutwards(void)
   }
 }
 
-/* Spread the shadow towards pixels inside of polygon. */
+// Spread the shadow towards pixels inside of polygon. 
 void CLayerMaker::SpreadShadowMaskInwards(void)
 {
   // for each mip map of the layer

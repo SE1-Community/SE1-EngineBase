@@ -79,7 +79,7 @@ LICENSE
   #pragma once
 #endif
 
-/* function gsvalfunc */
+// function gsvalfunc 
 unsigned char gsvalfunc(u_char reg) {
     if (reg < 0x1a) return u_char (reg + 'A');
     if (reg < 0x34) return u_char (reg + 'G');
@@ -89,7 +89,7 @@ unsigned char gsvalfunc(u_char reg) {
     return u_char(0);
 }
 
-/* function gsseckey */
+// function gsseckey 
 unsigned char *gsseckey(u_char *secure, u_char *key, int enctype) {
     static  u_char          validate[9];
     u_char                  secbuf[7],
@@ -108,16 +108,16 @@ unsigned char *gsseckey(u_char *secure, u_char *key, int enctype) {
 
     i = 0;
     ptr = buff;
-    do { *ptr++ = i++; } while (i);  /* 256 times */
+    do { *ptr++ = i++; } while (i);  // 256 times 
 
     ptr = buff;
-    k = (unsigned char*) memcpy(secbuf, key, 6); /* good if key is not NULLed */
+    k = (unsigned char*) memcpy(secbuf, key, 6); // good if key is not NULLed 
     k[6] = edx = i = 0;
-    do {    /* 256 times */
+    do {    // 256 times 
         if (!*k) k = secbuf;
         edx = *ptr + edx + *k;
-            /* don't use the XOR exchange optimization!!! */
-            /* ptrval is used only for faster code */
+            // don't use the XOR exchange optimization!!! 
+            // ptrval is used only for faster code 
         ptrval  = buff + edx;
         tmp1    = *ptr;
         *ptr    = *ptrval;
@@ -127,12 +127,12 @@ unsigned char *gsseckey(u_char *secure, u_char *key, int enctype) {
 
     sec = (unsigned char *) memcpy(secbuf, secure, 6);
     sec[6] = edi = ebx = 0;
-    do {    /* 6 times */
+    do {    // 6 times 
         edi = edi + *sec + 1;
         ecx = ebx + buff[edi];
         ebx = ecx;
-            /* don't use the XOR exchange optimization!!! */
-            /* ptr and ptrval are used only for faster code */
+            // don't use the XOR exchange optimization!!! 
+            // ptr and ptrval are used only for faster code 
         ptr     = buff + edi;
         ptrval  = buff + ebx;
         tmp1    = *ptr;
@@ -145,7 +145,7 @@ unsigned char *gsseckey(u_char *secure, u_char *key, int enctype) {
     if (enctype == 2) {
         ptr = key;
         sec = secbuf;
-        do {    /* 6 times */
+        do {    // 6 times 
             *sec++ ^= *ptr++;
         } while (*sec);
     }
@@ -166,7 +166,7 @@ unsigned char *gsseckey(u_char *secure, u_char *key, int enctype) {
     return(validate);
 }
 
-/* function resolv */
+// function resolv 
 u_int resolv(char *host) {
     struct  hostent *hp;
     u_int   host_ip;
@@ -181,6 +181,6 @@ u_int resolv(char *host) {
     return(host_ip);
 }
 
-/* end functions  */
+// end functions  
 
 #endif // include once check

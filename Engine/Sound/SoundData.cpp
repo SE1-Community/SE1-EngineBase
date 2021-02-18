@@ -188,7 +188,7 @@ void CSoundData::Write_t( CTStream *outFile)
   throw TRANS("Cannot write sounds!");
 }
 
-/* Get the description of this object. */
+// Get the description of this object. 
 CTString CSoundData::GetDescription(void)
 {
   CTString str;

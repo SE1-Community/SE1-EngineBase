@@ -24,7 +24,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  * Description:  C implementation of the Blowfish algorithm.
  */
 
-#define MAXKEYBYTES 56          /* 448 bits */
+#define MAXKEYBYTES 56          // 448 bits 
 
 #define N               16
 
@@ -330,13 +330,13 @@ void Blowfish_Decrypt(BLOWFISH_CTX *ctx, unsigned long *xl, unsigned long *xr) {
     Xl = Xl ^ ctx->P[i];
     Xr = F(ctx, Xl) ^ Xr;
 
-    /* Exchange Xl and Xr */
+    // Exchange Xl and Xr 
     temp = Xl;
     Xl = Xr;
     Xr = temp;
   }
 
-  /* Exchange Xl and Xr */
+  // Exchange Xl and Xr 
   temp = Xl;
   Xl = Xr;
   Xr = temp;

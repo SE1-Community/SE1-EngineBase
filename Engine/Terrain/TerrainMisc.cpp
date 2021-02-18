@@ -63,9 +63,9 @@ static BOOL HitBoundingBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOAT
 
   double maxT[NUMDIM];
   double candidatePlane[NUMDIM];
-  double minB[NUMDIM], maxB[NUMDIM];  /*box */
-  double origin[NUMDIM], dir[NUMDIM]; /*ray */
-  double coord[NUMDIM]; /* hit point */
+  double minB[NUMDIM], maxB[NUMDIM];  //box 
+  double origin[NUMDIM], dir[NUMDIM]; //ray 
+  double coord[NUMDIM]; // hit point 
 
   minB[0]   = bbox.minvect(1); minB[1] = bbox.minvect(2); minB[2] = bbox.minvect(3);
   maxB[0]   = bbox.maxvect(1); maxB[1] = bbox.maxvect(2); maxB[2] = bbox.maxvect(3);
@@ -88,27 +88,27 @@ static BOOL HitBoundingBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOAT
     }
   }
 
-  /* Ray origin inside bounding box */
+  // Ray origin inside bounding box 
   if (bInside)  {
     vHit = FLOAT3D(origin[0],origin[1],origin[2]);
     return (TRUE);
   }
 
 
-  /* Calculate T distances to candidate planes */
+  // Calculate T distances to candidate planes 
   for (i = 0; i < NUMDIM; i++)
     if (quadrant[i] != MIDDLE && dir[i] != 0.)
       maxT[i] = (candidatePlane[i]-origin[i]) / dir[i];
     else
       maxT[i] = -1.;
 
-  /* Get largest of the maxT's for final choice of intersection */
+  // Get largest of the maxT's for final choice of intersection 
   whichPlane = 0;
   for (i = 1; i < NUMDIM; i++)
     if (maxT[whichPlane] < maxT[i])
       whichPlane = i;
 
-  /* Check final candidate actually inside box */
+  // Check final candidate actually inside box 
   if (maxT[whichPlane] < 0.) return (FALSE);
   for (i = 0; i < NUMDIM; i++) {
     if (whichPlane != i) {
@@ -120,7 +120,7 @@ static BOOL HitBoundingBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOAT
       coord[i] = candidatePlane[i];
     }
   }
-  return (TRUE);        /* ray hits box */
+  return (TRUE);        // ray hits box 
 }
 
 
@@ -161,14 +161,14 @@ static BOOL RayHitsAABBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOATa
       quadrant[i] = MIDDLE;
     }
 
-  /* Ray origin inside bounding box */
+  // Ray origin inside bounding box 
   if (inside)  {
     vHit = FLOAT3D(origin[0],origin[1],origin[2]);
     return TRUE;
   }
 
 
-  /* Calculate T distances to candidate planes */
+  // Calculate T distances to candidate planes 
   for (i = 0; i < 3; i++) {
     if (quadrant[i] != MIDDLE && dir[i] != 0.) {
       maxT[i] = (candidatePlane[i]-origin[i]) / dir[i];
@@ -177,13 +177,13 @@ static BOOL RayHitsAABBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOATa
     }
   }
 
-  /* Get largest of the maxT's for final choice of intersection */
+  // Get largest of the maxT's for final choice of intersection 
   whichPlane = 0;
   for (i = 1; i < 3; i++)
     if (maxT[whichPlane] < maxT[i])
       whichPlane = i;
 
-  /* Check final candidate actually inside box */
+  // Check final candidate actually inside box 
     if (maxT[whichPlane] < 0.) {
       return FALSE;
     }

@@ -121,7 +121,7 @@ void CPlayerCharacter::Write_t(CTStream *pstr) // throw char *
   pstr->Write_t(pc_aubAppearance, sizeof(pc_aubAppearance));
 }
 
-/* Get character name. */
+// Get character name. 
 const CTString &CPlayerCharacter::GetName(void) const 
 {
   return pc_strName; 
@@ -134,7 +134,7 @@ const CTString CPlayerCharacter::GetNameForPrinting(void) const
   strName.ReplaceSubstr("\r", "");
   return "^o"+pc_strName+"^r";
 }
-/* Set character name. */
+// Set character name. 
 void CPlayerCharacter::SetName(CTString strName) 
 { 
   // limit string length to 20 characters not including decorated text control codes
@@ -142,7 +142,7 @@ void CPlayerCharacter::SetName(CTString strName)
   pc_strName = strName; 
 };
 
-/* Get character team. */
+// Get character team. 
 const CTString &CPlayerCharacter::GetTeam(void) const
 {
   return pc_strTeam; 
@@ -153,7 +153,7 @@ const CTString CPlayerCharacter::GetTeamForPrinting(void) const
   return "^o"+pc_strTeam+"^r"; 
 }
 
-/* Set character team. */
+// Set character team. 
 void CPlayerCharacter::SetTeam(CTString strTeam)
 {
   // limit string length to 20 characters not including decorated text control codes
@@ -161,7 +161,7 @@ void CPlayerCharacter::SetTeam(CTString strTeam)
   pc_strTeam = strTeam; 
 }
 
-/* Assignment operator. */
+// Assignment operator. 
 CPlayerCharacter &CPlayerCharacter::operator=(const CPlayerCharacter &pcOther)
 {
   ASSERT(this != NULL && &pcOther != NULL);
@@ -172,7 +172,7 @@ CPlayerCharacter &CPlayerCharacter::operator=(const CPlayerCharacter &pcOther)
   return *this;
 };
 
-/* Comparison operator. */
+// Comparison operator. 
 BOOL CPlayerCharacter::operator == (const CPlayerCharacter &pcOther) const
 {
   for (INDEX i=0;i<PLAYERGUIDSIZE; i++) {

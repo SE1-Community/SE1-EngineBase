@@ -97,7 +97,7 @@ void CPlayerBuffer::ReceiveActionPacket(CNetworkMessage *pnm, INDEX iMaxBuffer)
   }
 }
 
-/* Create action packet for player target from oldest buffered action. */
+// Create action packet for player target from oldest buffered action. 
 // (prepares lag info for given client number)
 void CPlayerBuffer::CreateActionPacket(CNetworkMessage *pnm, INDEX iClient)
 {
@@ -135,7 +135,7 @@ void CPlayerBuffer::CreateActionPacket(CNetworkMessage *pnm, INDEX iClient)
   (*pnm) << paDelta;
 }
 
-/* Advance action buffer by one tick by removing oldest action. */
+// Advance action buffer by one tick by removing oldest action. 
 void CPlayerBuffer::AdvanceActionBuffer(void)
 {
   ASSERT(plb_Active);

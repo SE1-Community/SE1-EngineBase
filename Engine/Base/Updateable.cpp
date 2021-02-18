@@ -43,7 +43,7 @@ TICK CUpdateable::LastUpdateTime(void) const
   return ud_llLastUpdate;
 }
 
-/* Mark that the object has become invalid in spite of its time stamp. */
+// Mark that the object has become invalid in spite of its time stamp. 
 void CUpdateable::Invalidate(void)
 {
   ud_llLastUpdate = -1;
@@ -73,7 +73,7 @@ TICK CUpdateableRT::LastUpdateTime(void) const
   return ud_llLastUpdate;
 }
 
-/* Mark that the object has become invalid in spite of its time stamp. */
+// Mark that the object has become invalid in spite of its time stamp. 
 void CUpdateableRT::Invalidate(void)
 {
   ud_llLastUpdate = -1;

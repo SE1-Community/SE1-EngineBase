@@ -28,7 +28,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  *  ViewPort
  */
 
-/* rcg !!! FIXME: This will need to go away. */
+// rcg !!! FIXME: This will need to go away. 
 #ifdef PLATFORM_WIN32
 class CTempDC {
 public:
@@ -57,12 +57,12 @@ public:
   void CloseCanvas(BOOL bRelease=FALSE);
 
 // interface
-  /* Constructor for given window. */
+  // Constructor for given window. 
   CViewPort(PIX pixWidth, PIX pixHeight, HWND hWnd);
-  /* Destructor. */
+  // Destructor. 
   ~CViewPort(void);
 
-  /* Display the back buffer on screen. */
+  // Display the back buffer on screen. 
   void SwapBuffers(void);
   // change size of this viewport, it's raster and all it's drawports to fit it window
   void Resize(void);

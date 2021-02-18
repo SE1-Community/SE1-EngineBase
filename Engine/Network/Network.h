@@ -40,7 +40,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  */
 class ENGINE_API CNetworkTimerHandler : public CTimerHandler {
 public:
-  /* This is called every TickQuantum seconds. */
+  // This is called every TickQuantum seconds. 
   virtual void HandleTimer(void);
 };
 
@@ -81,9 +81,9 @@ public:
 public:
   void Copy(const CNetworkSession &nsOriginal);
 
-  /* Default constructor. */
+  // Default constructor. 
   CNetworkSession(void);
-  /* Construct a session for connecting to certain server. */
+  // Construct a session for connecting to certain server. 
   CNetworkSession(const CTString &strAddress);
 };
 
@@ -141,12 +141,12 @@ public:
   // make actions packet for local players and send to server
   void SendActionsToServer(void);
 
-  /* Loop executed in timer interrupt, every game tick. */
+  // Loop executed in timer interrupt, every game tick. 
   void TimerLoop(void);
 
-  /* Add the timer handler. */
+  // Add the timer handler. 
   void AddTimerHandler(void);
-  /* Remove the timer handler. */
+  // Remove the timer handler. 
   void RemoveTimerHandler(void);
 
   // really do the level change
@@ -183,31 +183,31 @@ public:
   CStaticArray<struct NetGraphEntry> ga_angeNetGraph;    // array of netgraph entries
 
   // interface
-  /* Default constructor. */
+  // Default constructor. 
   CNetworkLibrary(void);
   ~CNetworkLibrary(void);
   DECLARE_NOCOPYING(CNetworkLibrary);
 
-  /* Initialize game management. */
+  // Initialize game management. 
   void Init(const CTString &strGameID);
-  /* Start a peer-to-peer game session. */
+  // Start a peer-to-peer game session. 
   void StartPeerToPeer_t(const CTString &strSessionName,
     const CTFileName &fnmWorld, ULONG ulSpawnFlags, 
     INDEX ctMaxPlayers, BOOL bWaitAllPlayers,
     void *pvSessionProperties); // throw char *
-  /* Trigger sessions enumeration over LAN and iNet. */
+  // Trigger sessions enumeration over LAN and iNet. 
   void EnumSessions(BOOL bInternet);
-  /* Join a running multi-player game. */
+  // Join a running multi-player game. 
   void JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctLocalPlayers); // throw char *
-  /* Start playing a demo. */
+  // Start playing a demo. 
   void StartDemoPlay_t(const CTFileName &fnDemo); // throw char *
-  /* Test if currently playing a demo. */
+  // Test if currently playing a demo. 
   BOOL IsPlayingDemo(void);
-  /* Test if currently recording a demo. */
+  // Test if currently recording a demo. 
   BOOL IsRecordingDemo(void);
-  /* Test if currently playing demo has finished. */
+  // Test if currently playing demo has finished. 
   BOOL IsDemoPlayFinished(void);
-  /* Stop currently running game. */
+  // Stop currently running game. 
   void StopGame(void);
 
   // pause/unpause game
@@ -246,42 +246,42 @@ public:
   // initiate level change
   void ChangeLevel(const CTFileName &fnmNextLevel, BOOL bRemember, INDEX iUserData);
 
-  /* Obtain file name of world that is currently loaded. */
+  // Obtain file name of world that is currently loaded. 
   CTFileName &GetCurrentWorld(void) { return ga_fnmWorld;};
 
-  /* Start recording a demo. */
+  // Start recording a demo. 
   void StartDemoRec_t(const CTFileName &fnDemo); // throw char *
-  /* Stop recording a demo. */
+  // Stop recording a demo. 
   void StopDemoRec(void);
 
-  /* Read current game situation from a stream. */
+  // Read current game situation from a stream. 
   void Read_t(CTStream *pstr);   // throw char *
-  /* Write current game situation into a stream. */
+  // Write current game situation into a stream. 
   void Write_t(CTStream *pstr);  // throw char *
 
-  /* Save the game. */
+  // Save the game. 
   void Save_t(const CTFileName &fnmGame); // throw char *
-  /* Load the game. */
+  // Load the game. 
   void Load_t(const CTFileName &fnmGame); // throw char *
 
-  /* Save a debugging game. */
+  // Save a debugging game. 
   void DebugSave(void);   // this doesn't throw anything
 
-  /* Add a new player to game. */
+  // Add a new player to game. 
   CPlayerSource *AddPlayer_t(CPlayerCharacter &pcCharacter);  // throw char *
 
-  /* Loop executed in main application thread. */
+  // Loop executed in main application thread. 
   void MainLoop(void);
 
-  /* Get player entity for a given local player. */
+  // Get player entity for a given local player. 
   CEntity *GetLocalPlayerEntity(CPlayerSource *ppls);
-  /* Get player entity for a given player by name. */
+  // Get player entity for a given player by name. 
   CEntity *GetPlayerEntityByName(const CTString &strName);
-  /* Get number of entities with given name. */
+  // Get number of entities with given name. 
   INDEX GetNumberOfEntitiesWithName(const CTString &strName);
-  /* Get n-th entity with given name. */
+  // Get n-th entity with given name. 
   CEntity *GetEntityWithName(const CTString &strName, INDEX iEntityWithThatName);
-  /* Test if a given player is local to this computer. */
+  // Test if a given player is local to this computer. 
   BOOL IsPlayerLocal(CEntity *pen);
   // get player source for a given player if it is local to this computer
   CPlayerSource *GetPlayerSource(CEntity *pen);
@@ -289,10 +289,10 @@ public:
   // get game time in currently running game
   TICK NetworkGameTime(void);
 
-  /* Get session properties for current game. */
+  // Get session properties for current game. 
   void *GetSessionProperties(void);
 
-  /* Send chat message from some players to some other players. */
+  // Send chat message from some players to some other players. 
   void SendChat(ULONG ulFrom, ULONG ulTo, const CTString &strMessage);
 };
 

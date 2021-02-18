@@ -38,32 +38,32 @@ public:
   #define MAX_PLAYERAPPEARANCE 32
   UBYTE pc_aubAppearance[MAX_PLAYERAPPEARANCE];
 
-  /* Default constructor. */
+  // Default constructor. 
   CPlayerCharacter(void);
-  /* Create a new character with its name. */
+  // Create a new character with its name. 
   CPlayerCharacter(const CTString &strName);
-  /* Get character name. */
+  // Get character name. 
   const CTString &GetName(void) const;
   const CTString GetNameForPrinting(void) const;
-  /* Set character name. */
+  // Set character name. 
   void SetName(CTString strName);
-  /* Get character team. */
+  // Get character team. 
   const CTString &GetTeam(void) const;
   const CTString GetTeamForPrinting(void) const;
-  /* Set character team. */
+  // Set character team. 
   void SetTeam(CTString strTeam);
 
   void Load_t( const CTFileName &fnFile); // throw char *
   void Save_t( const CTFileName &fnFile); // throw char *
-  /* Read character from a stream. */
+  // Read character from a stream. 
   void Read_t(CTStream *pstr);       // throw char *
-  /* Write character into a stream. */
+  // Write character into a stream. 
   void Write_t(CTStream *pstr);      // throw char *
 
-  /* Assignment operator. */
+  // Assignment operator. 
   CPlayerCharacter &operator=(const CPlayerCharacter &pcOther);
 
-  /* Comparison operator. */
+  // Comparison operator. 
   BOOL operator == (const CPlayerCharacter &pcOther) const;
 
   // stream operations

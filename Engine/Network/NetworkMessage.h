@@ -122,34 +122,34 @@ public:
   SLONG nm_slSize;            // size of message
   INDEX nm_iBit;              // next bit index to read/write (0 if not reading/writing bits)
 public:
-  /* Constructor for empty message (for receiving). */
+  // Constructor for empty message (for receiving). 
   CNetworkMessage(void);
-  /* Constructor for initializing message that is to be sent. */
+  // Constructor for initializing message that is to be sent. 
   CNetworkMessage(MESSAGETYPE mtType);
-  /* Copying. */
+  // Copying. 
   CNetworkMessage(const CNetworkMessage &nmOriginal);
   void operator=(const CNetworkMessage &nmOriginal);
-  /* Destructor. */
+  // Destructor. 
   ~CNetworkMessage(void);
   // reinit a message that is to be sent (to write different contents)
   void Reinit(void);
 
-  /* Ignore the contents of this message. */
+  // Ignore the contents of this message. 
   void IgnoreContents(void);
   // dump message to console
   void Dump(void);
 
-  /* Get the type of this message. */
+  // Get the type of this message. 
   inline MESSAGETYPE GetType(void) const { ASSERT(this != NULL); return MESSAGETYPE(nm_mtType&0x3F); };
-  /* Check if end of message. */
+  // Check if end of message. 
   BOOL EndOfMessage(void);
   // rewind message to start, so that written message can be read again
   void Rewind(void);
 
-  /* Pack a message to another message (message type is left untouched). */
+  // Pack a message to another message (message type is left untouched). 
   void Pack(CNetworkMessage &nmPacked, CCompressor &comp);
   void PackDefault(CNetworkMessage &nmPacked);
-  /* Unpack a message to another message (message type is left untouched). */
+  // Unpack a message to another message (message type is left untouched). 
   void Unpack(CNetworkMessage &nmUnpacked, CCompressor &comp);
   void UnpackDefault(CNetworkMessage &nmUnpacked);
 
@@ -159,7 +159,7 @@ public:
   void ReadBits(void *pvBuffer, INDEX ctBits);
   void WriteBits(const void *pvBuffer, INDEX ctBits);
 
-  /* Read an object from message. */
+  // Read an object from message. 
   inline CNetworkMessage &operator>>(float  &f) { Read( &f, sizeof( f)); return *this; }
   inline CNetworkMessage &operator>>(ULONG &ul) { Read(&ul, sizeof(ul)); return *this; }
   inline CNetworkMessage &operator>>(UWORD &uw) { Read(&uw, sizeof(uw)); return *this; }
@@ -169,7 +169,7 @@ public:
   inline CNetworkMessage &operator>>(SBYTE &sb) { Read(&sb, sizeof(sb)); return *this; }
   inline CNetworkMessage &operator>>(MESSAGETYPE &mt) { Read(&mt, sizeof(mt)); return *this; }
   CNetworkMessage &operator>>(CTString &str);
-  /* Write an object into message. */
+  // Write an object into message. 
   inline CNetworkMessage &operator<<(const float  &f) { Write( &f, sizeof( f)); return *this; }
   inline CNetworkMessage &operator<<(const double &d) { Write( &d, sizeof( d)); return *this; }
   inline CNetworkMessage &operator<<(const ULONG &ul) { Write(&ul, sizeof(ul)); return *this; }
@@ -185,9 +185,9 @@ public:
   inline CNetworkMessage &operator>>(TICK &ll) { Read(&ll, sizeof(ll)); return *this; } // throw char *
   inline CNetworkMessage &operator<<(const TICK &ll) { Write(&ll, sizeof(ll)); return *this; } // throw char *
 
-  /* Insert a sub-message into this message. */
+  // Insert a sub-message into this message. 
   void InsertSubMessage(const CNetworkMessage &nmSubMessage);
-  /* Extract a sub-message from this message. */
+  // Extract a sub-message from this message. 
   void ExtractSubMessage(CNetworkMessage &nmSubMessage);
 
   // shrink message buffer to exactly fit contents
@@ -208,20 +208,20 @@ public:
 public:
   INDEX nsb_iSequenceNumber;    // index for sorting in list
 public:
-  /* Constructor for receiving -- uninitialized block. */
+  // Constructor for receiving -- uninitialized block. 
   CNetworkStreamBlock(void);
-  /* Constructor for sending -- empty packet with given type and sequence. */
+  // Constructor for sending -- empty packet with given type and sequence. 
   CNetworkStreamBlock(MESSAGETYPE mtType, INDEX iSequenceNumber);
 
-  /* Read a block from a received message. */
+  // Read a block from a received message. 
   void ReadFromMessage(CNetworkMessage &nmToRead);
-  /* Add a block to a message to send. */
+  // Add a block to a message to send. 
   void WriteToMessage(CNetworkMessage &nmToWrite);
 
-  /* Remove the block from stream. */
+  // Remove the block from stream. 
   void RemoveFromStream(void);
 
-  /* Read/write the block from file stream. */
+  // Read/write the block from file stream. 
   void Read_t(CTStream &strm); // throw char *
   void Write_t(CTStream &strm); // throw char *
 };
@@ -239,16 +239,16 @@ public:
 public:
   CListHead ns_lhBlocks;   // list of blocks of this stream (higher sequences first)
 
-  /* Add a block that is already allocated to the stream. */
+  // Add a block that is already allocated to the stream. 
   void AddAllocatedBlock(CNetworkStreamBlock *pnsbBlock);
 public:
-  /* Constructor. */
+  // Constructor. 
   CNetworkStream(void);
-  /* Destructor. */
+  // Destructor. 
   ~CNetworkStream(void);
-  /* Clear the object (remove all blocks). */
+  // Clear the object (remove all blocks). 
   void Clear(void);
-  /* Copy from another network stream. */
+  // Copy from another network stream. 
   void Copy(CNetworkStream &nsOther);
   // get number of blocks used by this object
   INDEX GetUsedBlocks(void);
@@ -257,21 +257,21 @@ public:
   // get index of newest sequence stored
   INDEX GetNewestSequence(void);
 
-  /* Add a block to the stream (makes a copy of block). */
+  // Add a block to the stream (makes a copy of block). 
   void AddBlock(CNetworkStreamBlock &nsbBlock);
-  /* Read a block as a submessage from a message and add it to the stream. */
+  // Read a block as a submessage from a message and add it to the stream. 
   void ReadBlock(CNetworkMessage &nmMessage);
-  /* Get a block from stream by its sequence number. */
+  // Get a block from stream by its sequence number. 
   CNetworkStream::Result GetBlockBySequence(
     INDEX iSequenceNumber, CNetworkStreamBlock *&pnsbBlock);
   // find oldest block after given one (for batching missing sequences)
   INDEX GetOldestSequenceAfter(INDEX iSequenceNumber);
 
-  /* Write given number of newest blocks to a message. */
+  // Write given number of newest blocks to a message. 
   INDEX WriteBlocksToMessage(CNetworkMessage &nmMessage, INDEX ctBlocks);
-  /* Remove all blocks but the given number of newest ones. */
+  // Remove all blocks but the given number of newest ones. 
   void RemoveOlderBlocks(INDEX ctBlocksToKeep);
-  /* Remove all blocks with sequence older than given. */
+  // Remove all blocks with sequence older than given. 
   void RemoveOlderBlocksBySequence(INDEX iLastSequenceToKeep);
 };
 
@@ -288,7 +288,7 @@ public:
 
 public:
   CPlayerAction(void);
-  /* Clear the object (this sets up no actions). */
+  // Clear the object (this sets up no actions). 
   void Clear(void);
   // normalize action (remove invalid floats like -0)
   void Normalize(void);
@@ -300,13 +300,13 @@ public:
 
   void Lerp(const CPlayerAction &pa0, const CPlayerAction &pa1, FLOAT fFactor);
 
-  /* Write an object into message. */
+  // Write an object into message. 
   friend CNetworkMessage &operator<<(CNetworkMessage &nm, const CPlayerAction &pa);
-  /* Read an object from message. */
+  // Read an object from message. 
   friend CNetworkMessage &operator>>(CNetworkMessage &nm, CPlayerAction &pa);
-  /* Write an object into stream. */
+  // Write an object into stream. 
   friend CTStream &operator<<(CTStream &strm, const CPlayerAction &pa);
-  /* Read an object from stream. */
+  // Read an object from stream. 
   friend CTStream &operator>>(CTStream &strm, CPlayerAction &pa);
 };
 

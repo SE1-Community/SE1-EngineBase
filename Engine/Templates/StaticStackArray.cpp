@@ -39,7 +39,7 @@ template<class Type>
 inline CStaticStackArray<Type>::~CStaticStackArray(void) {
 };
 
-/* Destroy all objects, and reset the array to initial (empty) state. */
+// Destroy all objects, and reset the array to initial (empty) state. 
 template<class Type>
 inline void CStaticStackArray<Type>::Clear(void) {
   if (CStaticArray<Type>::Count() != 0) Delete(); 
@@ -95,7 +95,7 @@ inline Type *CStaticStackArray<Type>::Push(INDEX ct) {
   return &CStaticArray<Type>::operator[](sa_UsedCount-ct);
 }
 
-/* Remove one object from top of stack and return it. */
+// Remove one object from top of stack and return it. 
 template<class Type>
 inline Type &CStaticStackArray<Type>::Pop(void)
 {
@@ -175,7 +175,7 @@ CStaticStackArray<Type> &CStaticStackArray<Type>::operator=(const CStaticStackAr
 }
 
 
-/* Move all elements of another array into this one. */
+// Move all elements of another array into this one. 
 template<class Type>
 void CStaticStackArray<Type>::MoveArray(CStaticStackArray<Type> &arOther)
 {

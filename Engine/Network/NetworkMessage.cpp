@@ -102,7 +102,7 @@ CNetworkMessage::CNetworkMessage(MESSAGETYPE mtType)
   UBYTE ubType = nm_mtType;
   Write(&ubType, sizeof(ubType));
 }
-/* Copying. */
+// Copying. 
 CNetworkMessage::CNetworkMessage(const CNetworkMessage &nmOriginal)
 {
   // allocate message buffer
@@ -164,7 +164,7 @@ void CNetworkMessage::IgnoreContents(void)
 }
 
 
-/* Check if end of message. */
+// Check if end of message. 
 BOOL CNetworkMessage::EndOfMessage(void)
 {
   ASSERTMSG((nm_pubPointer-nm_pubMessage) <= nm_slSize, "Message over-reading!");
@@ -559,7 +559,7 @@ void CNetworkStreamBlock::RemoveFromStream(void)
   nsb_lnInStream.Remove();
 }
 
-/* Read/write the block from file stream. */
+// Read/write the block from file stream. 
 void CNetworkStreamBlock::Write_t(CTStream &strm) // throw char *
 {
   // write sequence number
@@ -619,7 +619,7 @@ void CNetworkStream::Clear(void)
     delete &*itnsbInList;
   }
 }
-/* Copy from another network stream. */
+// Copy from another network stream. 
 void CNetworkStream::Copy(CNetworkStream &nsOther)
 {
   // for each block in list
@@ -810,7 +810,7 @@ void CNetworkStream::RemoveOlderBlocks(INDEX ctBlocksToKeep)
   }
 }
 
-/* Remove all blocks with sequence older than given. */
+// Remove all blocks with sequence older than given. 
 void CNetworkStream::RemoveOlderBlocksBySequence(INDEX iLastSequenceToKeep)
 {
   // while there are any blocks in the list
@@ -901,7 +901,7 @@ void CPlayerAction::Lerp(const CPlayerAction &pa0, const CPlayerAction &pa1, FLO
 //   (65536-)     000000  = 32 bit value follows
 // note: above bits are ordered in reverse as they come when scanning bit by bit
 
-/* Write an object into message. */
+// Write an object into message. 
 CNetworkMessage &operator<<(CNetworkMessage &nm, const CPlayerAction &pa)
 {
   nm.Write(&pa.pa_llCreated, sizeof(pa.pa_llCreated));
@@ -956,7 +956,7 @@ CNetworkMessage &operator<<(CNetworkMessage &nm, const CPlayerAction &pa)
   }
   return nm;
 }
-/* Read an object from message. */
+// Read an object from message. 
 CNetworkMessage &operator>>(CNetworkMessage &nm, CPlayerAction &pa)
 {
   nm.Read(&pa.pa_llCreated, sizeof(pa.pa_llCreated));
@@ -1015,13 +1015,13 @@ CNetworkMessage &operator>>(CNetworkMessage &nm, CPlayerAction &pa)
   pa.pa_ulButtons = ulFlags;
   return nm;
 }
-/* Write an object into stream. */
+// Write an object into stream. 
 CTStream &operator<<(CTStream &strm, const CPlayerAction &pa)
 {
   strm.Write_t(&pa,sizeof(pa));
   return strm;
 }
-/* Read an object from stream. */
+// Read an object from stream. 
 CTStream &operator>>(CTStream &strm, CPlayerAction &pa)
 {
   strm.Read_t(&pa,sizeof(pa));

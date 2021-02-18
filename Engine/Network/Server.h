@@ -42,35 +42,35 @@ public:
   BOOL srv_bGameFinished; // set while game is finished
   FLOAT srv_fServerStep;  // counter for smooth time slowdown/speedup
 public:
-  /* Send disconnect message to some client. */
+  // Send disconnect message to some client. 
   void SendDisconnectMessage(INDEX iClient, const char *strExplanation, BOOL bStream = FALSE);
-  /* Get total number of active players. */
+  // Get total number of active players. 
   INDEX GetPlayersCount(void);
-  /* Get number of active vip players. */
+  // Get number of active vip players. 
   INDEX GetVIPPlayersCount(void);
-  /* Get total number of active clients. */
+  // Get total number of active clients. 
   INDEX GetClientsCount(void);
-  /* Get number of active vip clients. */
+  // Get number of active vip clients. 
   INDEX GetVIPClientsCount(void);
-  /* Get number of active observers. */
+  // Get number of active observers. 
   INDEX GetObserversCount(void);
-  /* Get number of active players on one client. */
+  // Get number of active players on one client. 
   INDEX GetPlayersCountForClient(INDEX iClient);
-  /* Find first inactive player. */
+  // Find first inactive player. 
   CPlayerBuffer *FirstInactivePlayer(void);
-  /* Check if some character name already exists in this session. */
+  // Check if some character name already exists in this session. 
   BOOL CharacterNameIsUsed(CPlayerCharacter &pcCharacter);
 
-  /* Send initialization info to local client. */
+  // Send initialization info to local client. 
   void ConnectLocalSessionState(INDEX iClient, CNetworkMessage &nm);
-  /* Send initialization info to remote client. */
+  // Send initialization info to remote client. 
   void ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm);
-  /* Send session state data to remote client. */
+  // Send session state data to remote client. 
   void SendSessionStateData(INDEX iClient);
 
-  /* Send one regular batch of sequences to a client. */
+  // Send one regular batch of sequences to a client. 
   void SendGameStreamBlocks(INDEX iClient);
-  /* Resend a batch of game stream blocks to a client. */
+  // Resend a batch of game stream blocks to a client. 
   void ResendGameStreamBlocks(INDEX iClient, INDEX iSequence0, INDEX ctSequences);
 
   // add a new sync check to buffer
@@ -85,21 +85,21 @@ public:
   // find a mask of all players on a certain client
   ULONG MaskOfPlayersOnClient(INDEX iClient);
 public:
-  /* Constructor. */
+  // Constructor. 
   CServer(void);
-  /* Destructor. */
+  // Destructor. 
   ~CServer();
 
-  /* Start server. */
+  // Start server. 
   void Start_t(void);
-  /* Stop server. */
+  // Stop server. 
   void Stop(void);
-  /* Run server loop. */
+  // Run server loop. 
   void ServerLoop(void);
-  /* Make synchronization test message and add it to game stream. */
+  // Make synchronization test message and add it to game stream. 
   void MakeSynchronisationCheck(void);
 
-  /* Handle incoming network messages. */
+  // Handle incoming network messages. 
   void HandleAll();
   void HandleAllForAClient(INDEX iClient);
   void HandleClientDisconected(INDEX iClient);

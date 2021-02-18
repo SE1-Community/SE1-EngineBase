@@ -53,7 +53,7 @@ TYPE *CStock_TYPE::Obtain_t(const CTFileName &fnmFileName)
     return pExisting;
   }
 
-  /* if not found, */
+  // if not found, 
 
   // create new stock object
   TYPE *ptNew = new TYPE;

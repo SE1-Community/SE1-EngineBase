@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 extern CTCriticalSection zip_csLock; // critical section for access to zlib functions
 
-/* Unpack from stream to stream. */
+// Unpack from stream to stream. 
 void CCompressor::UnpackStream_t(CTMemoryStream &strmSrc, CTStream &strmDst) // throw char *
 {
   // read the header
@@ -123,7 +123,7 @@ SLONG CRLEBBCompressor::NeededDestinationSize(SLONG slSourceSize)
 
 // on entry, slDstSize holds maximum size of output buffer,
 // on exit, it is filled with resulting size
-/* Pack a chunk of data using given compression. */
+// Pack a chunk of data using given compression. 
 BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize)
 {
   // cannot pack zero bytes
@@ -141,7 +141,7 @@ BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLO
   UBYTE *pbCountLimit = (UBYTE *)pbDestinationLimit;           // end marker
 
   {
-    /* PASS 1: Use destination buffer to cache number of forward-same bytes. */
+    // PASS 1: Use destination buffer to cache number of forward-same bytes. 
 
     // set the count of the last byte to one
     UBYTE *pbCount = pbCountLimit-1;
@@ -164,7 +164,7 @@ BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLO
   }
 
 
-  /* PASS 2: Pack bytes from source to the destination buffer. */
+  // PASS 2: Pack bytes from source to the destination buffer. 
 
   // start at the beginning of the buffers
   const SBYTE *pbSource      = pbSourceFirst;
@@ -218,7 +218,7 @@ BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLO
 
 // on entry, slDstSize holds maximum size of output buffer,
 // on exit, it is filled with resulting size
-/* Unpack a chunk of data using given compression. */
+// Unpack a chunk of data using given compression. 
 BOOL CRLEBBCompressor::Unpack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize)
 {
   const SBYTE *pbSource      = (const SBYTE *)pvSrc;            // current pointer
@@ -265,29 +265,29 @@ BOOL CRLEBBCompressor::Unpack(const void *pvSrc, SLONG slSrcSize, void *pvDst, S
 //#define UBYTE unsigned char /* Unsigned     byte (1 byte )        */
 //#define UWORD unsigned int  /* Unsigned     word (2 bytes)        */
 //#define ULONG unsigned long /* Unsigned longword (4 bytes)        */
-#define FLAG_BYTES    1     /* Number of bytes used by copy flag. */
-#define FLAG_COMPRESS 0     /* Signals that compression occurred. */
-#define FLAG_COPY     1     /* Signals that a copyover occurred.  */
-//void fast_copy(p_src,p_dst,len) /* Fast copy routine.             */
+#define FLAG_BYTES    1     // Number of bytes used by copy flag. 
+#define FLAG_COMPRESS 0     // Signals that compression occurred. 
+#define FLAG_COPY     1     // Signals that a copyover occurred.  
+//void fast_copy(p_src,p_dst,len) // Fast copy routine.             
 //UBYTE *p_src,*p_dst; {while (len--) *p_dst++=*p_src++;}
 inline void fast_copy(const UBYTE *p_src, UBYTE *p_dst, SLONG len)
 {
   memcpy(p_dst, p_src, len);
 }
 
-/******************************************************************************/
+//****************************************************************************
 
 void lzrw1_compress(const UBYTE *p_src_first, ULONG src_len,UBYTE *p_dst_first, ULONG *p_dst_len)
-/* Input  : Specify input block using p_src_first and src_len.          */
+// Input  : Specify input block using p_src_first and src_len.          
 /* Input  : Point p_dst_first to the start of the output zone (OZ).     */
-/* Input  : Point p_dst_len to a ULONG to receive the output length.    */
+// Input  : Point p_dst_len to a ULONG to receive the output length.    
 /* Input  : Input block and output zone must not overlap.               */
-/* Output : Length of output block written to *p_dst_len.               */
+// Output : Length of output block written to *p_dst_len.               
 /* Output : Output block in Mem[p_dst_first..p_dst_first+*p_dst_len-1]. */
-/* Output : May write in OZ=Mem[p_dst_first..p_dst_first+src_len+256-1].*/
+// Output : May write in OZ=Mem[p_dst_first..p_dst_first+src_len+256-1].
 /* Output : Upon completion guaranteed *p_dst_len <= src_len+FLAG_BYTES.  */
-#define PS *p++ != *s++  /* Body of inner unrolled matching loop.         */
-#define ITEMMAX 16     /* Maximum number of bytes in an expanded item.  */
+#define PS *p++ != *s++  // Body of inner unrolled matching loop.         
+#define ITEMMAX 16     // Maximum number of bytes in an expanded item.  
 {const UBYTE *p_src=p_src_first;
  UBYTE *p_dst=p_dst_first;
  const UBYTE *p_src_post=p_src_first+src_len;
@@ -329,18 +329,18 @@ void lzrw1_compress(const UBYTE *p_src_first, ULONG src_len,UBYTE *p_dst_first, 
           *p_dst_first=FLAG_COPY; *p_dst_len=src_len+FLAG_BYTES;
 }
 
-/******************************************************************************/
+//****************************************************************************
 
 void lzrw1_decompress(const UBYTE *p_src_first, ULONG src_len, UBYTE *p_dst_first, ULONG *p_dst_len)
-/* Input  : Specify input block using p_src_first and src_len.          */
+// Input  : Specify input block using p_src_first and src_len.          
 /* Input  : Point p_dst_first to the start of the output zone.          */
-/* Input  : Point p_dst_len to a ULONG to receive the output length.    */
+// Input  : Point p_dst_len to a ULONG to receive the output length.    
 /* Input  : Input block and output zone must not overlap. User knows    */
-/* Input  : upperbound on output block length from earlier compression. */
+// Input  : upperbound on output block length from earlier compression. 
 /* Input  : In any case, maximum expansion possible is eight times.     */
-/* Output : Length of output block written to *p_dst_len.               */
+// Output : Length of output block written to *p_dst_len.               
 /* Output : Output block in Mem[p_dst_first..p_dst_first+*p_dst_len-1]. */
-/* Output : Writes only  in Mem[p_dst_first..p_dst_first+*p_dst_len-1]. */
+// Output : Writes only  in Mem[p_dst_first..p_dst_first+*p_dst_len-1]. 
 {UWORD controlbits=0, control;
  const UBYTE *p_src=p_src_first+FLAG_BYTES;
  UBYTE *p_dst=p_dst_first;
@@ -375,7 +375,7 @@ SLONG CLZCompressor::NeededDestinationSize(SLONG slSourceSize)
 
 // on entry, slDstSize holds maximum size of output buffer,
 // on exit, it is filled with resulting size
-/* Pack a chunk of data using given compression. */
+// Pack a chunk of data using given compression. 
 BOOL CLZCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize)
 {
   // this is just wrapper for original function by Ross Williams
@@ -389,7 +389,7 @@ BOOL CLZCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG 
 
 // on entry, slDstSize holds maximum size of output buffer,
 // on exit, it is filled with resulting size
-/* Unpack a chunk of data using given compression. */
+// Unpack a chunk of data using given compression. 
 BOOL CLZCompressor::Unpack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize)
 {
   // this is just wrapper for original function by Ross Williams
@@ -401,7 +401,7 @@ BOOL CLZCompressor::Unpack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLON
   return TRUE;
 }
 
-/* Calculate needed size for destination buffer when packing memory. */
+// Calculate needed size for destination buffer when packing memory. 
 SLONG CzlibCompressor::NeededDestinationSize(SLONG slSourceSize)
 {
   // calculate worst case possible for size of zlib packed data
@@ -412,7 +412,7 @@ SLONG CzlibCompressor::NeededDestinationSize(SLONG slSourceSize)
 
 // on entry, slDstSize holds maximum size of output buffer,
 // on exit, it is filled with resulting size
-/* Pack a chunk of data using given compression. */
+// Pack a chunk of data using given compression. 
 BOOL CzlibCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize)
 {
 /*
@@ -436,7 +436,7 @@ int ZEXPORT compress (dest, destLen, source, sourceLen)
 
 // on entry, slDstSize holds maximum size of output buffer,
 // on exit, it is filled with resulting size
-/* Unpack a chunk of data using given compression. */
+// Unpack a chunk of data using given compression. 
 BOOL CzlibCompressor::Unpack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize)
 {
 /*

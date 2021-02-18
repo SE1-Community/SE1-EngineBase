@@ -529,7 +529,7 @@ INDEX CTerrainTile::CalculateLOD(void)
       if (ini >= 0) {
         CTerrainTile &ttNeigbour = _ptrTerrain->tr_attTiles[ini];
         // if neighbour is in higher lod
-        if (TRUE) { /*ttNeigbour.tt_iLod > tt.tt_iNewLod*/
+        if (TRUE) { //ttNeigbour.tt_iLod > tt.tt_iNewLod
           // add neighbour to regen queue
           _ptrTerrain->AddTileToRegenQueue(ini);
         }

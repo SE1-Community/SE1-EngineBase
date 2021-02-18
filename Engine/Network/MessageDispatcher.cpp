@@ -100,7 +100,7 @@ const CTString &CNetworkProvider::GetDescription(void) const
 CNetworkSession::CNetworkSession(void)
 {
 }
-/* Construct a session for connecting to certain server. */
+// Construct a session for connecting to certain server. 
 CNetworkSession::CNetworkSession(const CTString &strAddress)
 {
   ns_strAddress = strAddress;
@@ -261,7 +261,7 @@ static void UpdateReceivedStreamStats(SLONG slSize)
   }
 }
 
-/* Send a message from server to client. */
+// Send a message from server to client. 
 void CMessageDispatcher::SendToClient(INDEX iClient, const CNetworkMessage &nmMessage)
 {
 // if testing for packet-loss recovery
@@ -304,7 +304,7 @@ void CMessageDispatcher::SendToClientReliable(INDEX iClient, CTMemoryStream &str
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_SENDMESSAGE);
 }
 
-/* Send a message from client to server. */
+// Send a message from client to server. 
 void CMessageDispatcher::SendToServer(const CNetworkMessage &nmMessage)
 {
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_SENDMESSAGE);
@@ -323,7 +323,7 @@ void CMessageDispatcher::SendToServerReliable(const CNetworkMessage &nmMessage)
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_SENDMESSAGE);
 }
 
-/* Receive next message from server to client. */
+// Receive next message from server to client. 
 BOOL CMessageDispatcher::ReceiveFromServer(CNetworkMessage &nmMessage)
 {
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_RECEIVEMESSAGE);
@@ -387,7 +387,7 @@ BOOL CMessageDispatcher::ReceiveFromServerReliable(CTMemoryStream &strmMessage)
   return bReceived;
 }
 
-/* Receive next message from client to server. */
+// Receive next message from client to server. 
 BOOL CMessageDispatcher::ReceiveFromClient(INDEX iClient, CNetworkMessage &nmMessage)
 {
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_RECEIVEMESSAGE);
@@ -434,7 +434,7 @@ BOOL CMessageDispatcher::ReceiveFromClientReliable(INDEX iClient, CNetworkMessag
   return bReceived;
 }
 
-/* Send/receive broadcast messages. */
+// Send/receive broadcast messages. 
 void CMessageDispatcher::SendBroadcast(const CNetworkMessage &nmMessage, ULONG ulAddr, UWORD uwPort)
 {
   CAddress adrDestination;

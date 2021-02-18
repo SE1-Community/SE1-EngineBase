@@ -33,7 +33,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <search.h>   // for qsort
 #include <float.h>    // for FPU control
 
-/* rcg10042001 !!! FIXME: Move these somewhere. */
+// rcg10042001 !!! FIXME: Move these somewhere. 
 #if (defined PLATFORM_WIN32)
 #include <conio.h>
 #include <crtdbg.h>

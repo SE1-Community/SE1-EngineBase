@@ -68,7 +68,7 @@ __forceinline INDEX CRenderer::IsSectorVisible(CBrush3D &br, CBrushSector &bsc)
 }
 
 
-/* Transform vertices in one sector before clipping. */
+// Transform vertices in one sector before clipping. 
 void CRenderer::PreClipVertices(void)
 {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_TRANSFORMVERTICES);
@@ -98,7 +98,7 @@ void CRenderer::PreClipVertices(void)
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_TRANSFORMVERTICES);
 }
 
-/* Transform planes in one sector before clipping. */
+// Transform planes in one sector before clipping. 
 void CRenderer::PreClipPlanes(void)
 {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_TRANSFORMPLANES);
@@ -775,7 +775,7 @@ CScreenPolygon *CRenderer::MakeScreenPolygon(CBrushPolygon &bpo)
 }
 
 
-/* Add a polygon to scene rendering. */
+// Add a polygon to scene rendering. 
 void CRenderer::AddPolygonToScene( CScreenPolygon *pspo)
 {
   // if the polygon is not falid or occluder and not selected 

@@ -32,52 +32,52 @@ public:
   Vector<Type, iDimensions> minvect;   // vector of min coordinates
   Vector<Type, iDimensions> maxvect;   // vector of max coordinates
 
-  /* Clear to normalized empty bounding box. */
+  // Clear to normalized empty bounding box. 
   inline void SetToNormalizedEmpty(void);
 // interface:
 public:
-  /* Default constructor. */
+  // Default constructor. 
   inline AABBox(void);
-  /* Constructor for one-point bounding box. */
+  // Constructor for one-point bounding box. 
   inline AABBox(const Vector<Type, iDimensions> &vPoint);
-  /* Constructor for one-point and radius bounding box. */
+  // Constructor for one-point and radius bounding box. 
   inline AABBox(const Vector<Type, iDimensions> &vPoint, const Type radius);
-  /* Constructor for two diagonal points. */
+  // Constructor for two diagonal points. 
   inline AABBox(const Vector<Type, iDimensions> &vPoint1, const Vector<Type, iDimensions> &vPoint2);
 
-  /* Bounding box for union. */
+  // Bounding box for union. 
   inline AABBox<Type, iDimensions> &operator|=(const AABBox<Type, iDimensions> &b);
-  /* Bounding box for intersection. */
+  // Bounding box for intersection. 
   inline AABBox<Type, iDimensions> &operator&=(const AABBox<Type, iDimensions> &b);
-  /* Bounding box for intersection. */
+  // Bounding box for intersection. 
   inline AABBox<Type, iDimensions> operator&(const AABBox<Type, iDimensions> &b) const;
-  /* Function for moving bounding box. */
+  // Function for moving bounding box. 
   inline AABBox<Type, iDimensions> &operator+=(const Vector<Type, iDimensions> &vct);
   inline AABBox<Type, iDimensions> &operator-=(const Vector<Type, iDimensions> &vct);
-  /* Function for testing equality of bounding boxes. */
+  // Function for testing equality of bounding boxes. 
   inline BOOL operator == (const AABBox<Type, iDimensions> &box2) const;
-  /* Function for testing difference between bounding boxes. */
+  // Function for testing difference between bounding boxes. 
   inline BOOL operator != (const AABBox<Type, iDimensions> &box2) const;
-  /* Test if the bounding box contains another bounding box. */
+  // Test if the bounding box contains another bounding box. 
   inline BOOL operator >= (const AABBox<Type, iDimensions> &b) const;
-  /* Test if the bounding box is contained in another bounding box. */
+  // Test if the bounding box is contained in another bounding box. 
   inline BOOL operator <= (const AABBox<Type, iDimensions> &b) const;
 
-  /* Get diagonal vector (size of box). */
+  // Get diagonal vector (size of box). 
   inline const Vector<Type, iDimensions> Size(void) const;
-  /* Get center vector (middle of box). */
+  // Get center vector (middle of box). 
   inline const Vector<Type, iDimensions> Center(void) const;
-  /* Get minimal vector (lower left of box). */
+  // Get minimal vector (lower left of box). 
   inline const Vector<Type, iDimensions> &Min(void) const;
-  /* Get maximal vector (upper right of box). */
+  // Get maximal vector (upper right of box). 
   inline const Vector<Type, iDimensions> &Max(void) const;
-  /* Check if empty. */
+  // Check if empty. 
   inline BOOL IsEmpty(void) const;
 
-  /* Check if intersects or touches another bounding box. */
+  // Check if intersects or touches another bounding box. 
   inline BOOL HasContactWith(const AABBox<Type, iDimensions> &b) const;
   inline BOOL HasContactWith(const AABBox<Type, iDimensions> &b, Type tEpsilon) const;
-  /* Check if intersects or touches a sphere. */
+  // Check if intersects or touches a sphere. 
   inline BOOL TouchesSphere(
     const Vector<Type, iDimensions> &vSphereCenter, Type fSphereRadius) const;
 
@@ -277,13 +277,13 @@ inline AABBox<Type, iDimensions> &AABBox<Type, iDimensions>::operator-=(const Ve
   return *this;
 }
 
-/* Bounding box for intersection. */
+// Bounding box for intersection. 
 template<class Type, int iDimensions>
 inline AABBox<Type, iDimensions> AABBox<Type, iDimensions>::operator&(const AABBox<Type, iDimensions> &b) const {
   return AABBox<Type, iDimensions>(*this)&=b;
 }
 
-/* Check if intersects or touches another bounding box. */
+// Check if intersects or touches another bounding box. 
 template<class Type, int iDimensions>
 inline BOOL AABBox<Type, iDimensions>::HasContactWith(const AABBox<Type, iDimensions> &b) const
 {
@@ -298,7 +298,7 @@ inline BOOL AABBox<Type, iDimensions>::HasContactWith(const AABBox<Type, iDimens
   return TRUE;
 }
 
-/* Check if intersects or touches another bounding box. */
+// Check if intersects or touches another bounding box. 
 template<class Type, int iDimensions>
 inline BOOL AABBox<Type, iDimensions>::HasContactWith(const AABBox<Type, iDimensions> &b, Type tEpsilon) const
 {
@@ -313,7 +313,7 @@ inline BOOL AABBox<Type, iDimensions>::HasContactWith(const AABBox<Type, iDimens
   }
   return TRUE;
 }
-/* Check if intersects or touches a sphere. */
+// Check if intersects or touches a sphere. 
 template<class Type, int iDimensions>
 inline BOOL AABBox<Type, iDimensions>::TouchesSphere(
   const Vector<Type, iDimensions> &vSphereCenter, Type fSphereRadius) const

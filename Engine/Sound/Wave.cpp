@@ -186,11 +186,11 @@ WAVEFORMATEX PCMWaveInput::LoadInfo_t(CTStream *pCstrInput)
     throw (TRANS("PCM Wave Input: Info already loaded."));
   }
 
-  /* Read Riff */
+  // Read Riff 
   pCstrInput->ExpectID_t(CChunkID("RIFF"));     // ID "RIFF"
   (*pCstrInput) >> pwi_ulRiffLength;            // Ucitaj duljinu file-a
 
-  /* Read Wave */
+  // Read Wave 
   pCstrInput->ExpectID_t(CChunkID("WAVE"));     // ID "WAVE"
   pCstrInput->ExpectID_t(CChunkID("fmt "));     // ID "fmt "
   // read Format Chunk length
@@ -223,12 +223,12 @@ WAVEFORMATEX PCMWaveInput::LoadInfo_t(CTStream *pCstrInput)
     pCstrInput->Seek_t(-CID_LENGTH, CTStream::SD_CUR);
   }
 
-  /* Read Data */
+  // Read Data 
   pCstrInput->ExpectID_t(CChunkID("data"));      // ID "data"
   // read Data length (in bytes)
   (*pCstrInput) >> pwi_ulDataLength;
 
-  /* Check PCM format */
+  // Check PCM format 
   CheckWaveFormat_t(pwi_wfeWave, "PCM Wave Input (input)");
 
   // mark Info loaded

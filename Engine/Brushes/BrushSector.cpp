@@ -47,7 +47,7 @@ CBrushSector &CBrushSector::operator=(const CBrushSector &c)
 
 extern void AssureFPT_53(void);
 
-/* Default constructor. */
+// Default constructor. 
 CBrushSector::CBrushSector(void) 
 : bsc_ulFlags(0)
 , bsc_ulFlags2(0)
@@ -190,7 +190,7 @@ void CBrushSector::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prRelative
 }
 
 
-/* Uncache lightmaps on all shadows on the sector. */
+// Uncache lightmaps on all shadows on the sector. 
 void CBrushSector::UncacheLightMaps(void)
 {
   // for all polygons in this sector
@@ -199,7 +199,7 @@ void CBrushSector::UncacheLightMaps(void)
     itbpo->bpo_smShadowMap.Uncache();
   }}
 }
-/* Find and remember all entities in this sector. */
+// Find and remember all entities in this sector. 
 void CBrushSector::FindEntitiesInSector(void)
 {
   // assure that floating point precision is 53 bits

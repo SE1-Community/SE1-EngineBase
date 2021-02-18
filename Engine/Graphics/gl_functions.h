@@ -83,9 +83,9 @@ DLLFUNCTION( OGL, void , glDisable,( GLenum cap ),0,0);
 DLLFUNCTION( OGL, GLboolean , glIsEnabled,( GLenum cap ),0,0);
 
 
-DLLFUNCTION( OGL, void , glEnableClientState,( GLenum cap ),0,0);  /* 1.1 */
+DLLFUNCTION( OGL, void , glEnableClientState,( GLenum cap ),0,0);  // 1.1 
 
-DLLFUNCTION( OGL, void , glDisableClientState,( GLenum cap ),0,0);  /* 1.1 */
+DLLFUNCTION( OGL, void , glDisableClientState,( GLenum cap ),0,0);  // 1.1 
 
 
 DLLFUNCTION( OGL, void , glGetBooleanv,( GLenum pname, GLboolean *params ),0,0);
@@ -102,9 +102,9 @@ DLLFUNCTION( OGL, void , glPushAttrib,( GLbitfield mask ),0,0);
 DLLFUNCTION( OGL, void , glPopAttrib,( void ),0,0);
 
 
-DLLFUNCTION( OGL, void , glPushClientAttrib,( GLbitfield mask ),0,0);  /* 1.1 */
+DLLFUNCTION( OGL, void , glPushClientAttrib,( GLbitfield mask ),0,0);  // 1.1 
 
-DLLFUNCTION( OGL, void , glPopClientAttrib,( void ),0,0);  /* 1.1 */
+DLLFUNCTION( OGL, void , glPopClientAttrib,( void ),0,0);  // 1.1 
 
 
 DLLFUNCTION( OGL, GLint , glRenderMode,( GLenum mode ),0,0);
@@ -267,13 +267,13 @@ DLLFUNCTION( OGL, void , glIndexd,( GLdouble c ),0,0);
 DLLFUNCTION( OGL, void , glIndexf,( GLfloat c ),0,0);
 DLLFUNCTION( OGL, void , glIndexi,( GLint c ),0,0);
 DLLFUNCTION( OGL, void , glIndexs,( GLshort c ),0,0);
-DLLFUNCTION( OGL, void , glIndexub,( GLubyte c ),0,0);  /* 1.1 */
+DLLFUNCTION( OGL, void , glIndexub,( GLubyte c ),0,0);  // 1.1 
 
 DLLFUNCTION( OGL, void , glIndexdv,( const GLdouble *c ),0,0);
 DLLFUNCTION( OGL, void , glIndexfv,( const GLfloat *c ),0,0);
 DLLFUNCTION( OGL, void , glIndexiv,( const GLint *c ),0,0);
 DLLFUNCTION( OGL, void , glIndexsv,( const GLshort *c ),0,0);
-DLLFUNCTION( OGL, void , glIndexubv,( const GLubyte *c ),0,0);  /* 1.1 */
+DLLFUNCTION( OGL, void , glIndexubv,( const GLubyte *c ),0,0);  // 1.1 
 
 DLLFUNCTION( OGL, void , glColor3b,( GLbyte red, GLbyte green, GLbyte blue ),0,0);
 DLLFUNCTION( OGL, void , glColor3d,( GLdouble red, GLdouble green, GLdouble blue ),0,0);
@@ -599,7 +599,7 @@ DLLFUNCTION( OGL, void , glGetTexImage,( GLenum target, GLint level,
 
 
 
-/* 1.1 functions */
+// 1.1 functions 
 
 DLLFUNCTION( OGL, void , glGenTextures,( GLsizei n, GLuint *textures ),0,0);
 
@@ -749,23 +749,23 @@ DLLFUNCTION( OGL, void , glPopName,( void ),0,0);
  * 1.0 Extensions
  */
 
-/* GL_EXT_blend_minmax */
+// GL_EXT_blend_minmax 
 DLLFUNCTION( OGL, void , glBlendEquationEXT,( GLenum mode ),0,0);
 
 
 
-/* GL_EXT_blend_color */
+// GL_EXT_blend_color 
 DLLFUNCTION( OGL, void , glBlendColorEXT,( GLclampf red, GLclampf green,
                                          GLclampf blue, GLclampf alpha ),0,0);
 
 
 
-/* GL_EXT_polygon_offset */
+// GL_EXT_polygon_offset 
 DLLFUNCTION( OGL, void , glPolygonOffsetEXT,( GLfloat factor, GLfloat bias ),0,0);
 
 
 
-/* GL_EXT_vertex_array */
+// GL_EXT_vertex_array 
 
 DLLFUNCTION( OGL, void , glVertexPointerEXT,( GLint size, GLenum type,
                                             GLsizei stride,
@@ -797,7 +797,7 @@ DLLFUNCTION( OGL, void , glDrawArraysEXT,( GLenum mode, GLint first,
 
 
 
-/* GL_EXT_texture_object */
+// GL_EXT_texture_object 
 
 DLLFUNCTION( OGL, void , glGenTexturesEXT,( GLsizei n, GLuint *textures ),0,0);
 
@@ -818,7 +818,7 @@ DLLFUNCTION( OGL, GLboolean , glIsTextureEXT,( GLuint texture ),0,0);
 
 
 
-/* GL_EXT_texture3D */
+// GL_EXT_texture3D 
 
 DLLFUNCTION( OGL, void , glTexImage3DEXT,( GLenum target, GLint level,
                                          GLenum internalFormat,
@@ -842,7 +842,7 @@ DLLFUNCTION( OGL, void , glCopyTexSubImage3DEXT,( GLenum target, GLint level,
 
 
 
-/* GL_EXT_color_table */
+// GL_EXT_color_table 
 
 DLLFUNCTION( OGL, void , glColorTableEXT,( GLenum target, GLenum internalformat,
                                          GLsizei width, GLenum format,
@@ -865,7 +865,7 @@ DLLFUNCTION( OGL, void , glGetColorTableParameterivEXT,( GLenum target,
                                                        GLint *params ),0,0);
 
 
-/* GL_SGIS_multitexture */
+// GL_SGIS_multitexture 
 
 DLLFUNCTION( OGL, void , glMultiTexCoord1dSGIS,(GLenum target, GLdouble s),0,0);
 DLLFUNCTION( OGL, void , glMultiTexCoord1dvSGIS,(GLenum target, const GLdouble *v),0,0);
@@ -907,7 +907,7 @@ DLLFUNCTION( OGL, void , glSelectTextureSGIS,(GLenum target),0,0);
 DLLFUNCTION( OGL, void , glSelectTextureCoordSetSGIS,(GLenum target),0,0);
 
 
-/* GL_EXT_multitexture */
+// GL_EXT_multitexture 
 
 DLLFUNCTION( OGL, void , glMultiTexCoord1dEXT,(GLenum target, GLdouble s),0,0);
 DLLFUNCTION( OGL, void , glMultiTexCoord1dvEXT,(GLenum target, const GLdouble *v),0,0);
@@ -955,13 +955,13 @@ DLLFUNCTION( OGL, void , glSelectTextureTransformEXT,( GLenum target ),0,0);
 
 
 
-/* GL_EXT_point_parameters */
+// GL_EXT_point_parameters 
 DLLFUNCTION( OGL, void , glPointParameterfEXT,( GLenum pname, GLfloat param ),0,0);
 DLLFUNCTION( OGL, void , glPointParameterfvEXT,( GLenum pname,
                                                const GLfloat *params ),0,0);
 
 
-/* 1.2 functions */
+// 1.2 functions 
 DLLFUNCTION( OGL, void , glDrawRangeElements,( GLenum mode, GLuint start,
   GLuint end, GLsizei count, GLenum type, const GLvoid *indices ),0,0);
 
@@ -986,7 +986,7 @@ DLLFUNCTION( OGL, void , glCopyTexSubImage3D,( GLenum target, GLint level,
                                              GLsizei height ),0,0);
 
 
-/* !!! FIXME: This needs to move to a GL context abstraction layer. */
+// !!! FIXME: This needs to move to a GL context abstraction layer. 
 #ifdef PLATFORM_WIN32
 // gdi functions
 DLLFUNCTION( OGL, BOOL , wglCopyContext,(HGLRC, HGLRC, UINT),0,0);

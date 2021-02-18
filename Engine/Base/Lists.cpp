@@ -101,7 +101,7 @@ void CListHead::RemTail(void)
   lh_Tail->Remove();
 }
 
-/* Remove all elements from list. */
+// Remove all elements from list. 
 void CListHead::RemAll(void)
 {
   // for each element
@@ -157,7 +157,7 @@ INDEX CListHead::Count(void) const
   return slCount;
 }
 
-  /* Sort the list. */
+  // Sort the list. 
 void CListHead::Sort(int (*pCompare)(const void *p0, const void *p1), int iNodeOffset)
 {
   // get number of elements

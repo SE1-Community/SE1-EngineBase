@@ -200,19 +200,19 @@ public:
     oc_bSkipObjectB = FALSE;
   }
 
-  /* Add an entire array of BSP edges to some polygon according to action code. */
+  // Add an entire array of BSP edges to some polygon according to action code. 
   inline void AddEdgeArrayAccordingToAction(
       CDynamicArray<DOUBLEbspedge3D> &abed,
       enum CSGAction csga);
 
-  /* Fill array of bsp edges from array of polygon edges. */
+  // Fill array of bsp edges from array of polygon edges. 
   void PolygonEdgesToBSPEdges(
       CDynamicArray<CObjectPolygonEdge> &aope,
       CDynamicArray<DOUBLEbspedge3D> &abed
     );
 
 public:
-  /* Perform CSG splitting of sectors in one operand using other operand. */
+  // Perform CSG splitting of sectors in one operand using other operand. 
   void DoCSGSplitting(
       CObject3D &obResult,
       CObject3D &obA,
@@ -220,7 +220,7 @@ public:
       struct CSGOperationTable *pcsgotA,
       CObject3D &obB,
       INDEX iSectorOffsetB);
-  /* Perform CSG operation -- destroys both operands! */
+  // Perform CSG operation -- destroys both operands! 
   void DoCSGOperation(
       CObject3D &obResult,
       CObject3D &obA,

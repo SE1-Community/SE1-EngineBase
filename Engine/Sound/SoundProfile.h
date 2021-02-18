@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/Profiling.h>
 
-/* Class for holding profiling information for sound operations. */
+// Class for holding profiling information for sound operations. 
 class CSoundProfile : public CProfileForm {
 public:
   // indices for profiling counters and timers

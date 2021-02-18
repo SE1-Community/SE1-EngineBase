@@ -111,7 +111,7 @@ void CDynamicContainer<Type>::Remove(Type *ptOldObject)
   Pop();
 }
 
-/* Test if a given object is in the container. */
+// Test if a given object is in the container. 
 template<class Type>
 BOOL CDynamicContainer<Type>::IsMember(Type *ptOldObject)
 {
@@ -207,7 +207,7 @@ INDEX CDynamicContainer<Type>::GetIndex(Type *ptMember) {
   return 0;
 }
 
-/* Get first object in container (there must be at least one when calling this). */
+// Get first object in container (there must be at least one when calling this). 
 template<class Type>
 Type &CDynamicContainer<Type>::GetFirst(void)
 {
@@ -251,17 +251,17 @@ private:
   INDEX dci_Index;               // index of current element
   CDynamicContainer<Type> &dci_Array;   // reference to array
 public:
-  /* Constructor for given array. */
+  // Constructor for given array. 
   inline CDynamicContainerIterator(CDynamicContainer<Type> &da);
-  /* Destructor. */
+  // Destructor. 
   inline ~CDynamicContainerIterator(void);
 
-  /* Move to next object. */
+  // Move to next object. 
   inline void MoveToNext(void);
-  /* Check if finished. */
+  // Check if finished. 
   inline BOOL IsPastEnd(void);
   
-  /* Get current element. */
+  // Get current element. 
   Type &Current(void) { return *dci_Array.Pointer(dci_Index); }
   Type &operator*(void) { return *dci_Array.Pointer(dci_Index); }
   operator Type *(void) { return dci_Array.Pointer(dci_Index); }

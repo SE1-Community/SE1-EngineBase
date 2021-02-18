@@ -167,7 +167,7 @@ ULONG CPlayerSource::GetChatMask(void)
   return 1UL << pls_Index;
 }
 
-/* Create action packet from current player commands and for sending to server. */
+// Create action packet from current player commands and for sending to server. 
 void CPlayerSource::WriteActionPacket(CNetworkMessage &nm)
 {
   // synchronize access to actions

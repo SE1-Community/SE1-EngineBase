@@ -23,14 +23,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // global memory management functions
 
-/* Get amount of free memory in system. */
+// Get amount of free memory in system. 
 ENGINE_API extern SLONG GetFreeMemory( void );
 
-/* Allocate a block of memory - fatal error if not enough memory. */
+// Allocate a block of memory - fatal error if not enough memory. 
 ENGINE_API extern void *AllocMemory( SLONG memsize );
 ENGINE_API extern void *_debug_AllocMemory( SLONG memsize, int iType, const char *strFile, int iLine);
 ENGINE_API extern void *AllocMemoryAligned( SLONG memsize, SLONG slAlignPow2);
-/* Free a block of memory. */
+// Free a block of memory. 
 ENGINE_API extern void FreeMemory( void *memory);
 ENGINE_API extern void FreeMemoryAligned( void *memory);
 
@@ -38,7 +38,7 @@ ENGINE_API extern void ResizeMemory( void **memory, SLONG memsize );
 ENGINE_API extern void GrowMemory( void **memory, SLONG memsize );
 ENGINE_API extern void ShrinkMemory( void **memory,SLONG memsize );
 
-/* Allocate a copy of a string. - fatal error if not enough memory. */
+// Allocate a copy of a string. - fatal error if not enough memory. 
 ENGINE_API extern char *StringDuplicate(const char *strOriginal);
 
 ENGINE_API extern BOOL MemoryConsistencyCheck( void );
@@ -48,7 +48,7 @@ ENGINE_API extern BOOL AllMemoryFreed( void );
 ENGINE_API extern INDEX FindZero( UBYTE *pubMemory, INDEX iBytes);
 
 
-#ifdef _MSC_VER  /* rcg10042001 */
+#ifdef _MSC_VER  // rcg10042001 
 #ifndef NDEBUG
 
 // use debug version of operator new

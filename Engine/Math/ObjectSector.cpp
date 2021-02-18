@@ -303,7 +303,7 @@ inline void CEdgeEx::Initialize(const DOUBLE3D *pvPoint0, const DOUBLE3D *pvPoin
     edx_vDirection * ((vPoint0 % edx_vDirection))/(edx_vDirection % edx_vDirection);
 }
 
-/* Test if a point is on the edge line. */
+// Test if a point is on the edge line. 
 inline BOOL CEdgeEx::PointIsOnLine(const DOUBLE3D &vPointToTest) const
 {
   // if it is the reference point
@@ -650,7 +650,7 @@ void CObjectSector::RemapClonedPlanes(void)
 
   osc_aoplPlanes.Lock();
 
-  /* Prepare sorted array for remapping planes. */
+  // Prepare sorted array for remapping planes. 
 
   // create an array of pointers for sorting planes
   INDEX ctPlanes = osc_aoplPlanes.Count();
@@ -668,7 +668,7 @@ void CObjectSector::RemapClonedPlanes(void)
     // sort the array of pointers, so that same planes get next to each other
     qsort(&applSortedPlanes[0], ctPlanes, sizeof(CObjectPlane *), qsort_ComparePlanes);
 
-    /* Create remapping pointers. */
+    // Create remapping pointers. 
 
     // for all planes in sorted array, except the last one
     for (INDEX iSortedPlane=0; iSortedPlane<ctPlanes-1; iSortedPlane++) {
@@ -696,7 +696,7 @@ void CObjectSector::RemapClonedPlanes(void)
     }}
   }
 
-  /* Remap all references to planes. */
+  // Remap all references to planes. 
   // for all polygons in object
   {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
     // remap plane pointers
@@ -720,7 +720,7 @@ void CObjectSector::RemapClonedVertices(void)
 
   osc_aovxVertices.Lock();
 
-  /* Prepare sorted array for remapping vertices. */
+  // Prepare sorted array for remapping vertices. 
 
   // create an array of pointers for sorting vertices
   INDEX ctVertices = osc_aovxVertices.Count();
@@ -738,7 +738,7 @@ void CObjectSector::RemapClonedVertices(void)
     // sort the array of pointers, so that same vertices get next to each other
     qsort(&apvxSortedVertices[0], ctVertices, sizeof(CObjectVertex *), qsort_CompareVertices);
 
-    /* Create remapping pointers. */
+    // Create remapping pointers. 
 
     // for all vertices in sorted array, except the last one
     for (INDEX iSortedVertex=0; iSortedVertex<ctVertices-1; iSortedVertex++) {
@@ -774,7 +774,7 @@ void CObjectSector::RemapClonedVertices(void)
     }}
   }
 
-  /* Remap all references to vertices. */
+  // Remap all references to vertices. 
   // for all edges in object
   {FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited) {
     // remap vertex pointers
@@ -1182,7 +1182,7 @@ void CObjectSector::SplitCollinearEdgesRun(CStaticArray<CEdgeEx *> &apedxSortedE
   }
   CEdgeEx &edxLine = *apedxSortedEdgeLines[iFirstInRun];  // representative line of the run
 
-  /* set up array of vertex pointers */
+  // set up array of vertex pointers 
 /*
   // for each vertex in sector
   INDEX ctVerticesOnLine=0;
@@ -1255,7 +1255,7 @@ void CObjectSector::SplitCollinearEdgesRun(CStaticArray<CEdgeEx *> &apedxSortedE
     apvxSortedVertices[(iEdgeInRun-iFirstInRun)*2+1] = oed.oed_Vertex1;
   }}
 
-  /* sort the array of vertex pointers */
+  // sort the array of vertex pointers 
 
   // get axis direction from any edge in the run
   DOUBLE3D vDirection = apedxSortedEdgeLines[iFirstInRun]->edx_vDirection;
@@ -1292,7 +1292,7 @@ void CObjectSector::SplitCollinearEdgesRun(CStaticArray<CEdgeEx *> &apedxSortedE
     }
   }
 
-  /* split each edge in turn */
+  // split each edge in turn 
 
   // for all edges in run
   {for (INDEX iEdgeInRun=iFirstInRun; iEdgeInRun <= iLastInRun; iEdgeInRun++) {
@@ -1330,7 +1330,7 @@ void CObjectSector::SplitCollinearEdges(void)
 {
   osc_aoedEdges.Lock();
 
-  /* Prepare arrays for splitting edges. */
+  // Prepare arrays for splitting edges. 
 
   // create array of extended edge infosd
   CStaticArray<CEdgeEx> aedxEdgeLines;
@@ -1342,7 +1342,7 @@ void CObjectSector::SplitCollinearEdges(void)
     qsort(&apedxSortedEdgeLines[0], ctEdges, sizeof(CEdgeEx *), qsort_CompareEdgeLines);
   }
 
-  /* Create remapping pointers. */
+  // Create remapping pointers. 
 
   // for all edges in normal sorted array, starting at second one
   INDEX iFirstInLine = 0;
@@ -1359,12 +1359,12 @@ void CObjectSector::SplitCollinearEdges(void)
   // split the last run of collinear edges
   SplitCollinearEdgesRun(apedxSortedEdgeLines, iFirstInLine, ctEdges-1);
 
-  /* Remap references to edges. */
+  // Remap references to edges. 
 
   // for all polygons in object
   {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itpo2) {
 
-    /* create new array of polygon edges for child edges */
+    // create new array of polygon edges for child edges 
 
     // for all of its edge pointers
     INDEX ctNewEdges = 0;
@@ -1383,7 +1383,7 @@ void CObjectSector::SplitCollinearEdges(void)
     }
     aopoNewPolygonEdges.Lock();
 
-    /* set the array */
+    // set the array 
 
     // for all of its edge pointers
     INDEX iChildEdge = 0;
@@ -1399,7 +1399,7 @@ void CObjectSector::SplitCollinearEdges(void)
       }
     }}
 
-    /* replace old array with the new one */
+    // replace old array with the new one 
     aopoNewPolygonEdges.Unlock();
     itpo2->opo_PolygonEdges.Clear();
     itpo2->opo_PolygonEdges.MoveArray(aopoNewPolygonEdges);
@@ -1534,7 +1534,7 @@ void CObjectSector::RemapClonedEdges(void)
 
   osc_aoedEdges.Lock();
 
-  /* Prepare sorted arrays for remapping edges. */
+  // Prepare sorted arrays for remapping edges. 
 
   // create array of pointers for sorting edges
   INDEX ctEdges = osc_aoedEdges.Count();
@@ -1554,7 +1554,7 @@ void CObjectSector::RemapClonedEdges(void)
   // sort the array of pointers, so that same edges get next to each other
   qsort(&apedSortedEdges[0], ctEdges, sizeof(CObjectEdge *), qsort_CompareEdges);
 
-  /* Create remapping pointers. */
+  // Create remapping pointers. 
 
   // for all edges in normal sorted array, except the last one
   for (INDEX iSortedEdge=0; iSortedEdge<ctEdges-1; iSortedEdge++) {
@@ -1566,7 +1566,7 @@ void CObjectSector::RemapClonedEdges(void)
     }
   }
 
-  /* Create inverse pointers. */
+  // Create inverse pointers. 
 
   // for all edges in sorted array
   for (INDEX iNormalEdge=0; iNormalEdge<ctEdges; iNormalEdge++) {
@@ -1599,7 +1599,7 @@ void CObjectSector::RemapClonedEdges(void)
   }}
 #endif // NDEBUG
 
-  /* Remap all references to edges. */
+  // Remap all references to edges. 
 
   // for all polygons in object
   {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itpo2) {
@@ -1820,7 +1820,7 @@ void CObjectSector::GetBoundingBox(DOUBLEaabbox3D &boxSector)
  */
 void CObjectSector::CreateBSP(void)
 {
-  /* prepare array of bsp polygons */
+  // prepare array of bsp polygons 
 
   // get count of polygons in sector
   const INDEX ctPolygons = osc_aopoPolygons.Count();
@@ -1865,7 +1865,7 @@ void CObjectSector::CreateBSP(void)
   arbpo.Unlock();
   osc_aopoPolygons.Unlock();
 
-  /* create bsp tree from array of bsp polygons */
+  // create bsp tree from array of bsp polygons 
   osc_BSPTree.Create(arbpo);
 }
 
@@ -1890,7 +1890,7 @@ void CObjectSector::Inverse(void)
   }
 }
 
-/* Recalculate all planes from vertices. (used when stretching vertices) */
+// Recalculate all planes from vertices. (used when stretching vertices) 
 void CObjectSector::RecalculatePlanes(void)
 {
   // create a container for empty polygons

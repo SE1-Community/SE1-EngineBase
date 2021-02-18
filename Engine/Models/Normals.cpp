@@ -278,7 +278,7 @@ extern FLOAT3D avGouraudNormals[MAX_GOURAUDNORMALS] = {
 };
 
 
-/* Find nearest Gouraud normal for a vector. */
+// Find nearest Gouraud normal for a vector. 
 INDEX GouraudNormal( const FLOAT3D &vNormal)
 {
   INDEX i, besti;

@@ -240,7 +240,7 @@ void CRenderer::StepAndResortActiveList(void)
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_STEPANDRESORT);
 }
 
-/* Copy I coordinates from active list to edge data. */
+// Copy I coordinates from active list to edge data. 
 void CRenderer::CopyActiveCoordinates(void)
 {
   // for all active edges

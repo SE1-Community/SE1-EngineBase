@@ -53,7 +53,7 @@ public:
   // remove all slots, and reset the nametable to initial (empty) state
   void Clear(void);
 
-  /* Set allocation parameters. */
+  // Set allocation parameters. 
   void SetAllocationParameters(
     INDEX ctCompartments, INDEX ctSlotsPerComp, INDEX ctSlotsPerCompStep);
 

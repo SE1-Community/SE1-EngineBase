@@ -46,14 +46,14 @@ inline CStaticArray<Type>::~CStaticArray(void) {
   }
 };
 
-/* Random access operator. */
+// Random access operator. 
 template<class Type>
 inline void CStaticArray<Type>::operator=(const CStaticArray<Type> &arOriginal) {
   CopyArray(arOriginal);
 }
 
 template<class Type>
-/* Destroy all objects, and reset the array to initial (empty) state. */
+// Destroy all objects, and reset the array to initial (empty) state. 
 inline void CStaticArray<Type>::Clear(void) {
   if (sa_Count != 0) Delete(); 
 }
@@ -82,7 +82,7 @@ inline void CStaticArray<Type>::New(INDEX iCount) {
   sa_Count = iCount;
   sa_Array = new Type[iCount+1]; //(+1 for cache-prefetch opt)
 };
-/* Expand stack size but keep old objects. */
+// Expand stack size but keep old objects. 
 template<class Type>
 inline void CStaticArray<Type>::Expand(INDEX iNewCount)
 {
@@ -161,7 +161,7 @@ INDEX CStaticArray<Type>::Index(Type *ptMember) {
  * Assignment operator.
  */
 template<class Type>
-/* Copy all elements of another array into this one. */
+// Copy all elements of another array into this one. 
 void CStaticArray<Type>::CopyArray(const CStaticArray<Type> &arOriginal)
 {
   ASSERT(this != NULL);
@@ -184,7 +184,7 @@ void CStaticArray<Type>::CopyArray(const CStaticArray<Type> &arOriginal)
   }
 }
 
-/* Move all elements of another array into this one. */
+// Move all elements of another array into this one. 
 template<class Type>
 void CStaticArray<Type>::MoveArray(CStaticArray<Type> &arOther)
 {
@@ -218,16 +218,16 @@ private:
   INDEX sai_Index;          // index of current element
   CStaticArray<Type> &sai_Array;   // reference to array
 public:
-  /* Constructor for given array. */
+  // Constructor for given array. 
   inline CStaticArrayIterator(CStaticArray<Type> &sa);
-  /* Destructor. */
+  // Destructor. 
   inline ~CStaticArrayIterator(void);
 
-  /* Move to next object. */
+  // Move to next object. 
   inline void MoveToNext(void);
-  /* Check if finished. */
+  // Check if finished. 
   inline BOOL IsPastEnd(void);
-  /* Get current element. */
+  // Get current element. 
   Type &Current(void) { return sai_Array[sai_Index]; }
   Type &operator*(void) { return sai_Array[sai_Index]; }
   operator Type *(void) { return &sai_Array[sai_Index]; }

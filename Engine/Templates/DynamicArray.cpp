@@ -113,7 +113,7 @@ void CDynamicArray<Type>::Clear(void) {
   }
 }
 
-/* Random access operator. */
+// Random access operator. 
 template<class Type>
 Type &CDynamicArray<Type>::operator[](INDEX iObject) {
   return *Pointer(iObject); 
@@ -403,16 +403,16 @@ private:
   INDEX dai_Index;           // index of current element
   CDynamicArray<Type> &dai_Array;   // reference to array
 public:
-  /* Constructor for given array. */
+  // Constructor for given array. 
   inline CDynamicArrayIterator(CDynamicArray<Type> &da);
-  /* Destructor. */
+  // Destructor. 
   inline ~CDynamicArrayIterator(void);
 
-  /* Move to next object. */
+  // Move to next object. 
   inline void MoveToNext(void);
-  /* Check if finished. */
+  // Check if finished. 
   inline BOOL IsPastEnd(void);
-  /* Get current element. */
+  // Get current element. 
   Type &Current(void) { return *dai_Array.Pointer(dai_Index); }
   Type &operator*(void) { return *dai_Array.Pointer(dai_Index); }
   operator Type *(void) { return dai_Array.Pointer(dai_Index); }

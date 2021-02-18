@@ -37,24 +37,24 @@ public:
 #define PLS_MAXLASTACTIONS 3
   CPlayerAction pls_apaLastActions[PLS_MAXLASTACTIONS]; // old actions remembered for resending
 public:
-  /* Activate a new player. */
+  // Activate a new player. 
   void Start_t(CPlayerCharacter &pcCharacter);
-  /* Deactivate removed player. */
+  // Deactivate removed player. 
   void Stop(void);
-  /* Check if this player is active. */
+  // Check if this player is active. 
   BOOL IsActive(void) { return pls_Active; };
   // request character change for a player
   // NOTE: the request is asynchronious and possible failure cannot be detected
   void ChangeCharacter(CPlayerCharacter &pcNew);
 
-  /* Create action packet from current player commands and for sending to server. */
+  // Create action packet from current player commands and for sending to server. 
   void WriteActionPacket(CNetworkMessage &nm);
 public:
 
   CPlayerSource();
   ~CPlayerSource();
 
-  /* Set current player action. */
+  // Set current player action. 
   void SetAction(const CPlayerAction &paAction);
   // get mask of this player for chat messages
   ULONG GetChatMask(void);

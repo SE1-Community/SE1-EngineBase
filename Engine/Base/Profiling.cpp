@@ -184,7 +184,7 @@ const CTString &CProfileForm::GetTimerName(INDEX iTimer)
   return pf_aptTimers[iTimer].pt_strName;
 }
 
-/* Start a timer. */
+// Start a timer. 
 void CProfileForm::StartTimer_internal(INDEX iTimer)
 {
   CProfileTimer &pt = pf_aptTimers[iTimer];
@@ -198,7 +198,7 @@ void CProfileForm::StartTimer_internal(INDEX iTimer)
   _tvCurrentProfilingEpsilon += _tvStartEpsilon;
 }
 
-/* Stop a timer. */
+// Stop a timer. 
 void CProfileForm::StopTimer_internal(INDEX iTimer)
 {
   CProfileTimer &pt = pf_aptTimers[iTimer];
@@ -214,7 +214,7 @@ void CProfileForm::StopTimer_internal(INDEX iTimer)
   _tvCurrentProfilingEpsilon += _tvStopEpsilon;
 }
 
-/* Get current value of a counter. */
+// Get current value of a counter. 
 INDEX CProfileForm::GetCounterCount(INDEX iCounter) {
   return pf_apcCounters[iCounter].pc_ctCount;
 };
@@ -225,7 +225,7 @@ INDEX CProfileForm::GetAveragingCounter(void)
   return pf_ctAveragingCounter;
 }
 
-/* Get current value of a timer in seconds or in percentage of module time. */
+// Get current value of a timer in seconds or in percentage of module time. 
 double CProfileForm::GetTimerAverageTime(INDEX iTimer) {
   // must not report while some timers are active!
   ASSERT(pf_ctRunningTimers == 0);
@@ -238,7 +238,7 @@ double CProfileForm::GetTimerPercentageOfModule(INDEX iTimer) {
     /pf_tvOverAllElapsed.GetSeconds()*100;
 }
 
-/* Get percentage of module time in application time. */
+// Get percentage of module time in application time. 
 double CProfileForm::GetModulePercentage(void) {
   // must not report while some timers are active!
   ASSERT(pf_ctRunningTimers == 0);
@@ -277,7 +277,7 @@ void CProfileForm::Reset(void)
   }
 }
 
-/* Print one counter in report. */
+// Print one counter in report. 
 void CProfileCounter::Report(char *&strBuffer, INDEX ctAveragingCount)
 {
   if (ctAveragingCount == 0) {
@@ -287,7 +287,7 @@ void CProfileCounter::Report(char *&strBuffer, INDEX ctAveragingCount)
     pc_strName, pc_ctCount, (double)pc_ctCount/ctAveragingCount);
 }
 
-/* Print one timer in report. */
+// Print one timer in report. 
 void CProfileTimer::Report(char *&strBuffer,
                            INDEX ctAveragingCount,
                            CTimerValue tvAppElapsed, CTimerValue tvModElapsed)

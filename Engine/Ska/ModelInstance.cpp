@@ -524,7 +524,7 @@ void CModelInstance::AddAnimation(INDEX iAnimID, ULONG ulFlags, FLOAT fStrength,
 // see whether this animation even exists in the current skeleton
 INDEX iDummy1, iDummy2;
 if (!FindAnimationByID(iAnimID, &iDummy1, &iDummy2)) { 
-  /*this ModelInstance does not contain the required animation!!!*/
+  //this ModelInstance does not contain the required animation!!!
   SKAASSERT(FALSE);
 }
 #endif

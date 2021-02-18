@@ -42,7 +42,7 @@ inline CDynamicStackArray<Type>::~CDynamicStackArray(void) {
   CDynamicArray<Type>::Unlock();
 };
 
-/* Destroy all objects, and reset the array to initial (empty) state. */
+// Destroy all objects, and reset the array to initial (empty) state. 
 template<class Type>
 inline void CDynamicStackArray<Type>::Clear(void) {
   CDynamicArray<Type>::Clear(); da_ctUsed = 0; 

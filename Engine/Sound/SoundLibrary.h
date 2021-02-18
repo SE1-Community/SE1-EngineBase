@@ -27,12 +27,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticStackArray.h>
 #include <Engine/Templates/DynamicArray.h>
 
-#ifdef PLATFORM_WIN32 /* rcg10042001 */
+#ifdef PLATFORM_WIN32 // rcg10042001 
 #include <Engine/Sound/DSound.h>
 #include <Engine/Sound/EAX.h>
 #endif
 
-/* !!! FIXME: rcg10042001 This is going to need OpenAL or SDL_audio... */
+// !!! FIXME: rcg10042001 This is going to need OpenAL or SDL_audio... 
 
 
 // Mixer
@@ -52,7 +52,7 @@ void MixSound( class CSoundObject *pso);
  */
 class ENGINE_API CSoundTimerHandler : public CTimerHandler {
 public:
-  /* This is called every TickQuantum seconds. */
+  // This is called every TickQuantum seconds. 
   virtual void HandleTimer(void);
 };
 
@@ -74,7 +74,7 @@ public:
   CTCriticalSection sl_csSound;          // sync. access to sounds
   CSoundTimerHandler sl_thTimerHandler;  // handler for mixing sounds in timer
 
-/* rcg !!! FIXME: This needs to be abstracted. */
+// rcg !!! FIXME: This needs to be abstracted. 
 #ifdef PLATFORM_WIN32
   INDEX sl_ctWaveDevices;                // number of devices detected
   BOOL  sl_bUsingDirectSound;
@@ -110,40 +110,40 @@ public:
 
 #endif
 
-  /* Return library state (active < == > format <> NONE */
+  // Return library state (active < == > format <> NONE 
   inline BOOL IsActive(void) {return sl_EsfFormat != SF_NONE;};
-  /* Clear Library WaveOut */
+  // Clear Library WaveOut 
   void ClearLibrary(void);
 public:
-  /* Constructor */
+  // Constructor 
   CSoundLibrary(void);
-  /* Destructor */
+  // Destructor 
   ~CSoundLibrary(void);
   DECLARE_NOCOPYING(CSoundLibrary);
 
-  /* Initialization */
+  // Initialization 
   void Init(void);
-  /* Clear Sound Library */
+  // Clear Sound Library 
   void Clear(void);
 
-  /* Set Format */
+  // Set Format 
   SoundFormat SetFormat( SoundFormat EsfNew, BOOL bReport=FALSE);
-  /* Get Format */
+  // Get Format 
   inline SoundFormat GetFormat(void) { return sl_EsfFormat; };
 
-  /* Update all 3d effects and copy internal data. */
+  // Update all 3d effects and copy internal data. 
   void UpdateSounds(void);
-  /* Update Mixer */
+  // Update Mixer 
   void MixSounds(void);
-  /* Mute output until next UpdateSounds() */
+  // Mute output until next UpdateSounds() 
   void Mute(void);
 
-  /* Set listener enviroment properties (EAX) */
+  // Set listener enviroment properties (EAX) 
   BOOL SetEnvironment( INDEX iEnvNo, FLOAT fEnvSize=0);
 
-  /* Add sound in sound aware list */
+  // Add sound in sound aware list 
   void AddSoundAware( CSoundData &CsdAdd);
-  /* Remove a sound mode aware object */
+  // Remove a sound mode aware object 
   void RemoveSoundAware( CSoundData &CsdRemove);
 
   // listen from this listener this frame

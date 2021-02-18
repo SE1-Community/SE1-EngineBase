@@ -70,7 +70,7 @@ void CLinearAllocator<Type>::Clear(void)
 }
 
 
-/* Set how many elements to allocate when stack overflows. */
+// Set how many elements to allocate when stack overflows. 
 template <class Type>
 inline void CLinearAllocator<Type>::SetAllocationStep(INDEX ctStep)
 {

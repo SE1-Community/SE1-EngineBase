@@ -94,7 +94,7 @@ public:
 template<class Type>
 inline Quaternion<Type>::Quaternion(void) {};
 
-/* Constructor from three values. */
+// Constructor from three values. 
 template<class Type>
 inline Quaternion<Type>::Quaternion(Type w, Type x, Type y, Type z)
 : q_w(w), q_x(x), q_y(y), q_z(z) {};

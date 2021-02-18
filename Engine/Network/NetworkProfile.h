@@ -17,7 +17,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Profiling.h>
 #endif
 
-/* Class for holding profiling information for network. */
+// Class for holding profiling information for network. 
 class CNetworkProfile : public CProfileForm {
 public:
   // indices for profiling counters and timers

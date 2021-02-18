@@ -286,7 +286,7 @@ inline FLOAT FastRcp( const FLOAT f)
 // convert float from 0.0f to 1.0f -> ulong form 0 to 255
 inline ULONG NormFloatToByte( const FLOAT f)
 {
-    /* rcg10042001 !!! FIXME: Move this elsewhere. */
+    // rcg10042001 !!! FIXME: Move this elsewhere. 
 #ifdef _MSC_VER
   const FLOAT f255 = 255.0f;
   ULONG ulRet;
@@ -313,7 +313,7 @@ inline FLOAT NormByteToFloat( const ULONG ul)
 inline SLONG FloatToInt( FLOAT f)
 {
 #if (defined USE_PORTABLE_C)
-  return((SLONG) f);  /* best of luck to you. */
+  return((SLONG) f);  // best of luck to you. 
 
 #elif (defined _MSC_VER)
   SLONG slRet;

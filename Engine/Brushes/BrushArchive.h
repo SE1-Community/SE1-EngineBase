@@ -37,7 +37,7 @@ public:
   CStaticArray<CBrushSector *> ba_apbsc;
 
   // overrides from CSerial
-  /* Read/write to/from stream. */
+  // Read/write to/from stream. 
   void Read_t( CTStream *istrFile);  // throw char *
   void Write_t( CTStream *ostrFile); // throw char *
   void ReadPortalSectorLinks_t( CTStream &strm);  // throw char *
@@ -45,11 +45,11 @@ public:
   void ReadEntitySectorLinks_t( CTStream &strm);  // throw char *
   void WriteEntitySectorLinks_t( CTStream &strm); // throw char *
 
-  /* Calculate bounding boxes in all brushes. */
+  // Calculate bounding boxes in all brushes. 
   void CalculateBoundingBoxes(void);
-  /* Create links between portals and sectors on their other side. */
+  // Create links between portals and sectors on their other side. 
   void LinkPortalsAndSectors(void);
-  /* Make indices for all brush elements. */
+  // Make indices for all brush elements. 
   void MakeIndices(void);
   // remove shadow layers without valid light source in all brushes
   void RemoveDummyLayers(void);

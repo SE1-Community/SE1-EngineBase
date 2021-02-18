@@ -248,7 +248,7 @@ public:
   CDynamicContainer<class CTextureData>  tr_atdTopMaps;         // Array of top maps for each tile array (used by ArrayHolder)
   CStaticStackArray<INDEX>               tr_auiRegenList;       // List of tiles that need to be regenerated
 
-  /* Do not change any of this params directly */
+  // Do not change any of this params directly 
   UWORD  *tr_auwHeightMap;        // Terrain height map
   UWORD  *tr_auwShadingMap;       // Terrain shading map
   UBYTE  *tr_aubEdgeMap;          // Terrain edge map

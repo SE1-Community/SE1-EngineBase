@@ -37,20 +37,20 @@ public:
   SLONG  ra_LockCount;              // counter for memory locking
   ULONG  ra_Flags;                  // special flags
 
-  /* Recalculate dimensions for all drawports. */
+  // Recalculate dimensions for all drawports. 
   void RecalculateDrawPortsDimensions(void);
 
-  /* Constructor for given size. */
+  // Constructor for given size. 
   CRaster( PIX pixWidth, PIX pixHeight, ULONG ulFlags);
-  /* Destructor. */
+  // Destructor. 
   virtual ~CRaster(void);
-  /* Change size of this raster and all it's drawports. */
+  // Change size of this raster and all it's drawports. 
   void Resize(PIX pixNewWidth, PIX pixNewHeight);
 
 public:
-  /* Lock for drawing. */
+  // Lock for drawing. 
   virtual BOOL Lock();
-  /* Unlock after drawing. */
+  // Unlock after drawing. 
   virtual void Unlock();
 };
 

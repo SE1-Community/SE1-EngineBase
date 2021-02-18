@@ -81,7 +81,7 @@ void CBrushPolygon::DiscardShadows(void)
 }
 
 
-/* Initialize shadow map for the polygon. */
+// Initialize shadow map for the polygon. 
 void CBrushPolygon::InitializeShadowMap(void)
 {
   // reset shadow mapping to be default for its plane

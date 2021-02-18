@@ -14,7 +14,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 
-/* rcg10042001 */
+// rcg10042001
 #ifdef PLATFORM_WIN32
 #define alloca _alloca
 #endif

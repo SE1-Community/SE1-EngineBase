@@ -53,7 +53,7 @@ int NewHandler(size_t size)
   return 0;
 }
 
-/* Static class used for initializing memory handlers. */
+// Static class used for initializing memory handlers. 
 static class CMemHandlerInit {
 public:
   // constructor

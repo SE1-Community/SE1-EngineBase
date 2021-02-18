@@ -56,7 +56,7 @@ static inline FLOAT IntensityAtDistance( FLOAT fFallOff, FLOAT fHotSpot, FLOAT f
 }
 
 
-/* Find lights for one model. */
+// Find lights for one model. 
 BOOL CRenderer::FindModelLights( CEntity &en, const CPlacement3D &plModel,
                                  COLOR &colLight, COLOR &colAmbient, FLOAT &fTotalShadowIntensity,
                                  FLOAT3D &vTotalLightDirection, FLOATplane3D &plFloorPlane)
@@ -708,7 +708,7 @@ void Particle_PrepareEntity( FLOAT fMipFactor, BOOL bHasFog, BOOL bHasHaze, CEnt
   _Particle_penCurrentViewer = penViewer;
 }
 
-/* Render particles for models that were kept for delayed rendering. */
+// Render particles for models that were kept for delayed rendering. 
 void CRenderer::RenderParticles(BOOL bBackground)
 {
   if (_bMultiPlayer) gfx_bRenderParticles = 1; // must render in multiplayer mode!
@@ -760,7 +760,7 @@ void DeleteLensFlare(CLightSource *pls)
   }
 }
 
-/* Render lens flares. */
+// Render lens flares. 
 void CRenderer::RenderLensFlares(void)
 {
   // make sure we're have orthographic projection 

@@ -201,7 +201,7 @@ ENGINE_API extern COLOR AddColors( COLOR col1, COLOR col2); // fast color addito
 
 __forceinline ULONG ByteSwap( ULONG ul)
 {
-/* rcg10052001 Platform-wrappers. */
+// rcg10052001 Platform-wrappers. 
 #if (defined USE_PORTABLE_C)
   return( ((ul << 24)            ) |
             ((ul << 8) & 0x00FF0000) |

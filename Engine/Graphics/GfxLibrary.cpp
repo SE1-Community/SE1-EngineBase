@@ -1028,7 +1028,7 @@ CGfxLibrary::~CGfxLibrary()
 
 
 
-/* Initialize library for application main window. */
+// Initialize library for application main window. 
 void CGfxLibrary::Init(void)
 {
   ASSERT( this != NULL);
@@ -1518,7 +1518,7 @@ void CGfxLibrary::UnlockDrawPort( CDrawPort *pdpToUnlock)
 /////////////////////////////////////////////////////////////////////
 // Window canvas functions
 
-/* Create a new window canvas. */
+// Create a new window canvas. 
 void CGfxLibrary::CreateWindowCanvas(void *hWnd, CViewPort **ppvpNew, CDrawPort **ppdpNew)
 {
   RECT rectWindow;  // rectangle for the client area of the window
@@ -1540,7 +1540,7 @@ void CGfxLibrary::CreateWindowCanvas(void *hWnd, CViewPort **ppvpNew, CDrawPort 
   }
 }
 
-/* Destroy a window canvas. */
+// Destroy a window canvas. 
 void CGfxLibrary::DestroyWindowCanvas(CViewPort *pvpOld) {
   // delete the viewport
   delete pvpOld;
@@ -1552,7 +1552,7 @@ void CGfxLibrary::DestroyWindowCanvas(CViewPort *pvpOld) {
 #define WorkCanvasCLASS "WorkCanvas Window"
 static BOOL _bClassRegistered = FALSE;
 
-/* Create a work canvas. */
+// Create a work canvas. 
 void CGfxLibrary::CreateWorkCanvas(PIX pixWidth, PIX pixHeight, CDrawPort **ppdpNew)
 {
   // must have dimensions
@@ -1595,7 +1595,7 @@ void CGfxLibrary::CreateWorkCanvas(PIX pixWidth, PIX pixHeight, CDrawPort **ppdp
   CreateWindowCanvas(hWnd, &pvp, ppdpNew);
 }
 
-/* Destroy a work canvas. */
+// Destroy a work canvas. 
 void CGfxLibrary::DestroyWorkCanvas(CDrawPort *pdpOld)
 {
   CViewPort *pvp = pdpOld->dp_Raster->ra_pvpViewPort;

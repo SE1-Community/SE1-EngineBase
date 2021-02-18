@@ -1019,7 +1019,7 @@ void CSessionState::ProcessGameTick(CNetworkMessage &nmMessage, TICK llCurrentTi
   }
 }
 
-/* Process a predicted game tick. */
+// Process a predicted game tick. 
 void CSessionState::ProcessPredictedGameTick(INDEX iPredictionStep, FLOAT fFactor, TICK llCurrentTick)
 {
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_PROCESSGAMETICK);
@@ -1241,7 +1241,7 @@ void CSessionState::FlushProcessedPredictions(void)
   }
 }
 
-/* Find out how many prediction steps are currently pending. */
+// Find out how many prediction steps are currently pending. 
 INDEX CSessionState::GetPredictionStepsCount(void)
 {
   // start with no prediction
@@ -1255,7 +1255,7 @@ INDEX CSessionState::GetPredictionStepsCount(void)
   return ctPredictionSteps;
 }
 
-/* Process all eventual available prediction actions. */
+// Process all eventual available prediction actions. 
 void CSessionState::ProcessPrediction(void)
 {
   // FPU must be in 24-bit mode
@@ -1945,7 +1945,7 @@ void CSessionState::DumpSyncToMemory(void)
 }
 #endif
 
-/* Session state loop. */
+// Session state loop. 
 void CSessionState::SessionStateLoop(void)
 {
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_SESSIONSTATE_LOOP);
@@ -2117,7 +2117,7 @@ void CSessionState::SessionStateLoop(void)
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_SESSIONSTATE_LOOP);
 }
 
-/* Get number of active players. */
+// Get number of active players. 
 INDEX CSessionState::GetPlayersCount(void)
 {
   INDEX ctPlayers = 0;
@@ -2129,7 +2129,7 @@ INDEX CSessionState::GetPlayersCount(void)
   return ctPlayers;
 }
 
-/* Remember predictor positions of all players. */
+// Remember predictor positions of all players. 
 void CSessionState::RememberPlayerPredictorPositions(void)
 {
   // for each active player
@@ -2146,7 +2146,7 @@ void CSessionState::RememberPlayerPredictorPositions(void)
   }
 }
 
-/* Get player position. */
+// Get player position. 
 const FLOAT3D &CSessionState::GetPlayerPredictorPosition(INDEX iPlayer)
 {
   return ses_apltPlayers[iPlayer].plt_vPredictorPos;

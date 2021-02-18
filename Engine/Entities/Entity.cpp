@@ -213,7 +213,7 @@ CEntity::~CEntity(void)
 /////////////////////////////////////////////////////////////////////
 // Access functions
 
-/* Test if the entity is an empty brush. */
+// Test if the entity is an empty brush. 
 BOOL CEntity::IsEmptyBrush(void) const
 {
   // if it is not brush
@@ -233,12 +233,12 @@ BOOL CEntity::IsEmptyBrush(void) const
   }
 }
 
-/* Return max Game Players */
+// Return max Game Players 
 INDEX CEntity::GetMaxPlayers(void) {
   return NET_MAXGAMEPLAYERS;
 };
 
-/* Return Player Entity */
+// Return Player Entity 
 CEntity *CEntity::GetPlayerEntity(INDEX iPlayer)
 {
   ASSERT(iPlayer >= 0 && iPlayer<GetMaxPlayers());
@@ -251,7 +251,7 @@ CEntity *CEntity::GetPlayerEntity(INDEX iPlayer)
   }
 }
 
-/* Get bounding box of this entity - for AI purposes only. */
+// Get bounding box of this entity - for AI purposes only. 
 void CEntity::GetBoundingBox(FLOATaabbox3D &box)
 {
   if (en_pciCollisionInfo != NULL) {
@@ -262,7 +262,7 @@ void CEntity::GetBoundingBox(FLOATaabbox3D &box)
   }
 }
 
-/* Get size of this entity - for UI purposes only. */
+// Get size of this entity - for UI purposes only. 
 void CEntity::GetSize(FLOATaabbox3D &box)
 {
   if (en_RenderType == CEntity::RT_MODEL || en_RenderType == CEntity::RT_EDITORMODEL) {
@@ -287,7 +287,7 @@ void CEntity::GetSize(FLOATaabbox3D &box)
   }
 }
 
-/* Get name of this entity. */
+// Get name of this entity. 
 const CTString &CEntity::GetName(void) const
 {
   static const CTString strDummyName("");
@@ -299,40 +299,40 @@ const CTString &CEntity::GetDescription(void) const // name + some more verbose 
   return strDummyDescription;
 }
 
-/* Get first target of this entity. */
+// Get first target of this entity. 
 CEntity *CEntity::GetTarget(void) const
 {
   return NULL;
 }
 
-/* Check if entity can be used as a target. */
+// Check if entity can be used as a target. 
 BOOL CEntity::IsTargetable(void) const
 {
   // cannot be targeted unless this function is overridden
   return FALSE;
 }
-/* Check if entity is marker */
+// Check if entity is marker 
 BOOL CEntity::IsMarker(void) const{
   // cannot be marker unless this function is overridden
   return FALSE;
 }
-/* Check if entity is important */
+// Check if entity is important 
 BOOL CEntity::IsImportant(void) const{
   // cannot be important unless this function is overridden
   return FALSE;
 }
-/* Check if entity is moved on a route set up by its targets. */
+// Check if entity is moved on a route set up by its targets. 
 BOOL CEntity::MovesByTargetedRoute(CTString &strTargetProperty) const
 {
   return FALSE;
 }
-/* Check if entity can drop marker for making linked route. */
+// Check if entity can drop marker for making linked route. 
 BOOL CEntity::DropsMarker(CTFileName &fnmMarkerClass, CTString &strTargetProperty) const
 {
   return FALSE;
 }
 
-/* Get light source information - return NULL if not a light source. */
+// Get light source information - return NULL if not a light source. 
 CLightSource *CEntity::GetLightSource(void)
 {
   return NULL;
@@ -343,20 +343,20 @@ BOOL CEntity::IsTargetValid(SLONG slPropertyOffset, CEntity *penTarget)
   return TRUE;
 }
 
-/* Get anim data for given animation property - return NULL for none. */
+// Get anim data for given animation property - return NULL for none. 
 CAnimData *CEntity::GetAnimData(SLONG slPropertyOffset)
 {
   return NULL;
 }
 
-/* Get force type name, return empty string if not used. */
+// Get force type name, return empty string if not used. 
 const CTString &CEntity::GetForceName(INDEX iForce)
 {
   static const CTString strDummyName("");
   return strDummyName;
 }
 
-/* Get forces in given point. */
+// Get forces in given point. 
 void CEntity::GetForce(INDEX iForce, const FLOAT3D &vPoint,
   CForceStrength &fsGravity, CForceStrength &fsField)
 {
@@ -368,19 +368,19 @@ void CEntity::GetForce(INDEX iForce, const FLOAT3D &vPoint,
   // no force field
   fsField.fs_fAcceleration = 0;
 }
-/* Get entity that controls the force, used for change notification checking. */
+// Get entity that controls the force, used for change notification checking. 
 CEntity *CEntity::GetForceController(INDEX iForce)
 {
   return NULL;
 }
 
-/* Adjust model shading parameters if needed - return TRUE if needs model shadows. */
+// Adjust model shading parameters if needed - return TRUE if needs model shadows. 
 BOOL CEntity::AdjustShadingParameters(FLOAT3D &vLightDirection,
   COLOR &colLight, COLOR &colAmbient)
 {
   return TRUE;
 }
-/* Adjust model mip factor if needed. */
+// Adjust model mip factor if needed. 
 void CEntity::AdjustMipFactor(FLOAT &fMipFactor)
 {
   (void)fMipFactor;
@@ -401,53 +401,53 @@ CModelInstance *CEntity::GetModelInstanceForRendering(void)
   return en_pmiModelInstance;
 }
 
-/* Get fog type name, return empty string if not used. */
+// Get fog type name, return empty string if not used. 
 const CTString &CEntity::GetFogName(INDEX iFog)
 {
   static const CTString strDummyName("");
   return strDummyName;
 }
 
-/* Get fog, return FALSE for none. */
+// Get fog, return FALSE for none. 
 BOOL CEntity::GetFog(INDEX iFog, class CFogParameters &fpFog)
 {
   return FALSE;
 }
 
-/* Get haze type name, return empty string if not used. */
+// Get haze type name, return empty string if not used. 
 const CTString &CEntity::GetHazeName(INDEX iHaze)
 {
   static const CTString strDummyName("");
   return strDummyName;
 }
 
-/* Get haze, return FALSE for none. */
+// Get haze, return FALSE for none. 
 BOOL CEntity::GetHaze(INDEX iHaze, class CHazeParameters &hpHaze, FLOAT3D &vViewDir)
 {
   return FALSE;
 }
 
-/* Get mirror type name, return empty string if not used. */
+// Get mirror type name, return empty string if not used. 
 const CTString &CEntity::GetMirrorName(INDEX iMirror)
 {
   static const CTString strDummyName("");
   return strDummyName;
 }
 
-/* Get mirror, return FALSE for none. */
+// Get mirror, return FALSE for none. 
 BOOL CEntity::GetMirror(INDEX iMirror, class CMirrorParameters &mpMirror)
 {
   return FALSE;
 }
 
-/* Get gradient type name, return empty string if not used. */
+// Get gradient type name, return empty string if not used. 
 const CTString &CEntity::GetGradientName(INDEX iGradient)
 {
   static const CTString strDummyName("");
   return strDummyName;
 }
 
-/* Get gradient, return FALSE for none. */
+// Get gradient, return FALSE for none. 
 BOOL CEntity::GetGradient(INDEX iGradient, class CGradientParameters &gpGradient)
 {
   return FALSE;
@@ -458,23 +458,23 @@ FLOAT3D CEntity::GetClassificationBoxStretch(void)
   return FLOAT3D(1.0f, 1.0f, 1.0f);
 }
 
-/* Get field information - return NULL if not a field. */
+// Get field information - return NULL if not a field. 
 CFieldSettings *CEntity::GetFieldSettings(void)
 {
   return NULL;
 }
-/* Render particles made by this entity. */
+// Render particles made by this entity. 
 void CEntity::RenderParticles(void)
 {
   NOTHING;
 }
-/* Get current collision box index for this entity. */
+// Get current collision box index for this entity. 
 INDEX CEntity::GetCollisionBoxIndex(void)
 {
   // by default, use only box 0
   return 0;
 }
-/* Get current collision box - override for custom collision boxes. */
+// Get current collision box - override for custom collision boxes. 
 void CEntity::GetCollisionBoxParameters(INDEX iBox, FLOATaabbox3D &box, INDEX &iEquality)
 {
   // if this is ska model
@@ -492,7 +492,7 @@ void CEntity::GetCollisionBoxParameters(INDEX iBox, FLOATaabbox3D &box, INDEX &i
   }
 }
 
-/* Render game view */
+// Render game view 
 void CEntity::RenderGameView(CDrawPort *pdp, void *pvUserData)
 {
   NOTHING;
@@ -661,7 +661,7 @@ BOOL CEntity::CheckEventPrediction(ULONG ulTypeID, ULONG ulEventID)
   return _pNetwork->ga_sesSessionState.CheckEventPrediction(this, ulTypeID, ulEventID);
 }
 
-/* Called after creating and setting its properties. */
+// Called after creating and setting its properties. 
 void CEntity::OnInitialize(const CEntityEvent &eeInput)
 {
   ASSERT(GetFPUPrecision() == FPT_24BIT);
@@ -677,7 +677,7 @@ void CEntity::OnInitialize(const CEntityEvent &eeInput)
     ASSERTALWAYS("All entities must have Main procedure!");
   }
 }
-/* Called before releasing entity. */
+// Called before releasing entity. 
 void CEntity::OnEnd(void)
 {
 }
@@ -1356,7 +1356,7 @@ static void CheckTerrainForShadingInfo(CTerrain *ptrTerrain)
   }
 }
 
-/* Find and remember shading info for this entity if invalid. */
+// Find and remember shading info for this entity if invalid. 
 void CEntity::FindShadingInfo(void)
 {
   ASSERT(GetFPUPrecision() == FPT_24BIT);
@@ -1499,7 +1499,7 @@ CCollisionInfo::CCollisionInfo(const CCollisionInfo &ciOrg)
   ci_boxCurrent = ciOrg.ci_boxCurrent ;
   ci_ulFlags    = ciOrg.ci_ulFlags    ;
 }
-/* Create collision info for a model. */
+// Create collision info for a model. 
 void CCollisionInfo::FromModel(CEntity *penModel, INDEX iBox)
 {
   ASSERT(GetFPUPrecision() == FPT_24BIT);
@@ -1599,11 +1599,11 @@ void CCollisionInfo::FromModel(CEntity *penModel, INDEX iBox)
   }
 }
 
-/* Create collision info for a ska model */
+// Create collision info for a ska model 
 void CCollisionInfo::FromSkaModel(CEntity *penModel, INDEX iBox)
 {
 }
-/* Create collision info for a brush. */
+// Create collision info for a brush. 
 void CCollisionInfo::FromBrush(CBrush3D *pbrBrush)
 {
   ASSERT(GetFPUPrecision() == FPT_24BIT);
@@ -1634,7 +1634,7 @@ void CCollisionInfo::FromBrush(CBrush3D *pbrBrush)
   ci_fHandleR   = 1.0f;
 }
 
-/* Calculate current bounding box in absolute space from position. */
+// Calculate current bounding box in absolute space from position. 
 void CCollisionInfo::MakeBoxAtPlacement(const FLOAT3D &vPosition, const FLOATmatrix3D &mRotation,
   FLOATaabbox3D &box)
 {
@@ -1666,7 +1666,7 @@ FLOAT CCollisionInfo::GetMaxFloorRadius(void)
 }
 
 
-/* Find and remember collision info for this entity. */
+// Find and remember collision info for this entity. 
 void CEntity::FindCollisionInfo(void)
 {
   ASSERT(GetFPUPrecision() == FPT_24BIT);
@@ -1759,7 +1759,7 @@ void CEntity::CopyCollisionInfo(CEntity &enOrg)
   en_pciCollisionInfo->ci_boxCurrent = boxNew;
 }
 
-/* Get box and sphere for spatial clasification. */
+// Get box and sphere for spatial clasification. 
 void CEntity::UpdateSpatialRange(void)
 {
   CSetFPUPrecision FPUPrecision(FPT_24BIT);
@@ -1810,7 +1810,7 @@ void CEntity::UpdateSpatialRange(void)
   ASSERT(IsValidFloat(en_fSpatialClassificationRadius));
 }
 
-/* Find and remember all sectors that this entity is in. */
+// Find and remember all sectors that this entity is in. 
 void CEntity::FindSectorsAroundEntity(void)
 {
   CSetFPUPrecision sfp(FPT_53BIT);
@@ -2033,7 +2033,7 @@ public:
 };
 
 static CStaticStackArray<CSentEvent> _aseSentEvents;  // delayed events
-/* Send an event to this entity. */
+// Send an event to this entity. 
 void CEntity::SendEvent(const CEntityEvent &ee)
 {
   if (this == NULL) {
@@ -2144,7 +2144,7 @@ void CEntity::FindEntitiesInRange(
   }
 }
 
-/* Send an event to all entities in a box (box must be around this entity). */
+// Send an event to all entities in a box (box must be around this entity). 
 void CEntity::SendEventInRange(const CEntityEvent &ee, const FLOATaabbox3D &boxRange)
 {
   // find entities in the range
@@ -2158,7 +2158,7 @@ void CEntity::SendEventInRange(const CEntityEvent &ee, const FLOATaabbox3D &boxR
   }
 }
 
-/* Handle all sent events. */
+// Handle all sent events. 
 void CEntity::HandleSentEvents(void)
 {
   CSetFPUPrecision FPUPrecision(FPT_24BIT);
@@ -2198,7 +2198,7 @@ void CEntity::HandleSentEvents(void)
 /////////////////////////////////////////////////////////////////////
 // DLL class interface
 
-/* Initialize for being virtual entity that is not rendered. */
+// Initialize for being virtual entity that is not rendered. 
 void CEntity::InitAsVoid(void)
 {
   en_RenderType = RT_VOID;
@@ -2350,7 +2350,7 @@ void CEntity::SwitchToEditorModel(void)
 
 /////////////////////////////////////////////////////////////////////
 // Model manipulation
-/* Set the model data for model entity. */
+// Set the model data for model entity. 
 void CEntity::SetModel(const CTFileName &fnmModel)
 {
   ASSERT(en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL);
@@ -2455,21 +2455,21 @@ COLOR CEntity::GetModelColor(void) const
 }
 
 
-/* Get the model data for model entity. */
+// Get the model data for model entity. 
 
 const CTFileName &CEntity::GetModel(void)
 {
   ASSERT(en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL);
   return ((CAnimData*)en_pmoModelObject->GetData())->GetName();
 }
-/* Start new animation for model entity. */
+// Start new animation for model entity. 
 void CEntity::StartModelAnim(INDEX iNewModelAnim, ULONG ulFlags)
 {
   ASSERT(en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL);
   en_pmoModelObject->PlayAnim(iNewModelAnim, ulFlags);
 }
 
-/* Set the main texture data for model entity. */
+// Set the main texture data for model entity. 
 void CEntity::SetModelMainTexture(const CTFileName &fnmTexture)
 {
   ASSERT(en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL);
@@ -2500,20 +2500,20 @@ void CEntity::SetModelMainTexture(SLONG idTextureComponent)
     ECT_TEXTURE, idTextureComponent);
   en_pmoModelObject->mo_toTexture.SetData(pecTexture->ec_ptdTexture);
 }
-/* Get the main texture data for model entity. */
+// Get the main texture data for model entity. 
 const CTFileName &CEntity::GetModelMainTexture(void)
 {
   ASSERT(en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL);
   return en_pmoModelObject->mo_toTexture.GetData()->GetName();
 }
-/* Start new animation for main texture of model entity. */
+// Start new animation for main texture of model entity. 
 void CEntity::StartModelMainTextureAnim(INDEX iNewTextureAnim)
 {
   ASSERT(en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL);
   en_pmoModelObject->mo_toTexture.StartAnim(iNewTextureAnim);
 }
 
-/* Set the reflection texture data for model entity. */
+// Set the reflection texture data for model entity. 
 void CEntity::SetModelReflectionTexture(SLONG idTextureComponent)
 {
   ASSERT(en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL);
@@ -2521,7 +2521,7 @@ void CEntity::SetModelReflectionTexture(SLONG idTextureComponent)
     ECT_TEXTURE, idTextureComponent);
   en_pmoModelObject->mo_toReflection.SetData(pecTexture->ec_ptdTexture);
 }
-/* Set the specular texture data for model entity. */
+// Set the specular texture data for model entity. 
 void CEntity::SetModelSpecularTexture(SLONG idTextureComponent)
 {
   ASSERT(en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL);
@@ -2530,7 +2530,7 @@ void CEntity::SetModelSpecularTexture(SLONG idTextureComponent)
   en_pmoModelObject->mo_toSpecular.SetData(pecTexture->ec_ptdTexture);
 }
 
-/* Add attachment to model */
+// Add attachment to model 
 void CEntity::AddAttachment(INDEX iAttachment, ULONG ulIDModel, ULONG ulIDTexture)
 {
   // add attachment
@@ -2570,7 +2570,7 @@ void CEntity::AddAttachment(INDEX iAttachment, CTFileName fnModel, CTFileName fn
     (void) strError;
   }
 }
-/* Set the reflection texture data for attachment model entity. */
+// Set the reflection texture data for attachment model entity. 
 void CEntity::SetModelAttachmentReflectionTexture(INDEX iAttachment, SLONG idTextureComponent)
 {
   ASSERT(en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL);
@@ -2579,7 +2579,7 @@ void CEntity::SetModelAttachmentReflectionTexture(INDEX iAttachment, SLONG idTex
     ECT_TEXTURE, idTextureComponent);
   mo.mo_toReflection.SetData(pecTexture->ec_ptdTexture);
 }
-/* Set the specular texture data for attachment model entity. */
+// Set the specular texture data for attachment model entity. 
 void CEntity::SetModelAttachmentSpecularTexture(INDEX iAttachment, SLONG idTextureComponent)
 {
   ASSERT(en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL);
@@ -2736,7 +2736,7 @@ void CAutoPrecacheTexture::Precache(const CTFileName &fnm)
   }
 }
 
-/* Get a filename for a component of given id. */
+// Get a filename for a component of given id. 
 const CTFileName &CEntity::FileNameForComponent(SLONG slType, SLONG slID)
 {
   // find the component
@@ -2770,14 +2770,14 @@ CModelData *CEntity::GetModelDataForComponent(SLONG slID)
   }
 }
 
-/* Remove attachment from model */
+// Remove attachment from model 
 void CEntity::RemoveAttachment(INDEX iAttachment)
 {
   // remove attachment
   en_pmoModelObject->RemoveAttachmentModel(iAttachment);
 }
 
-/* Initialize last positions structure for particles. */
+// Initialize last positions structure for particles. 
 CLastPositions *CEntity::GetLastPositions(INDEX ctPositions)
 {
   TICK llTickNow = _pTimer->GetGameTick();
@@ -2802,7 +2802,7 @@ CLastPositions *CEntity::GetLastPositions(INDEX ctPositions)
 }
 
 
-/* Get absolute position of point on entity given relative to its size. */
+// Get absolute position of point on entity given relative to its size. 
 void CEntity::GetEntityPointRatio(const FLOAT3D &vRatio, FLOAT3D &vAbsPoint, BOOL bLerped)
 {
   ASSERT(bLerped || GetFPUPrecision() == FPT_24BIT);
@@ -2859,12 +2859,12 @@ void CEntity::GetEntityPointRatio(const FLOAT3D &vRatio, FLOAT3D &vAbsPoint, BOO
   }
 }
 
-/* Get absolute position of point on entity given in meters. */
+// Get absolute position of point on entity given in meters. 
 void CEntity::GetEntityPointFixed(const FLOAT3D &vFixed, FLOAT3D &vAbsPoint)
 {
   vAbsPoint = en_plPlacement.pl_PositionVector+vFixed*en_mRotation;
 }
-/* Get sector that given point is in - point must be inside this entity. */
+// Get sector that given point is in - point must be inside this entity. 
 CBrushSector *CEntity::GetSectorFromPoint(const FLOAT3D &vPointAbs)
 {
   // for each sector around entity
@@ -2878,7 +2878,7 @@ CBrushSector *CEntity::GetSectorFromPoint(const FLOAT3D &vPointAbs)
   return NULL;
 }
 
-/* Model change notify */
+// Model change notify 
 void CEntity::ModelChangeNotify(void)
 {
   // if this is ska model
@@ -3075,7 +3075,7 @@ static BOOL CheckBrushRangeDamage(
   return TRUE;
 }
 
-/* Apply some damage to all entities in some range. */
+// Apply some damage to all entities in some range. 
 void CEntity::InflictRangeDamage(CEntity *penInflictor, enum DamageType dmtType,
   FLOAT fDamageAmmount, const FLOAT3D &vCenter, FLOAT fHotSpotRange, FLOAT fFallOffRange)
 {
@@ -3123,7 +3123,7 @@ void CEntity::InflictRangeDamage(CEntity *penInflictor, enum DamageType dmtType,
   }
 }
 
-/* Apply some damage to all entities in a box (this doesn't test for obstacles). */
+// Apply some damage to all entities in a box (this doesn't test for obstacles). 
 void CEntity::InflictBoxDamage(CEntity *penInflictor, enum DamageType dmtType,
   FLOAT fDamageAmmount, const FLOATaabbox3D &box)
 {
@@ -3247,18 +3247,18 @@ void CEntity::ReceiveDamage(CEntity *penInflictor, enum DamageType dmtType,
   SendEvent(eDamage);
 }
 
-/* Receive item through event */
+// Receive item through event 
 BOOL CEntity::ReceiveItem(const CEntityEvent &ee)
 {
   return FALSE;
 }
 
-/* Get entity info */
+// Get entity info 
 void *CEntity::GetEntityInfo(void)
 {
   return NULL;
 };
-/* Fill in entity statistics - for AI purposes only */
+// Fill in entity statistics - for AI purposes only 
 BOOL CEntity::FillEntityStatistics(struct EntityStats *pes)
 {
   return FALSE;
@@ -3453,7 +3453,7 @@ void CEntity::Write_t( CTStream *ostr) // throw char *
 }
 
 
-/* Precache components that might be needed. */
+// Precache components that might be needed. 
 void CEntity::Precache(void)
 {
   NOTHING;
@@ -3610,25 +3610,25 @@ SLONG CEntity::GetUsedMemory(void)
 
 
 
-/* Get pointer to entity property from its packed identifier. */
+// Get pointer to entity property from its packed identifier. 
 class CEntityProperty *CEntity::PropertyForTypeAndID(ULONG ulType, ULONG ulID)
 {
   return en_pecClass->PropertyForTypeAndID(ulType, ulID);
 }
 
-/* Get pointer to entity component from its packed identifier. */
+// Get pointer to entity component from its packed identifier. 
 class CEntityComponent *CEntity::ComponentForTypeAndID(ULONG ulType, ULONG ulID)
 {
   return en_pecClass->ComponentForTypeAndID((enum EntityComponentType)ulType, ulID);
 }
 
-/* Get pointer to entity property from its name. */
+// Get pointer to entity property from its name. 
 class CEntityProperty *CEntity::PropertyForName(const CTString &strPropertyName)
 {
   return en_pecClass->PropertyForName(strPropertyName);
 }
  
-/* Create a new entity of given class in this world. */
+// Create a new entity of given class in this world. 
 CEntity *CEntity::CreateEntity(const CPlacement3D &plPlacement, SLONG idClass)
 {
   CEntityComponent *pecClassComponent = en_pecClass->ComponentForTypeAndID(
@@ -3649,20 +3649,20 @@ CLiveEntity::CLiveEntity(void)
   en_fHealth = 0;
 }
 
-/* Copy entity from another entity of same class. */
+// Copy entity from another entity of same class. 
 void CLiveEntity::Copy(CEntity &enOther, ULONG ulFlags)
 {
   CEntity::Copy(enOther, ulFlags);
   CLiveEntity *plenOther = (CLiveEntity *)(&enOther);
   en_fHealth = plenOther->en_fHealth;
 }
-/* Read from stream. */
+// Read from stream. 
 void CLiveEntity::Read_t( CTStream *istr) // throw char *
 {
   CEntity::Read_t(istr);
   (*istr) >> en_fHealth;
 }
-/* Write to stream. */
+// Write to stream. 
 void CLiveEntity::Write_t( CTStream *ostr) // throw char *
 {
   CEntity::Write_t(ostr);
@@ -3705,7 +3705,7 @@ CRationalEntity::CRationalEntity(void)
 {
 }
 
-/* Calculate physics for moving. */
+// Calculate physics for moving. 
 void CRationalEntity::ClearMovingTemp(void)
 {
 }
@@ -3742,7 +3742,7 @@ void CRationalEntity::DumpSync_t(CTStream &strm, INDEX iExtensiveSyncCheck)  // 
   strm.FPrintF_t("en_fHealth:    %g(%08x)\n", en_fHealth, (ULONG&)en_fHealth);
 }
 
-/* Copy entity from another entity of same class. */
+// Copy entity from another entity of same class. 
 void CRationalEntity::Copy(CEntity &enOther, ULONG ulFlags)
 {
   CLiveEntity::Copy(enOther, ulFlags);
@@ -3755,7 +3755,7 @@ void CRationalEntity::Copy(CEntity &enOther, ULONG ulFlags)
     }
   }
 }
-/* Read from stream. */
+// Read from stream. 
 void CRationalEntity::Read_t( CTStream *istr) // throw char *
 {
   CLiveEntity::Read_t(istr);
@@ -3785,7 +3785,7 @@ void CRationalEntity::Read_t( CTStream *istr) // throw char *
   }
 
 }
-/* Write to stream. */
+// Write to stream. 
 void CRationalEntity::Write_t( CTStream *ostr) // throw char *
 {
   CLiveEntity::Write_t(ostr);
@@ -3838,7 +3838,7 @@ void CRationalEntity::SetTimerAfter(TIME tmDelta) {
   TimerAt(_pTimer->GetGameTick() + CTimer::InTicks(tmDelta));
 }
 
-/* Cancel eventual pending timer. */
+// Cancel eventual pending timer. 
 void CRationalEntity::UnsetTimer(void) {
   en_llTimer = THINKTICK_NEVER;
   if (en_lnInTimers.IsLinked()) {
@@ -3971,7 +3971,7 @@ void CRationalEntity::OnInitialize(const CEntityEvent &eeInput) {
   HandleEvent(eeInput);
 }
 
-/* Called before releasing entity. */
+// Called before releasing entity. 
 void CRationalEntity::OnEnd(void)
 {
   // cancel eventual pending timer

@@ -27,18 +27,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 template <class cType, unsigned long ulFlag>
 class CSelection : public CDynamicContainer<cType> {
 public:
-  /* Deselect all objects. */
+  // Deselect all objects. 
   void Clear(void);
-  /* Destructor. */
+  // Destructor. 
   ~CSelection(void) { Clear(); }
 
-  /* Select one object. */
+  // Select one object. 
   void Select(cType &tToSelect);
-  /* Deselect one object. */
+  // Deselect one object. 
   void Deselect(cType &tToDeselect);
-  /* Test if one object is selected. */
+  // Test if one object is selected. 
   BOOL IsSelected(cType &tToSelect);
-  /* Get first in selection. NULL if empty selection */
+  // Get first in selection. NULL if empty selection 
   cType *GetFirstInSelection(void);
 };
 

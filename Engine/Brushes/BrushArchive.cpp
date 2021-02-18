@@ -54,7 +54,7 @@ void CBrushArchive::CalculateBoundingBoxes(void)
   _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_CALCULATEBOUNDINGBOXES);
 }
 
-/* Make indices for all brush elements. */
+// Make indices for all brush elements. 
 void CBrushArchive::MakeIndices(void)
 {
   // NOTE: Mips and brushes don't have indices, because it is not needed yet.
@@ -101,7 +101,7 @@ void CBrushArchive::MakeIndices(void)
 }
 
 #define DISTANCE_EPSILON 0.1f
-/* Create links between portals and sectors on their other side. */
+// Create links between portals and sectors on their other side. 
 void CBrushArchive::LinkPortalsAndSectors(void)
 {
   _pfWorldEditingProfile.StartTimer(CWorldEditingProfile::PTI_LINKPORTALSANDSECTORS);

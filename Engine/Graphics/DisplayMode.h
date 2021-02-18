@@ -42,7 +42,7 @@ public:
   PIX dm_pixSizeJ;
   enum DisplayDepth dm_ddDepth;  // bits per pixel for color
 
-  /* Default constructor. */
+  // Default constructor. 
   CDisplayMode(void);
 
   // get depth string

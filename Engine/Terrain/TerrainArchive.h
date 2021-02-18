@@ -34,7 +34,7 @@ public:
   CWorld *ta_pwoWorld;  // the world
 
   // overrides from CSerial
-  /* Read/write to/from stream. */
+  // Read/write to/from stream. 
   void Read_t( CTStream *istrFile);  // throw char *
   void Write_t( CTStream *ostrFile); // throw char *
 };

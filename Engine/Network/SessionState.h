@@ -132,17 +132,17 @@ public:
   // print an incoming chat message to console
   void PrintChatMessage(ULONG ulFrom, const CTString &strFrom, const CTString &strMessage);
 public:
-  /* Constructor. */
+  // Constructor. 
   CSessionState(void);
-  /* Destructor. */
+  // Destructor. 
   ~CSessionState(void);
 
   // get a pseudo-random number (safe for network gaming)
   ULONG Rnd(void);
 
-  /* Stop the session state. */
+  // Stop the session state. 
   void Stop(void);
-  /* Start session state. */
+  // Start session state. 
   void Start_t(INDEX ctLocalPlayers); // throw char *
 
   // do physics for a game tick
@@ -153,25 +153,25 @@ public:
   void WarmUpWorld(void);
   // reset random number generator (always randomizes to same sequence!)
   void ResetRND(void);
-  /* Process a game tick. */
+  // Process a game tick. 
   void ProcessGameTick(CNetworkMessage &nmMessage, TICK llCurrentTick);
-  /* Process a predicted game tick. */
+  // Process a predicted game tick. 
   void ProcessPredictedGameTick(INDEX iPredictionStep, FLOAT fFactor, TICK llCurrentTick);
-  /* Process a gamestream block. */
+  // Process a gamestream block. 
   void ProcessGameStreamBlock(CNetworkMessage &nmMessage);
-  /* Process all eventual avaliable gamestream blocks. */
+  // Process all eventual avaliable gamestream blocks. 
   void ProcessGameStream(void);
   // flush prediction actions that were already processed
   void FlushProcessedPredictions(void);
-  /* Find out how many prediction steps are currently pending. */
+  // Find out how many prediction steps are currently pending. 
   INDEX GetPredictionStepsCount(void);
-  /* Process all eventual avaliable prediction actions. */
+  // Process all eventual avaliable prediction actions. 
   void ProcessPrediction(void);
-  /* Get number of active players. */
+  // Get number of active players. 
   INDEX GetPlayersCount(void);
-  /* Remember predictor positions of all players. */
+  // Remember predictor positions of all players. 
   void RememberPlayerPredictorPositions(void);
-  /* Get player position. */
+  // Get player position. 
   const FLOAT3D &GetPlayerPredictorPosition(INDEX iPlayer);
 
   // check an event for prediction, returns true if already predicted
@@ -184,11 +184,11 @@ public:
   // dump sync data to text file
   void DumpSync_t(CTStream &strm, INDEX iExtensiveSyncCheck);  // throw char *
 
-  /* Read session state information from a stream. */
+  // Read session state information from a stream. 
   void Read_t(CTStream *pstr);   // throw char *
   void ReadWorldAndState_t(CTStream *pstr);   // throw char *
   void ReadRememberedLevels_t(CTStream *pstr);   // throw char *
-  /* Write session state information into a stream. */
+  // Write session state information into a stream. 
   void Write_t(CTStream *pstr);  // throw char *
   void WriteWorldAndState_t(CTStream *pstr);   // throw char *
   void WriteRememberedLevels_t(CTStream *pstr);   // throw char *
@@ -202,9 +202,9 @@ public:
   // forget all remembered levels
   void ForgetOldLevels(void);
 
-  /* Session state loop. */
+  // Session state loop. 
   void SessionStateLoop(void);
-  /* Session sync dump functions. */
+  // Session sync dump functions. 
   void DumpSyncToFile_t(CTStream &strm, INDEX iExtensiveSyncCheck); // throw char *
 #if DEBUG_SYNCSTREAMDUMPING
   void DumpSyncToMemory(void);

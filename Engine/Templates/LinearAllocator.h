@@ -45,7 +45,7 @@ public:
   // destroy all objects, and reset the allocator to initial (empty) state
   void Clear(void);
 
-  /* Set how many elements to allocate when stack overflows. */
+  // Set how many elements to allocate when stack overflows. 
   inline void SetAllocationStep(INDEX ctStep);
 
   // allocate a new object

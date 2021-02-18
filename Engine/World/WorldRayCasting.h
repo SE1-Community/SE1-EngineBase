@@ -41,18 +41,18 @@ public:
   CBrushPolygon *cr_pbpoIgnore;         // polygon that is origin of the continuted ray (is never hit by the ray)
   CEntity *cr_penIgnore;                // entity that is origin of the continuted ray (is never hit by the ray)
 
-  /* Internal construction helper. */
+  // Internal construction helper. 
   void Init(CEntity *penOrigin, const FLOAT3D &vOrigin, const FLOAT3D &vTarget);
   void ClearSectorList(void);
 
-  /* Add a sector if needed. */
+  // Add a sector if needed. 
   inline void AddSector(CBrushSector *pbsc);
-  /* Add all sectors of a brush. */
+  // Add all sectors of a brush. 
   void AddAllSectorsOfBrush(CBrush3D *pbr);
-  /* Add all sectors around given entity. */
+  // Add all sectors around given entity. 
   void AddSectorsAroundEntity(CEntity *pen);
 
-  /* Test against a model entity. */
+  // Test against a model entity. 
   void TestModelSimple(CEntity *penModel, CModelObject &mo);
   void TestModelCollisionBox(CEntity *penModel);
   void TestModelFull(CEntity *penModel, CModelObject &mo);
@@ -61,15 +61,15 @@ public:
   void TestModel(CEntity *penModel);
   void TestSkaModel(CEntity *penModel);
 
-  /* Test against a terrain */
+  // Test against a terrain 
   void TestTerrain(CEntity *penTerrain);
 
-  /* Test against a brush sector. */
+  // Test against a brush sector. 
   void TestBrushSector(CBrushSector *pbscSector);
 
-  /* Test entire world against ray. */
+  // Test entire world against ray. 
   void TestWholeWorld(CWorld *pwoWorld);
-  /* Test active sectors recusively. */
+  // Test active sectors recusively. 
   void TestThroughSectors(void);
   
 
@@ -103,15 +103,15 @@ public:
   CBrushPolygon *cr_pbpoBrushPolygon;   // polygon that was hit (if brush entity hit)
   CBrushSector *cr_pbscBrushSector;     // sector that was hit (if brush entity hit)
 
-  /* Constructor. */
+  // Constructor. 
   CCastRay(CEntity *penOrigin, const CPlacement3D &plOrigin); // target is very far away
   CCastRay(CEntity *penOrigin, const CPlacement3D &plOrigin, FLOAT fMaxTestDistance);
   CCastRay(CEntity *penOrigin, const FLOAT3D &vOrigin, const FLOAT3D &vTarget);
   ~CCastRay(void);
 
-  /* Do the ray casting. */
+  // Do the ray casting. 
   void Cast(CWorld *pwoWorld);
-  /* Continue cast. */
+  // Continue cast. 
   void ContinueCast(CWorld *pwoWorld);
 };
 

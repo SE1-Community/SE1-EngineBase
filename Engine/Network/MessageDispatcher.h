@@ -31,10 +31,10 @@ public:
 public:
   CListNode np_Node;               // for linking in list of avaliable providers
 
-  /* Default constructor. */
+  // Default constructor. 
   CNetworkProvider(void);
 
-  /* Create a human description of driver. */
+  // Create a human description of driver. 
   const CTString &GetDescription(void) const;
 };
 
@@ -49,39 +49,39 @@ public:
   CListHead md_lhProviders;           // statical list of providers initialized at startup
   CTString md_strGameID;
 
-  /* Enumerate all providers at startup (later enumeration just copies this list). */
+  // Enumerate all providers at startup (later enumeration just copies this list). 
   void EnumNetworkProviders_startup(CListHead &lh);
 public:
-  /* Default constructor. */
+  // Default constructor. 
   CMessageDispatcher(void);
-  /* Destructor. */
+  // Destructor. 
   ~CMessageDispatcher(void);
 
-  /* Initialize for a given game. */
+  // Initialize for a given game. 
   void Init(const CTString &strGameID);
 
-  /* Enumerate all providers. */
+  // Enumerate all providers. 
   void EnumNetworkProviders(CListHead &lh);
-  /* Start using a service provider. */
+  // Start using a service provider. 
   void StartProvider_t(const CNetworkProvider &npProvider);
-  /* Stop using current service provider. */
+  // Stop using current service provider. 
   void StopProvider(void);
 
-  /* Send a message from server to client. */
+  // Send a message from server to client. 
   void SendToClient(INDEX iClient, const CNetworkMessage &nmMessage);
   void SendToClientReliable(INDEX iClient, const CNetworkMessage &nmMessage);
   void SendToClientReliable(INDEX iClient, CTMemoryStream &strmMessage);
-  /* Send a message from client to server. */
+  // Send a message from client to server. 
   void SendToServer(const CNetworkMessage &nmMessage);
   void SendToServerReliable(const CNetworkMessage &nmMessage);
-  /* Receive next message from client to server. */
+  // Receive next message from client to server. 
   BOOL ReceiveFromClient(INDEX iClient, CNetworkMessage &nmMessage);
   BOOL ReceiveFromClientReliable(INDEX iClient, CNetworkMessage &nmMessage);
-  /* Receive next message from server to client. */
+  // Receive next message from server to client. 
   BOOL ReceiveFromServer(CNetworkMessage &nmMessage);
   BOOL ReceiveFromServerReliable(CNetworkMessage &nmMessage);
   BOOL ReceiveFromServerReliable(CTMemoryStream &strmMessage);
-  /* Send/receive broadcast messages. */
+  // Send/receive broadcast messages. 
   void SendBroadcast(const CNetworkMessage &nmMessage, ULONG ulAddr, UWORD uwPort);
   BOOL ReceiveBroadcast(CNetworkMessage &nmMessage, ULONG &ulAddr, UWORD &uwPort);
 };

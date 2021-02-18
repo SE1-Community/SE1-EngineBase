@@ -832,7 +832,7 @@ void CSoundLibrary::Clear(void) {
 }
 
 
-/* Clear Library WaveOut */
+// Clear Library WaveOut 
 void CSoundLibrary::ClearLibrary(void)
 {
   // access to the list of handlers must be locked
@@ -985,7 +985,7 @@ CSoundLibrary::SoundFormat CSoundLibrary::SetFormat( CSoundLibrary::SoundFormat 
 
 
 
-/* Update all 3d effects and copy internal data. */
+// Update all 3d effects and copy internal data. 
 void CSoundLibrary::UpdateSounds(void)
 {
   // see if we have valid handle for direct sound and eventually reinit sound
@@ -1248,7 +1248,7 @@ static SLONG PrepareSoundBuffer_waveout( CSoundLibrary &sl)
 }
 
   
-/* Update Mixer */
+// Update Mixer 
 void CSoundLibrary::MixSounds(void)
 {
   // synchronize access to sounds

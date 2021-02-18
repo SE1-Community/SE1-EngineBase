@@ -152,7 +152,7 @@ void CIsometricProjection3D::PostClip( const FLOAT3D &v3dTransformedPoint, FLOAT
 }
 
 
-/* Test if a sphere in view space is inside view frustum. */
+// Test if a sphere in view space is inside view frustum. 
 INDEX CIsometricProjection3D::TestSphereToFrustum(const FLOAT3D &vViewPoint, FLOAT fRadius) const
 {
   ASSERT( pr_Prepared && fRadius >= 0);
@@ -208,7 +208,7 @@ INDEX CIsometricProjection3D::TestSphereToFrustum(const FLOAT3D &vViewPoint, FLO
 }
 
 
-/* Test if an oriented box in view space is inside view frustum. */
+// Test if an oriented box in view space is inside view frustum. 
 INDEX CIsometricProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
 {
   ASSERT(pr_Prepared);
@@ -321,7 +321,7 @@ void CIsometricProjection3D::Project(const FLOATplane3D &p3dObjectPlane,
   p3dTransformedPlane = p3dObjectPlane*pr_mDirectionRotation + pr_TranslationVector;
 }
 
-/* Calculate plane gradient for a plane in 3D view space. */
+// Calculate plane gradient for a plane in 3D view space. 
 void CIsometricProjection3D::MakeOoKGradient(const FLOATplane3D &plViewerPlane, CPlanarGradients &pgOoK) const
 {
   //ASSERTALWAYS("Function not supported");

@@ -46,9 +46,9 @@ public:
   ULONG    bvx_ulFlags;                 // flags
   CBrushSector *bvx_pbscSector;         // back-pointer to sector
 
-  /* Default constructor. */
+  // Default constructor. 
   inline CBrushVertex(void) : bvx_pwvxWorking(NULL), bvx_ulFlags(0) {};
-  /* Clear the object. */
+  // Clear the object. 
   inline void Clear(void) {};
 
   // vertices may be selected
@@ -76,9 +76,9 @@ public:
   INDEX bpl_iPlaneMajorAxis1;  // major axes of the plane in apsolute space
   INDEX bpl_iPlaneMajorAxis2;
 
-  /* Default constructor. */
+  // Default constructor. 
   inline CBrushPlane(void) : bpl_pwplWorking(NULL) {};
-  /* Clear the object. */
+  // Clear the object. 
   inline void Clear(void) {};
 
   // get amount of memory used by this object
@@ -93,14 +93,14 @@ public:
   CBrushVertex *bed_pbvxVertex1;   // end vertex
   CWorkingEdge *bed_pwedWorking;   // pointer to screen edge if active in rendering
 
-  /* Default constructor. */
+  // Default constructor. 
   inline CBrushEdge(void) : bed_pwedWorking(NULL) {};
-  /* Constructor with two vertices. */
+  // Constructor with two vertices. 
   inline CBrushEdge(CBrushVertex *pbvx0, CBrushVertex *pbvx1)
     : bed_pwedWorking(NULL), bed_pbvxVertex0(pbvx0), bed_pbvxVertex1(pbvx1) {};
-  /* Clear the object. */
+  // Clear the object. 
   inline void Clear(void) {};
-  /* Test if this edge touches another one. */
+  // Test if this edge touches another one. 
   BOOL TouchesInSameSector(CBrushEdge &bedOther);
   BOOL TouchesInAnySector(CBrushEdge &bedOther);
 
@@ -114,9 +114,9 @@ public:
   CBrushEdge *bpe_pbedEdge;         // pointer to the edge
   BOOL bpe_bReverse;                // true if the vertex0 and vertex1 must be swapped
 
-  /* Clear the object. */
+  // Clear the object. 
   inline void Clear(void) {};
-  /* Get coordinates of the end vertices. */
+  // Get coordinates of the end vertices. 
   inline void GetVertices(CBrushVertex *&pbvx0, CBrushVertex *&pbvx1) {
     if (bpe_bReverse) {
       pbvx0 = bpe_pbedEdge->bed_pbvxVertex1;
@@ -286,7 +286,7 @@ public:
         s.bpt_colColor = 0xFFFFFFFF;
     }
 
-  /* Copy polygon properties */
+  // Copy polygon properties 
   CBrushPolygonTexture &CopyTextureProperties(CBrushPolygonTexture &bptOther, BOOL bCopyMapping) {
     bpt_toTexture.SetData( bptOther.bpt_toTexture.GetData());
     s.bpt_ubScroll = bptOther.s.bpt_ubScroll;
@@ -358,29 +358,29 @@ struct CBrushPolygonProperties {
   UBYTE bpp_ubGradientType;       // for gradiental shadows
   SBYTE bpp_sbShadowClusterSize;  // size of shadow clusters (size=(1<<ub)*0.5m)
   UWORD bpp_uwPretenderDistance;  // distance for pretender switching [m]
-  /* Default constructor. */
+  // Default constructor. 
   CBrushPolygonProperties(void) { memset(this, 0, sizeof(*this)); };
 };
 
 class ENGINE_API CBrushPolygon {
 public:
 // implementation:
-  /* Calculate area of the polygon. */
+  // Calculate area of the polygon. 
   DOUBLE CalculateArea(void);
-  /* Calculate bounding box of this polygon. */
+  // Calculate bounding box of this polygon. 
   void CalculateBoundingBox(void);
-  /* Create a BSP polygon from this polygon. */
+  // Create a BSP polygon from this polygon. 
   void CreateBSPPolygon(BSPPolygon<DOUBLE, 3> &bspo);
   void CreateBSPPolygonNonPrecise(BSPPolygon<DOUBLE, 3> &bspo);
-  /* Create shadow map for the polygon. */
+  // Create shadow map for the polygon. 
   void MakeShadowMap(CWorld *pwoWorld, BOOL bDoDirectionalLights);
-  /* Initialize shadow map for the polygon. */
+  // Initialize shadow map for the polygon. 
   void InitializeShadowMap(void);
   // discard all cached shading info for models
   void DiscardShadingInfos(void);
   // move edges from another polygon into this one
   void MovePolygonEdges(CBrushPolygon &bpoSource);
-  /* Test if this polygon touches another one. */
+  // Test if this polygon touches another one. 
   BOOL TouchesInSameSector(CBrushPolygon &bpoOther);
   BOOL TouchesInAnySector(CBrushPolygon &bpoOther);
   // make triangular representation of the polygon
@@ -407,36 +407,36 @@ public:
   CListHead bpo_lhShadingInfos;               // for linking shading infos of entities
   INDEX bpo_iInWorld;   // index of the polygon in entire world
 
-  /* Default constructor. */
+  // Default constructor. 
   inline CBrushPolygon(void) : bpo_ulFlags(0) {};
-  /* Clear the object. */
+  // Clear the object. 
   void Clear(void);
-  /* Destructor. */
+  // Destructor. 
   inline ~CBrushPolygon(void) { Clear(); };
   CBrushPolygon &CopyPolygon(CBrushPolygon &bp);
-  /* Copy polygon within same sector. */
+  // Copy polygon within same sector. 
   void CopyFromSameSector(CBrushPolygon &bpoOriginal);
   
-  /* Copy polygon properties */
+  // Copy polygon properties 
   CBrushPolygon &CopyProperties(CBrushPolygon &bpoOther, BOOL bCopyMapping = TRUE);
-  /* Copy polygon properties without texture */
+  // Copy polygon properties without texture 
   CBrushPolygon &CopyPropertiesWithoutTexture(CBrushPolygon &bpoOther);
-  /* Copy polygon's textures */
+  // Copy polygon's textures 
   CBrushPolygon &CopyTextures(CBrushPolygon &bpoOther);
   
   // polygons may be selected
   IMPLEMENT_SELECTING(bpo_ulFlags)
 
-  /* Select group of adjacent polygons with same color. */
+  // Select group of adjacent polygons with same color. 
   void SelectSimilarByColor(CSelection<CBrushPolygon, BPOF_SELECTED> &selbpoSimilar);
-  /* Select group of adjacent polygons with same texture. */
+  // Select group of adjacent polygons with same texture. 
   void SelectSimilarByTexture(CSelection<CBrushPolygon, BPOF_SELECTED> &selbpoSimilar, INDEX iTexture);
-  /* Select all polygons in sector with same texture. */
+  // Select all polygons in sector with same texture. 
   void SelectByTextureInSector(CSelection<CBrushPolygon, BPOF_SELECTED> &selbpoSimilar, INDEX iTexture);
-  /* Select all polygons in sector with same color. */
+  // Select all polygons in sector with same color. 
   void SelectByColorInSector(CSelection<CBrushPolygon, BPOF_SELECTED> &selbpoSimilar);
 
-  /* Discard shadows on the polygon. */
+  // Discard shadows on the polygon. 
   void DiscardShadows(void);
 
   // find minimum distance of a given point from the polygon edges
@@ -494,16 +494,16 @@ typedef CSelection<CBrushPolygon, BPOF_SELECTEDFORCSG> CBrushPolygonSelectionFor
 class ENGINE_API CBrushSector {
 public:
 // implementation:
-  /* Fill an object sector from a sector in brush. */
+  // Fill an object sector from a sector in brush. 
   void ToObjectSector(CObjectSector &osc);
-  /* Fill a brush sector from a sector in object3d. */
+  // Fill a brush sector from a sector in object3d. 
   void FromObjectSector_t(CObjectSector &osc); // throw char *
   // recalculate planes for polygons from their vertices
   void MakePlanesFromVertices();
   // update changed sector's data after dragging vertices or importing
   void UpdateSector(void);
 
-  /* Calculate volume of the sector. */
+  // Calculate volume of the sector. 
   DOUBLE CalculateVolume(void);
   // make triangular representation of the polygons in the sector
   void Triangulate(void);
@@ -538,23 +538,23 @@ public:
   INDEX bsc_ctspo;
   INDEX bsc_ivvx0;   // view vertices used in rendering
 
-  /* Default constructor. */
+  // Default constructor. 
   CBrushSector(void);
   ~CBrushSector(void);
   DECLARE_NOCOPYING(CBrushSector);
 
-  /* Clear the object. */
+  // Clear the object. 
   void Clear(void);
-  /* Lock all arrays. */
+  // Lock all arrays. 
   void LockAll(void);
-  /* Unlock all arrays. */
+  // Unlock all arrays. 
   void UnlockAll(void);
 
-  /* Update sector after moving vertices */
+  // Update sector after moving vertices 
   void UpdateVertexChanges(void);
   // triangularize given polygon
   void TriangularizePolygon( CBrushPolygon *pbpo);
-  /* Triangularize polygons contining vertices from selection */
+  // Triangularize polygons contining vertices from selection 
   void TriangularizeForVertices( CBrushVertexSelection &selVertex);
   // Triangularize marked polygons
   void TriangularizeMarkedPolygons( void);
@@ -566,24 +566,24 @@ public:
   BOOL IsReTripleAvailable( CBrushPolygonSelection &selPolygon);
   void ReTriple( CBrushPolygonSelection &selPolygon);
 
-  /* Calculate bounding boxes of all polygons. */
+  // Calculate bounding boxes of all polygons. 
   void CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prRelativeToAbsolute);
 
   // sectors may be selected
   IMPLEMENT_SELECTING(bsc_ulFlags)
 
   // overrides from CSerial
-  /* Read from stream. */
+  // Read from stream. 
   void Read_t( CTStream *istrFile); // throw char *
-  /* Write to stream. */
+  // Write to stream. 
   void Write_t( CTStream *ostrFile);  // throw char *
 
-  /* Uncache lightmaps on all shadows on the sector. */
+  // Uncache lightmaps on all shadows on the sector. 
   void UncacheLightMaps(void);
-  /* Find and remember all entities in this sector. */
+  // Find and remember all entities in this sector. 
   void FindEntitiesInSector(void);
 
-  /* Get/set properties. */
+  // Get/set properties. 
   inline INDEX GetContentType(void) {
     return (bsc_ulFlags >> BSCB_CONTENTTYPE)&0xff;
   }
@@ -646,28 +646,28 @@ public:
   CDynamicArray<CBrushSector> bm_abscSectors;         // sectors
   CBrush3D *bm_pbrBrush;                              // pointer to brush
 
-  /* Select all sectors within a range. */
+  // Select all sectors within a range. 
   void SelectSectorsInRange(CBrushSectorSelectionForCSG &selbscInRange, FLOATaabbox3D boxRange);
   void SelectSectorsInRange(CBrushSectorSelection &selbscInRange, FLOATaabbox3D boxRange);
-  /* Select all sectors in brush. */
+  // Select all sectors in brush. 
   void SelectAllSectors(CBrushSectorSelectionForCSG &selbscAll);
   void SelectAllSectors(CBrushSectorSelection &selbscAll);
-  /* Select open sector in brush. */
+  // Select open sector in brush. 
   void SelectOpenSector(CBrushSectorSelectionForCSG &selbscOpen);
-  /* Select closed sectors in brush. */
+  // Select closed sectors in brush. 
   void SelectClosedSectors(CBrushSectorSelectionForCSG &selbscClosed);
-  /* Fill a 3d object from a selection in a brush. */
+  // Fill a 3d object from a selection in a brush. 
   void ToObject3D(CObject3D &ob, CBrushSectorSelection &selbscToCopy);
   void ToObject3D(CObject3D &ob, CBrushSectorSelectionForCSG &selbscToCopy);
-  /* Add an object3d to brush. (returns pointer to the first created sector) */
+  // Add an object3d to brush. (returns pointer to the first created sector) 
   CBrushSector *AddFromObject3D_t(CObject3D &ob); // throw char *
-  /* Delete all sectors in a selection. */
+  // Delete all sectors in a selection. 
   void DeleteSelectedSectors(CBrushSectorSelectionForCSG &selbscToDelete);
-  /* Spread all brush mips after this one. */
+  // Spread all brush mips after this one. 
   void SpreadFurtherMips(void);
-  /* Reoptimize all sectors in the brush mip. */
+  // Reoptimize all sectors in the brush mip. 
   void Reoptimize(void);
-  /* Find all portals that have no links and kill their portal flag. */
+  // Find all portals that have no links and kill their portal flag. 
   void RemoveDummyPortals(BOOL bClearPortalFlags);
 public:
 // interface:
@@ -676,20 +676,20 @@ public:
   FLOATaabbox3D bm_boxBoundingBox;  // bounding box of entire mip-brush in absolute space
   FLOATaabbox3D bm_boxRelative;     // bounding box of entire mip-brush in relative space
 
-  /* Constructor. */
+  // Constructor. 
   CBrushMip(void);
-  /* Free all memory and leave empty brush mip. */
+  // Free all memory and leave empty brush mip. 
   void Clear(void);
-  /* Fill a brush mip from 3d object. */
+  // Fill a brush mip from 3d object. 
   void FromObject3D_t(CObject3D &ob); // throw char *
-  /* Copy brush mip from another brush mip. */
+  // Copy brush mip from another brush mip. 
   void Copy(CBrushMip &bmOther, FLOAT fStretch, BOOL bMirrorX);
 
-  /* Set mip distance of this mip, spread all that are further. */
+  // Set mip distance of this mip, spread all that are further. 
   void SetMipDistance(FLOAT fMipDistance);
-  /* Get mip factor of this mip. */
+  // Get mip factor of this mip. 
   FLOAT GetMipDistance(void);
-  /* Get mip index of this mip. */
+  // Get mip index of this mip. 
   INDEX GetMipIndex(void);
   // get next brush mip
   CBrushMip *GetNext(void);
@@ -699,15 +699,15 @@ public:
   inline BOOL IsFirstMip(void);
 
   // overrides from CSerial
-  /* Read from stream. */
+  // Read from stream. 
   void Read_new_t( CTStream *istrFile); // throw char *
   void Read_old_t( CTStream *istrFile); // throw char *
-  /* Write to stream. */
+  // Write to stream. 
   void Write_t( CTStream *ostrFile);  // throw char *
 
-  /* Update bounding box from bounding boxes of all sectors. */
+  // Update bounding box from bounding boxes of all sectors. 
   void UpdateBoundingBox(void);
-  /* Calculate bounding boxes in all sectors. */
+  // Calculate bounding boxes in all sectors. 
   void CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prRelativeToAbsolute);
 };
 
@@ -726,12 +726,12 @@ public:
   class CFieldSettings *br_pfsFieldSettings;// field settings for field brushes
   ULONG br_ulFlags;                   // brush flags
 
-  /* Wrapper for CObject3D::Optimize(), updates profiling information. */
+  // Wrapper for CObject3D::Optimize(), updates profiling information. 
   static void OptimizeObject3D(CObject3D &ob);
 
-  /* Prepare a projection from brush space to absolute space. */
+  // Prepare a projection from brush space to absolute space. 
   void PrepareRelativeToAbsoluteProjection(CSimpleProjection3D_DOUBLE &prRelativeToAbsolute);
-  /* Calculate bounding boxes in all brush mips. */
+  // Calculate bounding boxes in all brush mips. 
   void CalculateBoundingBoxes(void);
   void CalculateBoundingBoxesForOneMip(CBrushMip *pbmOnly);  // for only one mip
   INDEX GetBrushType() { return CBrushBase::BT_BRUSH3D; }    // this is brush not terrain
@@ -745,22 +745,22 @@ public:
   // destructor
   ~CBrush3D(void);
 
-  /* Free all memory and leave empty brush. */
+  // Free all memory and leave empty brush. 
   void Clear(void);
-  /* Fill a brush from 3d object. */
+  // Fill a brush from 3d object. 
   void FromObject3D_t(CObject3D &ob); // throw char *
   void AddMipBrushFromObject3D_t(CObject3D &ob, FLOAT fSwitchDistance); // throw char *
-  /* Copy brush from another brush with possible mirror and stretch. */
+  // Copy brush from another brush with possible mirror and stretch. 
   void Copy(CBrush3D &brOther, FLOAT fStretch, BOOL bMirrorX);
 
-  /* Delete a brush mip with given factor. */
+  // Delete a brush mip with given factor. 
   void DeleteBrushMip(CBrushMip *pbmToDelete);
-  /* Create a new brush mip. */
+  // Create a new brush mip. 
   CBrushMip *NewBrushMipAfter(CBrushMip *pbm, BOOL bCopy);
   CBrushMip *NewBrushMipBefore(CBrushMip *pbm, BOOL bCopy);
-  /* Get a brush mip for given mip-factor. */
+  // Get a brush mip for given mip-factor. 
   CBrushMip *GetBrushMipByDistance(FLOAT fDistance);
-  /* Get a brush mip by its given index. */
+  // Get a brush mip by its given index. 
   CBrushMip *GetBrushMipByIndex(INDEX iMip);
   // get first brush mip
   CBrushMip *GetFirstMip(void);
@@ -773,11 +773,11 @@ public:
   void SwitchToZoning(void);
 
   // overrides from CSerial
-  /* Read from stream. */
+  // Read from stream. 
   void Read_t( CTStream *istrFile); // throw char *
   void Read_new_t( CTStream *istrFile); // throw char *
   void Read_old_t( CTStream *istrFile); // throw char *
-  /* Write to stream. */
+  // Write to stream. 
   void Write_t( CTStream *ostrFile);  // throw char *
 };
 

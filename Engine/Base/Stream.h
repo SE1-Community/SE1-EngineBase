@@ -45,9 +45,9 @@ class ENGINE_API CChunkID {
 public:
   char cid_ID[CID_LENGTH+1];
 public:
-  /* Default constructor and string constructor. */
+  // Default constructor and string constructor. 
   inline CChunkID(const char *strString = "    ");
-  /* Comparison operator. */
+  // Comparison operator. 
   inline int operator == (const CChunkID &cidOther) const;
   inline int operator != (const CChunkID &cidOther) const;
   inline operator const char *(void) const { return cid_ID; }
@@ -55,12 +55,12 @@ public:
 };
 
 // inline implementations
-/* Default constructor and string constructor. */
+// Default constructor and string constructor. 
 inline CChunkID::CChunkID(const char *strString /*= "    "*/) {
   ASSERT(strlen(strString) == CID_LENGTH);
   memcpy(cid_ID, strString, CID_LENGTH+1);
 };
-/* Comparison operator. */
+// Comparison operator. 
 inline int CChunkID::operator == (const CChunkID &cidOther) const {
   return (*((ULONG *)&cid_ID[0]) == *((ULONG *)&cidOther.cid_ID[0]));
 };
@@ -87,7 +87,7 @@ public:
   class CNameTable_CTFileName &strm_ntDictionary;  // name table for the dictionary
   CDynamicStackArray<CTFileName> strm_afnmDictionary; // dictionary is stored here
 
-  /* Throw an exception of formatted string. */
+  // Throw an exception of formatted string. 
   void Throw_t(char *strFormat, ...); // throw char *
   // read the dictionary from given offset in file (internal function)
   void ReadDictionary_intenal_t(SLONG slOffset);
@@ -114,53 +114,53 @@ public:
     SD_CUR = SEEK_CUR,
   };
 
-  /* Static function enable stream handling. */
+  // Static function enable stream handling. 
   static void EnableStreamHandling(void);
-  /* Static function disable stream handling. */
+  // Static function disable stream handling. 
   static void DisableStreamHandling(void);
 
-#ifdef PLATFORM_WIN32 /* rcg10042001 !!! FIXME */
-  /* Static function to filter exceptions and intercept access violation */
+#ifdef PLATFORM_WIN32 // rcg10042001 !!! FIXME 
+  // Static function to filter exceptions and intercept access violation 
   static int ExceptionFilter(DWORD dwCode, _EXCEPTION_POINTERS *pExceptionInfoPtrs);
 #endif
 
-  /* Static function to report fatal exception error. */
+  // Static function to report fatal exception error. 
   static void ExceptionFatalError(void);
 
-  /* Default constructor. */
+  // Default constructor. 
   CTStream(void);
-  /* Destruction. */
+  // Destruction. 
   virtual ~CTStream(void);
 
-  /* Check if the stream can be read. -- used mainly for assertions */
+  // Check if the stream can be read. -- used mainly for assertions 
   virtual BOOL IsReadable(void) = 0;
-  /* Check if the stream can be written. -- used mainly for assertions */
+  // Check if the stream can be written. -- used mainly for assertions 
   virtual BOOL IsWriteable(void) = 0;
-  /* Check if the stream can be seeked. -- used mainly for assertions */
+  // Check if the stream can be seeked. -- used mainly for assertions 
   virtual BOOL IsSeekable(void) = 0;
 
-  /* Read a block of data from stream. */
+  // Read a block of data from stream. 
   virtual void Read_t(void *pvBuffer, SLONG slSize) = 0; // throw char *
-  /* Write a block of data to stream. */
+  // Write a block of data to stream. 
   virtual void Write_t(const void *pvBuffer, SLONG slSize) = 0; // throw char *
 
-  /* Seek in stream. */
+  // Seek in stream. 
   virtual void Seek_t(SLONG slOffset, enum SeekDir sd) = 0; // throw char *
-  /* Set absolute position in stream. */
+  // Set absolute position in stream. 
   virtual void SetPos_t(SLONG slPosition) = 0; // throw char *
-  /* Get absolute position in stream. */
+  // Get absolute position in stream. 
   virtual SLONG GetPos_t(void) = 0; // throw char *
-  /* Get size of stream */
+  // Get size of stream 
   virtual SLONG GetStreamSize(void) = 0;
-  /* Get CRC32 of stream */
+  // Get CRC32 of stream 
   virtual ULONG GetStreamCRC32_t(void) = 0;
-  /* Check if file position points to the EOF */
+  // Check if file position points to the EOF 
   virtual BOOL AtEOF(void) = 0;
 
-  /* Get description of this stream (e.g. filename for a CFileStream). */
+  // Get description of this stream (e.g. filename for a CFileStream). 
   inline CTString &GetDescription(void) { return strm_strStreamDescription; };
 
-  /* Read an object from stream. */
+  // Read an object from stream. 
   inline CTStream &operator>>(float  &f) { Read_t( &f, sizeof( f)); return *this; } // throw char *
   inline CTStream &operator>>(double &d) { Read_t( &d, sizeof( d)); return *this; } // throw char *
   inline CTStream &operator>>(ULONG &ul) { Read_t(&ul, sizeof(ul)); return *this; } // throw char *
@@ -170,7 +170,7 @@ public:
   inline CTStream &operator>>(SWORD &sw) { Read_t(&sw, sizeof(sw)); return *this; } // throw char *
   inline CTStream &operator>>(SBYTE &sb) { Read_t(&sb, sizeof(sb)); return *this; } // throw char *
   inline CTStream &operator>>(BOOL   &b) { Read_t( &b, sizeof( b)); return *this; } // throw char *
-  /* Write an object into stream. */
+  // Write an object into stream. 
   inline CTStream &operator<<(const float  &f) { Write_t( &f, sizeof( f)); return *this; } // throw char *
   inline CTStream &operator<<(const double &d) { Write_t( &d, sizeof( d)); return *this; } // throw char *
   inline CTStream &operator<<(const ULONG &ul) { Write_t(&ul, sizeof(ul)); return *this; } // throw char *
@@ -189,11 +189,11 @@ public:
   ENGINE_API friend CTStream &operator>>(CTStream &strmStream, CTFileName &fnmFileName);
   ENGINE_API friend CTStream &operator<<(CTStream &strmStream, const CTFileName &fnmFileName);
 
-  /* Put a line of text into stream. */
+  // Put a line of text into stream. 
   virtual void PutLine_t(const char *strBuffer); // throw char *
   virtual void PutString_t(const char *strString); // throw char *
   virtual void FPrintF_t(const char *strFormat, ...); // throw char *
-  /* Get a line of text from stream. */
+  // Get a line of text from stream. 
   virtual void GetLine_t(char *strBuffer, SLONG slBufferSize, char cDelimiter='\n'); // throw char *
   virtual void GetLine_t(CTString &strLine, char cDelimiter='\n'); // throw char *
 
@@ -246,34 +246,34 @@ private:
 
   BOOL fstrm_bReadOnly;  // set if file is opened in read-only mode
 public:
-  /* Default constructor. */
+  // Default constructor. 
   CTFileStream(void);
-  /* Destructor. */
+  // Destructor. 
   virtual ~CTFileStream(void);
 
-  /* Open an existing file. */
+  // Open an existing file. 
   void Open_t(const CTFileName &fnFileName, enum CTStream::OpenMode om=CTStream::OM_READ); // throw char *
-  /* Create a new file or overwrite existing. */
+  // Create a new file or overwrite existing. 
   void Create_t(const CTFileName &fnFileName, enum CTStream::CreateMode cm=CTStream::CM_BINARY); // throw char *
-  /* Close an open file. */
+  // Close an open file. 
   void Close(void);
-  /* Get CRC32 of stream */
+  // Get CRC32 of stream 
   ULONG GetStreamCRC32_t(void);
 
-  /* Read a block of data from stream. */
+  // Read a block of data from stream. 
   void Read_t(void *pvBuffer, SLONG slSize); // throw char *
-  /* Write a block of data to stream. */
+  // Write a block of data to stream. 
   void Write_t(const void *pvBuffer, SLONG slSize); // throw char *
 
-  /* Seek in stream. */
+  // Seek in stream. 
   void Seek_t(SLONG slOffset, enum SeekDir sd); // throw char *
-  /* Set absolute position in stream. */
+  // Set absolute position in stream. 
   void SetPos_t(SLONG slPosition); // throw char *
-  /* Get absolute position in stream. */
+  // Get absolute position in stream. 
   SLONG GetPos_t(void); // throw char *
-  /* Get size of stream */
+  // Get size of stream 
   SLONG GetStreamSize(void);
-  /* Check if file position points to the EOF */
+  // Check if file position points to the EOF 
   BOOL AtEOF(void);
 
   // whether or not the given pointer is coming from this stream (mainly used for exception handling)
@@ -299,36 +299,36 @@ public:
   SLONG mstrm_slLocation;    // location in the stream
   UBYTE* mstrm_pubBufferMax; // furthest that the stream location has ever gotten
 public:
-  /* Create dynamically resizing stream for reading/writing. */
+  // Create dynamically resizing stream for reading/writing. 
   CTMemoryStream(void);
-  /* Create static stream from given buffer. */
+  // Create static stream from given buffer. 
   CTMemoryStream(void *pvBuffer, SLONG slSize, CTStream::OpenMode om = CTStream::OM_READ);
-  /* Destructor. */
+  // Destructor. 
   virtual ~CTMemoryStream(void);
 
-  /* Lock the buffer contents and it's size. */
+  // Lock the buffer contents and it's size. 
   void LockBuffer(void **ppvBuffer, SLONG *pslSize);
-    /* Unlock buffer. */
+    // Unlock buffer. 
   void UnlockBuffer(void);
 
-  /* Read a block of data from stream. */
+  // Read a block of data from stream. 
   void Read_t(void *pvBuffer, SLONG slSize); // throw char *
-  /* Write a block of data to stream. */
+  // Write a block of data to stream. 
   void Write_t(const void *pvBuffer, SLONG slSize); // throw char *
 
-  /* Seek in stream. */
+  // Seek in stream. 
   void Seek_t(SLONG slOffset, enum SeekDir sd); // throw char *
-  /* Set absolute position in stream. */
+  // Set absolute position in stream. 
   void SetPos_t(SLONG slPosition); // throw char *
-  /* Get absolute position in stream. */
+  // Get absolute position in stream. 
   SLONG GetPos_t(void); // throw char *
-  /* Get size of stream. */
+  // Get size of stream. 
   SLONG GetSize_t(void); // throw char *
-  /* Get size of stream */
+  // Get size of stream 
   SLONG GetStreamSize(void);
-  /* Get CRC32 of stream */
+  // Get CRC32 of stream 
   ULONG GetStreamCRC32_t(void);
-  /* Check if file position points to the EOF */
+  // Check if file position points to the EOF 
   BOOL AtEOF(void);
 
   // whether or not the given pointer is coming from this stream (mainly used for exception handling)

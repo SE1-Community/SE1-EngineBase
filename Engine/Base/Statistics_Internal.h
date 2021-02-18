@@ -148,18 +148,18 @@ public:
   CStatForm(void);
   void Clear(void);
 
-  /* Increment counter by given count. */
+  // Increment counter by given count. 
   inline void IncrementCounter(INDEX iCounter, FLOAT fAdd=1) {
     sf_ascCounters[iCounter].sc_fCount += fAdd;
   };
 
-  /* Start a timer. */
+  // Start a timer. 
   inline void StartTimer(INDEX iTimer) {
     CStatTimer &st = sf_astTimers[iTimer];
     ASSERT( sf_astTimers[iTimer].st_tvStarted.tv_llValue == -1);
     st.st_tvStarted = _pTimer->GetHighPrecisionTimer();
   };
-  /* Stop a timer. */
+  // Stop a timer. 
   inline void StopTimer(INDEX iTimer) {
     CStatTimer &st = sf_astTimers[iTimer];
     ASSERT( sf_astTimers[iTimer].st_tvStarted.tv_llValue != -1);
@@ -167,7 +167,7 @@ public:
     st.st_tvStarted.tv_llValue = -1;
   };
 
-  /* Check whether the timer is counting. */
+  // Check whether the timer is counting. 
   inline BOOL CheckTimer(INDEX iTimer) { 
     CStatTimer &st = sf_astTimers[iTimer];
     return (st.st_tvStarted.tv_llValue != -1);

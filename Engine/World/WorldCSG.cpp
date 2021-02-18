@@ -393,7 +393,7 @@ void CWorld::SplitSectors(CEntity &enThis, CBrushSectorSelection &selbscSectorsT
     return;
   }
 
-  /* Assure that the other brush has only one sector. */
+  // Assure that the other brush has only one sector. 
 
   // if other brush has more than one sector
   if (bmOther.bm_abscSectors.Count()>1) {
@@ -403,7 +403,7 @@ void CWorld::SplitSectors(CEntity &enThis, CBrushSectorSelection &selbscSectorsT
     woOther.JoinSectors(selbscOtherAll);
   }
 
-  /* Split selected sectors with the one sector in the other brush. */
+  // Split selected sectors with the one sector in the other brush. 
 
   // get the sector of the other brush to object
   CBrushSectorSelectionForCSG selbscOther;
@@ -751,7 +751,7 @@ void CWorld::JoinPolygons(CBrushPolygonSelection &selbpoPolygonsToJoin)
   _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_CSGTOTAL);
 }
 
-/* Test if a polygon selection can be joined. */
+// Test if a polygon selection can be joined. 
 BOOL CWorld::CanJoinAllPossiblePolygons(CBrushPolygonSelection &selbpoPolygonsToJoin)
 {
   // if selection has less than two polygons
@@ -768,7 +768,7 @@ struct JoinedPolygon {
   INDEX jp_ctEdges;
 };
 
-/* Join all selected polygons that can be joined. */
+// Join all selected polygons that can be joined. 
 void CWorld::JoinAllPossiblePolygons(
   CBrushPolygonSelection &selbpoPolygonsToJoin, BOOL bPreserveTextures, INDEX iTexture)
 {
@@ -859,7 +859,7 @@ void CWorld::JoinAllPossiblePolygons(
   _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_CSGTOTAL);
 }
 
-/* Copy selected sectors from one brush to a new entity in another world. */
+// Copy selected sectors from one brush to a new entity in another world. 
 BOOL CWorld::CanCopySectors(CBrushSectorSelection &selbscSectorsToCopy)
 {
   if (selbscSectorsToCopy.Count()<1) return FALSE;
@@ -972,7 +972,7 @@ void CWorld::CopySectors(CBrushSectorSelection &selbscSectorsToCopy, CEntity *pe
   }
 }
 
-/* Delete selected sectors. */
+// Delete selected sectors. 
 void CWorld::DeleteSectors(CBrushSectorSelection &selbscSectorsToDelete, BOOL bClearPortalFlags)
 {
   CBrushMip *pbm = NULL;

@@ -182,7 +182,7 @@ void CRenderer::DrawBrushSectorVerticesAndEdges(CBrushSector &bscSector)
     }
   }
 }
-/* Draw edges of a field brush sector. */
+// Draw edges of a field brush sector. 
 void CRenderer::DrawFieldBrushSectorEdges(CBrushSector &bscSector)
 {
   CBrushMip *pbm = bscSector.bsc_pbmBrushMip;
@@ -229,7 +229,7 @@ void CRenderer::DrawFieldBrushSectorEdges(CBrushSector &bscSector)
   }
 }
 
-/* Prepare a brush entity for rendering if it is not yet prepared. */
+// Prepare a brush entity for rendering if it is not yet prepared. 
 void CRenderer::PrepareBrush(CEntity *penBrush)
 {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_PREPAREBRUSH);

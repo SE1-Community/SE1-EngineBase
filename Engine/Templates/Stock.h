@@ -29,14 +29,14 @@ public:
   CNameTable_TYPE st_ntObjects;  // name table for fast lookup
 
 public:
-  /* Default constructor. */
+  // Default constructor. 
   CStock_TYPE(void);
-  /* Destructor. */
+  // Destructor. 
   ~CStock_TYPE(void);
 
-  /* Obtain an object from stock - loads if not loaded. */
+  // Obtain an object from stock - loads if not loaded. 
   ENGINE_API TYPE *Obtain_t(const CTFileName &fnmFileName); // throw char *
-  /* Release an object when not needed any more. */
+  // Release an object when not needed any more. 
   ENGINE_API void Release(TYPE *ptObject);
   // free all unused elements of the stock
   ENGINE_API void FreeUnused(void);

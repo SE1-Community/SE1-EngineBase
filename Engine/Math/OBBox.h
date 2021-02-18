@@ -36,20 +36,20 @@ public:
   Vector<Type, 3> box_avAxis[3];   // axis direction vectors
   Type box_atSize[3];              // size on each of the axis (in both directions)
 
-  /* Clear to normalized empty bounding box. */
+  // Clear to normalized empty bounding box. 
   inline void SetToNormalizedEmpty(void);
 // interface:
 public:
-  /* Default constructor. */
+  // Default constructor. 
   inline OBBox(void);
-  /* Constructor from components. */
+  // Constructor from components. 
   inline OBBox(const Vector<Type, 3> &vO,
     const Vector<Type, 3> &vAxis0, const Vector<Type, 3> &vAxis1, const Vector<Type, 3> &vAxis2,
     Type tSize0, Type tSize1, Type tSize2);
-  /* Constructor from axis aligned box and placement. */
+  // Constructor from axis aligned box and placement. 
   inline OBBox(const AABBox<Type, 3> &aabbox, 
     const Vector<Type, 3> &vPos, const Matrix<Type, 3, 3> &mRot);
-  /* Constructor from axis aligned box without placement. */
+  // Constructor from axis aligned box without placement. 
   inline OBBox(const AABBox<Type, 3> &aabbox);
 
   // classify box with respect to a plane
@@ -57,7 +57,7 @@ public:
   // check if two boxes intersect/touch
   inline BOOL HasContactWith(const OBBox<Type> &boxB) const;
 
-  /* Check if empty. */
+  // Check if empty. 
   inline BOOL IsEmpty(void) const;
 };
 
@@ -79,7 +79,7 @@ inline OBBox<Type>::OBBox<Type>() {
   SetToNormalizedEmpty();
 }
 
-/* Constructor from axis aligned box and placement. */
+// Constructor from axis aligned box and placement. 
 template<class Type>
 inline OBBox<Type>::OBBox(const AABBox<Type, 3> &aabbox, 
   const Vector<Type, 3> &vPos, const Matrix<Type, 3, 3> &mRot)
@@ -96,7 +96,7 @@ inline OBBox<Type>::OBBox(const AABBox<Type, 3> &aabbox,
   box_atSize[1] = aabbox.Size()(2)*0.5f;
   box_atSize[2] = aabbox.Size()(3)*0.5f;
 }
-/* Constructor from axis aligned box without placement. */
+// Constructor from axis aligned box without placement. 
 template<class Type>
 inline OBBox<Type>::OBBox(const AABBox<Type, 3> &aabbox)
 {
@@ -109,7 +109,7 @@ inline OBBox<Type>::OBBox(const AABBox<Type, 3> &aabbox)
   box_atSize[2] = aabbox.Size()(3)*0.5f;
 }
 
-/* Constructor from components. */
+// Constructor from components. 
 template<class Type>
 inline OBBox<Type>::OBBox(const Vector<Type, 3> &vO,
   const Vector<Type, 3> &vAxis0, const Vector<Type, 3> &vAxis1, const Vector<Type, 3> &vAxis2,

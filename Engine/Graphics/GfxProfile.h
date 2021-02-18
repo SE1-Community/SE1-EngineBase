@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/Profiling.h>
 
-/* Class for holding profiling information for gfx. */
+// Class for holding profiling information for gfx. 
 class CGfxProfile : public CProfileForm {
 public:
   // indices for profiling counters and timers

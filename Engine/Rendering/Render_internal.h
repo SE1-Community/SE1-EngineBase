@@ -80,20 +80,20 @@ public:
   PIX spo_pixMaxJ;
   PIX spo_pixTotalArea; // sum of all visible spans
 
-  /* Default constructor. */
+  // Default constructor. 
   CScreenPolygon(void) {
   #ifndef NDEBUG
     spo_iInStack = 0;
   #endif
   };
-  /* Destructor. */
+  // Destructor. 
   inline ~CScreenPolygon(void);
   
-  /* Test if this polygon is a portal. */
+  // Test if this polygon is a portal. 
   inline BOOL IsPortal(void) { 
     return spo_pbpoBrushPolygon != NULL && spo_pbpoBrushPolygon->bpo_ulFlags&BPOF_RENDERASPORTAL;
   };
-  /* Clear the object. */
+  // Clear the object. 
   inline void Clear(void) {};
 };
 
@@ -128,7 +128,7 @@ public:
   PIX sed_pixBottomJ;
 
   ALIGNED_NEW_AND_DELETE(32);
-  /* Clear the object. */
+  // Clear the object. 
   inline void Clear(void) {};
 };
 
@@ -185,7 +185,7 @@ public:
   CScreenEdge *sp_psedEdge1;      // edge right of this span
   CScreenPolygon *sp_pspoPolygon; // polygon of this span
 
-  /* Clear the object. */
+  // Clear the object. 
   inline void Clear(void) {};
 };
 
@@ -375,25 +375,25 @@ public:
   CScreenPolygon re_spoFarSentinel; // sentinel polygon for surface stack
   CListHead re_lhSurfaceStack;      // list of polygons in stack - closest first
 
-  /* Determine color to use for coloring vertices. */
+  // Determine color to use for coloring vertices. 
   static inline COLOR ColorForVertices(COLOR colPolygon, COLOR colSector);
-  /* Determine color to use for coloring edges. */
+  // Determine color to use for coloring edges. 
   static inline COLOR ColorForEdges(COLOR colPolygon, COLOR colSector);
-  /* Determine color to use for coloring polygons. */
+  // Determine color to use for coloring polygons. 
   static inline COLOR ColorForPolygons(COLOR colPolygon, COLOR colSector);
-  /* Draw vertices and/or edges of a brush sector. */
+  // Draw vertices and/or edges of a brush sector. 
   void DrawBrushPolygonVerticesAndEdges(CBrushPolygon &bpoPolygon);
   void DrawBrushSectorVerticesAndEdges(CBrushSector &bscSector);
-  /* Draw edges of a field brush sector. */
+  // Draw edges of a field brush sector. 
   void DrawFieldBrushSectorEdges(CBrushSector &bscSector);
 
-  /* Make a screen edge from two vertices. */
+  // Make a screen edge from two vertices. 
   inline void MakeScreenEdge(CScreenEdge &sed, FLOAT fI0, FLOAT fJ0, FLOAT fI1, FLOAT fJ1);
   // set scene rendering parameters for one polygon texture
   inline void SetOneTextureParameters(CBrushPolygon &bpo, ScenePolygon &spo, INDEX iTexture);
-  /* Make a screen polygon for a brush polygon */
+  // Make a screen polygon for a brush polygon 
   CScreenPolygon *MakeScreenPolygon(CBrushPolygon &bpo);
-  /* Add a polygon to scene rendering. */
+  // Add a polygon to scene rendering. 
   void AddPolygonToScene(CScreenPolygon *pspo);
 
   // check if a sector is inside view frustum
@@ -435,115 +435,115 @@ public:
 
   // switch a screen edge to using containers
   inline void SwitchEdgeToContainers(CScreenEdge &sed);
-  /* Add an edge to add list of its top scanline and remove list at its bottom line. */
+  // Add an edge to add list of its top scanline and remove list at its bottom line. 
   inline void AddEdgeToAddAndRemoveLists(CScreenEdge &sed);
-  /* Add all edges in add list to active list. */
+  // Add all edges in add list to active list. 
   inline void AddAddListToActiveList(INDEX iScanLine);
-  /* Remove all edges in remove list from active list and from other lists. */
+  // Remove all edges in remove list from active list and from other lists. 
   inline void RemRemoveListFromActiveList(CScreenEdge *psedFirst);
-  /* Step all edges in active list by one scan line and resort them. */
+  // Step all edges in active list by one scan line and resort them. 
   inline void StepAndResortActiveList(void);
-  /* Copy I coordinates from active list to edge data. */
+  // Copy I coordinates from active list to edge data. 
   inline void CopyActiveCoordinates(void);
-  /* Remove an active portal from rendering */
+  // Remove an active portal from rendering 
   inline void RemovePortal(CScreenPolygon &spo);
 
-  /* Add a sector of a brush to rendering queues. */
+  // Add a sector of a brush to rendering queues. 
   void AddActiveSector(CBrushSector &bscSector);
-  /* Add sector(s) adjoined to a portal to rendering and remove the portal. */
+  // Add sector(s) adjoined to a portal to rendering and remove the portal. 
   void PassPortal(CScreenPolygon &spo);
 
-  /* Generate a span for a polygon on current scan line. */
+  // Generate a span for a polygon on current scan line. 
   inline void MakeSpan(CScreenPolygon &spo, CScreenEdge *psed0, CScreenEdge *psed1);
 
-  /* Add spans in current line to scene. */
+  // Add spans in current line to scene. 
   void AddSpansToScene(void);
 
-  /* Add a mirror/portal. */
+  // Add a mirror/portal. 
   void AddMirror(CScreenPolygon &spo);
   
-  /* Add a polygon to surface stack. */
+  // Add a polygon to surface stack. 
   inline BOOL AddPolygonToSurfaceStack(CScreenPolygon &spo);
-  /* Remove a polygon from surface stack. */
+  // Remove a polygon from surface stack. 
   inline BOOL RemPolygonFromSurfaceStack(CScreenPolygon &spo);
-  /* Swap two polygons in surface stack. */
+  // Swap two polygons in surface stack. 
   inline BOOL SwapPolygonsInSurfaceStack(CScreenPolygon &spoOld, CScreenPolygon &spoNew);
-  /* Remove all polygons from surface stack. */
+  // Remove all polygons from surface stack. 
   inline void FlushSurfaceStack(void);
 
   // update VisTweak flags with given zoning sector
   inline void UpdateVisTweaks(CBrushSector *pbsc);
 
-  /* Initialize list of active edges and surface stack. */
+  // Initialize list of active edges and surface stack. 
   void InitScanEdges(void);
-  /* Clean up list of active edges and surface stack. */
+  // Clean up list of active edges and surface stack. 
   void EndScanEdges(void);
-  /* Scan list of active edges into spans. */
+  // Scan list of active edges into spans. 
   inline CScreenPolygon *ScanOneLine(void);
-  /* Rasterize edges into spans. */
+  // Rasterize edges into spans. 
   void ScanEdges(void);
 
-  /* Render wireframe brushes. */
+  // Render wireframe brushes. 
   void RenderWireFrameBrushes(void);
-  /* Find lights for one model. */
+  // Find lights for one model. 
   BOOL FindModelLights( CEntity &en, const CPlacement3D &plModel, COLOR &colLight, COLOR &colAmbient,
                         FLOAT &fTotalShadowIntensity, FLOAT3D &vTotalLightDirection, FLOATplane3D &plFloorPlane);
-  /* Render a model. */
+  // Render a model. 
   void RenderOneModel( CEntity &en, CModelObject &moModel, const CPlacement3D &plModel,
                        const FLOAT fDistanceFactor, BOOL bRenderShadow, ULONG ulDMFlags);
-  /* Render a ska model. */
+  // Render a ska model. 
   void CRenderer::RenderOneSkaModel( CEntity &en, const CPlacement3D &plModel,
                                   const FLOAT fDistanceFactor, BOOL bRenderShadow, ULONG ulDMFlags);
-  /* Render models that were kept for delayed rendering. */
+  // Render models that were kept for delayed rendering. 
   void RenderModels(BOOL bBackground);
-  /* Render active terrains */
+  // Render active terrains 
   void RenderTerrains(void);
-  /* Render active terrains in wireframe mode */
+  // Render active terrains in wireframe mode 
   void RenderWireFrameTerrains(void);
-  /* Render particles for models that were kept for delayed rendering. */
+  // Render particles for models that were kept for delayed rendering. 
   void RenderParticles(BOOL bBackground);
   // render one arrow given its 3d coordinates in world
   void ProjectClipAndDrawArrow(
     const FLOAT3D &v0, const FLOAT3D &v1, COLOR colColor);
-  /* Render target lines for each drawn entity that has some targets. */
+  // Render target lines for each drawn entity that has some targets. 
   void RenderEntityTargets(void);
-  /* Render entity names. */
+  // Render entity names. 
   void RenderEntityNames(void);
-  /* Render lens flares. */
+  // Render lens flares. 
   void RenderLensFlares(void);
-  /* Sort a list of translucent polygons. */
+  // Sort a list of translucent polygons. 
   ScenePolygon *SortTranslucentPolygons(ScenePolygon *pspoFirst);
 
-  /* Prepare a brush entity for rendering if it is not yet prepared. */
+  // Prepare a brush entity for rendering if it is not yet prepared. 
   void PrepareBrush(CEntity *penBrush);
 
-  /* Add a non-zoning brush entity to rendering list (add all sectors immediately). */
+  // Add a non-zoning brush entity to rendering list (add all sectors immediately). 
   void AddNonZoningBrush(CEntity *penBrush, CBrushSector *pbscThatAdds);
-  /* Add a model entity to rendering. */
+  // Add a model entity to rendering. 
   void AddModelEntity(CEntity *penModel);
-  /* Add a ska model entity to rendering. */
+  // Add a ska model entity to rendering. 
   void AddSkaModelEntity(CEntity *penModel);
-  /* Add a terrain entity to rendering list. */
+  // Add a terrain entity to rendering list. 
   void AddTerrainEntity(CEntity *penTerrain);
-  /* Add a lens flare to rendering. */
+  // Add a lens flare to rendering. 
   void AddLensFlare(CEntity *penLight, CLightSource *pls, CProjection3D *pprProjection, INDEX iMirrorLevel=0);
 
-  /* Add to rendering all entities in the world (used in special cases in world editor). */
+  // Add to rendering all entities in the world (used in special cases in world editor). 
   void AddAllEntities(void);
-  /* Add to rendering all entities that are inside an zoning brush sector. */
+  // Add to rendering all entities that are inside an zoning brush sector. 
   void AddEntitiesInSector(CBrushSector *pbscSectorInside);
-  /* Add to rendering all zoning brush sectors that an entity is in. */
+  // Add to rendering all zoning brush sectors that an entity is in. 
   void AddZoningSectorsAroundEntity(CEntity *pen, const FLOAT3D &vEyesPos);
-  /* Add to rendering one particular zoning brush sector. */
+  // Add to rendering one particular zoning brush sector. 
   void AddGivenZoningSector(CBrushSector *pbscSector);
-  /* Add to rendering all zoning brush sectors near a given box in absolute space. */
+  // Add to rendering all zoning brush sectors near a given box in absolute space. 
   void AddZoningSectorsAroundBox(const FLOATaabbox3D &boxNear);
-  /* Add to rendering all entities that are inside a given box. */
+  // Add to rendering all entities that are inside a given box. 
   void AddEntitiesInBox(const FLOATaabbox3D &boxNear);
 
-  /* Constructor. */
+  // Constructor. 
   CRenderer(void);
-  /* Destructor. */
+  // Destructor. 
   ~CRenderer(void);
 
   // initialize clipping rectangle

@@ -84,7 +84,7 @@ void CBrushSector::ToObjectSector(CObjectSector &osc)
   // lock the brush elements
   LockAll();
 
-  /* Copy vertices. */
+  // Copy vertices. 
 
   // get the number of vertices in brush
   INDEX ctVertices = bsc_abvxVertices.Count();
@@ -95,7 +95,7 @@ void CBrushSector::ToObjectSector(CObjectSector &osc)
     osc.osc_aovxVertices[iVertex] = bsc_abvxVertices[iVertex].bvx_vdPreciseRelative;
   }
 
-  /* Copy planes. */
+  // Copy planes. 
 
   // get the number of planes in brush
   INDEX ctPlanes = bsc_abplPlanes.Count();
@@ -106,7 +106,7 @@ void CBrushSector::ToObjectSector(CObjectSector &osc)
     osc.osc_aoplPlanes[iPlane] = bsc_abplPlanes[iPlane].bpl_pldPreciseRelative;
   }
 
-  /* Copy edges. */
+  // Copy edges. 
 
   // get the number of edges in brush
   INDEX ctEdges = bsc_abedEdges.Count();
@@ -121,7 +121,7 @@ void CBrushSector::ToObjectSector(CObjectSector &osc)
     oed.oed_Vertex1 = &osc.osc_aovxVertices[bsc_abvxVertices.Index(bed.bed_pbvxVertex1)];
   }
 
-  /* Copy polygons. */
+  // Copy polygons. 
 
   // get the number of polygons in brush
   INDEX ctPolygons = bsc_abpoPolygons.Count();

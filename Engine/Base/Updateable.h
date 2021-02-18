@@ -26,13 +26,13 @@ class ENGINE_API CUpdateable {
 private:
   TICK ud_llLastUpdate;   // last time this object has been updated
 public:
-  /* Constructor. */
+  // Constructor. 
   CUpdateable(void);
-  /* Get time when last updated. */
+  // Get time when last updated. 
   TICK LastUpdateTime(void) const ;
-  /* Mark that the object has been updated. */
+  // Mark that the object has been updated. 
   void MarkUpdated(void);
-  /* Mark that the object has become invalid in spite of its time stamp. */
+  // Mark that the object has become invalid in spite of its time stamp. 
   void Invalidate(void);
 };
 

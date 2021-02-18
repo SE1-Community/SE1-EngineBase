@@ -56,13 +56,13 @@ public:
 
   CCollisionInfo(void) {};
   CCollisionInfo(const CCollisionInfo &ciOrg);
-  /* Create collision info for a model. */
+  // Create collision info for a model. 
   void FromModel(CEntity *penModel, INDEX iBox);
-  /* Create collision info for a ska model */
+  // Create collision info for a ska model 
   void FromSkaModel(CEntity *penModel, INDEX iBox);
-  /* Create collision info for a brush. */
+  // Create collision info for a brush. 
   void FromBrush(CBrush3D *pbrBrush);
-  /* Calculate bounding box in absolute space from position. */
+  // Calculate bounding box in absolute space from position. 
   void MakeBoxAtPlacement(const FLOAT3D &vPosition, const FLOATmatrix3D &mRotation,
     FLOATaabbox3D &box);
   // get maximum radius of entity in xz plane (relative to entity handle)

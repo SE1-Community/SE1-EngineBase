@@ -133,7 +133,7 @@ void CPlacement3D::RelativeToRelativeSmooth(const CPlacement3D &plSource,
   prSimple.ProjectPlacementSmooth(*this, *this);
 }
 
-/* Make this placement be a linear interpolation between given two placements. */
+// Make this placement be a linear interpolation between given two placements. 
 void CPlacement3D::Lerp(const CPlacement3D &pl0, const CPlacement3D &pl1, FLOAT fFactor)
 {
   // lerp the position

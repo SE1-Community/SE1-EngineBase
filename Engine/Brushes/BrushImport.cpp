@@ -113,7 +113,7 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
   // lock the brush elements
   LockAll();
 
-  /* Copy vertices. */
+  // Copy vertices. 
 
   // get the number of vertices in object
   INDEX ctVertices = osc.osc_aovxVertices.Count();
@@ -127,7 +127,7 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
     osc.osc_aovxVertices[iVertex].ovx_Index = iVertex;
   }
 
-  /* Copy planes. */
+  // Copy planes. 
 
   // get the number of planes in object
   INDEX ctPlanes = osc.osc_aoplPlanes.Count();
@@ -140,7 +140,7 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
     osc.osc_aoplPlanes[iPlane].opl_Index = iPlane;
   }
 
-  /* Copy edges. */
+  // Copy edges. 
 
   // get the number of edges in object
   INDEX ctEdges = osc.osc_aoedEdges.Count();
@@ -163,7 +163,7 @@ void CBrushSector::FromObjectSector_t(CObjectSector &osc) // throw char *
     oed.oed_Index = iEdge;
   }
 
-  /* Copy polygons. */
+  // Copy polygons. 
 
   // get the number of polygons in object
   INDEX ctPolygons = osc.osc_aopoPolygons.Count();

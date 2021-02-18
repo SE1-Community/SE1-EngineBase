@@ -35,29 +35,29 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 class CTimerValue {
 public:
   __int64 tv_llValue;       // 64 bit integer (MSVC specific!)
-  /* Constructor from quad integer. */
+  // Constructor from quad integer. 
   inline CTimerValue(__int64 llValue) : tv_llValue(llValue) {};
 public:
-  /* Constructor. */
+  // Constructor. 
   inline CTimerValue(void) {};
-  /* Constructor from seconds. */
+  // Constructor from seconds. 
   inline CTimerValue(double dSeconds);
-  /* Clear timer value (set it to zero). */
+  // Clear timer value (set it to zero). 
   inline void Clear(void);
-  /* Addition. */
+  // Addition. 
   inline CTimerValue &operator+=(const CTimerValue &tvOther);
   inline CTimerValue operator+(const CTimerValue &tvOther) const;
-  /* Substraction. */
+  // Substraction. 
   inline CTimerValue &operator-=(const CTimerValue &tvOther);
   inline CTimerValue operator-(const CTimerValue &tvOther) const;
-  /* Comparisons. */
+  // Comparisons. 
   inline BOOL operator<(const CTimerValue &tvOther) const;
   inline BOOL operator>(const CTimerValue &tvOther) const;
   inline BOOL operator <= (const CTimerValue &tvOther) const;
   inline BOOL operator >= (const CTimerValue &tvOther) const;
-  /* Get the timer value in seconds. - use for time spans only! */
+  // Get the timer value in seconds. - use for time spans only! 
   inline double GetSeconds(void);
-  /* Get the timer value in milliseconds as integral value. */
+  // Get the timer value in milliseconds as integral value. 
   inline __int64 GetMilliseconds(void);
 };
 // a base class for hooking on timer interrupt
@@ -65,8 +65,8 @@ class CTimerHandler {
 public:
   CListNode th_Node;
 public:
-  virtual ~CTimerHandler(void) {}  /* rcg10042001 */
-  /* This is called every TickQuantum seconds. */
+  virtual ~CTimerHandler(void) {}  // rcg10042001 
+  // This is called every TickQuantum seconds. 
   ENGINE_API virtual void HandleTimer(void)=0;
 };
 
@@ -95,15 +95,15 @@ public:
   // interval defining frequency of the game ticker
   static const TIME TickQuantum;     // 20 ticks per second
 
-  /* Constructor. */
+  // Constructor. 
   CTimer(BOOL bInterrupt=TRUE);
-  /* Destructor. */
+  // Destructor. 
   ~CTimer(void);
-  /* Add a timer handler. */
+  // Add a timer handler. 
   void AddHandler(CTimerHandler *pthNew);
-  /* Remove a timer handler. */
+  // Remove a timer handler. 
   void RemHandler(CTimerHandler *pthOld);
-  /* Handle timer handlers manually. */
+  // Handle timer handlers manually. 
   void HandleTimerHandlers(void);
 
   // Get the real time tick value.
@@ -130,7 +130,7 @@ public:
   // Get current factor used for lerping between game ticks.
   inline FLOAT GetLerpFactor2(void) const { return tm_fLerpFactor2; };
 
-  /* Get current timer value of high precision timer. */
+  // Get current timer value of high precision timer. 
   inline CTimerValue GetHighPrecisionTimer(void) {
    __int64 mmRet;
     _asm rdtsc

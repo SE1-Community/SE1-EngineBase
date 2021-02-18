@@ -404,7 +404,7 @@ void CClipMove::ClipMovingSphereToBrushPolygon(const CMovingSphere &msMoving,
   }
 }
 
-/* Clip a moving sphere to a terrain polygon, update collision data. */
+// Clip a moving sphere to a terrain polygon, update collision data. 
 void CClipMove::ClipMovingSphereToTerrainPolygon(
   const CMovingSphere &msMoving, const FLOAT3D &v0, const FLOAT3D &v1, const FLOAT3D &v2)
 {
@@ -504,7 +504,7 @@ void CClipMove::ClipMovingSphereToTerrainPolygon(
     );
 }
 
-/* Clip movement to a terrain polygon. */
+// Clip movement to a terrain polygon. 
 void CClipMove::ClipMoveToTerrainPolygon(const FLOAT3D &v0, const FLOAT3D &v1, const FLOAT3D &v2)
 {
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHPOLYGON);
@@ -549,7 +549,7 @@ void CClipMove::ProjectASpheresToB(void)
   _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_PROJECTASPHERESTOB);
 }
 
-/* Find movement box in absolute space for A entity. */
+// Find movement box in absolute space for A entity. 
 void CClipMove::FindAbsoluteMovementBoxForA(void)
 {
 /*
@@ -753,7 +753,7 @@ void CClipMove::ClipMoveToModel(CEntity *penModel)
   _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CLIPMOVETOMODEL);
 }
 
-/* Cache near polygons of movable entity. */
+// Cache near polygons of movable entity. 
 void CClipMove::CacheNearPolygons(void)
 {
   // if movement box is still inside cached box
@@ -971,7 +971,7 @@ void CClipMove::ClipToZoningSector(CBrushSector *pbsc)
   _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CLIPTOZONINGSECTOR);
 }
 
-/* Clip movement to brush sectors near the entity. */
+// Clip movement to brush sectors near the entity. 
 void CClipMove::ClipMoveToBrushes(void)
 {
   // we never clip moving brush to a brush
@@ -1088,7 +1088,7 @@ void CClipMove::ClipMoveToBrushes(void)
   _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES);
 }
 
-/* Clip movement to models near the entity. */
+// Clip movement to models near the entity. 
 void CClipMove::ClipMoveToModels(void)
 {
   if (cm_penMoving->en_ulCollisionFlags&ECF_IGNOREMODELS) {

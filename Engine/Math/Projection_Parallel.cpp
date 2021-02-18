@@ -142,7 +142,7 @@ void CParallelProjection3D::PostClip( const FLOAT3D &v3dTransformedPoint, FLOAT 
   fViewR = fTransformedR *pr_vZoomFactors(1);
 }
 
-/* Test if a sphere in view space is inside view frustum. */
+// Test if a sphere in view space is inside view frustum. 
 INDEX CParallelProjection3D::TestSphereToFrustum(const FLOAT3D &vViewPoint, FLOAT fRadius) const
 {
   ASSERT(pr_Prepared);
@@ -197,7 +197,7 @@ INDEX CParallelProjection3D::TestSphereToFrustum(const FLOAT3D &vViewPoint, FLOA
   return iPass;
 }
 
-/* Test if an oriented box in view space is inside view frustum. */
+// Test if an oriented box in view space is inside view frustum. 
 INDEX CParallelProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
 {
   ASSERT(pr_Prepared);
@@ -317,7 +317,7 @@ void CParallelProjection3D::Project(const FLOATplane3D &p3dObjectPlane,
   p3dTransformedPlane = p3dObjectPlane*pr_RotationMatrix + pr_TranslationVector;
 }
 
-/* Calculate plane gradient for a plane in 3D view space. */
+// Calculate plane gradient for a plane in 3D view space. 
 void CParallelProjection3D::MakeOoKGradient(const FLOATplane3D &plViewerPlane, CPlanarGradients &pgOoK) const
 {
   // check that the projection object is prepared for projecting

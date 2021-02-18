@@ -54,7 +54,7 @@ public:
   CServerRequest(void);
   ~CServerRequest(void);
 
-  /* Destroy all objects, and reset the array to initial (empty) state. */
+  // Destroy all objects, and reset the array to initial (empty) state. 
   void Clear(void);
 };
 

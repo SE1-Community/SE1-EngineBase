@@ -98,38 +98,38 @@ public:
   CListHead wo_lhMovers;        // entities that want to/have to move
   BOOL wo_bPortalLinksUpToDate; // set if portal-sector links are up to date
 
-  /* Initialize collision grid. */
+  // Initialize collision grid. 
   void InitCollisionGrid(void);
-  /* Destroy collision grid. */
+  // Destroy collision grid. 
   void DestroyCollisionGrid(void);
-  /* Clear collision grid. */
+  // Clear collision grid. 
   void ClearCollisionGrid(void);
 
-  /* Add an entity to cell(s) in collision grid. */
+  // Add an entity to cell(s) in collision grid. 
   void AddEntityToCollisionGrid(CEntity *pen, const FLOATaabbox3D &boxEntity);
-  /* Remove an entity from cell(s) in collision grid. */
+  // Remove an entity from cell(s) in collision grid. 
   void RemoveEntityFromCollisionGrid(CEntity *pen, const FLOATaabbox3D &boxEntity);
-  /* Move an entity inside cell(s) in collision grid. */
+  // Move an entity inside cell(s) in collision grid. 
   void MoveEntityInCollisionGrid(CEntity *pen,
     const FLOATaabbox3D &boxOld, const FLOATaabbox3D &boxNew);
-  /* Find all entities in collision grid near given box. */
+  // Find all entities in collision grid near given box. 
   void FindEntitiesNearBox(const FLOATaabbox3D &boxNear,
     CStaticStackArray<CEntity*> &apenNearEntities);
 
-  /* Create a new entity of given class. */
+  // Create a new entity of given class. 
   CEntity *CreateEntity(const CPlacement3D &plPlacement, CEntityClass *pecClass);
-  /* Clear all entity pointers that point to this entity. */
+  // Clear all entity pointers that point to this entity. 
   void UntargetEntity(CEntity *penToUntarget);
 
-  /* Add an entity to list of timers. */
+  // Add an entity to list of timers. 
   void AddTimer(CRationalEntity *penTimer);
   // set overdue timers to be due in current time
   void AdjustLateTimers(TICK llCurrentTime);
 
   // CSG operations for editing a world
-  /* Get a valid brush mip of brush for use in CSG operations. */
+  // Get a valid brush mip of brush for use in CSG operations. 
   CBrushMip *GetBrushMip(CEntity &enBrush);
-  /* Copy selected sectors of a source brush to a 3D object. */
+  // Copy selected sectors of a source brush to a 3D object. 
   void CopySourceBrushSectorsToObject(
     CEntity &enBrush,
     CBrushSectorSelectionForCSG &bscselSectors,
@@ -138,15 +138,15 @@ public:
     const CPlacement3D &plTargetPlacement,
     DOUBLEaabbox3D &boxSourceAbsolute
     );
-  /* Move sectors of a target brush that are affected, to a 3D object. */
+  // Move sectors of a target brush that are affected, to a 3D object. 
   void MoveTargetBrushPartToObject(
     CEntity &enBrush,
     DOUBLEaabbox3D &boxAffected,
     CObject3D &obObject
     );
-  /* Add 3D object sectors to a brush. */
+  // Add 3D object sectors to a brush. 
   void AddObjectToBrush(CObject3D &obObject, CEntity &enBrush);
-  /* Do some CSG operation with one brush in this world and one brush in other world. */
+  // Do some CSG operation with one brush in this world and one brush in other world. 
   void DoCSGOperation(
     CEntity &enThis,
     CWorld &woOther,
@@ -156,12 +156,12 @@ public:
     void (CObject3D::*DoCSGClosedSectors)(CObject3D &obA, CObject3D &obB)
     );
 
-  /* Copy all entities except one from another world to this one. */
+  // Copy all entities except one from another world to this one. 
   void CopyAllEntitiesExceptOne(CWorld &woOther, CEntity &enExcepted,
     const CPlacement3D &plOtherSystem);
-  /* Join two sectors from one brush-mip together. */
+  // Join two sectors from one brush-mip together. 
   CBrushSector *JoinTwoSectors(CBrushSector &bscA, CBrushSector &bscB);
-  /* Split one sector by a 3D object. */
+  // Split one sector by a 3D object. 
   void SplitOneSector(CBrushSector &bscToSplit, CObject3D &obToSplitBy);
 
   // read/write world information (description, name, flags...)
@@ -187,59 +187,59 @@ public:
 
   TIME wo_WorldGameTick;  // game tick that world is currently in
 
-  /* Constructor. */
+  // Constructor. 
   CWorld(void);
-  /* Destructor. */
+  // Destructor. 
   ~CWorld(void);
   DECLARE_NOCOPYING(CWorld);
-  /* Clear all arrays. */
+  // Clear all arrays. 
   void Clear(void);
 
-  /* Lock all arrays. */
+  // Lock all arrays. 
   void LockAll(void);
-  /* Unlock all arrays. */
+  // Unlock all arrays. 
   void UnlockAll(void);
 
-  /* Create a new entity of given class. */
+  // Create a new entity of given class. 
   CEntity *CreateEntity_t(const CPlacement3D &plPlacement,
     const CTFileName &fnmClass); // throw char *
-  /* Copy one entity from another world into this one. */
+  // Copy one entity from another world into this one. 
   CEntity *CopyOneEntity(CEntity &enToCopy, const CPlacement3D &plOtherSystem);
-  /* Copy container of entities from another world to this one and select them. */
+  // Copy container of entities from another world to this one and select them. 
   void CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy,
     CEntitySelection &senCopied, const CPlacement3D &plOtherSystem);
-  /* Copy entity in world. */
+  // Copy entity in world. 
   CEntity *CopyEntityInWorld(CEntity &enOriginal, const CPlacement3D &plOtherEntity,
     BOOL bWithDescendants = TRUE);
-  /* Destroy a selection of entities - reserved for use in WEd only! */
+  // Destroy a selection of entities - reserved for use in WEd only! 
   void DestroyEntities(CEntitySelection &senToDestroy);
-  /* Destroy given entity - reserved for use in WEd only! */
+  // Destroy given entity - reserved for use in WEd only! 
   void DestroyOneEntity( CEntity *penToDestroy);  
-  /* Find an entity with given character. */
+  // Find an entity with given character. 
   CPlayerEntity *FindEntityWithCharacter(CPlayerCharacter &pcCharacter);
 
-  /* Copy entities for prediction. */
+  // Copy entities for prediction. 
   void CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy);
 
-  /* Cast a ray and see what it hits. */
+  // Cast a ray and see what it hits. 
   void CastRay(CCastRay &crRay);
-  /* Continue to cast already cast ray */
+  // Continue to cast already cast ray 
   void ContinueCast(CCastRay &crRay);
-  /* Test if a movement is clipped by something and where. */
+  // Test if a movement is clipped by something and where. 
   void ClipMove(CClipMove &cmMove);
 
-  /* Set background color for this world. */
+  // Set background color for this world. 
   void SetBackgroundColor(COLOR colBackground);
-  /* Get background color for this world. */
+  // Get background color for this world. 
   COLOR GetBackgroundColor(void);
-  /* Set background viewer entity for this world. */
+  // Set background viewer entity for this world. 
   void SetBackgroundViewer(CEntity *penEntity);
-  /* Get background viewer entity for this world. */
+  // Get background viewer entity for this world. 
   CEntity *GetBackgroundViewer(void);
 
-  /* Set description for this world. */
+  // Set description for this world. 
   void SetDescription(const CTString &strDescription);
-  /* Get description for this world. */
+  // Get description for this world. 
   const CTString &GetDescription(void);
 
   // get/set name of the world
@@ -249,39 +249,39 @@ public:
   void SetSpawnFlags(ULONG ulFlags);
   ULONG GetSpawnFlags(void);
 
-  /* Save entire world (both brushes and current state). */
+  // Save entire world (both brushes and current state). 
   void Save_t(const CTFileName &fnmWorld); // throw char *
-  /* Load entire world (both brushes and current state). */
+  // Load entire world (both brushes and current state). 
   void Load_t(const CTFileName &fnmWorld); // throw char *
-  /* Reinitialize entities from their properties. (use only in WEd!) */
+  // Reinitialize entities from their properties. (use only in WEd!) 
   void ReinitializeEntities(void);
-  /* Precache data needed by entities. */
+  // Precache data needed by entities. 
   void PrecacheEntities_t(void);  // throw char *
   // delete all entities that don't fit given spawn flags
   void FilterEntitiesBySpawnFlags(ULONG ulFlags);
 
-  /* Read entire world (both brushes and current state). */
+  // Read entire world (both brushes and current state). 
   void Read_t(CTStream *pistrm); // throw char *
-  /* Write entire world (both brushes and current state). */
+  // Write entire world (both brushes and current state). 
   void Write_t(CTStream *postrm); // throw char *
 
-  /* Load just world brushes from a file with entire world information. */
+  // Load just world brushes from a file with entire world information. 
   void LoadBrushes_t(const CTFileName &fnmWorld); // throw char *
 
-  /* Update sectors after brush vertex moving */
+  // Update sectors after brush vertex moving 
   void UpdateSectorsAfterVertexChange( CBrushVertexSelection &selVertex);
-  /* Update sectors during brush vertex moving */
+  // Update sectors during brush vertex moving 
   void UpdateSectorsDuringVertexChange( CBrushVertexSelection &selVertex);
-  /* Triangularize polygons that contain vertices from given selection */
+  // Triangularize polygons that contain vertices from given selection 
   void TriangularizeForVertices( CBrushVertexSelection &selVertex);
-  /* Clears 'marked for use' flag on all polygons in world */
+  // Clears 'marked for use' flag on all polygons in world 
   void ClearMarkedForUseFlag(void);
   
   // CSG operations for editing worlds
-  /* Add a brush from another world to a brush in this world, other entities get copied. */
+  // Add a brush from another world to a brush in this world, other entities get copied. 
   void CSGAdd(CEntity &enThis, CWorld &woOther, CEntity &enOther, const CPlacement3D &plOther);
   void CSGAddReverse(CEntity &enThis, CWorld &woOther, CEntity &enOther, const CPlacement3D &plOther);
-  /* Substract a brush from another world to a brush in this world. */
+  // Substract a brush from another world to a brush in this world. 
   void CSGRemove(CEntity &enThis, CWorld &woOther, CEntity &enOther,
     const CPlacement3D &plOther);
   /* Split selected sectors in a brush in this world with one brush in other world.
@@ -289,9 +289,9 @@ public:
    */
   void SplitSectors(CEntity &enThis, CBrushSectorSelection &selbscSectorsToSplit,
     CWorld &woOther, CEntity &enOther, const CPlacement3D &plOther);
-  /* If two or more sectors can be joined. */
+  // If two or more sectors can be joined. 
   BOOL CanJoinSectors(CBrushSectorSelection &selbscSectorsToJoin);
-  /* Join two or more sectors from one brush-mip together. */
+  // Join two or more sectors from one brush-mip together. 
   void JoinSectors(CBrushSectorSelection &selbscSectorsToJoin);
 
   /* Split selected polygons in a brush in this world with one brush in other world.
@@ -299,20 +299,20 @@ public:
    */
   void SplitPolygons(CEntity &enThis, CBrushPolygonSelection &selbpoPolygonsToSplit,
     CWorld &woOther, CEntity &enOther, const CPlacement3D &plOther);
-  /* Join two or more polygons from one brush-sector together. */
+  // Join two or more polygons from one brush-sector together. 
   void JoinPolygons(CBrushPolygonSelection &selbpoPolygonsToJoin);
-  /* Test if a polygon selection can be joined. */
+  // Test if a polygon selection can be joined. 
   BOOL CanJoinPolygons(CBrushPolygonSelection &selbpoPolygonsToJoin);
-  /* Join all selected polygons that can be joined. */
+  // Join all selected polygons that can be joined. 
   void JoinAllPossiblePolygons(CBrushPolygonSelection &selbpoPolygonsToJoin,
     BOOL bPreserveTextures, INDEX iTexture);
-  /* Test if a polygon selection can be joined. */
+  // Test if a polygon selection can be joined. 
   BOOL CanJoinAllPossiblePolygons(CBrushPolygonSelection &selbpoPolygonsToJoin);
 
-  /* Copy selected sectors from one brush to a new entity in another world. */
+  // Copy selected sectors from one brush to a new entity in another world. 
   BOOL CanCopySectors(CBrushSectorSelection &selbscSectorsToCopy);
   void CopySectors(CBrushSectorSelection &selbscSectorsToCopy, CEntity *penTarget, BOOL bWithEntities);
-  /* Delete selected sectors. */
+  // Delete selected sectors. 
   void DeleteSectors(CBrushSectorSelection &selbscSectorsToDelete, BOOL bClearPortalFlags);
   void CopyPolygonInWorld(CBrushPolygon &bpoSrc, CBrushSector &bsc, INDEX iPol, INDEX &iEdg, INDEX &iVtx);
   void CopyPolygonsToBrush(CBrushPolygonSelection &selPolygons, CEntity *penbr);
@@ -324,31 +324,31 @@ public:
   void MirrorAndStretch(CWorld &woOriginal, FLOAT fStretch, enum WorldMirrorType wmt);
 
   // hide/show functions
-  /* Hide entities contained in given selection. */
+  // Hide entities contained in given selection. 
   void HideSelectedEntities(CEntitySelection &selenEntitiesToHide);
-  /* Hide all unselected entities. */
+  // Hide all unselected entities. 
   void HideUnselectedEntities(void);
-  /* Show all entities. */
+  // Show all entities. 
   void ShowAllEntities(void);
-  /* Hide sectors contained in given selection. */
+  // Hide sectors contained in given selection. 
   void HideSelectedSectors(CBrushSectorSelection &selbscSectorsToHide);
-  /* Hide all unselected sectors. */
+  // Hide all unselected sectors. 
   void HideUnselectedSectors(void);
-  /* Show all sectors. */
+  // Show all sectors. 
   void ShowAllSectors(void);
 
-  /* Selecting by texture in selected sectors */
+  // Selecting by texture in selected sectors 
   void SelectByTextureInSelectedSectors( CTFileName fnTexture, CBrushPolygonSelection &selbpoSimilar, INDEX iTexture);
-  /* Selecting by texture in world */
+  // Selecting by texture in world 
   void SelectByTextureInWorld( CTFileName fnTexture, CBrushPolygonSelection &selbpoSimilar, INDEX iTexture);
 
   // shadow manipulation functions
-  /* Recalculate all shadow maps that are not valid or of smaller precision. */
+  // Recalculate all shadow maps that are not valid or of smaller precision. 
   void CalculateDirectionalShadows(void);
   void CalculateNonDirectionalShadows(void);
-  /* Find all shadow layers near a certain position. */
+  // Find all shadow layers near a certain position. 
   void FindShadowLayers(const FLOATaabbox3D &boxNear, BOOL bSelectedOnly=FALSE, BOOL bDirectional = TRUE);
-  /* Discard shadows on all brush polygons in the world. */
+  // Discard shadows on all brush polygons in the world. 
   void DiscardAllShadows(void);
 
   // create links between zoning brush sectors and non-zoning entities in sectors
@@ -357,17 +357,17 @@ public:
   // rebuild all links in world
   void RebuildLinks(void);
 
-  /* Read world brushes from stream. */
+  // Read world brushes from stream. 
   void ReadBrushes_t( CTStream *istr);   // throw char *
-  /* Write world brushes to stream. */
+  // Write world brushes to stream. 
   void WriteBrushes_t( CTStream *ostr);  // throw char *
 
-  /* Read current world state from stream. */
+  // Read current world state from stream. 
   void ReadState_t( CTStream *istr);   // throw char *
   void ReadState_veryold_t( CTStream *istr);   // throw char *
   void ReadState_old_t( CTStream *istr);   // throw char *
   void ReadState_new_t( CTStream *istr);   // throw char *
-  /* Write current world state to stream. */
+  // Write current world state to stream. 
   void WriteState_t( CTStream *ostr, BOOL bImportDictionary = FALSE);  // throw char *
 };
 

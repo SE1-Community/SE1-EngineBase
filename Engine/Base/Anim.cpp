@@ -527,7 +527,7 @@ INDEX CAnimData::GetFrame( INDEX iAnimation, INDEX iFramePlace) {
 void CAnimData::SetFrame( INDEX iAnimation, INDEX iFramePlace, INDEX iNewFrame) {
   ASSERT( iFramePlace<ad_Anims[iAnimation].oa_NumberOfFrames);
   ad_Anims[iAnimation].oa_FrameIndices[iFramePlace] = iNewFrame;};
-/* Get number of animations. */
+// Get number of animations. 
 INDEX CAnimData::GetAnimsCt(void) const {return ad_NumberOfAnims;};
 
 // Delete animation
@@ -589,7 +589,7 @@ CAnimObject::CAnimObject(void) {
   ao_ulFlags = AOF_PAUSED;
 };
 
-/* Destructor. */
+// Destructor. 
 CAnimObject::~CAnimObject(void) {
   ao_AnimData->RemReference();
 };
@@ -852,7 +852,7 @@ void CAnimObject::StartAnim(INDEX iNew) {
   ao_ulFlags = AOF_LOOPING;
 };
 
-/* Start playing an animation. */
+// Start playing an animation. 
 void CAnimObject::PlayAnim(INDEX iNew, ULONG ulFlags)
 {
   if (ao_AnimData == NULL) return;
@@ -901,7 +901,7 @@ void CAnimObject::PlayAnim(INDEX iNew, ULONG ulFlags)
   MarkChanged();
 };
 
-/* Seamlessly continue playing another animation from same point. */
+// Seamlessly continue playing another animation from same point. 
 void CAnimObject::SwitchToAnim(INDEX iNew)
 {
   if (ao_AnimData == NULL) return;
@@ -1026,7 +1026,7 @@ INDEX CAnimObject::GetFrame(void) const
   return FrameInTime(_pTimer->CurrentTick());  // return frame index that coresponds to current moment
 }
 
-/* Gets number of frames in current anim. */
+// Gets number of frames in current anim. 
 INDEX CAnimObject::GetFramesInCurrentAnim(void) const {
   ASSERT( ao_AnimData != NULL);
   return ao_AnimData->ad_Anims[ao_iCurrentAnim].oa_NumberOfFrames;

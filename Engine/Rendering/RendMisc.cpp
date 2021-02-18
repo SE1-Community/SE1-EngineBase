@@ -88,7 +88,7 @@ FLOAT CWorldRenderPrefs::GetCurrentMipBrushingFactor(FLOAT fDistanceMipFactor)
 // helper classes
 /////////////////////////////////////////////////////////////////////
 
-/* Destructor. */
+// Destructor. 
 CScreenPolygon::~CScreenPolygon(void) {
   ASSERT(spo_iInStack == 0);
 };

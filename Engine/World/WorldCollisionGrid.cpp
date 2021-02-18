@@ -270,12 +270,12 @@ void CCollisionGrid::RemoveEntry(INDEX igc, CEntity *pen)
 
 
 
-/* Initialize collision grid. */
+// Initialize collision grid. 
 void CWorld::InitCollisionGrid(void)
 {
   wo_pcgCollisionGrid = new CCollisionGrid;
 }
-/* Destroy collision grid. */
+// Destroy collision grid. 
 void CWorld::DestroyCollisionGrid(void)
 {
   delete wo_pcgCollisionGrid;
@@ -288,7 +288,7 @@ void CWorld::ClearCollisionGrid(void)
 }
 
 
-/* Add an entity to cell(s) in collision grid. */
+// Add an entity to cell(s) in collision grid. 
 void CWorld::AddEntityToCollisionGrid(CEntity *pen, const FLOATaabbox3D &boxEntity)
 {
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_ADDENTITYTOGRID);
@@ -308,7 +308,7 @@ void CWorld::AddEntityToCollisionGrid(CEntity *pen, const FLOATaabbox3D &boxEnti
 }
 
 
-/* Remove an entity from cell(s) in collision grid. */
+// Remove an entity from cell(s) in collision grid. 
 void CWorld::RemoveEntityFromCollisionGrid(CEntity *pen, const FLOATaabbox3D &boxEntity)
 {
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_REMENTITYFROMGRID);
@@ -330,7 +330,7 @@ void CWorld::RemoveEntityFromCollisionGrid(CEntity *pen, const FLOATaabbox3D &bo
   _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_REMENTITYFROMGRID);
 }
 
-/* Move an entity inside cell(s) in collision grid. */
+// Move an entity inside cell(s) in collision grid. 
 void CWorld::MoveEntityInCollisionGrid(CEntity *pen,
   const FLOATaabbox3D &boxOld, const FLOATaabbox3D &boxNew)
 {
@@ -375,7 +375,7 @@ void CWorld::MoveEntityInCollisionGrid(CEntity *pen,
 }
 
 
-/* Find all entities in collision grid near given box. */
+// Find all entities in collision grid near given box. 
 void CWorld::FindEntitiesNearBox(const FLOATaabbox3D &boxNear,
   CStaticStackArray<CEntity*> &apenNearEntities)
 {

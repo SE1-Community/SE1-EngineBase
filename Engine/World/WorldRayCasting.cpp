@@ -572,7 +572,7 @@ void CCastRay::TestBrushSector(CBrushSector *pbscSector)
   }
 }
 
-/* Add a sector if needed. */
+// Add a sector if needed. 
 inline void CCastRay::AddSector(CBrushSector *pbsc)
 {
   // if not already active and in first mip of its brush
@@ -583,7 +583,7 @@ inline void CCastRay::AddSector(CBrushSector *pbsc)
     pbsc->bsc_ulFlags|=BSCF_RAYTESTED;
   }
 }
-/* Add all sectors of a brush. */
+// Add all sectors of a brush. 
 void CCastRay::AddAllSectorsOfBrush(CBrush3D *pbr)
 {
   // get relevant mip as if in manual mip brushing mode
@@ -602,7 +602,7 @@ void CCastRay::AddAllSectorsOfBrush(CBrush3D *pbr)
   }
 }
 
-/* Add all sectors around given entity. */
+// Add all sectors around given entity. 
 void CCastRay::AddSectorsAroundEntity(CEntity *pen)
 {
   // for each zoning sector that this entity is in
@@ -617,7 +617,7 @@ void CCastRay::AddSectorsAroundEntity(CEntity *pen)
   ENDFOR}
 }
 
-/* Test entire world against ray. */
+// Test entire world against ray. 
 void CCastRay::TestWholeWorld(CWorld *pwoWorld)
 {
   // for each entity in the world
@@ -696,7 +696,7 @@ void CCastRay::TestWholeWorld(CWorld *pwoWorld)
   }}
 }
 
-/* Test active sectors recusively. */
+// Test active sectors recusively. 
 void CCastRay::TestThroughSectors(void)
 {
   // for each active sector (sectors are added during iteration!)

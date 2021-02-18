@@ -133,7 +133,7 @@ void TranslateBackSlashes(char *str)
 }
 
 #define READSIZE  1024
-/* Relpace File and remove #line directive from file */
+// Relpace File and remove #line directive from file
 void ReplaceFileRL(const char *strOld, const char *strNew)
 {
   char strOldBuff[READSIZE*3+1];
@@ -216,7 +216,7 @@ Error:
   if (pfOld) fclose(pfOld);
 }
 
-/* Replace a file with a new file. */
+// Replace a file with a new file.
 void ReplaceFile(const char *strOld, const char *strNew)
 {
   if (_bRemoveLineDirective)

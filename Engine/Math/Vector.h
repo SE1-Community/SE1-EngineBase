@@ -30,33 +30,33 @@ class Vector {
 public:
   Type vector[iDimensions];     // array that holds the members
 public:
-  /* Default constructor. */
+  // Default constructor. 
   __forceinline Vector(void);
-  /* Constructor from coordinates. */
+  // Constructor from coordinates. 
   __forceinline Vector(Type x1);
   __forceinline Vector(Type x1, Type x2);
   __forceinline Vector(Type x1, Type x2, Type x3);
   __forceinline Vector(Type x1, Type x2, Type x3, Type x4);
-  /* Clear function */
+  // Clear function 
   __forceinline void Clear(void) {};
 
 
-  /* Conversion into scalar -- length of vector (Euclidian norm). */
+  // Conversion into scalar -- length of vector (Euclidian norm). 
   __forceinline Type Length(void) const;
-  /* Conversion into scalar -- Manhattan norm of vector. */
+  // Conversion into scalar -- Manhattan norm of vector. 
   __forceinline Type ManhattanNorm(void) const;
-  /* Conversion into scalar -- Max norm of vector. */
+  // Conversion into scalar -- Max norm of vector. 
   __forceinline Type MaxNorm(void) const;
 
-  /* Reference vector member by it's index (1-based indices!). */
+  // Reference vector member by it's index (1-based indices!). 
   __forceinline Type &operator()(int i);
   __forceinline const Type &operator()(int i) const;
 
-  /* Normalize vector, i.e. make it a unit vector. */
+  // Normalize vector, i.e. make it a unit vector. 
   __forceinline Vector<Type, iDimensions> &Normalize(void);
   __forceinline Vector<Type, iDimensions> &SafeNormalize(void); // gives vector with (0,0,0) orientation if input is too small
 
-  /* Mathematical operators. */
+  // Mathematical operators. 
   // unary minus
   __forceinline Vector<Type, iDimensions> &Flip(void);
   __forceinline Vector<Type, iDimensions> operator-(void) const;
@@ -83,7 +83,7 @@ public:
   __forceinline BOOL operator == (const Vector<Type, iDimensions> &vector2) const;
   __forceinline BOOL operator != (const Vector<Type, iDimensions> &vector2) const;
 
-  /* Stream operations */
+  // Stream operations 
   friend __forceinline CTStream &operator>>(CTStream &strm, Vector<Type, iDimensions> &vector) {
     strm.Read_t(&vector, sizeof(vector));
     return strm;

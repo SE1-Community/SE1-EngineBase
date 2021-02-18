@@ -148,12 +148,12 @@ enum EntityComponentType {  // DO NOT RENUMBER!
 
 class ENGINE_API CEntityComponent {
 public:
-  /* Obtain the component. */
+  // Obtain the component. 
   void Obtain_t(void);  // throw char *
   void ObtainWithCheck(void);
   // add component to crc table
   void AddToCRCTable(void);
-  /* Release the component. */
+  // Release the component. 
   void Release(void);
 public:
   EntityComponentType ec_ectType;       // type of component
@@ -208,20 +208,20 @@ public:
   void (*dec_OnWorldRender)(CWorld *pwoWorld);  // function called for each rendering
   void (*dec_OnWorldEnd)(CWorld *pwoWorld);     // function called on world cleanup
 
-  /* Get pointer to entity property from its name. */
+  // Get pointer to entity property from its name. 
   class CEntityProperty *PropertyForName(const CTString &strPropertyName);
-  /* Get pointer to entity property from its packed identifier. */
+  // Get pointer to entity property from its packed identifier. 
   class CEntityProperty *PropertyForTypeAndID(CEntityProperty::PropertyType eptType, ULONG ulID);
-  /* Get event handler given state and event code. */
+  // Get event handler given state and event code. 
   CEntity::pEventHandler HandlerForStateAndEvent(SLONG slState, SLONG slEvent);
-  /* Get event handler name for given state. */
+  // Get event handler name for given state. 
   const char *HandlerNameForState(SLONG slState);
-  /* Get derived class override for given state. */
+  // Get derived class override for given state. 
   SLONG GetOverridenState(SLONG slState);
-  /* Get pointer to component from its type and identifier. */
+  // Get pointer to component from its type and identifier. 
   class CEntityComponent *ComponentForTypeAndID(EntityComponentType ectType,
     SLONG slID);
-  /* Get pointer to component from the component. */
+  // Get pointer to component from the component. 
   class CEntityComponent *ComponentForPointer(void *pv);
   // precache given component
   void PrecacheModel(SLONG slID);
@@ -230,7 +230,7 @@ public:
   void PrecacheClass(SLONG slID, INDEX iUser = -1);
 };
 
-/* rcg10062001 */
+// rcg10062001 
 #if (defined _MSC_VER)
  #define DECLSPEC_DLLEXPORT _declspec (dllexport)
 #else

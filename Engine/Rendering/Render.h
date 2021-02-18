@@ -86,75 +86,75 @@ public:
   enum SelectionType wrp_stSelection;   // what kind of selection is shown
 
 public:
-  /* Constructor -- sets default values. */
+  // Constructor -- sets default values. 
   CWorldRenderPrefs(void);
 
-  /* Test if drawing of hidden edges is turned on. */
+  // Test if drawing of hidden edges is turned on. 
   inline BOOL IsHiddenLinesOn(void) { return wrp_bHiddenLinesOn; };
-  /* Set drawing of hidden edges on or off. */
+  // Set drawing of hidden edges on or off. 
   inline void SetHiddenLinesOn(BOOL bOn) { wrp_bHiddenLinesOn = bOn; };
 
-  /* Test if drawing of lines to target entities is turned on. */
+  // Test if drawing of lines to target entities is turned on. 
   inline BOOL IsShowTargetsOn(void) { return wrp_bShowTargetsOn; };
-  /* Set drawing of lines to target entities on or off. */
+  // Set drawing of lines to target entities on or off. 
   inline void SetShowTargetsOn(BOOL bOn) { wrp_bShowTargetsOn = bOn; };
 
-  /* Test if typing of entity names is turned on. */
+  // Test if typing of entity names is turned on. 
   inline BOOL IsShowEntityNamesOn(void) { return wrp_bShowEntityNames; };
-  /* Set typing of entity names on or off. */
+  // Set typing of entity names on or off. 
   inline void SetShowEntityNamesOn(BOOL bOn) { wrp_bShowEntityNames = bOn; };  
 
-  /* Test if drawing of editor models is turned on. */
+  // Test if drawing of editor models is turned on. 
   inline BOOL IsEditorModelsOn(void) { return wrp_bEditorModelsOn; };
-  /* Set drawing of editor models on or off. */
+  // Set drawing of editor models on or off. 
   inline void SetEditorModelsOn(BOOL bOn) { wrp_bEditorModelsOn = bOn; };
-  /* Test if drawing of editor models is turned on. */
+  // Test if drawing of editor models is turned on. 
   inline BOOL IsFieldBrushesOn(void) { return wrp_bFieldBrushesOn; };
-  /* Set drawing of editor models on or off. */
+  // Set drawing of editor models on or off. 
   inline void SetFieldBrushesOn(BOOL bOn) { wrp_bFieldBrushesOn = bOn; };
 
-  /* Test if drawing background texture is on. */
+  // Test if drawing background texture is on. 
   inline BOOL IsBackgroundTextureOn(void) { return wrp_bBackgroundTextureOn; };
-  /* Set drawing of background texture on or off. */
+  // Set drawing of background texture on or off. 
   inline void SetBackgroundTextureOn(BOOL bOn) { wrp_bBackgroundTextureOn = bOn; };
 
-  /* Test if drawing visibility tweaks for selected sectors is on. */
+  // Test if drawing visibility tweaks for selected sectors is on. 
   inline BOOL IsVisTweaksOn(void) { return wrp_bShowVisTweaksOn; };
-  /* Set drawing of visibility tweaks for selected sectors on or off. */
+  // Set drawing of visibility tweaks for selected sectors on or off. 
   inline void SetVisTweaksOn(BOOL bOn) { wrp_bShowVisTweaksOn = bOn; };
 
-  /* Test if visibility tweaks are off. */
+  // Test if visibility tweaks are off. 
   inline BOOL IsVisTweaksDisabled(void) { return wrp_bDisableVisTweaks; };
-  /* Set disabling of visibility tweaks on or off. */
+  // Set disabling of visibility tweaks on or off. 
   inline void DisableVisTweaks(BOOL bOn) { wrp_bDisableVisTweaks = bOn; };
   
-  /* Test if drawing fog is on. */
+  // Test if drawing fog is on. 
   inline BOOL IsFogOn(void) { return wrp_bFogOn; };
-  /* Set drawing of fog on or off. */
+  // Set drawing of fog on or off. 
   inline void SetFogOn(BOOL bOn) { wrp_bFogOn = bOn; };
-  /* Test if drawing haze is on. */
+  // Test if drawing haze is on. 
   inline BOOL IsHazeOn(void) { return wrp_bHazeOn; };
-  /* Set drawing of haze on or off. */
+  // Set drawing of haze on or off. 
   inline void SetHazeOn(BOOL bOn) { wrp_bHazeOn = bOn; };
-  /* Test if drawing mirrors is on. */
+  // Test if drawing mirrors is on. 
   inline BOOL IsMirrorsOn(void) { return wrp_bMirrorsOn; };
-  /* Set drawing of mirrors on or off. */
+  // Set drawing of mirrors on or off. 
   inline void SetMirrorsOn(BOOL bOn) { wrp_bMirrorsOn = bOn; };
 
-  /* Test if mip brushing should be automatic. */
+  // Test if mip brushing should be automatic. 
   inline BOOL IsAutoMipBrushingOn(void) { return wrp_bAutoMipBrushingOn; };
-  /* Set mip brushing should to automatic or manual. */
+  // Set mip brushing should to automatic or manual. 
   inline void SetAutoMipBrushingOn(BOOL bOn) { wrp_bAutoMipBrushingOn = bOn; };
-  /* Set/get mip factor for manual mip brushing. */
+  // Set/get mip factor for manual mip brushing. 
   inline void SetManualMipBrushingFactor(FLOAT fFactor) { wrp_fManualMipBrushingFactor = fFactor; };
   inline FLOAT GetManualMipBrushingFactor(void) { return wrp_fManualMipBrushingFactor; };
 
-  /* Test if texture layer is shown. */
+  // Test if texture layer is shown. 
   inline BOOL IsTextureLayerOn(INDEX iTexture) {
     ASSERT(iTexture >= 0 && iTexture<3);
     return wrp_abTextureLayers[iTexture];
   };
-  /* Set texture layer shown/hidden. */
+  // Set texture layer shown/hidden. 
   inline void SetTextureLayerOn(BOOL bOn, INDEX iTexture) {
     ASSERT(iTexture >= 0 && iTexture<3);
     wrp_abTextureLayers[iTexture] = bOn;
@@ -163,52 +163,52 @@ public:
   // Get mip brushing factor relevant for given distance mip factor
   FLOAT GetCurrentMipBrushingFactor(FLOAT fDistanceMipFactor);
 
-  /* Set/get the fill type for vertices. */
+  // Set/get the fill type for vertices. 
   inline void SetVerticesFillType(enum FillType ft) { wrp_ftVertices = ft; };
   inline enum FillType GetVerticesFillType(void) { return wrp_ftVertices; };
-  /* Set/get the ink color for vertices. */
+  // Set/get the ink color for vertices. 
   inline void SetVerticesInkColor(COLOR color) { wrp_colVertices = color; };
   inline COLOR GetVerticesInkColor(void) { return wrp_colVertices; };
 
-  /* Set/get the fill type for edges. */
+  // Set/get the fill type for edges. 
   inline void SetEdgesFillType(enum FillType ft) { wrp_ftEdges = ft; };
   inline enum FillType GetEdgesFillType(void) { return wrp_ftEdges; };
-  /* Set/get the ink color for edges. */
+  // Set/get the ink color for edges. 
   inline void SetEdgesInkColor(COLOR color) { wrp_colEdges = color; };
   inline COLOR GetEdgesInkColor(void) { return wrp_colEdges; };
 
-  /* Set/get the fill type for polygons. */
+  // Set/get the fill type for polygons. 
   inline void SetPolygonsFillType(enum FillType ft) { wrp_ftPolygons= ft; };
   inline enum FillType GetPolygonsFillType(void) { return wrp_ftPolygons; };
-  /* Set/get the ink color for polygons. */
+  // Set/get the ink color for polygons. 
   inline void SetPolygonsInkColor(COLOR color) { wrp_colPolygons = color; };
   inline COLOR GetPolygonsInkColor(void) { return wrp_colPolygons; };
 
-  /* Set/get the brush shadow quality. */
+  // Set/get the brush shadow quality. 
   inline void SetShadowsType( enum ShadowsType sht) { wrp_shtShadows = sht; };
   inline enum ShadowsType GetShadowsType(void) { return wrp_shtShadows; };
 
-  /* Set/get the lens flare quality. */
+  // Set/get the lens flare quality. 
   inline void SetLensFlaresType( enum LensFlaresType lft) { wrp_lftLensFlares = lft; };
   inline enum LensFlaresType GetLensFlares(void) { return wrp_lftLensFlares; };
 
-  /* Set/get range (in meters) around viewer that is always drawn. */
+  // Set/get range (in meters) around viewer that is always drawn. 
   inline void SetMinimumRenderRange(FLOAT fRange) { wrp_fMinimumRenderRange = fRange; };
   inline FLOAT GetMinimumRenderRange(void) { return wrp_fMinimumRenderRange; };
 
-  /* Set/get model object used for marking selected models. */
+  // Set/get model object used for marking selected models. 
   inline void SetSelectedEntityModel(CModelObject *pmoSelection) { wrp_pmoEmptyBrush = wrp_pmoSelectedEntity = pmoSelection; };
   inline CModelObject *GetSelectedEntityModel(void) { return wrp_pmoSelectedEntity; };
 
-  /* Set/get model object used for marking selected portals. */
+  // Set/get model object used for marking selected portals. 
   inline void SetSelectedPortalModel(CModelObject *pmoSelection) { wrp_pmoSelectedPortal = pmoSelection; };
   inline CModelObject *GetSelectedPortalModel(void) { return wrp_pmoSelectedPortal; };
 
-  /* Set/get model object used for marking empty brushes. */
+  // Set/get model object used for marking empty brushes. 
   inline void SetEmptyBrushModel(CModelObject *pmoBrush) { wrp_pmoEmptyBrush = pmoBrush; };
   inline CModelObject *GetEmptyBrushModel(void) { return wrp_pmoEmptyBrush; };
 
-  /* Set/get the selection type. */
+  // Set/get the selection type. 
   inline void SetSelectionType(enum SelectionType st) { wrp_stSelection = st; };
   inline enum SelectionType GetSelectionType(void) { return wrp_stSelection; };
 };

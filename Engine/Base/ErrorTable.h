@@ -34,9 +34,9 @@ struct ErrorTable {
 #define ERRORCODE(code, description) {code, #code, description}
 // macro for defining error table
 #define ERRORTABLE(errorcodes) {sizeof(errorcodes)/sizeof(struct ErrorCode), errorcodes}
-/* Get the name string for error code. */
+// Get the name string for error code. 
 ENGINE_API extern const char *ErrorName(const struct ErrorTable *pet, SLONG slErrCode);
-/* Get the description string for error code. */
+// Get the description string for error code. 
 ENGINE_API extern const char *ErrorDescription(const struct ErrorTable *pet, SLONG slErrCode);
 
 

@@ -172,7 +172,7 @@ void CPlayerTarget::ApplyActionPacket(const CPlayerAction &paDelta)
   }
 }
 
-/* Remember prediction action. */
+// Remember prediction action. 
 void CPlayerTarget::PrebufferActionPacket(const CPlayerAction &paPrediction)
 {
   ASSERT(plt_bActive);
@@ -205,7 +205,7 @@ INDEX CPlayerTarget::GetNumberOfPredictions(void)
   return plt_abPrediction.GetCount();
 }
   
-/* Apply predicted action with given index. */
+// Apply predicted action with given index. 
 void CPlayerTarget::ApplyPredictedAction(INDEX iAction, FLOAT fFactor)
 {
   // synchronize access to actions

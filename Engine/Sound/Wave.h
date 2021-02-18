@@ -31,7 +31,7 @@ private:
   BOOL   pwi_bInfoLoaded,  pwi_bDataLoaded; // Status
   SWORD *pwi_pswMemory; // Memory
 
-  /* Conversion */
+  // Conversion 
   DOUBLE pwi_dRatio;
   // get and store data
   inline ULONG GetData_t( CTStream *pCstrInput);
@@ -43,20 +43,20 @@ public:
   // Check wave format
   static void CheckWaveFormat_t( WAVEFORMATEX SwfeCheck, char *pcErrorString);
 
-  /* Constructor */
+  // Constructor 
   inline PCMWaveInput(void) { pwi_bInfoLoaded = FALSE; pwi_bDataLoaded = FALSE; };
-  /* Load Wave info */
+  // Load Wave info 
   WAVEFORMATEX LoadInfo_t( CTStream *pCstrInput);
-  /* Load and convert Wave data */
+  // Load and convert Wave data 
   void LoadData_t( CTStream *pCstrInput, SWORD *pswMemory, WAVEFORMATEX &SwfeDesired);
 
-  /* Length in bytes / blocks / seconds */
+  // Length in bytes / blocks / seconds 
   ULONG  GetByteLength(void);
   ULONG  GetDataLength(void);
   ULONG  GetDataLength( WAVEFORMATEX SwfeDesired);
   DOUBLE GetSecondsLength(void);
 
-  /* Buffer length in bytes */
+  // Buffer length in bytes 
   ULONG DetermineBufferSize(void);
   ULONG DetermineBufferSize( WAVEFORMATEX SwfeDesired);
 };

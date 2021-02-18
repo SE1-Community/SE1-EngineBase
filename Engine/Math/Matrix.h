@@ -27,20 +27,20 @@ class Matrix {
 public:
   Type matrix[iRows][iColumns];     // array that holds the members
 public:
-  /* Default constructor. */
+  // Default constructor. 
   __forceinline Matrix(void);
-  /* Constructor that sets the whole matrix to same number. */
+  // Constructor that sets the whole matrix to same number. 
   __forceinline Matrix(const Type x);
 
-  /* Reference matrix member by it's row and column indices (1-based indices!). */
+  // Reference matrix member by it's row and column indices (1-based indices!). 
   __forceinline Type &operator()(int iRow, int iColumn);
   __forceinline const Type &operator()(int iRow, int iColumn) const;
 
-  /* Make a transposed matrix. */
+  // Make a transposed matrix. 
   __forceinline Matrix<Type, iRows, iColumns> operator!(void) const;
   __forceinline Matrix<Type, iRows, iColumns> &operator != (const Matrix<Type, iRows, iColumns> &matrix2);
 
-  /* Mathematical operators. */
+  // Mathematical operators. 
   // between matrices
   __forceinline Matrix<Type, iRows, iColumns> operator+(const Matrix<Type, iRows, iColumns> &matrix2) const;
   __forceinline Matrix<Type, iRows, iColumns> &operator+=(const Matrix<Type, iRows, iColumns> &matrix2);
@@ -54,7 +54,7 @@ public:
   __forceinline Matrix<Type, iRows, iColumns> operator/(const Type tMul) const;
   __forceinline Matrix<Type, iRows, iColumns> &operator/=(const Type tMul);
 
-  /* Set matrix main diagonal. */
+  // Set matrix main diagonal. 
   void Diagonal(Type x);
   void Diagonal(const Vector<Type, iRows> &v);
 
@@ -62,7 +62,7 @@ public:
   Vector<Type, iColumns> GetRow(Type iRow) const;
   Vector<Type, iRows> GetColumn(Type iColumn) const;
 
-  /* Stream operations */
+  // Stream operations 
   friend __forceinline CTStream &operator>>(CTStream &strm, Matrix<Type, iRows, iColumns> &matrix)
   {
     strm.Read_t(&matrix, sizeof(matrix));
@@ -153,7 +153,7 @@ __forceinline const Type &Matrix<Type, iRows, iColumns>::operator()(int iRow, in
 }
 
 
-/* Mathematical operators. */
+// Mathematical operators. 
 
 
 // transposed FLOAT 3x3

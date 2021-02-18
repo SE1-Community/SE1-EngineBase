@@ -77,7 +77,7 @@ CNameTableSlot_TYPE *CNameTable_TYPE::FindSlot(ULONG ulKey, const CTString &strN
   return NULL;
 }
 
-/* Set allocation parameters. */
+// Set allocation parameters. 
 void CNameTable_TYPE::SetAllocationParameters(
   INDEX ctCompartments, INDEX ctSlotsPerComp, INDEX ctSlotsPerCompStep)
 {

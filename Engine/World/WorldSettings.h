@@ -28,7 +28,7 @@ public:
   CTString tt_strName;
   CMappingDefinition tt_mdTransformation;
 
-  /* Constructor. */
+  // Constructor. 
   CTextureTransformation(void);
 };
 
@@ -39,7 +39,7 @@ public:
   UBYTE tb_ubBlendingType;    // uses gfx flags for texture blending (STX_BLEND_xxxx)
   COLOR tb_colMultiply;       // original polygon color is multiplied by this
 
-  /* Constructor. */
+  // Constructor. 
   CTextureBlending(void);
 };
 
@@ -58,7 +58,7 @@ public:
   TICK  st_llWalkDamageFrequency;   // how much to delay between two damages
   ULONG st_ulFlags;
   CTString st_strName;      // name of surface type
-  /* Default constructor. */
+  // Default constructor. 
   CSurfaceType(void) :
     st_fFriction(1.0f),
     st_fStairsHeight(1.0f),
@@ -96,7 +96,7 @@ public:
   TICK  ct_llDrowningDamageDelay;   // how much to delay between two damages
   FLOAT ct_fKillImmersion;          // contents kills anything alive that gets in deeper than this
   INDEX ct_iKillDamageType;         // type of killing damage
-  /* Default constructor. */
+  // Default constructor. 
   CContentType(void) :
     ct_strName(""),
     ct_ulFlags(CTF_BREATHABLE_LUNGS|CTF_FLYABLE),
@@ -120,7 +120,7 @@ public:
   CTString et_strName;  // name of environment type
   INDEX et_iType;
   FLOAT et_fSize;
-  /* Default constructor. */
+  // Default constructor. 
   CEnvironmentType(void) :
     et_strName(""),
     et_iType(1),
@@ -135,7 +135,7 @@ class ENGINE_API CIlluminationType {
 public:
   CTString it_strName;  // name of illumination type
 
-  /* Default constructor. */
+  // Default constructor. 
   CIlluminationType(void) : it_strName("") {};
 };
 

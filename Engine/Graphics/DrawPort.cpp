@@ -129,7 +129,7 @@ void CDrawPort::InitCloned( CDrawPort *pdpBase, DOUBLE rMinI,DOUBLE rMinJ, DOUBL
   dp_ulBlendingA  = 0;
 }
 
-/* Create a drawport for full raster. */
+// Create a drawport for full raster. 
 CDrawPort::CDrawPort( CRaster *praBase)
 {
   // remember the raster structures
@@ -154,7 +154,7 @@ CDrawPort::CDrawPort( CRaster *praBase)
   dp_ulBlendingA  = 0;
 }
 
-/* Clone a drawport */
+// Clone a drawport 
 CDrawPort::CDrawPort( CDrawPort *pdpBase,
                       DOUBLE rMinI,DOUBLE rMinJ, DOUBLE rSizeI,DOUBLE rSizeJ)
 {

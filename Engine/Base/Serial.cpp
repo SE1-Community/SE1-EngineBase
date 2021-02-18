@@ -48,7 +48,7 @@ void CSerial::Clear(void)
   ser_FileName.Clear();
 }
 
-/* Get the description of this object. */
+// Get the description of this object. 
 CTString CSerial::GetDescription(void)
 {
   return "<no description>";

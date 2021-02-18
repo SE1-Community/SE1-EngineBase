@@ -29,9 +29,9 @@ public:
   CTFileName gffi_fnFileName; // full name of the file (relative to application path)
   ULONG gffi_ulFileDataOffset; // file data block offset from beginning of the file
   ULONG gffi_ulFileSize; // size of sub group file
-  /* Read one file info from stream. */
+  // Read one file info from stream. 
   void Read_t(CTStream *istr); // throw char *
-  /* Write one file info into stream. */
+  // Write one file info into stream. 
   void Write_t(CTStream *ostr); // throw char *
 };
 

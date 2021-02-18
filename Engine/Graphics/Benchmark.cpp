@@ -343,7 +343,7 @@ static void RunTest(DOUBLE (*pTest)(void), INDEX ct)
 }
 
 
-/* Benchmark current driver. */
+// Benchmark current driver. 
 void CGfxLibrary::Benchmark(CViewPort *pvp, CDrawPort *pdp)
 {
   // remember drawport/viewport

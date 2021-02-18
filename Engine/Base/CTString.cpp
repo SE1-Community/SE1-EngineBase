@@ -105,7 +105,7 @@ BOOL CTString::RemovePrefix( const CTString &strPrefix)
   strcpy( str_String, strTemp.str_String);
   return TRUE;
 }
-/* Check if has given prefix */
+// Check if has given prefix 
 BOOL CTString::HasPrefix( const CTString &strPrefix) const
 {
   INDEX lenPrefix = strlen( strPrefix);
@@ -114,7 +114,7 @@ BOOL CTString::HasPrefix( const CTString &strPrefix) const
   return TRUE;
 }
 
-/* Find index of a substring in a string (returns -1 if not found). */
+// Find index of a substring in a string (returns -1 if not found). 
 INDEX CTString::FindSubstr(const CTString &strSub)
 {
   INDEX ct = Length();
@@ -131,7 +131,7 @@ wrong:;
   return -1;
 }
 
-/* Replace a substring in a string. */
+// Replace a substring in a string. 
 BOOL CTString::ReplaceSubstr(const CTString &strSub, const CTString &strNewSub)
 {
   INDEX iPos = FindSubstr(strSub);
@@ -148,7 +148,7 @@ BOOL CTString::ReplaceSubstr(const CTString &strSub, const CTString &strNewSub)
   return TRUE;
 }
 
-/* Trim the string from left to contain at most given number of characters. */
+// Trim the string from left to contain at most given number of characters. 
 INDEX CTString::TrimLeft( INDEX ctCharacters)
 {
   // clamp negative values
@@ -164,7 +164,7 @@ INDEX CTString::TrimLeft( INDEX ctCharacters)
   return lenPrefix;
 }
 
-/* Trim the string from right to contain at most given number of characters. */
+// Trim the string from right to contain at most given number of characters. 
 INDEX CTString::TrimRight( INDEX ctCharacters)
 {
   // clamp negative values
@@ -233,7 +233,7 @@ BOOL IsSpace(char c)
   return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 }
 
-/* Trim the string from from spaces from left. */
+// Trim the string from from spaces from left. 
 INDEX CTString::TrimSpacesLeft(void)
 {
   // for each character in string
@@ -249,7 +249,7 @@ INDEX CTString::TrimSpacesLeft(void)
   return TrimLeft(str_String+strlen(str_String) - chr);
 }
 
-/* Trim the string from from spaces from right. */
+// Trim the string from from spaces from right. 
 INDEX CTString::TrimSpacesRight(void)
 {
   // for each character in string reversed
@@ -281,7 +281,7 @@ void CTString::OnlyFirstLine(void)
 }
 
 
-/* Calculate hashing value for the string. */
+// Calculate hashing value for the string. 
 ULONG CTString::GetHash(void) const
 {
   ULONG ulKey = 0;
@@ -377,7 +377,7 @@ BOOL CTString::IsValid(void) const
 #endif // NDEBUG
 
 
-/* Load an entire text file into a string. */
+// Load an entire text file into a string. 
 void CTString::ReadUntilEOF_t(CTStream &strmFile)  // throw char *
 {
   // get the file size
@@ -442,7 +442,7 @@ void CTString::LoadKeepCRLF_t(const class CTFileName &fnmFile)  // throw char *
   str_String[slFileSize] = 0;
 }
 
-/* Save an entire string into a text file. */
+// Save an entire string into a text file. 
 void CTString::Save_t(const class CTFileName &fnmFile)  // throw char *
 {
   // open the file for writing

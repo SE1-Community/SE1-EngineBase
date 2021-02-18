@@ -17,7 +17,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Math/Float.h>
 
-/* Get current precision setting of FPU. */
+// Get current precision setting of FPU. 
 enum FPUPrecisionType GetFPUPrecision(void)
 {
   // get control flags from FPU
@@ -40,7 +40,7 @@ enum FPUPrecisionType GetFPUPrecision(void)
   };
 }
 
-/* Set current precision setting of FPU. */
+// Set current precision setting of FPU. 
 void SetFPUPrecision(enum FPUPrecisionType fptNew)
 {
   ULONG fpcw;

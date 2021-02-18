@@ -40,7 +40,7 @@ CBrush3D::~CBrush3D(void)
 {
 }
 
-/* Delete a brush mip with given factor. */
+// Delete a brush mip with given factor. 
 void CBrush3D::DeleteBrushMip(CBrushMip *pbmToDelete)
 {
   ASSERT(pbmToDelete != NULL);
@@ -56,7 +56,7 @@ void CBrush3D::DeleteBrushMip(CBrushMip *pbmToDelete)
   delete pbmToDelete;
 }
 
-/* Create a new brush mip. */
+// Create a new brush mip. 
 CBrushMip *CBrush3D::NewBrushMipAfter(CBrushMip *pbmOld, BOOL bCopy)
 {
   ASSERT(pbmOld != NULL);
@@ -131,7 +131,7 @@ CBrushMip *CBrush3D::GetBrushMipByDistance(FLOAT fMipDistance)
   // return last mip found
   return pbmLastGood;
 }
-/* Get a brush mip by its given index. */
+// Get a brush mip by its given index. 
 CBrushMip *CBrush3D::GetBrushMipByIndex(INDEX iMip)
 {
   INDEX iCurrentMip = 0;
@@ -181,7 +181,7 @@ void CBrush3D::Clear(void) {
   }
 }
 
-/* Copy brush from another brush with possible mirror and stretch. */
+// Copy brush from another brush with possible mirror and stretch. 
 void CBrush3D::Copy(CBrush3D &brOther, FLOAT fStretch, BOOL bMirrorX)
 {
   // clear this brush in case there is something in it

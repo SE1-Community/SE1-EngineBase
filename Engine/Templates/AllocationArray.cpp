@@ -44,7 +44,7 @@ template<class Type>
 inline CAllocationArray<Type>::~CAllocationArray(void) {
 };
 
-/* Destroy all objects, and reset the array to initial (empty) state. */
+// Destroy all objects, and reset the array to initial (empty) state. 
 template<class Type>
 inline void CAllocationArray<Type>::Clear(void) {
   // delete the objects themselves
@@ -81,7 +81,7 @@ inline void CAllocationArray<Type>::Delete(void) {
   ASSERT(FALSE);
 }
 
-/* Alocate a new object. */
+// Alocate a new object. 
 template<class Type>
 inline INDEX CAllocationArray<Type>::Allocate(void)
 {
@@ -101,7 +101,7 @@ inline INDEX CAllocationArray<Type>::Allocate(void)
   // pop one free index from the top of stack, and use that one
   return aa_aiFreeElements.Pop();
 }
-/* Free object with given index. */
+// Free object with given index. 
 template<class Type>
 inline void CAllocationArray<Type>::Free(INDEX iToFree)
 {
@@ -117,7 +117,7 @@ inline void CAllocationArray<Type>::Free(INDEX iToFree)
   aa_aiFreeElements.Push() = iToFree;
 }
 
-/* Free all objects, but keep pool space. */
+// Free all objects, but keep pool space. 
 template<class Type>
 inline void CAllocationArray<Type>::FreeAll(void)
 {
@@ -151,7 +151,7 @@ inline BOOL CAllocationArray<Type>::IsAllocated(INDEX i)
   return TRUE;
 }
 
-/* Random access operator. */
+// Random access operator. 
 template<class Type>
 inline Type &CAllocationArray<Type>::operator[](INDEX iObject)
 {
@@ -180,7 +180,7 @@ inline const Type &CAllocationArray<Type>::operator[](INDEX iObject) const
 #endif
   return CStaticArray<Type>::operator[](iObject);
 }
-/* Get number of allocated objects in array. */
+// Get number of allocated objects in array. 
 template<class Type>
 INDEX CAllocationArray<Type>::Count(void) const
 {
@@ -189,7 +189,7 @@ INDEX CAllocationArray<Type>::Count(void) const
   return CStaticArray<Type>::Count()-aa_aiFreeElements.Count();
 }
 
-/* Get index of a object from it's pointer. */
+// Get index of a object from it's pointer. 
 template<class Type>
 INDEX CAllocationArray<Type>::Index(Type *ptObject)
 {
@@ -199,7 +199,7 @@ INDEX CAllocationArray<Type>::Index(Type *ptObject)
   return i;
 }
 
-/* Assignment operator. */
+// Assignment operator. 
 template<class Type>
 CAllocationArray<Type> &CAllocationArray<Type>::operator=(
   const CAllocationArray<Type> &aaOriginal)

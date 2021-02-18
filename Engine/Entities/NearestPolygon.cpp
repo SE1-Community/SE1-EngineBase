@@ -39,7 +39,7 @@ public:
 
 static CStaticStackArray<CActiveSector> _aas;
 
-/* Add a sector if needed. */
+// Add a sector if needed. 
 static void AddSector(CBrushSector *pbsc)
 {
   // if not already active and in first mip of its brush
@@ -50,7 +50,7 @@ static void AddSector(CBrushSector *pbsc)
     pbsc->bsc_ulFlags|=BSCF_NEARTESTED;
   }
 }
-/* Add all sectors of a brush. */
+// Add all sectors of a brush. 
 static void AddAllSectorsOfBrush(CBrush3D *pbr)
 {
   // get first mip
@@ -146,7 +146,7 @@ void SearchThroughSectors(void)
   }
 }
 
-/* Get nearest position of nearest brush polygon to this entity if available. */
+// Get nearest position of nearest brush polygon to this entity if available. 
 // use:
 // ->bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity
 // to get the entity

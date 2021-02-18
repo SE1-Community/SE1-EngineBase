@@ -374,7 +374,7 @@ void CEntity::CopyEntityProperties(CEntity &enOther, ULONG ulFlags)
   }
 }
 
-/* Copy container of entities from another world to this one and select them. */
+// Copy container of entities from another world to this one and select them. 
 void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy,
   CEntitySelection &senCopied, const CPlacement3D &plOtherSystem)
 {
@@ -502,7 +502,7 @@ void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy
   _aprRemaps.Clear();
 }
 
-/* Copy one entity from another world into this one. */
+// Copy one entity from another world into this one. 
 CEntity *CWorld::CopyOneEntity(CEntity &enToCopy, const CPlacement3D &plOtherSystem)
 {
   // prepare container for copying
@@ -536,7 +536,7 @@ void CWorld::CopyAllEntitiesExceptOne(CWorld &woOther, CEntity &enExcepted,
 }
 
 
-/* Copy entity in world. */
+// Copy entity in world. 
 CEntity *CWorld::CopyEntityInWorld(CEntity &enOriginal, const CPlacement3D &plOtherEntity,
   BOOL bWithDescendants /*= TRUE*/)
 {
@@ -629,7 +629,7 @@ void CWorld::MirrorAndStretch(CWorld &woOriginal, FLOAT fStretch, enum WorldMirr
   _bMirrorAndStretch = FALSE;
 }
 
-/* Copy entities for prediction. */
+// Copy entities for prediction. 
 void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy)
 {
   INDEX ctEntities = cenToCopy.Count();

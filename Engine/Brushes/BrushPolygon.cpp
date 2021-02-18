@@ -76,7 +76,7 @@ void CBrushPolygon::CalculateBoundingBox(void)
 }
 
 
-/* Create a BSP polygon from this polygon. */
+// Create a BSP polygon from this polygon. 
 void CBrushPolygon::CreateBSPPolygon(BSPPolygon<DOUBLE, 3> &bspo)
 {
   ASSERT(GetFPUPrecision() == FPT_53BIT);
@@ -224,7 +224,7 @@ void CBrushPolygon::SelectByColorInSector(CBrushPolygonSelection &selbpoSimilar)
   }
 }
 
-/* Clear the object. */
+// Clear the object. 
 void CBrushPolygon::Clear(void)
 {
   bpo_abpePolygonEdges.Clear();
@@ -264,7 +264,7 @@ void CBrushPolygon::CopyFromSameSector(CBrushPolygon &bpoOriginal)
   bpo_abpePolygonEdges = bpoOriginal.bpo_abpePolygonEdges;
 }
 
-/* Copy polygon properties */
+// Copy polygon properties 
 CBrushPolygon &CBrushPolygon::CopyProperties(CBrushPolygon &bpoOther, BOOL bCopyMapping) {
   bpo_ulFlags &= ~BPOF_MASK_FOR_COPYING;
   bpo_ulFlags |= (bpoOther.bpo_ulFlags&BPOF_MASK_FOR_COPYING);
@@ -276,7 +276,7 @@ CBrushPolygon &CBrushPolygon::CopyProperties(CBrushPolygon &bpoOther, BOOL bCopy
   return *this;
 };
 
-/* Copy polygon properties without texture */
+// Copy polygon properties without texture 
 CBrushPolygon &CBrushPolygon::CopyPropertiesWithoutTexture(CBrushPolygon &bpoOther) {
   bpo_ulFlags &= ~BPOF_MASK_FOR_COPYING;
   bpo_ulFlags |= (bpoOther.bpo_ulFlags&BPOF_MASK_FOR_COPYING);
@@ -285,7 +285,7 @@ CBrushPolygon &CBrushPolygon::CopyPropertiesWithoutTexture(CBrushPolygon &bpoOth
   return *this;
 };
 
-/* Copy polygon's textures */
+// Copy polygon's textures 
 CBrushPolygon &CBrushPolygon::CopyTextures(CBrushPolygon &bpoOther) {
   bpo_abptTextures[0].CopyTextureProperties( bpoOther.bpo_abptTextures[0], TRUE);
   bpo_abptTextures[1].CopyTextureProperties( bpoOther.bpo_abptTextures[1], TRUE);
@@ -334,7 +334,7 @@ void CBrushPolygon::MovePolygonEdges(CBrushPolygon &bpoSource)
   bpo_abpePolygonEdges.MoveArray(abpeNew);
 }
 
-/* Test if this edge touches another one. */
+// Test if this edge touches another one. 
 #define TOUCHEPSILON 0.001f
 extern INDEX wed_bIgnoreTJunctions;
 
@@ -403,7 +403,7 @@ BOOL CBrushEdge::TouchesInAnySector(CBrushEdge &bedOther)
   return FALSE;
 }
 
-/* Test if this polygon touches another one. */
+// Test if this polygon touches another one. 
 BOOL CBrushPolygon::TouchesInAnySector(CBrushPolygon &bpoOther)
 {
   INDEX ctEdgesThis  = bpo_abpePolygonEdges.Count();

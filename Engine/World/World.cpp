@@ -66,13 +66,13 @@ static inline CPlacement3D CalculateRayPlacement(
   return plRay;
 }
 
-/* Constructor. */
+// Constructor. 
 CTextureTransformation::CTextureTransformation(void)
 {
   tt_strName = "";
 }
 
-/* Constructor. */
+// Constructor. 
 CTextureBlending::CTextureBlending(void)
 {
   tb_strName = "";
@@ -428,25 +428,25 @@ void CWorld::UnlockAll(void)
   wo_taTerrains.ta_atrTerrains.Unlock();
 }
 
-/* Get background color for this world. */
+// Get background color for this world. 
 COLOR CWorld::GetBackgroundColor(void)
 {
   return wo_colBackground;
 }
 
-/* Set background color for this world. */
+// Set background color for this world. 
 void CWorld::SetBackgroundColor(COLOR colBackground)
 {
   wo_colBackground = colBackground;
 }
 
-/* Set background viewer entity for this world. */
+// Set background viewer entity for this world. 
 void CWorld::SetBackgroundViewer(CEntity *penEntity)
 {
   wo_penBackgroundViewer = penEntity;
 }
 
-/* Get background viewer entity for this world. */
+// Get background viewer entity for this world. 
 CEntity *CWorld::GetBackgroundViewer(void)
 {
   // if the background viewer entity is deleted
@@ -457,12 +457,12 @@ CEntity *CWorld::GetBackgroundViewer(void)
   return wo_penBackgroundViewer;
 }
 
-/* Set description for this world. */
+// Set description for this world. 
 void CWorld::SetDescription(const CTString &strDescription)
 {
   wo_strDescription = strDescription;
 }
-/* Get description for this world. */
+// Get description for this world. 
 const CTString &CWorld::GetDescription(void)
 {
   return wo_strDescription;
@@ -531,7 +531,7 @@ void CWorld::CalculateNonDirectionalShadows(void)
 }
 
 
-/* Find all shadow layers near a certain position. */
+// Find all shadow layers near a certain position. 
 void CWorld::FindShadowLayers(
   const FLOATaabbox3D &boxNear,
   BOOL bSelectedOnly /*=FALSE*/,
@@ -553,7 +553,7 @@ void CWorld::FindShadowLayers(
   }
   _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_FINDSHADOWLAYERS);
 }
-/* Discard shadows on all brush polygons in the world. */
+// Discard shadows on all brush polygons in the world. 
 void CWorld::DiscardAllShadows(void)
 {
   FLOATaabbox3D box;
@@ -770,7 +770,7 @@ void CWorld::ReinitializeEntities(void)
 
   _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_REINITIALIZEENTITIES);
 }
-/* Precache data needed by entities. */
+// Precache data needed by entities. 
 void CWorld::PrecacheEntities_t(void)
 {
   // for each entity in the world
@@ -868,7 +868,7 @@ void CWorld::RebuildLinks(void)
   LinkEntitiesToSectors();
 }
 
-/* Update sectors during brush vertex moving */
+// Update sectors during brush vertex moving 
 void CWorld::UpdateSectorsDuringVertexChange( CBrushVertexSelection &selVertex)
 {
   // create container of sectors that will need to be updated
@@ -889,7 +889,7 @@ void CWorld::UpdateSectorsDuringVertexChange( CBrushVertexSelection &selVertex)
   }}
 }
 
-/* Update sectors after brush vertex moving */
+// Update sectors after brush vertex moving 
 void CWorld::UpdateSectorsAfterVertexChange( CBrushVertexSelection &selVertex)
 {
   // create container of sectors that will need to be updated
@@ -910,7 +910,7 @@ void CWorld::UpdateSectorsAfterVertexChange( CBrushVertexSelection &selVertex)
   }}
 }
 
-/* Triangularize polygons that contain vertices from given selection */
+// Triangularize polygons that contain vertices from given selection 
 void CWorld::TriangularizeForVertices( CBrushVertexSelection &selVertex)
 {
   // create container of sectors that contain polygons that need to be triangularized
@@ -1112,7 +1112,7 @@ CEntity *CWorld::EntityFromID(ULONG ulID)
   return NULL;
 }
 
-/* Triangularize selected polygons. */
+// Triangularize selected polygons. 
 void CWorld::TriangularizePolygons(CDynamicContainer<CBrushPolygon> &dcPolygons)
 {
   ClearMarkedForUseFlag();

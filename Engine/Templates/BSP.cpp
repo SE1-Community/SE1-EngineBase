@@ -462,7 +462,7 @@ BSPNode<Type, iDimensions>::BSPNode(BSPNode<Type, iDimensions> &bnRoot)
   }
 }
 
-/* Test if a sphere is inside, outside, or intersecting. (Just a trivial rejection test) */
+// Test if a sphere is inside, outside, or intersecting. (Just a trivial rejection test) 
 template<class Type, int iDimensions>
 FLOAT BSPNode<Type, iDimensions>::TestSphere(const Vector<Type, iDimensions> &vSphereCenter, Type tSphereRadius) const
 {
@@ -513,7 +513,7 @@ FLOAT BSPNode<Type, iDimensions>::TestSphere(const Vector<Type, iDimensions> &vS
     }
   }
 }
-/* Test if a box is inside, outside, or intersecting. (Just a trivial rejection test) */
+// Test if a box is inside, outside, or intersecting. (Just a trivial rejection test) 
 template<class Type, int iDimensions>
 FLOAT BSPNode<Type, iDimensions>::TestBox(const OBBox<Type> &box) const
 {
@@ -822,7 +822,7 @@ void BSPCutter<Type, iDimensions>::SplitEdge(const Vector<Type, iDimensions> &vP
   Type tDistance0 = plSplitPlane.PointDistance(vPoint0);
   Type tDistance1 = plSplitPlane.PointDistance(vPoint1);
 
-  /* ---- first point behind plane ---- */
+  // ---- first point behind plane ---- 
   if (tDistance0 < -BSP_EPSILON) {
 
     // if both are back
@@ -851,7 +851,7 @@ void BSPCutter<Type, iDimensions>::SplitEdge(const Vector<Type, iDimensions> &vP
       bvcBack.AddVertex(vPoint1);
     }
 
-  /* ---- first point in front of plane ---- */
+  // ---- first point in front of plane ---- 
   } else if (tDistance0 > +BSP_EPSILON) {
     // if first is front, second back
     if (tDistance1 < -BSP_EPSILON) {
@@ -880,7 +880,7 @@ void BSPCutter<Type, iDimensions>::SplitEdge(const Vector<Type, iDimensions> &vP
       bvcFront.AddVertex(vPoint1);
     }
 
-  /* ---- first point on the plane ---- */
+  // ---- first point on the plane ---- 
   } else {
     // if first is on the plane, second back
     if (tDistance1 < -BSP_EPSILON) {
@@ -1081,7 +1081,7 @@ void BSPTree<Type, iDimensions>::Destroy(void)
   }
 }
 
-/* Test if a sphere could touch any of inside nodes. (Just a trivial rejection test) */
+// Test if a sphere could touch any of inside nodes. (Just a trivial rejection test) 
 template<class Type, int iDimensions>
 FLOAT BSPTree<Type, iDimensions>::TestSphere(const Vector<Type, iDimensions> &vSphereCenter, Type tSphereRadius) const
 {
@@ -1089,7 +1089,7 @@ FLOAT BSPTree<Type, iDimensions>::TestSphere(const Vector<Type, iDimensions> &vS
   // just start recursive testing at root node
   return bt_pbnRoot->TestSphere(vSphereCenter, tSphereRadius);
 }
-/* Test if a box is inside, outside, or intersecting. (Just a trivial rejection test) */
+// Test if a box is inside, outside, or intersecting. (Just a trivial rejection test) 
 template<class Type, int iDimensions>
 FLOAT BSPTree<Type, iDimensions>::TestBox(const OBBox<Type> &box) const
 {
@@ -1120,7 +1120,7 @@ void BSPTree<Type, iDimensions>::FindLineMinMax(
 }
 
 static INDEX _ctNextIndex;
-/* Move one subtree to array. */
+// Move one subtree to array. 
 template<class Type, int iDimensions>
 void BSPTree<Type, iDimensions>::MoveSubTreeToArray(BSPNode<Type, iDimensions> *pbnSubtree)
 {
@@ -1157,7 +1157,7 @@ void BSPTree<Type, iDimensions>::MoveSubTreeToArray(BSPNode<Type, iDimensions> *
   }
 }
 
-/* Count nodes in subtree. */
+// Count nodes in subtree. 
 template<class Type, int iDimensions>
 INDEX BSPTree<Type, iDimensions>::CountNodes(BSPNode<Type, iDimensions> *pbnSubtree)
 {
@@ -1170,7 +1170,7 @@ INDEX BSPTree<Type, iDimensions>::CountNodes(BSPNode<Type, iDimensions> *pbnSubt
   }
 }
 
-/* Move all nodes to array. */
+// Move all nodes to array. 
 template<class Type, int iDimensions>
 void BSPTree<Type, iDimensions>::MoveNodesToArray(void)
 {
@@ -1196,7 +1196,7 @@ void BSPTree<Type, iDimensions>::MoveNodesToArray(void)
   bt_pbnRoot = &bt_abnNodes[0];
 }
 
-/* Read/write entire bsp tree to disk. */
+// Read/write entire bsp tree to disk. 
 template<class Type, int iDimensions>
 void BSPTree<Type, iDimensions>::Read_t(CTStream &strm) // throw char *
 {

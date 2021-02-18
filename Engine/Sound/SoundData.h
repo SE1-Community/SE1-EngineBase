@@ -68,7 +68,7 @@ public:
   void  Read_t(CTStream *inFile);        // throw char *
   // write sound to file (not implemented)
   void  Write_t(CTStream *outFile);       // throw char *
-  /* Get the description of this object. */
+  // Get the description of this object. 
   CTString GetDescription(void);
   // free allocated memory for sound and Sound in DXBuffer
   void  Clear(void);

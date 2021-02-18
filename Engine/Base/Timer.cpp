@@ -315,7 +315,7 @@ void CTimer::RemHandler(CTimerHandler *pthOld)
   pthOld->th_Node.Remove();
 }
 
-/* Handle timer handlers manually. */
+// Handle timer handlers manually. 
 void CTimer::HandleTimerHandlers(void)
 {
   // access to the list of handlers must be locked

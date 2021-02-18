@@ -29,44 +29,44 @@ class Plane : public Vector<Type, iDimensions> { // normal vector
 public:
   Type pl_distance;      // distance from point 0 along the normal vector
 public:
-  /* Default constructor. */
+  // Default constructor. 
   inline Plane(void);
-  /* Constructor from normal vector and distance. */
+  // Constructor from normal vector and distance. 
   inline Plane(const Vector<Type, iDimensions> &normal, const Type distance);
-  /* Constructor from normal vector and a point on plane. */
+  // Constructor from normal vector and a point on plane. 
   inline Plane(const Vector<Type, iDimensions> &normal, const Vector<Type, iDimensions> &point);
-  /* Constructor from 3 points on plane, counter clockwise order. */
+  // Constructor from 3 points on plane, counter clockwise order. 
   inline Plane(const Vector<Type, iDimensions> &point0, const Vector<Type, iDimensions> &point1, const Vector<Type, iDimensions> &point2);
 
-  /* Reference distance. */
+  // Reference distance. 
   inline Type &Distance(void);
   inline const Type &Distance(void) const;
-  /* Get a reference point on the plane. */
+  // Get a reference point on the plane. 
   inline Vector<Type, iDimensions> ReferencePoint(void) const;
-  /* Get a reference point on the plane, if origin is at given vector. */
+  // Get a reference point on the plane, if origin is at given vector. 
   inline Vector<Type, iDimensions> ReferencePoint(const Vector<Type, iDimensions> &vOrigin) const;
 
-  /* Get distance of point from plane. */
+  // Get distance of point from plane. 
   inline const Type PointDistance(const Vector<Type, iDimensions> &point) const;
-  /* Get missing coordinate value */
+  // Get missing coordinate value 
   inline void GetCoordinate(const int iIndex, Vector<Type, iDimensions> &point) const;
-  /* Get distance of plane from plane. */
+  // Get distance of plane from plane. 
   inline const Type PlaneDistance(const Plane<Type, iDimensions> &plOther) const;
-  /* Project a point to the plane. */
+  // Project a point to the plane. 
   inline Vector<Type, iDimensions> ProjectPoint(const Vector<Type, iDimensions> &point) const;
-  /* Project a direction vector to the plane. */
+  // Project a direction vector to the plane. 
   inline Vector<Type, iDimensions> ProjectDirection(const Vector<Type, iDimensions> &direction) const;
-  /* Get index of the greatest coordinate of normal. */
+  // Get index of the greatest coordinate of normal. 
   inline INDEX GetMaxNormal(void) const;
-  /* Deproject a point to the plane. */
+  // Deproject a point to the plane. 
   inline Vector<Type, iDimensions> DeprojectPoint(const Plane<Type, iDimensions> &plOther, const Vector<Type, iDimensions> &point) const;
-  /* Deproject a direction vector to the plane. */
+  // Deproject a direction vector to the plane. 
   inline Vector<Type, iDimensions> DeprojectDirection(const Plane<Type, iDimensions> &plOther, const Vector<Type, iDimensions> &point) const;
 
-  /* Offset the plane forward for a given distance. */
+  // Offset the plane forward for a given distance. 
   inline void Offset(const Type offset);
 
-  /* Mathematical operators. */
+  // Mathematical operators. 
   // unary minus (fliping of the plane)
   inline Plane<Type, iDimensions> operator-(void) const;
   // addition of vector (translation of the plane by the vector)
@@ -210,7 +210,7 @@ inline Vector<Type, iDimensions> Plane<Type, iDimensions>::ProjectDirection(cons
   return ProjectPoint(direction) - ReferencePoint();
 }
 template<class Type, int iDimensions>
-/* Deproject a point to the plane. */
+// Deproject a point to the plane. 
 inline Vector<Type, iDimensions> Plane<Type, iDimensions>::DeprojectPoint(const Plane<Type, iDimensions> &plOther, const Vector<Type, iDimensions> &point) const
 {
   Vector<Type, iDimensions> &vNormal      = (Vector<Type, iDimensions> &) *this;
@@ -218,7 +218,7 @@ inline Vector<Type, iDimensions> Plane<Type, iDimensions>::DeprojectPoint(const 
   return point - vNormalOther*( PointDistance(point)/(vNormal%vNormalOther) );
 }
 template<class Type, int iDimensions>
-/* Deproject a direction vector to the plane. */
+// Deproject a direction vector to the plane. 
 inline Vector<Type, iDimensions> Plane<Type, iDimensions>::DeprojectDirection(const Plane<Type, iDimensions> &plOther, const Vector<Type, iDimensions> &point) const
 {
   Vector<Type, iDimensions> &vNormal      = (Vector<Type, iDimensions> &) *this;
@@ -242,7 +242,7 @@ inline INDEX Plane<Type, iDimensions>::GetMaxNormal(void) const
   return iMax;
 }
 
-/* Offset the plane forward for a given distance. */
+// Offset the plane forward for a given distance. 
 template<class Type, int iDimensions>
 inline void Plane<Type, iDimensions>::Offset(const Type offset)
 {

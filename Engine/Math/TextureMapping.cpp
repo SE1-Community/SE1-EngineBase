@@ -212,7 +212,7 @@ void CMappingDefinition::ReadOld_t(CTStream &strm) // throw char *
   md_fVoT = +fCos;
 }
 
-/* Find texture coordinates for an object-space point. */
+// Find texture coordinates for an object-space point. 
 void CMappingDefinition::GetTextureCoordinates(
   const CMappingVectors &mvDefault, const FLOAT3D &vSpace, MEX2D &vTexture) const
 {
@@ -225,7 +225,7 @@ void CMappingDefinition::GetTextureCoordinates(
   vTexture(1) = FloatToInt((u+md_fUOffset)*1024.0f);
   vTexture(2) = FloatToInt((v+md_fVOffset)*1024.0f);
 }
-/* Find object-space coordinates for a texture point. */
+// Find object-space coordinates for a texture point. 
 void CMappingDefinition::GetSpaceCoordinates(
   const CMappingVectors &mvDefault, const MEX2D &vTexture, FLOAT3D &vSpace) const
 {

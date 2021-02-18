@@ -77,9 +77,9 @@ public:
   void PrevManualMipLevel();                       // sets previous mip-level (more precize)
   void NextManualMipLevel();                       // sets next mip-level (more rough)
   void SetMipSwitchFactor(INDEX iMipLevel, float fMipFactor); // sets given mip-level's new switch factor
-  /* retrieves current frame's bounding box */
+  // retrieves current frame's bounding box 
   void GetCurrentFrameBBox( FLOATaabbox3D &MaxBB);
-  /* retrieves bounding box of all frames */
+  // retrieves bounding box of all frames 
   void GetAllFramesBBox( FLOATaabbox3D &MaxBB);
   FLOAT3D GetCollisionBoxMin(INDEX iCollisionBox);
   FLOAT3D GetCollisionBoxMax(INDEX iCollisionBox);

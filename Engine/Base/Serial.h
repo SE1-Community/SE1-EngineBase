@@ -31,34 +31,34 @@ public:
   CTFileName ser_FileName;  // last file name loaded
 
 public:
-  /* Default constructor. */
+  // Default constructor. 
   CSerial(void);
-  /* Destructor. */
+  // Destructor. 
   virtual ~CSerial( void);
 
-  /* Get the file name of this object. */
+  // Get the file name of this object. 
   inline const CTFileName &GetName(void) { return ser_FileName; };
-  /* Get the description of this object. */
+  // Get the description of this object. 
   virtual CTString GetDescription(void);
-  /* Load from file. */
+  // Load from file. 
   void Load_t( const CTFileName fnFileName); // throw char *
-  /* Save to file. */
+  // Save to file. 
   void Save_t( const CTFileName fnFileName); // throw char *
-  /* Reload from file. */
+  // Reload from file. 
   void Reload(void);
-  /* Mark that object is used once more. */
+  // Mark that object is used once more. 
   void MarkUsed(void);
-  /* Mark that object is used once less. */
+  // Mark that object is used once less. 
   void MarkUnused(void);
-  /* Check if object is used at least once. */
+  // Check if object is used at least once. 
   BOOL IsUsed(void);
   INDEX GetUsedCount(void);
 
-  /* Clear the object. */
+  // Clear the object. 
   virtual void Clear(void);
-  /* Read from stream. */
+  // Read from stream. 
   virtual void Read_t( CTStream *istrFile)=0; // throw char *
-  /* Write to stream. */
+  // Write to stream. 
   virtual void Write_t( CTStream *ostrFile)=0; // throw char *
   // check if this kind of objects is auto-freed
   virtual BOOL IsAutoFreed(void) { return TRUE; };

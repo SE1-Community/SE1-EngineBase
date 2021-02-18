@@ -121,7 +121,7 @@ VALUE_TYPE CHashTable_TYPE::GetValueFromIndex(INDEX iIndex)
   return ht_GetItemValue(ht_ahtsSlots[iIndex].hts_ptElement);
 }
 
-/* Set allocation parameters. */
+// Set allocation parameters. 
 void CHashTable_TYPE::SetAllocationParameters(INDEX ctCompartments, INDEX ctSlotsPerComp, INDEX ctSlotsPerCompStep)
 {
   ASSERT(ht_ctCompartments == 0 && ht_ctSlotsPerComp == 0 && ht_ctSlotsPerCompStep == 0);

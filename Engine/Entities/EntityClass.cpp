@@ -99,7 +99,7 @@ void CEntityClass::Clear(void)
   ec_fnmClassDLL.Clear();
 }
 
-/* Check that all properties have been properly declared. */
+// Check that all properties have been properly declared. 
 void CEntityClass::CheckClassProperties(void)
 {
 // do nothing in release version
@@ -352,27 +352,27 @@ void CEntityClass::AddToCRCTable(void)
   CRCT_AddFile_t(ec_fnmClassDLL);
 }
 
-/* Get pointer to entity property from its name. */
+// Get pointer to entity property from its name. 
 class CEntityProperty *CEntityClass::PropertyForName(const CTString &strPropertyName) {
   return ec_pdecDLLClass->PropertyForName(strPropertyName);
 };
-/* Get pointer to entity property from its packed identifier. */
+// Get pointer to entity property from its packed identifier. 
 class CEntityProperty *CEntityClass::PropertyForTypeAndID(
   ULONG ulType, ULONG ulID) {
   return ec_pdecDLLClass->PropertyForTypeAndID((CEntityProperty::PropertyType)ulType, ulID);
 };
 
-/* Get event handler for given state and event code. */
+// Get event handler for given state and event code. 
 CEntity::pEventHandler CEntityClass::HandlerForStateAndEvent(SLONG slState, SLONG slEvent) {
   return ec_pdecDLLClass->HandlerForStateAndEvent(slState, slEvent);
 }
 
-/* Get pointer to component from its identifier. */
+// Get pointer to component from its identifier. 
 class CEntityComponent *CEntityClass::ComponentForTypeAndID(
   EntityComponentType ectType, SLONG slID) {
   return ec_pdecDLLClass->ComponentForTypeAndID(ectType, slID);
 }
-/* Get pointer to component from the component. */
+// Get pointer to component from the component. 
 class CEntityComponent *CEntityClass::ComponentForPointer(void *pv) {
   return ec_pdecDLLClass->ComponentForPointer(pv);
 }
@@ -573,7 +573,7 @@ CEntity::pEventHandler CDLLEntityClass::HandlerForStateAndEvent(SLONG slState, S
   }
 }
 
-/* Get event handler name for given state. */
+// Get event handler name for given state. 
 const char *CDLLEntityClass::HandlerNameForState(SLONG slState)
 {
   // for each handler
@@ -595,7 +595,7 @@ const char *CDLLEntityClass::HandlerNameForState(SLONG slState)
   }
 }
 
-/* Get derived class override for given state. */
+// Get derived class override for given state. 
 SLONG CDLLEntityClass::GetOverridenState(SLONG slState)
 {
   // for each handler

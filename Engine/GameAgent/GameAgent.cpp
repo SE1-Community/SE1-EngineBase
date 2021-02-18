@@ -639,7 +639,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
     _setStatus(".");
   }
   else
-  { /* MSLegacy */
+  { // MSLegacy 
     // make sure that there are no requests still stuck in buffer
     ga_asrRequests.Clear();
     // we're not a server
@@ -677,7 +677,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
         return;
     }
 
-/* Open a socket and connect to the Master server */
+// Open a socket and connect to the Master server 
 
     peer.sin_addr.s_addr = uiMSIP = resolv(cMS);
     peer.sin_port        = htons(usMSport);
@@ -695,7 +695,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
         return;
     }
 
-/* Allocate memory for a buffer and get a pointer to it */
+// Allocate memory for a buffer and get a pointer to it 
 
     cResponse = (char*) malloc(BUFFSZSTR + 1);
     if (!cResponse) {
@@ -704,7 +704,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
         return;
     }
 
-/* Reading response from Master Server - returns the string with the secret key */
+// Reading response from Master Server - returns the string with the secret key 
 
     iLen = 0;
     iErr = recv(_sock, (char*)cResponse + iLen, BUFFSZSTR - iLen, 0);
@@ -717,7 +717,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
     iLen += iErr;
     cResponse[iLen] = 0x00;
 
-/* Allocate memory for a buffer and get a pointer to it */
+// Allocate memory for a buffer and get a pointer to it 
 
     ucSec = (u_char*) malloc(BUFFSZSTR + 1);
     if (!ucSec) {
@@ -728,7 +728,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
     memcpy ( ucSec, cResponse,  BUFFSZSTR);
     ucSec[iLen] = 0x00;
 
-/* Geting the secret key from a string */
+// Geting the secret key from a string 
 
     cSec = strstr(cResponse, "\\secure\\");
     if (!cSec) {
@@ -738,7 +738,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
     } else {
         ucSec  += 15;
 
-/* Creating a key for authentication (Validate key) */
+// Creating a key for authentication (Validate key) 
 
         ucKey = gsseckey(ucSec, ucGamekey, iEnctype);
     }
@@ -746,7 +746,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
     if (cResponse) free (cResponse);
     if (ucSec) free (ucSec);
 
-/* Generate a string for the response (to Master Server) with the specified (Validate ucKey) */
+// Generate a string for the response (to Master Server) with the specified (Validate ucKey) 
 
     cMsstring = (char*) malloc(BUFFSZSTR + 1);
     if (!cMsstring) {
@@ -766,11 +766,11 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
         cWhere,
         cFilter);
 
-/* Check the buffer */
+// Check the buffer 
 
     CHK_BUFFSTRLEN;
 
-/* The string sent to master server */
+// The string sent to master server 
 
     if (send(_sock,cMsstring, iLen, 0) < 0) {
         CPrintF("Error reading from TCP socket!\n");
@@ -780,7 +780,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
     }
     if (cMsstring) free (cMsstring);
 
- /* Allocate memory for a buffer and get a pointer to it */
+ // Allocate memory for a buffer and get a pointer to it 
 
     if (_szIPPortBuffer ) {
         CLEANMSSRUFF1;
@@ -796,7 +796,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
     iDynsz = BUFFSZ;
 
 
-/* The received encoded data after sending the string (Validate key) */
+// The received encoded data after sending the string (Validate key) 
 
     iLen = 0;
     while ((iErr = recv(_sock, _szIPPortBuffer + iLen, iDynsz - iLen, 0)) > 0) {
@@ -978,7 +978,7 @@ extern void GameAgent_EnumUpdate(void)
     }
   }
  } else {
- /* MSLegacy */
+ // MSLegacy 
     if (_bActivated) {
         HANDLE  _hThread;
         DWORD   _dwThreadId;
@@ -1068,7 +1068,7 @@ DWORD WINAPI _MS_Thread(LPVOID lpParam) {
         timeout_udp.tv_usec = 50000;               // timeout += 0.05 seconds
         int _iN = select(_sockudp + 1, &readfds_udp, NULL, NULL, &timeout_udp);
         if (_iN > 0) {
-          /** do recvfrom stuff **/
+          //* do recvfrom stuff *
           iRet =  recvfrom(_sockudp, _szBuffer, 2048, 0, (sockaddr*)&_sinClient, &_iClientLength);
           FD_CLR(_sockudp, &readfds_udp);
           if (iRet != -1 && iRet > 100 && iRet != SOCKET_ERROR) {
@@ -1271,7 +1271,7 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
         timeout_udp.tv_usec = 50000;                // timeout += 0.05 seconds
         int _iN = select(_sockudp + 1, &readfds_udp, NULL, NULL, &timeout_udp);
         if (_iN > 0) {
-          /** do recvfrom stuff **/
+          //* do recvfrom stuff *
           iRet =  recvfrom(_sockudp, _szBuffer, 2048, 0, (sockaddr*)&_sinClient, &_iClientLength);
           FD_CLR(_sockudp, &readfds_udp);
           if (iRet != -1 && iRet > 100 && iRet != SOCKET_ERROR) {

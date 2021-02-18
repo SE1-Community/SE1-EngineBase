@@ -36,7 +36,7 @@ private:
   CTString pc_strName;    // name of this counter
   INDEX pc_ctCount;       // the counter itself
 
-  /* Print one counter in report. */
+  // Print one counter in report. 
   void Report(char *&strBuffer, INDEX ctAveragingCount);
 };
 
@@ -52,7 +52,7 @@ private:
   CTString pt_strAveragingName; // name of averaging counter
   INDEX pt_ctAveraging;         // averaging counter for this timer
 
-  /* Print one timer in report. */
+  // Print one timer in report. 
   void Report(char *&strBuffer, INDEX ctAveragingCount,
     CTimerValue tvAppElapsed, CTimerValue tvModElapsed);
 };
@@ -86,9 +86,9 @@ public:
 
   CTimerValue pf_tvLastReset;  // time when profile form was last reset
 
-  /* Start a timer. */
+  // Start a timer. 
   void StartTimer_internal(INDEX iTimer);
-  /* Stop a timer. */
+  // Stop a timer. 
   void StopTimer_internal(INDEX iTimer);
 
 // interface:
@@ -106,37 +106,37 @@ public:
   // Measure profiling errors and set epsilon corrections.
   static void CalibrateProfilingTimers(void);
 
-  /* Increment averaging counter by given count. */
+  // Increment averaging counter by given count. 
   inline void IncrementAveragingCounter(INDEX ctAdd=1) {
     pf_ctAveragingCounter += ctAdd;
   };
 
-  /* Increment counter by given count. */
+  // Increment counter by given count. 
   inline void IncrementCounter(INDEX iCounter, INDEX ctAdd=1) {
     pf_apcCounters[iCounter].pc_ctCount += ctAdd;
   };
-  /* Get current value of a counter. */
+  // Get current value of a counter. 
   INDEX GetCounterCount(INDEX iCounter);
 
 #if TIMER_PROFILING
-  /* Start a timer. */
+  // Start a timer. 
   inline void StartTimer(INDEX iTimer) {
     StartTimer_internal(iTimer);
   };
-  /* Stop a timer. */
+  // Stop a timer. 
   inline void StopTimer(INDEX iTimer) {
     StopTimer_internal(iTimer);
   };
-  /* Increment averaging counter for a timer by given count. */
+  // Increment averaging counter for a timer by given count. 
   inline void IncrementTimerAveragingCounter(INDEX iTimer, INDEX ctAdd=1) {
     pf_aptTimers[iTimer].pt_ctAveraging += ctAdd;
   };
-  /* Set name of a counter. */
+  // Set name of a counter. 
   void SetCounterName_internal(INDEX iCounter, const CTString &strName)
   {
     pf_apcCounters[iCounter].pc_strName = strName;
   }
-  /* Set name of a timer. */
+  // Set name of a timer. 
   void SetTimerName_internal(INDEX iTimer, const CTString &strName, const CTString &strAveragingName)
   {
     pf_aptTimers[iTimer].pt_strName = strName;
@@ -155,23 +155,23 @@ public:
   #define SETTIMERNAME(a,b,c) SetTimerName_internal(a,"","")
 #endif
 
-  /* Get current value of a timer in seconds or in percentage of module time. */
+  // Get current value of a timer in seconds or in percentage of module time. 
   double GetTimerPercentageOfModule(INDEX iTimer);
   double GetTimerAverageTime(INDEX iTimer);
-  /* Get name of a counter. */
+  // Get name of a counter. 
   const CTString &GetCounterName(INDEX iCounter);
-  /* Get name of a timer. */
+  // Get name of a timer. 
   const CTString &GetTimerName(INDEX iTimer);
 
-  /* Get percentage of module time in application time. */
+  // Get percentage of module time in application time. 
   double GetModulePercentage(void);
 
 #endif // ENGINE_INTERNAL
 
-  /* Reset all profiling values. */
+  // Reset all profiling values. 
   ENGINE_API void  Reset(void);
 
-  /* Report profiling results. */
+  // Report profiling results. 
   ENGINE_API void Report(CTString &strReport);
 };
 

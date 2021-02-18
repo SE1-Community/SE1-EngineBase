@@ -12,7 +12,7 @@
 #include <float.h>
 
 #ifndef DIRECTSOUND_VERSION
-#define DIRECTSOUND_VERSION 0x0800  /* Version 8.0 */
+#define DIRECTSOUND_VERSION 0x0800  // Version 8.0 
 #endif
 
 #ifdef __cplusplus
@@ -22,7 +22,7 @@ extern "C" {
 #ifndef __DSOUND_INCLUDED__
 #define __DSOUND_INCLUDED__
 
-/* Type definitions shared with Direct3D */
+// Type definitions shared with Direct3D 
 
 #ifndef DX_SHARED_DEFINES
 
@@ -55,7 +55,7 @@ typedef D3DVECTOR *LPD3DVECTOR;
 #define DX_SHARED_DEFINES
 #endif // DX_SHARED_DEFINES
 
-#define _FACDS  0x878   /* DirectSound's facility code */
+#define _FACDS  0x878   // DirectSound's facility code 
 #define MAKE_DSHRESULT(code)  MAKE_HRESULT(1, _FACDS, code)
 
 // DirectSound Component GUID {47D4D946-62E8-11CF-93BC-444553540000}

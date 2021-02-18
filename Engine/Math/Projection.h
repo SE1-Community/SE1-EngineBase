@@ -73,99 +73,99 @@ public:
 public:
 // interface:
   // construction/destruction
-  /* Default constructor. */
+  // Default constructor. 
   CProjection3D(void);
 
   // member referencing
-  /* Reference object placement. */
+  // Reference object placement. 
   inline CPlacement3D &ObjectPlacementL(void);
   inline const CPlacement3D &ObjectPlacementR(void) const;
-  /* Reference object handle. */
+  // Reference object handle. 
   inline FLOAT3D &ObjectHandleL(void);
   inline const FLOAT3D &ObjectHandleR(void) const;
-  /* Reference viewer placement. */
+  // Reference viewer placement. 
   inline CPlacement3D &ViewerPlacementL(void);
   inline const CPlacement3D &ViewerPlacementR(void) const;
-  /* Reference clipping distances. */
+  // Reference clipping distances. 
   inline FLOAT &FrontClipDistanceL(void);             // obsolete
   inline const FLOAT &FrontClipDistanceR(void) const; // obsolete
   inline FLOAT &NearClipDistanceL(void);
   inline const FLOAT &NearClipDistanceR(void) const;
   inline FLOAT &FarClipDistanceL(void);
   inline const FLOAT &FarClipDistanceR(void) const;
-  /* Reference screen bounding box. */
+  // Reference screen bounding box. 
   inline FLOATaabbox2D &ScreenBBoxL(void);
   inline const FLOATaabbox2D &ScreenBBoxR(void) const;
-  /* Reference screen aspect ratio. */
+  // Reference screen aspect ratio. 
   inline FLOAT &AspectRatioL(void);
   inline const FLOAT &AspectRatioR(void) const;
-  /* Reference target object stretching. */
+  // Reference target object stretching. 
   inline FLOAT3D &ObjectStretchL(void);
   inline const FLOAT3D &ObjectStretchR(void) const;
-  /* Reference miror plane. */
+  // Reference miror plane. 
   inline FLOATplane3D &MirrorPlaneL(void);
   inline const FLOATplane3D &MirrorPlaneR(void) const;
   inline void TurnOffMirrorPlane(void);
-  /* Reference warp plane. */
+  // Reference warp plane. 
   inline FLOATplane3D &WarpPlaneL(void);
   inline const FLOATplane3D &WarpPlaneR(void) const;
   inline void TurnOffWarpPlane(void);
-  /* Reference target object face-forward flag. */
+  // Reference target object face-forward flag. 
   inline BOOL &ObjectFaceForwardL(void);
   inline const BOOL &ObjectFaceForwardR(void) const;
   inline BOOL &ObjectHalfFaceForwardL(void);
   inline const BOOL &ObjectHalfFaceForwardR(void) const;
-  /* Reference corrections for depth buffer factor. */
+  // Reference corrections for depth buffer factor. 
   inline FLOAT &DepthBufferNearL(void);
   inline const FLOAT &DepthBufferNearR(void) const;
   inline FLOAT &DepthBufferFarL(void);
   inline const FLOAT &DepthBufferFarR(void) const;
-  /* Reference view stretching. */
+  // Reference view stretching. 
   inline FLOAT &ViewStretchL(void);
   inline const FLOAT &ViewStretchR(void) const;
 
-  /* Prepare for projecting. */
+  // Prepare for projecting. 
   virtual void Prepare(void) = 0;
   virtual BOOL IsPerspective(void) { return FALSE; };
 
-  /* Project 3D object point into 3D view space. */
+  // Project 3D object point into 3D view space. 
   virtual void ProjectCoordinate(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dViewPoint) const = 0;
-  /* Get a distance of object point from the viewer. */
+  // Get a distance of object point from the viewer. 
   virtual FLOAT GetDistance(const FLOAT3D &v3dObjectPoint) const = 0;
-  /* Project 3D object direction vector into 3D view space. */
+  // Project 3D object direction vector into 3D view space. 
   virtual void ProjectDirection(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dViewPoint) const = 0;
-  /* Project 3D object axis aligned bounding box into 3D view space. */
+  // Project 3D object axis aligned bounding box into 3D view space. 
   virtual void ProjectAABBox(const FLOATaabbox3D &boxObject, FLOATaabbox3D &boxView) const = 0;
-  /* Project 3D object point into 3D view space, before clipping. */
+  // Project 3D object point into 3D view space, before clipping. 
   virtual void PreClip(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dTransformedPoint) const = 0;
-  /* Clip a line. */
+  // Clip a line. 
   virtual ULONG ClipLine(FLOAT3D &v3dPoint0, FLOAT3D &v3dPoint1) const = 0;
-  /* Project 3D object point into 3D view space, after clipping. */
+  // Project 3D object point into 3D view space, after clipping. 
   virtual void PostClip(const FLOAT3D &v3dTransformedPoint, FLOAT3D &v3dViewPoint) const = 0;
   virtual void PostClip(const FLOAT3D &v3dTransformedPoint, FLOAT fTransformedR,
     FLOAT3D &v3dViewPoint, FLOAT &fViewR) const = 0;
-  /* Test if a sphere in view space is inside view frustum. */
+  // Test if a sphere in view space is inside view frustum. 
   virtual INDEX TestSphereToFrustum(const FLOAT3D &vViewPoint, FLOAT fRadius) const = 0;
-  /* Test if an oriented box in view space is inside view frustum. */
+  // Test if an oriented box in view space is inside view frustum. 
   virtual INDEX TestBoxToFrustum(const FLOATobbox3D &boxView) const = 0;
 
-  /* Get placement for a ray through a projected point. */
+  // Get placement for a ray through a projected point. 
   virtual void RayThroughPoint(const FLOAT3D &v3dViewPoint, CPlacement3D &plRay) const = 0;
 
-  /* Project 3D object plane into 3D view space. */
+  // Project 3D object plane into 3D view space. 
   virtual void Project(const FLOATplane3D &p3dObjectPlane, FLOATplane3D &v3dTransformedPlane) const = 0;
-  /* Check if an object-space plane is visible. */
+  // Check if an object-space plane is visible. 
   virtual BOOL IsObjectPlaneVisible(const FLOATplane3D &p3dObjectPlane) const = 0;
-  /* Check if a viewer-space plane is visible. */
+  // Check if a viewer-space plane is visible. 
   virtual BOOL IsViewerPlaneVisible(const FLOATplane3D &p3dViewerPlane) const = 0;
 
-  /* Calculate a mip-factor for a given object. */
+  // Calculate a mip-factor for a given object. 
   // by its distance from viewer
   virtual FLOAT MipFactor(FLOAT fDistance) const = 0;
   // general mip-factor for target object
   virtual FLOAT MipFactor(void) const = 0;
 
-  /* Calculate plane gradient for a plane in 3D view space. */
+  // Calculate plane gradient for a plane in 3D view space. 
   virtual void MakeOoKGradient(const FLOATplane3D &plViewerPlane, CPlanarGradients &pgOoK) const = 0;
 };
 
@@ -192,49 +192,49 @@ public:
   CPerspectiveProjection3D(void);
 
   // member referencing
-  /* Reference field of view. */
+  // Reference field of view. 
   inline ANGLE &FOVL(void);
   inline const ANGLE &FOVR(void) const;
 
-  /* Prepare for projecting. */
+  // Prepare for projecting. 
   virtual void Prepare(void);
   virtual BOOL IsPerspective(void) { return TRUE; };
 
-  /* Project 3D object point into 3D view space. */
+  // Project 3D object point into 3D view space. 
   void ProjectCoordinate(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dViewPoint) const;
-  /* Get a distance of object point from the viewer. */
+  // Get a distance of object point from the viewer. 
   FLOAT GetDistance(const FLOAT3D &v3dObjectPoint) const;
-  /* Project 3D object direction vector into 3D view space. */
+  // Project 3D object direction vector into 3D view space. 
   void ProjectDirection(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dViewPoint) const;
-  /* Project 3D object axis aligned bounding box into 3D view space. */
+  // Project 3D object axis aligned bounding box into 3D view space. 
   virtual void ProjectAABBox(const FLOATaabbox3D &boxObject, FLOATaabbox3D &boxView) const;
-  /* Project 3D object point into 3D view space, before clipping. */
+  // Project 3D object point into 3D view space, before clipping. 
   virtual void PreClip(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dTransformedPoint) const;
-  /* Clip a line. */
+  // Clip a line. 
   virtual ULONG ClipLine(FLOAT3D &v3dPoint0, FLOAT3D &v3dPoint1) const;
-  /* Project 3D object point into 3D view space, after clipping. */
+  // Project 3D object point into 3D view space, after clipping. 
   virtual void PostClip(const FLOAT3D &v3dTransformedPoint, FLOAT3D &v3dViewPoint) const;
   virtual void PostClip(const FLOAT3D &v3dTransformedPoint, FLOAT fTransformedR,
     FLOAT3D &v3dViewPoint, FLOAT &fViewR) const;
-  /* Test if a sphere in view space is inside view frustum. */
+  // Test if a sphere in view space is inside view frustum. 
   INDEX TestSphereToFrustum(const FLOAT3D &vViewPoint, FLOAT fRadius) const;
-  /* Test if an oriented box in view space is inside view frustum. */
+  // Test if an oriented box in view space is inside view frustum. 
   INDEX TestBoxToFrustum(const FLOATobbox3D &boxView) const;
 
-  /* Calculate plane gradient for a plane in 3D view space. */
+  // Calculate plane gradient for a plane in 3D view space. 
   virtual void MakeOoKGradient(const FLOATplane3D &plViewerPlane, CPlanarGradients &pgOoK) const;
 
-  /* Get placement for a ray through a projected point. */
+  // Get placement for a ray through a projected point. 
   virtual void RayThroughPoint(const FLOAT3D &v3dViewPoint, CPlacement3D &plRay) const;
 
-  /* Project 3D object plane into 3D view space. */
+  // Project 3D object plane into 3D view space. 
   virtual void Project(const FLOATplane3D &p3dObjectPlane, FLOATplane3D &v3dTransformedPlane) const;
-  /* Check if an object-space plane is visible. */
+  // Check if an object-space plane is visible. 
   virtual BOOL IsObjectPlaneVisible(const FLOATplane3D &p3dObjectPlane) const;
-  /* Check if a viewer-space plane is visible. */
+  // Check if a viewer-space plane is visible. 
   virtual BOOL IsViewerPlaneVisible(const FLOATplane3D &p3dViewerPlane) const;
 
-  /* Calculate a mip-factor for a given object. */
+  // Calculate a mip-factor for a given object. 
   // by its distance from viewer
   virtual FLOAT MipFactor(FLOAT fDistance) const;
   // general mip-factor for target object
@@ -254,48 +254,48 @@ public:
 public:
 // implementation:
   // member referencing
-  /* Reference zoom factor. */
+  // Reference zoom factor. 
   inline FLOAT &ZoomFactorL(void);
   inline const FLOAT &ZoomFactorR(void) const;
 
-  /* Prepare for projecting. */
+  // Prepare for projecting. 
   virtual void Prepare(void);
 
-  /* Project 3D object point into 3D view space. */
+  // Project 3D object point into 3D view space. 
   void ProjectCoordinate(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dViewPoint) const;
-  /* Get a distance of object point from the viewer. */
+  // Get a distance of object point from the viewer. 
   FLOAT GetDistance(const FLOAT3D &v3dObjectPoint) const;
-  /* Project 3D object direction vector into 3D view space. */
+  // Project 3D object direction vector into 3D view space. 
   void ProjectDirection(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dViewPoint) const;
-  /* Project 3D object axis aligned bounding box into 3D view space. */
+  // Project 3D object axis aligned bounding box into 3D view space. 
   virtual void ProjectAABBox(const FLOATaabbox3D &boxObject, FLOATaabbox3D &boxView) const;
-  /* Project 3D object point into 3D view space, before clipping. */
+  // Project 3D object point into 3D view space, before clipping. 
   virtual void PreClip(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dTransformedPoint) const;
-  /* Clip a line. */
+  // Clip a line. 
   virtual ULONG ClipLine(FLOAT3D &v3dPoint0, FLOAT3D &v3dPoint1) const;
-  /* Project 3D object point into 3D view space, after clipping. */
+  // Project 3D object point into 3D view space, after clipping. 
   virtual void PostClip(const FLOAT3D &v3dTransformedPoint, FLOAT3D &v3dViewPoint) const;
   virtual void PostClip(const FLOAT3D &v3dTransformedPoint, FLOAT fTransformedR,
     FLOAT3D &v3dViewPoint, FLOAT &fViewR) const;
-  /* Test if a sphere in view space is inside view frustum. */
+  // Test if a sphere in view space is inside view frustum. 
   INDEX TestSphereToFrustum(const FLOAT3D &vViewPoint, FLOAT fRadius) const;
-  /* Test if an oriented box in view space is inside view frustum. */
+  // Test if an oriented box in view space is inside view frustum. 
   INDEX TestBoxToFrustum(const FLOATobbox3D &boxView) const;
 
-  /* Get placement for a ray through a projected point. */
+  // Get placement for a ray through a projected point. 
   virtual void RayThroughPoint(const FLOAT3D &v3dViewPoint, CPlacement3D &plRay) const;
 
-  /* Calculate plane gradient for a plane in 3D view space. */
+  // Calculate plane gradient for a plane in 3D view space. 
   virtual void MakeOoKGradient(const FLOATplane3D &plViewerPlane, CPlanarGradients &pgOoK) const;
 
-  /* Project 3D object plane into 3D view space. */
+  // Project 3D object plane into 3D view space. 
   virtual void Project(const FLOATplane3D &p3dObjectPlane, FLOATplane3D &v3dTransformedPlane) const;
-  /* Check if an object-space plane is visible. */
+  // Check if an object-space plane is visible. 
   virtual BOOL IsObjectPlaneVisible(const FLOATplane3D &p3dObjectPlane) const;
-  /* Check if a viewer-space plane is visible. */
+  // Check if a viewer-space plane is visible. 
   virtual BOOL IsViewerPlaneVisible(const FLOATplane3D &p3dViewerPlane) const;
 
-  /* Calculate a mip-factor for a given object. */
+  // Calculate a mip-factor for a given object. 
   // by its distance from viewer
   virtual FLOAT MipFactor(FLOAT fDistance) const;
   // general mip-factor for target object
@@ -316,44 +316,44 @@ public:
   FLOAT3D pr_vViewDirection;  // heads in the direction of viewing
 public:
 // implementation:
-  /* Prepare for projecting. */
+  // Prepare for projecting. 
   virtual void Prepare(void);
 
-  /* Project 3D object point into 3D view space. */
+  // Project 3D object point into 3D view space. 
   virtual void ProjectCoordinate(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dViewPoint) const;
-  /* Get a distance of object point from the viewer. */
+  // Get a distance of object point from the viewer. 
   virtual FLOAT GetDistance(const FLOAT3D &v3dObjectPoint) const;
-  /* Project 3D object direction vector into 3D view space. */
+  // Project 3D object direction vector into 3D view space. 
   virtual void ProjectDirection(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dViewPoint) const;
-  /* Project 3D object axis aligned bounding box into 3D view space. */
+  // Project 3D object axis aligned bounding box into 3D view space. 
   virtual void ProjectAABBox(const FLOATaabbox3D &boxObject, FLOATaabbox3D &boxView) const;
-  /* Project 3D object point into 3D view space, before clipping. */
+  // Project 3D object point into 3D view space, before clipping. 
   virtual void PreClip(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dTransformedPoint) const;
-  /* Clip a line. */
+  // Clip a line. 
   virtual ULONG ClipLine(FLOAT3D &v3dPoint0, FLOAT3D &v3dPoint1) const;
-  /* Project 3D object point into 3D view space, after clipping. */
+  // Project 3D object point into 3D view space, after clipping. 
   virtual void PostClip(const FLOAT3D &v3dTransformedPoint, FLOAT3D &v3dViewPoint) const;
   virtual void PostClip(const FLOAT3D &v3dTransformedPoint, FLOAT fTransformedR,
     FLOAT3D &v3dViewPoint, FLOAT &fViewR) const;
-  /* Test if a sphere in view space is inside view frustum. */
+  // Test if a sphere in view space is inside view frustum. 
   INDEX TestSphereToFrustum(const FLOAT3D &vViewPoint, FLOAT fRadius) const;
-  /* Test if an oriented box in view space is inside view frustum. */
+  // Test if an oriented box in view space is inside view frustum. 
   INDEX TestBoxToFrustum(const FLOATobbox3D &boxView) const;
 
-  /* Get placement for a ray through a projected point. */
+  // Get placement for a ray through a projected point. 
   virtual void RayThroughPoint(const FLOAT3D &v3dViewPoint, CPlacement3D &plRay) const;
 
-  /* Calculate plane gradient for a plane in 3D view space. */
+  // Calculate plane gradient for a plane in 3D view space. 
   virtual void MakeOoKGradient(const FLOATplane3D &plViewerPlane, CPlanarGradients &pgOoK) const;
 
-  /* Project 3D object plane into 3D view space. */
+  // Project 3D object plane into 3D view space. 
   virtual void Project(const FLOATplane3D &p3dObjectPlane, FLOATplane3D &v3dTransformedPlane) const;
-  /* Check if an object-space plane is visible. */
+  // Check if an object-space plane is visible. 
   virtual BOOL IsObjectPlaneVisible(const FLOATplane3D &p3dObjectPlane) const;
-  /* Check if a viewer-space plane is visible. */
+  // Check if a viewer-space plane is visible. 
   virtual BOOL IsViewerPlaneVisible(const FLOATplane3D &p3dViewerPlane) const;
 
-  /* Calculate a mip-factor for a given object. */
+  // Calculate a mip-factor for a given object. 
   // by its distance from viewer
   virtual FLOAT MipFactor(FLOAT fDistance) const;
   // general mip-factor for target object
@@ -372,47 +372,47 @@ public:
 // implementation:
   // member referencing
 
-  /* Prepare for projecting. */
+  // Prepare for projecting. 
   virtual void Prepare(void);
 
-  /* Project 3D object point into 3D view space. */
+  // Project 3D object point into 3D view space. 
   void ProjectCoordinate(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dViewPoint) const;
-  /* Get a distance of object point from the viewer. */
+  // Get a distance of object point from the viewer. 
   FLOAT GetDistance(const FLOAT3D &v3dObjectPoint) const;
-  /* Project 3D object direction vector into 3D view space. */
+  // Project 3D object direction vector into 3D view space. 
   void ProjectDirection(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dViewPoint) const;
-  /* Project 3D object placement into 3D view space. */
+  // Project 3D object placement into 3D view space. 
   void ProjectPlacement(const CPlacement3D &plObject, CPlacement3D &plView) const;
   void ProjectPlacementSmooth(const CPlacement3D &plObject, CPlacement3D &plView) const;
-  /* Project 3D object axis aligned bounding box into 3D view space. */
+  // Project 3D object axis aligned bounding box into 3D view space. 
   virtual void ProjectAABBox(const FLOATaabbox3D &boxObject, FLOATaabbox3D &boxView) const;
-  /* Project 3D object point into 3D view space, before clipping. */
+  // Project 3D object point into 3D view space, before clipping. 
   virtual void PreClip(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dTransformedPoint) const;
-  /* Clip a line. */
+  // Clip a line. 
   virtual ULONG ClipLine(FLOAT3D &v3dPoint0, FLOAT3D &v3dPoint1) const;
-  /* Project 3D object point into 3D view space, after clipping. */
+  // Project 3D object point into 3D view space, after clipping. 
   virtual void PostClip(const FLOAT3D &v3dTransformedPoint, FLOAT3D &v3dViewPoint) const;
   virtual void PostClip(const FLOAT3D &v3dTransformedPoint, FLOAT fTransformedR,
     FLOAT3D &v3dViewPoint, FLOAT &fViewR) const;
-  /* Test if a sphere in view space is inside view frustum. */
+  // Test if a sphere in view space is inside view frustum. 
   INDEX TestSphereToFrustum(const FLOAT3D &vViewPoint, FLOAT fRadius) const;
-  /* Test if an oriented box in view space is inside view frustum. */
+  // Test if an oriented box in view space is inside view frustum. 
   INDEX TestBoxToFrustum(const FLOATobbox3D &boxView) const;
 
-  /* Get placement for a ray through a projected point. */
+  // Get placement for a ray through a projected point. 
   virtual void RayThroughPoint(const FLOAT3D &v3dViewPoint, CPlacement3D &plRay) const;
 
-  /* Calculate plane gradient for a plane in 3D view space. */
+  // Calculate plane gradient for a plane in 3D view space. 
   virtual void MakeOoKGradient(const FLOATplane3D &plViewerPlane, CPlanarGradients &pgOoK) const;
 
-  /* Project 3D object plane into 3D view space. */
+  // Project 3D object plane into 3D view space. 
   virtual void Project(const FLOATplane3D &p3dObjectPlane, FLOATplane3D &v3dTransformedPlane) const;
-  /* Check if an object-space plane is visible. */
+  // Check if an object-space plane is visible. 
   virtual BOOL IsObjectPlaneVisible(const FLOATplane3D &p3dObjectPlane) const;
-  /* Check if a viewer-space plane is visible. */
+  // Check if a viewer-space plane is visible. 
   virtual BOOL IsViewerPlaneVisible(const FLOATplane3D &p3dViewerPlane) const;
 
-  /* Calculate a mip-factor for a given object. */
+  // Calculate a mip-factor for a given object. 
   // by its distance from viewer
   virtual FLOAT MipFactor(FLOAT fDistance) const;
   // general mip-factor for target object
@@ -430,40 +430,40 @@ private:
   CParallelProjection3D ap_Parallel;
   CProjection3D *ap_CurrentProjection;
 public:
-  /* Default constructor. */
+  // Default constructor. 
   inline CAnyProjection3D(void) : ap_CurrentProjection(NULL) {};
-  /* Copy constructor. */
+  // Copy constructor. 
   inline CAnyProjection3D(const CAnyProjection3D &apOriginal) { operator=(apOriginal);}
-  /* Start beeing CSimpleProjection3D. */
+  // Start beeing CSimpleProjection3D. 
   inline void BeSimple(void);
-  /* Test if CSimpleProjection3D. */
+  // Test if CSimpleProjection3D. 
   inline BOOL IsSimple(void);
-  /* Start beeing CIsometricProjection3D. */
+  // Start beeing CIsometricProjection3D. 
   inline void BeIsometric(void);
-  /* Test if CIsometricProjection3D. */
+  // Test if CIsometricProjection3D. 
   inline BOOL IsIsometric(void);
-  /* Start beeing CPerspectiveProjection3D. */
+  // Start beeing CPerspectiveProjection3D. 
   inline void BePerspective(void);
-  /* Test if CPerspectiveProjection3D. */
+  // Test if CPerspectiveProjection3D. 
   inline BOOL IsPerspective(void);
-  /* Start beeing CParallelProjection3D. */
+  // Start beeing CParallelProjection3D. 
   inline void BeParallel(void);
-  /* Test if CParallelProjection3D. */
+  // Test if CParallelProjection3D. 
   inline BOOL IsParallel(void);
-  /* Reference currently active projection. */
+  // Reference currently active projection. 
   inline CProjection3D *operator->(void);
-  /* Get the pointer to currently active projection. */
+  // Get the pointer to currently active projection. 
   inline operator CProjection3D *(void);
 
-  /* Initialize from another any-projection. */
+  // Initialize from another any-projection. 
   inline void operator=(const CAnyProjection3D &prAny);
-  /* Initialize from a simple projection. */
+  // Initialize from a simple projection. 
   inline void operator=(const CSimpleProjection3D &prSimple);
-  /* Initialize from an isometric projection. */
+  // Initialize from an isometric projection. 
   inline void operator=(const CIsometricProjection3D &prIsometric);
-  /* Initialize from a perspective projection. */
+  // Initialize from a perspective projection. 
   inline void operator=(const CPerspectiveProjection3D &prPerspective);
-  /* Initialize from a parallel projection. */
+  // Initialize from a parallel projection. 
   inline void operator=(const CParallelProjection3D &prParallel);
 };
 
@@ -495,7 +495,7 @@ ENGINE_API inline const CPlacement3D &CProjection3D::ObjectPlacementR(void) cons
   return pr_ObjectPlacement;
 }
 
-/* Reference object handle. */
+// Reference object handle. 
 ENGINE_API inline FLOAT3D &CProjection3D::ObjectHandleL(void) {
   IFDEBUG(pr_Prepared = FALSE);    // invalidate precalculations on any non-const access
   return pr_vObjectHandle;
@@ -551,7 +551,7 @@ ENGINE_API inline const FLOAT &CProjection3D::AspectRatioR(void) const {
   return pr_AspectRatio;
 }
 
-/* Reference target object stretching. */
+// Reference target object stretching. 
 ENGINE_API inline FLOAT3D &CProjection3D::ObjectStretchL(void) {
   IFDEBUG(pr_Prepared = FALSE);    // invalidate precalculations on any non-const access
   return pr_ObjectStretch;
@@ -560,7 +560,7 @@ ENGINE_API inline const FLOAT3D &CProjection3D::ObjectStretchR(void) const {
   return pr_ObjectStretch;
 }
 
-/* Reference view stretching. */
+// Reference view stretching. 
 ENGINE_API inline FLOAT &CProjection3D::ViewStretchL(void) {
   IFDEBUG(pr_Prepared = FALSE);    // invalidate precalculations on any non-const access
   return pr_fViewStretch;
@@ -569,7 +569,7 @@ ENGINE_API inline const FLOAT &CProjection3D::ViewStretchR(void) const {
   return pr_fViewStretch;
 }
 
-/* Reference mirror plane. */
+// Reference mirror plane. 
 ENGINE_API inline FLOATplane3D &CProjection3D::MirrorPlaneL(void) {
   IFDEBUG(pr_Prepared = FALSE);    // invalidate precalculations on any non-const access
   pr_bMirror = TRUE;
@@ -583,7 +583,7 @@ inline void CProjection3D::TurnOffMirrorPlane(void)
   IFDEBUG(pr_Prepared = FALSE);    // invalidate precalculations on any non-const access
   pr_bMirror = FALSE;
 }
-/* Reference warp plane. */
+// Reference warp plane. 
 ENGINE_API inline FLOATplane3D &CProjection3D::WarpPlaneL(void) {
   IFDEBUG(pr_Prepared = FALSE);    // invalidate precalculations on any non-const access
   pr_bWarp = TRUE;
@@ -616,7 +616,7 @@ ENGINE_API inline const BOOL &CProjection3D::ObjectHalfFaceForwardR(void) const 
   return pr_bHalfFaceForward;
 }
 
-/* Reference corrections for depth buffer factor. */
+// Reference corrections for depth buffer factor. 
 ENGINE_API inline FLOAT &CProjection3D::DepthBufferNearL(void)
 {
   IFDEBUG(pr_Prepared = FALSE);    // invalidate precalculations on any non-const access
@@ -700,19 +700,19 @@ ENGINE_API inline void CAnyProjection3D::BeParallel(void)
   ap_CurrentProjection = &ap_Parallel;
 }
 
-/* Test if CSimpleProjection3D. */
+// Test if CSimpleProjection3D. 
 ENGINE_API inline BOOL CAnyProjection3D::IsSimple(void) {
   return ap_CurrentProjection == &ap_Simple;
 }
-/* Test if CIsometricProjection3D. */
+// Test if CIsometricProjection3D. 
 ENGINE_API inline BOOL CAnyProjection3D::IsIsometric(void) {
   return ap_CurrentProjection == &ap_Isometric;
 }
-/* Test if CPerspectiveProjection3D. */
+// Test if CPerspectiveProjection3D. 
 ENGINE_API inline BOOL CAnyProjection3D::IsPerspective(void) {
   return ap_CurrentProjection == &ap_Perspective;
 }
-/* Test if CParallelProjection3D. */
+// Test if CParallelProjection3D. 
 ENGINE_API inline BOOL CAnyProjection3D::IsParallel(void) {
   return ap_CurrentProjection == &ap_Parallel;
 }

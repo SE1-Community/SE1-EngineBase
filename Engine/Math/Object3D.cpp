@@ -196,7 +196,7 @@ void CObject3D::Inverse(void)
   }}
 }
 
-/* Recalculate all planes from vertices. (used when stretching vertices) */
+// Recalculate all planes from vertices. (used when stretching vertices) 
 void CObject3D::RecalculatePlanes(void)
 {
   ASSERT(GetFPUPrecision() == FPT_53BIT);
@@ -240,7 +240,7 @@ void CObject3D::GetBoundingBox(DOUBLEaabbox3D &boxObject)
   }
 }
 
-/* Dump the object 3D to debug window. */
+// Dump the object 3D to debug window. 
 void CObject3D::DebugDump(void)
 {
 #ifndef NDEBUG

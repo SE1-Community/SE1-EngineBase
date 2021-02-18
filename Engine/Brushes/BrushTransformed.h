@@ -39,7 +39,7 @@ class CWorkingVertex {
 public:
   FLOAT3D wvx_vRelative;  // coordinates in brush space
   ALIGNED_NEW_AND_DELETE(32);
-  /* Clear the object. */
+  // Clear the object. 
   inline void Clear(void) {};
 };
 
@@ -54,7 +54,7 @@ public:
   CMappingVectors wpl_mvView;   // mapping vectors in view space
   CPlanarGradients wpl_pgOoK;   // plane gradients in default mapping
   BOOL wpl_bVisible;            // set if the plane is visible
-  /* Clear the object. */
+  // Clear the object. 
   inline void Clear(void) {};
 };
 
@@ -65,7 +65,7 @@ class CWorkingEdge {
 public:
   INDEX wed_iwvx0;    // working vertices in sector
   INDEX wed_iwvx1;
-  /* Clear the object. */
+  // Clear the object. 
   inline void Clear(void) {};
 };
 

@@ -114,7 +114,7 @@ void InfoMessage(const char *strFormat, ...)
   MessageBoxA(NULL, strBuffer, TRANS("Information"), MB_OK|MB_ICONINFORMATION|MB_SETFOREGROUND|MB_TASKMODAL);
 }
 
-/* Ask user for yes/no answer(stops program until user responds). */
+// Ask user for yes/no answer(stops program until user responds). 
 BOOL YesNoMessage(const char *strFormat, ...)
 {
   // format the message in buffer

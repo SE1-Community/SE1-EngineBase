@@ -139,7 +139,7 @@ void CBrushMip::DeleteSelectedSectors(CBrushSectorSelectionForCSG &selbscToDelet
   selbscToDelete.CDynamicContainer<CBrushSector>::Clear();
 }
 
-/* Constructor. */
+// Constructor. 
 CBrushMip::CBrushMip(void) : bm_fMaxDistance(1E6f)
 {
 }
@@ -198,7 +198,7 @@ void CBrushMip::Clear(void)
   bm_abscSectors.Clear();
 }
 
-/* Update bounding box from bounding boxes of all sectors. */
+// Update bounding box from bounding boxes of all sectors. 
 void CBrushMip::UpdateBoundingBox(void)
 {
   // clear the bounding box of the mip
@@ -251,7 +251,7 @@ void CBrushMip::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prBrushToAbso
   }}
 }
 
-/* Reoptimize all sectors in the brush mip. */
+// Reoptimize all sectors in the brush mip. 
 void CBrushMip::Reoptimize(void)
 {
   // create an object 3d from the source brush mip
@@ -278,7 +278,7 @@ void CBrushMip::Reoptimize(void)
   }
 }
 
-/* Find all portals that have no links and kill their portal flag. */
+// Find all portals that have no links and kill their portal flag. 
 void CBrushMip::RemoveDummyPortals(BOOL bClearPortalFlags)
 {
   // for all sectors in the brush mip
@@ -320,7 +320,7 @@ void CBrushMip::RemoveDummyPortals(BOOL bClearPortalFlags)
   }}
 }
 
-/* Spread all brush mips after this one. */
+// Spread all brush mips after this one. 
 void CBrushMip::SpreadFurtherMips(void)
 {
   // get the brush of this mip
@@ -346,7 +346,7 @@ void CBrushMip::SpreadFurtherMips(void)
   }
 }
 
-/* Set mip factor of this mip, spread all that are further. */
+// Set mip factor of this mip, spread all that are further. 
 void CBrushMip::SetMipDistance(FLOAT fMaxDistance)
 {
   // set the factor
@@ -355,13 +355,13 @@ void CBrushMip::SetMipDistance(FLOAT fMaxDistance)
   SpreadFurtherMips();
 }
 
-/* Get mip factor of this mip. */
+// Get mip factor of this mip. 
 FLOAT CBrushMip::GetMipDistance(void)
 {
   return bm_fMaxDistance;
 }
 
-/* Get mip index of this mip. */
+// Get mip index of this mip. 
 INDEX CBrushMip::GetMipIndex(void)
 {
   // get the brush of this mip

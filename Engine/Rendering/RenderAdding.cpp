@@ -319,7 +319,7 @@ void CRenderer::AddSkaModelEntity(CEntity *penModel)
 }
 
 
-/* Add a lens flare to rendering. */
+// Add a lens flare to rendering. 
 void CRenderer::AddLensFlare( CEntity *penLight, CLightSource *pls, CProjection3D *pprProjection, INDEX iMirrorLevel/*=0*/)
 {
   // if flares are off
@@ -385,7 +385,7 @@ void CRenderer::AddLensFlare( CEntity *penLight, CLightSource *pls, CProjection3
 
 
 
-/* Add a moving brush entity to rendering list (add all sectors immediately). */
+// Add a moving brush entity to rendering list (add all sectors immediately). 
 void CRenderer::AddNonZoningBrush( CEntity *penBrush, CBrushSector *pbscThatAdds)
 {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_ADDNONZONINGBRUSH);
@@ -469,7 +469,7 @@ addBrush:
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDNONZONINGBRUSH);
 }
 
-/* Add a terrain entity to rendering list. */
+// Add a terrain entity to rendering list. 
 void CRenderer::AddTerrainEntity(CEntity *penTerrain)
 {
   // _pfRenderProfile.StartTimer(CRenderProfile::PTI_ADDNONZONINGBRUSH);
@@ -503,7 +503,7 @@ void CRenderer::AddTerrainEntity(CEntity *penTerrain)
   re_cenDrawn.Add(penTerrain);
 }
 
-/* Add to rendering all entities in the world (used in special cases in world editor). */
+// Add to rendering all entities in the world (used in special cases in world editor). 
 void CRenderer::AddAllEntities(void)
 {
   // for all entities in world
@@ -533,7 +533,7 @@ void CRenderer::AddAllEntities(void)
   }
 }
 
-/* Add to rendering all entities that are inside an zoning brush sector. */
+// Add to rendering all entities that are inside an zoning brush sector. 
 void CRenderer::AddEntitiesInSector(CBrushSector *pbscSectorInside)
 {
   // if we don't have a relevant sector to test with 
@@ -568,7 +568,7 @@ void CRenderer::AddEntitiesInSector(CBrushSector *pbscSectorInside)
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDENTITIESINSECTOR);
 };
 
-/* Add to rendering all entities that are inside a given box. */
+// Add to rendering all entities that are inside a given box. 
 void CRenderer::AddEntitiesInBox(const FLOATaabbox3D &boxNear)
 {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_ADDENTITIESINBOX);
@@ -653,7 +653,7 @@ inline void CRenderer::UpdateVisTweaks(CBrushSector *pbsc)
   }
 }
 
-/* Add to rendering all zoning brush sectors that an entity is in. */
+// Add to rendering all zoning brush sectors that an entity is in. 
 void CRenderer::AddZoningSectorsAroundEntity(CEntity *pen, const FLOAT3D &vEyesPos)
 {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_ADDZONINGSECTORS);
@@ -711,7 +711,7 @@ void CRenderer::AddZoningSectorsAroundEntity(CEntity *pen, const FLOAT3D &vEyesP
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDZONINGSECTORS);
 }
 
-/* Add to rendering one particular zoning brush sector. */
+// Add to rendering one particular zoning brush sector. 
 void CRenderer::AddGivenZoningSector(CBrushSector *pbsc)
 {
   // get the sector's brush mip, brush and entity
@@ -741,7 +741,7 @@ void CRenderer::AddGivenZoningSector(CBrushSector *pbsc)
   }
 }
 
-/* Add to rendering all zoning brush sectors near a given box in absolute space. */
+// Add to rendering all zoning brush sectors near a given box in absolute space. 
 void CRenderer::AddZoningSectorsAroundBox(const FLOATaabbox3D &boxNear)
 {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_ADDZONINGSECTORS);
@@ -858,7 +858,7 @@ void CMirror::FinishAdding(void)
   }
 }
 
-/* Add a mirror/portal. */
+// Add a mirror/portal. 
 void CRenderer::AddMirror(CScreenPolygon &spo)
 {
   // if far sentinel

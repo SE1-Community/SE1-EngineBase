@@ -81,55 +81,55 @@ public:
   inline void GetPositionsOfEntity(
     CEntity *pen, FLOAT3D &v0, FLOATmatrix3D &m0, FLOAT3D &v1, FLOATmatrix3D &m1);
 
-  /* Project spheres of entity A to space of entity B. */
+  // Project spheres of entity A to space of entity B. 
   void ProjectASpheresToB(void);
-  /* Find movement box in absolute space for A entity. */
+  // Find movement box in absolute space for A entity. 
   void FindAbsoluteMovementBoxForA(void);
 
-  /* Clip a moving point to a sphere, update collision data. */
+  // Clip a moving point to a sphere, update collision data. 
   inline void ClipMovingPointToSphere(const FLOAT3D &vStart, const FLOAT3D &vEnd,
     const FLOAT3D &vSphereCenter, const FLOAT fSphereRadius);
-  /* Clip a moving point to a cylinder, update collision data. */
+  // Clip a moving point to a cylinder, update collision data. 
   inline void ClipMovingPointToCylinder(const FLOAT3D &vStart, const FLOAT3D &vEnd,
     const FLOAT3D &vCylinderBottomCenter, const FLOAT3D &vCylinderTopCenter,
     const FLOAT fCylinderRadius);
 
-  /* Clip a moving sphere to a standing sphere, update collision data. */
+  // Clip a moving sphere to a standing sphere, update collision data. 
   void ClipMovingSphereToSphere(const CMovingSphere &msMoving,
     const CMovingSphere &msStanding);
-  /* Clip a moving sphere to a brush polygon, update collision data. */
+  // Clip a moving sphere to a brush polygon, update collision data. 
   void ClipMovingSphereToBrushPolygon(
     const CMovingSphere &msMoving, CBrushPolygon *pbpoPolygon);
-  /* Clip a moving sphere to a terrain polygon, update collision data. */
+  // Clip a moving sphere to a terrain polygon, update collision data. 
   void ClipMovingSphereToTerrainPolygon(
     const CMovingSphere &msMoving, const FLOAT3D &v0, const FLOAT3D &v1, const FLOAT3D &v2);
-  /* Clip movement to a brush polygon. */
+  // Clip movement to a brush polygon. 
   void ClipMoveToBrushPolygon(CBrushPolygon *pbpoPolygon);
-  /* Clip movement to a terrain polygon. */
+  // Clip movement to a terrain polygon. 
   void ClipMoveToTerrainPolygon(const FLOAT3D &v0, const FLOAT3D &v1, const FLOAT3D &v2);
 
-  /* Prepare projections and spheres for movement clipping. */
+  // Prepare projections and spheres for movement clipping. 
   void PrepareProjectionsAndSpheres(void);
-  /* Clip movement if B is a model. */
+  // Clip movement if B is a model. 
   void ClipModelMoveToModel(void);
-  /* Clip movement if B is a brush. */
+  // Clip movement if B is a brush. 
   void ClipBrushMoveToModel(void);
 
-  /* Clip movement to a model entity. */
+  // Clip movement to a model entity. 
   void ClipMoveToModel(CEntity *penModel);
 
   void ClipToNonZoningSector(CBrushSector *pbsc);
   void ClipToZoningSector(CBrushSector *pbsc);
   void ClipToTerrain(CEntity *pen);
 
-  /* Cache near polygons of movable entity. */
+  // Cache near polygons of movable entity. 
   void CacheNearPolygons(void);
-  /* Clip movement to brush sectors near the entity. */
+  // Clip movement to brush sectors near the entity. 
   void ClipMoveToBrushes(void);
-  /* Clip movement to models near the entity. */
+  // Clip movement to models near the entity. 
   void ClipMoveToModels(void);
 
-  /* Clip movement to the world. */
+  // Clip movement to the world. 
   void ClipMoveToWorld(class CWorld *pwoWorld);
 public:
 
@@ -140,7 +140,7 @@ public:
   FLOATplane3D cm_plClippedPlane; // the plane that was hit (in absolute space)
   FLOAT3D cm_vClippedLine;        // vector describing part of test line that was clipped
 
-  /* Constructor. */
+  // Constructor. 
   CClipMove(CMovableEntity *penEntity);
 };
 

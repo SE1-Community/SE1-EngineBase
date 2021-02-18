@@ -33,7 +33,7 @@ typedef unsigned char       UBYTE;
 typedef unsigned int        UINT;
 
 
-#ifdef PLATFORM_UNIX  /* rcg10042001 */
+#ifdef PLATFORM_UNIX  // rcg10042001 
     #define __forceinline inline
 
     #if (!defined MAX_PATH)
@@ -44,10 +44,10 @@ typedef unsigned int        UINT;
     typedef unsigned long  int  DWORD;
     typedef signed long  int    LONG;
 
-    typedef void *HWND;  /* !!! FIXME this sucks. */
-    typedef void *HINSTANCE;  /* !!! FIXME this sucks. */
-    typedef void *HGLRC;  /* !!! FIXME this sucks. */
-    typedef ULONG COLORREF;  /* !!! FIXME this sucks. */
+    typedef void *HWND;  // !!! FIXME this sucks. 
+    typedef void *HINSTANCE;  // !!! FIXME this sucks. 
+    typedef void *HGLRC;  // !!! FIXME this sucks. 
+    typedef ULONG COLORREF;  // !!! FIXME this sucks. 
 
     typedef struct
     {

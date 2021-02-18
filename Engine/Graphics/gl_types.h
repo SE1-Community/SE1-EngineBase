@@ -25,14 +25,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  *
  */
 
-/* !!! FIXME: rcg10042001 Christ I hope this are the same on the Linux ABI... */
+// !!! FIXME: rcg10042001 Christ I hope this are the same on the Linux ABI... 
 
 typedef enum {
-  /* Boolean values */
+  // Boolean values 
   GL_FALSE = 0,
   GL_TRUE   = 1,
 
-  /* Data types */
+  // Data types 
   GL_BYTE            = 0x1400,
   GL_UNSIGNED_BYTE  = 0x1401,
   GL_SHORT          = 0x1402,
@@ -45,7 +45,7 @@ typedef enum {
   GL_3_BYTES        = 0x1408,
   GL_4_BYTES        = 0x1409,
 
-  /* Primitives */
+  // Primitives 
   GL_LINES      = 0x0001,
   GL_POINTS      = 0x0000,
   GL_LINE_STRIP      = 0x0003,
@@ -58,7 +58,7 @@ typedef enum {
   GL_POLYGON      = 0x0009,
   GL_EDGE_FLAG      = 0x0B43,
 
-  /* Vertex Arrays */
+  // Vertex Arrays 
   GL_VERTEX_ARRAY      = 0x8074,
   GL_NORMAL_ARRAY      = 0x8075,
   GL_COLOR_ARRAY      = 0x8076,
@@ -100,19 +100,19 @@ typedef enum {
   GL_T2F_C4F_N3F_V3F    = 0x2A2C,
   GL_T4F_C4F_N3F_V4F    = 0x2A2D,
 
-  /* Matrix Mode */
+  // Matrix Mode 
   GL_MATRIX_MODE      = 0x0BA0,
   GL_MODELVIEW      = 0x1700,
   GL_PROJECTION      = 0x1701,
   GL_TEXTURE      = 0x1702,
 
-  /* Points */
+  // Points 
   GL_POINT_SMOOTH      = 0x0B10,
   GL_POINT_SIZE      = 0x0B11,
   GL_POINT_SIZE_GRANULARITY   = 0x0B13,
   GL_POINT_SIZE_RANGE    = 0x0B12,
 
-  /* Lines */
+  // Lines 
   GL_LINE_SMOOTH      = 0x0B20,
   GL_LINE_STIPPLE      = 0x0B24,
   GL_LINE_STIPPLE_PATTERN    = 0x0B25,
@@ -121,7 +121,7 @@ typedef enum {
   GL_LINE_WIDTH_GRANULARITY  = 0x0B23,
   GL_LINE_WIDTH_RANGE    = 0x0B22,
 
-  /* Polygons */
+  // Polygons 
   GL_POINT      = 0x1B00,
   GL_LINE        = 0x1B01,
   GL_FILL        = 0x1B02,
@@ -141,14 +141,14 @@ typedef enum {
   GL_POLYGON_OFFSET_LINE    = 0x2A02,
   GL_POLYGON_OFFSET_FILL    = 0x8037,
 
-  /* Display Lists */
+  // Display Lists 
   GL_COMPILE      = 0x1300,
   GL_COMPILE_AND_EXECUTE    = 0x1301,
   GL_LIST_BASE      = 0x0B32,
   GL_LIST_INDEX      = 0x0B33,
   GL_LIST_MODE      = 0x0B30,
 
-  /* Depth buffer */
+  // Depth buffer 
   GL_NEVER      = 0x0200,
   GL_LESS        = 0x0201,
   GL_GEQUAL      = 0x0206,
@@ -165,7 +165,7 @@ typedef enum {
   GL_DEPTH_WRITEMASK    = 0x0B72,
   GL_DEPTH_COMPONENT    = 0x1902,
 
-  /* Lighting */
+  // Lighting 
   GL_LIGHTING      = 0x0B50,
   GL_LIGHT0      = 0x4000,
   GL_LIGHT1      = 0x4001,
@@ -201,7 +201,7 @@ typedef enum {
   GL_COLOR_MATERIAL_PARAMETER  = 0x0B56,
   GL_NORMALIZE      = 0x0BA1,
 
-  /* User clipping planes */
+  // User clipping planes 
   GL_CLIP_PLANE0      = 0x3000,
   GL_CLIP_PLANE1      = 0x3001,
   GL_CLIP_PLANE2      = 0x3002,
@@ -209,7 +209,7 @@ typedef enum {
   GL_CLIP_PLANE4      = 0x3004,
   GL_CLIP_PLANE5      = 0x3005,
 
-  /* Accumulation buffer */
+  // Accumulation buffer 
   GL_ACCUM_RED_BITS    = 0x0D58,
   GL_ACCUM_GREEN_BITS    = 0x0D59,
   GL_ACCUM_BLUE_BITS    = 0x0D5A,
@@ -221,12 +221,12 @@ typedef enum {
   GL_MULT        = 0x0103,
   GL_RETURN      = 0x0102,
 
-  /* Alpha testing */
+  // Alpha testing 
   GL_ALPHA_TEST      = 0x0BC0,
   GL_ALPHA_TEST_REF    = 0x0BC2,
   GL_ALPHA_TEST_FUNC    = 0x0BC1,
 
-  /* Blending */
+  // Blending 
   GL_BLEND      = 0x0BE2,
   GL_BLEND_SRC      = 0x0BE1,
   GL_BLEND_DST      = 0x0BE0,
@@ -246,12 +246,12 @@ typedef enum {
   GL_CONSTANT_ALPHA    = 0x8003,
   GL_ONE_MINUS_CONSTANT_ALPHA  = 0x8004,
 
-  /* Render Mode */
+  // Render Mode 
   GL_FEEDBACK      = 0x1C01,
   GL_RENDER      = 0x1C00,
   GL_SELECT      = 0x1C02,
 
-  /* Feedback */
+  // Feedback 
   GL_2D        = 0x0600,
   GL_3D        = 0x0601,
   GL_3D_COLOR      = 0x0602,
@@ -269,11 +269,11 @@ typedef enum {
   GL_FEEDBACK_BUFFER_SIZE    = 0x0DF1,
   GL_FEEDBACK_BUFFER_TYPE    = 0x0DF2,
 
-  /* Selection */
+  // Selection 
   GL_SELECTION_BUFFER_POINTER  = 0x0DF3,
   GL_SELECTION_BUFFER_SIZE  = 0x0DF4,
 
-  /* Fog */
+  // Fog 
   GL_FOG        = 0x0B60,
   GL_FOG_MODE      = 0x0B65,
   GL_FOG_DENSITY      = 0x0B62,
@@ -285,7 +285,7 @@ typedef enum {
   GL_EXP        = 0x0800,
   GL_EXP2        = 0x0801,
 
-  /* Logic Ops */
+  // Logic Ops 
   GL_LOGIC_OP      = 0x0BF1,
   GL_INDEX_LOGIC_OP    = 0x0BF1,
   GL_COLOR_LOGIC_OP    = 0x0BF2,
@@ -307,7 +307,7 @@ typedef enum {
   GL_OR_REVERSE      = 0x150B,
   GL_OR_INVERTED      = 0x150D,
 
-  /* Stencil */
+  // Stencil 
   GL_STENCIL_TEST      = 0x0B90,
   GL_STENCIL_WRITEMASK    = 0x0B98,
   GL_STENCIL_BITS      = 0x0D57,
@@ -324,13 +324,13 @@ typedef enum {
   GL_INCR        = 0x1E02,
   GL_DECR        = 0x1E03,
 
-  /* Buffers, Pixel Drawing/Reading */
+  // Buffers, Pixel Drawing/Reading 
   GL_NONE        = 0,
   GL_LEFT        = 0x0406,
   GL_RIGHT      = 0x0407,
-  /*GL_FRONT      = 0x0404, */
-  /*GL_BACK      = 0x0405, */
-  /*GL_FRONT_AND_BACK    = 0x0408, */
+  //GL_FRONT      = 0x0404, 
+  //GL_BACK      = 0x0405, 
+  //GL_FRONT_AND_BACK    = 0x0408, 
   GL_FRONT_LEFT      = 0x0400,
   GL_FRONT_RIGHT      = 0x0401,
   GL_BACK_LEFT      = 0x0402,
@@ -365,7 +365,7 @@ typedef enum {
   GL_RGB        = 0x1907,
   GL_RGBA        = 0x1908,
 
-  /* Implementation limits */
+  // Implementation limits 
   GL_MAX_LIST_NESTING    = 0x0B31,
   GL_MAX_ATTRIB_STACK_DEPTH  = 0x0D35,
   GL_MAX_MODELVIEW_STACK_DEPTH  = 0x0D36,
@@ -380,7 +380,7 @@ typedef enum {
   GL_MAX_VIEWPORT_DIMS    = 0x0D3A,
   GL_MAX_CLIENT_ATTRIB_STACK_DEPTH= 0x0D3B,
 
-  /* Gets */
+  // Gets 
   GL_ATTRIB_STACK_DEPTH    = 0x0BB0,
   GL_CLIENT_ATTRIB_STACK_DEPTH  = 0x0BB1,
   GL_COLOR_CLEAR_VALUE    = 0x0C22,
@@ -410,7 +410,7 @@ typedef enum {
   GL_VIEWPORT      = 0x0BA2,
 
 
-  /* Evaluators */
+  // Evaluators 
   GL_AUTO_NORMAL      = 0x0D80,
   GL_MAP1_COLOR_4      = 0x0D90,
   GL_MAP1_GRID_DOMAIN    = 0x0DD0,
@@ -438,7 +438,7 @@ typedef enum {
   GL_DOMAIN      = 0x0A02,
   GL_ORDER      = 0x0A01,
 
-  /* Hints */
+  // Hints 
   GL_FOG_HINT      = 0x0C54,
   GL_LINE_SMOOTH_HINT    = 0x0C52,
   GL_PERSPECTIVE_CORRECTION_HINT  = 0x0C50,
@@ -448,11 +448,11 @@ typedef enum {
   GL_FASTEST      = 0x1101,
   GL_NICEST      = 0x1102,
 
-  /* Scissor box */
+  // Scissor box 
   GL_SCISSOR_TEST      = 0x0C11,
   GL_SCISSOR_BOX      = 0x0C10,
 
-  /* Pixel Mode / Transfer */
+  // Pixel Mode / Transfer 
   GL_MAP_COLOR      = 0x0D10,
   GL_MAP_STENCIL      = 0x0D11,
   GL_INDEX_SHIFT      = 0x0D12,
@@ -502,7 +502,7 @@ typedef enum {
   GL_ZOOM_X      = 0x0D16,
   GL_ZOOM_Y      = 0x0D17,
 
-  /* Texture mapping */
+  // Texture mapping 
   GL_TEXTURE_ENV      = 0x2300,
   GL_TEXTURE_ENV_MODE    = 0x2200,
   GL_TEXTURE_1D      = 0x0DE0,
@@ -547,7 +547,7 @@ typedef enum {
   GL_TEXTURE_GEN_R    = 0x0C62,
   GL_TEXTURE_GEN_Q    = 0x0C63,
 
-  /* GL 1.1 texturing */
+  // GL 1.1 texturing 
   GL_PROXY_TEXTURE_1D    = 0x8063,
   GL_PROXY_TEXTURE_2D    = 0x8064,
   GL_TEXTURE_PRIORITY    = 0x8066,
@@ -556,7 +556,7 @@ typedef enum {
   GL_TEXTURE_BINDING_2D    = 0x8069,
   GL_TEXTURE_INTERNAL_FORMAT  = 0x1003,
 
-  /* GL 1.2 texturing */
+  // GL 1.2 texturing 
   GL_PACK_SKIP_IMAGES    = 0x806B,
   GL_PACK_IMAGE_HEIGHT    = 0x806C,
   GL_UNPACK_SKIP_IMAGES    = 0x806D,
@@ -568,7 +568,7 @@ typedef enum {
   GL_MAX_3D_TEXTURE_SIZE    = 0x8073,
   GL_TEXTURE_BINDING_3D    = 0x806A,
 
-  /* Internal texture formats (GL 1.1) */
+  // Internal texture formats (GL 1.1) 
   GL_ALPHA4    = 0x803B,
   GL_ALPHA8    = 0x803C,
   GL_ALPHA12  = 0x803D,
@@ -643,13 +643,13 @@ typedef enum {
   GL_COMPRESSED_TEXTURE_FORMATS_ARB      = 0x86A3,
 
 
-  /* Utility */
+  // Utility 
   GL_VENDOR      = 0x1F00,
   GL_RENDERER    = 0x1F01,
   GL_VERSION    = 0x1F02,
   GL_EXTENSIONS  = 0x1F03,
 
-  /* Errors */
+  // Errors 
   GL_INVALID_VALUE    = 0x0501,
   GL_INVALID_ENUM      = 0x0500,
   GL_INVALID_OPERATION    = 0x0502,
@@ -661,7 +661,7 @@ typedef enum {
    * Extensions
    */
 
-  /* GL_EXT_blend_minmax and GL_EXT_blend_color */
+  // GL_EXT_blend_minmax and GL_EXT_blend_color 
   GL_CONSTANT_COLOR_EXT      = 0x8001,
   GL_ONE_MINUS_CONSTANT_COLOR_EXT    = 0x8002,
   GL_CONSTANT_ALPHA_EXT      = 0x8003,
@@ -674,12 +674,12 @@ typedef enum {
   GL_FUNC_REVERSE_SUBTRACT_EXT    = 0x800B,
   GL_BLEND_COLOR_EXT      = 0x8005,
 
-  /* GL_EXT_polygon_offset */
+  // GL_EXT_polygon_offset 
   GL_POLYGON_OFFSET_EXT      = 0x8037,
   GL_POLYGON_OFFSET_FACTOR_EXT    = 0x8038,
   GL_POLYGON_OFFSET_BIAS_EXT    = 0x8039,
 
-  /* GL_EXT_vertex_array */
+  // GL_EXT_vertex_array 
   GL_VERTEX_ARRAY_EXT      = 0x8074,
   GL_NORMAL_ARRAY_EXT      = 0x8075,
   GL_COLOR_ARRAY_EXT      = 0x8076,
@@ -713,13 +713,13 @@ typedef enum {
   GL_TEXTURE_COORD_ARRAY_POINTER_EXT  = 0x8092,
   GL_EDGE_FLAG_ARRAY_POINTER_EXT    = 0x8093,
 
-  /* GL_EXT_texture_object */
+  // GL_EXT_texture_object 
   GL_TEXTURE_PRIORITY_EXT      = 0x8066,
   GL_TEXTURE_RESIDENT_EXT      = 0x8067,
   GL_TEXTURE_1D_BINDING_EXT    = 0x8068,
   GL_TEXTURE_2D_BINDING_EXT    = 0x8069,
 
-  /* GL_EXT_texture3D */
+  // GL_EXT_texture3D 
   GL_PACK_SKIP_IMAGES_EXT      = 0x806B,
   GL_PACK_IMAGE_HEIGHT_EXT    = 0x806C,
   GL_UNPACK_SKIP_IMAGES_EXT    = 0x806D,
@@ -731,7 +731,7 @@ typedef enum {
   GL_MAX_3D_TEXTURE_SIZE_EXT    = 0x8073,
   GL_TEXTURE_3D_BINDING_EXT    = 0x806A,
 
-  /* GL_EXT_paletted_texture */
+  // GL_EXT_paletted_texture 
   GL_TABLE_TOO_LARGE_EXT      = 0x8031,
   GL_COLOR_TABLE_FORMAT_EXT    = 0x80D8,
   GL_COLOR_TABLE_WIDTH_EXT    = 0x80D9,
@@ -749,22 +749,22 @@ typedef enum {
   GL_COLOR_INDEX12_EXT      = 0x80E6,
   GL_COLOR_INDEX16_EXT      = 0x80E7,
 
-  /* GL_EXT_shared_texture_palette */
+  // GL_EXT_shared_texture_palette 
   GL_SHARED_TEXTURE_PALETTE_EXT    = 0x81FB,
 
-  /* GL_EXT_point_parameters */
+  // GL_EXT_point_parameters 
   GL_POINT_SIZE_MIN_EXT      = 0x8126,
   GL_POINT_SIZE_MAX_EXT      = 0x8127,
   GL_POINT_FADE_THRESHOLD_SIZE_EXT  = 0x8128,
   GL_DISTANCE_ATTENUATION_EXT    = 0x8129,
 
-  /* GL_EXT_rescale_normal */
+  // GL_EXT_rescale_normal 
   GL_RESCALE_NORMAL_EXT      = 0x803A,
 
-  /* GL_EXT_abgr */
+  // GL_EXT_abgr 
   GL_ABGR_EXT        = 0x8000,
 
-  /* GL_SGIS_multitexture */
+  // GL_SGIS_multitexture 
   GL_SELECTED_TEXTURE_SGIS    = 0x835C,
   GL_SELECTED_TEXTURE_COORD_SET_SGIS  = 0x835D,
   GL_MAX_TEXTURES_SGIS      = 0x835E,
@@ -774,7 +774,7 @@ typedef enum {
   GL_TEXTURE3_SGIS      = 0x8362,
   GL_TEXTURE_COORD_SET_SOURCE_SGIS  = 0x8363,
 
-  /* GL_EXT_multitexture */
+  // GL_EXT_multitexture 
   GL_SELECTED_TEXTURE_EXT      = 0x83C0,
   GL_SELECTED_TEXTURE_COORD_SET_EXT  = 0x83C1,
   GL_SELECTED_TEXTURE_TRANSFORM_EXT  = 0x83C2,
@@ -786,7 +786,7 @@ typedef enum {
   GL_TEXTURE2_EXT        = 0x83C8,
   GL_TEXTURE3_EXT        = 0x83C9,
 
-  /* GL_ARB_multitexture */
+  // GL_ARB_multitexture 
   GL_ACTIVE_TEXTURE_ARB               = 0x84E0,
   GL_CLIENT_ACTIVE_TEXTURE_ARB        = 0x84E1,
   GL_MAX_TEXTURE_UNITS_ARB            = 0x84E2,
@@ -795,7 +795,7 @@ typedef enum {
   GL_TEXTURE2_ARB                     = 0x84C2,
   GL_TEXTURE3_ARB                     = 0x84C3,
 
-  /* GL_EXT_texture_env_combine */
+  // GL_EXT_texture_env_combine 
   GL_COMBINE_EXT                      = 0x8570,
   GL_COMBINE_RGB_EXT                  = 0x8571,
   GL_COMBINE_ALPHA_EXT                = 0x8572,
@@ -818,26 +818,26 @@ typedef enum {
   GL_OPERAND1_ALPHA_EXT               = 0x8599,
   GL_OPERAND2_ALPHA_EXT               = 0x859A,
 
-  /* GL_EXT_clip_volume_hint */  
+  // GL_EXT_clip_volume_hint   
   GL_CLIP_VOLUME_CLIPPING_HINT_EXT = 0x80F0,
 
-  /* GL_EXT_compiled_vertex_array */
+  // GL_EXT_compiled_vertex_array 
   GL_ARRAY_ELEMENT_LOCK_FIRST_EXT = 0x81A8,
   GL_ARRAY_ELEMENT_LOCK_COUNT_EXT = 0x81A9,
 
-  /* GL_EXT_texture_filter_anisotropic */
+  // GL_EXT_texture_filter_anisotropic 
   GL_TEXTURE_MAX_ANISOTROPY_EXT     = 0x84FE,
   GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FF,
 
-  /* GL_EXT_texture_lod_bias */
+  // GL_EXT_texture_lod_bias 
   GL_MAX_TEXTURE_LOD_BIAS_EXT   = 0x84FD,
   GL_TEXTURE_FILTER_CONTROL_EXT = 0x8500,
   GL_TEXTURE_LOD_BIAS_EXT       = 0x8501,
   
-  /* GL_SGIS_texture_edge_clamp */
+  // GL_SGIS_texture_edge_clamp 
   GL_CLAMP_TO_EDGE_SGIS  = 0x812F,
 
-  /* GL_NV_vertex_array_range & GL_NV_fence */
+  // GL_NV_vertex_array_range & GL_NV_fence 
   GL_ALL_COMPLETED_NV                  = 0x84F2,
   GL_FENCE_STATUS_NV                   = 0x84F3,
   GL_FENCE_CONDITION_NV                = 0x84F4,
@@ -847,7 +847,7 @@ typedef enum {
   GL_MAX_VERTEX_ARRAY_RANGE_ELEMENT_NV = 0x8520,
   GL_VERTEX_ARRAY_RANGE_POINTER_NV     = 0x8521,
 
-  /* ATI GL_ATI_pn_triangles */
+  // ATI GL_ATI_pn_triangles 
   GL_PN_TRIANGLES_ATI                        = 0x87F0,
   GL_MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI  = 0x87F1,
   GL_PN_TRIANGLES_POINT_MODE_ATI            = 0x87F2,
@@ -858,13 +858,13 @@ typedef enum {
   GL_PN_TRIANGLES_NORMAL_MODE_LINEAR_ATI    = 0x87F7,
   GL_PN_TRIANGLES_NORMAL_MODE_QUADRATIC_ATI = 0x87F8,
 
-  /* 3DFX T-Buffer */
+  // 3DFX T-Buffer 
   GL_MULTISAMPLE_BIT_3DFX = 0x20000000,
   GL_MULTISAMPLE_3DFX      = 0x86B2,
   GL_SAMPLE_BUFFERS_3DFX  = 0x86B3,
   GL_SAMPLES_3DFX         = 0x86B4,
 
-  /* occlussion test and query */
+  // occlussion test and query 
   GL_OCCLUSION_TEST_HP             = 0x8165,
   GL_OCCLUSION_TEST_RESULT_HP      = 0x8166,
   GL_PIXEL_COUNTER_BITS_NV         = 0x8864,
@@ -872,7 +872,7 @@ typedef enum {
   GL_PIXEL_COUNT_NV                = 0x8866,
   GL_PIXEL_COUNT_AVAILABLE_NV      = 0x8867,
 
-  /* WGL extensions */
+  // WGL extensions 
   WGL_NUMBER_PIXEL_FORMATS_EXT = 0x2000,
   WGL_DRAW_TO_WINDOW_EXT       = 0x2001,
   WGL_DRAW_TO_BITMAP_EXT       = 0x2002,
@@ -975,7 +975,7 @@ typedef enum {
   WGL_SAMPLES_3DFX        = 0x2061,
                                           
                                           
-  /* OpenGL 1.2 */                     
+  // OpenGL 1.2                      
   GL_RESCALE_NORMAL      = 0x803A,      
   GL_CLAMP_TO_EDGE      = 0x812F,      
   GL_MAX_ELEMENTS_VERTICES    = 0xF0E8,
@@ -1004,7 +1004,7 @@ typedef enum {
 } GLenum;
 
 
-/* GL_NO_ERROR must be zero */
+// GL_NO_ERROR must be zero 
 #define GL_NO_ERROR 0
 
 enum {
@@ -1047,21 +1047,21 @@ typedef unsigned int GLbitfield;
  *
  */
 
-/*  C type    GL type    storage                            */
+//  C type    GL type    storage                            
 /*-------------------------------------------------------------------------*/
 typedef void    GLvoid;
 typedef unsigned char  GLboolean;
-typedef signed char  GLbyte;    /* 1-byte signed */
-typedef short    GLshort;  /* 2-byte signed */
-typedef int    GLint;    /* 4-byte signed */
-typedef unsigned char  GLubyte;  /* 1-byte unsigned */
-typedef unsigned short  GLushort;  /* 2-byte unsigned */
-typedef unsigned int  GLuint;    /* 4-byte unsigned */
-typedef int    GLsizei;  /* 4-byte signed */
-typedef float    GLfloat;  /* single precision float */
-typedef float    GLclampf;  /* single precision float in [0,1] */
-typedef double    GLdouble;  /* double precision float */
-typedef double    GLclampd;  /* double precision float in [0,1] */
+typedef signed char  GLbyte;    // 1-byte signed 
+typedef short    GLshort;  // 2-byte signed 
+typedef int    GLint;    // 4-byte signed 
+typedef unsigned char  GLubyte;  // 1-byte unsigned 
+typedef unsigned short  GLushort;  // 2-byte unsigned 
+typedef unsigned int  GLuint;    // 4-byte unsigned 
+typedef int    GLsizei;  // 4-byte signed 
+typedef float    GLfloat;  // single precision float 
+typedef float    GLclampf;  // single precision float in [0,1] 
+typedef double    GLdouble;  // double precision float 
+typedef double    GLclampd;  // double precision float in [0,1] 
 
 
 

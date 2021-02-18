@@ -221,7 +221,7 @@ struct ENGINE_API PolygonsPerPatch
   inline void Clear() { ppp_iPolygons.Clear();};
 };
 
-/* rcg 10042001 removed anonymous structs, dangerous union. */
+// rcg 10042001 removed anonymous structs, dangerous union. 
 struct ENGINE_API TransformedVertexData {
   FLOAT3D tvd_TransformedPoint;                   // for transformed point vector
   PolyVertex2D tvd_pv2;         // vertex structure for software
@@ -241,7 +241,7 @@ public:
   void Read_t(CTStream *istrFile);
   void ReadName_t(CTStream *istrFile);
   void Write_t(CTStream *ostrFile);
-  /* Clear the object. */
+  // Clear the object. 
   inline void Clear(void) {};
 };
 

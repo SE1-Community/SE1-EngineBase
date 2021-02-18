@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "gl_types.h"
 
-/* rcg10042001 wraped for platform. */
+// rcg10042001 wraped for platform. 
 #if (defined _MSC_VER)
 #define DLLFUNCTION(dll, output, name, inputs, params, required) \
   extern output (__stdcall *p##name) inputs
@@ -47,7 +47,7 @@ extern GLint     (__stdcall *pwglGetSwapIntervalEXT)(void);
 extern void (__stdcall *pglActiveTextureARB)(GLenum texunit);
 extern void (__stdcall *pglClientActiveTextureARB)(GLenum texunit);
 
-#ifdef PLATFORM_WIN32 /* !!! FIXME: Move to abstraction layer. --rcg. */
+#ifdef PLATFORM_WIN32 // !!! FIXME: Move to abstraction layer. --rcg. 
 // t-buffer support
 extern char *(__stdcall *pwglGetExtensionsStringARB)(HDC hdc);
 extern BOOL  (__stdcall *pwglChoosePixelFormatARB)(HDC hdc, const int *piAttribIList, const FLOAT *pfAttribFList, UINT nMaxFormats, int *piFormats, UINT *nNumFormats);
@@ -56,7 +56,7 @@ extern BOOL  (__stdcall *pwglGetPixelFormatAttribivARB)(HDC hdc, int iPixelForma
 extern void  (__stdcall *pglTBufferMask3DFX)(GLuint mask);
 
 // GL_NV_vertex_array_range & GL_NV_fence
-#ifdef PLATFORM_WIN32 /* !!! FIXME: Move to abstraction layer. --rcg. */
+#ifdef PLATFORM_WIN32 // !!! FIXME: Move to abstraction layer. --rcg. 
 extern void *(__stdcall *pwglAllocateMemoryNV)(GLint size, GLfloat readfreq, GLfloat writefreq, GLfloat priority);
 extern void  (__stdcall *pwglFreeMemoryNV)(void *pointer);
 #endif
@@ -82,7 +82,7 @@ extern void  (__stdcall *pglPNTrianglesfATI)( GLenum pname, GLfloat param);
 // set color from croteam format
 inline void glCOLOR( COLOR col)
 {
-/* rcg10052001 Platform-wrappers. */
+// rcg10052001 Platform-wrappers. 
 #if (defined USE_PORTABLE_C)
   col = ( ((col << 24)            ) |
             ((col << 8) & 0x00FF0000) |

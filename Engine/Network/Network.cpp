@@ -1154,7 +1154,7 @@ void CNetworkLibrary::DebugSave(void)
   }
 }
 
-/* Enumerate existing sessions. */
+// Enumerate existing sessions. 
 void CNetworkLibrary::EnumSessions(BOOL bInternet)
 {
   // clear old list
@@ -1235,7 +1235,7 @@ void CNetworkLibrary::JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctL
   CPrintF("  joined\n");
 }
 
-/* Start playing a demo. */
+// Start playing a demo. 
 void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo)  // throw char *
 {
   // mute all sounds
@@ -1303,19 +1303,19 @@ void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo)  // throw char *
   ga_ctTimersPending = 0;
 }
 
-/* Test if currently playing demo has finished. */
+// Test if currently playing demo has finished. 
 BOOL CNetworkLibrary::IsDemoPlayFinished(void)
 {
   return ga_bDemoPlay && ga_bDemoPlayFinished;
 }
 
-/* Test if currently playing a demo. */
+// Test if currently playing a demo. 
 BOOL CNetworkLibrary::IsPlayingDemo(void)
 {
   return ga_bDemoPlay;
 }
 
-/* Test if currently recording a demo. */
+// Test if currently recording a demo. 
 BOOL CNetworkLibrary::IsRecordingDemo(void)
 {
   return ga_bDemoRec;
@@ -1697,7 +1697,7 @@ void CNetworkLibrary::ChangeLevel_internal(void)
   FinishCRCGather();
 }
 
-/* Start recording a demo. */
+// Start recording a demo. 
 void CNetworkLibrary::StartDemoRec_t(const CTFileName &fnDemo) // throw char *
 {
   // synchronize access to network
@@ -1722,7 +1722,7 @@ void CNetworkLibrary::StartDemoRec_t(const CTFileName &fnDemo) // throw char *
   ga_bDemoRec = TRUE;
 }
 
-/* Stop recording a demo. */
+// Stop recording a demo. 
 void CNetworkLibrary::StopDemoRec(void)
 {
   // synchronize access to network
@@ -2035,7 +2035,7 @@ void CNetworkLibrary::TimerLoop(void)
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_TIMERLOOP);
 }
 
-/* Get player entity for a given local player. */
+// Get player entity for a given local player. 
 CEntity *CNetworkLibrary::GetLocalPlayerEntity(CPlayerSource *ppls)
 {
   // synchronize access to network
@@ -2056,7 +2056,7 @@ CEntity *CNetworkLibrary::GetLocalPlayerEntity(CPlayerSource *ppls)
   }
 }
 
-/* Get player entity for a given player by name. */
+// Get player entity for a given player by name. 
 CEntity *CNetworkLibrary::GetPlayerEntityByName(const CTString &strName)
 {
   // synchronize access to network
@@ -2076,7 +2076,7 @@ CEntity *CNetworkLibrary::GetPlayerEntityByName(const CTString &strName)
   return NULL;
 }
 
-/* Get number of entities with given name. */
+// Get number of entities with given name. 
 INDEX CNetworkLibrary::GetNumberOfEntitiesWithName(const CTString &strName)
 {
   INDEX ctEntities = 0;
@@ -2088,7 +2088,7 @@ INDEX CNetworkLibrary::GetNumberOfEntitiesWithName(const CTString &strName)
   return ctEntities;
 }
 
-/* Get n-th entity with given name. */
+// Get n-th entity with given name. 
 CEntity *CNetworkLibrary::GetEntityWithName(const CTString &strName, INDEX iEntityWithThatName)
 {
   INDEX ctEntities = 0;
@@ -2104,7 +2104,7 @@ CEntity *CNetworkLibrary::GetEntityWithName(const CTString &strName, INDEX iEnti
   }}
   return pen;
 }
-/* Test if a given player is local to this computer. */
+// Test if a given player is local to this computer. 
 BOOL CNetworkLibrary::IsPlayerLocal(CEntity *pen)
 {
   return GetPlayerSource(pen) != NULL;
@@ -2166,7 +2166,7 @@ CPlayerSource *CNetworkLibrary::AddPlayer_t(CPlayerCharacter &pcCharacter)  // t
   return NULL;
 }
 
-/* Get session properties for current game. */
+// Get session properties for current game. 
 void *CNetworkLibrary::GetSessionProperties(void)
 {
   // synchronize access to network
@@ -2175,7 +2175,7 @@ void *CNetworkLibrary::GetSessionProperties(void)
   return ga_aubProperties;
 }
 
-/* Send chat message from some players to some other players. */
+// Send chat message from some players to some other players. 
 void CNetworkLibrary::SendChat(ULONG ulFrom, ULONG ulTo, const CTString &strMessage)
 {
   // if the string is too long and we're not server

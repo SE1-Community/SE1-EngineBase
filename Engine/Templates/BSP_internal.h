@@ -37,10 +37,10 @@ enum BSPNodeLocation {
 template<class Type, int iDimensions>
 class BSPVertex : public Vector<Type, iDimensions> {
 public:
-  /* Default constructor. */
+  // Default constructor. 
   inline BSPVertex(void) {};
 
-  /* Assignment operator with coordinates only. */
+  // Assignment operator with coordinates only. 
   inline BSPVertex<Type, iDimensions> &operator=(const Vector<Type, iDimensions> &vCoordinates);
 };
 
@@ -57,25 +57,25 @@ public:
 public:
   Vector<Type, iDimensions> bvc_vDirection;                  // direction of the split line
 
-  /* Default constructor. */
+  // Default constructor. 
   BSPVertexContainer(void);
 
-  /* Initialize for a direction. */
+  // Initialize for a direction. 
   void Initialize(const Vector<Type, iDimensions> &vDirection);
-  /* Uninitialize. */
+  // Uninitialize. 
   void Uninitialize(void);
 
-  /* Check if this container is in an unusable state (polygon coplanar with the splitter).*/
+  // Check if this container is in an unusable state (polygon coplanar with the splitter).
   inline BOOL IsPlannar(void) { return bvc_iMaxAxis == 0; };
 
-  /* Add a new vertex. */
+  // Add a new vertex. 
   inline void AddVertex(const Vector<Type, iDimensions> &vPoint);
 
-  /* Sort vertices in this container along the largest axis of container direction. */
+  // Sort vertices in this container along the largest axis of container direction. 
   void Sort(void);
-  /* Elliminate paired vertices. */
+  // Elliminate paired vertices. 
   void ElliminatePairedVertices(void);
-  /* Create edges from vertices in one container -- must be sorted before. */
+  // Create edges from vertices in one container -- must be sorted before. 
   void CreateEdges(CDynamicArray<BSPEdge<Type, iDimensions> > &abedAll, ULONG ulEdgeTag);
 };
 
@@ -89,11 +89,11 @@ public:
   Vector<Type, iDimensions> bed_vVertex1;
   ULONG bed_ulEdgeTag;   // tags for BSPs with tagged edges/planes
 
-  /* Default constructor. */
+  // Default constructor. 
   inline BSPEdge(void) {};
-  /* Constructor with two vectors. */
+  // Constructor with two vectors. 
   inline BSPEdge(const Vector<Type, iDimensions> &vVertex0, const Vector<Type, iDimensions> &vVertex1, ULONG ulTag);
-  /* Clear the object. */
+  // Clear the object. 
   inline void Clear(void) {};
   // remove all edges marked for removal
   static void RemoveMarkedBSPEdges(CDynamicArray<BSPEdge<Type, iDimensions> > &abed);
@@ -110,12 +110,12 @@ public:
   CDynamicArray<BSPEdge<Type, iDimensions> > bpo_abedPolygonEdges;  // array of edges in the polygon
   ULONG bpo_ulPlaneTag;         // tags for BSPs with tagged planes (-1 for no tag)
 
-  /* Add an edge to the polygon. */
+  // Add an edge to the polygon. 
   inline void AddEdge(const Vector<Type, iDimensions> &vPoint0, const Vector<Type, iDimensions> &vPoint1, ULONG ulTag);
 
-  /* Default constructor. */
+  // Default constructor. 
   inline BSPPolygon(void) : bpo_ulPlaneTag(-1) {};
-  /* Constructor with array of edges and plane. */
+  // Constructor with array of edges and plane. 
   inline BSPPolygon(
     Plane<Type, iDimensions> &plPlane, CDynamicArray<BSPEdge<Type, iDimensions> > abedPolygonEdges, ULONG ulPlaneTag)
     : Plane<Type, iDimensions>(plPlane)
@@ -123,7 +123,7 @@ public:
     , bpo_ulPlaneTag(ulPlaneTag)
     {};
 
-  /* Clear the object. */
+  // Clear the object. 
   inline void Clear(void) {bpo_abedPolygonEdges.Clear();};
 };
 
@@ -147,16 +147,16 @@ public:
   ULONG bn_ulPlaneTag;         // tags for BSPs with tagged planes (-1 for no tag)
 
 public:
-  /* Defualt constructor (for arrays only). */
+  // Defualt constructor (for arrays only). 
   inline BSPNode(void) {};
-  /* Constructor for a leaf node. */
+  // Constructor for a leaf node. 
   inline BSPNode(enum BSPNodeLocation bnl);
-  /* Constructor for a branch node. */
+  // Constructor for a branch node. 
   inline BSPNode(const Plane<Type, iDimensions> &plSplitPlane, ULONG ulPlaneTag, 
     BSPNode<Type, iDimensions> &bnFront, BSPNode<Type, iDimensions> &bnBack);
-  /* Constructor for cloning a bsp (sub)tree. */
+  // Constructor for cloning a bsp (sub)tree. 
   BSPNode(BSPNode<Type, iDimensions> &bnRoot);
-  /* Recursive destructor. */
+  // Recursive destructor. 
   void DeleteBSPNodeRecursively(void);
 
   // find minimum/maximum parameters of points on a line that are inside - recursive
@@ -165,9 +165,9 @@ public:
     const Vector<Type, iDimensions> &v1,
     Type t0, Type t1);
 
-  /* Test if a sphere is inside, outside, or intersecting. (Just a trivial rejection test) */
+  // Test if a sphere is inside, outside, or intersecting. (Just a trivial rejection test) 
   FLOAT TestSphere(const Vector<Type, iDimensions> &vSphereCenter, Type tSphereRadius) const;
-  /* Test if a box is inside, outside, or intersecting. (Just a trivial rejection test) */
+  // Test if a box is inside, outside, or intersecting. (Just a trivial rejection test) 
   FLOAT TestBox(const OBBox<Type> &box) const;
 };
 
@@ -177,13 +177,13 @@ public:
 template<class Type, int iDimensions>
 class BSPCutter {
 public:
-  /* Split an edge with a plane. */
+  // Split an edge with a plane. 
   static inline void SplitEdge(const Vector<Type, iDimensions> &vPoint0, const Vector<Type, iDimensions> &vPoint1, ULONG ulEdgeTag,
     const Plane<Type, iDimensions> &plSplitPlane,
     BSPPolygon<Type, iDimensions> &abedFront, BSPPolygon<Type, iDimensions> &abedBack,
     BSPVertexContainer<Type, iDimensions> &bvcFront, BSPVertexContainer<Type, iDimensions> &bvcBack);
 
-  /* Cut a polygon with a BSP tree. */
+  // Cut a polygon with a BSP tree. 
   void CutPolygon(BSPPolygon<Type, iDimensions> &bpoPolygon, BSPNode<Type, iDimensions> &bn);
 
 public:
@@ -192,13 +192,13 @@ public:
   CDynamicArray<BSPEdge<Type, iDimensions> > bc_abedBorderInside; // edges of border part of polygon facing inwards
   CDynamicArray<BSPEdge<Type, iDimensions> > bc_abedBorderOutside;// edges of border part of polygon facing outwards
 
-  /* Split a polygon with a plane. */
+  // Split a polygon with a plane. 
   static inline BOOL SplitPolygon(BSPPolygon<Type, iDimensions> &bpoPolygon, const Plane<Type, iDimensions> &plPlane, ULONG ulPlaneTag,
     BSPPolygon<Type, iDimensions> &bpoFront, BSPPolygon<Type, iDimensions> &bpoBack);
 
-  /* Constructor for splitting a polygon with a BSP tree. */
+  // Constructor for splitting a polygon with a BSP tree. 
   BSPCutter(BSPPolygon<Type, iDimensions> &bpoPolygon, BSPNode<Type, iDimensions> &bnRoot);
-  /* Destructor. */
+  // Destructor. 
   ~BSPCutter(void);
 };
 

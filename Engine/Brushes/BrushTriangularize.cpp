@@ -126,37 +126,37 @@ public:
   // get a vertex coordinates
   inline DOUBLE3D GetVertex(CBrushVertex *pbvx) const;
 
-  /* Create a splitter plane for an edge. */
+  // Create a splitter plane for an edge. 
   inline void EdgeToPlane(const DOUBLE3D &vVertex0, const DOUBLE3D &vVertex1,
     DOUBLEplane3D &plPlane) const;
-  /* Clip edge to a plane and check if something remains behind. */
+  // Clip edge to a plane and check if something remains behind. 
   BOOL ClipEdge(DOUBLE3D &vVertex0, DOUBLE3D &vVertex1, const DOUBLEplane3D &plPlane) const;
-  /* Check if an edge is entirely or partially inside considered triangle. */
+  // Check if an edge is entirely or partially inside considered triangle. 
   BOOL EdgeInsideTriangle(const CBrushEdge *pbed) const;
-  /* Calculate the quality of currently considered triangle. */
+  // Calculate the quality of currently considered triangle. 
   DOUBLE TriangleQuality(void) const;
 
-  /* Check that duplicate or reverse edges do not exist. */
+  // Check that duplicate or reverse edges do not exist. 
   void CheckForInvalidEdges(void);
-  /* Add given edge to temporary array. */
+  // Add given edge to temporary array. 
   void AddEdge(CBrushVertex *pbvxVertex0, CBrushVertex *pbvxVertex1);
 
-  /* Create an array of forward oriented edges from polygon edges of a polygon. */
+  // Create an array of forward oriented edges from polygon edges of a polygon. 
   void MakeEdgesForTriangularization(void);
-  /* Test all edges for intersection with considered triangle. */
+  // Test all edges for intersection with considered triangle. 
   BOOL CheckTriangleAgainstEdges(void);
-  /* Find best triangle in array of edges. */
+  // Find best triangle in array of edges. 
   void FindBestTriangle(void);
-  /* Find if left/right triangle edges already exist. */
+  // Find if left/right triangle edges already exist. 
   void FindExistingTriangleEdges(void);
-  /* Remove best triangle from edges. */
+  // Remove best triangle from edges. 
   void RemoveBestTriangleFromPolygon(void);
-  /* Add best triangle to triangles. */
+  // Add best triangle to triangles. 
   void AddBestTriangleToTriangles(void);
 
-  /* Print a statement to debugging output file. */
+  // Print a statement to debugging output file. 
   void DPrintF(char *strFormat, ...);
-  /* Dump triangle edges to debug output. */
+  // Dump triangle edges to debug output. 
   void DumpEdges(void);
 
   // find vertices used without duplication
@@ -172,7 +172,7 @@ public:
   // array for triangle elements
   CStaticArray<INDEX> tr_aiElements;
 
-  /* Constructor - do triangularization for a polygon. */
+  // Constructor - do triangularization for a polygon. 
   CTriangularizer(CBrushPolygon &bpoOriginalPolygon);
 
   INDEX tr_iError;
@@ -211,7 +211,7 @@ BOOL CTriangularizer::ClipEdge(DOUBLE3D &vVertex0, DOUBLE3D &vVertex1,
   DOUBLE fDistance0 = plPlane.PointDistance(vVertex0);
   DOUBLE fDistance1 = plPlane.PointDistance(vVertex1);
                    
-  /* ---- first point behind plane ---- */
+  // ---- first point behind plane ---- 
   if (fDistance0 < -EPSILON) {
 
     // if both are back
@@ -232,7 +232,7 @@ BOOL CTriangularizer::ClipEdge(DOUBLE3D &vVertex0, DOUBLE3D &vVertex1,
       return TRUE;
     }
 
-  /* ---- first point in front of plane ---- */
+  // ---- first point in front of plane ---- 
   } else if (fDistance0 > +EPSILON) {
 
     // if first is front, second back
@@ -253,7 +253,7 @@ BOOL CTriangularizer::ClipEdge(DOUBLE3D &vVertex0, DOUBLE3D &vVertex1,
       return FALSE;
     }
 
-  /* ---- first point on the plane ---- */
+  // ---- first point on the plane ---- 
   } else {
     // if first is on the plane, second back
     if (fDistance1 < -EPSILON) {
@@ -731,7 +731,7 @@ void CTriangularizer::FindBestTriangle(void)
 #if 0
   // if no acceptable triangles have been found
   if (tr_fQualityBest<???) {
-    /* dump all sector's vertices */
+    // dump all sector's vertices 
     /*
     FOREACHINSTATICARRAY(tr_bpoOriginalPolygon.bpo_pbscSector->bsc_abvxVertices,
       CBrushVertex, itbvx) {

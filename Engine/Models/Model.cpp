@@ -1707,7 +1707,7 @@ void CModelData::RemReference_internal(void)
 }
 
 
-/* Get the description of this object. */
+// Get the description of this object. 
 CTString CModelData::GetDescription(void)
 {
   CTString str;

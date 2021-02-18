@@ -88,13 +88,13 @@ public: //private:
   CSoundParameters so_spNew;    // parameters to set on next update
   CSoundParameters3D so_sp3;    // 3d sound parameters
 
-  /* Play Buffer */
+  // Play Buffer 
   void PlayBuffer(void);
-  /* Stop Buffer */
+  // Stop Buffer 
   void StopBuffer(void);
-  /* Update all 3d effects. */
+  // Update all 3d effects. 
   void Update3DEffects(void);
-  /* Prepare sound */
+  // Prepare sound 
   void PrepareSound(void);
 
   // get proper sound object for predicted events - return NULL the event is already predicted

@@ -370,7 +370,7 @@ INDEX CServer::FindSyncCheck(TICK llTick, CSyncCheck &sc)
   }
 }
 
-/* Send one regular batch of sequences to a client. */
+// Send one regular batch of sequences to a client. 
 void CServer::SendGameStreamBlocks(INDEX iClient)
 {
   // get corresponding session socket
@@ -522,7 +522,7 @@ void CServer::SendGameStreamBlocks(INDEX iClient)
   }
 }
 
-/* Resend a batch of game stream blocks to a client. */
+// Resend a batch of game stream blocks to a client. 
 void CServer::ResendGameStreamBlocks(INDEX iClient, INDEX iSequence0, INDEX ctSequences)
 {
   extern INDEX net_bReportMiscErrors;
@@ -574,7 +574,7 @@ void CServer::ResendGameStreamBlocks(INDEX iClient, INDEX iSequence0, INDEX ctSe
   }
 }
 
-/* Get number of active players. */
+// Get number of active players. 
 INDEX CServer::GetPlayersCount(void)
 {
   INDEX ctPlayers = 0;
@@ -585,7 +585,7 @@ INDEX CServer::GetPlayersCount(void)
   }
   return ctPlayers;
 }
-/* Get number of active vip players. */
+// Get number of active vip players. 
 INDEX CServer::GetVIPPlayersCount(void)
 {
   INDEX ctPlayers = 0;
@@ -596,7 +596,7 @@ INDEX CServer::GetVIPPlayersCount(void)
   }
   return ctPlayers;
 }
-/* Get total number of active clients. */
+// Get total number of active clients. 
 INDEX CServer::GetClientsCount(void)
 {
   INDEX ctClients = 0;
@@ -612,7 +612,7 @@ INDEX CServer::GetClientsCount(void)
   return ctClients;
 
 }
-/* Get number of active vip clients. */
+// Get number of active vip clients. 
 INDEX CServer::GetVIPClientsCount(void)
 {
   INDEX ctClients = 0;
@@ -629,7 +629,7 @@ INDEX CServer::GetVIPClientsCount(void)
 
   return ctClients;
 }
-/* Get number of active observers. */
+// Get number of active observers. 
 INDEX CServer::GetObserversCount(void)
 {
   INDEX ctClients = 0;
@@ -647,7 +647,7 @@ INDEX CServer::GetObserversCount(void)
   return ctClients;
 }
 
-/* Get number of active players on one client. */
+// Get number of active players on one client. 
 INDEX CServer::GetPlayersCountForClient(INDEX iClient)
 {
   INDEX ctPlayers = 0;
@@ -829,7 +829,7 @@ void CServer::AddBlockToAllSessions(CNetworkStreamBlock &nsb)
   }
 }
 
-/* Send initialization info to local client. */
+// Send initialization info to local client. 
 void CServer::ConnectLocalSessionState(INDEX iClient, CNetworkMessage &nm)
 {
   // find session of this client
@@ -847,7 +847,7 @@ void CServer::ConnectLocalSessionState(INDEX iClient, CNetworkMessage &nm)
   _pNetwork->SendToClientReliable(iClient, nmInitMainServer);
 }
 
-/* Send initialization info to remote client. */
+// Send initialization info to remote client. 
 void CServer::ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm)
 {
   ASSERT(iClient>0);
@@ -1016,7 +1016,7 @@ void CServer::ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm)
   }
 }
 
-/* Send session state data to remote client. */
+// Send session state data to remote client. 
 void CServer::SendSessionStateData(INDEX iClient)
 {
   ASSERT(iClient>0);
@@ -1089,7 +1089,7 @@ void CServer::SendSessionStateData(INDEX iClient)
   }
 }
 
-/* Handle incoming network messages. */
+// Handle incoming network messages. 
 void CServer::HandleAll()
 {
   // clear last accepted client info

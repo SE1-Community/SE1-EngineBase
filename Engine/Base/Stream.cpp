@@ -256,7 +256,7 @@ void IgnoreApplicationPath(void)
 /////////////////////////////////////////////////////////////////////////////
 // Helper functions
 
-/* Static function enable stream handling. */
+// Static function enable stream handling. 
 void CTStream::EnableStreamHandling(void)
 {
   ASSERT(!_bThreadCanHandleStreams && _plhOpenedStreams == NULL);
@@ -265,7 +265,7 @@ void CTStream::EnableStreamHandling(void)
   _plhOpenedStreams = new CListHead;
 }
 
-/* Static function disable stream handling. */
+// Static function disable stream handling. 
 void CTStream::DisableStreamHandling(void)
 {
   ASSERT(_bThreadCanHandleStreams && _plhOpenedStreams != NULL);
@@ -340,7 +340,7 @@ void CTStream::Throw_t(char *strFormat, ...)  // throws char *
 /////////////////////////////////////////////////////////////////////////////
 // Binary access methods
 
-/* Get CRC32 of stream */
+// Get CRC32 of stream 
 ULONG CTStream::GetStreamCRC32_t(void)
 {
   // remember where stream is now
@@ -374,7 +374,7 @@ ULONG CTStream::GetStreamCRC32_t(void)
 /////////////////////////////////////////////////////////////////////////////
 // Text access methods
 
-/* Get a line of text from file. */
+// Get a line of text from file. 
 // throws char *
 void CTStream::GetLine_t(char *strBuffer, SLONG slBufferSize, char cDelimiter /*='\n'*/ )
 {
@@ -429,7 +429,7 @@ void CTStream::GetLine_t(CTString &strLine, char cDelimiter/*='\n'*/) // throw c
 }
 
 
-/* Put a line of text into file. */
+// Put a line of text into file. 
 void CTStream::PutLine_t(const char *strBuffer) // throws char *
 {
   // check parameters
@@ -836,7 +836,7 @@ void CTStream::DictionaryPreload_t(void)
 /////////////////////////////////////////////////////////////////////////////
 // General construction/destruction
 
-/* Default constructor. */
+// Default constructor. 
 CTStream::CTStream(void) : strm_ntDictionary(*new CNameTable_CTFileName)
 {
   strm_strStreamDescription = "";
@@ -844,7 +844,7 @@ CTStream::CTStream(void) : strm_ntDictionary(*new CNameTable_CTFileName)
   strm_dmDictionaryMode = DM_NONE;
 }
 
-/* Destructor. */
+// Destructor. 
 CTStream::~CTStream(void)
 {
   strm_ntDictionary.Clear();
@@ -1030,7 +1030,7 @@ void CTFileStream::Close(void)
   strm_slDictionaryPos=0;
 }
 
-/* Get CRC32 of stream */
+// Get CRC32 of stream 
 ULONG CTFileStream::GetStreamCRC32_t(void)
 {
   // if file on disk
@@ -1046,7 +1046,7 @@ ULONG CTFileStream::GetStreamCRC32_t(void)
   }
 }
 
-/* Read a block of data from stream. */
+// Read a block of data from stream. 
 void CTFileStream::Read_t(void *pvBuffer, SLONG slSize)
 {
   if (fstrm_iZipHandle != -1) {
@@ -1058,7 +1058,7 @@ void CTFileStream::Read_t(void *pvBuffer, SLONG slSize)
   fread(pvBuffer, slSize, 1, fstrm_pFile);
 }
 
-/* Write a block of data to stream. */
+// Write a block of data to stream. 
 void CTFileStream::Write_t(const void *pvBuffer, SLONG slSize)
 {
   if (fstrm_bReadOnly || fstrm_iZipHandle != -1) {
@@ -1068,7 +1068,7 @@ void CTFileStream::Write_t(const void *pvBuffer, SLONG slSize)
   fwrite(pvBuffer, slSize, 1, fstrm_pFile);
 }
 
-/* Seek in stream. */
+// Seek in stream. 
 void CTFileStream::Seek_t(SLONG slOffset, enum SeekDir sd)
 {
   if (fstrm_iZipHandle != -1) {
@@ -1082,13 +1082,13 @@ void CTFileStream::Seek_t(SLONG slOffset, enum SeekDir sd)
   }
 }
 
-/* Set absolute position in stream. */
+// Set absolute position in stream. 
 void CTFileStream::SetPos_t(SLONG slPosition)
 {
   Seek_t(slPosition, SD_BEG);
 }
 
-/* Get absolute position in stream. */
+// Get absolute position in stream. 
 SLONG CTFileStream::GetPos_t(void)
 {
   if (fstrm_iZipHandle != -1) {
@@ -1098,7 +1098,7 @@ SLONG CTFileStream::GetPos_t(void)
   }
 }
 
-/* Get size of stream */
+// Get size of stream 
 SLONG CTFileStream::GetStreamSize(void)
 {
   if (fstrm_iZipHandle != -1) {
@@ -1112,7 +1112,7 @@ SLONG CTFileStream::GetStreamSize(void)
   }
 }
 
-/* Check if file position points to the EOF */
+// Check if file position points to the EOF 
 BOOL CTFileStream::AtEOF(void)
 {
   if (fstrm_iZipHandle != -1) {
@@ -1196,7 +1196,7 @@ CTMemoryStream::CTMemoryStream(void *pvBuffer, SLONG slSize,
   _plhOpenedStreams->AddTail( strm_lnListNode);
 }
 
-/* Destructor. */
+// Destructor. 
 CTMemoryStream::~CTMemoryStream(void)
 {
   ASSERT(mstrm_ctLocked == 0);
@@ -1245,14 +1245,14 @@ BOOL CTMemoryStream::IsSeekable(void)
   return TRUE;
 }
 
-/* Read a block of data from stream. */
+// Read a block of data from stream. 
 void CTMemoryStream::Read_t(void *pvBuffer, SLONG slSize)
 {
   memcpy(pvBuffer, mstrm_pubBuffer + mstrm_slLocation, slSize);
   mstrm_slLocation += slSize;
 }
 
-/* Write a block of data to stream. */
+// Write a block of data to stream. 
 void CTMemoryStream::Write_t(const void *pvBuffer, SLONG slSize)
 {
   memcpy(mstrm_pubBuffer + mstrm_slLocation, pvBuffer, slSize);
@@ -1263,7 +1263,7 @@ void CTMemoryStream::Write_t(const void *pvBuffer, SLONG slSize)
   }
 }
 
-/* Seek in stream. */
+// Seek in stream. 
 void CTMemoryStream::Seek_t(SLONG slOffset, enum SeekDir sd)
 {
   switch (sd) {
@@ -1273,37 +1273,37 @@ void CTMemoryStream::Seek_t(SLONG slOffset, enum SeekDir sd)
   }
 }
 
-/* Set absolute position in stream. */
+// Set absolute position in stream. 
 void CTMemoryStream::SetPos_t(SLONG slPosition)
 {
   mstrm_slLocation = slPosition;
 }
 
-/* Get absolute position in stream. */
+// Get absolute position in stream. 
 SLONG CTMemoryStream::GetPos_t(void)
 {
   return mstrm_slLocation;
 }
 
-/* Get size of stream. */
+// Get size of stream. 
 SLONG CTMemoryStream::GetSize_t(void)
 {
   return GetStreamSize();
 }
 
-/* Get size of stream */
+// Get size of stream 
 SLONG CTMemoryStream::GetStreamSize(void)
 {
   return mstrm_pubBufferMax - mstrm_pubBuffer;
 }
 
-/* Get CRC32 of stream */
+// Get CRC32 of stream 
 ULONG CTMemoryStream::GetStreamCRC32_t(void)
 {
   return CTStream::GetStreamCRC32_t();
 }
 
-/* Check if file position points to the EOF */
+// Check if file position points to the EOF 
 BOOL CTMemoryStream::AtEOF(void)
 {
   return mstrm_slLocation >= GetStreamSize();

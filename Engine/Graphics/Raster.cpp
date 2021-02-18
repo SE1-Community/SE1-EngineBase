@@ -63,7 +63,7 @@ CRaster::~CRaster(void)
 }
 
 
-/* Recalculate dimensions for all drawports. */
+// Recalculate dimensions for all drawports. 
 void CRaster::RecalculateDrawPortsDimensions(void)
 {
   // for all drawports in this raster

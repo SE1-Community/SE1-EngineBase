@@ -54,7 +54,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif  // defined _MSC_VER
 
 
-#ifdef PLATFORM_UNIX  /* rcg10042001 */
+#ifdef PLATFORM_UNIX  // rcg10042001 
   #define ENGINE_API
 #endif
 

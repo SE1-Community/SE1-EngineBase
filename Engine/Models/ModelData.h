@@ -136,7 +136,7 @@ public:
   void LinkDataForSurfaces(BOOL bFirstMip);// calculate polygons and vertices for surface
   void Read_t( CTStream *istrFile);  // throw char *
   void Write_t( CTStream *ostrFile); // throw char *
-  /* Get the description of this object. */
+  // Get the description of this object. 
   CTString GetDescription(void);
 
 };

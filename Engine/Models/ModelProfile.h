@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/Profiling.h>
 
-/* Class for holding profiling information for models. */
+// Class for holding profiling information for models. 
 class CModelProfile : public CProfileForm {
 public:
   // indices for profiling counters and timers
