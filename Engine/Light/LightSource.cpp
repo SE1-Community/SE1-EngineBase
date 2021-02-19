@@ -290,64 +290,62 @@ static inline BOOL IsPolygonInfluencedByDirectionalLight(CBrushPolygon *pbpo) {
 // find all shadow maps that should have layers from this light source
 void CLightSource::FindShadowLayersDirectional(BOOL bSelectedOnly) {
   // for each layer of the light source
-  {FORDELETELIST(CBrushShadowLayer, bsl_lnInLightSource, ls_lhLayers,
-                 itbsl) {CBrushPolygon *pbpo = itbsl->bsl_pbsmShadowMap->GetBrushPolygon();
-  // if only selected polygons are checked, and this one is not selected
-  if (bSelectedOnly && !(pbpo->bpo_ulFlags & BPOF_SELECTED)) {
-    // skip it
-    continue;
-  }
-  // if the polygon is influenced
-  if (IsPolygonInfluencedByDirectionalLight(pbpo)) {
-    // mark it
-    pbpo->bpo_ulFlags |= BPOF_MARKEDLAYER;
-    // update its parameters
-    UpdateLayer(*itbsl);
-    // if the polygon is not influenced
-  } else {
-    // invalidate its shadow map
-    itbsl->bsl_pbsmShadowMap->Invalidate(ls_ulFlags & LSF_DYNAMIC);
-    // delete the layer
-    delete &*itbsl;
-  }
-}
-}
+  {FORDELETELIST(CBrushShadowLayer, bsl_lnInLightSource, ls_lhLayers, itbsl) {
+    CBrushPolygon *pbpo = itbsl->bsl_pbsmShadowMap->GetBrushPolygon();
+    // if only selected polygons are checked, and this one is not selected
+    if (bSelectedOnly && !(pbpo->bpo_ulFlags & BPOF_SELECTED)) {
+      // skip it
+      continue;
+    }
+    // if the polygon is influenced
+    if (IsPolygonInfluencedByDirectionalLight(pbpo)) {
+      // mark it
+      pbpo->bpo_ulFlags |= BPOF_MARKEDLAYER;
+      // update its parameters
+      UpdateLayer(*itbsl);
+      // if the polygon is not influenced
+    } else {
+      // invalidate its shadow map
+      itbsl->bsl_pbsmShadowMap->Invalidate(ls_ulFlags & LSF_DYNAMIC);
+      // delete the layer
+      delete &*itbsl;
+    }
+  }}
 
-// for each entity in the world
-{FOREACHINDYNAMICCONTAINER(ls_penEntity->en_pwoWorld->wo_cenEntities, CEntity, iten) {
-  // if it is brush entity
-  if (iten->en_RenderType == CEntity::RT_BRUSH) {
-    // for each mip in its brush
-    FOREACHINLIST(CBrushMip, bm_lnInBrush, iten->en_pbrBrush->br_lhBrushMips,
-                  itbm) {// for all sectors in this mip
-                         FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
-                           // for each polygon in sector
-                           FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {CBrushPolygon *pbpo = itbpo;
-// if only selected polygons are checked, and this one is not selected
-if (bSelectedOnly && !(pbpo->bpo_ulFlags & BPOF_SELECTED)) {
-  // skip it
-  continue;
-}
-// if the polygon is not marked but it is influenced
-if (!(pbpo->bpo_ulFlags & BPOF_MARKEDLAYER) && IsPolygonInfluencedByDirectionalLight(pbpo)) {
-  // add a layer to the polygon
-  AddLayer(*pbpo);
-}
-}
-}
-}
-}
-}
-}
+  // for each entity in the world
+  {FOREACHINDYNAMICCONTAINER(ls_penEntity->en_pwoWorld->wo_cenEntities, CEntity, iten) {
+    // if it is brush entity
+    if (iten->en_RenderType == CEntity::RT_BRUSH) {
+      // for each mip in its brush
+      FOREACHINLIST(CBrushMip, bm_lnInBrush, iten->en_pbrBrush->br_lhBrushMips, itbm) {
+        // for all sectors in this mip
+        FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
+          // for each polygon in sector
+          FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
+            CBrushPolygon *pbpo = itbpo;
+            // if only selected polygons are checked, and this one is not selected
+            if (bSelectedOnly && !(pbpo->bpo_ulFlags & BPOF_SELECTED)) {
+              // skip it
+              continue;
+            }
 
-// for each layer of the light source
-{
-  FOREACHINLIST(CBrushShadowLayer, bsl_lnInLightSource, ls_lhLayers, itbsl) {
+            // if the polygon is not marked but it is influenced
+            if (!(pbpo->bpo_ulFlags & BPOF_MARKEDLAYER) && IsPolygonInfluencedByDirectionalLight(pbpo)) {
+              // add a layer to the polygon
+              AddLayer(*pbpo);
+            }
+          }
+        }
+      }
+    }
+  }}
+
+  // for each layer of the light source
+  {FOREACHINLIST(CBrushShadowLayer, bsl_lnInLightSource, ls_lhLayers, itbsl) {
     CBrushPolygon *pbpo = itbsl->bsl_pbsmShadowMap->GetBrushPolygon();
     // unmark the polygon
     pbpo->bpo_ulFlags &= ~BPOF_MARKEDLAYER;
-  }
-}
+  }}
 }
 
 static const FLOAT3D *_pvOrigin;
@@ -406,35 +404,34 @@ void CLightSource::FindShadowLayersPoint(BOOL bSelectedOnly) {
 
   // for each layer of the light source
   DOUBLE3D dvOrigin = FLOATtoDOUBLE(*_pvOrigin);
-  {
-    FORDELETELIST(CBrushShadowLayer, bsl_lnInLightSource, ls_lhLayers, itbsl) {
-      CBrushPolygon *pbpo = itbsl->bsl_pbsmShadowMap->GetBrushPolygon();
-      CEntity *penWithPolygon = pbpo->bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
-      // fixup for fast moving brush shadow recalculation
-      if (_penLightUpdating != NULL && _penLightUpdating != penWithPolygon) {
-        continue;
-      }
-      // if only selected polygons are checked, and this one is not selected
-      if (bSelectedOnly && !(pbpo->bpo_ulFlags & BPOF_SELECTED)) {
-        // skip it
-        continue;
-      }
 
-      // if the polygon is influenced
-      if (IsPolygonInfluencedByPointLight(pbpo)) {
-        // mark it
-        pbpo->bpo_ulFlags |= BPOF_MARKEDLAYER;
-        // update its parameters
-        UpdateLayer(*itbsl);
-        // if the polygon is not influenced
-      } else {
-        // invalidate its shadow map
-        itbsl->bsl_pbsmShadowMap->Invalidate(ls_ulFlags & LSF_DYNAMIC);
-        // delete the layer
-        delete &*itbsl;
-      }
+  {FORDELETELIST(CBrushShadowLayer, bsl_lnInLightSource, ls_lhLayers, itbsl) {
+    CBrushPolygon *pbpo = itbsl->bsl_pbsmShadowMap->GetBrushPolygon();
+    CEntity *penWithPolygon = pbpo->bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
+    // fixup for fast moving brush shadow recalculation
+    if (_penLightUpdating != NULL && _penLightUpdating != penWithPolygon) {
+      continue;
     }
-  }
+    // if only selected polygons are checked, and this one is not selected
+    if (bSelectedOnly && !(pbpo->bpo_ulFlags & BPOF_SELECTED)) {
+      // skip it
+      continue;
+    }
+
+    // if the polygon is influenced
+    if (IsPolygonInfluencedByPointLight(pbpo)) {
+      // mark it
+      pbpo->bpo_ulFlags |= BPOF_MARKEDLAYER;
+      // update its parameters
+      UpdateLayer(*itbsl);
+      // if the polygon is not influenced
+    } else {
+      // invalidate its shadow map
+      itbsl->bsl_pbsmShadowMap->Invalidate(ls_ulFlags & LSF_DYNAMIC);
+      // delete the layer
+      delete &*itbsl;
+    }
+  }}
 
   // if it is a movable entity
   if (ls_penEntity->en_ulPhysicsFlags & EPF_MOVABLE) {
@@ -459,58 +456,54 @@ void CLightSource::FindShadowLayersPoint(BOOL bSelectedOnly) {
     // if it is not a movable entity
   } else {
     // for each entity in the world
-    {
-      FOREACHINDYNAMICCONTAINER(ls_penEntity->en_pwoWorld->wo_cenEntities, CEntity, iten) {
-        // fixup for fast moving brush shadow recalculation
-        if (_penLightUpdating != NULL && _penLightUpdating != &*iten) {
-          continue;
-        }
-        // if it is brush entity
-        if (iten->en_RenderType == CEntity::RT_BRUSH) {
-          // for each mip in its brush
-          FOREACHINLIST(CBrushMip, bm_lnInBrush, iten->en_pbrBrush->br_lhBrushMips, itbm) {
-            // if the mip doesn't have contact with the light
-            if (!itbm->bm_boxBoundingBox.HasContactWith(_boxLight)) {
+    {FOREACHINDYNAMICCONTAINER(ls_penEntity->en_pwoWorld->wo_cenEntities, CEntity, iten) {
+      // fixup for fast moving brush shadow recalculation
+      if (_penLightUpdating != NULL && _penLightUpdating != &*iten) {
+        continue;
+      }
+      // if it is brush entity
+      if (iten->en_RenderType == CEntity::RT_BRUSH) {
+        // for each mip in its brush
+        FOREACHINLIST(CBrushMip, bm_lnInBrush, iten->en_pbrBrush->br_lhBrushMips, itbm) {
+          // if the mip doesn't have contact with the light
+          if (!itbm->bm_boxBoundingBox.HasContactWith(_boxLight)) {
+            // skip it
+            continue;
+          }
+          // for all sectors in this mip
+          FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
+            // if the sector doesn't have contact with the light
+            if (!itbsc->bsc_boxBoundingBox.HasContactWith(_boxLight)
+                || (itbsc->bsc_bspBSPTree.bt_pbnRoot != NULL
+                    && !(itbsc->bsc_bspBSPTree.TestSphere(dvOrigin, FLOATtoDOUBLE(_rRange)) >= 0))) {
               // skip it
               continue;
             }
-            // for all sectors in this mip
-            FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
-              // if the sector doesn't have contact with the light
-              if (!itbsc->bsc_boxBoundingBox.HasContactWith(_boxLight)
-                  || (itbsc->bsc_bspBSPTree.bt_pbnRoot != NULL
-                      && !(itbsc->bsc_bspBSPTree.TestSphere(dvOrigin, FLOATtoDOUBLE(_rRange)) >= 0))) {
+            // for each polygon in sector
+            FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
+              // if only selected polygons are checked, and this one is not selected
+              if (bSelectedOnly && !(itbpo->bpo_ulFlags & BPOF_SELECTED)) {
                 // skip it
                 continue;
               }
-              // for each polygon in sector
-              FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
-                // if only selected polygons are checked, and this one is not selected
-                if (bSelectedOnly && !(itbpo->bpo_ulFlags & BPOF_SELECTED)) {
-                  // skip it
-                  continue;
-                }
-                // if the polygon is not marked but it is influenced
-                if (!(itbpo->bpo_ulFlags & BPOF_MARKEDLAYER) && IsPolygonInfluencedByPointLight(itbpo)) {
-                  // add a layer to the polygon
-                  AddLayer(*itbpo);
-                }
+              // if the polygon is not marked but it is influenced
+              if (!(itbpo->bpo_ulFlags & BPOF_MARKEDLAYER) && IsPolygonInfluencedByPointLight(itbpo)) {
+                // add a layer to the polygon
+                AddLayer(*itbpo);
               }
             }
           }
         }
       }
-    }
+    }}
   }
 
   // for each layer of the light source
-  {
-    FOREACHINLIST(CBrushShadowLayer, bsl_lnInLightSource, ls_lhLayers, itbsl) {
-      CBrushPolygon *pbpo = itbsl->bsl_pbsmShadowMap->GetBrushPolygon();
-      // unmark the polygon
-      pbpo->bpo_ulFlags &= ~BPOF_MARKEDLAYER;
-    }
-  }
+  {FOREACHINLIST(CBrushShadowLayer, bsl_lnInLightSource, ls_lhLayers, itbsl) {
+    CBrushPolygon *pbpo = itbsl->bsl_pbsmShadowMap->GetBrushPolygon();
+    // unmark the polygon
+    pbpo->bpo_ulFlags &= ~BPOF_MARKEDLAYER;
+  }}
 }
 
 void CLightSource::FindShadowLayers(BOOL bSelectedOnly) {
@@ -547,34 +540,32 @@ void CLightSource::UpdateTerrains(CPlacement3D plOld, CPlacement3D plNew) {
   }
 
   // for each entity in the world
-  {
-    FOREACHINDYNAMICCONTAINER(ls_penEntity->en_pwoWorld->wo_cenEntities, CEntity, iten) {
-      // if it is terrain entity
-      if (iten->en_RenderType == CEntity::RT_TERRAIN) {
-        CTerrain *ptrTerrain = iten->GetTerrain();
-        ASSERT(ptrTerrain != NULL);
-        // Calculate bboxes of light at old position and new position
-        FLOATaabbox3D bboxLightOld = FLOATaabbox3D(plOld.pl_PositionVector, ls_rFallOff);
-        FLOATaabbox3D bboxLightNew = FLOATaabbox3D(plNew.pl_PositionVector, ls_rFallOff);
-        FLOATaabbox3D bboxLightPos = FLOATaabbox3D(plNew.pl_PositionVector);
+  {FOREACHINDYNAMICCONTAINER(ls_penEntity->en_pwoWorld->wo_cenEntities, CEntity, iten) {
+    // if it is terrain entity
+    if (iten->en_RenderType == CEntity::RT_TERRAIN) {
+      CTerrain *ptrTerrain = iten->GetTerrain();
+      ASSERT(ptrTerrain != NULL);
+      // Calculate bboxes of light at old position and new position
+      FLOATaabbox3D bboxLightOld = FLOATaabbox3D(plOld.pl_PositionVector, ls_rFallOff);
+      FLOATaabbox3D bboxLightNew = FLOATaabbox3D(plNew.pl_PositionVector, ls_rFallOff);
+      FLOATaabbox3D bboxLightPos = FLOATaabbox3D(plNew.pl_PositionVector);
 
-        if (ls_ulFlags & LSF_DIRECTIONAL) {
-          ptrTerrain->UpdateShadowMap();
+      if (ls_ulFlags & LSF_DIRECTIONAL) {
+        ptrTerrain->UpdateShadowMap();
+      } else {
+        if (bboxLightPos.HasContactWith(bboxLightOld)) {
+          FLOATaabbox3D bboxLightAll = bboxLightOld;
+          bboxLightAll |= bboxLightNew;
+          ptrTerrain->UpdateShadowMap(&bboxLightAll, TRUE);
         } else {
-          if (bboxLightPos.HasContactWith(bboxLightOld)) {
-            FLOATaabbox3D bboxLightAll = bboxLightOld;
-            bboxLightAll |= bboxLightNew;
-            ptrTerrain->UpdateShadowMap(&bboxLightAll, TRUE);
-          } else {
-            // Update part of shadow map where light was before moving
-            ptrTerrain->UpdateShadowMap(&bboxLightOld, TRUE);
-            // Update part of shadow map where light is now
-            ptrTerrain->UpdateShadowMap(&bboxLightNew, TRUE);
-          }
+          // Update part of shadow map where light was before moving
+          ptrTerrain->UpdateShadowMap(&bboxLightOld, TRUE);
+          // Update part of shadow map where light is now
+          ptrTerrain->UpdateShadowMap(&bboxLightNew, TRUE);
         }
       }
     }
-  }
+  }}
 }
 
 // set properties of the light source without discarding shadows

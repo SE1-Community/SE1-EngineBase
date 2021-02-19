@@ -39,27 +39,24 @@ template CDynamicArray<CBrushSector>;
  */
 void CBrushMip::SelectSectorsInRange(CBrushSectorSelectionForCSG &selbscInRange, FLOATaabbox3D boxRange) {
   // for all sectors in the brush
-  {
-    FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
-      // if the sector is in the range
-      if (itbsc->bsc_boxBoundingBox.HasContactWith(boxRange, CSG_RANGE_EPSILON)) {
-        // select it
-        selbscInRange.Select(itbsc.Current());
-      }
+  {FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
+    // if the sector is in the range
+    if (itbsc->bsc_boxBoundingBox.HasContactWith(boxRange, CSG_RANGE_EPSILON)) {
+      // select it
+      selbscInRange.Select(itbsc.Current());
     }
-  }
+  }}
 }
+
 void CBrushMip::SelectSectorsInRange(CBrushSectorSelection &selbscInRange, FLOATaabbox3D boxRange) {
   // for all sectors in the brush
-  {
-    FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
-      // if the sector is in the range
-      if (itbsc->bsc_boxBoundingBox.HasContactWith(boxRange, CSG_RANGE_EPSILON)) {
-        // select it
-        selbscInRange.Select(itbsc.Current());
-      }
+  {FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
+    // if the sector is in the range
+    if (itbsc->bsc_boxBoundingBox.HasContactWith(boxRange, CSG_RANGE_EPSILON)) {
+      // select it
+      selbscInRange.Select(itbsc.Current());
     }
-  }
+  }}
 }
 
 /*
@@ -67,15 +64,14 @@ void CBrushMip::SelectSectorsInRange(CBrushSectorSelection &selbscInRange, FLOAT
  */
 void CBrushMip::SelectOpenSector(CBrushSectorSelectionForCSG &selbscOpen) {
   // for all sectors in the brush
-  {
-    FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
-      // if the sector is open
-      if (itbsc->bsc_ulFlags & BSCF_OPENSECTOR) {
-        // select it
-        selbscOpen.Select(itbsc.Current());
-      }
+  {FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
+    // if the sector is open
+    if (itbsc->bsc_ulFlags & BSCF_OPENSECTOR) {
+      // select it
+      selbscOpen.Select(itbsc.Current());
     }
-  }
+  }}
+
   // there must be at most one open sector in a brush mip
   ASSERT(selbscOpen.Count() <= 1);
 }
@@ -85,15 +81,14 @@ void CBrushMip::SelectOpenSector(CBrushSectorSelectionForCSG &selbscOpen) {
  */
 void CBrushMip::SelectClosedSectors(CBrushSectorSelectionForCSG &selbscClosed) {
   // for all sectors in the brush
-  {
-    FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
-      // if the sector is closed
-      if (!(itbsc->bsc_ulFlags & BSCF_OPENSECTOR)) {
-        // select it
-        selbscClosed.Select(itbsc.Current());
-      }
+  {FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
+    // if the sector is closed
+    if (!(itbsc->bsc_ulFlags & BSCF_OPENSECTOR)) {
+      // select it
+      selbscClosed.Select(itbsc.Current());
     }
-  }
+  }}
+
   // there must be at most one open sector in a brush mip
   ASSERT(bm_abscSectors.Count() - selbscClosed.Count() <= 1);
 }
@@ -103,21 +98,17 @@ void CBrushMip::SelectClosedSectors(CBrushSectorSelectionForCSG &selbscClosed) {
  */
 void CBrushMip::SelectAllSectors(CBrushSectorSelectionForCSG &selbscAll) {
   // for all sectors in the brush
-  {
-    FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
-      // select it
-      selbscAll.Select(itbsc.Current());
-    }
-  }
+  {FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
+    // select it
+    selbscAll.Select(itbsc.Current());
+  }}
 }
 void CBrushMip::SelectAllSectors(CBrushSectorSelection &selbscAll) {
   // for all sectors in the brush
-  {
-    FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
-      // select it
-      selbscAll.Select(itbsc.Current());
-    }
-  }
+  {FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
+    // select it
+    selbscAll.Select(itbsc.Current());
+  }}
 }
 
 /*
@@ -125,12 +116,10 @@ void CBrushMip::SelectAllSectors(CBrushSectorSelection &selbscAll) {
  */
 void CBrushMip::DeleteSelectedSectors(CBrushSectorSelectionForCSG &selbscToDelete) {
   // for each sector in the selection
-  {
-    FOREACHINDYNAMICCONTAINER(selbscToDelete, CBrushSector, itbsc) {
-      // delete it from the brush mip
-      bm_abscSectors.Delete(itbsc);
-    }
-  }
+  {FOREACHINDYNAMICCONTAINER(selbscToDelete, CBrushSector, itbsc) {
+    // delete it from the brush mip
+    bm_abscSectors.Delete(itbsc);
+  }}
 
   /* NOTE: we must not clear the selection directly, since the sectors
      contained there are already freed and deselecting them would make an access
@@ -201,20 +190,18 @@ void CBrushMip::UpdateBoundingBox(void) {
   bm_boxBoundingBox = FLOATaabbox3D();
   bm_boxRelative = FLOATaabbox3D();
   // for all sectors in the brush mip
-  {
-    FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
-      // discard portal-sector links to this sector
-      itbsc->bsc_rdOtherSidePortals.Clear();
-      {
-        FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
-          itbpo->bpo_rsOtherSideSectors.Clear();
-        }
-      }
-      // add the box of the sector to the box of mip
-      bm_boxBoundingBox |= itbsc->bsc_boxBoundingBox;
-      bm_boxRelative |= itbsc->bsc_boxRelative;
-    }
-  }
+  {FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
+    // discard portal-sector links to this sector
+    itbsc->bsc_rdOtherSidePortals.Clear();
+
+    {FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
+      itbpo->bpo_rsOtherSideSectors.Clear();
+    }}
+
+    // add the box of the sector to the box of mip
+    bm_boxBoundingBox |= itbsc->bsc_boxBoundingBox;
+    bm_boxRelative |= itbsc->bsc_boxRelative;
+  }}
 
   // if this brush is zoning
   if (bm_pbrBrush->br_penEntity != NULL && (bm_pbrBrush->br_penEntity->en_ulFlags & ENF_ZONING)) {
@@ -239,15 +226,13 @@ void CBrushMip::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prBrushToAbso
     return;
   }
   // for all sectors in the brush mip
-  {
-    FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
-      // calculate bounding boxes in that sector
-      itbsc->CalculateBoundingBoxes(prBrushToAbsolute);
-      // add the box of the sector to the box of mip
-      bm_boxBoundingBox |= itbsc->bsc_boxBoundingBox;
-      bm_boxRelative |= itbsc->bsc_boxRelative;
-    }
-  }
+  {FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
+    // calculate bounding boxes in that sector
+    itbsc->CalculateBoundingBoxes(prBrushToAbsolute);
+    // add the box of the sector to the box of mip
+    bm_boxBoundingBox |= itbsc->bsc_boxBoundingBox;
+    bm_boxRelative |= itbsc->bsc_boxRelative;
+  }}
 }
 
 // Reoptimize all sectors in the brush mip.
@@ -279,47 +264,44 @@ void CBrushMip::Reoptimize(void) {
 // Find all portals that have no links and kill their portal flag.
 void CBrushMip::RemoveDummyPortals(BOOL bClearPortalFlags) {
   // for all sectors in the brush mip
-  {
-    FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
-      // for each portal polygon in sector
-      {
-        FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
-          CBrushPolygon &bpo = *itbpo;
-          if (!(bpo.bpo_ulFlags & OPOF_PORTAL)) {
-            continue;
-          }
-          // find if it has at least one link in this same mip
-          BOOL bHasLink = FALSE;
-          // for all entities in the sector
-          {
-            FOREACHDSTOFSRC(bpo.bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbsc)
-            if (pbsc->bsc_pbmBrushMip == this) {
-              bHasLink = TRUE;
-              break;
-            }
-            ENDFOR
-          }
-          // if there is none
-          if (!bHasLink) {
-            // assume that it should not be portal
-            bpo.bpo_ulFlags &= ~OPOF_PORTAL;
-
-            // also start rendering as a wall so that user can see that
-            if (bClearPortalFlags) {
-              bpo.bpo_ulFlags &= ~(BPOF_PASSABLE | BPOF_PORTAL);
-            }
-            bpo.bpo_abptTextures[0].s.bpt_ubBlend = BPT_BLEND_OPAQUE;
-            bpo.bpo_bppProperties.bpp_ubShadowBlend = BPT_BLEND_SHADE;
-
-            // remove all of its links
-            bpo.bpo_rsOtherSideSectors.Clear();
-            // world's links are not up to date anymore
-            bm_pbrBrush->br_penEntity->en_pwoWorld->wo_bPortalLinksUpToDate = FALSE;
-          }
-        }
+  {FOREACHINDYNAMICARRAY(bm_abscSectors, CBrushSector, itbsc) {
+    // for each portal polygon in sector
+    {FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
+      CBrushPolygon &bpo = *itbpo;
+      if (!(bpo.bpo_ulFlags & OPOF_PORTAL)) {
+        continue;
       }
-    }
-  }
+
+      // find if it has at least one link in this same mip
+      BOOL bHasLink = FALSE;
+
+      // for all entities in the sector
+      {FOREACHDSTOFSRC(bpo.bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbsc)
+        if (pbsc->bsc_pbmBrushMip == this) {
+          bHasLink = TRUE;
+          break;
+        }
+      ENDFOR}
+
+      // if there is none
+      if (!bHasLink) {
+        // assume that it should not be portal
+        bpo.bpo_ulFlags &= ~OPOF_PORTAL;
+
+        // also start rendering as a wall so that user can see that
+        if (bClearPortalFlags) {
+          bpo.bpo_ulFlags &= ~(BPOF_PASSABLE | BPOF_PORTAL);
+        }
+        bpo.bpo_abptTextures[0].s.bpt_ubBlend = BPT_BLEND_OPAQUE;
+        bpo.bpo_bppProperties.bpp_ubShadowBlend = BPT_BLEND_SHADE;
+
+        // remove all of its links
+        bpo.bpo_rsOtherSideSectors.Clear();
+        // world's links are not up to date anymore
+        bm_pbrBrush->br_penEntity->en_pwoWorld->wo_bPortalLinksUpToDate = FALSE;
+      }
+    }}
+  }}
 }
 
 // Spread all brush mips after this one.

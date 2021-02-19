@@ -442,8 +442,8 @@ static void StockInfo(void) {
 
   if (_pGfx != NULL) {
     FLOAT fSlackRatio;
-    FOREACHINLIST(CShadowMap, sm_lnInGfx, _pGfx->gl_lhCachedShadows,
-                  itsm) { // get polygon size in pixels (used portion of shadowmap)
+    FOREACHINLIST(CShadowMap, sm_lnInGfx, _pGfx->gl_lhCachedShadows, itsm) {
+      // get polygon size in pixels (used portion of shadowmap)
       SLONG slStaticSize, slDynamicSize, slUploadSize;
       BOOL bIsFlat = itsm->GetUsedMemory(slStaticSize, slDynamicSize, slUploadSize, fSlackRatio);
       SLONG slTotalSize = slDynamicSize + slUploadSize;
@@ -536,18 +536,30 @@ static void StockInfo(void) {
 
           // add each vertex and working vertex in sector
           ctVertices += itbsc->bsc_abvxVertices.Count();
-          FOREACHINSTATICARRAY(itbsc->bsc_abvxVertices, CBrushVertex, itbvx) slVtxBytes += itbvx->GetUsedMemory();
-          FOREACHINSTATICARRAY(itbsc->bsc_awvxVertices, CWorkingVertex, itwvx) slVtxBytes += 32; // aligned to 32 bytes!
+          FOREACHINSTATICARRAY(itbsc->bsc_abvxVertices, CBrushVertex, itbvx) {
+            slVtxBytes += itbvx->GetUsedMemory();
+          }
+          FOREACHINSTATICARRAY(itbsc->bsc_awvxVertices, CWorkingVertex, itwvx) {
+            slVtxBytes += 32; // aligned to 32 bytes!
+          }
 
           // add each plane and working plane in sector
           ctPlanes += itbsc->bsc_abplPlanes.Count();
-          FOREACHINSTATICARRAY(itbsc->bsc_abplPlanes, CBrushPlane, itbpl) slPlnBytes += itbpl->GetUsedMemory();
-          FOREACHINSTATICARRAY(itbsc->bsc_awplPlanes, CWorkingPlane, itwpl) slPlnBytes += sizeof(CWorkingPlane);
+          FOREACHINSTATICARRAY(itbsc->bsc_abplPlanes, CBrushPlane, itbpl) {
+            slPlnBytes += itbpl->GetUsedMemory();
+          }
+          FOREACHINSTATICARRAY(itbsc->bsc_awplPlanes, CWorkingPlane, itwpl) {
+            slPlnBytes += sizeof(CWorkingPlane);
+          }
 
           // add each edge and working edge in sector
           ctEdges += itbsc->bsc_abedEdges.Count();
-          FOREACHINSTATICARRAY(itbsc->bsc_abedEdges, CBrushEdge, itbed) slEdgBytes += itbed->GetUsedMemory();
-          FOREACHINSTATICARRAY(itbsc->bsc_awedEdges, CWorkingEdge, itwed) slEdgBytes += sizeof(CWorkingEdge);
+          FOREACHINSTATICARRAY(itbsc->bsc_abedEdges, CBrushEdge, itbed) {
+            slEdgBytes += itbed->GetUsedMemory();
+          }
+          FOREACHINSTATICARRAY(itbsc->bsc_awedEdges, CWorkingEdge, itwed) {
+            slEdgBytes += sizeof(CWorkingEdge);
+          }
 
           // for each polygon in sector
           ctPolys += itbsc->bsc_abpoPolygons.Count();
@@ -1493,13 +1505,11 @@ void CNetworkLibrary::ChangeLevel_internal(void) {
 
   // find all entities that are to cross to next level
   CEntitySelection senToCross;
-  {
-    FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
-      if (iten->en_ulFlags & ENF_CROSSESLEVELS) {
-        senToCross.Select(*iten);
-      }
+  {FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
+    if (iten->en_ulFlags & ENF_CROSSESLEVELS) {
+      senToCross.Select(*iten);
     }
-  }
+  }}
 
   // copy them to a temporary world
   CWorld wldTemp;
@@ -2032,13 +2042,11 @@ CEntity *CNetworkLibrary::GetPlayerEntityByName(const CTString &strName) {
 // Get number of entities with given name.
 INDEX CNetworkLibrary::GetNumberOfEntitiesWithName(const CTString &strName) {
   INDEX ctEntities = 0;
-  {
-    FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
-      if (iten->GetName() == strName) {
-        ctEntities++;
-      }
+  {FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
+    if (iten->GetName() == strName) {
+      ctEntities++;
     }
-  }
+  }}
   return ctEntities;
 }
 
@@ -2046,17 +2054,15 @@ INDEX CNetworkLibrary::GetNumberOfEntitiesWithName(const CTString &strName) {
 CEntity *CNetworkLibrary::GetEntityWithName(const CTString &strName, INDEX iEntityWithThatName) {
   INDEX ctEntities = 0;
   CEntity *pen = NULL;
-  {
-    FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
-      if (iten->GetName() == strName) {
-        pen = iten;
-        if (ctEntities == iEntityWithThatName) {
-          break;
-        }
-        ctEntities++;
+  {FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
+    if (iten->GetName() == strName) {
+      pen = iten;
+      if (ctEntities == iEntityWithThatName) {
+        break;
       }
+      ctEntities++;
     }
-  }
+  }}
   return pen;
 }
 // Test if a given player is local to this computer.
@@ -2069,22 +2075,20 @@ CPlayerSource *CNetworkLibrary::GetPlayerSource(CEntity *pen) {
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
 
   // for all local player on this machine
-  {
-    FOREACHINSTATICARRAY(ga_aplsPlayers, CPlayerSource, itpls) {
-      // get the index of the player target in game state
-      INDEX iPlayerTarget = itpls->pls_Index;
-      // if player is added
-      if (iPlayerTarget >= 0) {
-        // get the player target
-        CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[iPlayerTarget];
-        // if it is that one
-        if (plt.plt_penPlayerEntity == pen) {
-          // return it
-          return itpls;
-        }
+  {FOREACHINSTATICARRAY(ga_aplsPlayers, CPlayerSource, itpls) {
+    // get the index of the player target in game state
+    INDEX iPlayerTarget = itpls->pls_Index;
+    // if player is added
+    if (iPlayerTarget >= 0) {
+      // get the player target
+      CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[iPlayerTarget];
+      // if it is that one
+      if (plt.plt_penPlayerEntity == pen) {
+        // return it
+        return itpls;
       }
     }
-  }
+  }}
 
   // if not found, it is not local
   return NULL;
@@ -2114,6 +2118,7 @@ CPlayerSource *CNetworkLibrary::AddPlayer_t(CPlayerCharacter &pcCharacter) // th
       return &itcls.Current();
     }
   }
+
   // number of local clients is limited with NET_MAXLOCALCLIENTS
   ASSERTALWAYS("Adding too much local clients!");
   throw TRANS("Cannot add more local clients");

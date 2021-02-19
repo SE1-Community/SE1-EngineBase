@@ -208,18 +208,15 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox) {
   ct_boxTotal |= boxNew;
 
   // for each zoning sector that this entity is in
-  {
-    FOREACHSRCOFDST(ct_penEntity->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+  {FOREACHSRCOFDST(ct_penEntity->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     // add it to list of active sectors
     ct_lhActiveSectors.AddTail(pbsc->bsc_lnInActiveSectors);
-    ENDFOR
-  }
+  ENDFOR}
 
   // for each active sector
   FOREACHINLIST(CBrushSector, bsc_lnInActiveSectors, ct_lhActiveSectors, itbsc) {
     // for non-zoning brush entities in the sector
-    {
-      FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
+    {FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
       if (pen->en_RenderType != CEntity::RT_BRUSH
           && (_pNetwork->ga_ulDemoMinorVersion <= 4 || pen->en_RenderType != CEntity::RT_FIELDBRUSH)) {
         break; // brushes are sorted first in list
@@ -230,18 +227,15 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox) {
       // if brush mip exists for that mip factor
       if (pbm != NULL) {
         // for each sector in the mip
-        {
-          FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbscNonZoning) {
-            CBrushSector &bscNonZoning = *itbscNonZoning;
-            // add it to list of active sectors
-            if (!bscNonZoning.bsc_lnInActiveSectors.IsLinked()) {
-              ct_lhActiveSectors.AddTail(bscNonZoning.bsc_lnInActiveSectors);
-            }
+        {FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbscNonZoning) {
+          CBrushSector &bscNonZoning = *itbscNonZoning;
+          // add it to list of active sectors
+          if (!bscNonZoning.bsc_lnInActiveSectors.IsLinked()) {
+            ct_lhActiveSectors.AddTail(bscNonZoning.bsc_lnInActiveSectors);
           }
-        }
+        }}
       }
-      ENDFOR
-    }
+    ENDFOR}
 
     // if the sector's brush doesn't have collision
     CEntity *penSectorBrush = itbsc->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
@@ -263,15 +257,13 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox) {
       // if it is passable
       if (pbpo->bpo_ulFlags & BPOF_PASSABLE) {
         // for each sector related to the portal
-        {
-          FOREACHDSTOFSRC(pbpo->bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbscRelated)
+        {FOREACHDSTOFSRC(pbpo->bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbscRelated)
           // if the sector is not active
           if (!pbscRelated->bsc_lnInActiveSectors.IsLinked()) {
             // add it to active list
             ct_lhActiveSectors.AddTail(pbscRelated->bsc_lnInActiveSectors);
           }
-          ENDFOR
-        }
+        ENDFOR}
 
         // if it is not passable
       } else {
@@ -289,9 +281,7 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox) {
 
 CClipTest::~CClipTest(void) {
   // clear list of active sectors
-  {
-    FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, ct_lhActiveSectors, itbsc) {
-      itbsc->bsc_lnInActiveSectors.Remove();
-    }
-  }
+  {FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, ct_lhActiveSectors, itbsc) {
+    itbsc->bsc_lnInActiveSectors.Remove();
+  }}
 }

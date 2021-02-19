@@ -408,15 +408,13 @@ void CSessionState::Start_AtClient_t(INDEX ctLocalPlayers) // throw char *
 // notify entities of level change
 void CSessionState::SendLevelChangeNotification(CEntityEvent &ee) {
   // for each entity in the world
-  {
-    FOREACHINDYNAMICCONTAINER(_pNetwork->ga_World.wo_cenEntities, CEntity, iten) {
-      // if it should be notified
-      if (iten->en_ulFlags & ENF_NOTIFYLEVELCHANGE) {
-        // send the event
-        iten->SendEvent(ee);
-      }
+  {FOREACHINDYNAMICCONTAINER(_pNetwork->ga_World.wo_cenEntities, CEntity, iten) {
+    // if it should be notified
+    if (iten->en_ulFlags & ENF_NOTIFYLEVELCHANGE) {
+      // send the event
+      iten->SendEvent(ee);
     }
-  }
+  }}
 }
 
 // wait for a stream to come from server
@@ -571,90 +569,85 @@ void CSessionState::HandleMovers(void) {
 
   // put all movers in active list, pushing ones first
   CListHead lhActiveMovers, lhDoneMovers, lhDummyMovers;
-  {FORDELETELIST(CMovableEntity, en_lnInMovers, _pNetwork->ga_World.wo_lhMovers, itenMover) {CMovableEntity *pen = itenMover;
-  pen->en_lnInMovers.Remove();
-  // if predicting, and it is not a predictor
-  if (ses_bPredicting && !pen->IsPredictor()) {
-    // skip it
-    lhDummyMovers.AddTail(pen->en_lnInMovers);
-    continue;
-  }
-  if (!(pen->en_ulFlags & ENF_DELETED)) {
-    if ((pen->en_ulPhysicsFlags & EPF_ONBLOCK_MASK) == EPF_ONBLOCK_PUSH) {
-      lhActiveMovers.AddHead(pen->en_lnInMovers);
-    } else {
-      lhActiveMovers.AddTail(pen->en_lnInMovers);
+  {FORDELETELIST(CMovableEntity, en_lnInMovers, _pNetwork->ga_World.wo_lhMovers, itenMover) {
+    CMovableEntity *pen = itenMover;
+    pen->en_lnInMovers.Remove();
+    // if predicting, and it is not a predictor
+    if (ses_bPredicting && !pen->IsPredictor()) {
+      // skip it
+      lhDummyMovers.AddTail(pen->en_lnInMovers);
+      continue;
     }
-  }
-}
-}
+    if (!(pen->en_ulFlags & ENF_DELETED)) {
+      if ((pen->en_ulPhysicsFlags & EPF_ONBLOCK_MASK) == EPF_ONBLOCK_PUSH) {
+        lhActiveMovers.AddHead(pen->en_lnInMovers);
+      } else {
+        lhActiveMovers.AddTail(pen->en_lnInMovers);
+      }
+    }
+  }}
 
-// for each active mover
-{FORDELETELIST(CMovableEntity, en_lnInMovers, lhActiveMovers,
-               itenMover) {// let it clear its temporary variables to prevent bad syncs
-                           itenMover->ClearMovingTemp();
-}
-}
+  // for each active mover
+  {FORDELETELIST(CMovableEntity, en_lnInMovers, lhActiveMovers, itenMover) {
+    // let it clear its temporary variables to prevent bad syncs
+    itenMover->ClearMovingTemp();
+  }}
 
-// for each active mover
-{
-  FORDELETELIST(CMovableEntity, en_lnInMovers, lhActiveMovers, itenMover) {
+  // for each active mover
+  {FORDELETELIST(CMovableEntity, en_lnInMovers, lhActiveMovers, itenMover) {
     // let it calculate its wanted parameters for this tick
     itenMover->PreMoving();
+  }}
+
+  // while there are some active movers
+  while (!lhActiveMovers.IsEmpty()) {
+    // get first one
+    CMovableEntity *penMoving = LIST_HEAD(lhActiveMovers, CMovableEntity, en_lnInMovers);
+    CEntityPointer penCurrent = penMoving; // just to keep it alive around the loop
+    // first move it to done list (if not done, it will move back to world's movers)
+    penMoving->en_lnInMovers.Remove();
+    lhDoneMovers.AddTail(penMoving->en_lnInMovers);
+
+    /*
+        CPrintF("**%s(%08x)",
+          penMoving->en_pecClass->ec_pdecDLLClass->dec_strName,
+          penMoving->en_ulID);
+        if (penMoving->IsPredictable()) {
+          CPrintF(" predictable");
+        }
+        if (penMoving->IsPredictor()) {
+          CPrintF(" predictor");
+        }
+        if (penMoving->IsPredicted()) {
+          CPrintF(" predicted");
+        }
+        if (penMoving->en_penReference != NULL) {
+          CPrintF("reference id%08x", penMoving->en_penReference->en_ulID);
+        }
+        CPrintF("\n");
+    */
+
+    // let it do its own physics
+    penMoving->DoMoving();
+    //    CPrintF("\n");
+
+    // if any mover is re-added, put it to the end of active list
+    lhActiveMovers.MoveList(_pNetwork->ga_World.wo_lhMovers);
   }
-}
 
-// while there are some active movers
-while (!lhActiveMovers.IsEmpty()) {
-  // get first one
-  CMovableEntity *penMoving = LIST_HEAD(lhActiveMovers, CMovableEntity, en_lnInMovers);
-  CEntityPointer penCurrent = penMoving; // just to keep it alive around the loop
-  // first move it to done list (if not done, it will move back to world's movers)
-  penMoving->en_lnInMovers.Remove();
-  lhDoneMovers.AddTail(penMoving->en_lnInMovers);
+  // for each done mover
+  {FORDELETELIST(CMovableEntity, en_lnInMovers, lhDoneMovers, itenMover) {
+    // if predicting, and it is not a predictor
+    if (ses_bPredicting && !itenMover->IsPredictor()) {
+      // skip it
+      continue;
+    }
+    // let it calculate its parameters after all movement has been resolved
+    itenMover->PostMoving();
+  }}
 
-  /*
-      CPrintF("**%s(%08x)",
-        penMoving->en_pecClass->ec_pdecDLLClass->dec_strName,
-        penMoving->en_ulID);
-      if (penMoving->IsPredictable()) {
-        CPrintF(" predictable");
-      }
-      if (penMoving->IsPredictor()) {
-        CPrintF(" predictor");
-      }
-      if (penMoving->IsPredicted()) {
-        CPrintF(" predicted");
-      }
-      if (penMoving->en_penReference != NULL) {
-        CPrintF("reference id%08x", penMoving->en_penReference->en_ulID);
-      }
-      CPrintF("\n");
-  */
-
-  // let it do its own physics
-  penMoving->DoMoving();
-  //    CPrintF("\n");
-
-  // if any mover is re-added, put it to the end of active list
-  lhActiveMovers.MoveList(_pNetwork->ga_World.wo_lhMovers);
-}
-
-// for each done mover
-{FORDELETELIST(CMovableEntity, en_lnInMovers, lhDoneMovers,
-               itenMover) {                                                   // if predicting, and it is not a predictor
-                           if (ses_bPredicting && !itenMover->IsPredictor()) {// skip it
-                                                                              continue;
-}
-// let it calculate its parameters after all movement has been resolved
-itenMover->PostMoving();
-}
-}
-
-// for each done mover
-
-{
-  FORDELETELIST(CMovableEntity, en_lnInMovers, lhDoneMovers, itenMover) {
+  // for each done mover
+  {FORDELETELIST(CMovableEntity, en_lnInMovers, lhDoneMovers, itenMover) {
     CMovableEntity *pen = itenMover;
     // if predicting, and it is not a predictor
     if (ses_bPredicting && !itenMover->IsPredictor()) {
@@ -669,17 +662,16 @@ itenMover->PostMoving();
     }
     // let it clear its temporary variables to prevent bad syncs
     pen->ClearMovingTemp();
-  }
-}
+  }}
 
-// return all done movers to the world's list
-_pNetwork->ga_World.wo_lhMovers.MoveList(lhDummyMovers);
-_pNetwork->ga_World.wo_lhMovers.MoveList(lhDoneMovers);
+  // return all done movers to the world's list
+  _pNetwork->ga_World.wo_lhMovers.MoveList(lhDummyMovers);
+  _pNetwork->ga_World.wo_lhMovers.MoveList(lhDoneMovers);
 
-// handle all the sent events
-CEntity::HandleSentEvents();
+  // handle all the sent events
+  CEntity::HandleSentEvents();
 
-_pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_HANDLEMOVERS);
+  _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_HANDLEMOVERS);
 }
 
 // do thinking for a game tick
@@ -764,44 +756,41 @@ void CSessionState::ChecksumForSync(ULONG &ulCRC, INDEX iExtensiveSyncCheck) {
   // if all entities should be synced
   if (iExtensiveSyncCheck > 1) {
     // for each active entity in the world
-    {FOREACHINDYNAMICCONTAINER(_pNetwork->ga_World.wo_cenEntities, CEntity, iten) {if (iten->IsPredictor()) {continue;
-  }
-  iten->ChecksumForSync(ulCRC, iExtensiveSyncCheck);
-}
-}
-// for each entity in the world
-{
-  FOREACHINDYNAMICCONTAINER(_pNetwork->ga_World.wo_cenAllEntities, CEntity, iten) {
-    if (iten->IsPredictor()) {
-      continue;
-    }
-    iten->ChecksumForSync(ulCRC, iExtensiveSyncCheck);
-  }
-}
-}
-
-if (iExtensiveSyncCheck > 0) {
-  // checksum all movers
-  {
-    FOREACHINLIST(CMovableEntity, en_lnInMovers, _pNetwork->ga_World.wo_lhMovers, iten) {
+    {FOREACHINDYNAMICCONTAINER(_pNetwork->ga_World.wo_cenEntities, CEntity, iten) {
       if (iten->IsPredictor()) {
         continue;
       }
       iten->ChecksumForSync(ulCRC, iExtensiveSyncCheck);
-    }
+    }}
+
+    // for each entity in the world
+    {FOREACHINDYNAMICCONTAINER(_pNetwork->ga_World.wo_cenAllEntities, CEntity, iten) {
+      if (iten->IsPredictor()) {
+        continue;
+      }
+      iten->ChecksumForSync(ulCRC, iExtensiveSyncCheck);
+    }}
   }
-}
-// checksum all active players
-{
-  FOREACHINSTATICARRAY(ses_apltPlayers, CPlayerTarget, itclt) {
+
+  if (iExtensiveSyncCheck > 0) {
+    // checksum all movers
+    {FOREACHINLIST(CMovableEntity, en_lnInMovers, _pNetwork->ga_World.wo_lhMovers, iten) {
+      if (iten->IsPredictor()) {
+        continue;
+      }
+      iten->ChecksumForSync(ulCRC, iExtensiveSyncCheck);
+    }}
+  }
+
+  // checksum all active players
+  {FOREACHINSTATICARRAY(ses_apltPlayers, CPlayerTarget, itclt) {
     CPlayerTarget &clt = *itclt;
     if (clt.IsActive()) {
       clt.plt_paPreLastAction.ChecksumForSync(ulCRC);
       clt.plt_paLastAction.ChecksumForSync(ulCRC);
       clt.plt_penPlayerEntity->ChecksumForSync(ulCRC, iExtensiveSyncCheck);
     }
-  }
-}
+  }}
 }
 
 // dump sync data to text file
@@ -820,29 +809,25 @@ void CSessionState::DumpSync_t(CTStream &strm, INDEX iExtensiveSyncCheck) // thr
 
   strm.FPrintF_t("\n\n == == == == == == == == == == == == players:\n");
   // dump all active players
-  {
-    FOREACHINSTATICARRAY(ses_apltPlayers, CPlayerTarget, itclt) {
-      CPlayerTarget &clt = *itclt;
-      if (clt.IsActive()) {
-        clt.plt_penPlayerEntity->DumpSync_t(strm, iExtensiveSyncCheck);
-        strm.FPrintF_t("\n -- action:\n");
-        clt.plt_paPreLastAction.DumpSync_t(strm);
-        clt.plt_paLastAction.DumpSync_t(strm);
-      }
+  {FOREACHINSTATICARRAY(ses_apltPlayers, CPlayerTarget, itclt) {
+    CPlayerTarget &clt = *itclt;
+    if (clt.IsActive()) {
+      clt.plt_penPlayerEntity->DumpSync_t(strm, iExtensiveSyncCheck);
+      strm.FPrintF_t("\n -- action:\n");
+      clt.plt_paPreLastAction.DumpSync_t(strm);
+      clt.plt_paLastAction.DumpSync_t(strm);
     }
-  }
+  }}
 
   if (iExtensiveSyncCheck > 0) {
     strm.FPrintF_t("\n\n == == == == == == == == == == == == movers:\n");
     // dump all movers
-    {
-      FOREACHINLIST(CMovableEntity, en_lnInMovers, _pNetwork->ga_World.wo_lhMovers, iten) {
-        if (iten->IsPredictor()) {
-          continue;
-        }
-        iten->DumpSync_t(strm, iExtensiveSyncCheck);
+    {FOREACHINLIST(CMovableEntity, en_lnInMovers, _pNetwork->ga_World.wo_lhMovers, iten) {
+      if (iten->IsPredictor()) {
+        continue;
       }
-    }
+      iten->DumpSync_t(strm, iExtensiveSyncCheck);
+    }}
   }
 
   // if all entities should be synced
@@ -850,24 +835,21 @@ void CSessionState::DumpSync_t(CTStream &strm, INDEX iExtensiveSyncCheck) // thr
     strm.FPrintF_t("\n\n == == == == == == == == == == == == active entities (%d):\n",
                    _pNetwork->ga_World.wo_cenEntities.Count());
     // for each entity in the world
-    {
-      FOREACHINDYNAMICCONTAINER(_pNetwork->ga_World.wo_cenEntities, CEntity, iten) {
-        if (iten->IsPredictor()) {
-          continue;
-        }
-        iten->DumpSync_t(strm, iExtensiveSyncCheck);
+    {FOREACHINDYNAMICCONTAINER(_pNetwork->ga_World.wo_cenEntities, CEntity, iten) {
+      if (iten->IsPredictor()) {
+        continue;
       }
-    }
+      iten->DumpSync_t(strm, iExtensiveSyncCheck);
+    }}
+
     strm.FPrintF_t("\n\n == == == == == == == == == == == == all entities (%d):\n", _pNetwork->ga_World.wo_cenEntities.Count());
     // for each entity in the world
-    {
-      FOREACHINDYNAMICCONTAINER(_pNetwork->ga_World.wo_cenAllEntities, CEntity, iten) {
-        if (iten->IsPredictor()) {
-          continue;
-        }
-        iten->DumpSync_t(strm, iExtensiveSyncCheck);
+    {FOREACHINDYNAMICCONTAINER(_pNetwork->ga_World.wo_cenAllEntities, CEntity, iten) {
+      if (iten->IsPredictor()) {
+        continue;
       }
-    }
+      iten->DumpSync_t(strm, iExtensiveSyncCheck);
+    }}
   }
 
   _pNetwork->ga_World.UnlockAll();
@@ -1762,32 +1744,30 @@ void CSessionState::WriteWorldAndState_t(CTStream *pstr) // throw char *
   CListHead &lhTimers = _pNetwork->ga_World.wo_lhTimers;
   *pstr << lhTimers.Count();
   // for each entity in the timer list
-  {
-    FOREACHINLIST(CRationalEntity, en_lnInTimers, lhTimers, iten) {
-      // save its index in container
-      *pstr << iten->en_ulID;
-    }
-  }
+  {FOREACHINLIST(CRationalEntity, en_lnInTimers, lhTimers, iten) {
+    // save its index in container
+    *pstr << iten->en_ulID;
+  }}
 
   // write number of entities in mover list
   pstr->WriteID_t("MVRS"); // movers
   CListHead &lhMovers = _pNetwork->ga_World.wo_lhMovers;
   *pstr << lhMovers.Count();
   // for each entity in the mover list
-  {FOREACHINLIST(CMovableEntity, en_lnInMovers, lhMovers, iten) {// save its index in container
-                                                                 *pstr << iten->en_ulID;
-}
-}
+  {FOREACHINLIST(CMovableEntity, en_lnInMovers, lhMovers, iten) {
+    // save its index in container
+    *pstr << iten->en_ulID;
+  }}
 
-// write number of clients
-(*pstr) << ses_apltPlayers.Count();
-// for all clients
-FOREACHINSTATICARRAY(ses_apltPlayers, CPlayerTarget, itclt) {
-  // write to stream
-  itclt->Write_t(pstr);
-}
+  // write number of clients
+  (*pstr) << ses_apltPlayers.Count();
+  // for all clients
+  FOREACHINSTATICARRAY(ses_apltPlayers, CPlayerTarget, itclt) {
+    // write to stream
+    itclt->Write_t(pstr);
+  }
 
-_pNetwork->ga_World.UnlockAll();
+  _pNetwork->ga_World.UnlockAll();
 }
 
 void CSessionState::WriteRememberedLevels_t(CTStream *pstr) {
@@ -1818,14 +1798,13 @@ void CSessionState::RememberCurrentLevel(const CTString &strFileName) {
 
 // find a level if it is remembered
 CRememberedLevel *CSessionState::FindRememberedLevel(const CTString &strFileName) {
-  {
-    FOREACHINLIST(CRememberedLevel, rl_lnInSessionState, ses_lhRememberedLevels, itrl) {
-      CRememberedLevel &rl = *itrl;
-      if (rl.rl_strFileName == strFileName) {
-        return &rl;
-      }
+  {FOREACHINLIST(CRememberedLevel, rl_lnInSessionState, ses_lhRememberedLevels, itrl) {
+    CRememberedLevel &rl = *itrl;
+    if (rl.rl_strFileName == strFileName) {
+      return &rl;
     }
-  }
+  }}
+
   return NULL;
 }
 
@@ -1891,11 +1870,9 @@ void CSessionState::MakeSynchronisationCheck(void) {
 
 // forget all remembered levels
 void CSessionState::ForgetOldLevels(void) {
-  {
-    FORDELETELIST(CRememberedLevel, rl_lnInSessionState, ses_lhRememberedLevels, itrl) {
-      delete &*itrl;
-    }
-  }
+  {FORDELETELIST(CRememberedLevel, rl_lnInSessionState, ses_lhRememberedLevels, itrl) {
+    delete &*itrl;
+  }}
 }
 
 extern INDEX cli_bDumpSync;

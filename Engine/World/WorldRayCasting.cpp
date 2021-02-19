@@ -511,12 +511,10 @@ void CCastRay::TestBrushSector(CBrushSector *pbscSector) {
         // if it is portal and testing recusively
         if ((ulFlags & cr_ulPassablePolygons) && (cr_penOrigin != NULL)) {
           // for each sector on the other side
-          {
-            FOREACHDSTOFSRC(bpoPolygon.bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbsc)
+          {FOREACHDSTOFSRC(bpoPolygon.bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbsc)
             // add the sector
             AddSector(pbsc);
-            ENDFOR
-          }
+          ENDFOR}
 
           if (cr_bHitPortals && ulFlags & (BPOF_TRANSLUCENT | BPOF_TRANSPARENT) && !cr_bPhysical) {
             // remember hit coordinates
@@ -557,6 +555,7 @@ void CCastRay::AddAllSectorsOfBrush(CBrush3D *pbr) {
     // skip it
     return;
   }
+
   // for each sector in the brush mip
   FOREACHINDYNAMICARRAY(pbmMip->bm_abscSectors, CBrushSector, itbsc) {
     // add the sector
@@ -567,8 +566,7 @@ void CCastRay::AddAllSectorsOfBrush(CBrush3D *pbr) {
 // Add all sectors around given entity.
 void CCastRay::AddSectorsAroundEntity(CEntity *pen) {
   // for each zoning sector that this entity is in
-  {
-    FOREACHSRCOFDST(pen->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+  {FOREACHSRCOFDST(pen->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     // if part of zoning brush
     if (pbsc->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->GetRenderType() != CEntity::RT_BRUSH) {
       // skip it
@@ -576,84 +574,81 @@ void CCastRay::AddSectorsAroundEntity(CEntity *pen) {
     }
     // add the sector
     AddSector(pbsc);
-    ENDFOR
-  }
+  ENDFOR}
 }
 
 // Test entire world against ray.
 void CCastRay::TestWholeWorld(CWorld *pwoWorld) {
   // for each entity in the world
-  {
-    FOREACHINDYNAMICCONTAINER(pwoWorld->wo_cenEntities, CEntity, itenInWorld) {
-      // if it is the origin of the ray
-      if (itenInWorld == cr_penOrigin || itenInWorld == cr_penIgnore) {
+  {FOREACHINDYNAMICCONTAINER(pwoWorld->wo_cenEntities, CEntity, itenInWorld) {
+    // if it is the origin of the ray
+    if (itenInWorld == cr_penOrigin || itenInWorld == cr_penIgnore) {
+      // skip it
+      continue;
+    }
+
+    // if it is a brush and testing against brushes is disabled
+    if ((itenInWorld->en_RenderType == CEntity::RT_BRUSH || itenInWorld->en_RenderType == CEntity::RT_FIELDBRUSH)
+        && !cr_bHitBrushes) {
+      // skip it
+      continue;
+    }
+
+    // if it is a model and testing against models is enabled
+    if (((itenInWorld->en_RenderType == CEntity::RT_MODEL
+          || (itenInWorld->en_RenderType == CEntity::RT_EDITORMODEL && _wrpWorldRenderPrefs.IsEditorModelsOn()))
+          && cr_ttHitModels != TT_NONE)
+        //  and if cast type is TT_FULL_SEETROUGH then model is not
+        //  ENF_SEETROUGH
+        && !((cr_ttHitModels == TT_FULLSEETHROUGH || cr_ttHitModels == TT_COLLISIONBOX)
+              && (itenInWorld->en_ulFlags & ENF_SEETHROUGH))) {
+      // test it against the model entity
+      TestModel(itenInWorld);
+      // if it is a ska model
+    } else if (((itenInWorld->en_RenderType == CEntity::RT_SKAMODEL
+                  || (itenInWorld->en_RenderType == CEntity::RT_SKAEDITORMODEL && _wrpWorldRenderPrefs.IsEditorModelsOn()))
+                && cr_ttHitModels != TT_NONE)
+                //  and if cast type is TT_FULL_SEETROUGH then model is not
+                //  ENF_SEETROUGH
+                && !((cr_ttHitModels == TT_FULLSEETHROUGH || cr_ttHitModels == TT_COLLISIONBOX)
+                    && (itenInWorld->en_ulFlags & ENF_SEETHROUGH))) {
+      TestSkaModel(itenInWorld);
+    } else if (itenInWorld->en_RenderType == CEntity::RT_TERRAIN) {
+      TestTerrain(itenInWorld);
+      // if it is a brush
+    } else if (itenInWorld->en_RenderType == CEntity::RT_BRUSH
+                || (itenInWorld->en_RenderType == CEntity::RT_FIELDBRUSH && _wrpWorldRenderPrefs.IsFieldBrushesOn()
+                    && cr_bHitFields)) {
+      // get its brush
+      CBrush3D &brBrush = *itenInWorld->en_pbrBrush;
+
+      // get relevant mip as if in manual mip brushing mode
+      CBrushMip *pbmMip = brBrush.GetBrushMipByDistance(_wrpWorldRenderPrefs.GetManualMipBrushingFactor());
+
+      // if it has no brush mip for that mip factor
+      if (pbmMip == NULL) {
         // skip it
         continue;
       }
 
-      // if it is a brush and testing against brushes is disabled
-      if ((itenInWorld->en_RenderType == CEntity::RT_BRUSH || itenInWorld->en_RenderType == CEntity::RT_FIELDBRUSH)
-          && !cr_bHitBrushes) {
-        // skip it
-        continue;
-      }
-
-      // if it is a model and testing against models is enabled
-      if (((itenInWorld->en_RenderType == CEntity::RT_MODEL
-            || (itenInWorld->en_RenderType == CEntity::RT_EDITORMODEL && _wrpWorldRenderPrefs.IsEditorModelsOn()))
-           && cr_ttHitModels != TT_NONE)
-          //  and if cast type is TT_FULL_SEETROUGH then model is not
-          //  ENF_SEETROUGH
-          && !((cr_ttHitModels == TT_FULLSEETHROUGH || cr_ttHitModels == TT_COLLISIONBOX)
-               && (itenInWorld->en_ulFlags & ENF_SEETHROUGH))) {
+      // if it has zero sectors
+      if (pbmMip->bm_abscSectors.Count() == 0) {
         // test it against the model entity
         TestModel(itenInWorld);
-        // if it is a ska model
-      } else if (((itenInWorld->en_RenderType == CEntity::RT_SKAMODEL
-                   || (itenInWorld->en_RenderType == CEntity::RT_SKAEDITORMODEL && _wrpWorldRenderPrefs.IsEditorModelsOn()))
-                  && cr_ttHitModels != TT_NONE)
-                 //  and if cast type is TT_FULL_SEETROUGH then model is not
-                 //  ENF_SEETROUGH
-                 && !((cr_ttHitModels == TT_FULLSEETHROUGH || cr_ttHitModels == TT_COLLISIONBOX)
-                      && (itenInWorld->en_ulFlags & ENF_SEETHROUGH))) {
-        TestSkaModel(itenInWorld);
-      } else if (itenInWorld->en_RenderType == CEntity::RT_TERRAIN) {
-        TestTerrain(itenInWorld);
-        // if it is a brush
-      } else if (itenInWorld->en_RenderType == CEntity::RT_BRUSH
-                 || (itenInWorld->en_RenderType == CEntity::RT_FIELDBRUSH && _wrpWorldRenderPrefs.IsFieldBrushesOn()
-                     && cr_bHitFields)) {
-        // get its brush
-        CBrush3D &brBrush = *itenInWorld->en_pbrBrush;
 
-        // get relevant mip as if in manual mip brushing mode
-        CBrushMip *pbmMip = brBrush.GetBrushMipByDistance(_wrpWorldRenderPrefs.GetManualMipBrushingFactor());
-
-        // if it has no brush mip for that mip factor
-        if (pbmMip == NULL) {
-          // skip it
-          continue;
-        }
-
-        // if it has zero sectors
-        if (pbmMip->bm_abscSectors.Count() == 0) {
-          // test it against the model entity
-          TestModel(itenInWorld);
-
-          // if it has some sectors
-        } else {
-          // for each sector in the brush mip
-          FOREACHINDYNAMICARRAY(pbmMip->bm_abscSectors, CBrushSector, itbsc) {
-            // if the sector is not hidden
-            if (!(itbsc->bsc_ulFlags & BSCF_HIDDEN)) {
-              // test the ray against the sector
-              TestBrushSector(itbsc);
-            }
+        // if it has some sectors
+      } else {
+        // for each sector in the brush mip
+        FOREACHINDYNAMICARRAY(pbmMip->bm_abscSectors, CBrushSector, itbsc) {
+          // if the sector is not hidden
+          if (!(itbsc->bsc_ulFlags & BSCF_HIDDEN)) {
+            // test the ray against the sector
+            TestBrushSector(itbsc);
           }
         }
       }
     }
-  }
+  }}
 }
 
 // Test active sectors recusively.
@@ -664,8 +659,7 @@ void CCastRay::TestThroughSectors(void) {
     // test the ray against the sector
     TestBrushSector(pbsc);
     // for each entity in the sector
-    {
-      FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
+    {FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
       // if it is the origin of the ray
       if (pen == cr_penOrigin || pen == cr_penIgnore) {
         // skip it
@@ -708,17 +702,15 @@ void CCastRay::TestThroughSectors(void) {
         // add all sectors in the brush
         AddAllSectorsOfBrush(&brBrush);
       }
-      ENDFOR
-    }
+    ENDFOR}
   }
 
   // for all tested terrains
-  {
-    FORDELETELIST(CTerrain, tr_lnInActiveTerrains, _lhTestedTerrains, ittr) {
-      // remove it from list
-      ittr->tr_lnInActiveTerrains.Remove();
-    }
-  }
+  {FORDELETELIST(CTerrain, tr_lnInActiveTerrains, _lhTestedTerrains, ittr) {
+    // remove it from list
+    ittr->tr_lnInActiveTerrains.Remove();
+  }}
+
   ASSERT(_lhTestedTerrains.IsEmpty());
 }
 

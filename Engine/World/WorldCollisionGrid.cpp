@@ -352,20 +352,18 @@ void CWorld::MoveEntityInCollisionGrid(CEntity *pen, const FLOATaabbox3D &boxOld
 
 // Find all entities in collision grid near given box.
 void CWorld::FindEntitiesNearBox(const FLOATaabbox3D &boxNear, CStaticStackArray<CEntity *> &apenNearEntities) {
-#if DEBUG_COLLIDEWITHALL
+  #if DEBUG_COLLIDEWITHALL
   apenNearEntities.PopAll();
   // for each entity
-  {
-    FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
-      CEntity &en = *iten;
-      if (en.GetRenderType() == CEntity::RT_MODEL && en.en_pciCollisionInfo != NULL) {
-        apenNearEntities.Push() = &en;
-      }
+  {FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
+    CEntity &en = *iten;
+    if (en.GetRenderType() == CEntity::RT_MODEL && en.en_pciCollisionInfo != NULL) {
+      apenNearEntities.Push() = &en;
     }
-  }
+  }}
 
   return;
-#endif
+  #endif
 
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_FINDENTITIESNEARBOX);
   _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_FINDINGNEARENTITIES);
@@ -376,29 +374,27 @@ void CWorld::FindEntitiesNearBox(const FLOATaabbox3D &boxNear, CStaticStackArray
   apenNearEntities.PopAll();
 
   // for each cell spanned by the box
-  {
-    for (INDEX iX = iMinX; iX <= iMaxX; iX++) {
-      for (INDEX iZ = iMinZ; iZ <= iMaxZ; iZ++) {
-        _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_NEARCELLSFOUND);
-        // find that cell
-        INDEX igc = wo_pcgCollisionGrid->FindCell(iX, iZ, FALSE);
-        // if the cell is empty
-        if (igc < 0) {
-          // skip it
-          continue;
-        }
-        _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_NEAROCCUPIEDCELLSFOUND);
-        // for each entity in the cell
-        for (INDEX iEntry = wo_pcgCollisionGrid->cg_agcCells[igc].gc_iFirstEntry; iEntry >= 0;
-             iEntry = wo_pcgCollisionGrid->cg_ageEntries[iEntry].ge_iNextEntry) {
-          CEntity *penEntity = wo_pcgCollisionGrid->cg_ageEntries[iEntry].ge_penEntity;
-          // if it is not already found
-          if (!(penEntity->en_ulFlags & ENF_FOUNDINGRIDSEARCH)) {
-            // add it
-            apenNearEntities.Push() = penEntity;
-            // mark it as found
-            penEntity->en_ulFlags |= ENF_FOUNDINGRIDSEARCH;
-          }
+  for (INDEX iX = iMinX; iX <= iMaxX; iX++) {
+    for (INDEX iZ = iMinZ; iZ <= iMaxZ; iZ++) {
+      _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_NEARCELLSFOUND);
+      // find that cell
+      INDEX igc = wo_pcgCollisionGrid->FindCell(iX, iZ, FALSE);
+      // if the cell is empty
+      if (igc < 0) {
+        // skip it
+        continue;
+      }
+      _pfPhysicsProfile.IncrementCounter(CPhysicsProfile::PCI_NEAROCCUPIEDCELLSFOUND);
+      // for each entity in the cell
+      for (INDEX iEntry = wo_pcgCollisionGrid->cg_agcCells[igc].gc_iFirstEntry; iEntry >= 0;
+            iEntry = wo_pcgCollisionGrid->cg_ageEntries[iEntry].ge_iNextEntry) {
+        CEntity *penEntity = wo_pcgCollisionGrid->cg_ageEntries[iEntry].ge_penEntity;
+        // if it is not already found
+        if (!(penEntity->en_ulFlags & ENF_FOUNDINGRIDSEARCH)) {
+          // add it
+          apenNearEntities.Push() = penEntity;
+          // mark it as found
+          penEntity->en_ulFlags |= ENF_FOUNDINGRIDSEARCH;
         }
       }
     }

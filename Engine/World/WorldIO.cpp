@@ -786,15 +786,16 @@ void CWorld::WriteState_t(CTStream *ostr, BOOL bImportDictionary /* = FALSE */) 
   ostr->WriteID_t("ENs2"); // entities
   // write number of entities
   (*ostr) << wo_cenAllEntities.Count();
+
   // for each entity
-  {FOREACHINDYNAMICCONTAINER(wo_cenAllEntities, CEntity, iten) {CEntity &en = *iten;
-  // write the id, class and its placement
-  (*ostr) << en.en_ulID << en.en_pecClass->GetName() << en.en_plPlacement;
-}
-}
-// for each entity
-{
-  FOREACHINDYNAMICCONTAINER(wo_cenAllEntities, CEntity, iten) {
+  {FOREACHINDYNAMICCONTAINER(wo_cenAllEntities, CEntity, iten) {
+    CEntity &en = *iten;
+    // write the id, class and its placement
+    (*ostr) << en.en_ulID << en.en_pecClass->GetName() << en.en_plPlacement;
+  }}
+
+  // for each entity
+  {FOREACHINDYNAMICCONTAINER(wo_cenAllEntities, CEntity, iten) {
     // remember stream position
     SLONG slOffset = ostr->GetPos_t();
     // serialize entity into stream
@@ -804,22 +805,19 @@ void CWorld::WriteState_t(CTStream *ostr, BOOL bImportDictionary /* = FALSE */) 
     ostr->SetPos_t(slOffset + 2 * sizeof(SLONG));
     *ostr << SLONG(slOffsetAfter - slOffset - 3 * sizeof(SLONG));
     ostr->SetPos_t(slOffsetAfter);
-  }
-}
+  }}
 
-ostr->WriteID_t(CChunkID("ENOR")); // entity order
-*ostr << wo_cenEntities.Count();
-// for each non-deleted entity
-{
-  FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
+  ostr->WriteID_t(CChunkID("ENOR")); // entity order
+  *ostr << wo_cenEntities.Count();
+  // for each non-deleted entity
+  {FOREACHINDYNAMICCONTAINER(wo_cenEntities, CEntity, iten) {
     // write its id
     *ostr << iten->en_ulID;
-  }
-}
+  }}
 
-wo_baBrushes.WriteEntitySectorLinks_t(*ostr);
+  wo_baBrushes.WriteEntitySectorLinks_t(*ostr);
 
-ostr->DictionaryWriteEnd_t();
+  ostr->DictionaryWriteEnd_t();
 }
 
 // read/write world information (description, name, flags...)

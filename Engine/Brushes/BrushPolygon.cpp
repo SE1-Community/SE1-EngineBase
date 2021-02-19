@@ -65,13 +65,11 @@ void CBrushPolygon::CalculateBoundingBox(void) {
   // clear the bounding box
   bpo_boxBoundingBox = FLOATaabbox3D();
   // for all edges in polygon
-  {
-    FOREACHINSTATICARRAY(bpo_abpePolygonEdges, CBrushPolygonEdge, itbpe) {
-      // add the edges vertices to the bounding box
-      bpo_boxBoundingBox |= itbpe->bpe_pbedEdge->bed_pbvxVertex0->bvx_vAbsolute;
-      bpo_boxBoundingBox |= itbpe->bpe_pbedEdge->bed_pbvxVertex1->bvx_vAbsolute;
-    }
-  }
+  {FOREACHINSTATICARRAY(bpo_abpePolygonEdges, CBrushPolygonEdge, itbpe) {
+    // add the edges vertices to the bounding box
+    bpo_boxBoundingBox |= itbpe->bpe_pbedEdge->bed_pbvxVertex0->bvx_vAbsolute;
+    bpo_boxBoundingBox |= itbpe->bpe_pbedEdge->bed_pbvxVertex1->bvx_vAbsolute;
+  }}
 }
 
 // Create a BSP polygon from this polygon.
@@ -287,14 +285,12 @@ DOUBLE CBrushPolygon::CalculateArea(void) {
   ASSERT(GetFPUPrecision() == FPT_53BIT);
   DOUBLE3D vArea = DOUBLE3D(0.0, 0.0, 0.0);
   // for each polygon edge
-  {
-    FOREACHINSTATICARRAY(bpo_abpePolygonEdges, CBrushPolygonEdge, itbpe) {
-      DOUBLE3D v0, v1;
-      itbpe->GetVertexCoordinatesPreciseRelative(v0, v1);
-      // add the area of triangle that the edge closes with the origin
-      vArea += v0 * v1;
-    }
-  }
+  {FOREACHINSTATICARRAY(bpo_abpePolygonEdges, CBrushPolygonEdge, itbpe) {
+    DOUBLE3D v0, v1;
+    itbpe->GetVertexCoordinatesPreciseRelative(v0, v1);
+    // add the area of triangle that the edge closes with the origin
+    vArea += v0 * v1;
+  }}
   return (((DOUBLE3D &)bpo_pbplPlane->bpl_pldPreciseRelative) % vArea) / 2.0;
 }
 

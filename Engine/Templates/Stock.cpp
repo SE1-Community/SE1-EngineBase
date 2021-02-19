@@ -100,22 +100,20 @@ void CStock_TYPE::FreeUnused(void) {
   do {
     // create container of objects that should be freed
     CDynamicContainer<TYPE> ctToFree;
-    {
-      FOREACHINDYNAMICCONTAINER(st_ctObjects, TYPE, itt) {
-        if (!itt->IsUsed()) {
-          ctToFree.Add(itt);
-        }
+    {FOREACHINDYNAMICCONTAINER(st_ctObjects, TYPE, itt) {
+      if (!itt->IsUsed()) {
+        ctToFree.Add(itt);
       }
-    }
+    }}
+
     bAnyRemoved = ctToFree.Count() > 0;
+
     // for each object that should be freed
-    {
-      FOREACHINDYNAMICCONTAINER(ctToFree, TYPE, itt) {
-        st_ctObjects.Remove(itt);
-        st_ntObjects.Remove(itt);
-        delete (&*itt);
-      }
-    }
+    {FOREACHINDYNAMICCONTAINER(ctToFree, TYPE, itt) {
+      st_ctObjects.Remove(itt);
+      st_ntObjects.Remove(itt);
+      delete (&*itt);
+    }}
 
     // as long as there is something to remove
   } while (bAnyRemoved);
@@ -124,15 +122,14 @@ void CStock_TYPE::FreeUnused(void) {
 
 SLONG CStock_TYPE::CalculateUsedMemory(void) {
   SLONG slUsedTotal = 0;
-  {
-    FOREACHINDYNAMICCONTAINER(st_ctObjects, TYPE, itt) {
-      SLONG slUsedByObject = itt->GetUsedMemory();
-      if (slUsedByObject < 0) {
-        return -1;
-      }
-      slUsedTotal += slUsedByObject;
+
+  {FOREACHINDYNAMICCONTAINER(st_ctObjects, TYPE, itt) {
+    SLONG slUsedByObject = itt->GetUsedMemory();
+    if (slUsedByObject < 0) {
+      return -1;
     }
-  }
+    slUsedTotal += slUsedByObject;
+  }}
 
   return slUsedTotal;
 }
@@ -142,18 +139,17 @@ void CStock_TYPE::DumpMemoryUsage_t(CTStream &strm) // throw char *
 {
   CTString strLine;
   SLONG slUsedTotal = 0;
-  {
-    FOREACHINDYNAMICCONTAINER(st_ctObjects, TYPE, itt) {
-      SLONG slUsedByObject = itt->GetUsedMemory();
-      if (slUsedByObject < 0) {
-        strm.PutLine_t("Error!");
-        return;
-      }
-      strLine.PrintF("%7.1fk %s(%d) %s", slUsedByObject / 1024.0f, (const char *)(itt->GetName()), itt->GetUsedCount(),
-                     itt->GetDescription());
-      strm.PutLine_t(strLine);
+
+  {FOREACHINDYNAMICCONTAINER(st_ctObjects, TYPE, itt) {
+    SLONG slUsedByObject = itt->GetUsedMemory();
+    if (slUsedByObject < 0) {
+      strm.PutLine_t("Error!");
+      return;
     }
-  }
+    strLine.PrintF("%7.1fk %s(%d) %s", slUsedByObject / 1024.0f, (const char *)(itt->GetName()), itt->GetUsedCount(),
+                    itt->GetDescription());
+    strm.PutLine_t(strLine);
+  }}
 }
 
 // get number of total elements in stock
@@ -165,12 +161,10 @@ INDEX CStock_TYPE::GetTotalCount(void) {
 
 INDEX CStock_TYPE::GetUsedCount(void) {
   INDEX ctUsed = 0;
-  {
-    FOREACHINDYNAMICCONTAINER(st_ctObjects, TYPE, itt) {
-      if (itt->IsUsed()) {
-        ctUsed++;
-      }
+  {FOREACHINDYNAMICCONTAINER(st_ctObjects, TYPE, itt) {
+    if (itt->IsUsed()) {
+      ctUsed++;
     }
-  }
+  }}
   return ctUsed;
 }

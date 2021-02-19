@@ -76,12 +76,12 @@ CEntity *CEntity::TouchingEntity(BOOL (*ConsiderEntity)(CEntity *), CEntity *pen
   penField = this;
   CBrushMip *pbm = en_pbrBrush->GetBrushMipByDistance(0.0f);
   _pbsc = NULL;
-  {
-    FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbsc) {
-      _pbsc = itbsc;
-      break;
-    }
-  }
+
+  {FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbsc) {
+    _pbsc = itbsc;
+    break;
+  }}
+
   // if illegal number of sectors
   if (_pbsc == NULL || pbm->bm_abscSectors.Count() > 1) {
     // error
@@ -102,11 +102,9 @@ CEntity *CEntity::TouchingEntity(BOOL (*ConsiderEntity)(CEntity *), CEntity *pen
   // no entities active initially
   _apenActive.PopAll();
   // for each zoning sector that this entity is in
-  {
-    FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+  {FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     // for all movable model entities that should be considered in the sector
-    {
-      FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
+    {FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
       if (!(pen->en_ulPhysicsFlags & EPF_MOVABLE) || (pen->en_RenderType != RT_MODEL && pen->en_RenderType != RT_EDITORMODEL)
           || (!ConsiderEntity(pen))) {
         continue;
@@ -125,20 +123,16 @@ CEntity *CEntity::TouchingEntity(BOOL (*ConsiderEntity)(CEntity *), CEntity *pen
       // add it to active
       _apenActive.Push() = pen;
       pen->en_ulFlags |= ENF_FOUNDINGRIDSEARCH;
-    }
-  }
-  ENDFOR
-}
+    ENDFOR}
+  ENDFOR}
 
-// mark all as inactive
-{
-  for (INDEX ien = 0; ien < _apenActive.Count(); ien++) {
+  // mark all as inactive
+  {for (INDEX ien = 0; ien < _apenActive.Count(); ien++) {
     CEntity *pen = _apenActive[ien];
     pen->en_ulFlags &= ~ENF_FOUNDINGRIDSEARCH;
-  }
-}
+  }}
 
-_apenActive.PopAll();
+  _apenActive.PopAll();
 
-return penTouched;
+  return penTouched;
 }

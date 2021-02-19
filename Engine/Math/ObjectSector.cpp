@@ -561,90 +561,81 @@ void CObjectSector::CheckOptimizationAlgorithm(void) {
   }
 
   // for planes
-  FOREACHINDYNAMICARRAY(osc_aoplPlanes, CObjectPlane,
-                        itpl1) {FOREACHINDYNAMICARRAY(osc_aoplPlanes, CObjectPlane, itpl2) {CObjectPlane &pl1 = itpl1.Current();
-  CObjectPlane &pl2 = itpl2.Current();
-  ASSERT((&pl1 == &pl2) || (ComparePlanes(pl1, pl2) != 0));
-}
-}
+  FOREACHINDYNAMICARRAY(osc_aoplPlanes, CObjectPlane, itpl1) {
+    FOREACHINDYNAMICARRAY(osc_aoplPlanes, CObjectPlane, itpl2) {
+      CObjectPlane &pl1 = itpl1.Current();
+      CObjectPlane &pl2 = itpl2.Current();
+      ASSERT((&pl1 == &pl2) || (ComparePlanes(pl1, pl2) != 0));
+    }
+  }
 
-// for edges
-{
-  FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited1) {
+  // for edges
+  {FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited1) {
     FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited2) {
       CObjectEdge &ed1 = ited1.Current();
       CObjectEdge &ed2 = ited2.Current();
       ASSERT((&ed1 == &ed2) || (ed1.oed_Vertex0 != ed2.oed_Vertex0) || (ed1.oed_Vertex1 != ed2.oed_Vertex1));
-    }
+    }}
   }
-}
 
-// for inverse edges
-INDEX iInversesFound = 0;
-{FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge,
-                       ited1) {FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited2) {CObjectEdge &ed1 = ited1.Current();
-CObjectEdge &ed2 = ited2.Current();
-if (&ed1 == &ed2)
-  continue;
-BOOL inv1, inv2;
-inv1 = (&ed1 == ed2.optimize.oed_InverseEdge);
-inv2 = (&ed2 == ed1.optimize.oed_InverseEdge);
-// check against cross linked inverses
-ASSERT(!(inv1 && inv2));
-if (inv1) {
-  iInversesFound++;
-}
-// check against inverses that have not been found
-ASSERT((inv1 || inv2) || (ed1.oed_Vertex0 != ed2.oed_Vertex1) || (ed1.oed_Vertex1 != ed2.oed_Vertex0));
-}
-}
-}
-
-// for each polygon
-{
-  FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
-    // for each edge in polygon
-    {
-      FOREACHINDYNAMICARRAY(itopo->opo_PolygonEdges, CObjectPolygonEdge, itope) {
-        CObjectEdge &oedThis = *itope->ope_Edge;
-        CObjectVertex *povxStartThis, *povxEndThis;
-        // get start and end vertices
-        itope->GetVertices(povxStartThis, povxEndThis);
-        // if start vertex is not on the plane
-        DOUBLE fDistance = itopo->opo_Plane->PointDistance(*povxStartThis);
-        if (Abs(fDistance) > (VTX_EPSILON * 16.0)) {
-          // report it
-          _RPT4(_CRT_WARN, "(%f, %f, %f) is 1/%f from plane ", (*povxStartThis)(1), (*povxStartThis)(2), (*povxStartThis)(3),
-                1.0 / fDistance);
-          _RPT4(_CRT_WARN, "(%f, %f, %f):%f\n", (*itopo->opo_Plane)(1), (*itopo->opo_Plane)(2), (*itopo->opo_Plane)(3),
-                itopo->opo_Plane->Distance());
-        }
+  // for inverse edges
+  INDEX iInversesFound = 0;
+  {FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited1) {
+    FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited2) {
+      CObjectEdge &ed1 = ited1.Current();
+      CObjectEdge &ed2 = ited2.Current();
+      if (&ed1 == &ed2)
+        continue;
+      BOOL inv1, inv2;
+      inv1 = (&ed1 == ed2.optimize.oed_InverseEdge);
+      inv2 = (&ed2 == ed1.optimize.oed_InverseEdge);
+      // check against cross linked inverses
+      ASSERT(!(inv1 && inv2));
+      if (inv1) {
+        iInversesFound++;
       }
+      // check against inverses that have not been found
+      ASSERT((inv1 || inv2) || (ed1.oed_Vertex0 != ed2.oed_Vertex1) || (ed1.oed_Vertex1 != ed2.oed_Vertex0));
     }
-  }
-}
+  }}
+
+  // for each polygon
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
+    // for each edge in polygon
+    {FOREACHINDYNAMICARRAY(itopo->opo_PolygonEdges, CObjectPolygonEdge, itope) {
+      CObjectEdge &oedThis = *itope->ope_Edge;
+      CObjectVertex *povxStartThis, *povxEndThis;
+      // get start and end vertices
+      itope->GetVertices(povxStartThis, povxEndThis);
+      // if start vertex is not on the plane
+      DOUBLE fDistance = itopo->opo_Plane->PointDistance(*povxStartThis);
+      if (Abs(fDistance) > (VTX_EPSILON * 16.0)) {
+        // report it
+        _RPT4(_CRT_WARN, "(%f, %f, %f) is 1/%f from plane ", (*povxStartThis)(1), (*povxStartThis)(2), (*povxStartThis)(3),
+              1.0 / fDistance);
+        _RPT4(_CRT_WARN, "(%f, %f, %f):%f\n", (*itopo->opo_Plane)(1), (*itopo->opo_Plane)(2), (*itopo->opo_Plane)(3),
+              itopo->opo_Plane->Distance());
+      }
+    }}
+  }}
 }
 
 BOOL CObjectSector::ArePolygonsPlanar(void) {
   // for each polygon
-  {
-    FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
-      // for each edge in polygon
-      {
-        FOREACHINDYNAMICARRAY(itopo->opo_PolygonEdges, CObjectPolygonEdge, itope) {
-          CObjectEdge &oedThis = *itope->ope_Edge;
-          CObjectVertex *povxStartThis, *povxEndThis;
-          // get start and end vertices
-          itope->GetVertices(povxStartThis, povxEndThis);
-          // if start vertex is not on the plane
-          DOUBLE fDistance = itopo->opo_Plane->PointDistance(*povxStartThis);
-          if (Abs(fDistance) > (VTX_EPSILON * 16.0)) {
-            return FALSE;
-          }
-        }
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
+    // for each edge in polygon
+    {FOREACHINDYNAMICARRAY(itopo->opo_PolygonEdges, CObjectPolygonEdge, itope) {
+      CObjectEdge &oedThis = *itope->ope_Edge;
+      CObjectVertex *povxStartThis, *povxEndThis;
+      // get start and end vertices
+      itope->GetVertices(povxStartThis, povxEndThis);
+      // if start vertex is not on the plane
+      DOUBLE fDistance = itopo->opo_Plane->PointDistance(*povxStartThis);
+      if (Abs(fDistance) > (VTX_EPSILON * 16.0)) {
+        return FALSE;
       }
-    }
-  }
+    }}
+  }}
   return TRUE;
 }
 
@@ -709,12 +700,10 @@ void CObjectSector::RemapClonedPlanes(void) {
 
   // Remap all references to planes.
   // for all polygons in object
-  {
-    FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
-      // remap plane pointers
-      itopo->opo_Plane = itopo->opo_Plane->opl_Remap;
-    }
-  }
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
+    // remap plane pointers
+    itopo->opo_Plane = itopo->opo_Plane->opl_Remap;
+  }}
 
   osc_aoplPlanes.Unlock();
 }
@@ -789,18 +778,16 @@ void CObjectSector::RemapClonedVertices(void) {
 
   // Remap all references to vertices.
   // for all edges in object
-  {
-    FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited) {
-      // remap vertex pointers
-      ited->oed_Vertex0 = ited->oed_Vertex0->ovx_Remap;
-      ited->oed_Vertex1 = ited->oed_Vertex1->ovx_Remap;
-    }
-  }
+  {FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited) {
+    // remap vertex pointers
+    ited->oed_Vertex0 = ited->oed_Vertex0->ovx_Remap;
+    ited->oed_Vertex1 = ited->oed_Vertex1->ovx_Remap;
+  }}
 
   osc_aovxVertices.Unlock();
 
-#if 0
-#ifndef NDEBUG
+  #if 0
+  #ifndef NDEBUG
   if (bBug) goto skipbug;
   // for vertices
   {FOREACHINDYNAMICARRAY(osc_aovxVertices, CObjectVertex, itvx1) {
@@ -833,8 +820,8 @@ bug:
   }}
 
 skipbug:;
-#endif // NDEBUG
-#endif 0
+  #endif // NDEBUG
+  #endif 0
 }
 
 /*
@@ -848,62 +835,58 @@ void CObjectSector::RemoveUnusedVertices(void) {
   }
 
   // clear all vertex tags
-  {FOREACHINDYNAMICARRAY(osc_aovxVertices, CObjectVertex, itovx) {itovx->ovx_Tag = FALSE;
-}
-}
+  {FOREACHINDYNAMICARRAY(osc_aovxVertices, CObjectVertex, itovx) {
+    itovx->ovx_Tag = FALSE;
+  }}
 
-// mark all vertices that are used by some edge
-{
-  FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited) {
+  // mark all vertices that are used by some edge
+  {FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited) {
     ited->oed_Vertex0->ovx_Tag = TRUE;
     ited->oed_Vertex1->ovx_Tag = TRUE;
-  }
-}
+  }}
 
-// find number of used vertices
-INDEX ctUsedVertices = 0;
-{
-  FOREACHINDYNAMICARRAY(osc_aovxVertices, CObjectVertex, itovx) {
+  // find number of used vertices
+  INDEX ctUsedVertices = 0;
+  {FOREACHINDYNAMICARRAY(osc_aovxVertices, CObjectVertex, itovx) {
     if (itovx->ovx_Tag) {
       ctUsedVertices++;
     }
-  }
-}
+  }}
 
-// create a new array with as much vertices as we have counted in last pass
-CDynamicArray<CObjectVertex> aovxNew;
-CObjectVertex *povxUsed = aovxNew.New(ctUsedVertices);
+  // create a new array with as much vertices as we have counted in last pass
+  CDynamicArray<CObjectVertex> aovxNew;
+  CObjectVertex *povxUsed = aovxNew.New(ctUsedVertices);
 
-// for each vertex
-{FOREACHINDYNAMICARRAY(osc_aovxVertices, CObjectVertex, itovx) {                     // if it is used
-                                                                if (itovx->ovx_Tag) {// copy it to new array
-                                                                                       *povxUsed = itovx.Current();
-// set its remap pointer into new array
-itovx->ovx_Remap = povxUsed;
-povxUsed++;
-// if it is not used
-}
-else {
-// clear its remap pointer (for debugging)
-#ifndef NDEBUG
-  itovx->ovx_Remap = NULL;
-#endif
-}
-}
-}
+  // for each vertex
+  {FOREACHINDYNAMICARRAY(osc_aovxVertices, CObjectVertex, itovx) {
+    // if it is used
+    if (itovx->ovx_Tag) {
+      // copy it to new array
+      *povxUsed = itovx.Current();
 
-// for all edges in object
-{
-  FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited) {
+      // set its remap pointer into new array
+      itovx->ovx_Remap = povxUsed;
+      povxUsed++;
+
+    // if it is not used
+    } else {
+      // clear its remap pointer (for debugging)
+      #ifndef NDEBUG
+      itovx->ovx_Remap = NULL;
+      #endif
+    }
+  }}
+
+  // for all edges in object
+  {FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited) {
     // remap vertex pointers
     ited->oed_Vertex0 = ited->oed_Vertex0->ovx_Remap;
     ited->oed_Vertex1 = ited->oed_Vertex1->ovx_Remap;
-  }
-}
+  }}
 
-// use new array of vertices instead of the old one
-osc_aovxVertices.Clear();
-osc_aovxVertices.MoveArray(aovxNew);
+  // use new array of vertices instead of the old one
+  osc_aovxVertices.Clear();
+  osc_aovxVertices.MoveArray(aovxNew);
 }
 
 /*
@@ -917,67 +900,59 @@ void CObjectSector::RemoveUnusedEdges(void) {
   }
 
   // clear all edge tags
-  {FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, itoed) {itoed->oed_Tag = FALSE;
-}
-}
+  {FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, itoed) {
+    itoed->oed_Tag = FALSE;
+  }}
 
-// mark all edges that are used by some polygon
-{
-  FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
-    {
-      FOREACHINDYNAMICARRAY(itopo->opo_PolygonEdges, CObjectPolygonEdge, itope) {
-        itope->ope_Edge->oed_Tag = TRUE;
-      }
-    }
-  }
-}
+  // mark all edges that are used by some polygon
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
+    {FOREACHINDYNAMICARRAY(itopo->opo_PolygonEdges, CObjectPolygonEdge, itope) {
+      itope->ope_Edge->oed_Tag = TRUE;
+    }}
+  }}
 
-// find number of used edges
-INDEX ctUsedEdges = 0;
-{
-  FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, itoed) {
+  // find number of used edges
+  INDEX ctUsedEdges = 0;
+  {FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, itoed) {
     if (itoed->oed_Tag) {
       ctUsedEdges++;
     }
-  }
-}
+  }}
 
 // create a new array with as much edges as we have counted in last pass
 CDynamicArray<CObjectEdge> aoedNew;
 CObjectEdge *poedUsed = aoedNew.New(ctUsedEdges);
 
-// for each edge
-{FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, itoed) {                     // if it is used
-                                                           if (itoed->oed_Tag) {// copy it to new array
-                                                                                  *poedUsed = itoed.Current();
-// set its remap pointer into new array
-itoed->optimize.oed_Remap = poedUsed;
-poedUsed++;
-// if it is not used
-}
-else {
-// clear its remap pointer (for debugging)
-#ifndef NDEBUG
-  itoed->optimize.oed_Remap = NULL;
-#endif
-}
-}
-}
+  // for each edge
+  {FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, itoed) {
+    // if it is used
+    if (itoed->oed_Tag) {
+      // copy it to new array
+      *poedUsed = itoed.Current();
 
-// remap edge pointers in all polygons
-{
-  FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
-    {
-      FOREACHINDYNAMICARRAY(itopo->opo_PolygonEdges, CObjectPolygonEdge, itope) {
-        itope->ope_Edge = itope->ope_Edge->optimize.oed_Remap;
-      }
+      // set its remap pointer into new array
+      itoed->optimize.oed_Remap = poedUsed;
+      poedUsed++;
+
+    // if it is not used
+    } else {
+      // clear its remap pointer (for debugging)
+      #ifndef NDEBUG
+      itoed->optimize.oed_Remap = NULL;
+      #endif
     }
-  }
-}
+  }}
 
-// use new array of edges instead the old one
-osc_aoedEdges.Clear();
-osc_aoedEdges.MoveArray(aoedNew);
+  // remap edge pointers in all polygons
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
+    {FOREACHINDYNAMICARRAY(itopo->opo_PolygonEdges, CObjectPolygonEdge, itope) {
+      itope->ope_Edge = itope->ope_Edge->optimize.oed_Remap;
+    }}
+  }}
+
+  // use new array of edges instead the old one
+  osc_aoedEdges.Clear();
+  osc_aoedEdges.MoveArray(aoedNew);
 }
 
 /*
@@ -991,59 +966,54 @@ void CObjectSector::RemoveUnusedPlanes(void) {
   }
 
   // clear all plane tags
-  {FOREACHINDYNAMICARRAY(osc_aoplPlanes, CObjectPlane, itopl) {itopl->opl_Tag = FALSE;
-}
-}
+  {FOREACHINDYNAMICARRAY(osc_aoplPlanes, CObjectPlane, itopl) {
+    itopl->opl_Tag = FALSE;
+}}
 
-// mark all planes that are used by some polygon
-{
-  FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
+  // mark all planes that are used by some polygon
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
     itopo->opo_Plane->opl_Tag = TRUE;
-  }
-}
+  }}
 
-// find number of used planes
-INDEX ctUsedPlanes = 0;
-{
-  FOREACHINDYNAMICARRAY(osc_aoplPlanes, CObjectPlane, itopl) {
+  // find number of used planes
+  INDEX ctUsedPlanes = 0;
+  {FOREACHINDYNAMICARRAY(osc_aoplPlanes, CObjectPlane, itopl) {
     if (itopl->opl_Tag) {
       ctUsedPlanes++;
     }
-  }
-}
+  }}
 
-// create a new array with as much planes as we have counted in last pass
-CDynamicArray<CObjectPlane> aoplNew;
-CObjectPlane *poplUsed = aoplNew.New(ctUsedPlanes);
+  // create a new array with as much planes as we have counted in last pass
+  CDynamicArray<CObjectPlane> aoplNew;
+  CObjectPlane *poplUsed = aoplNew.New(ctUsedPlanes);
 
-// for each plane
-{FOREACHINDYNAMICARRAY(osc_aoplPlanes, CObjectPlane, itopl) {                     // if it is used
-                                                             if (itopl->opl_Tag) {// copy it to new array
-                                                                                    *poplUsed = itopl.Current();
-// set its remap pointer into new array
-itopl->opl_Remap = poplUsed;
-poplUsed++;
-// if it is not used
-}
-else {
-// clear its remap pointer (for debugging)
-#ifndef NDEBUG
-  itopl->opl_Remap = NULL;
-#endif
-}
-}
-}
+  // for each plane
+  {FOREACHINDYNAMICARRAY(osc_aoplPlanes, CObjectPlane, itopl) {
+    // if it is used
+    if (itopl->opl_Tag) {
+      // copy it to new array
+      *poplUsed = itopl.Current();
 
-// remap plane pointers in all polygons
-{
-  FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
+      // set its remap pointer into new array
+      itopl->opl_Remap = poplUsed;
+      poplUsed++;
+    // if it is not used
+    } else {
+      // clear its remap pointer (for debugging)
+      #ifndef NDEBUG
+      itopl->opl_Remap = NULL;
+      #endif
+    }
+  }}
+
+  // remap plane pointers in all polygons
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
     itopo->opo_Plane = itopo->opo_Plane->opl_Remap;
-  }
-}
+  }}
 
-// use new array of planes instead the old one
-osc_aoplPlanes.Clear();
-osc_aoplPlanes.MoveArray(aoplNew);
+  // use new array of planes instead the old one
+  osc_aoplPlanes.Clear();
+  osc_aoplPlanes.MoveArray(aoplNew);
 }
 
 /*
@@ -1114,12 +1084,10 @@ void CObjectSector::JoinContinuingPolygonEdges(void) {
      edges in one polygon are considered.
    */
   // for each polygon
-  {
-    FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
-      // join continuing edges in it
-      itopo->JoinContinuingEdges(osc_aoedEdges);
-    }
-  }
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
+    // join continuing edges in it
+    itopo->JoinContinuingEdges(osc_aoedEdges);
+  }}
 
   osc_aoedEdges.Unlock();
 }
@@ -1136,71 +1104,67 @@ void CObjectPolygon::JoinContinuingEdges(CDynamicArray<CObjectEdge> &oedEdges) {
   INDEX ctEdges = opo_PolygonEdges.Count();
 
   // for each edge
-  {
-    FOREACHINDYNAMICARRAY(opo_PolygonEdges, CObjectPolygonEdge, itope) {
-      CObjectEdge &oedThis = *itope->ope_Edge;
+  {FOREACHINDYNAMICARRAY(opo_PolygonEdges, CObjectPolygonEdge, itope) {
+    CObjectEdge &oedThis = *itope->ope_Edge;
 
-      // if not already marked for removal
-      if (&oedThis != NULL) {
-        CObjectVertex *povxStartThis, *povxEndThis;
-        // get start and end vertices
-        itope->GetVertices(povxStartThis, povxEndThis);
-        // mark the original edge for removal
-        itope->ope_Edge = NULL;
+    // if not already marked for removal
+    if (&oedThis != NULL) {
+      CObjectVertex *povxStartThis, *povxEndThis;
+      // get start and end vertices
+      itope->GetVertices(povxStartThis, povxEndThis);
+      // mark the original edge for removal
+      itope->ope_Edge = NULL;
 
-        BOOL bChangeDone; // termination condition flag
-        // repeat
-        do {
-          // mark that nothing is changed
-          bChangeDone = FALSE;
+      BOOL bChangeDone; // termination condition flag
+      // repeat
+      do {
+        // mark that nothing is changed
+        bChangeDone = FALSE;
 
-          // for each edge
-          {
-            FOREACHINDYNAMICARRAY(opo_PolygonEdges, CObjectPolygonEdge, itope2) {
-              CObjectEdge &oedOther = *itope2->ope_Edge;
+        // for each edge
+        {FOREACHINDYNAMICARRAY(opo_PolygonEdges, CObjectPolygonEdge, itope2) {
+          CObjectEdge &oedOther = *itope2->ope_Edge;
 
-              // if not already marked for removal
-              if (&oedOther != NULL) {
-                // if the two edges are collinear
-                if (CompareEdgeLines(*oedThis.colinear2.oed_pedxLine, *oedOther.colinear2.oed_pedxLine) == 0) {
-                  CObjectVertex *povxStartOther, *povxEndOther;
-                  // get start and end vertices
-                  itope2->GetVertices(povxStartOther, povxEndOther);
+          // if not already marked for removal
+          if (&oedOther != NULL) {
+            // if the two edges are collinear
+            if (CompareEdgeLines(*oedThis.colinear2.oed_pedxLine, *oedOther.colinear2.oed_pedxLine) == 0) {
+              CObjectVertex *povxStartOther, *povxEndOther;
+              // get start and end vertices
+              itope2->GetVertices(povxStartOther, povxEndOther);
 
-                  // if the other edge is continuing to this one
-                  if (povxStartOther == povxEndThis) {
-                    // extend the current edge by it
-                    povxEndThis = povxEndOther;
-                    // mark it for removal
-                    itope2->ope_Edge = NULL;
-                    // mark that a change is done
-                    bChangeDone = TRUE;
+              // if the other edge is continuing to this one
+              if (povxStartOther == povxEndThis) {
+                // extend the current edge by it
+                povxEndThis = povxEndOther;
+                // mark it for removal
+                itope2->ope_Edge = NULL;
+                // mark that a change is done
+                bChangeDone = TRUE;
 
-                    // if the other edge is continued by this one
-                  } else if (povxStartThis == povxEndOther) {
-                    // extend the current edge by it
-                    povxStartThis = povxStartOther;
-                    // mark it for removal
-                    itope2->ope_Edge = NULL;
-                    // mark that a change is done
-                    bChangeDone = TRUE;
-                  }
-                }
+                // if the other edge is continued by this one
+              } else if (povxStartThis == povxEndOther) {
+                // extend the current edge by it
+                povxStartThis = povxStartOther;
+                // mark it for removal
+                itope2->ope_Edge = NULL;
+                // mark that a change is done
+                bChangeDone = TRUE;
               }
             }
           }
+        }}
 
-          // until a pass is made without making any change
-        } while (bChangeDone);
+        // until a pass is made without making any change
+      } while (bChangeDone);
 
-        // create new edge with given start and end vertices
-        CObjectEdge *poedNew = oedEdges.New();
-        *poedNew = CObjectEdge(*povxStartThis, *povxEndThis);
-        // add it to new array
-        *aopeNew.New() = CObjectPolygonEdge(poedNew);
-      }
+      // create new edge with given start and end vertices
+      CObjectEdge *poedNew = oedEdges.New();
+      *poedNew = CObjectEdge(*povxStartThis, *povxEndThis);
+      // add it to new array
+      *aopeNew.New() = CObjectPolygonEdge(poedNew);
     }
-  }
+  }}
 
   // replace old array with the new one
   opo_PolygonEdges.Clear();
@@ -1395,50 +1359,45 @@ void CObjectSector::SplitCollinearEdges(void) {
   // Remap references to edges.
 
   // for all polygons in object
-  {
-    FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itpo2) {
-      // create new array of polygon edges for child edges
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itpo2) {
+    // create new array of polygon edges for child edges
 
-      // for all of its edge pointers
-      INDEX ctNewEdges = 0;
-      {
-        FOREACHINDYNAMICARRAY(itpo2->opo_PolygonEdges, CObjectPolygonEdge, itope) {
-          // count all children
-          for (CObjectEdge *poed = itope->ope_Edge->colinear1.oed_FirstChild; poed != NULL;
-               poed = poed->colinear1.oed_NextSibling) {
-            ctNewEdges++;
-          }
-        }
+    // for all of its edge pointers
+    INDEX ctNewEdges = 0;
+    {FOREACHINDYNAMICARRAY(itpo2->opo_PolygonEdges, CObjectPolygonEdge, itope) {
+      // count all children
+      for (CObjectEdge *poed = itope->ope_Edge->colinear1.oed_FirstChild; poed != NULL;
+           poed = poed->colinear1.oed_NextSibling) {
+        ctNewEdges++;
       }
-      // create a new array of edge references
-      CDynamicArray<CObjectPolygonEdge> aopoNewPolygonEdges;
-      if (ctNewEdges > 0) {
-        aopoNewPolygonEdges.New(ctNewEdges);
-      }
-      aopoNewPolygonEdges.Lock();
+    }}
 
-      // set the array
-
-      // for all of its edge pointers
-      INDEX iChildEdge = 0;
-      {
-        FOREACHINDYNAMICARRAY(itpo2->opo_PolygonEdges, CObjectPolygonEdge, itope) {
-          // for all of its children
-          for (CObjectEdge *poed = itope->ope_Edge->colinear1.oed_FirstChild; poed != NULL;
-               poed = poed->colinear1.oed_NextSibling) {
-            // set the child polygon edge
-            aopoNewPolygonEdges[iChildEdge] = CObjectPolygonEdge(poed, itope->ope_Backward);
-            iChildEdge++;
-          }
-        }
-      }
-
-      // replace old array with the new one
-      aopoNewPolygonEdges.Unlock();
-      itpo2->opo_PolygonEdges.Clear();
-      itpo2->opo_PolygonEdges.MoveArray(aopoNewPolygonEdges);
+    // create a new array of edge references
+    CDynamicArray<CObjectPolygonEdge> aopoNewPolygonEdges;
+    if (ctNewEdges > 0) {
+      aopoNewPolygonEdges.New(ctNewEdges);
     }
-  }
+    aopoNewPolygonEdges.Lock();
+
+    // set the array
+
+    // for all of its edge pointers
+    INDEX iChildEdge = 0;
+    {FOREACHINDYNAMICARRAY(itpo2->opo_PolygonEdges, CObjectPolygonEdge, itope) {
+      // for all of its children
+      for (CObjectEdge *poed = itope->ope_Edge->colinear1.oed_FirstChild; poed != NULL;
+           poed = poed->colinear1.oed_NextSibling) {
+        // set the child polygon edge
+        aopoNewPolygonEdges[iChildEdge] = CObjectPolygonEdge(poed, itope->ope_Backward);
+        iChildEdge++;
+      }
+    }}
+
+    // replace old array with the new one
+    aopoNewPolygonEdges.Unlock();
+    itpo2->opo_PolygonEdges.Clear();
+    itpo2->opo_PolygonEdges.MoveArray(aopoNewPolygonEdges);
+  }}
 
   osc_aoedEdges.Unlock();
 }
@@ -1448,12 +1407,10 @@ void CObjectSector::SplitCollinearEdges(void) {
  */
 void CObjectSector::RemoveRedundantPolygonEdges(void) {
   // for each polygon
-  {
-    FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
-      // remove redundant edges from it
-      itopo->RemoveRedundantEdges();
-    }
-  }
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
+    // remove redundant edges from it
+    itopo->RemoveRedundantEdges();
+  }}
 }
 
 /*
@@ -1467,28 +1424,25 @@ void CObjectPolygon::RemoveRedundantEdges(void) {
   INDEX ctEdges = opo_PolygonEdges.Count();
 
   // for each edge
-  {
-    FOREACHINDYNAMICARRAY(opo_PolygonEdges, CObjectPolygonEdge, itope) {
-      // if not already marked for removal
-      if (itope->ope_Edge != NULL) {
-        // for each edge
-        {
-          FOREACHINDYNAMICARRAY(opo_PolygonEdges, CObjectPolygonEdge, itope2) {
-            // if it uses same edge in opposite direction
-            if (itope2->ope_Edge == itope->ope_Edge && itope2->ope_Backward != itope->ope_Backward) {
-              // mark them both for removal
-              itope2->ope_Edge = NULL;
-              itope->ope_Edge = NULL;
-              // mark that there are two edges less
-              ctEdges -= 2;
-              // don't test this edge any more
-              break;
-            }
-          }
+  {FOREACHINDYNAMICARRAY(opo_PolygonEdges, CObjectPolygonEdge, itope) {
+    // if not already marked for removal
+    if (itope->ope_Edge != NULL) {
+      // for each edge
+      {FOREACHINDYNAMICARRAY(opo_PolygonEdges, CObjectPolygonEdge, itope2) {
+        // if it uses same edge in opposite direction
+        if (itope2->ope_Edge == itope->ope_Edge && itope2->ope_Backward != itope->ope_Backward) {
+          // mark them both for removal
+          itope2->ope_Edge = NULL;
+          itope->ope_Edge = NULL;
+          // mark that there are two edges less
+          ctEdges -= 2;
+          // don't test this edge any more
+          break;
         }
-      }
+      }}
     }
-  }
+  }}
+
   // remove polygon edges that are mark as unused
   RemoveMarkedEdges(ctEdges);
 }
@@ -1506,15 +1460,13 @@ void CObjectPolygon::RemoveMarkedEdges(INDEX ctEdges) {
 
   // for each edge
   INDEX iNewEdge = 0;
-  {
-    FOREACHINDYNAMICARRAY(opo_PolygonEdges, CObjectPolygonEdge, itope) {
-      // if it is not marked for removal
-      if (itope->ope_Edge != NULL) {
-        // copy it
-        aoedNewPolygonEdges[iNewEdge++] = itope.Current();
-      }
+  {FOREACHINDYNAMICARRAY(opo_PolygonEdges, CObjectPolygonEdge, itope) {
+    // if it is not marked for removal
+    if (itope->ope_Edge != NULL) {
+      // copy it
+      aoedNewPolygonEdges[iNewEdge++] = itope.Current();
     }
-  }
+  }}
 
   // replace old array with the new one
   aoedNewPolygonEdges.Unlock();
@@ -1528,20 +1480,18 @@ void CObjectPolygon::RemoveMarkedEdges(INDEX ctEdges) {
 void CObjectPolygon::RemoveDummyEdgeReferences(void) {
   INDEX ctUsedEdges = opo_PolygonEdges.Count();
   // for all edges in polygon
-  {
-    FOREACHINDYNAMICARRAY(opo_PolygonEdges, CObjectPolygonEdge, itope) {
-      // if it has zero length
-      if (itope->ope_Edge->oed_Vertex0 == itope->ope_Edge->oed_Vertex1) {
-        ASSERT(CompareVertices(*itope->ope_Edge->oed_Vertex0, *itope->ope_Edge->oed_Vertex1) == 0);
-        // mark it for removal
-        itope->ope_Edge = NULL;
-        ctUsedEdges--;
-      } else {
-        // !!!! why this fails sometimes? ASSERT(CompareVertices(*itope->ope_Edge->oed_Vertex0, *itope->ope_Edge->oed_Vertex1) !=
-        // 0);
-      }
+  {FOREACHINDYNAMICARRAY(opo_PolygonEdges, CObjectPolygonEdge, itope) {
+    // if it has zero length
+    if (itope->ope_Edge->oed_Vertex0 == itope->ope_Edge->oed_Vertex1) {
+      ASSERT(CompareVertices(*itope->ope_Edge->oed_Vertex0, *itope->ope_Edge->oed_Vertex1) == 0);
+      // mark it for removal
+      itope->ope_Edge = NULL;
+      ctUsedEdges--;
+    } else {
+      // !!!! why this fails sometimes? ASSERT(CompareVertices(*itope->ope_Edge->oed_Vertex0, *itope->ope_Edge->oed_Vertex1) !=
+      // 0);
     }
-  }
+  }}
 
   // remove all marked edges from the polygon
   RemoveMarkedEdges(ctUsedEdges);
@@ -1552,12 +1502,10 @@ void CObjectPolygon::RemoveDummyEdgeReferences(void) {
  */
 void CObjectSector::RemoveDummyEdgeReferences(void) {
   // for each polygon
-  {
-    FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
-      // remove zero length edges from it
-      itopo->RemoveDummyEdgeReferences();
-    }
-  }
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
+    // remove zero length edges from it
+    itopo->RemoveDummyEdgeReferences();
+  }}
 }
 
 /*
@@ -1627,40 +1575,36 @@ void CObjectSector::RemapClonedEdges(void) {
     }
   }
 
-#ifndef NDEBUG
+  #ifndef NDEBUG
   // for all edges in object
-  {
-    FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited) {
-      CObjectEdge &edInverse = *ited->optimize.oed_InverseEdge;
-      // check that no remapped edges have been marked as inverses
-      ASSERT(&edInverse == NULL || edInverse.optimize.oed_Remap == &edInverse);
-    }
-  }
-#endif // NDEBUG
+  {FOREACHINDYNAMICARRAY(osc_aoedEdges, CObjectEdge, ited) {
+    CObjectEdge &edInverse = *ited->optimize.oed_InverseEdge;
+    // check that no remapped edges have been marked as inverses
+    ASSERT(&edInverse == NULL || edInverse.optimize.oed_Remap == &edInverse);
+  }}
+  #endif // NDEBUG
 
   // Remap all references to edges.
 
   // for all polygons in object
-  {
-    FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itpo2) {
-      // for all of its edge pointers
-      FOREACHINDYNAMICARRAY(itpo2->opo_PolygonEdges, CObjectPolygonEdge, itope) {
-        // get the remapped edge pointer
-        CObjectEdge *pedNew = itope->ope_Edge->optimize.oed_Remap;
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itpo2) {
+    // for all of its edge pointers
+    FOREACHINDYNAMICARRAY(itpo2->opo_PolygonEdges, CObjectPolygonEdge, itope) {
+      // get the remapped edge pointer
+      CObjectEdge *pedNew = itope->ope_Edge->optimize.oed_Remap;
 
-        // if has an inverse edge
-        if (pedNew->optimize.oed_InverseEdge != NULL) {
-          // use the inverse edge
-          pedNew = pedNew->optimize.oed_InverseEdge;
-          // mark that the direction has changed
-          itope->ope_Backward = !itope->ope_Backward;
-        }
-
-        // use the edge
-        itope->ope_Edge = pedNew;
+      // if has an inverse edge
+      if (pedNew->optimize.oed_InverseEdge != NULL) {
+        // use the inverse edge
+        pedNew = pedNew->optimize.oed_InverseEdge;
+        // mark that the direction has changed
+        itope->ope_Backward = !itope->ope_Backward;
       }
+
+      // use the edge
+      itope->ope_Edge = pedNew;
     }
-  }
+  }}
 
   osc_aoedEdges.Unlock();
 }
@@ -1671,37 +1615,34 @@ void CObjectSector::RemapClonedEdges(void) {
 void CObjectSector::RemoveDummyPolygons(void) {
   // for each polygon
   INDEX ctUsedPolygons = 0;
-  {
-    FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
-      // if it has more than 2 edges
-      if (itopo->opo_PolygonEdges.Count() > 2) {
-        // mark it as used
-        itopo->opo_Tag = TRUE;
-        // count it
-        ctUsedPolygons++;
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
+    // if it has more than 2 edges
+    if (itopo->opo_PolygonEdges.Count() > 2) {
+      // mark it as used
+      itopo->opo_Tag = TRUE;
+      // count it
+      ctUsedPolygons++;
 
-        // if it has less than 3 edges
-      } else {
-        // mark it as unused
-        itopo->opo_Tag = FALSE;
-      }
+      // if it has less than 3 edges
+    } else {
+      // mark it as unused
+      itopo->opo_Tag = FALSE;
     }
-  }
+  }}
 
   // create a new array of polygons
   CDynamicArray<CObjectPolygon> aopoNew;
   CObjectPolygon *popoNew = aopoNew.New(ctUsedPolygons);
 
   // for each polygon in sector
-  {
-    FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
-      // if it is used
-      if (itopo->opo_Tag) {
-        // add it to the new array
-        *popoNew++ = itopo.Current();
-      }
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
+    // if it is used
+    if (itopo->opo_Tag) {
+      // add it to the new array
+      *popoNew++ = itopo.Current();
     }
-  }
+  }}
+
   // replace old array with the new one
   osc_aopoPolygons.Clear();
   osc_aopoPolygons.MoveArray(aopoNew);
@@ -1719,6 +1660,7 @@ void CObjectSector::Optimize(void) {
     Snap((*itovx)(2), VTX_SNAP);
     Snap((*itovx)(3), VTX_SNAP);
   }}
+
   // for each plane
   {FOREACHINDYNAMICARRAY(osc_aoplPlanes, CObjectPlane, itopl) {
     // snap the plane coordinates
@@ -1935,56 +1877,54 @@ void CObjectSector::RecalculatePlanes(void) {
   CDynamicContainer<CObjectPolygon> copoEmpty;
 
   // for all polygons
-  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {CObjectPolygon &opo = *itopo;
-  // clear plane normal
-  DOUBLE3D vNormal = DOUBLE3D(0.0f, 0.0f, 0.0f);
+  {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
+    CObjectPolygon &opo = *itopo;
+    // clear plane normal
+    DOUBLE3D vNormal = DOUBLE3D(0.0f, 0.0f, 0.0f);
 
-  // for all edges in polygon
-  INDEX ctVertices = opo.opo_PolygonEdges.Count();
-  opo.opo_PolygonEdges.Lock();
-  {
-    for (INDEX iVertex = 0; iVertex < ctVertices; iVertex++) {
-      // get its vertices in counterclockwise order
-      CObjectPolygonEdge &ope = opo.opo_PolygonEdges[iVertex];
-      CObjectVertex *povx0, *povx1;
-      if (ope.ope_Backward) {
-        povx0 = ope.ope_Edge->oed_Vertex1;
-        povx1 = ope.ope_Edge->oed_Vertex0;
-      } else {
-        povx0 = ope.ope_Edge->oed_Vertex0;
-        povx1 = ope.ope_Edge->oed_Vertex1;
+    // for all edges in polygon
+    INDEX ctVertices = opo.opo_PolygonEdges.Count();
+    opo.opo_PolygonEdges.Lock();
+    {
+      for (INDEX iVertex = 0; iVertex < ctVertices; iVertex++) {
+        // get its vertices in counterclockwise order
+        CObjectPolygonEdge &ope = opo.opo_PolygonEdges[iVertex];
+        CObjectVertex *povx0, *povx1;
+        if (ope.ope_Backward) {
+          povx0 = ope.ope_Edge->oed_Vertex1;
+          povx1 = ope.ope_Edge->oed_Vertex0;
+        } else {
+          povx0 = ope.ope_Edge->oed_Vertex0;
+          povx1 = ope.ope_Edge->oed_Vertex1;
+        }
+        DOUBLE3D vSum = *povx0 + *povx1;
+        DOUBLE3D vDif = *povx0 - *povx1;
+        // add the edge contribution to the normal vector
+        vNormal(1) += vDif(2) * vSum(3);
+        vNormal(2) += vDif(3) * vSum(1);
+        vNormal(3) += vDif(1) * vSum(2);
       }
-      DOUBLE3D vSum = *povx0 + *povx1;
-      DOUBLE3D vDif = *povx0 - *povx1;
-      // add the edge contribution to the normal vector
-      vNormal(1) += vDif(2) * vSum(3);
-      vNormal(2) += vDif(3) * vSum(1);
-      vNormal(3) += vDif(1) * vSum(2);
     }
-  }
 
-  // if the polygon area is too small
-  if (vNormal.Length() < 1E-8) {
-    // mark it for removal
-    copoEmpty.Add(&opo);
-    // if the polygon area is ok
-  } else {
-    // add one plane to planes array
-    CObjectPlane *pplPlane = osc_aoplPlanes.New();
-    // construct this plane from normal vector and one point
-    *pplPlane = DOUBLEplane3D(vNormal, *opo.opo_PolygonEdges[0].ope_Edge->oed_Vertex0);
-    opo.opo_Plane = pplPlane;
-  }
+    // if the polygon area is too small
+    if (vNormal.Length() < 1E-8) {
+      // mark it for removal
+      copoEmpty.Add(&opo);
+      // if the polygon area is ok
+    } else {
+      // add one plane to planes array
+      CObjectPlane *pplPlane = osc_aoplPlanes.New();
+      // construct this plane from normal vector and one point
+      *pplPlane = DOUBLEplane3D(vNormal, *opo.opo_PolygonEdges[0].ope_Edge->oed_Vertex0);
+      opo.opo_Plane = pplPlane;
+    }
 
-  opo.opo_PolygonEdges.Unlock();
-}
-}
+    opo.opo_PolygonEdges.Unlock();
+  }}
 
-// for all empty polygons
-{
-  FOREACHINDYNAMICCONTAINER(copoEmpty, CObjectPolygon, itopoEmpty) {
+  // for all empty polygons
+  {FOREACHINDYNAMICCONTAINER(copoEmpty, CObjectPolygon, itopoEmpty) {
     // delete the polygon from sector
     osc_aopoPolygons.Delete(itopoEmpty);
-  }
-}
+  }}
 }

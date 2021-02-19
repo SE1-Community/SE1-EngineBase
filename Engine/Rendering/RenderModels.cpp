@@ -143,93 +143,91 @@ BOOL CRenderer::FindModelLights(CEntity &en, const CPlacement3D &plModel, COLOR 
 
       fTotalShadowIntensity = 0.0f;
       // for each shadow layer
-      {
-        FOREACHINLIST(CBrushShadowLayer, bsl_lnInShadowMap, bsm.bsm_lhLayers, itbsl) {
-          // get the light source
-          CLightSource *plsLight = itbsl->bsl_plsLightSource;
+      {FOREACHINLIST(CBrushShadowLayer, bsl_lnInShadowMap, bsm.bsm_lhLayers, itbsl) {
+        // get the light source
+        CLightSource *plsLight = itbsl->bsl_plsLightSource;
 
-          // remember the light parameters
-          UBYTE ubR, ubG, ubB;
-          UBYTE ubDAR, ubDAG, ubDAB;
-          plsLight->GetLightColorAndAmbient(ubR, ubG, ubB, ubDAR, ubDAG, ubDAB);
+        // remember the light parameters
+        UBYTE ubR, ubG, ubB;
+        UBYTE ubDAR, ubDAG, ubDAB;
+        plsLight->GetLightColorAndAmbient(ubR, ubG, ubB, ubDAR, ubDAG, ubDAB);
 
-          // add directional ambient if needed
-          if (en.en_psiShadingInfo->si_pbpoPolygon->bpo_ulFlags & BPOF_HASDIRECTIONALAMBIENT) {
-            slSAR += ubDAR;
-            slSAG += ubDAG;
-            slSAB += ubDAB;
+        // add directional ambient if needed
+        if (en.en_psiShadingInfo->si_pbpoPolygon->bpo_ulFlags & BPOF_HASDIRECTIONALAMBIENT) {
+          slSAR += ubDAR;
+          slSAG += ubDAG;
+          slSAB += ubDAB;
+        }
+
+        // get the layer intensity at the point
+        FLOAT fShadowFactor;
+        if (en.en_ulFlags & ENF_CLUSTERSHADOWS) {
+          fShadowFactor = 1.0f;
+        } else {
+          fShadowFactor = itbsl->GetLightStrength(en.en_psiShadingInfo->si_pixShadowU, en.en_psiShadingInfo->si_pixShadowV,
+                                                  en.en_psiShadingInfo->si_fUDRatio, en.en_psiShadingInfo->si_fLRRatio);
+        }
+        // skip this light if no intensity
+        if (fShadowFactor < 0.01f)
+          continue;
+
+        const CPlacement3D &plLight = plsLight->ls_penEntity->GetPlacement();
+        const FLOAT3D &vLight = plLight.pl_PositionVector;
+        // get its parameters at the model position
+        FLOAT3D vDirection;
+        FLOAT fDistance;
+        FLOAT fFallOffFactor;
+
+        if (plsLight->ls_ulFlags & LSF_DIRECTIONAL) {
+          fFallOffFactor = 1.0f;
+          AnglesToDirectionVector(plLight.pl_OrientationAngle, vDirection);
+          plModel.pl_PositionVector - vLight;
+          if (!(en.en_psiShadingInfo->si_pbpoPolygon->bpo_ulFlags & BPOF_HASDIRECTIONALLIGHT)) {
+            ubR = ubG = ubB = 0;
           }
+          fDistance = 1.0f;
+        } else {
+          vDirection = plModel.pl_PositionVector - vLight;
+          fDistance = vDirection.Length();
 
-          // get the layer intensity at the point
-          FLOAT fShadowFactor;
-          if (en.en_ulFlags & ENF_CLUSTERSHADOWS) {
-            fShadowFactor = 1.0f;
-          } else {
-            fShadowFactor = itbsl->GetLightStrength(en.en_psiShadingInfo->si_pixShadowU, en.en_psiShadingInfo->si_pixShadowV,
-                                                    en.en_psiShadingInfo->si_fUDRatio, en.en_psiShadingInfo->si_fLRRatio);
-          }
-          // skip this light if no intensity
-          if (fShadowFactor < 0.01f)
+          if (fDistance > plsLight->ls_rFallOff) {
             continue;
-
-          const CPlacement3D &plLight = plsLight->ls_penEntity->GetPlacement();
-          const FLOAT3D &vLight = plLight.pl_PositionVector;
-          // get its parameters at the model position
-          FLOAT3D vDirection;
-          FLOAT fDistance;
-          FLOAT fFallOffFactor;
-
-          if (plsLight->ls_ulFlags & LSF_DIRECTIONAL) {
+          } else if (fDistance < plsLight->ls_rHotSpot) {
             fFallOffFactor = 1.0f;
-            AnglesToDirectionVector(plLight.pl_OrientationAngle, vDirection);
-            plModel.pl_PositionVector - vLight;
-            if (!(en.en_psiShadingInfo->si_pbpoPolygon->bpo_ulFlags & BPOF_HASDIRECTIONALLIGHT)) {
-              ubR = ubG = ubB = 0;
-            }
-            fDistance = 1.0f;
           } else {
-            vDirection = plModel.pl_PositionVector - vLight;
-            fDistance = vDirection.Length();
-
-            if (fDistance > plsLight->ls_rFallOff) {
-              continue;
-            } else if (fDistance < plsLight->ls_rHotSpot) {
-              fFallOffFactor = 1.0f;
-            } else {
-              fFallOffFactor = (plsLight->ls_rFallOff - fDistance) / (plsLight->ls_rFallOff - plsLight->ls_rHotSpot);
-            }
-          }
-          // add the light to active lights
-          struct ModelLight &ml = _amlLights.Push();
-          ml.ml_plsLight = plsLight;
-          // normalize direction vector
-          if (fDistance > 0.001f) {
-            ml.ml_vDirection = vDirection / fDistance;
-          } else {
-            ml.ml_vDirection = FLOAT3D(0.0f, 0.0f, 0.0f);
-          }
-          // special case for substract sector ambient light
-          if (plsLight->ls_ulFlags & LSF_SUBSTRACTSECTORAMBIENT) {
-            ubR = (UBYTE)Clamp((SLONG)ubR - slSAR, 0L, 255L);
-            ubG = (UBYTE)Clamp((SLONG)ubG - slSAG, 0L, 255L);
-            ubB = (UBYTE)Clamp((SLONG)ubB - slSAB, 0L, 255L);
-          }
-          // calculate light intensity
-          FLOAT fShade = (ubR + ubG + ubB) * (2.0f / (3.0f * 255.0f));
-          ml.ml_fShadowIntensity = fShade * fShadowFactor;
-          fTotalShadowIntensity += ml.ml_fShadowIntensity;
-          // special case for dark light
-          if (plsLight->ls_ulFlags & LSF_DARKLIGHT) {
-            ml.ml_fR = -ubR * fFallOffFactor;
-            ml.ml_fG = -ubG * fFallOffFactor;
-            ml.ml_fB = -ubB * fFallOffFactor;
-          } else {
-            ml.ml_fR = +ubR * fFallOffFactor;
-            ml.ml_fG = +ubG * fFallOffFactor;
-            ml.ml_fB = +ubB * fFallOffFactor;
+            fFallOffFactor = (plsLight->ls_rFallOff - fDistance) / (plsLight->ls_rFallOff - plsLight->ls_rHotSpot);
           }
         }
-      }
+        // add the light to active lights
+        struct ModelLight &ml = _amlLights.Push();
+        ml.ml_plsLight = plsLight;
+        // normalize direction vector
+        if (fDistance > 0.001f) {
+          ml.ml_vDirection = vDirection / fDistance;
+        } else {
+          ml.ml_vDirection = FLOAT3D(0.0f, 0.0f, 0.0f);
+        }
+        // special case for substract sector ambient light
+        if (plsLight->ls_ulFlags & LSF_SUBSTRACTSECTORAMBIENT) {
+          ubR = (UBYTE)Clamp((SLONG)ubR - slSAR, 0L, 255L);
+          ubG = (UBYTE)Clamp((SLONG)ubG - slSAG, 0L, 255L);
+          ubB = (UBYTE)Clamp((SLONG)ubB - slSAB, 0L, 255L);
+        }
+        // calculate light intensity
+        FLOAT fShade = (ubR + ubG + ubB) * (2.0f / (3.0f * 255.0f));
+        ml.ml_fShadowIntensity = fShade * fShadowFactor;
+        fTotalShadowIntensity += ml.ml_fShadowIntensity;
+        // special case for dark light
+        if (plsLight->ls_ulFlags & LSF_DARKLIGHT) {
+          ml.ml_fR = -ubR * fFallOffFactor;
+          ml.ml_fG = -ubG * fFallOffFactor;
+          ml.ml_fB = -ubB * fFallOffFactor;
+        } else {
+          ml.ml_fR = +ubR * fFallOffFactor;
+          ml.ml_fG = +ubG * fFallOffFactor;
+          ml.ml_fB = +ubB * fFallOffFactor;
+        }
+      }}
 
       FLOAT fTR = 0.0f;
       FLOAT fTG = 0.0f;

@@ -300,30 +300,28 @@ void CRenderer::RenderWireFrameBrushes(void) {
                          || _wrpWorldRenderPrefs.wrp_stSelection == CWorldRenderPrefs::ST_VERTICES;
 
   // for all active sectors
-  {
-    FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, re_lhActiveSectors, itbsc) {
-      CBrushSector &bsc = *itbsc;
-      // if invisible
-      if (bsc.bsc_ulFlags & BSCF_INVISIBLE) {
-        // skip it
-        continue;
-      }
+  {FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, re_lhActiveSectors, itbsc) {
+    CBrushSector &bsc = *itbsc;
+    // if invisible
+    if (bsc.bsc_ulFlags & BSCF_INVISIBLE) {
+      // skip it
+      continue;
+    }
 
-      // if it is field brush
-      if (bsc.bsc_pbmBrushMip->bm_pbrBrush->br_pfsFieldSettings != NULL) {
-        // if fields should be drawn
-        if (_wrpWorldRenderPrefs.IsFieldBrushesOn()) {
-          // draw it (all brush sectors in the list are already prepared and transformed)
-          DrawFieldBrushSectorEdges(bsc);
-        }
-      } else {
-        if (bRenderNonField) {
-          // draw it (all brush sectors in the list are already prepared and transformed)
-          DrawBrushSectorVerticesAndEdges(bsc);
-        }
+    // if it is field brush
+    if (bsc.bsc_pbmBrushMip->bm_pbrBrush->br_pfsFieldSettings != NULL) {
+      // if fields should be drawn
+      if (_wrpWorldRenderPrefs.IsFieldBrushesOn()) {
+        // draw it (all brush sectors in the list are already prepared and transformed)
+        DrawFieldBrushSectorEdges(bsc);
+      }
+    } else {
+      if (bRenderNonField) {
+        // draw it (all brush sectors in the list are already prepared and transformed)
+        DrawBrushSectorVerticesAndEdges(bsc);
       }
     }
-  }
+  }}
 }
 
 /*

@@ -276,37 +276,39 @@ void CBrushSector::Write_t(CTStream *postrm) // throw char *
   // write the number of vertices in brush
   (*postrm) << bsc_abvxVertices.Count();
   // for each vertex
-  {FOREACHINSTATICARRAY(bsc_abvxVertices, CBrushVertex, itbvx) {// write precise vertex coordinates
-                                                                postrm->Write_t(&itbvx->bvx_vdPreciseRelative, sizeof(DOUBLE3D));
-}
-}
+  {FOREACHINSTATICARRAY(bsc_abvxVertices, CBrushVertex, itbvx) {
+    // write precise vertex coordinates
+    postrm->Write_t(&itbvx->bvx_vdPreciseRelative, sizeof(DOUBLE3D));
+  }}
 
-(*postrm).WriteID_t("PLNs"); // 'planes'
-// write the number of planes in brush
-(*postrm) << bsc_abplPlanes.Count();
-// for each plane
-{FOREACHINSTATICARRAY(bsc_abplPlanes, CBrushPlane, itbpl) {// write precise plane coordinates
-                                                           postrm->Write_t(&itbpl->bpl_pldPreciseRelative, sizeof(DOUBLEplane3D));
-}
-}
+  (*postrm).WriteID_t("PLNs"); // 'planes'
+  // write the number of planes in brush
+  (*postrm) << bsc_abplPlanes.Count();
 
-(*postrm).WriteID_t("EDGs"); // 'edges'
-// write the number of edges in brush
-(*postrm) << bsc_abedEdges.Count();
-// for each edge
-{FOREACHINSTATICARRAY(bsc_abedEdges, CBrushEdge, itbed) {// write indices of edge vertices
-                                                         (*postrm) << bsc_abvxVertices.Index(itbed->bed_pbvxVertex0);
-(*postrm) << bsc_abvxVertices.Index(itbed->bed_pbvxVertex1);
-}
-}
+  // for each plane
+  {FOREACHINSTATICARRAY(bsc_abplPlanes, CBrushPlane, itbpl) {
+    // write precise plane coordinates
+    postrm->Write_t(&itbpl->bpl_pldPreciseRelative, sizeof(DOUBLEplane3D));
+  }}
 
-(*postrm).WriteID_t("BPOs"); // 'brush polygons'
-(*postrm) << INDEX(BPOV_CURRENT);
-// write the number of polygons in brush
-(*postrm) << bsc_abpoPolygons.Count();
-// for each polygon
-{
-  FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
+  (*postrm).WriteID_t("EDGs"); // 'edges'
+  // write the number of edges in brush
+  (*postrm) << bsc_abedEdges.Count();
+
+  // for each edge
+  {FOREACHINSTATICARRAY(bsc_abedEdges, CBrushEdge, itbed) {
+    // write indices of edge vertices
+    (*postrm) << bsc_abvxVertices.Index(itbed->bed_pbvxVertex0);
+    (*postrm) << bsc_abvxVertices.Index(itbed->bed_pbvxVertex1);
+  }}
+
+  (*postrm).WriteID_t("BPOs"); // 'brush polygons'
+  (*postrm) << INDEX(BPOV_CURRENT);
+  // write the number of polygons in brush
+  (*postrm) << bsc_abpoPolygons.Count();
+
+  // for each polygon
+  {FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
     CBrushPolygon &bpo = *itbpo;
     // write index of the plane
     (*postrm) << bsc_abplPlanes.Index(bpo.bpo_pbplPlane);
@@ -324,50 +326,49 @@ void CBrushSector::Write_t(CTStream *postrm) // throw char *
     // write number of polygon edges
     (*postrm) << bpo.bpo_abpePolygonEdges.Count();
     // for each polygon edge
-    {FOREACHINSTATICARRAY(bpo.bpo_abpePolygonEdges, CBrushPolygonEdge,
-                          itbpe) {// get its edge index
-                                  INDEX iEdge = bsc_abedEdges.Index(itbpe->bpe_pbedEdge);
-    // if it is reverse edge
-    if (itbpe->bpe_bReverse) {
-      // set highest bit in the index
-      iEdge |= 0x80000000;
+    {FOREACHINSTATICARRAY(bpo.bpo_abpePolygonEdges, CBrushPolygonEdge, itbpe) {
+      // get its edge index
+      INDEX iEdge = bsc_abedEdges.Index(itbpe->bpe_pbedEdge);
+
+      // if it is reverse edge
+      if (itbpe->bpe_bReverse) {
+        // set highest bit in the index
+        iEdge |= 0x80000000;
+      }
+      // write the index
+      (*postrm) << iEdge;
+    }}
+
+    // write number of triangle vertices
+    (*postrm) << bpo.bpo_apbvxTriangleVertices.Count();
+
+    // for each triangle vertex
+    {FOREACHINSTATICARRAY(bpo.bpo_apbvxTriangleVertices, CBrushVertex *, itpbvx) {
+      // write its index
+      (*postrm) << bsc_abvxVertices.Index(*itpbvx);
+    }}
+
+    // write number of triangle elements
+    INDEX ctElements = bpo.bpo_aiTriangleElements.Count();
+    (*postrm) << ctElements;
+
+    // write all element indices
+    if (ctElements > 0) {
+      (*postrm).Write_t(&bpo.bpo_aiTriangleElements[0], ctElements * sizeof(INDEX));
     }
-    // write the index
-    (*postrm) << iEdge;
-  }
-}
 
-// write number of triangle vertices
-(*postrm) << bpo.bpo_apbvxTriangleVertices.Count();
-// for each triangle vertex
-{
-  FOREACHINSTATICARRAY(bpo.bpo_apbvxTriangleVertices, CBrushVertex *, itpbvx) {
-    // write its index
-    (*postrm) << bsc_abvxVertices.Index(*itpbvx);
-  }
-}
+    // write the shadow-map (if it exists)
+    bpo.bpo_smShadowMap.Write_t(postrm);
+    // write shadow color
+    (*postrm) << bpo.bpo_colShadow;
+  }}
 
-// write number of triangle elements
-INDEX ctElements = bpo.bpo_aiTriangleElements.Count();
-(*postrm) << ctElements;
-// write all element indices
-if (ctElements > 0) {
-  (*postrm).Write_t(&bpo.bpo_aiTriangleElements[0], ctElements * sizeof(INDEX));
-}
+  // unlock the brush elements
+  UnlockAll();
 
-// write the shadow-map (if it exists)
-bpo.bpo_smShadowMap.Write_t(postrm);
-// write shadow color
-(*postrm) << bpo.bpo_colShadow;
-}
-}
-
-// unlock the brush elements
-UnlockAll();
-
-// write bsp
-(*postrm).WriteID_t("BSP0");
-bsc_bspBSPTree.Write_t(*postrm);
+  // write bsp
+  (*postrm).WriteID_t("BSP0");
+  bsc_bspBSPTree.Write_t(*postrm);
 }
 
 /*
@@ -416,36 +417,37 @@ void CBrushSector::Read_t(CTStream *pistrm) // throw char *
   bsc_abvxVertices.New(ctVertices);
   bsc_awvxVertices.New(ctVertices);
   // for each vertex
-  {FOREACHINSTATICARRAY(bsc_abvxVertices, CBrushVertex, itbvx) {// read precise vertex coordinates
-                                                                pistrm->Read_t(&itbvx->bvx_vdPreciseRelative, sizeof(DOUBLE3D));
-  // remember sector pointer
-  itbvx->bvx_pbscSector = this;
-}
-}
+  {FOREACHINSTATICARRAY(bsc_abvxVertices, CBrushVertex, itbvx) {
+    // read precise vertex coordinates
+    pistrm->Read_t(&itbvx->bvx_vdPreciseRelative, sizeof(DOUBLE3D));
+    // remember sector pointer
+    itbvx->bvx_pbscSector = this;
+  }}
 
-(*pistrm).ExpectID_t("PLNs"); // 'planes'
-// read the number of planes in brush
-INDEX ctPlanes;
-(*pistrm) >> ctPlanes;
-// create that much planes
-bsc_abplPlanes.New(ctPlanes);
-bsc_awplPlanes.New(ctPlanes);
-// for each plane
-{FOREACHINSTATICARRAY(bsc_abplPlanes, CBrushPlane, itbpl) {// read precise plane coordinates
-                                                           pistrm->Read_t(&itbpl->bpl_pldPreciseRelative, sizeof(DOUBLEplane3D));
-}
-}
+  (*pistrm).ExpectID_t("PLNs"); // 'planes'
+  // read the number of planes in brush
+  INDEX ctPlanes;
+  (*pistrm) >> ctPlanes;
+  // create that much planes
+  bsc_abplPlanes.New(ctPlanes);
+  bsc_awplPlanes.New(ctPlanes);
 
-(*pistrm).ExpectID_t("EDGs"); // 'edges'
-// read the number of edges in brush
-INDEX ctEdges;
-(*pistrm) >> ctEdges;
-// create that much edges
-bsc_abedEdges.New(ctEdges);
-bsc_awedEdges.New(ctEdges);
-// for all edges in object
-{
-  for (INDEX iEdge = 0; iEdge < ctEdges; iEdge++) {
+  // for each plane
+  {FOREACHINSTATICARRAY(bsc_abplPlanes, CBrushPlane, itbpl) {
+    // read precise plane coordinates
+    pistrm->Read_t(&itbpl->bpl_pldPreciseRelative, sizeof(DOUBLEplane3D));
+  }}
+
+  (*pistrm).ExpectID_t("EDGs"); // 'edges'
+  // read the number of edges in brush
+  INDEX ctEdges;
+  (*pistrm) >> ctEdges;
+  // create that much edges
+  bsc_abedEdges.New(ctEdges);
+  bsc_awedEdges.New(ctEdges);
+
+  // for all edges in object
+  {for (INDEX iEdge = 0; iEdge < ctEdges; iEdge++) {
     CBrushEdge &bed = bsc_abedEdges[iEdge];
     CWorkingEdge &wed = bsc_awedEdges[iEdge];
     // read indices of edge vertices
@@ -460,25 +462,24 @@ bsc_awedEdges.New(ctEdges);
     bed.bed_pwedWorking = &wed;
     wed.wed_iwvx0 = iVertex0;
     wed.wed_iwvx1 = iVertex1;
+  }}
+
+  INDEX iBPOVersion;
+  (*pistrm).ExpectID_t("BPOs"); // 'brush polygons'
+  (*pistrm) >> iBPOVersion;
+  if (iBPOVersion < BPOV_WITHHYPERTEXTURES) {
+    ThrowF_t(TRANS("Brush polygon version too old (%d)."), iBPOVersion);
   }
-}
 
-INDEX iBPOVersion;
-(*pistrm).ExpectID_t("BPOs"); // 'brush polygons'
-(*pistrm) >> iBPOVersion;
-if (iBPOVersion < BPOV_WITHHYPERTEXTURES) {
-  ThrowF_t(TRANS("Brush polygon version too old (%d)."), iBPOVersion);
-}
+  // read the number of polygons in brush
+  INDEX ctPolygons;
+  (*pistrm) >> ctPolygons;
+  _ctPolygonsLoaded += ctPolygons;
+  // create that much polygons
+  bsc_abpoPolygons.New(ctPolygons);
 
-// read the number of polygons in brush
-INDEX ctPolygons;
-(*pistrm) >> ctPolygons;
-_ctPolygonsLoaded += ctPolygons;
-// create that much polygons
-bsc_abpoPolygons.New(ctPolygons);
-// for each polygon
-{
-  FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
+  // for each polygon
+  {FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
     CBrushPolygon &bpo = *itbpo;
     // read index of the plane
     INDEX iPlane;
@@ -558,25 +559,23 @@ bsc_abpoPolygons.New(ctPolygons);
     // create that much polygons edges
     bpo.bpo_abpePolygonEdges.New(ctPolygonEdges);
     // for each polygon edge
-    {
-      FOREACHINSTATICARRAY(bpo.bpo_abpePolygonEdges, CBrushPolygonEdge, itbpe) {
-        // read its edge index
-        INDEX iEdge;
-        (*pistrm) >> iEdge;
-        // if the highest bit is set
-        if (iEdge & 0x80000000) {
-          // mark that it is reverse edge
-          itbpe->bpe_bReverse = TRUE;
-          // clear the highest bit
-          iEdge &= ~0x80000000;
-        } else {
-          // mark that it is not reverse edge
-          itbpe->bpe_bReverse = FALSE;
-        }
-        // set edge pointer
-        itbpe->bpe_pbedEdge = &bsc_abedEdges[iEdge];
+    {FOREACHINSTATICARRAY(bpo.bpo_abpePolygonEdges, CBrushPolygonEdge, itbpe) {
+      // read its edge index
+      INDEX iEdge;
+      (*pistrm) >> iEdge;
+      // if the highest bit is set
+      if (iEdge & 0x80000000) {
+        // mark that it is reverse edge
+        itbpe->bpe_bReverse = TRUE;
+        // clear the highest bit
+        iEdge &= ~0x80000000;
+      } else {
+        // mark that it is not reverse edge
+        itbpe->bpe_bReverse = FALSE;
       }
-    }
+      // set edge pointer
+      itbpe->bpe_pbedEdge = &bsc_abedEdges[iEdge];
+    }}
 
     // if triangles are saved
     if (iBPOVersion >= BPOV_TRIANGLES) {
@@ -586,14 +585,12 @@ bsc_abpoPolygons.New(ctPolygons);
       // allocate them
       bpo.bpo_apbvxTriangleVertices.New(ctVertices);
       // for each triangle vertex
-      {
-        FOREACHINSTATICARRAY(bpo.bpo_apbvxTriangleVertices, CBrushVertex *, itpbvx) {
-          // read its index
-          INDEX ivx;
-          (*pistrm) >> ivx;
-          *itpbvx = &bsc_abvxVertices[ivx];
-        }
-      }
+      {FOREACHINSTATICARRAY(bpo.bpo_apbvxTriangleVertices, CBrushVertex *, itpbvx) {
+        // read its index
+        INDEX ivx;
+        (*pistrm) >> ivx;
+        *itpbvx = &bsc_abvxVertices[ivx];
+      }}
 
       // read number of triangle elements
       INDEX ctElements;
@@ -617,27 +614,27 @@ bsc_abpoPolygons.New(ctPolygons);
       (*pistrm) >> ubDummy;
       bpo.bpo_colShadow = C_WHITE | CT_OPAQUE;
     }
+  }}
+
+  // unlock the brush elements
+  UnlockAll();
+
+  // calculate the volume of the sector
+  CalculateVolume();
+
+  bsc_ulTempFlags &= ~BSCTF_PRELOADEDBSP;
+
+  // if there is current version of bsp saved
+  if ((*pistrm).PeekID_t() == CChunkID("BSP0")) {
+    _pfWorldEditingProfile.StartTimer(CWorldEditingProfile::PTI_READBSP);
+    (*pistrm).ExpectID_t("BSP0");
+    // read it
+    bsc_bspBSPTree.Read_t(*pistrm);
+    // if read ok
+    if (bsc_bspBSPTree.bt_abnNodes.Count() > 0) {
+      // mark that tree doesn't have to be recalculated
+      bsc_ulTempFlags |= BSCTF_PRELOADEDBSP;
+    }
+    _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_READBSP);
   }
-}
-
-// unlock the brush elements
-UnlockAll();
-
-// calculate the volume of the sector
-CalculateVolume();
-
-bsc_ulTempFlags &= ~BSCTF_PRELOADEDBSP;
-// if there is current version of bsp saved
-if ((*pistrm).PeekID_t() == CChunkID("BSP0")) {
-  _pfWorldEditingProfile.StartTimer(CWorldEditingProfile::PTI_READBSP);
-  (*pistrm).ExpectID_t("BSP0");
-  // read it
-  bsc_bspBSPTree.Read_t(*pistrm);
-  // if read ok
-  if (bsc_bspBSPTree.bt_abnNodes.Count() > 0) {
-    // mark that tree doesn't have to be recalculated
-    bsc_ulTempFlags |= BSCTF_PRELOADEDBSP;
-  }
-  _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_READBSP);
-}
 }

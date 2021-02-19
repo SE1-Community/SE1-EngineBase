@@ -449,37 +449,34 @@ void CRenderer::CleanupScanning(void) {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_CLEANUP);
 
   // for all active sectors
-  {
-    FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, re_lhActiveSectors, itbsc) {
-      // remove it from list
-      itbsc->bsc_lnInActiveSectors.Remove();
+  {FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, re_lhActiveSectors, itbsc) {
+    // remove it from list
+    itbsc->bsc_lnInActiveSectors.Remove();
 
-      // for all polygons in sector
-      FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itpo) {
-        CBrushPolygon &bpo = *itpo;
-        // clear screen polygon pointers
-        bpo.bpo_pspoScreenPolygon = NULL;
-      }
+    // for all polygons in sector
+    FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itpo) {
+      CBrushPolygon &bpo = *itpo;
+      // clear screen polygon pointers
+      bpo.bpo_pspoScreenPolygon = NULL;
     }
-  }
+  }}
+
   ASSERT(re_lhActiveSectors.IsEmpty());
 
   // for all active brushes
-  {
-    FORDELETELIST(CBrush3D, br_lnInActiveBrushes, re_lhActiveBrushes, itbr) {
-      // remove it from list
-      itbr->br_lnInActiveBrushes.Remove();
-    }
-  }
+  {FORDELETELIST(CBrush3D, br_lnInActiveBrushes, re_lhActiveBrushes, itbr) {
+    // remove it from list
+    itbr->br_lnInActiveBrushes.Remove();
+  }}
+
   ASSERT(re_lhActiveBrushes.IsEmpty());
 
   // for all active terrains
-  {
-    FORDELETELIST(CTerrain, tr_lnInActiveTerrains, re_lhActiveTerrains, ittr) {
-      // remove it from list
-      ittr->tr_lnInActiveTerrains.Remove();
-    }
-  }
+  {FORDELETELIST(CTerrain, tr_lnInActiveTerrains, re_lhActiveTerrains, ittr) {
+    // remove it from list
+    ittr->tr_lnInActiveTerrains.Remove();
+  }}
+
   ASSERT(re_lhActiveTerrains.IsEmpty());
 
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_CLEANUP);
@@ -491,12 +488,10 @@ void CRenderer::RenderTerrains(void) {
   papr = &re_prProjection;
 
   // for all active terrains
-  {
-    FORDELETELIST(CTerrain, tr_lnInActiveTerrains, re_lhActiveTerrains, ittr) {
-      // render terrain
-      ittr->Render(*papr, re_pdpDrawPort);
-    }
-  }
+  {FORDELETELIST(CTerrain, tr_lnInActiveTerrains, re_lhActiveTerrains, ittr) {
+    // render terrain
+    ittr->Render(*papr, re_pdpDrawPort);
+  }}
 }
 
 // Render active terrains in wireframe mode
@@ -511,17 +506,15 @@ void CRenderer::RenderWireFrameTerrains(void) {
   COLOR colEdges = _wrpWorldRenderPrefs.wrp_colEdges;
   COLOR colVertices = 0xFF0000FF;
   // for all active terrains
-  {
-    FORDELETELIST(CTerrain, tr_lnInActiveTerrains, re_lhActiveTerrains, ittr) {
-      // render terrain
-      if (bShowEdges) {
-        ittr->RenderWireFrame(*papr, re_pdpDrawPort, colEdges);
-      }
-      if (bShowVertices) {
-        // ittr->RenderVertices(*papr, re_pdpDrawPort,colVertices);
-      }
+  {FORDELETELIST(CTerrain, tr_lnInActiveTerrains, re_lhActiveTerrains, ittr) {
+    // render terrain
+    if (bShowEdges) {
+      ittr->RenderWireFrame(*papr, re_pdpDrawPort, colEdges);
     }
-  }
+    if (bShowVertices) {
+      // ittr->RenderVertices(*papr, re_pdpDrawPort,colVertices);
+    }
+  }}
 }
 // draw the prepared things to screen
 void CRenderer::DrawToScreen(void) {

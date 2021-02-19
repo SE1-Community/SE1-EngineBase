@@ -715,13 +715,13 @@ void CClipMove::CacheNearPolygons(void) {
   box |= cm_penMoving->en_boxMovingEstimate;
 
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_CACHENEARPOLYGONS_ADDINITIAL);
+
   // for each zoning sector that this entity is in
-  {
-    FOREACHSRCOFDST(cm_penMoving->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+  {FOREACHSRCOFDST(cm_penMoving->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     // add it to list of active sectors
     cm_lhActiveSectors.AddTail(pbsc->bsc_lnInActiveSectors);
-    ENDFOR
-  }
+  ENDFOR}
+
   _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CACHENEARPOLYGONS_ADDINITIAL);
 
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_CACHENEARPOLYGONS_MAINLOOP);
@@ -743,22 +743,19 @@ void CClipMove::CacheNearPolygons(void) {
       // if it is passable
       if (pbpo->bpo_ulFlags & BPOF_PASSABLE) {
         // for each sector related to the portal
-        {
-          FOREACHDSTOFSRC(pbpo->bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbscRelated)
+        {FOREACHDSTOFSRC(pbpo->bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbscRelated)
           // if the sector is not active
           if (!pbscRelated->bsc_lnInActiveSectors.IsLinked()) {
             // add it to active list
             cm_lhActiveSectors.AddTail(pbscRelated->bsc_lnInActiveSectors);
           }
-          ENDFOR
-        }
+        ENDFOR}
       }
       _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CACHENEARPOLYGONS_MAINLOOPFOUND);
     }
 
     // for non-zoning non-movable brush entities in the sector
-    {
-      FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
+    {FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
       if (pen->en_RenderType == CEntity::RT_TERRAIN) {
         continue;
       }
@@ -778,31 +775,28 @@ void CClipMove::CacheNearPolygons(void) {
       // if brush mip exists for that mip factor
       if (pbm != NULL) {
         // for each sector in the mip
-        {
-          FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbscNonZoning) {
-            CBrushSector &bscNonZoning = *itbscNonZoning;
-            // add it to list of active sectors
-            if (!bscNonZoning.bsc_lnInActiveSectors.IsLinked()) {
-              cm_lhActiveSectors.AddTail(bscNonZoning.bsc_lnInActiveSectors);
-            }
+        {FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbscNonZoning) {
+          CBrushSector &bscNonZoning = *itbscNonZoning;
+          // add it to list of active sectors
+          if (!bscNonZoning.bsc_lnInActiveSectors.IsLinked()) {
+            cm_lhActiveSectors.AddTail(bscNonZoning.bsc_lnInActiveSectors);
           }
-        }
+        }}
       }
       _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES_ADDNONZONING);
-      ENDFOR
-    }
+    ENDFOR}
 
     _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES_FINDNONZONING);
   }
   _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CACHENEARPOLYGONS_MAINLOOP);
 
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_CACHENEARPOLYGONS_CLEANUP);
+
   // clear list of active sectors
-  {
-    FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, cm_lhActiveSectors, itbsc) {
-      itbsc->bsc_lnInActiveSectors.Remove();
-    }
-  }
+  {FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, cm_lhActiveSectors, itbsc) {
+    itbsc->bsc_lnInActiveSectors.Remove();
+  }}
+
   _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CACHENEARPOLYGONS_CLEANUP);
 
   _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CACHENEARPOLYGONS);
@@ -893,15 +887,13 @@ void CClipMove::ClipToZoningSector(CBrushSector *pbsc) {
       // if it is passable
     } else {
       // for each sector related to the portal
-      {
-        FOREACHDSTOFSRC(pbpo->bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbscRelated)
+      {FOREACHDSTOFSRC(pbpo->bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbscRelated)
         // if the sector is not active
         if (pbscRelated->bsc_pbmBrushMip->IsFirstMip() && !pbscRelated->bsc_lnInActiveSectors.IsLinked()) {
           // add it to active list
           cm_lhActiveSectors.AddTail(pbscRelated->bsc_lnInActiveSectors);
         }
-        ENDFOR
-      }
+      ENDFOR}
     }
   }
 
@@ -923,8 +915,7 @@ void CClipMove::ClipMoveToBrushes(void) {
 
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES_ADDINITIAL);
   // for each zoning sector that this entity is in
-  {
-    FOREACHSRCOFDST(cm_penMoving->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+  {FOREACHSRCOFDST(cm_penMoving->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     _pfPhysicsProfile.IncrementTimerAveragingCounter(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES_ADDINITIAL, 1);
     // if it collides with this one
     if (pbsc->bsc_pbmBrushMip->IsFirstMip() && pbsc->bsc_pbmBrushMip->bm_pbrBrush->br_pfsFieldSettings == NULL
@@ -932,8 +923,7 @@ void CClipMove::ClipMoveToBrushes(void) {
       // add it to list of active sectors
       cm_lhActiveSectors.AddTail(pbsc->bsc_lnInActiveSectors);
     }
-    ENDFOR
-  }
+  ENDFOR}
   _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES_ADDINITIAL);
 
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES_MAINLOOP);
@@ -943,8 +933,7 @@ void CClipMove::ClipMoveToBrushes(void) {
 
     _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES_FINDNONZONING);
     // for non-zoning brush entities in the sector
-    {
-      FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
+    {FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
       if (pen->en_RenderType != CEntity::RT_BRUSH && pen->en_RenderType != CEntity::RT_FIELDBRUSH
           && pen->en_RenderType != CEntity::RT_TERRAIN) {
         break; // brushes are sorted first in list
@@ -976,19 +965,17 @@ void CClipMove::ClipMoveToBrushes(void) {
       // if brush mip exists for that mip factor
       if (pbm != NULL) {
         // for each sector in the mip
-        {
-          FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbscNonZoning) {
-            CBrushSector &bscNonZoning = *itbscNonZoning;
-            // add it to list of active sectors
-            if (!bscNonZoning.bsc_lnInActiveSectors.IsLinked()) {
-              cm_lhActiveSectors.AddTail(bscNonZoning.bsc_lnInActiveSectors);
-            }
+        {FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbscNonZoning) {
+          CBrushSector &bscNonZoning = *itbscNonZoning;
+          // add it to list of active sectors
+          if (!bscNonZoning.bsc_lnInActiveSectors.IsLinked()) {
+            cm_lhActiveSectors.AddTail(bscNonZoning.bsc_lnInActiveSectors);
           }
-        }
+        }}
       }
       _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES_ADDNONZONING);
-      ENDFOR
-    }
+    ENDFOR}
+
     _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES_FINDNONZONING);
 
     // get the sector's brush mip, brush and entity
@@ -1017,12 +1004,12 @@ void CClipMove::ClipMoveToBrushes(void) {
   _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES_MAINLOOP);
 
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES_CLEANUP);
+
   // clear list of active sectors
-  {
-    FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, cm_lhActiveSectors, itbsc) {
-      itbsc->bsc_lnInActiveSectors.Remove();
-    }
-  }
+  {FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, cm_lhActiveSectors, itbsc) {
+    itbsc->bsc_lnInActiveSectors.Remove();
+  }}
+
   _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES_CLEANUP);
 
   _pfPhysicsProfile.StopTimer(CPhysicsProfile::PTI_CLIPMOVETOBRUSHES);

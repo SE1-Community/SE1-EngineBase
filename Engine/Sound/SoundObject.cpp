@@ -402,137 +402,135 @@ void CSoundObject::Update3DEffects(void) {
 
   // for each listener
   INDEX ctEffectiveListeners = 0;
-  {
-    FOREACHINLIST(CSoundListener, sli_lnInActiveListeners, _pSound->sl_lhActiveListeners, itsli) {
-      CSoundListener &sli = *itsli;
+  {FOREACHINLIST(CSoundListener, sli_lnInActiveListeners, _pSound->sl_lhActiveListeners, itsli) {
+    CSoundListener &sli = *itsli;
 
-      // if local, but not of this listener
-      if ((so_slFlags & SOF_LOCAL) && so_penEntity != sli.sli_penEntity) {
-        // don't add this listener
-        continue;
-      }
-
-      // calculated parameters for this listener
-      FLOAT fLVolume, fRVolume;
-      FLOAT fLFilter, fRFilter;
-      FLOAT fLDelay, fRDelay;
-      FLOAT fPitchShift;
-
-      // calculate distance from listener
-      FLOAT3D vAbsDelta = vPosition - sli.sli_vPosition;
-      FLOAT fAbsDelta = vAbsDelta.Length();
-
-      // if too far away
-      if (fAbsDelta > so_sp3.sp3_fFalloff) {
-        // don't add this listener
-        continue;
-      }
-
-      // calculate distance falloff factor
-      FLOAT fDistanceFactor;
-      if (fAbsDelta <= so_sp3.sp3_fHotSpot) {
-        fDistanceFactor = 1;
-      } else {
-        fDistanceFactor = (so_sp3.sp3_fFalloff - fAbsDelta) / (so_sp3.sp3_fFalloff - so_sp3.sp3_fHotSpot);
-      }
-      ASSERT(fDistanceFactor >= 0 && fDistanceFactor <= +1);
-
-      // calculate volumetric influence
-      // NOTE: decoded sounds must be threated as volumetric
-      FLOAT fNonVolumetric = 1.0f;
-      FLOAT fNonVolumetricAdvanced = 1.0f;
-      if ((so_slFlags & SOF_VOLUMETRIC) || so_psdcDecoder != NULL) {
-        fNonVolumetric = 1.0f - fDistanceFactor;
-        fNonVolumetricAdvanced = 0.0f;
-      }
-      ASSERT(fNonVolumetric >= 0 && fNonVolumetric <= +1);
-
-      // find doppler effect pitch shift
-      fPitchShift = 1.0f;
-      if (fAbsDelta > 0.001f) {
-        FLOAT3D vObjectDirection = vAbsDelta / fAbsDelta;
-        FLOAT fObjectSpeed = vSpeed % vObjectDirection;           // negative towards listener
-        FLOAT fListenerSpeed = sli.sli_vSpeed % vObjectDirection; // positive towards object
-        fPitchShift = (snd_fDopplerSoundSpeed + fListenerSpeed * fNonVolumetricAdvanced)
-                      / (snd_fDopplerSoundSpeed + fObjectSpeed * fNonVolumetricAdvanced);
-      }
-
-      // find position of sound relative to viewer orientation
-      FLOAT3D vRelative = vAbsDelta * !sli.sli_mRotation;
-      // find distances from left and right ear
-      FLOAT fLDistance = (FLOAT3D(-snd_fEarsDistance * fNonVolumetricAdvanced / 2, 0, 0) - vRelative).Length();
-      FLOAT fRDistance = (FLOAT3D(+snd_fEarsDistance * fNonVolumetricAdvanced / 2, 0, 0) - vRelative).Length();
-      // calculate sound delay to each ear
-      fLDelay = fLDistance / snd_fDelaySoundSpeed;
-      fRDelay = fRDistance / snd_fDelaySoundSpeed;
-
-      // calculate relative sound directions
-      FLOAT fLRFactor = 0; // positive right
-      FLOAT fFBFactor = 0; // positive front
-      FLOAT fUDFactor = 0; // positive up
-
-      if (fAbsDelta > 0.001f) {
-        FLOAT3D vDir = vRelative / fAbsDelta;
-        fLRFactor = +vDir(1);
-        fFBFactor = -vDir(3);
-        fUDFactor = +vDir(2);
-      }
-      ASSERT(fLRFactor >= -1.1 && fLRFactor <= +1.1);
-      ASSERT(fFBFactor >= -1.1 && fFBFactor <= +1.1);
-      ASSERT(fUDFactor >= -1.1 && fUDFactor <= +1.1);
-
-      // calculate panning influence factor
-      FLOAT fPanningFactor = fNonVolumetric * snd_fPanStrength;
-      ASSERT(fPanningFactor >= 0 && fPanningFactor <= +1);
-
-      // calc volume for left and right channel
-      FLOAT fVolume = so_sp3.sp3_fMaxVolume * fDistanceFactor;
-      if (fLRFactor > 0) {
-        fLVolume = (1 - fLRFactor * fPanningFactor) * fVolume;
-        fRVolume = fVolume;
-      } else {
-        fLVolume = fVolume;
-        fRVolume = (1 + fLRFactor * fPanningFactor) * fVolume;
-      }
-
-      // calculate filters
-      FLOAT fListenerFilter = sli.sli_fFilter;
-      if (so_slFlags & SOF_NOFILTER) {
-        fListenerFilter = 0.0f;
-      }
-      fLFilter = fRFilter = 1 + fListenerFilter;
-      if (fLRFactor > 0) {
-        fLFilter += fLRFactor * snd_fLRFilter * fNonVolumetricAdvanced;
-      } else {
-        fRFilter -= fLRFactor * snd_fLRFilter * fNonVolumetricAdvanced;
-      }
-      if (fFBFactor < 0) {
-        fLFilter -= snd_fBFilter * fFBFactor * fNonVolumetricAdvanced;
-        fRFilter -= snd_fBFilter * fFBFactor * fNonVolumetricAdvanced;
-      }
-      if (fUDFactor > 0) {
-        fLFilter += snd_fUFilter * fUDFactor * fNonVolumetricAdvanced;
-        fRFilter += snd_fUFilter * fUDFactor * fNonVolumetricAdvanced;
-      } else {
-        fLFilter -= snd_fDFilter * fUDFactor * fNonVolumetricAdvanced;
-        fRFilter -= snd_fDFilter * fUDFactor * fNonVolumetricAdvanced;
-      }
-
-      // adjust calculated volume to the one of listener
-      fLVolume *= sli.sli_fVolume;
-      fRVolume *= sli.sli_fVolume;
-
-      // update parameters for all listener
-      fTLVolume = Max(fTLVolume, fLVolume);
-      fTRVolume = Max(fTRVolume, fRVolume);
-      fTLDelay = Min(fTLDelay, fLDelay);
-      fTRDelay = Min(fTRDelay, fRDelay);
-      fTLFilter = Min(fTLFilter, fLFilter);
-      fTRFilter = Min(fTRFilter, fRFilter);
-      fTPitchShift += fPitchShift;
-      ctEffectiveListeners++;
+    // if local, but not of this listener
+    if ((so_slFlags & SOF_LOCAL) && so_penEntity != sli.sli_penEntity) {
+      // don't add this listener
+      continue;
     }
-  }
+
+    // calculated parameters for this listener
+    FLOAT fLVolume, fRVolume;
+    FLOAT fLFilter, fRFilter;
+    FLOAT fLDelay, fRDelay;
+    FLOAT fPitchShift;
+
+    // calculate distance from listener
+    FLOAT3D vAbsDelta = vPosition - sli.sli_vPosition;
+    FLOAT fAbsDelta = vAbsDelta.Length();
+
+    // if too far away
+    if (fAbsDelta > so_sp3.sp3_fFalloff) {
+      // don't add this listener
+      continue;
+    }
+
+    // calculate distance falloff factor
+    FLOAT fDistanceFactor;
+    if (fAbsDelta <= so_sp3.sp3_fHotSpot) {
+      fDistanceFactor = 1;
+    } else {
+      fDistanceFactor = (so_sp3.sp3_fFalloff - fAbsDelta) / (so_sp3.sp3_fFalloff - so_sp3.sp3_fHotSpot);
+    }
+    ASSERT(fDistanceFactor >= 0 && fDistanceFactor <= +1);
+
+    // calculate volumetric influence
+    // NOTE: decoded sounds must be threated as volumetric
+    FLOAT fNonVolumetric = 1.0f;
+    FLOAT fNonVolumetricAdvanced = 1.0f;
+    if ((so_slFlags & SOF_VOLUMETRIC) || so_psdcDecoder != NULL) {
+      fNonVolumetric = 1.0f - fDistanceFactor;
+      fNonVolumetricAdvanced = 0.0f;
+    }
+    ASSERT(fNonVolumetric >= 0 && fNonVolumetric <= +1);
+
+    // find doppler effect pitch shift
+    fPitchShift = 1.0f;
+    if (fAbsDelta > 0.001f) {
+      FLOAT3D vObjectDirection = vAbsDelta / fAbsDelta;
+      FLOAT fObjectSpeed = vSpeed % vObjectDirection;           // negative towards listener
+      FLOAT fListenerSpeed = sli.sli_vSpeed % vObjectDirection; // positive towards object
+      fPitchShift = (snd_fDopplerSoundSpeed + fListenerSpeed * fNonVolumetricAdvanced)
+                    / (snd_fDopplerSoundSpeed + fObjectSpeed * fNonVolumetricAdvanced);
+    }
+
+    // find position of sound relative to viewer orientation
+    FLOAT3D vRelative = vAbsDelta * !sli.sli_mRotation;
+    // find distances from left and right ear
+    FLOAT fLDistance = (FLOAT3D(-snd_fEarsDistance * fNonVolumetricAdvanced / 2, 0, 0) - vRelative).Length();
+    FLOAT fRDistance = (FLOAT3D(+snd_fEarsDistance * fNonVolumetricAdvanced / 2, 0, 0) - vRelative).Length();
+    // calculate sound delay to each ear
+    fLDelay = fLDistance / snd_fDelaySoundSpeed;
+    fRDelay = fRDistance / snd_fDelaySoundSpeed;
+
+    // calculate relative sound directions
+    FLOAT fLRFactor = 0; // positive right
+    FLOAT fFBFactor = 0; // positive front
+    FLOAT fUDFactor = 0; // positive up
+
+    if (fAbsDelta > 0.001f) {
+      FLOAT3D vDir = vRelative / fAbsDelta;
+      fLRFactor = +vDir(1);
+      fFBFactor = -vDir(3);
+      fUDFactor = +vDir(2);
+    }
+    ASSERT(fLRFactor >= -1.1 && fLRFactor <= +1.1);
+    ASSERT(fFBFactor >= -1.1 && fFBFactor <= +1.1);
+    ASSERT(fUDFactor >= -1.1 && fUDFactor <= +1.1);
+
+    // calculate panning influence factor
+    FLOAT fPanningFactor = fNonVolumetric * snd_fPanStrength;
+    ASSERT(fPanningFactor >= 0 && fPanningFactor <= +1);
+
+    // calc volume for left and right channel
+    FLOAT fVolume = so_sp3.sp3_fMaxVolume * fDistanceFactor;
+    if (fLRFactor > 0) {
+      fLVolume = (1 - fLRFactor * fPanningFactor) * fVolume;
+      fRVolume = fVolume;
+    } else {
+      fLVolume = fVolume;
+      fRVolume = (1 + fLRFactor * fPanningFactor) * fVolume;
+    }
+
+    // calculate filters
+    FLOAT fListenerFilter = sli.sli_fFilter;
+    if (so_slFlags & SOF_NOFILTER) {
+      fListenerFilter = 0.0f;
+    }
+    fLFilter = fRFilter = 1 + fListenerFilter;
+    if (fLRFactor > 0) {
+      fLFilter += fLRFactor * snd_fLRFilter * fNonVolumetricAdvanced;
+    } else {
+      fRFilter -= fLRFactor * snd_fLRFilter * fNonVolumetricAdvanced;
+    }
+    if (fFBFactor < 0) {
+      fLFilter -= snd_fBFilter * fFBFactor * fNonVolumetricAdvanced;
+      fRFilter -= snd_fBFilter * fFBFactor * fNonVolumetricAdvanced;
+    }
+    if (fUDFactor > 0) {
+      fLFilter += snd_fUFilter * fUDFactor * fNonVolumetricAdvanced;
+      fRFilter += snd_fUFilter * fUDFactor * fNonVolumetricAdvanced;
+    } else {
+      fLFilter -= snd_fDFilter * fUDFactor * fNonVolumetricAdvanced;
+      fRFilter -= snd_fDFilter * fUDFactor * fNonVolumetricAdvanced;
+    }
+
+    // adjust calculated volume to the one of listener
+    fLVolume *= sli.sli_fVolume;
+    fRVolume *= sli.sli_fVolume;
+
+    // update parameters for all listener
+    fTLVolume = Max(fTLVolume, fLVolume);
+    fTRVolume = Max(fTRVolume, fRVolume);
+    fTLDelay = Min(fTLDelay, fLDelay);
+    fTRDelay = Min(fTRDelay, fRDelay);
+    fTLFilter = Min(fTLFilter, fLFilter);
+    fTRFilter = Min(fTRFilter, fRFilter);
+    fTPitchShift += fPitchShift;
+    ctEffectiveListeners++;
+  }}
 
   fTPitchShift /= ctEffectiveListeners;
 

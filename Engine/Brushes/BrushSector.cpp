@@ -116,14 +116,12 @@ void CBrushSector::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prRelative
   // clear the bounding box of the sector
   bsc_boxBoundingBox = FLOATaabbox3D();
   // for all polygons in this sector
-  {
-    FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
-      // calculate bounding box for that polygon
-      itbpo->CalculateBoundingBox();
-      // add the polygon's bounding box to sector's bounding box
-      bsc_boxBoundingBox |= itbpo->bpo_boxBoundingBox;
-    }
-  }
+  {FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
+    // calculate bounding box for that polygon
+    itbpo->CalculateBoundingBox();
+    // add the polygon's bounding box to sector's bounding box
+    bsc_boxBoundingBox |= itbpo->bpo_boxBoundingBox;
+  }}
 
   // if the bsp tree is not preloaded
   if (!(bsc_ulTempFlags & BSCTF_PRELOADEDBSP)) {
@@ -194,12 +192,10 @@ void CBrushSector::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prRelative
 // Uncache lightmaps on all shadows on the sector.
 void CBrushSector::UncacheLightMaps(void) {
   // for all polygons in this sector
-  {
-    FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
-      // uncache shadow map on the polygon
-      itbpo->bpo_smShadowMap.Uncache();
-    }
-  }
+  {FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
+    // uncache shadow map on the polygon
+    itbpo->bpo_smShadowMap.Uncache();
+  }}
 }
 // Find and remember all entities in this sector.
 void CBrushSector::FindEntitiesInSector(void) {
@@ -221,37 +217,35 @@ void CBrushSector::FindEntitiesInSector(void) {
   FLOATobbox3D boxSector(bsc_boxBoundingBox);
 
   // for each entity in the world
-  {
-    FOREACHINDYNAMICCONTAINER(penEntity->en_pwoWorld->wo_cenEntities, CEntity, iten) {
-      // if not in spatial clasification
-      if (iten->en_fSpatialClassificationRadius < 0) {
-        // skip it
-        continue;
-      }
-      // get bounding sphere
-      FLOAT fSphereRadius = iten->en_fSpatialClassificationRadius;
-      const FLOAT3D &vSphereCenter = iten->en_plPlacement.pl_PositionVector;
-      // if the sector's bounding box has contact with the sphere
-      if (bsc_boxBoundingBox.TouchesSphere(vSphereCenter, fSphereRadius)) {
-        // if the sphere is inside the sector
-        if (bsc_bspBSPTree.TestSphere(FLOATtoDOUBLE(vSphereCenter), FLOATtoDOUBLE(fSphereRadius)) >= 0) {
-          // make oriented bounding box of the entity
-          FLOATobbox3D boxEntity(iten->en_boxSpatialClassification, iten->en_plPlacement.pl_PositionVector, iten->en_mRotation);
+  {FOREACHINDYNAMICCONTAINER(penEntity->en_pwoWorld->wo_cenEntities, CEntity, iten) {
+    // if not in spatial clasification
+    if (iten->en_fSpatialClassificationRadius < 0) {
+      // skip it
+      continue;
+    }
+    // get bounding sphere
+    FLOAT fSphereRadius = iten->en_fSpatialClassificationRadius;
+    const FLOAT3D &vSphereCenter = iten->en_plPlacement.pl_PositionVector;
+    // if the sector's bounding box has contact with the sphere
+    if (bsc_boxBoundingBox.TouchesSphere(vSphereCenter, fSphereRadius)) {
+      // if the sphere is inside the sector
+      if (bsc_bspBSPTree.TestSphere(FLOATtoDOUBLE(vSphereCenter), FLOATtoDOUBLE(fSphereRadius)) >= 0) {
+        // make oriented bounding box of the entity
+        FLOATobbox3D boxEntity(iten->en_boxSpatialClassification, iten->en_plPlacement.pl_PositionVector, iten->en_mRotation);
 
-          // if the box is inside the sector
-          if (boxSector.HasContactWith(boxEntity) && bsc_bspBSPTree.TestBox(FLOATtoDOUBLE(boxEntity)) >= 0) {
-            // relate the entity to the sector
-            if (iten->en_RenderType == CEntity::RT_BRUSH || iten->en_RenderType == CEntity::RT_FIELDBRUSH
-                || iten->en_RenderType == CEntity::RT_TERRAIN) { // brushes first
-              AddRelationPairHeadHead(bsc_rsEntities, iten->en_rdSectors);
-            } else {
-              AddRelationPairTailTail(bsc_rsEntities, iten->en_rdSectors);
-            }
+        // if the box is inside the sector
+        if (boxSector.HasContactWith(boxEntity) && bsc_bspBSPTree.TestBox(FLOATtoDOUBLE(boxEntity)) >= 0) {
+          // relate the entity to the sector
+          if (iten->en_RenderType == CEntity::RT_BRUSH || iten->en_RenderType == CEntity::RT_FIELDBRUSH
+              || iten->en_RenderType == CEntity::RT_TERRAIN) { // brushes first
+            AddRelationPairHeadHead(bsc_rsEntities, iten->en_rdSectors);
+          } else {
+            AddRelationPairTailTail(bsc_rsEntities, iten->en_rdSectors);
           }
         }
       }
     }
-  }
+  }}
 }
 
 /*
@@ -298,14 +292,12 @@ DOUBLE CBrushSector::CalculateVolume(void) {
 
   DOUBLE fSectorVolume = 0.0;
   // for each polygon
-  {
-    FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
-      // calculate the area of the polygon
-      DOUBLE fPolygonArea = itbpo->CalculateArea();
-      // add the volume of the pyramid that the polygon closes with origin
-      fSectorVolume += fPolygonArea * itbpo->bpo_pbplPlane->bpl_pldPreciseRelative.Distance() / 3.0;
-    }
-  }
+  {FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
+    // calculate the area of the polygon
+    DOUBLE fPolygonArea = itbpo->CalculateArea();
+    // add the volume of the pyramid that the polygon closes with origin
+    fSectorVolume += fPolygonArea * itbpo->bpo_pbplPlane->bpl_pldPreciseRelative.Distance() / 3.0;
+  }}
 
   // if the volume is positive
   if (fSectorVolume >= 0.0) {
@@ -329,11 +321,9 @@ DOUBLE CBrushSector::CalculateVolume(void) {
 void CBrushSector::Triangulate(void) {
   _pfWorldEditingProfile.StartTimer(CWorldEditingProfile::PTI_TRIANGULATE);
   // for each polygon
-  {
-    FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
-      itbpo->Triangulate();
-    }
-  }
+  {FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
+    itbpo->Triangulate();
+  }}
 
   _pfWorldEditingProfile.StopTimer(CWorldEditingProfile::PTI_TRIANGULATE);
 }
@@ -447,32 +437,28 @@ void CBrushSector::TriangularizeForVertices(CBrushVertexSelection &selVertex) {
 
   // ---------- Mark polygons in this sector that contain any of the selected vertices
   // for all polygons in this sector
-  {
-    FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
-      // if polygon is already marked for triangularization
-      if (itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE) {
-        // no need to test it again
-        continue;
-      }
-      // if this polygon is triangle
-      if (itbpo->bpo_aiTriangleElements.Count() == 3) {
-        // skip it
-        continue;
-      }
-      // for all vertices in this polygon
-      {
-        FOREACHINSTATICARRAY(itbpo->bpo_apbvxTriangleVertices, CBrushVertex *, itpbvx) {
-          // if any of polygon's vertices is selected
-          if ((*itpbvx)->bvx_ulFlags & BVXF_SELECTED) {
-            // mark for triangularized
-            itbpo->bpo_ulFlags |= BPOF_MARKED_FOR_USE;
-            // no need to test other vertices in this polygon
-            break;
-          }
-        }
-      }
+  {FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
+    // if polygon is already marked for triangularization
+    if (itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE) {
+      // no need to test it again
+      continue;
     }
-  }
+    // if this polygon is triangle
+    if (itbpo->bpo_aiTriangleElements.Count() == 3) {
+      // skip it
+      continue;
+    }
+    // for all vertices in this polygon
+    {FOREACHINSTATICARRAY(itbpo->bpo_apbvxTriangleVertices, CBrushVertex *, itpbvx) {
+      // if any of polygon's vertices is selected
+      if ((*itpbvx)->bvx_ulFlags & BVXF_SELECTED) {
+        // mark for triangularized
+        itbpo->bpo_ulFlags |= BPOF_MARKED_FOR_USE;
+        // no need to test other vertices in this polygon
+        break;
+      }
+    }}
+  }}
 
   // triangularize marked polygons
   TriangularizeMarkedPolygons();
@@ -484,22 +470,21 @@ void CBrushSector::TriangularizeMarkedPolygons(void) {
   INDEX ctNewTriangles = 0;
 
   // for all polygons in this sector
-  {
-    FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
-      // if this polygon is triangle
-      if (itbpo->bpo_aiTriangleElements.Count() == 3) {
-        // skip it
-        continue;
-      }
-      // if polygon is already marked for triangularization
-      if (itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE) {
-        // count polygon
-        ctPolygonsToRemove++;
-        // and its triangles
-        ctNewTriangles += itbpo->bpo_aiTriangleElements.Count() / 3;
-      }
+  {FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
+    // if this polygon is triangle
+    if (itbpo->bpo_aiTriangleElements.Count() == 3) {
+      // skip it
+      continue;
     }
-  }
+
+    // if polygon is already marked for triangularization
+    if (itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE) {
+      // count polygon
+      ctPolygonsToRemove++;
+      // and its triangles
+      ctNewTriangles += itbpo->bpo_aiTriangleElements.Count() / 3;
+    }
+  }}
 
   // if all marked polygons are already triangularized
   if (ctPolygonsToRemove == 0) {
@@ -527,14 +512,103 @@ void CBrushSector::TriangularizeMarkedPolygons(void) {
   // ----------- Copy old polygons, create new ones along with their edges
   // for all polygons in this sector
   INDEX iNewPolygons = 0;
-  {
-    FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
-      CBrushPolygon &bpoOld = *itbpo;
+  {FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
+    CBrushPolygon &bpoOld = *itbpo;
 
-      // polygon shouldn't be triangularized
-      if (!(itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE)) {
+    // polygon shouldn't be triangularized
+    if (!(itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE)) {
+      CBrushPolygon &bpoNew = abpoPolygonsNew[iNewPolygons];
+      // copy the old polygon
+      bpoNew.bpo_pbplPlane = itbpo->bpo_pbplPlane;
+
+      bpoNew.bpo_abptTextures[0].CopyTextureProperties(itbpo->bpo_abptTextures[0], TRUE);
+      bpoNew.bpo_abptTextures[1].CopyTextureProperties(itbpo->bpo_abptTextures[1], TRUE);
+      bpoNew.bpo_abptTextures[2].CopyTextureProperties(itbpo->bpo_abptTextures[2], TRUE);
+
+      bpoNew.bpo_colColor = itbpo->bpo_colColor;
+      bpoNew.bpo_ulFlags = itbpo->bpo_ulFlags & ~(BPOF_MARKED_FOR_USE | BPOF_SELECTED);
+      bpoNew.bpo_colShadow = itbpo->bpo_colShadow;
+      bpoNew.bpo_bppProperties = itbpo->bpo_bppProperties;
+      bpoNew.bpo_pbscSector = itbpo->bpo_pbscSector;
+
+      // remap brush polygon edges to point to edges of new array
+      INDEX ctEdgesToRemap = itbpo->bpo_abpePolygonEdges.Count();
+      // allocate new polygon edges
+      bpoNew.bpo_abpePolygonEdges.New(ctEdgesToRemap);
+      // for each edge in polygon
+      for (INDEX iRemapEdge = 0; iRemapEdge < ctEdgesToRemap; iRemapEdge++) {
+        CBrushPolygonEdge &bpeOld = itbpo->bpo_abpePolygonEdges[iRemapEdge];
+        CBrushPolygonEdge &bpeNew = bpoNew.bpo_abpePolygonEdges[iRemapEdge];
+
+        // get index of the edge for old edge array
+        INDEX iOldIndex = bsc_abedEdges.Index(bpeOld.bpe_pbedEdge);
+
+        // use same index, but point to edge in new edge array
+        bpeNew.bpe_pbedEdge = &abedEdgesNew[iOldIndex];
+        // set edge direction
+        bpeNew.bpe_bReverse = bpeOld.bpe_bReverse;
+      }
+
+      bpoNew.bpo_apbvxTriangleVertices = bpoOld.bpo_apbvxTriangleVertices;
+      bpoNew.bpo_aiTriangleElements = bpoOld.bpo_aiTriangleElements;
+
+      // initialize shadow map
+      bpoNew.InitializeShadowMap();
+
+      iNewPolygons++;
+
+    // if polygon is marked for triangularization
+    } else {
+      INDEX ctTriangles = itbpo->bpo_aiTriangleElements.Count() / 3;
+      // for each triangle in old polygon
+      for (INDEX iTriangle = 0; iTriangle < ctTriangles; iTriangle++) {
         CBrushPolygon &bpoNew = abpoPolygonsNew[iNewPolygons];
-        // copy the old polygon
+        INDEX iVtx0 = itbpo->bpo_aiTriangleElements[iTriangle * 3 + 0];
+        INDEX iVtx1 = itbpo->bpo_aiTriangleElements[iTriangle * 3 + 1];
+        INDEX iVtx2 = itbpo->bpo_aiTriangleElements[iTriangle * 3 + 2];
+
+        CBrushVertex *pbvtx0 = itbpo->bpo_apbvxTriangleVertices[iVtx0];
+        CBrushVertex *pbvtx1 = itbpo->bpo_apbvxTriangleVertices[iVtx1];
+        CBrushVertex *pbvtx2 = itbpo->bpo_apbvxTriangleVertices[iVtx2];
+
+        // setup edge 0
+        abedEdgesNew[iEdge + 0].bed_pbvxVertex0 = pbvtx0;
+        abedEdgesNew[iEdge + 0].bed_pbvxVertex1 = pbvtx1;
+
+        // setup edge 1
+        abedEdgesNew[iEdge + 1].bed_pbvxVertex0 = pbvtx1;
+        abedEdgesNew[iEdge + 1].bed_pbvxVertex1 = pbvtx2;
+
+        // setup edge 2
+        abedEdgesNew[iEdge + 2].bed_pbvxVertex0 = pbvtx2;
+        abedEdgesNew[iEdge + 2].bed_pbvxVertex1 = pbvtx0;
+
+        // allocate and set polygon edges for new triangle
+        bpoNew.bpo_abpePolygonEdges.New(3);
+        bpoNew.bpo_abpePolygonEdges[0].bpe_pbedEdge = &abedEdgesNew[iEdge + 0];
+        bpoNew.bpo_abpePolygonEdges[0].bpe_bReverse = FALSE;
+        bpoNew.bpo_abpePolygonEdges[1].bpe_pbedEdge = &abedEdgesNew[iEdge + 1];
+        bpoNew.bpo_abpePolygonEdges[1].bpe_bReverse = FALSE;
+        bpoNew.bpo_abpePolygonEdges[2].bpe_pbedEdge = &abedEdgesNew[iEdge + 2];
+        bpoNew.bpo_abpePolygonEdges[2].bpe_bReverse = FALSE;
+
+        CBrushEdge &edg0 = *bpoNew.bpo_abpePolygonEdges[0].bpe_pbedEdge;
+        CBrushEdge &edg1 = *bpoNew.bpo_abpePolygonEdges[1].bpe_pbedEdge;
+        CBrushEdge &edg2 = *bpoNew.bpo_abpePolygonEdges[2].bpe_pbedEdge;
+
+        // set brush vertex ptrs
+        bpoNew.bpo_apbvxTriangleVertices.New(3);
+        bpoNew.bpo_apbvxTriangleVertices[0] = pbvtx0;
+        bpoNew.bpo_apbvxTriangleVertices[1] = pbvtx1;
+        bpoNew.bpo_apbvxTriangleVertices[2] = pbvtx2;
+
+        // setup fixed trinagle element indices
+        bpoNew.bpo_aiTriangleElements.New(3);
+        bpoNew.bpo_aiTriangleElements[0] = 0;
+        bpoNew.bpo_aiTriangleElements[1] = 1;
+        bpoNew.bpo_aiTriangleElements[2] = 2;
+
+        // copy parameters from old polygon
         bpoNew.bpo_pbplPlane = itbpo->bpo_pbplPlane;
 
         bpoNew.bpo_abptTextures[0].CopyTextureProperties(itbpo->bpo_abptTextures[0], TRUE);
@@ -547,107 +621,16 @@ void CBrushSector::TriangularizeMarkedPolygons(void) {
         bpoNew.bpo_bppProperties = itbpo->bpo_bppProperties;
         bpoNew.bpo_pbscSector = itbpo->bpo_pbscSector;
 
-        // remap brush polygon edges to point to edges of new array
-        INDEX ctEdgesToRemap = itbpo->bpo_abpePolygonEdges.Count();
-        // allocate new polygon edges
-        bpoNew.bpo_abpePolygonEdges.New(ctEdgesToRemap);
-        // for each edge in polygon
-        for (INDEX iRemapEdge = 0; iRemapEdge < ctEdgesToRemap; iRemapEdge++) {
-          CBrushPolygonEdge &bpeOld = itbpo->bpo_abpePolygonEdges[iRemapEdge];
-          CBrushPolygonEdge &bpeNew = bpoNew.bpo_abpePolygonEdges[iRemapEdge];
-
-          // get index of the edge for old edge array
-          INDEX iOldIndex = bsc_abedEdges.Index(bpeOld.bpe_pbedEdge);
-
-          // use same index, but point to edge in new edge array
-          bpeNew.bpe_pbedEdge = &abedEdgesNew[iOldIndex];
-          // set edge direction
-          bpeNew.bpe_bReverse = bpeOld.bpe_bReverse;
-        }
-
-        bpoNew.bpo_apbvxTriangleVertices = bpoOld.bpo_apbvxTriangleVertices;
-        bpoNew.bpo_aiTriangleElements = bpoOld.bpo_aiTriangleElements;
-
         // initialize shadow map
         bpoNew.InitializeShadowMap();
 
+        // skip created edges
+        iEdge += 3;
+        // next triangle
         iNewPolygons++;
       }
-      // if polygon is marked for triangularization
-      else {
-        INDEX ctTriangles = itbpo->bpo_aiTriangleElements.Count() / 3;
-        // for each triangle in old polygon
-        for (INDEX iTriangle = 0; iTriangle < ctTriangles; iTriangle++) {
-          CBrushPolygon &bpoNew = abpoPolygonsNew[iNewPolygons];
-          INDEX iVtx0 = itbpo->bpo_aiTriangleElements[iTriangle * 3 + 0];
-          INDEX iVtx1 = itbpo->bpo_aiTriangleElements[iTriangle * 3 + 1];
-          INDEX iVtx2 = itbpo->bpo_aiTriangleElements[iTriangle * 3 + 2];
-
-          CBrushVertex *pbvtx0 = itbpo->bpo_apbvxTriangleVertices[iVtx0];
-          CBrushVertex *pbvtx1 = itbpo->bpo_apbvxTriangleVertices[iVtx1];
-          CBrushVertex *pbvtx2 = itbpo->bpo_apbvxTriangleVertices[iVtx2];
-
-          // setup edge 0
-          abedEdgesNew[iEdge + 0].bed_pbvxVertex0 = pbvtx0;
-          abedEdgesNew[iEdge + 0].bed_pbvxVertex1 = pbvtx1;
-
-          // setup edge 1
-          abedEdgesNew[iEdge + 1].bed_pbvxVertex0 = pbvtx1;
-          abedEdgesNew[iEdge + 1].bed_pbvxVertex1 = pbvtx2;
-
-          // setup edge 2
-          abedEdgesNew[iEdge + 2].bed_pbvxVertex0 = pbvtx2;
-          abedEdgesNew[iEdge + 2].bed_pbvxVertex1 = pbvtx0;
-
-          // allocate and set polygon edges for new triangle
-          bpoNew.bpo_abpePolygonEdges.New(3);
-          bpoNew.bpo_abpePolygonEdges[0].bpe_pbedEdge = &abedEdgesNew[iEdge + 0];
-          bpoNew.bpo_abpePolygonEdges[0].bpe_bReverse = FALSE;
-          bpoNew.bpo_abpePolygonEdges[1].bpe_pbedEdge = &abedEdgesNew[iEdge + 1];
-          bpoNew.bpo_abpePolygonEdges[1].bpe_bReverse = FALSE;
-          bpoNew.bpo_abpePolygonEdges[2].bpe_pbedEdge = &abedEdgesNew[iEdge + 2];
-          bpoNew.bpo_abpePolygonEdges[2].bpe_bReverse = FALSE;
-
-          CBrushEdge &edg0 = *bpoNew.bpo_abpePolygonEdges[0].bpe_pbedEdge;
-          CBrushEdge &edg1 = *bpoNew.bpo_abpePolygonEdges[1].bpe_pbedEdge;
-          CBrushEdge &edg2 = *bpoNew.bpo_abpePolygonEdges[2].bpe_pbedEdge;
-
-          // set brush vertex ptrs
-          bpoNew.bpo_apbvxTriangleVertices.New(3);
-          bpoNew.bpo_apbvxTriangleVertices[0] = pbvtx0;
-          bpoNew.bpo_apbvxTriangleVertices[1] = pbvtx1;
-          bpoNew.bpo_apbvxTriangleVertices[2] = pbvtx2;
-
-          // setup fixed trinagle element indices
-          bpoNew.bpo_aiTriangleElements.New(3);
-          bpoNew.bpo_aiTriangleElements[0] = 0;
-          bpoNew.bpo_aiTriangleElements[1] = 1;
-          bpoNew.bpo_aiTriangleElements[2] = 2;
-
-          // copy parameters from old polygon
-          bpoNew.bpo_pbplPlane = itbpo->bpo_pbplPlane;
-
-          bpoNew.bpo_abptTextures[0].CopyTextureProperties(itbpo->bpo_abptTextures[0], TRUE);
-          bpoNew.bpo_abptTextures[1].CopyTextureProperties(itbpo->bpo_abptTextures[1], TRUE);
-          bpoNew.bpo_abptTextures[2].CopyTextureProperties(itbpo->bpo_abptTextures[2], TRUE);
-
-          bpoNew.bpo_colColor = itbpo->bpo_colColor;
-          bpoNew.bpo_ulFlags = itbpo->bpo_ulFlags & ~(BPOF_MARKED_FOR_USE | BPOF_SELECTED);
-          bpoNew.bpo_colShadow = itbpo->bpo_colShadow;
-          bpoNew.bpo_bppProperties = itbpo->bpo_bppProperties;
-          bpoNew.bpo_pbscSector = itbpo->bpo_pbscSector;
-
-          // initialize shadow map
-          bpoNew.InitializeShadowMap();
-
-          // skip created edges
-          iEdge += 3;
-          // next triangle
-          iNewPolygons++;
-        }
-      }
     }
-  }
+  }}
 
   // copy new arrays over old ones
   bsc_abedEdges.MoveArray(abedEdgesNew);
@@ -693,15 +676,13 @@ void CBrushSector::SubdivideTriangles(CBrushPolygonSelection &selPolygon) {
   pwo->ClearMarkedForUseFlag();
 
   // for all polygons in selection
-  {
-    FOREACHINDYNAMICCONTAINER(selPolygon, CBrushPolygon, itbpo) {
-      // mark them for use
-      itbpo->bpo_ulFlags |= BPOF_MARKED_FOR_USE;
-      if (itbpo->bpo_aiTriangleElements.Count() != 3) {
-        return;
-      }
+  {FOREACHINDYNAMICCONTAINER(selPolygon, CBrushPolygon, itbpo) {
+    // mark them for use
+    itbpo->bpo_ulFlags |= BPOF_MARKED_FOR_USE;
+    if (itbpo->bpo_aiTriangleElements.Count() != 3) {
+      return;
     }
-  }
+  }}
 
   // clear the selection
   selPolygon.Clear();
@@ -749,219 +730,217 @@ void CBrushSector::SubdivideTriangles(CBrushPolygonSelection &selPolygon) {
   // ----------- Copy old polygons, create new ones along with their edges and vertices
   // for all polygons in this sector
   INDEX iNewPolygons = 0;
-  {
-    FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
-      CBrushPolygon &bpoOld = *itbpo;
+  {FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
+    CBrushPolygon &bpoOld = *itbpo;
 
-      // polygon shouldn't be subdivided
-      if (!(itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE)) {
-        // copy the old polygon
-        CBrushPolygon &bpoNew = abpoPolygonsNew[iNewPolygons];
-        bpoNew.bpo_pbplPlane = bpoOld.bpo_pbplPlane;
+    // polygon shouldn't be subdivided
+    if (!(itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE)) {
+      // copy the old polygon
+      CBrushPolygon &bpoNew = abpoPolygonsNew[iNewPolygons];
+      bpoNew.bpo_pbplPlane = bpoOld.bpo_pbplPlane;
 
-        bpoNew.bpo_abptTextures[0].CopyTextureProperties(bpoOld.bpo_abptTextures[0], TRUE);
-        bpoNew.bpo_abptTextures[1].CopyTextureProperties(bpoOld.bpo_abptTextures[1], TRUE);
-        bpoNew.bpo_abptTextures[2].CopyTextureProperties(bpoOld.bpo_abptTextures[2], TRUE);
+      bpoNew.bpo_abptTextures[0].CopyTextureProperties(bpoOld.bpo_abptTextures[0], TRUE);
+      bpoNew.bpo_abptTextures[1].CopyTextureProperties(bpoOld.bpo_abptTextures[1], TRUE);
+      bpoNew.bpo_abptTextures[2].CopyTextureProperties(bpoOld.bpo_abptTextures[2], TRUE);
 
-        bpoNew.bpo_colColor = bpoOld.bpo_colColor;
-        bpoNew.bpo_ulFlags = bpoOld.bpo_ulFlags & ~(BPOF_MARKED_FOR_USE | BPOF_SELECTED);
-        bpoNew.bpo_colShadow = bpoOld.bpo_colShadow;
-        bpoNew.bpo_bppProperties = bpoOld.bpo_bppProperties;
-        bpoNew.bpo_pbscSector = bpoOld.bpo_pbscSector;
+      bpoNew.bpo_colColor = bpoOld.bpo_colColor;
+      bpoNew.bpo_ulFlags = bpoOld.bpo_ulFlags & ~(BPOF_MARKED_FOR_USE | BPOF_SELECTED);
+      bpoNew.bpo_colShadow = bpoOld.bpo_colShadow;
+      bpoNew.bpo_bppProperties = bpoOld.bpo_bppProperties;
+      bpoNew.bpo_pbscSector = bpoOld.bpo_pbscSector;
 
-        // remap brush polygon edges to point to edges of new array
-        INDEX ctEdgesToRemap = bpoOld.bpo_abpePolygonEdges.Count();
-        // allocate new polygon edges
-        bpoNew.bpo_abpePolygonEdges.New(ctEdgesToRemap);
-        // for each edge in polygon
-        for (INDEX iRemapEdge = 0; iRemapEdge < ctEdgesToRemap; iRemapEdge++) {
-          CBrushPolygonEdge &bpeOld = bpoOld.bpo_abpePolygonEdges[iRemapEdge];
-          CBrushPolygonEdge &bpeNew = bpoNew.bpo_abpePolygonEdges[iRemapEdge];
+      // remap brush polygon edges to point to edges of new array
+      INDEX ctEdgesToRemap = bpoOld.bpo_abpePolygonEdges.Count();
+      // allocate new polygon edges
+      bpoNew.bpo_abpePolygonEdges.New(ctEdgesToRemap);
+      // for each edge in polygon
+      for (INDEX iRemapEdge = 0; iRemapEdge < ctEdgesToRemap; iRemapEdge++) {
+        CBrushPolygonEdge &bpeOld = bpoOld.bpo_abpePolygonEdges[iRemapEdge];
+        CBrushPolygonEdge &bpeNew = bpoNew.bpo_abpePolygonEdges[iRemapEdge];
 
-          // get index of the edge for old edge array
-          INDEX iOldIndex = bsc_abedEdges.Index(bpeOld.bpe_pbedEdge);
+        // get index of the edge for old edge array
+        INDEX iOldIndex = bsc_abedEdges.Index(bpeOld.bpe_pbedEdge);
 
-          // use same index, but point to edge in new edge array
-          bpeNew.bpe_pbedEdge = &abedEdgesNew[iOldIndex];
-          // set edge direction
-          bpeNew.bpe_bReverse = bpeOld.bpe_bReverse;
-        }
-
-        // allocate and set vertex pointers
-        bpoNew.bpo_apbvxTriangleVertices.New(3);
-        // remap brush vertex pointers
-        for (INDEX iTVtx = 0; iTVtx < 3; iTVtx++) {
-          INDEX iOldVtx = bsc_abvxVertices.Index(bpoOld.bpo_apbvxTriangleVertices[iTVtx]);
-          bpoNew.bpo_apbvxTriangleVertices[iTVtx] = &abvxVerticesNew[iOldVtx];
-        }
-
-        // copy triangle and triangle elements arrays
-        bpoNew.bpo_aiTriangleElements = bpoOld.bpo_aiTriangleElements;
-
-        // initialize shadow map
-        bpoNew.InitializeShadowMap();
-
-        iNewPolygons++;
+        // use same index, but point to edge in new edge array
+        bpeNew.bpe_pbedEdge = &abedEdgesNew[iOldIndex];
+        // set edge direction
+        bpeNew.bpe_bReverse = bpeOld.bpe_bReverse;
       }
-      // if polygon is marked for subdivision
-      else {
-        INDEX iVtx0 = bpoOld.bpo_aiTriangleElements[0];
-        INDEX iVtx1 = bpoOld.bpo_aiTriangleElements[1];
-        INDEX iVtx2 = bpoOld.bpo_aiTriangleElements[2];
 
-        INDEX iOldVtx0 = bsc_abvxVertices.Index(bpoOld.bpo_apbvxTriangleVertices[iVtx0]);
-        INDEX iOldVtx1 = bsc_abvxVertices.Index(bpoOld.bpo_apbvxTriangleVertices[iVtx1]);
-        INDEX iOldVtx2 = bsc_abvxVertices.Index(bpoOld.bpo_apbvxTriangleVertices[iVtx2]);
-        CBrushVertex *pbvtx0 = &abvxVerticesNew[iOldVtx0];
-        CBrushVertex *pbvtx1 = &abvxVerticesNew[iOldVtx1];
-        CBrushVertex *pbvtx2 = &abvxVerticesNew[iOldVtx2];
-        CBrushVertex *pbvtx3 = &abvxVerticesNew[iVtx];
-        pbvtx3->bvx_pbscSector = this;
-
-        // calculate and set middle point of the triangle
-        DOUBLE3D vCenter = FLOATtoDOUBLE(pbvtx0->bvx_vAbsolute + pbvtx1->bvx_vAbsolute + pbvtx2->bvx_vAbsolute) / 3.0;
-        pbvtx3->SetAbsolutePosition(vCenter);
-
-        // add new edges
-        // setup edge 0 (copy of old edge)
-        abedEdgesNew[iEdge + 0].bed_pbvxVertex0 = pbvtx0;
-        abedEdgesNew[iEdge + 0].bed_pbvxVertex1 = pbvtx1;
-        // setup edge 1 (copy of old edge)
-        abedEdgesNew[iEdge + 1].bed_pbvxVertex0 = pbvtx1;
-        abedEdgesNew[iEdge + 1].bed_pbvxVertex1 = pbvtx2;
-        // setup edge 2 (copy of old edge)
-        abedEdgesNew[iEdge + 2].bed_pbvxVertex0 = pbvtx2;
-        abedEdgesNew[iEdge + 2].bed_pbvxVertex1 = pbvtx0;
-        // setup edge 3
-        abedEdgesNew[iEdge + 3].bed_pbvxVertex0 = pbvtx0;
-        abedEdgesNew[iEdge + 3].bed_pbvxVertex1 = pbvtx3;
-        // setup edge 4
-        abedEdgesNew[iEdge + 4].bed_pbvxVertex0 = pbvtx1;
-        abedEdgesNew[iEdge + 4].bed_pbvxVertex1 = pbvtx3;
-        // setup edge 5
-        abedEdgesNew[iEdge + 5].bed_pbvxVertex0 = pbvtx2;
-        abedEdgesNew[iEdge + 5].bed_pbvxVertex1 = pbvtx3;
-
-        // ---------------- Create first sub-triangle
-        CBrushPolygon &bpoNew1 = abpoPolygonsNew[iNewPolygons + 0];
-        // allocate and set polygon edges
-        bpoNew1.bpo_abpePolygonEdges.New(3);
-        bpoNew1.bpo_abpePolygonEdges[0].bpe_pbedEdge = &abedEdgesNew[iEdge + 0];
-        bpoNew1.bpo_abpePolygonEdges[0].bpe_bReverse = FALSE;
-        bpoNew1.bpo_abpePolygonEdges[1].bpe_pbedEdge = &abedEdgesNew[iEdge + 4];
-        bpoNew1.bpo_abpePolygonEdges[1].bpe_bReverse = FALSE;
-        bpoNew1.bpo_abpePolygonEdges[2].bpe_pbedEdge = &abedEdgesNew[iEdge + 3];
-        bpoNew1.bpo_abpePolygonEdges[2].bpe_bReverse = TRUE;
-
-        // set brush vertex ptrs
-        bpoNew1.bpo_apbvxTriangleVertices.New(3);
-        bpoNew1.bpo_apbvxTriangleVertices[0] = pbvtx0;
-        bpoNew1.bpo_apbvxTriangleVertices[1] = pbvtx1;
-        bpoNew1.bpo_apbvxTriangleVertices[2] = pbvtx3;
-
-        // setup fixed trinagle element indices
-        bpoNew1.bpo_aiTriangleElements.New(3);
-        bpoNew1.bpo_aiTriangleElements[0] = 0;
-        bpoNew1.bpo_aiTriangleElements[1] = 1;
-        bpoNew1.bpo_aiTriangleElements[2] = 2;
-
-        // copy parameters from old polygon
-        bpoNew1.bpo_pbplPlane = bpoOld.bpo_pbplPlane;
-        bpoNew1.bpo_abptTextures[0].CopyTextureProperties(bpoOld.bpo_abptTextures[0], TRUE);
-        bpoNew1.bpo_abptTextures[1].CopyTextureProperties(bpoOld.bpo_abptTextures[1], TRUE);
-        bpoNew1.bpo_abptTextures[2].CopyTextureProperties(bpoOld.bpo_abptTextures[2], TRUE);
-        bpoNew1.bpo_colColor = bpoOld.bpo_colColor;
-        bpoNew1.bpo_ulFlags = bpoOld.bpo_ulFlags & ~(BPOF_MARKED_FOR_USE | BPOF_SELECTED);
-        bpoNew1.bpo_colShadow = bpoOld.bpo_colShadow;
-        bpoNew1.bpo_bppProperties = bpoOld.bpo_bppProperties;
-        bpoNew1.bpo_pbscSector = bpoOld.bpo_pbscSector;
-
-        // initialize shadow map
-        bpoNew1.InitializeShadowMap();
-
-        // ---------------- Create second sub-triangle
-        CBrushPolygon &bpoNew2 = abpoPolygonsNew[iNewPolygons + 1];
-        // allocate and set polygon edges
-        bpoNew2.bpo_abpePolygonEdges.New(3);
-        bpoNew2.bpo_abpePolygonEdges[0].bpe_pbedEdge = &abedEdgesNew[iEdge + 1];
-        bpoNew2.bpo_abpePolygonEdges[0].bpe_bReverse = FALSE;
-        bpoNew2.bpo_abpePolygonEdges[1].bpe_pbedEdge = &abedEdgesNew[iEdge + 5];
-        bpoNew2.bpo_abpePolygonEdges[1].bpe_bReverse = FALSE;
-        bpoNew2.bpo_abpePolygonEdges[2].bpe_pbedEdge = &abedEdgesNew[iEdge + 4];
-        bpoNew2.bpo_abpePolygonEdges[2].bpe_bReverse = TRUE;
-
-        // set brush vertex ptrs
-        bpoNew2.bpo_apbvxTriangleVertices.New(3);
-        bpoNew2.bpo_apbvxTriangleVertices[0] = pbvtx1;
-        bpoNew2.bpo_apbvxTriangleVertices[1] = pbvtx2;
-        bpoNew2.bpo_apbvxTriangleVertices[2] = pbvtx3;
-
-        // setup fixed trinagle element indices
-        bpoNew2.bpo_aiTriangleElements.New(3);
-        bpoNew2.bpo_aiTriangleElements[0] = 0;
-        bpoNew2.bpo_aiTriangleElements[1] = 1;
-        bpoNew2.bpo_aiTriangleElements[2] = 2;
-
-        // copy parameters from old polygon
-        bpoNew2.bpo_pbplPlane = bpoOld.bpo_pbplPlane;
-        bpoNew2.bpo_abptTextures[0].CopyTextureProperties(bpoOld.bpo_abptTextures[0], TRUE);
-        bpoNew2.bpo_abptTextures[1].CopyTextureProperties(bpoOld.bpo_abptTextures[1], TRUE);
-        bpoNew2.bpo_abptTextures[2].CopyTextureProperties(bpoOld.bpo_abptTextures[2], TRUE);
-        bpoNew2.bpo_colColor = bpoOld.bpo_colColor;
-        bpoNew2.bpo_ulFlags = bpoOld.bpo_ulFlags & ~(BPOF_MARKED_FOR_USE | BPOF_SELECTED);
-        bpoNew2.bpo_colShadow = bpoOld.bpo_colShadow;
-        bpoNew2.bpo_bppProperties = bpoOld.bpo_bppProperties;
-        bpoNew2.bpo_pbscSector = bpoOld.bpo_pbscSector;
-
-        // initialize shadow map
-        bpoNew2.InitializeShadowMap();
-
-        // ---------------- Create third sub-triangle
-        CBrushPolygon &bpoNew3 = abpoPolygonsNew[iNewPolygons + 2];
-        // allocate and set polygon edges
-        bpoNew3.bpo_abpePolygonEdges.New(3);
-        bpoNew3.bpo_abpePolygonEdges[0].bpe_pbedEdge = &abedEdgesNew[iEdge + 2];
-        bpoNew3.bpo_abpePolygonEdges[0].bpe_bReverse = FALSE;
-        bpoNew3.bpo_abpePolygonEdges[1].bpe_pbedEdge = &abedEdgesNew[iEdge + 3];
-        bpoNew3.bpo_abpePolygonEdges[1].bpe_bReverse = FALSE;
-        bpoNew3.bpo_abpePolygonEdges[2].bpe_pbedEdge = &abedEdgesNew[iEdge + 5];
-        bpoNew3.bpo_abpePolygonEdges[2].bpe_bReverse = TRUE;
-
-        // set brush vertex ptrs
-        bpoNew3.bpo_apbvxTriangleVertices.New(3);
-        bpoNew3.bpo_apbvxTriangleVertices[0] = pbvtx2;
-        bpoNew3.bpo_apbvxTriangleVertices[1] = pbvtx0;
-        bpoNew3.bpo_apbvxTriangleVertices[2] = pbvtx3;
-
-        // setup fixed trinagle element indices
-        bpoNew3.bpo_aiTriangleElements.New(3);
-        bpoNew3.bpo_aiTriangleElements[0] = 0;
-        bpoNew3.bpo_aiTriangleElements[1] = 1;
-        bpoNew3.bpo_aiTriangleElements[2] = 2;
-
-        // copy parameters from old polygon
-        bpoNew3.bpo_pbplPlane = bpoOld.bpo_pbplPlane;
-        bpoNew3.bpo_abptTextures[0].CopyTextureProperties(bpoOld.bpo_abptTextures[0], TRUE);
-        bpoNew3.bpo_abptTextures[1].CopyTextureProperties(bpoOld.bpo_abptTextures[1], TRUE);
-        bpoNew3.bpo_abptTextures[2].CopyTextureProperties(bpoOld.bpo_abptTextures[2], TRUE);
-        bpoNew3.bpo_colColor = bpoOld.bpo_colColor;
-        bpoNew3.bpo_ulFlags = bpoOld.bpo_ulFlags & ~(BPOF_MARKED_FOR_USE | BPOF_SELECTED);
-        bpoNew3.bpo_colShadow = bpoOld.bpo_colShadow;
-        bpoNew3.bpo_bppProperties = bpoOld.bpo_bppProperties;
-        bpoNew3.bpo_pbscSector = bpoOld.bpo_pbscSector;
-
-        // initialize shadow map
-        bpoNew3.InitializeShadowMap();
-
-        // skip newly created vertex
-        iVtx++;
-        // skip created edges
-        iEdge += 6;
-        // next triangle
-        iNewPolygons += 3;
+      // allocate and set vertex pointers
+      bpoNew.bpo_apbvxTriangleVertices.New(3);
+      // remap brush vertex pointers
+      for (INDEX iTVtx = 0; iTVtx < 3; iTVtx++) {
+        INDEX iOldVtx = bsc_abvxVertices.Index(bpoOld.bpo_apbvxTriangleVertices[iTVtx]);
+        bpoNew.bpo_apbvxTriangleVertices[iTVtx] = &abvxVerticesNew[iOldVtx];
       }
+
+      // copy triangle and triangle elements arrays
+      bpoNew.bpo_aiTriangleElements = bpoOld.bpo_aiTriangleElements;
+
+      // initialize shadow map
+      bpoNew.InitializeShadowMap();
+
+      iNewPolygons++;
+
+    // if polygon is marked for subdivision
+    } else {
+      INDEX iVtx0 = bpoOld.bpo_aiTriangleElements[0];
+      INDEX iVtx1 = bpoOld.bpo_aiTriangleElements[1];
+      INDEX iVtx2 = bpoOld.bpo_aiTriangleElements[2];
+
+      INDEX iOldVtx0 = bsc_abvxVertices.Index(bpoOld.bpo_apbvxTriangleVertices[iVtx0]);
+      INDEX iOldVtx1 = bsc_abvxVertices.Index(bpoOld.bpo_apbvxTriangleVertices[iVtx1]);
+      INDEX iOldVtx2 = bsc_abvxVertices.Index(bpoOld.bpo_apbvxTriangleVertices[iVtx2]);
+      CBrushVertex *pbvtx0 = &abvxVerticesNew[iOldVtx0];
+      CBrushVertex *pbvtx1 = &abvxVerticesNew[iOldVtx1];
+      CBrushVertex *pbvtx2 = &abvxVerticesNew[iOldVtx2];
+      CBrushVertex *pbvtx3 = &abvxVerticesNew[iVtx];
+      pbvtx3->bvx_pbscSector = this;
+
+      // calculate and set middle point of the triangle
+      DOUBLE3D vCenter = FLOATtoDOUBLE(pbvtx0->bvx_vAbsolute + pbvtx1->bvx_vAbsolute + pbvtx2->bvx_vAbsolute) / 3.0;
+      pbvtx3->SetAbsolutePosition(vCenter);
+
+      // add new edges
+      // setup edge 0 (copy of old edge)
+      abedEdgesNew[iEdge + 0].bed_pbvxVertex0 = pbvtx0;
+      abedEdgesNew[iEdge + 0].bed_pbvxVertex1 = pbvtx1;
+      // setup edge 1 (copy of old edge)
+      abedEdgesNew[iEdge + 1].bed_pbvxVertex0 = pbvtx1;
+      abedEdgesNew[iEdge + 1].bed_pbvxVertex1 = pbvtx2;
+      // setup edge 2 (copy of old edge)
+      abedEdgesNew[iEdge + 2].bed_pbvxVertex0 = pbvtx2;
+      abedEdgesNew[iEdge + 2].bed_pbvxVertex1 = pbvtx0;
+      // setup edge 3
+      abedEdgesNew[iEdge + 3].bed_pbvxVertex0 = pbvtx0;
+      abedEdgesNew[iEdge + 3].bed_pbvxVertex1 = pbvtx3;
+      // setup edge 4
+      abedEdgesNew[iEdge + 4].bed_pbvxVertex0 = pbvtx1;
+      abedEdgesNew[iEdge + 4].bed_pbvxVertex1 = pbvtx3;
+      // setup edge 5
+      abedEdgesNew[iEdge + 5].bed_pbvxVertex0 = pbvtx2;
+      abedEdgesNew[iEdge + 5].bed_pbvxVertex1 = pbvtx3;
+
+      // ---------------- Create first sub-triangle
+      CBrushPolygon &bpoNew1 = abpoPolygonsNew[iNewPolygons + 0];
+      // allocate and set polygon edges
+      bpoNew1.bpo_abpePolygonEdges.New(3);
+      bpoNew1.bpo_abpePolygonEdges[0].bpe_pbedEdge = &abedEdgesNew[iEdge + 0];
+      bpoNew1.bpo_abpePolygonEdges[0].bpe_bReverse = FALSE;
+      bpoNew1.bpo_abpePolygonEdges[1].bpe_pbedEdge = &abedEdgesNew[iEdge + 4];
+      bpoNew1.bpo_abpePolygonEdges[1].bpe_bReverse = FALSE;
+      bpoNew1.bpo_abpePolygonEdges[2].bpe_pbedEdge = &abedEdgesNew[iEdge + 3];
+      bpoNew1.bpo_abpePolygonEdges[2].bpe_bReverse = TRUE;
+
+      // set brush vertex ptrs
+      bpoNew1.bpo_apbvxTriangleVertices.New(3);
+      bpoNew1.bpo_apbvxTriangleVertices[0] = pbvtx0;
+      bpoNew1.bpo_apbvxTriangleVertices[1] = pbvtx1;
+      bpoNew1.bpo_apbvxTriangleVertices[2] = pbvtx3;
+
+      // setup fixed trinagle element indices
+      bpoNew1.bpo_aiTriangleElements.New(3);
+      bpoNew1.bpo_aiTriangleElements[0] = 0;
+      bpoNew1.bpo_aiTriangleElements[1] = 1;
+      bpoNew1.bpo_aiTriangleElements[2] = 2;
+
+      // copy parameters from old polygon
+      bpoNew1.bpo_pbplPlane = bpoOld.bpo_pbplPlane;
+      bpoNew1.bpo_abptTextures[0].CopyTextureProperties(bpoOld.bpo_abptTextures[0], TRUE);
+      bpoNew1.bpo_abptTextures[1].CopyTextureProperties(bpoOld.bpo_abptTextures[1], TRUE);
+      bpoNew1.bpo_abptTextures[2].CopyTextureProperties(bpoOld.bpo_abptTextures[2], TRUE);
+      bpoNew1.bpo_colColor = bpoOld.bpo_colColor;
+      bpoNew1.bpo_ulFlags = bpoOld.bpo_ulFlags & ~(BPOF_MARKED_FOR_USE | BPOF_SELECTED);
+      bpoNew1.bpo_colShadow = bpoOld.bpo_colShadow;
+      bpoNew1.bpo_bppProperties = bpoOld.bpo_bppProperties;
+      bpoNew1.bpo_pbscSector = bpoOld.bpo_pbscSector;
+
+      // initialize shadow map
+      bpoNew1.InitializeShadowMap();
+
+      // ---------------- Create second sub-triangle
+      CBrushPolygon &bpoNew2 = abpoPolygonsNew[iNewPolygons + 1];
+      // allocate and set polygon edges
+      bpoNew2.bpo_abpePolygonEdges.New(3);
+      bpoNew2.bpo_abpePolygonEdges[0].bpe_pbedEdge = &abedEdgesNew[iEdge + 1];
+      bpoNew2.bpo_abpePolygonEdges[0].bpe_bReverse = FALSE;
+      bpoNew2.bpo_abpePolygonEdges[1].bpe_pbedEdge = &abedEdgesNew[iEdge + 5];
+      bpoNew2.bpo_abpePolygonEdges[1].bpe_bReverse = FALSE;
+      bpoNew2.bpo_abpePolygonEdges[2].bpe_pbedEdge = &abedEdgesNew[iEdge + 4];
+      bpoNew2.bpo_abpePolygonEdges[2].bpe_bReverse = TRUE;
+
+      // set brush vertex ptrs
+      bpoNew2.bpo_apbvxTriangleVertices.New(3);
+      bpoNew2.bpo_apbvxTriangleVertices[0] = pbvtx1;
+      bpoNew2.bpo_apbvxTriangleVertices[1] = pbvtx2;
+      bpoNew2.bpo_apbvxTriangleVertices[2] = pbvtx3;
+
+      // setup fixed trinagle element indices
+      bpoNew2.bpo_aiTriangleElements.New(3);
+      bpoNew2.bpo_aiTriangleElements[0] = 0;
+      bpoNew2.bpo_aiTriangleElements[1] = 1;
+      bpoNew2.bpo_aiTriangleElements[2] = 2;
+
+      // copy parameters from old polygon
+      bpoNew2.bpo_pbplPlane = bpoOld.bpo_pbplPlane;
+      bpoNew2.bpo_abptTextures[0].CopyTextureProperties(bpoOld.bpo_abptTextures[0], TRUE);
+      bpoNew2.bpo_abptTextures[1].CopyTextureProperties(bpoOld.bpo_abptTextures[1], TRUE);
+      bpoNew2.bpo_abptTextures[2].CopyTextureProperties(bpoOld.bpo_abptTextures[2], TRUE);
+      bpoNew2.bpo_colColor = bpoOld.bpo_colColor;
+      bpoNew2.bpo_ulFlags = bpoOld.bpo_ulFlags & ~(BPOF_MARKED_FOR_USE | BPOF_SELECTED);
+      bpoNew2.bpo_colShadow = bpoOld.bpo_colShadow;
+      bpoNew2.bpo_bppProperties = bpoOld.bpo_bppProperties;
+      bpoNew2.bpo_pbscSector = bpoOld.bpo_pbscSector;
+
+      // initialize shadow map
+      bpoNew2.InitializeShadowMap();
+
+      // ---------------- Create third sub-triangle
+      CBrushPolygon &bpoNew3 = abpoPolygonsNew[iNewPolygons + 2];
+      // allocate and set polygon edges
+      bpoNew3.bpo_abpePolygonEdges.New(3);
+      bpoNew3.bpo_abpePolygonEdges[0].bpe_pbedEdge = &abedEdgesNew[iEdge + 2];
+      bpoNew3.bpo_abpePolygonEdges[0].bpe_bReverse = FALSE;
+      bpoNew3.bpo_abpePolygonEdges[1].bpe_pbedEdge = &abedEdgesNew[iEdge + 3];
+      bpoNew3.bpo_abpePolygonEdges[1].bpe_bReverse = FALSE;
+      bpoNew3.bpo_abpePolygonEdges[2].bpe_pbedEdge = &abedEdgesNew[iEdge + 5];
+      bpoNew3.bpo_abpePolygonEdges[2].bpe_bReverse = TRUE;
+
+      // set brush vertex ptrs
+      bpoNew3.bpo_apbvxTriangleVertices.New(3);
+      bpoNew3.bpo_apbvxTriangleVertices[0] = pbvtx2;
+      bpoNew3.bpo_apbvxTriangleVertices[1] = pbvtx0;
+      bpoNew3.bpo_apbvxTriangleVertices[2] = pbvtx3;
+
+      // setup fixed trinagle element indices
+      bpoNew3.bpo_aiTriangleElements.New(3);
+      bpoNew3.bpo_aiTriangleElements[0] = 0;
+      bpoNew3.bpo_aiTriangleElements[1] = 1;
+      bpoNew3.bpo_aiTriangleElements[2] = 2;
+
+      // copy parameters from old polygon
+      bpoNew3.bpo_pbplPlane = bpoOld.bpo_pbplPlane;
+      bpoNew3.bpo_abptTextures[0].CopyTextureProperties(bpoOld.bpo_abptTextures[0], TRUE);
+      bpoNew3.bpo_abptTextures[1].CopyTextureProperties(bpoOld.bpo_abptTextures[1], TRUE);
+      bpoNew3.bpo_abptTextures[2].CopyTextureProperties(bpoOld.bpo_abptTextures[2], TRUE);
+      bpoNew3.bpo_colColor = bpoOld.bpo_colColor;
+      bpoNew3.bpo_ulFlags = bpoOld.bpo_ulFlags & ~(BPOF_MARKED_FOR_USE | BPOF_SELECTED);
+      bpoNew3.bpo_colShadow = bpoOld.bpo_colShadow;
+      bpoNew3.bpo_bppProperties = bpoOld.bpo_bppProperties;
+      bpoNew3.bpo_pbscSector = bpoOld.bpo_pbscSector;
+
+      // initialize shadow map
+      bpoNew3.InitializeShadowMap();
+
+      // skip newly created vertex
+      iVtx++;
+      // skip created edges
+      iEdge += 6;
+      // next triangle
+      iNewPolygons += 3;
     }
-  }
+  }}
 
   // copy new arrays over old ones
   bsc_awvxVertices.MoveArray(awvxVerticesNew);
@@ -1106,62 +1085,60 @@ void CBrushSector::ReTriple(CBrushPolygonSelection &selPolygon) {
   // ----------- Copy old polygons (except two new ones)
   // for all polygons in this sector
   INDEX iNewPolygons = 0;
-  {
-    FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
-      CBrushPolygon &bpoOld = *itbpo;
+  {FOREACHINSTATICARRAY(bsc_abpoPolygons, CBrushPolygon, itbpo) {
+    CBrushPolygon &bpoOld = *itbpo;
 
-      // polygon shouldn't be subdivided
-      if (!(itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE)) {
-        // copy the old polygon
-        CBrushPolygon &bpoNew = abpoPolygonsNew[iNewPolygons];
-        bpoNew.bpo_pbplPlane = bpoOld.bpo_pbplPlane;
+    // polygon shouldn't be subdivided
+    if (!(itbpo->bpo_ulFlags & BPOF_MARKED_FOR_USE)) {
+      // copy the old polygon
+      CBrushPolygon &bpoNew = abpoPolygonsNew[iNewPolygons];
+      bpoNew.bpo_pbplPlane = bpoOld.bpo_pbplPlane;
 
-        bpoNew.bpo_abptTextures[0].CopyTextureProperties(bpoOld.bpo_abptTextures[0], TRUE);
-        bpoNew.bpo_abptTextures[1].CopyTextureProperties(bpoOld.bpo_abptTextures[1], TRUE);
-        bpoNew.bpo_abptTextures[2].CopyTextureProperties(bpoOld.bpo_abptTextures[2], TRUE);
+      bpoNew.bpo_abptTextures[0].CopyTextureProperties(bpoOld.bpo_abptTextures[0], TRUE);
+      bpoNew.bpo_abptTextures[1].CopyTextureProperties(bpoOld.bpo_abptTextures[1], TRUE);
+      bpoNew.bpo_abptTextures[2].CopyTextureProperties(bpoOld.bpo_abptTextures[2], TRUE);
 
-        bpoNew.bpo_colColor = bpoOld.bpo_colColor;
-        bpoNew.bpo_ulFlags = bpoOld.bpo_ulFlags & ~(BPOF_MARKED_FOR_USE | BPOF_SELECTED);
-        bpoNew.bpo_colShadow = bpoOld.bpo_colShadow;
-        bpoNew.bpo_bppProperties = bpoOld.bpo_bppProperties;
-        bpoNew.bpo_pbscSector = bpoOld.bpo_pbscSector;
+      bpoNew.bpo_colColor = bpoOld.bpo_colColor;
+      bpoNew.bpo_ulFlags = bpoOld.bpo_ulFlags & ~(BPOF_MARKED_FOR_USE | BPOF_SELECTED);
+      bpoNew.bpo_colShadow = bpoOld.bpo_colShadow;
+      bpoNew.bpo_bppProperties = bpoOld.bpo_bppProperties;
+      bpoNew.bpo_pbscSector = bpoOld.bpo_pbscSector;
 
-        // remap brush polygon edges to point to edges of new array
-        INDEX ctEdgesToRemap = bpoOld.bpo_abpePolygonEdges.Count();
-        // allocate new polygon edges
-        bpoNew.bpo_abpePolygonEdges.New(ctEdgesToRemap);
-        // for each edge in polygon
-        for (INDEX iRemapEdge = 0; iRemapEdge < ctEdgesToRemap; iRemapEdge++) {
-          CBrushPolygonEdge &bpeOld = bpoOld.bpo_abpePolygonEdges[iRemapEdge];
-          CBrushPolygonEdge &bpeNew = bpoNew.bpo_abpePolygonEdges[iRemapEdge];
+      // remap brush polygon edges to point to edges of new array
+      INDEX ctEdgesToRemap = bpoOld.bpo_abpePolygonEdges.Count();
+      // allocate new polygon edges
+      bpoNew.bpo_abpePolygonEdges.New(ctEdgesToRemap);
+      // for each edge in polygon
+      for (INDEX iRemapEdge = 0; iRemapEdge < ctEdgesToRemap; iRemapEdge++) {
+        CBrushPolygonEdge &bpeOld = bpoOld.bpo_abpePolygonEdges[iRemapEdge];
+        CBrushPolygonEdge &bpeNew = bpoNew.bpo_abpePolygonEdges[iRemapEdge];
 
-          // get index of the edge for old edge array
-          INDEX iOldIndex = bsc_abedEdges.Index(bpeOld.bpe_pbedEdge);
+        // get index of the edge for old edge array
+        INDEX iOldIndex = bsc_abedEdges.Index(bpeOld.bpe_pbedEdge);
 
-          // use same index, but point to edge in new edge array
-          bpeNew.bpe_pbedEdge = &abedEdgesNew[iOldIndex];
-          // set edge direction
-          bpeNew.bpe_bReverse = bpeOld.bpe_bReverse;
-        }
-
-        // allocate and set vertex pointers
-        INDEX ctOldTVtx = bpoOld.bpo_apbvxTriangleVertices.Count();
-        bpoNew.bpo_apbvxTriangleVertices.New(ctOldTVtx);
-        // copy old brush vertex pointers
-        for (INDEX iTVtx = 0; iTVtx < ctOldTVtx; iTVtx++) {
-          bpoNew.bpo_apbvxTriangleVertices[iTVtx] = bpoOld.bpo_apbvxTriangleVertices[iTVtx];
-        }
-
-        // copy triangle and triangle elements arrays
-        bpoNew.bpo_aiTriangleElements = bpoOld.bpo_aiTriangleElements;
-
-        // initialize shadow map
-        bpoNew.InitializeShadowMap();
-
-        iNewPolygons++;
+        // use same index, but point to edge in new edge array
+        bpeNew.bpe_pbedEdge = &abedEdgesNew[iOldIndex];
+        // set edge direction
+        bpeNew.bpe_bReverse = bpeOld.bpe_bReverse;
       }
+
+      // allocate and set vertex pointers
+      INDEX ctOldTVtx = bpoOld.bpo_apbvxTriangleVertices.Count();
+      bpoNew.bpo_apbvxTriangleVertices.New(ctOldTVtx);
+      // copy old brush vertex pointers
+      for (INDEX iTVtx = 0; iTVtx < ctOldTVtx; iTVtx++) {
+        bpoNew.bpo_apbvxTriangleVertices[iTVtx] = bpoOld.bpo_apbvxTriangleVertices[iTVtx];
+      }
+
+      // copy triangle and triangle elements arrays
+      bpoNew.bpo_aiTriangleElements = bpoOld.bpo_aiTriangleElements;
+
+      // initialize shadow map
+      bpoNew.InitializeShadowMap();
+
+      iNewPolygons++;
     }
-  }
+  }}
 
   // get shared edge
   CBrushEdge *pse = NULL;

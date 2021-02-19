@@ -523,7 +523,10 @@ static void PrepareModelMipForRendering(CModelData &md, INDEX iMip) {
 
   // count surfaces
   INDEX ctSurfaces = 0;
-  { FOREACHINSTATICARRAY(mmi.mmpi_MappingSurfaces, MappingSurface, itms) ctSurfaces++; }
+  {FOREACHINSTATICARRAY(mmi.mmpi_MappingSurfaces, MappingSurface, itms) {
+    ctSurfaces++;
+  }}
+
   // sort surfaces by diffuse type
   qsort(&mmi.mmpi_MappingSurfaces[0], ctSurfaces, sizeof(MappingSurface), qsort_CompareSurfaceDiffuseTypes);
 
@@ -533,67 +536,65 @@ static void PrepareModelMipForRendering(CModelData &md, INDEX iMip) {
   // for each surface
   INDEX iSrfVx = 0;
   INDEX iSrfEl = 0;
-  {
-    FOREACHINSTATICARRAY(mmi.mmpi_MappingSurfaces, MappingSurface, itms) {
-      MappingSurface &ms = *itms;
-      // if it is empty surface
-      if (ms.ms_aiPolygons.Count() == 0) {
-        // just clear all its data
-        ms.ms_ctSrfVx = 0;
-        ms.ms_ctSrfEl = 0;
-        ms.ms_iSrfVx0 = MAX_SLONG; // set to invalid to catch eventual bugs
-        // proceed to next surface
-        continue;
-      }
-
-      // determine surface and mip model rendering type (write to z-buffer or not)
-      const BOOL bBump = ms.ms_ulRenderingFlags & SRF_BUMP;
-
-      if (!(ms.ms_ulRenderingFlags & SRF_DIFFUSE) || ms.ms_sttTranslucencyType == STT_TRANSLUCENT
-          || ms.ms_sttTranslucencyType == STT_ADD || ms.ms_sttTranslucencyType == STT_MULTIPLY) {
-        ms.ms_ulRenderingFlags &= ~SRF_OPAQUE;
-        mmi.mmpi_ulLayerFlags &= ~MMI_OPAQUE;
-      } else {
-        ms.ms_ulRenderingFlags |= SRF_OPAQUE;
-        mmi.mmpi_ulLayerFlags &= ~MMI_TRANSLUCENT;
-      }
-      // accumulate flags
-      mmi.mmpi_ulLayerFlags |= ms.ms_ulRenderingFlags;
-
-      // alloc memory for bump coords if needed
-      if (bBump && !bBumpAllocated) {
-        mmi.mmpi_avBumpU.New(mmi.mmpi_ctSrfVx);
-        mmi.mmpi_avBumpV.New(mmi.mmpi_ctSrfVx);
-        bBumpAllocated = TRUE;
-      }
-
-      // assign surface vertex numbers
-      ms.ms_iSrfVx0 = iSrfVx;
-      ms.ms_ctSrfVx = ms.ms_aiTextureVertices.Count();
-      // for each vertex
-      for (INDEX iVxInSurface = 0; iVxInSurface < ms.ms_ctSrfVx; iVxInSurface++) {
-        // get texture vertex
-        ModelTextureVertex &mtv = amtv[ms.ms_aiTextureVertices[iVxInSurface]];
-        // remember index for elements preparing
-        mtv.mtv_iSurfaceVx = iSrfVx;
-        // remember index for rendering
-        mmi.mmpi_auwSrfToMip[iSrfVx] = aiMdlToMip[mtv.mtv_iTransformedVertex];
-        // assign data to texture array
-        mmi.mmpi_avmexTexCoord[iSrfVx](1) = (FLOAT)mtv.mtv_UV(1);
-        mmi.mmpi_avmexTexCoord[iSrfVx](2) = (FLOAT)mtv.mtv_UV(2);
-
-        // assign bump mapping normals (only if surface has bump mapping)
-        if (bBump) {
-          mmi.mmpi_avBumpU[iSrfVx] = mtv.mtv_vU;
-          mmi.mmpi_avBumpV[iSrfVx] = mtv.mtv_vV;
-        }
-        //
-
-        iSrfVx++;
-      } // set vertex indices
-      PrepareSurfaceElements(mmi, ms);
+  {FOREACHINSTATICARRAY(mmi.mmpi_MappingSurfaces, MappingSurface, itms) {
+    MappingSurface &ms = *itms;
+    // if it is empty surface
+    if (ms.ms_aiPolygons.Count() == 0) {
+      // just clear all its data
+      ms.ms_ctSrfVx = 0;
+      ms.ms_ctSrfEl = 0;
+      ms.ms_iSrfVx0 = MAX_SLONG; // set to invalid to catch eventual bugs
+      // proceed to next surface
+      continue;
     }
-  }
+
+    // determine surface and mip model rendering type (write to z-buffer or not)
+    const BOOL bBump = ms.ms_ulRenderingFlags & SRF_BUMP;
+
+    if (!(ms.ms_ulRenderingFlags & SRF_DIFFUSE) || ms.ms_sttTranslucencyType == STT_TRANSLUCENT
+        || ms.ms_sttTranslucencyType == STT_ADD || ms.ms_sttTranslucencyType == STT_MULTIPLY) {
+      ms.ms_ulRenderingFlags &= ~SRF_OPAQUE;
+      mmi.mmpi_ulLayerFlags &= ~MMI_OPAQUE;
+    } else {
+      ms.ms_ulRenderingFlags |= SRF_OPAQUE;
+      mmi.mmpi_ulLayerFlags &= ~MMI_TRANSLUCENT;
+    }
+    // accumulate flags
+    mmi.mmpi_ulLayerFlags |= ms.ms_ulRenderingFlags;
+
+    // alloc memory for bump coords if needed
+    if (bBump && !bBumpAllocated) {
+      mmi.mmpi_avBumpU.New(mmi.mmpi_ctSrfVx);
+      mmi.mmpi_avBumpV.New(mmi.mmpi_ctSrfVx);
+      bBumpAllocated = TRUE;
+    }
+
+    // assign surface vertex numbers
+    ms.ms_iSrfVx0 = iSrfVx;
+    ms.ms_ctSrfVx = ms.ms_aiTextureVertices.Count();
+    // for each vertex
+    for (INDEX iVxInSurface = 0; iVxInSurface < ms.ms_ctSrfVx; iVxInSurface++) {
+      // get texture vertex
+      ModelTextureVertex &mtv = amtv[ms.ms_aiTextureVertices[iVxInSurface]];
+      // remember index for elements preparing
+      mtv.mtv_iSurfaceVx = iSrfVx;
+      // remember index for rendering
+      mmi.mmpi_auwSrfToMip[iSrfVx] = aiMdlToMip[mtv.mtv_iTransformedVertex];
+      // assign data to texture array
+      mmi.mmpi_avmexTexCoord[iSrfVx](1) = (FLOAT)mtv.mtv_UV(1);
+      mmi.mmpi_avmexTexCoord[iSrfVx](2) = (FLOAT)mtv.mtv_UV(2);
+
+      // assign bump mapping normals (only if surface has bump mapping)
+      if (bBump) {
+        mmi.mmpi_avBumpU[iSrfVx] = mtv.mtv_vU;
+        mmi.mmpi_avBumpV[iSrfVx] = mtv.mtv_vV;
+      }
+      //
+
+      iSrfVx++;
+    } // set vertex indices
+    PrepareSurfaceElements(mmi, ms);
+  }}
 
   // for each patch
   FOREACHINSTATICARRAY(mmi.mmpi_aPolygonsPerPatch, PolygonsPerPatch, itppp) {
@@ -992,47 +993,47 @@ static void RenderOneSide(CRenderModel &rm, BOOL bBackSide, ULONG ulLayerFlags) 
   INDEX iStartElem = 0;
   INDEX ctElements = 0;
   ModelMipInfo &mmi = *rm.rm_pmmiMip;
-  {
-    FOREACHINSTATICARRAY(mmi.mmpi_MappingSurfaces, MappingSurface, itms) {
-      const MappingSurface &ms = *itms;
-      const ULONG ulFlags = ms.ms_ulRenderingFlags;
-      // end rendering if surface is invisible or empty - these are the last surfaces in surface list
-      if ((ulFlags & SRF_INVISIBLE) || ms.ms_ctSrfVx == 0)
-        break;
-      // skip surface if ...
-      if (!(ulFlags & ulLayerFlags)                      // not in this layer,
-          || (bBackSide && !(ulFlags & SRF_DOUBLESIDED)) // rendering back side and surface is not double sided,
-          || !(_ulColorMask & ms.ms_ulOnColor)           // not on or off.
-          || (_ulColorMask & ms.ms_ulOffColor)) {
+
+  {FOREACHINSTATICARRAY(mmi.mmpi_MappingSurfaces, MappingSurface, itms) {
+    const MappingSurface &ms = *itms;
+    const ULONG ulFlags = ms.ms_ulRenderingFlags;
+    // end rendering if surface is invisible or empty - these are the last surfaces in surface list
+    if ((ulFlags & SRF_INVISIBLE) || ms.ms_ctSrfVx == 0)
+      break;
+    // skip surface if ...
+    if (!(ulFlags & ulLayerFlags)                      // not in this layer,
+        || (bBackSide && !(ulFlags & SRF_DOUBLESIDED)) // rendering back side and surface is not double sided,
+        || !(_ulColorMask & ms.ms_ulOnColor)           // not on or off.
+        || (_ulColorMask & ms.ms_ulOffColor)) {
+      if (ctElements > 0)
+        FlushElements(ctElements, &mmi.mmpi_aiElements[iStartElem]);
+      iStartElem += ctElements + ms.ms_ctSrfEl;
+      ctElements = 0;
+      continue;
+    }
+
+    // if should set parameters
+    if (ulLayerFlags & SRF_DIFFUSE) {
+      // get rendering parameters
+      SurfaceTranslucencyType stt = ms.ms_sttTranslucencyType;
+
+      SLONG slBump = _bHasBump && (ms.ms_ulRenderingFlags & SRF_BUMP) && mdl_bRenderBump; // && !_bFlatFill
+
+      // if surface uses rendering parameters different than last one
+      if (sttLast != stt || slBumpLast != slBump) {
+        // set up new API states
         if (ctElements > 0)
           FlushElements(ctElements, &mmi.mmpi_aiElements[iStartElem]);
-        iStartElem += ctElements + ms.ms_ctSrfEl;
+        SetRenderingParameters(stt, slBump);
+        sttLast = stt;
+        slBumpLast = slBump;
+        iStartElem += ctElements;
         ctElements = 0;
-        continue;
       }
+    } // batch the surface polygons for rendering
+    ctElements += ms.ms_ctSrfEl;
+  }}
 
-      // if should set parameters
-      if (ulLayerFlags & SRF_DIFFUSE) {
-        // get rendering parameters
-        SurfaceTranslucencyType stt = ms.ms_sttTranslucencyType;
-
-        SLONG slBump = _bHasBump && (ms.ms_ulRenderingFlags & SRF_BUMP) && mdl_bRenderBump; // && !_bFlatFill
-
-        // if surface uses rendering parameters different than last one
-        if (sttLast != stt || slBumpLast != slBump) {
-          // set up new API states
-          if (ctElements > 0)
-            FlushElements(ctElements, &mmi.mmpi_aiElements[iStartElem]);
-          SetRenderingParameters(stt, slBump);
-          sttLast = stt;
-          slBumpLast = slBump;
-          iStartElem += ctElements;
-          ctElements = 0;
-        }
-      } // batch the surface polygons for rendering
-      ctElements += ms.ms_ctSrfEl;
-    }
-  }
   // flush leftovers
   if (ctElements > 0)
     FlushElements(ctElements, &mmi.mmpi_aiElements[iStartElem]);
@@ -2112,27 +2113,28 @@ void CModelObject::RenderModel_View(CRenderModel &rm) {
 
   // for each surface in current mip model
   BOOL bEmpty = TRUE;
-  {
-    FOREACHINSTATICARRAY(mmi.mmpi_MappingSurfaces, MappingSurface, itms) {
-      const MappingSurface &ms = *itms;
-      iSrfVx0 = ms.ms_iSrfVx0;
-      ctSrfVx = ms.ms_ctSrfVx;
-      // skip to next in case of invisible or empty surface
-      if ((ms.ms_ulRenderingFlags & SRF_INVISIBLE) || ctSrfVx == 0)
-        break;
-      bEmpty = FALSE;
-      puwSrfToMip = &mmi.mmpi_auwSrfToMip[iSrfVx0];
-      pvtxSrfBase = &_avtxSrfBase[iSrfVx0];
-      INDEX iSrfVx;
+  {FOREACHINSTATICARRAY(mmi.mmpi_MappingSurfaces, MappingSurface, itms) {
+    const MappingSurface &ms = *itms;
+    iSrfVx0 = ms.ms_iSrfVx0;
+    ctSrfVx = ms.ms_ctSrfVx;
+    // skip to next in case of invisible or empty surface
+    if ((ms.ms_ulRenderingFlags & SRF_INVISIBLE) || ctSrfVx == 0) {
+      break;
+    }
 
-#if ASMOPT == 1
-      __asm {
+    bEmpty = FALSE;
+    puwSrfToMip = &mmi.mmpi_auwSrfToMip[iSrfVx0];
+    pvtxSrfBase = &_avtxSrfBase[iSrfVx0];
+    INDEX iSrfVx;
+
+    #if ASMOPT == 1
+    __asm {
       push    ebx
       mov     ebx,D [puwSrfToMip]
       mov     esi,D [pvtxMipBase]
       mov     edi,D [pvtxSrfBase]
       mov     ecx,D [ctSrfVx]
-srfVtxLoop:
+    srfVtxLoop:
       movzx   eax,W [ebx]
       lea     eax,[eax*2+eax] // *3
       mov     edx,D [esi+eax*4+0] 
@@ -2145,28 +2147,29 @@ srfVtxLoop:
       jnz     srfVtxLoop
       emms
       pop     ebx
-      }
-#else
-      // setup vetrex array
+    }
+    #else
+    // setup vetrex array
+    for (iSrfVx = 0; iSrfVx < ctSrfVx; iSrfVx++) {
+      const INDEX iMipVx = puwSrfToMip[iSrfVx];
+      pvtxSrfBase[iSrfVx].x = pvtxMipBase[iMipVx].x;
+      pvtxSrfBase[iSrfVx].y = pvtxMipBase[iMipVx].y;
+      pvtxSrfBase[iSrfVx].z = pvtxMipBase[iMipVx].z;
+    }
+    #endif
+
+    // setup normal array for truform (if enabled)
+    if (GFX_bTruform) {
+      GFXNormal *pnorSrfBase = &_anorSrfBase[iSrfVx0];
       for (iSrfVx = 0; iSrfVx < ctSrfVx; iSrfVx++) {
         const INDEX iMipVx = puwSrfToMip[iSrfVx];
-        pvtxSrfBase[iSrfVx].x = pvtxMipBase[iMipVx].x;
-        pvtxSrfBase[iSrfVx].y = pvtxMipBase[iMipVx].y;
-        pvtxSrfBase[iSrfVx].z = pvtxMipBase[iMipVx].z;
-      }
-#endif
-      // setup normal array for truform (if enabled)
-      if (GFX_bTruform) {
-        GFXNormal *pnorSrfBase = &_anorSrfBase[iSrfVx0];
-        for (iSrfVx = 0; iSrfVx < ctSrfVx; iSrfVx++) {
-          const INDEX iMipVx = puwSrfToMip[iSrfVx];
-          pnorSrfBase[iSrfVx].nx = pnorMipBase[iMipVx].nx;
-          pnorSrfBase[iSrfVx].ny = pnorMipBase[iMipVx].ny;
-          pnorSrfBase[iSrfVx].nz = pnorMipBase[iMipVx].nz;
-        }
+        pnorSrfBase[iSrfVx].nx = pnorMipBase[iMipVx].nx;
+        pnorSrfBase[iSrfVx].ny = pnorMipBase[iMipVx].ny;
+        pnorSrfBase[iSrfVx].nz = pnorMipBase[iMipVx].nz;
       }
     }
-  }
+  }}
+
   // prepare (and lock) vertex array
   gfxEnableDepthTest();
   gfxSetVertexArray(&_avtxSrfBase[0], _ctAllSrfVx);
@@ -2319,34 +2322,33 @@ srfVtxLoop:
   colMdlDiff.MultiplyRGBA(colD, colB);
 
   // for each surface in current mip model
-  {
-    FOREACHINSTATICARRAY(mmi.mmpi_MappingSurfaces, MappingSurface, itms) {
-      const MappingSurface &ms = *itms;
-      iSrfVx0 = ms.ms_iSrfVx0;
-      ctSrfVx = ms.ms_ctSrfVx;
-      if ((ms.ms_ulRenderingFlags & SRF_INVISIBLE) || ctSrfVx == 0)
-        break; // done if found invisible or empty surface
-      // cache surface pointers
-      puwSrfToMip = &mmi.mmpi_auwSrfToMip[iSrfVx0];
-      pvTexCoord = &mmi.mmpi_avmexTexCoord[iSrfVx0];
-      ptexSrfBase = &_atexSrfBase[iSrfVx0];
-      pcolSrfBase = &_acolSrfBase[iSrfVx0];
+  {FOREACHINSTATICARRAY(mmi.mmpi_MappingSurfaces, MappingSurface, itms) {
+    const MappingSurface &ms = *itms;
+    iSrfVx0 = ms.ms_iSrfVx0;
+    ctSrfVx = ms.ms_ctSrfVx;
+    if ((ms.ms_ulRenderingFlags & SRF_INVISIBLE) || ctSrfVx == 0)
+      break; // done if found invisible or empty surface
+    // cache surface pointers
+    puwSrfToMip = &mmi.mmpi_auwSrfToMip[iSrfVx0];
+    pvTexCoord = &mmi.mmpi_avmexTexCoord[iSrfVx0];
+    ptexSrfBase = &_atexSrfBase[iSrfVx0];
+    pcolSrfBase = &_acolSrfBase[iSrfVx0];
 
-      // get surface diffuse color and combine with model color
-      GFXColor colSrfDiff;
-      const COLOR colD = AdjustColor(ms.ms_colDiffuse, _slTexHueShift, _slTexSaturation);
-      colSrfDiff.MultiplyRGBA(colD, colMdlDiff);
+    // get surface diffuse color and combine with model color
+    GFXColor colSrfDiff;
+    const COLOR colD = AdjustColor(ms.ms_colDiffuse, _slTexHueShift, _slTexSaturation);
+    colSrfDiff.MultiplyRGBA(colD, colMdlDiff);
 
-#if ASMOPT == 1
-      // setup texcoord array
-      __asm {
+    #if ASMOPT == 1
+    // setup texcoord array
+    __asm {
       push    ebx
       mov     esi,D [pvTexCoord]
       mov     edi,D [ptexSrfBase]
       mov     ecx,D [ctSrfVx]
       shr     ecx,1
       jz      vtxRest
-vtxLoop:
+    vtxLoop:
       fld     D [esi+0]
       fmul    D [fTexCorrU]
       fld     D [esi+8]
@@ -2364,7 +2366,7 @@ vtxLoop:
       add     edi,2*2*4
       dec     ecx
       jnz     vtxLoop
-vtxRest:
+    vtxRest:
       test    D [ctSrfVx],1
       jz      vtxEnd
       fld     D [esi+0]
@@ -2374,34 +2376,33 @@ vtxRest:
       fxch    st(1)
       fstp    D [edi+0]
       fstp    D [edi+4]
-vtxEnd:
+    vtxEnd:
       pop     ebx
-      }
-#else
-      // setup texcoord array
-      for (INDEX iSrfVx = 0; iSrfVx < ctSrfVx; iSrfVx++) {
-        ptexSrfBase[iSrfVx].s = pvTexCoord[iSrfVx](1) * fTexCorrU;
-        ptexSrfBase[iSrfVx].t = pvTexCoord[iSrfVx](2) * fTexCorrV;
-      }
-#endif
+    }
+    #else
+    // setup texcoord array
+    for (INDEX iSrfVx = 0; iSrfVx < ctSrfVx; iSrfVx++) {
+      ptexSrfBase[iSrfVx].s = pvTexCoord[iSrfVx](1) * fTexCorrU;
+      ptexSrfBase[iSrfVx].t = pvTexCoord[iSrfVx](2) * fTexCorrV;
+    }
+    #endif
 
+    // setup color array
+    if (ms.ms_sstShadingType == SST_FULLBRIGHT) {
+      // eventually adjust reflection color for overbrighting
+      GFXColor colSrfDiffAdj = colSrfDiff;
+      if (bOverbright) {
+        colSrfDiffAdj.r >>= 1;
+        colSrfDiffAdj.g >>= 1;
+        colSrfDiffAdj.b >>= 1;
+      } // just copy diffuse color
+      for (INDEX iSrfVx = 0; iSrfVx < ctSrfVx; iSrfVx++)
+        pcolSrfBase[iSrfVx] = colSrfDiffAdj;
+    } else {
+      #if ASMOPT == 1
       // setup color array
-      if (ms.ms_sstShadingType == SST_FULLBRIGHT) {
-        // eventually adjust reflection color for overbrighting
-        GFXColor colSrfDiffAdj = colSrfDiff;
-        if (bOverbright) {
-          colSrfDiffAdj.r >>= 1;
-          colSrfDiffAdj.g >>= 1;
-          colSrfDiffAdj.b >>= 1;
-        } // just copy diffuse color
-        for (INDEX iSrfVx = 0; iSrfVx < ctSrfVx; iSrfVx++)
-          pcolSrfBase[iSrfVx] = colSrfDiffAdj;
-      }
-      else {
-#if ASMOPT == 1
-        // setup color array
-        const COLOR colS = colSrfDiff.abgr;
-        __asm {
+      const COLOR colS = colSrfDiff.abgr;
+      __asm {
         push    ebx
         mov     ebx,D [puwSrfToMip]
         mov     esi,D [pcolMipBase]
@@ -2412,7 +2413,7 @@ vtxEnd:
         psllw   mm4,7
         paddw   mm4,Q [mmRounder]
         xor     ecx,ecx
-diffColLoop:
+      diffColLoop:
         movzx   eax,W [ebx+ecx*2]
         movd    mm1,D [esi+eax*4]
         punpcklbw mm1,mm0
@@ -2426,33 +2427,38 @@ diffColLoop:
         jl      diffColLoop
         emms
         pop     ebx
-        }
-#else
-        // setup diffuse color array
-        for (INDEX iSrfVx = 0; iSrfVx < ctSrfVx; iSrfVx++) {
-          const INDEX iMipVx = puwSrfToMip[iSrfVx];
-          pcolSrfBase[iSrfVx].MultiplyRGBCopyA1(colSrfDiff, pcolMipBase[iMipVx]);
-        }
-#endif
       }
-      // eventually attenuate color in case of fog or haze
-      if ((ms.ms_ulRenderingFlags & SRF_OPAQUE) && !_bForceTranslucency)
-        continue;
-      // eventually do some haze and/or fog attenuation of alpha channel in surface
-      if (rm.rm_ulFlags & RMF_HAZE) {
-        if (ms.ms_sttTranslucencyType == STT_MULTIPLY)
-          AttenuateColor(pshdMipHaze, ctSrfVx);
-        else
-          AttenuateAlpha(pshdMipHaze, ctSrfVx);
+      #else
+      // setup diffuse color array
+      for (INDEX iSrfVx = 0; iSrfVx < ctSrfVx; iSrfVx++) {
+        const INDEX iMipVx = puwSrfToMip[iSrfVx];
+        pcolSrfBase[iSrfVx].MultiplyRGBCopyA1(colSrfDiff, pcolMipBase[iMipVx]);
       }
-      if (rm.rm_ulFlags & RMF_FOG) {
-        if (ms.ms_sttTranslucencyType == STT_MULTIPLY)
-          AttenuateColor(pshdMipFogy, ctSrfVx);
-        else
-          AttenuateAlpha(pshdMipFogy, ctSrfVx);
+      #endif
+    }
+
+    // eventually attenuate color in case of fog or haze
+    if ((ms.ms_ulRenderingFlags & SRF_OPAQUE) && !_bForceTranslucency) {
+      continue;
+    }
+
+    // eventually do some haze and/or fog attenuation of alpha channel in surface
+    if (rm.rm_ulFlags & RMF_HAZE) {
+      if (ms.ms_sttTranslucencyType == STT_MULTIPLY) {
+        AttenuateColor(pshdMipHaze, ctSrfVx);
+      } else {
+        AttenuateAlpha(pshdMipHaze, ctSrfVx);
       }
     }
-  }
+    if (rm.rm_ulFlags & RMF_FOG) {
+      if (ms.ms_sttTranslucencyType == STT_MULTIPLY) {
+        AttenuateColor(pshdMipFogy, ctSrfVx);
+      } else {
+        AttenuateAlpha(pshdMipFogy, ctSrfVx);
+      }
+    }
+  }}
+
   // done with diffuse surfaces setup
   _pfModelProfile.StopTimer(CModelProfile::PTI_VIEW_INIT_DIFF_SURF);
 

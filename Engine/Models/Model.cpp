@@ -440,14 +440,16 @@ void ModelPolygon::Write_t(CTStream *pFile) // throw char *
   pFile->WriteID_t(CChunkID("MDP2"));
   INDEX ctVertices = mp_PolygonVertices.Count();
   (*pFile) << ctVertices;
-  {FOREACHINSTATICARRAY(mp_PolygonVertices, ModelPolygonVertex, it) {it.Current().Write_t(pFile);
-}
-}
-(*pFile) << mp_RenderFlags;
-(*pFile) << mp_ColorAndAlpha;
-(*pFile) << mp_Surface;
-}
-;
+
+  {FOREACHINSTATICARRAY(mp_PolygonVertices, ModelPolygonVertex, it) {
+    it.Current().Write_t(pFile);
+  }}
+
+  (*pFile) << mp_RenderFlags;
+  (*pFile) << mp_ColorAndAlpha;
+  (*pFile) << mp_Surface;
+};
+
 //------------------------------------------ READ
 void ModelPolygon::Read_t(CTStream *pFile) // throw char *
 {
@@ -458,29 +460,30 @@ void ModelPolygon::Read_t(CTStream *pFile) // throw char *
     pFile->ReadFullChunk_t(CChunkID("IMPV"), &ctVertices, sizeof(INDEX));
     mp_PolygonVertices.New(ctVertices);
 
-    {FOREACHINSTATICARRAY(mp_PolygonVertices, ModelPolygonVertex, it) {it.Current().Read_t(pFile);
-  }
-}
-(*pFile) >> mp_RenderFlags;
-(*pFile) >> mp_ColorAndAlpha;
-(*pFile) >> mp_Surface;
-(*pFile) >> ulDummy; // ex on color
-(*pFile) >> ulDummy; // ex off color
-}
-else {
-  pFile->ExpectID_t(CChunkID("MDP2"));
-  (*pFile) >> ctVertices;
-  mp_PolygonVertices.New(ctVertices);
+    {FOREACHINSTATICARRAY(mp_PolygonVertices, ModelPolygonVertex, it) {
+      it.Current().Read_t(pFile);
+    }}
 
-  {FOREACHINSTATICARRAY(mp_PolygonVertices, ModelPolygonVertex, it) {it.Current().Read_t(pFile);
-}
-}
-(*pFile) >> mp_RenderFlags;
-(*pFile) >> mp_ColorAndAlpha;
-(*pFile) >> mp_Surface;
-}
-}
-;
+    (*pFile) >> mp_RenderFlags;
+    (*pFile) >> mp_ColorAndAlpha;
+    (*pFile) >> mp_Surface;
+    (*pFile) >> ulDummy; // ex on color
+    (*pFile) >> ulDummy; // ex off color
+  } else {
+    pFile->ExpectID_t(CChunkID("MDP2"));
+    (*pFile) >> ctVertices;
+    mp_PolygonVertices.New(ctVertices);
+
+    {FOREACHINSTATICARRAY(mp_PolygonVertices, ModelPolygonVertex, it) {
+      it.Current().Read_t(pFile);
+    }}
+
+    (*pFile) >> mp_RenderFlags;
+    (*pFile) >> mp_ColorAndAlpha;
+    (*pFile) >> mp_Surface;
+  }
+};
+
 //----------------------------------------------------------------------------------
 // TEMPORARY - REMOVE THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // POLYGON RENDER CONSTANTS
@@ -782,11 +785,9 @@ void ModelMipInfo::Write_t(CTStream *pFile) // throw char *
 
   // Save count, call write for array of model polygons
   pFile->WriteFullChunk_t(CChunkID("IPOL"), &mmpi_PolygonsCt, sizeof(INDEX));
-  {
-    FOREACHINSTATICARRAY(mmpi_Polygons, ModelPolygon, it) {
-      it.Current().Write_t(pFile);
-    }
-  }
+  {FOREACHINSTATICARRAY(mmpi_Polygons, ModelPolygon, it) {
+    it.Current().Write_t(pFile);
+  }}
 
   // Save count, array of texture vertices
   iMembersCt = mmpi_TextureVertices.Count();
@@ -796,25 +797,26 @@ void ModelMipInfo::Write_t(CTStream *pFile) // throw char *
   // Save count, call write for array of mapping surfaces
   iMembersCt = mmpi_MappingSurfaces.Count();
   (*pFile) << iMembersCt;
-  {FOREACHINSTATICARRAY(mmpi_MappingSurfaces, MappingSurface, it) {it.Current().Write_t(pFile);
-}
-}
+  {FOREACHINSTATICARRAY(mmpi_MappingSurfaces, MappingSurface, it) {
+    it.Current().Write_t(pFile);
+  }}
 
-// write mip model flags
-(*pFile) << mmpi_ulFlags;
-// write info of polygons occupied by patch
-INDEX ctPatches = mmpi_aPolygonsPerPatch.Count();
-(*pFile) << ctPatches;
-// for each patch
-for (INDEX iPatch = 0; iPatch < ctPatches; iPatch++) {
-  // write no of occupied polygons
-  INDEX ctOccupied = mmpi_aPolygonsPerPatch[iPatch].ppp_iPolygons.Count();
-  (*pFile) << ctOccupied;
-  if (ctOccupied != 0) {
-    pFile->WriteFullChunk_t(CChunkID("OCPL"), &mmpi_aPolygonsPerPatch[iPatch].ppp_iPolygons[0], ctOccupied * sizeof(INDEX));
+  // write mip model flags
+  (*pFile) << mmpi_ulFlags;
+  // write info of polygons occupied by patch
+  INDEX ctPatches = mmpi_aPolygonsPerPatch.Count();
+  (*pFile) << ctPatches;
+  // for each patch
+  for (INDEX iPatch = 0; iPatch < ctPatches; iPatch++) {
+    // write no of occupied polygons
+    INDEX ctOccupied = mmpi_aPolygonsPerPatch[iPatch].ppp_iPolygons.Count();
+    (*pFile) << ctOccupied;
+    if (ctOccupied != 0) {
+      pFile->WriteFullChunk_t(CChunkID("OCPL"), &mmpi_aPolygonsPerPatch[iPatch].ppp_iPolygons[0], ctOccupied * sizeof(INDEX));
+    }
   }
 }
-}
+
 //------------------------------------------ READ
 /*
  * This is read function of one mip-model
@@ -825,55 +827,54 @@ void ModelMipInfo::Read_t(CTStream *pFile, BOOL bReadPolygonalPatches, BOOL bRea
   // Load count, allocate array and call Read for array of model polygons
   pFile->ReadFullChunk_t(CChunkID("IPOL"), &mmpi_PolygonsCt, sizeof(INDEX));
   mmpi_Polygons.New(mmpi_PolygonsCt);
-  {FOREACHINSTATICARRAY(mmpi_Polygons, ModelPolygon, it) {it.Current().Read_t(pFile);
-}
-}
+  {FOREACHINSTATICARRAY(mmpi_Polygons, ModelPolygon, it) {
+    it.Current().Read_t(pFile);
+  }}
 
-// Load count, allocate and load array of texture vertices
-(*pFile) >> iMembersCt;
-mmpi_TextureVertices.New(iMembersCt);
-if (bReadPolygonsPerSurface) {
-  // chunk ID will tell us if we should read new format that contains bump normals
-  CChunkID idChunk = pFile->GetID_t();
-  // jump over chunk size
-  ULONG ulDummySize;
-  (*pFile) >> ulDummySize;
-  // if bump normals are saved (new format)
-  if (idChunk == CChunkID("TXV2")) {
-    pFile->ReadRawChunk_t(&mmpi_TextureVertices[0], iMembersCt * sizeof(struct ModelTextureVertex));
+  // Load count, allocate and load array of texture vertices
+  (*pFile) >> iMembersCt;
+  mmpi_TextureVertices.New(iMembersCt);
+  if (bReadPolygonsPerSurface) {
+    // chunk ID will tell us if we should read new format that contains bump normals
+    CChunkID idChunk = pFile->GetID_t();
+    // jump over chunk size
+    ULONG ulDummySize;
+    (*pFile) >> ulDummySize;
+    // if bump normals are saved (new format)
+    if (idChunk == CChunkID("TXV2")) {
+      pFile->ReadRawChunk_t(&mmpi_TextureVertices[0], iMembersCt * sizeof(struct ModelTextureVertex));
+    } else {
+      // bump normals are not saved
+      for (INDEX iVertex = 0; iVertex < iMembersCt; iVertex++) {
+        pFile->Read_t(&mmpi_TextureVertices[iVertex].mtv_UVW, sizeof(FLOAT3D));
+        pFile->Read_t(&mmpi_TextureVertices[iVertex].mtv_UV, sizeof(MEX2D));
+        pFile->Read_t(&mmpi_TextureVertices[iVertex].mtv_Done, sizeof(BOOL));
+        pFile->Read_t(&mmpi_TextureVertices[iVertex].mtv_iTransformedVertex, sizeof(INDEX));
+        mmpi_TextureVertices[iVertex].mtv_vU = FLOAT3D(0.0f, 0.0f, 0.0f);
+        mmpi_TextureVertices[iVertex].mtv_vV = FLOAT3D(0.0f, 0.0f, 0.0f);
+      }
+    }
   } else {
-    // bump normals are not saved
+    pFile->ExpectID_t(CChunkID("TXVT"));
+    // jump over chunk size
+    ULONG ulDummySize;
+    (*pFile) >> ulDummySize;
+    // read models in old format
     for (INDEX iVertex = 0; iVertex < iMembersCt; iVertex++) {
       pFile->Read_t(&mmpi_TextureVertices[iVertex].mtv_UVW, sizeof(FLOAT3D));
       pFile->Read_t(&mmpi_TextureVertices[iVertex].mtv_UV, sizeof(MEX2D));
       pFile->Read_t(&mmpi_TextureVertices[iVertex].mtv_Done, sizeof(BOOL));
-      pFile->Read_t(&mmpi_TextureVertices[iVertex].mtv_iTransformedVertex, sizeof(INDEX));
+      mmpi_TextureVertices[iVertex].mtv_iTransformedVertex = 0;
       mmpi_TextureVertices[iVertex].mtv_vU = FLOAT3D(0.0f, 0.0f, 0.0f);
       mmpi_TextureVertices[iVertex].mtv_vV = FLOAT3D(0.0f, 0.0f, 0.0f);
     }
   }
-} else {
-  pFile->ExpectID_t(CChunkID("TXVT"));
-  // jump over chunk size
-  ULONG ulDummySize;
-  (*pFile) >> ulDummySize;
-  // read models in old format
-  for (INDEX iVertex = 0; iVertex < iMembersCt; iVertex++) {
-    pFile->Read_t(&mmpi_TextureVertices[iVertex].mtv_UVW, sizeof(FLOAT3D));
-    pFile->Read_t(&mmpi_TextureVertices[iVertex].mtv_UV, sizeof(MEX2D));
-    pFile->Read_t(&mmpi_TextureVertices[iVertex].mtv_Done, sizeof(BOOL));
-    mmpi_TextureVertices[iVertex].mtv_iTransformedVertex = 0;
-    mmpi_TextureVertices[iVertex].mtv_vU = FLOAT3D(0.0f, 0.0f, 0.0f);
-    mmpi_TextureVertices[iVertex].mtv_vV = FLOAT3D(0.0f, 0.0f, 0.0f);
-  }
-}
 
-// Load count, allcate array and call Read for array of mapping surfaces
-(*pFile) >> iMembersCt;
-mmpi_MappingSurfaces.New(iMembersCt);
-INDEX iIndexOfSurface = 0;
-{
-  FOREACHINSTATICARRAY(mmpi_MappingSurfaces, MappingSurface, it) {
+  // Load count, allcate array and call Read for array of mapping surfaces
+  (*pFile) >> iMembersCt;
+  mmpi_MappingSurfaces.New(iMembersCt);
+  INDEX iIndexOfSurface = 0;
+  {FOREACHINSTATICARRAY(mmpi_MappingSurfaces, MappingSurface, it) {
     it.Current().Read_t(pFile, bReadPolygonsPerSurface, bReadSurfaceColors);
     // obtain color per surface from polygons (old model format)
     if (!bReadPolygonsPerSurface) {
@@ -888,29 +889,28 @@ INDEX iIndexOfSurface = 0;
       }
       iIndexOfSurface++;
     }
-  }
-}
+  }}
 
-if (bReadPolygonalPatches) {
-  // read mip model flags
-  (*pFile) >> mmpi_ulFlags;
-  // read no of patches
-  INDEX ctPatches;
-  (*pFile) >> ctPatches;
-  if (ctPatches != 0) {
-    mmpi_aPolygonsPerPatch.New(ctPatches);
-    // read info for polygonal patches
-    for (INDEX iPatch = 0; iPatch < ctPatches; iPatch++) {
-      // read no of occupied polygons
-      INDEX ctOccupied;
-      (*pFile) >> ctOccupied;
-      if (ctOccupied != 0) {
-        mmpi_aPolygonsPerPatch[iPatch].ppp_iPolygons.New(ctOccupied);
-        pFile->ReadFullChunk_t(CChunkID("OCPL"), &mmpi_aPolygonsPerPatch[iPatch].ppp_iPolygons[0], ctOccupied * sizeof(INDEX));
+  if (bReadPolygonalPatches) {
+    // read mip model flags
+    (*pFile) >> mmpi_ulFlags;
+    // read no of patches
+    INDEX ctPatches;
+    (*pFile) >> ctPatches;
+    if (ctPatches != 0) {
+      mmpi_aPolygonsPerPatch.New(ctPatches);
+      // read info for polygonal patches
+      for (INDEX iPatch = 0; iPatch < ctPatches; iPatch++) {
+        // read no of occupied polygons
+        INDEX ctOccupied;
+        (*pFile) >> ctOccupied;
+        if (ctOccupied != 0) {
+          mmpi_aPolygonsPerPatch[iPatch].ppp_iPolygons.New(ctOccupied);
+          pFile->ReadFullChunk_t(CChunkID("OCPL"), &mmpi_aPolygonsPerPatch[iPatch].ppp_iPolygons[0], ctOccupied * sizeof(INDEX));
+        }
       }
     }
   }
-}
 }
 
 //--------------------------------------------------------------------------------------------

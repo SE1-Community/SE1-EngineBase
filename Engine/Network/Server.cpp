@@ -228,12 +228,10 @@ void CServer::Stop(void) {
   srv_aplbPlayers.New(NET_MAXGAMEPLAYERS);
   // initialize player indices
   INDEX iPlayer = 0;
-  {
-    FOREACHINSTATICARRAY(srv_aplbPlayers, CPlayerBuffer, itplb) {
-      itplb->plb_Index = iPlayer;
-      iPlayer++;
-    }
-  }
+  {FOREACHINSTATICARRAY(srv_aplbPlayers, CPlayerBuffer, itplb) {
+    itplb->plb_Index = iPlayer;
+    iPlayer++;
+  }}
 
   // init buffer for sync checks
   srv_ascChecks.Clear();
@@ -764,15 +762,13 @@ void CServer::MakeAllActions(void) {
   }
 
   // for all players in game
-  {
-    FOREACHINSTATICARRAY(srv_aplbPlayers, CPlayerBuffer, itplb) {
-      // if player is active
-      if (itplb->IsActive()) {
-        // flush oldest action
-        itplb->AdvanceActionBuffer();
-      }
+  {FOREACHINSTATICARRAY(srv_aplbPlayers, CPlayerBuffer, itplb) {
+    // if player is active
+    if (itplb->IsActive()) {
+      // flush oldest action
+      itplb->AdvanceActionBuffer();
     }
-  }
+  }}
 }
 
 // add a block to streams for all sessions

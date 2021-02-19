@@ -347,21 +347,19 @@ void CTriangularizer::MakeEdgesForTriangularization(void) {
  * Add given edge to temporary array.
  */
 void CTriangularizer::AddEdge(CBrushVertex *pbvxVertex0, CBrushVertex *pbvxVertex1) {
-#ifndef NDEBUG
+  #ifndef NDEBUG
   // for each edge
-  {
-    FOREACHINDYNAMICARRAY(tr_abedEdges, CBrushEdge, itbed) {
-      // must not exist
-      if (itbed->bed_pbvxVertex0 == pbvxVertex0 && itbed->bed_pbvxVertex1 == pbvxVertex1) {
-        return;
-      }
-      ASSERT(itbed->bed_pbvxVertex0 != pbvxVertex0 || itbed->bed_pbvxVertex1 != pbvxVertex1);
-
-      // must not have reverse
-      ASSERT(itbed->bed_pbvxVertex0 != pbvxVertex1 || itbed->bed_pbvxVertex1 != pbvxVertex0);
+  {FOREACHINDYNAMICARRAY(tr_abedEdges, CBrushEdge, itbed) {
+    // must not exist
+    if (itbed->bed_pbvxVertex0 == pbvxVertex0 && itbed->bed_pbvxVertex1 == pbvxVertex1) {
+      return;
     }
-  }
-#endif
+    ASSERT(itbed->bed_pbvxVertex0 != pbvxVertex0 || itbed->bed_pbvxVertex1 != pbvxVertex1);
+
+    // must not have reverse
+    ASSERT(itbed->bed_pbvxVertex0 != pbvxVertex1 || itbed->bed_pbvxVertex1 != pbvxVertex0);
+  }}
+  #endif
 
   // add new edge
   CBrushEdge *pbedNew = tr_abedEdges.New(1);
@@ -374,28 +372,24 @@ void CTriangularizer::AddEdge(CBrushVertex *pbvxVertex0, CBrushVertex *pbvxVerte
  */
 void CTriangularizer::CheckForInvalidEdges(void) {
   // for each edge
-  {
-    FOREACHINDYNAMICARRAY(tr_abedEdges, CBrushEdge, itbed1) {
-      // for each edge
-      {
-        FOREACHINDYNAMICARRAY(tr_abedEdges, CBrushEdge, itbed2) {
-          // if same edge
-          if (&*itbed1 == &*itbed2) {
-            // skip
-            continue;
-          }
-          CBrushEdge *pbed1 = itbed1;
-          CBrushEdge *pbed2 = itbed2;
-
-          // must not exist
-          ASSERT(pbed1->bed_pbvxVertex0 != pbed2->bed_pbvxVertex0 || pbed1->bed_pbvxVertex1 != pbed2->bed_pbvxVertex1);
-
-          // must not have reverse
-          ASSERT(pbed1->bed_pbvxVertex0 != pbed2->bed_pbvxVertex1 || pbed1->bed_pbvxVertex1 != pbed2->bed_pbvxVertex0);
-        }
+  {FOREACHINDYNAMICARRAY(tr_abedEdges, CBrushEdge, itbed1) {
+    // for each edge
+    {FOREACHINDYNAMICARRAY(tr_abedEdges, CBrushEdge, itbed2) {
+      // if same edge
+      if (&*itbed1 == &*itbed2) {
+        // skip
+        continue;
       }
-    }
-  }
+      CBrushEdge *pbed1 = itbed1;
+      CBrushEdge *pbed2 = itbed2;
+
+      // must not exist
+      ASSERT(pbed1->bed_pbvxVertex0 != pbed2->bed_pbvxVertex0 || pbed1->bed_pbvxVertex1 != pbed2->bed_pbvxVertex1);
+
+      // must not have reverse
+      ASSERT(pbed1->bed_pbvxVertex0 != pbed2->bed_pbvxVertex1 || pbed1->bed_pbvxVertex1 != pbed2->bed_pbvxVertex0);
+    }}
+  }}
 }
 
 /*
@@ -679,7 +673,7 @@ void CTriangularizer::FindBestTriangle(void) {
   }
   tr_abedEdges.Unlock();
 
-#if 0
+  #if 0
   // if no acceptable triangles have been found
   if (tr_fQualityBest<???) {
     // dump all sector's vertices 
@@ -707,7 +701,7 @@ void CTriangularizer::FindBestTriangle(void) {
     FatalError("No acceptable triangles found for triangularization!\n"
       "Debugging information written to file '%s'.", _fnmDebugOutput);
   }
-#endif
+  #endif
 }
 
 // find vertices used without duplication

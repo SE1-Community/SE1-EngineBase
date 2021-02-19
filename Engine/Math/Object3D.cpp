@@ -60,8 +60,9 @@ void CObject3D::CreateSectorIndices(void) {
 BOOL CObject3D::ArePolygonsPlanar(void) {
   // for all sectors
   FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itsc) {
-    if (!itsc->ArePolygonsPlanar())
+    if (!itsc->ArePolygonsPlanar()) {
       return FALSE;
+    }
   }
   return TRUE;
 }
@@ -98,12 +99,10 @@ void CObject3D::Project(CSimpleProjection3D_DOUBLE &pr) {
       // if projection is inverted
       if (bInverted) {
         // invert all polygon edges
-        {
-          FOREACHINDYNAMICARRAY(itpo->opo_PolygonEdges, CObjectPolygonEdge, itope) {
-            CObjectPolygonEdge &ope = *itope;
-            ope.ope_Backward = !ope.ope_Backward;
-          }
-        }
+        {FOREACHINDYNAMICARRAY(itpo->opo_PolygonEdges, CObjectPolygonEdge, itope) {
+          CObjectPolygonEdge &ope = *itope;
+          ope.ope_Backward = !ope.ope_Backward;
+        }}
       }
     }
     // for all planes in sector
@@ -144,21 +143,19 @@ void CObject3D::RemoveEmptySectors(void) {
   CDynamicContainer<CObjectSector> coscEmpty;
 
   // for all sectors in object
-  {FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector,
-                         itosc) {                                           // if it has no polygons
-                                 if (itosc->osc_aopoPolygons.Count() == 0) {// add the sector to the container of empty sectors
-                                                                            coscEmpty.Add(&itosc.Current());
-}
-}
-}
+  {FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
+    // if it has no polygons
+    if (itosc->osc_aopoPolygons.Count() == 0) {
+      // add the sector to the container of empty sectors
+      coscEmpty.Add(&itosc.Current());
+    }
+  }}
 
-// for all empty sectors
-{
-  FOREACHINDYNAMICCONTAINER(coscEmpty, CObjectSector, itoscEmpty) {
+  // for all empty sectors
+  {FOREACHINDYNAMICCONTAINER(coscEmpty, CObjectSector, itoscEmpty) {
     // delete the sector from object
     ob_aoscSectors.Delete(&itoscEmpty.Current());
-  }
-}
+  }}
 }
 
 /*
@@ -168,12 +165,10 @@ void CObject3D::Optimize(void) {
   ASSERT(GetFPUPrecision() == FPT_53BIT);
 
   // for all sectors in the object
-  {
-    FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
-      // optimize the sector
-      itosc->Optimize();
-    }
-  }
+  {FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
+    // optimize the sector
+    itosc->Optimize();
+  }}
 
   // remove sectors that have no polygons
   RemoveEmptySectors();
@@ -185,24 +180,20 @@ void CObject3D::Optimize(void) {
 void CObject3D::Inverse(void) {
   ASSERT(GetFPUPrecision() == FPT_53BIT);
   // for all sectors in object
-  {
-    FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
-      // inverse the sector
-      itosc->Inverse();
-    }
-  }
+  {FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
+    // inverse the sector
+    itosc->Inverse();
+  }}
 }
 
 // Recalculate all planes from vertices. (used when stretching vertices)
 void CObject3D::RecalculatePlanes(void) {
   ASSERT(GetFPUPrecision() == FPT_53BIT);
   // for all sectors in object
-  {
-    FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
-      // recalculate all planes in sector
-      itosc->RecalculatePlanes();
-    }
-  }
+  {FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
+    // recalculate all planes in sector
+    itosc->RecalculatePlanes();
+  }}
 }
 
 /*
@@ -210,17 +201,13 @@ void CObject3D::RecalculatePlanes(void) {
  */
 void CObject3D::TurnPortalsToWalls(void) {
   // for all sectors in object
-  {
-    FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
-      // for all polygons
-      {
-        FOREACHINDYNAMICARRAY(itosc->osc_aopoPolygons, CObjectPolygon, itopo) {
-          // clear the portal flag
-          itopo->opo_ulFlags &= ~OPOF_PORTAL;
-        }
-      }
-    }
-  }
+  {FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
+    // for all polygons
+    {FOREACHINDYNAMICARRAY(itosc->osc_aopoPolygons, CObjectPolygon, itopo) {
+      // clear the portal flag
+      itopo->opo_ulFlags &= ~OPOF_PORTAL;
+    }}
+  }}
 }
 
 /*
@@ -247,68 +234,57 @@ void CObject3D::DebugDump(void) {
   _RPT0(_CRT_WARN, "Object3D dump BEGIN:\n");
 
   _RPT1(_CRT_WARN, "Sectors: %d\n", ob_aoscSectors.Count());
-  {
-    FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
-      _RPT1(_CRT_WARN, "SC%d:\n", ob_aoscSectors.Index(&itosc.Current()));
+  {FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
+    _RPT1(_CRT_WARN, "SC%d:\n", ob_aoscSectors.Index(&itosc.Current()));
 
-      _RPT1(_CRT_WARN, "Vertices: %d\n", itosc->osc_aovxVertices.Count());
-      {
-        FOREACHINDYNAMICARRAY(itosc->osc_aovxVertices, CObjectVertex, itovx) {
-          _RPT4(_CRT_WARN, "VX%d: (%f, %f, %f)\n", itosc->osc_aovxVertices.Index(itovx), (*itovx)(1), (*itovx)(2), (*itovx)(3));
-        }
-      }
+    _RPT1(_CRT_WARN, "Vertices: %d\n", itosc->osc_aovxVertices.Count());
+    {FOREACHINDYNAMICARRAY(itosc->osc_aovxVertices, CObjectVertex, itovx) {
+      _RPT4(_CRT_WARN, "VX%d: (%f, %f, %f)\n", itosc->osc_aovxVertices.Index(itovx), (*itovx)(1), (*itovx)(2), (*itovx)(3));
+    }}
 
-      _RPT1(_CRT_WARN, "Planes: %d\n", itosc->osc_aoplPlanes.Count());
-      {
-        FOREACHINDYNAMICARRAY(itosc->osc_aoplPlanes, CObjectPlane, itopl) {
-          _RPT4(_CRT_WARN, "PL%d: (%g, %g, %g)", itosc->osc_aoplPlanes.Index(&itopl.Current()), itopl.Current()(1),
-                itopl.Current()(2), itopl.Current()(3));
-          _RPT1(_CRT_WARN, ":%g\n", itopl->Distance());
-        }
-      }
+    _RPT1(_CRT_WARN, "Planes: %d\n", itosc->osc_aoplPlanes.Count());
+    {FOREACHINDYNAMICARRAY(itosc->osc_aoplPlanes, CObjectPlane, itopl) {
+      _RPT4(_CRT_WARN, "PL%d: (%g, %g, %g)", itosc->osc_aoplPlanes.Index(&itopl.Current()), itopl.Current()(1),
+            itopl.Current()(2), itopl.Current()(3));
+      _RPT1(_CRT_WARN, ":%g\n", itopl->Distance());
+    }}
 
-      _RPT1(_CRT_WARN, "Edges: %d\n", itosc->osc_aoedEdges.Count());
-      itosc->osc_aovxVertices.Lock();
-      {
-        FOREACHINDYNAMICARRAY(itosc->osc_aoedEdges, CObjectEdge, itoed) {
-          _RPT3(_CRT_WARN, "ED%d: VX%d -> VX%d\n", itosc->osc_aoedEdges.Index(&itoed.Current()),
-                itosc->osc_aovxVertices.Index(itoed->oed_Vertex0), itosc->osc_aovxVertices.Index(itoed->oed_Vertex1));
-        }
-      }
-      itosc->osc_aovxVertices.Unlock();
+    _RPT1(_CRT_WARN, "Edges: %d\n", itosc->osc_aoedEdges.Count());
+    itosc->osc_aovxVertices.Lock();
+    {FOREACHINDYNAMICARRAY(itosc->osc_aoedEdges, CObjectEdge, itoed) {
+      _RPT3(_CRT_WARN, "ED%d: VX%d -> VX%d\n", itosc->osc_aoedEdges.Index(&itoed.Current()),
+            itosc->osc_aovxVertices.Index(itoed->oed_Vertex0), itosc->osc_aovxVertices.Index(itoed->oed_Vertex1));
+    }}
+    itosc->osc_aovxVertices.Unlock();
 
-      _RPT1(_CRT_WARN, "Polygons: %d\n", itosc->osc_aopoPolygons.Count());
-      itosc->osc_aovxVertices.Lock();
-      itosc->osc_aoedEdges.Lock();
-      itosc->osc_aoplPlanes.Lock();
-      {
-        FOREACHINDYNAMICARRAY(itosc->osc_aopoPolygons, CObjectPolygon, itopo) {
-          _RPT3(_CRT_WARN, "PO%d (PL%d): Edges: %d\n  ", itosc->osc_aopoPolygons.Index(&itopo.Current()),
-                itosc->osc_aoplPlanes.Index(itopo->opo_Plane), itopo->opo_PolygonEdges.Count());
-          {
-            FOREACHINDYNAMICARRAY(itopo->opo_PolygonEdges, CObjectPolygonEdge, itope) {
-              _RPT1(_CRT_WARN, "ED%d", itosc->osc_aoedEdges.Index(itope->ope_Edge));
-              CObjectVertex *povx0, *povx1;
-              if (itope->ope_Backward) {
-                povx0 = itope->ope_Edge->oed_Vertex1;
-                povx1 = itope->ope_Edge->oed_Vertex0;
-              } else {
-                povx0 = itope->ope_Edge->oed_Vertex0;
-                povx1 = itope->ope_Edge->oed_Vertex1;
-              }
-              _RPT4(_CRT_WARN, " (VX%d (%f,%f,%f)", itosc->osc_aovxVertices.Index(povx0), (*povx0)(1), (*povx0)(2), (*povx0)(3));
-              _RPT4(_CRT_WARN, "->VX%d (%f,%f,%f)) ", itosc->osc_aovxVertices.Index(povx1), (*povx1)(1), (*povx1)(2),
-                    (*povx1)(3));
-            }
-          }
-          _RPT0(_CRT_WARN, "\n");
+    _RPT1(_CRT_WARN, "Polygons: %d\n", itosc->osc_aopoPolygons.Count());
+    itosc->osc_aovxVertices.Lock();
+    itosc->osc_aoedEdges.Lock();
+    itosc->osc_aoplPlanes.Lock();
+    {FOREACHINDYNAMICARRAY(itosc->osc_aopoPolygons, CObjectPolygon, itopo) {
+      _RPT3(_CRT_WARN, "PO%d (PL%d): Edges: %d\n  ", itosc->osc_aopoPolygons.Index(&itopo.Current()),
+            itosc->osc_aoplPlanes.Index(itopo->opo_Plane), itopo->opo_PolygonEdges.Count());
+      {FOREACHINDYNAMICARRAY(itopo->opo_PolygonEdges, CObjectPolygonEdge, itope) {
+        _RPT1(_CRT_WARN, "ED%d", itosc->osc_aoedEdges.Index(itope->ope_Edge));
+        CObjectVertex *povx0, *povx1;
+        if (itope->ope_Backward) {
+          povx0 = itope->ope_Edge->oed_Vertex1;
+          povx1 = itope->ope_Edge->oed_Vertex0;
+        } else {
+          povx0 = itope->ope_Edge->oed_Vertex0;
+          povx1 = itope->ope_Edge->oed_Vertex1;
         }
-      }
-      itosc->osc_aoplPlanes.Unlock();
-      itosc->osc_aoedEdges.Unlock();
-      itosc->osc_aovxVertices.Unlock();
-    }
-  }
+        _RPT4(_CRT_WARN, " (VX%d (%f,%f,%f)", itosc->osc_aovxVertices.Index(povx0), (*povx0)(1), (*povx0)(2), (*povx0)(3));
+        _RPT4(_CRT_WARN, "->VX%d (%f,%f,%f)) ", itosc->osc_aovxVertices.Index(povx1), (*povx1)(1), (*povx1)(2),
+              (*povx1)(3));
+      }}
+      _RPT0(_CRT_WARN, "\n");
+    }}
+    
+    itosc->osc_aoplPlanes.Unlock();
+    itosc->osc_aoedEdges.Unlock();
+    itosc->osc_aovxVertices.Unlock();
+  }}
 
   _RPT0(_CRT_WARN, "Object3D dump END:\n");
 

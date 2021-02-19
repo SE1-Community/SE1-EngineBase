@@ -851,13 +851,11 @@ BOOL CGfxLibrary::InitDriver_OGL(BOOL b3Dfx /*=FALSE*/) {
 void CGfxLibrary::EndDriver_OGL(void) {
   // unbind all textures
   if (_pTextureStock != NULL) {
-    {
-      FOREACHINDYNAMICCONTAINER(_pTextureStock->st_ctObjects, CTextureData, ittd) {
-        CTextureData &td = *ittd;
-        td.td_tpLocal.Clear();
-        td.Unbind();
-      }
-    }
+    {FOREACHINDYNAMICCONTAINER(_pTextureStock->st_ctObjects, CTextureData, ittd) {
+      CTextureData &td = *ittd;
+      td.td_tpLocal.Clear();
+      td.Unbind();
+    }}
   }
   // unbind fog, haze and flat texture
   gfxDeleteTexture(_fog_ulTexture);

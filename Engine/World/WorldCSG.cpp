@@ -480,8 +480,9 @@ BOOL CWorld::CanJoinSectors(CBrushSectorSelection &selbscSectorsToJoin) {
   // for all sectors in the selection
   FOREACHINDYNAMICCONTAINER(selbscSectorsToJoin, CBrushSector, itbsc) {
     // if sectors are in the same mip
-    if (itbsc->bsc_pbmBrushMip != pbmMip)
+    if (itbsc->bsc_pbmBrushMip != pbmMip) {
       return FALSE;
+    }
   }
   return TRUE;
 }
@@ -510,8 +511,9 @@ void CWorld::JoinSectors(CBrushSectorSelection &selbscSectorsToJoin) {
   FOREACHINDYNAMICCONTAINER(selbscSectorsToJoin, CBrushSector, itbsc) {
     // join the sector with the result sector
     pbscResult = JoinTwoSectors(*pbscResult, *itbsc);
-    if (pbscResult == NULL)
+    if (pbscResult == NULL) {
       break;
+    }
   }
 
   // update the bounding boxes of the brush
@@ -619,15 +621,13 @@ BOOL CWorld::CanJoinPolygons(CBrushPolygonSelection &selbpoPolygonsToJoin) {
   CBrushPlane *pbplPlane = pbpoFirstPolygon->bpo_pbplPlane;
 
   // for each polyon in selection
-  {
-    FOREACHINDYNAMICCONTAINER(selbpoPolygonsToJoin, CBrushPolygon, itbpo) {
-      // if it has different sector or plane
-      if (itbpo->bpo_pbscSector != pbscSector || itbpo->bpo_pbplPlane != pbplPlane) {
-        // it cannot be joined
-        return FALSE;
-      }
+  {FOREACHINDYNAMICCONTAINER(selbpoPolygonsToJoin, CBrushPolygon, itbpo) {
+    // if it has different sector or plane
+    if (itbpo->bpo_pbscSector != pbscSector || itbpo->bpo_pbplPlane != pbplPlane) {
+      // it cannot be joined
+      return FALSE;
     }
-  }
+  }}
 
   // if all tests are passed, it can be joined
   return TRUE;
@@ -853,8 +853,9 @@ BOOL CWorld::CanCopySectors(CBrushSectorSelection &selbscSectorsToCopy) {
   // for all sectors in the selection
   FOREACHINDYNAMICCONTAINER(selbscSectorsToCopy, CBrushSector, itbsc) {
     // if sectors are not in the same mip
-    if (itbsc->bsc_pbmBrushMip != pbmMip)
+    if (itbsc->bsc_pbmBrushMip != pbmMip) {
       return FALSE;
+    }
   }
   return TRUE;
 }
@@ -915,21 +916,18 @@ void CWorld::CopySectors(CBrushSectorSelection &selbscSectorsToCopy, CEntity *pe
   if (bWithEntities) {
     // make a container of entities to copy
     CDynamicContainer<CEntity> cenToCopy;
+
     // for each of the selected sectors
-    {
-      FOREACHINDYNAMICCONTAINER(selbscSectorsToCopy, CBrushSector, itbsc) {
-        // for each entity in the sector
-        {
-          FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
-          // if it is not in container
-          if (!cenToCopy.IsMember(pen)) {
-            // add it to container
-            cenToCopy.Add(pen);
-          }
-          ENDFOR
+    {FOREACHINDYNAMICCONTAINER(selbscSectorsToCopy, CBrushSector, itbsc) {
+      // for each entity in the sector
+      {FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
+        // if it is not in container
+        if (!cenToCopy.IsMember(pen)) {
+          // add it to container
+          cenToCopy.Add(pen);
         }
-      }
-    }
+      ENDFOR}
+    }}
 
     // copy all entities in the container to destination world
     CEntitySelection senCopied;
@@ -958,14 +956,14 @@ void CWorld::CopySectors(CBrushSectorSelection &selbscSectorsToCopy, CEntity *pe
 // Delete selected sectors.
 void CWorld::DeleteSectors(CBrushSectorSelection &selbscSectorsToDelete, BOOL bClearPortalFlags) {
   CBrushMip *pbm = NULL;
+
   // for each sector in the selection
-  {
-    FOREACHINDYNAMICCONTAINER(selbscSectorsToDelete, CBrushSector, itbsc) {
-      // delete it from the brush mip
-      pbm = itbsc->bsc_pbmBrushMip;
-      pbm->bm_abscSectors.Delete(itbsc);
-    }
-  }
+  {FOREACHINDYNAMICCONTAINER(selbscSectorsToDelete, CBrushSector, itbsc) {
+    // delete it from the brush mip
+    pbm = itbsc->bsc_pbmBrushMip;
+    pbm->bm_abscSectors.Delete(itbsc);
+  }}
+
   // clear the selection on the container level
   selbscSectorsToDelete.CDynamicContainer<CBrushSector>::Clear();
 
@@ -1074,70 +1072,64 @@ void CWorld::CopyPolygonsToBrush(CBrushPolygonSelection &selPolygons, CEntity *p
   // create polygons and planes
   pbscDst->bsc_abpoPolygons.New(ctPol);
   pbscDst->bsc_abplPlanes.New(ctPol);
+
   // count edges
   INDEX ctEdges = 0;
-  {
-    FOREACHINDYNAMICCONTAINER(selPolygons, CBrushPolygon, itbpo) {
-      ctEdges += itbpo->bpo_abpePolygonEdges.Count();
-    }
-  }
+  {FOREACHINDYNAMICCONTAINER(selPolygons, CBrushPolygon, itbpo) {
+    ctEdges += itbpo->bpo_abpePolygonEdges.Count();
+  }}
+
   ASSERT(ctEdges != 0);
   // create edges and vertices
   pbscDst->bsc_abedEdges.New(ctEdges);
   pbscDst->bsc_abvxVertices.New(ctEdges * 2);
 
-  {FOREACHINSTATICARRAY(pbscDst->bsc_abvxVertices, CBrushVertex, itbvx) {itbvx->bvx_pbscSector = pbscDst;
-}
-}
+  {FOREACHINSTATICARRAY(pbscDst->bsc_abvxVertices, CBrushVertex, itbvx) {
+    itbvx->bvx_pbscSector = pbscDst;
+  }}
 
-{
-  FOREACHINSTATICARRAY(pbscDst->bsc_abpoPolygons, CBrushPolygon, itbpo) {
+  {FOREACHINSTATICARRAY(pbscDst->bsc_abpoPolygons, CBrushPolygon, itbpo) {
     itbpo->bpo_pbscSector = pbscDst;
-  }
-}
+  }}
 
-INDEX iPol = 0;
-INDEX iVtx = 0;
-INDEX iEdg = 0;
-{
-  FOREACHINDYNAMICCONTAINER(selPolygons, CBrushPolygon, itbpo) {
+  INDEX iPol = 0;
+  INDEX iVtx = 0;
+  INDEX iEdg = 0;
+
+  {FOREACHINDYNAMICCONTAINER(selPolygons, CBrushPolygon, itbpo) {
     CBrushPolygon &bpoSrc = *itbpo;
     CopyPolygonInWorld(bpoSrc, *pbscDst, iPol, iEdg, iVtx);
     iPol++;
-  }
-}
+  }}
 
-// check polygon setup
-/*
-INDEX ctVertices=pbsc->bsc_abvxVertices.Count();
-INDEX ctEdgesControl=pbsc->bsc_abedEdges.Count();
-INDEX ctPlanes=pbsc->bsc_abplPlanes.Count();
-INDEX ctPolygons=pbsc->bsc_abpoPolygons.Count();
+  // check polygon setup
+  /*
+  INDEX ctVertices=pbsc->bsc_abvxVertices.Count();
+  INDEX ctEdgesControl=pbsc->bsc_abedEdges.Count();
+  INDEX ctPlanes=pbsc->bsc_abplPlanes.Count();
+  INDEX ctPolygons=pbsc->bsc_abpoPolygons.Count();
 
-FOREACHINLIST(CBrushMip, bm_lnInBrush, penbr->GetBrush()->br_lhBrushMips, itbm)
-{
-  CBrushMip &brmip=*itbm;
-  FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc)
-  {
-    CBrushSector &bsc=*itbsc;
-    FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo)
-    {
-      CBrushPolygon &bpo=*itbpo;
-      CheckOnePolygon(bsc, bpo);
+  FOREACHINLIST(CBrushMip, bm_lnInBrush, penbr->GetBrush()->br_lhBrushMips, itbm) {
+    CBrushMip &brmip=*itbm;
+    FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
+      CBrushSector &bsc=*itbsc;
+      FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
+        CBrushPolygon &bpo=*itbpo;
+        CheckOnePolygon(bsc, bpo);
+      }
     }
   }
-}
-*/
+  */
 
-// reoptimize it
-pbscDst->bsc_pbmBrushMip->Reoptimize();
+  // reoptimize it
+  pbscDst->bsc_pbmBrushMip->Reoptimize();
 
-// update the bounding boxes of the brush
-CBrushMip *pbrNewMip = penbr->en_pbrBrush->GetFirstMip();
-pbrNewMip->UpdateBoundingBox();
-RebuildLinks();
-// find possible shadow layers near affected area
-FindShadowLayers(pbrNewMip->bm_boxBoundingBox);
+  // update the bounding boxes of the brush
+  CBrushMip *pbrNewMip = penbr->en_pbrBrush->GetFirstMip();
+  pbrNewMip->UpdateBoundingBox();
+  RebuildLinks();
+  // find possible shadow layers near affected area
+  FindShadowLayers(pbrNewMip->bm_boxBoundingBox);
 }
 
 void CWorld::DeletePolygons(CDynamicContainer<CBrushPolygon> &dcPolygons) {
@@ -1155,22 +1147,21 @@ void CWorld::DeletePolygons(CDynamicContainer<CBrushPolygon> &dcPolygons) {
 
   // reoptimize mips
   CDynamicContainer<CBrushMip> dcBrushMips;
-  {FOREACHINDYNAMICCONTAINER(dcSectors, CBrushSector, itbsc) {CBrushSector &bsc = *itbsc;
-  // reoptimize mips
-  if (!dcBrushMips.IsMember(bsc.bsc_pbmBrushMip)) {
-    dcBrushMips.Add(bsc.bsc_pbmBrushMip);
-  }
-}
-}
 
-{
-  FOREACHINDYNAMICCONTAINER(dcBrushMips, CBrushMip, itbm) {
+  {FOREACHINDYNAMICCONTAINER(dcSectors, CBrushSector, itbsc) {
+    CBrushSector &bsc = *itbsc;
+    // reoptimize mips
+    if (!dcBrushMips.IsMember(bsc.bsc_pbmBrushMip)) {
+      dcBrushMips.Add(bsc.bsc_pbmBrushMip);
+    }
+  }}
+
+  {FOREACHINDYNAMICCONTAINER(dcBrushMips, CBrushMip, itbm) {
     itbm->Reoptimize();
     itbm->UpdateBoundingBox();
     FindShadowLayers(itbm->bm_boxBoundingBox);
-  }
-}
-RebuildLinks();
+  }}
+  RebuildLinks();
 }
 
 void CWorld::CreatePolygon(CBrushVertexSelection &selVtx) {
@@ -1178,14 +1169,12 @@ void CWorld::CreatePolygon(CBrushVertexSelection &selVtx) {
     return;
 
   CBrushSector *pbsc = NULL;
-  {
-    FOREACHINDYNAMICCONTAINER(selVtx, CBrushVertex, itvtx) {
-      CBrushVertex &bvtx = *itvtx;
-      if (bvtx.bvx_pbscSector == NULL || (pbsc != NULL && pbsc != bvtx.bvx_pbscSector))
-        return;
-      pbsc = bvtx.bvx_pbscSector;
-    }
-  }
+  {FOREACHINDYNAMICCONTAINER(selVtx, CBrushVertex, itvtx) {
+    CBrushVertex &bvtx = *itvtx;
+    if (bvtx.bvx_pbscSector == NULL || (pbsc != NULL && pbsc != bvtx.bvx_pbscSector))
+      return;
+    pbsc = bvtx.bvx_pbscSector;
+  }}
 
   selVtx.Lock();
   CBrushVertex &bv0 = selVtx[0];
@@ -1204,19 +1193,17 @@ void CWorld::CreatePolygon(CBrushVertexSelection &selVtx) {
   CBrushPlane *abplNew = &pbsc->bsc_abplPlanes[0];
 
   // remap edge pointers in sector's polygons
-  {
-    FOREACHINSTATICARRAY(pbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
-      CBrushPolygon &bpo = *itbpo;
-      for (INDEX iEdg = 0; iEdg < bpo.bpo_abpePolygonEdges.Count(); iEdg++) {
-        CBrushPolygonEdge &bpe = bpo.bpo_abpePolygonEdges[iEdg];
-        bpe.bpe_pbedEdge = (CBrushEdge *)((UBYTE *)bpe.bpe_pbedEdge + ((UBYTE *)abpeNew - (UBYTE *)abpeOld));
-      }
-      // remap plane ptr
-      bpo.bpo_pbplPlane = (CBrushPlane *)((UBYTE *)bpo.bpo_pbplPlane + ((UBYTE *)abplNew - (UBYTE *)abplOld));
-      // clear relations
-      bpo.bpo_rsOtherSideSectors.Clear();
+  {FOREACHINSTATICARRAY(pbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
+    CBrushPolygon &bpo = *itbpo;
+    for (INDEX iEdg = 0; iEdg < bpo.bpo_abpePolygonEdges.Count(); iEdg++) {
+      CBrushPolygonEdge &bpe = bpo.bpo_abpePolygonEdges[iEdg];
+      bpe.bpe_pbedEdge = (CBrushEdge *)((UBYTE *)bpe.bpe_pbedEdge + ((UBYTE *)abpeNew - (UBYTE *)abpeOld));
     }
-  }
+    // remap plane ptr
+    bpo.bpo_pbplPlane = (CBrushPlane *)((UBYTE *)bpo.bpo_pbplPlane + ((UBYTE *)abplNew - (UBYTE *)abplOld));
+    // clear relations
+    bpo.bpo_rsOtherSideSectors.Clear();
+  }}
 
   // initialize new edges
   CBrushEdge &be0 = pbsc->bsc_abedEdges[ctEdgesOld + 0];
@@ -1310,12 +1297,10 @@ void CWorld::FlipPolygon(CBrushPolygon &bpo) {
   CBrushPlane *abplNew = &bsc.bsc_abplPlanes[0];
 
   // remap plane ptrs
-  {
-    FOREACHINSTATICARRAY(bsc.bsc_abpoPolygons, CBrushPolygon, itbpo) {
-      CBrushPolygon &bpo = *itbpo;
-      bpo.bpo_pbplPlane = (CBrushPlane *)((UBYTE *)bpo.bpo_pbplPlane + ((UBYTE *)abplNew - (UBYTE *)abplOld));
-    }
-  }
+  {FOREACHINSTATICARRAY(bsc.bsc_abpoPolygons, CBrushPolygon, itbpo) {
+    CBrushPolygon &bpo = *itbpo;
+    bpo.bpo_pbplPlane = (CBrushPlane *)((UBYTE *)bpo.bpo_pbplPlane + ((UBYTE *)abplNew - (UBYTE *)abplOld));
+  }}
 
   // invert order of triangle vertices
   for (INDEX iVtx = 0; iVtx < bpo.bpo_aiTriangleElements.Count(); iVtx += 3) {

@@ -127,15 +127,13 @@ void CMipModel::FromObject3D_t(CObject3D &objRestFrame, CObject3D &objMipSourceF
   mm_amvVertices.New(pOS->osc_aovxVertices.Count());
   // copy vertice coordinates from object3d to mip vertices
   INDEX iVertice = 0;
-  {
-    FOREACHINDYNAMICARRAY(mm_amvVertices, CMipVertex, itVertice) {
-      (FLOAT3D &)(*itVertice) = DOUBLEtoFLOAT(pOS->osc_aovxVertices[iVertice]);
-      itVertice->mv_vRestFrameCoordinate = DOUBLEtoFLOAT(objRestFrame.ob_aoscSectors[0].osc_aovxVertices[iVertice]);
-      // calculate bounding box of all vertices
-      mm_boxBoundingBox |= *itVertice;
-      iVertice++;
-    }
-  }
+  {FOREACHINDYNAMICARRAY(mm_amvVertices, CMipVertex, itVertice) {
+    (FLOAT3D &)(*itVertice) = DOUBLEtoFLOAT(pOS->osc_aovxVertices[iVertice]);
+    itVertice->mv_vRestFrameCoordinate = DOUBLEtoFLOAT(objRestFrame.ob_aoscSectors[0].osc_aovxVertices[iVertice]);
+    // calculate bounding box of all vertices
+    mm_boxBoundingBox |= *itVertice;
+    iVertice++;
+  }}
 
   // add mip polygons
   mm_ampPolygons.New(pOS->osc_aopoPolygons.Count());
@@ -216,13 +214,12 @@ FLOAT CMipModel::GetGoodness(CMipVertex *pmvSource, CMipVertex *pmvTarget) {
 }
 
 INDEX CMipModel::FindSurfacesForVertices(void) {
-  {FOREACHINDYNAMICARRAY(mm_amvVertices, CMipVertex, itVertice) {itVertice->mv_iSurface = -1;
-}
-}
+  {FOREACHINDYNAMICARRAY(mm_amvVertices, CMipVertex, itVertice) {
+    itVertice->mv_iSurface = -1;
+  }}
 
-// for all polygons
-{
-  FOREACHINDYNAMICARRAY(mm_ampPolygons, CMipPolygon, itPolygon) {
+  // for all polygons
+  {FOREACHINDYNAMICARRAY(mm_ampPolygons, CMipPolygon, itPolygon) {
     // for all vertices in this polygon
     CMipPolygonVertex *pmpvCurrentInPolygon = itPolygon->mp_pmpvFirstPolygonVertex;
     do {
@@ -237,78 +234,71 @@ INDEX CMipModel::FindSurfacesForVertices(void) {
         pmvVertex->mv_iSurface = -2;
       pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
     } while (pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
-  }
-}
+  }}
 
-// count vertices that are sourounded with only one surface
-INDEX ctVerticesWithOneSurface = 0;
-// for all vertices
-{
-  FOREACHINDYNAMICARRAY(mm_amvVertices, CMipVertex, itVertice) {
-    if (itVertice->mv_iSurface >= 0)
+  // count vertices that are sourounded with only one surface
+  INDEX ctVerticesWithOneSurface = 0;
+  // for all vertices
+  {FOREACHINDYNAMICARRAY(mm_amvVertices, CMipVertex, itVertice) {
+    if (itVertice->mv_iSurface >= 0) {
       ctVerticesWithOneSurface++;
-  }
-}
-return ctVerticesWithOneSurface;
+    }
+  }}
+  return ctVerticesWithOneSurface;
 }
 
 void CMipModel::JoinVertexPair(CMipVertex *pmvBestSource, CMipVertex *pmvBestTarget) {
   // for all polygons
-  {
-    FOREACHINDYNAMICARRAY(mm_ampPolygons, CMipPolygon, itPolygon) {
-      // for all vertices in this polygon
-      CMipPolygonVertex *pmpvCurrentInPolygon = itPolygon->mp_pmpvFirstPolygonVertex;
-      do {
-        if (pmpvCurrentInPolygon->mpv_pmvVertex == pmvBestSource) {
-          pmpvCurrentInPolygon->mpv_pmvVertex = pmvBestTarget;
-        }
-        pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
-      } while (pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
-    }
-  }
+  {FOREACHINDYNAMICARRAY(mm_ampPolygons, CMipPolygon, itPolygon) {
+    // for all vertices in this polygon
+    CMipPolygonVertex *pmpvCurrentInPolygon = itPolygon->mp_pmpvFirstPolygonVertex;
+    do {
+      if (pmpvCurrentInPolygon->mpv_pmvVertex == pmvBestSource) {
+        pmpvCurrentInPolygon->mpv_pmvVertex = pmvBestTarget;
+      }
+      pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
+    } while (pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
+  }}
+
   // delete best source vertex
   mm_amvVertices.Delete(pmvBestSource);
 
   // for all polygons
-  {
-    FOREACHINDYNAMICARRAY(mm_ampPolygons, CMipPolygon, itPolygon) {
-      // for all vertices in this polygon
-      CMipPolygonVertex *pmpvCurrentInPolygon = itPolygon->mp_pmpvFirstPolygonVertex;
-      do {
-        CMipPolygonVertex *pmpvSuccesor = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
-        // if current vertex and its sucessor are same mip vertex
-        if (pmpvCurrentInPolygon->mpv_pmvVertex == pmpvSuccesor->mpv_pmvVertex) {
-          // enable looping even if vertex that is first in polygon is deleted
-          if (pmpvSuccesor == itPolygon->mp_pmpvFirstPolygonVertex) {
-            itPolygon->mp_pmpvFirstPolygonVertex = pmpvSuccesor->mpv_pmpvNextInPolygon;
-          }
-          // relink current vertex over sucessor
-          pmpvCurrentInPolygon->mpv_pmpvNextInPolygon = pmpvSuccesor->mpv_pmpvNextInPolygon;
-          // delete sucessor vertex
-          delete pmpvSuccesor;
+  {FOREACHINDYNAMICARRAY(mm_ampPolygons, CMipPolygon, itPolygon) {
+    // for all vertices in this polygon
+    CMipPolygonVertex *pmpvCurrentInPolygon = itPolygon->mp_pmpvFirstPolygonVertex;
+    do {
+      CMipPolygonVertex *pmpvSuccesor = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
+      // if current vertex and its sucessor are same mip vertex
+      if (pmpvCurrentInPolygon->mpv_pmvVertex == pmpvSuccesor->mpv_pmvVertex) {
+        // enable looping even if vertex that is first in polygon is deleted
+        if (pmpvSuccesor == itPolygon->mp_pmpvFirstPolygonVertex) {
+          itPolygon->mp_pmpvFirstPolygonVertex = pmpvSuccesor->mpv_pmpvNextInPolygon;
         }
-        pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
-      } while (pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
-    }
-  }
+        // relink current vertex over sucessor
+        pmpvCurrentInPolygon->mpv_pmpvNextInPolygon = pmpvSuccesor->mpv_pmpvNextInPolygon;
+        // delete sucessor vertex
+        delete pmpvSuccesor;
+      }
+      pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
+    } while (pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
+  }}
 
   CDynamicContainer<CMipPolygon> cPolygonsToDelete;
   // for all polygons
-  {FOREACHINDYNAMICARRAY(mm_ampPolygons, CMipPolygon,
-                         itPolygon) {CMipPolygonVertex *pmpvFirst = itPolygon->mp_pmpvFirstPolygonVertex;
-  // if this is polygon with one or two vertices
-  if ((pmpvFirst->mpv_pmpvNextInPolygon == pmpvFirst) || (pmpvFirst->mpv_pmpvNextInPolygon->mpv_pmpvNextInPolygon == pmpvFirst)) {
-    // add it to container for deleting
-    cPolygonsToDelete.Add(&itPolygon.Current());
-  }
-}
-}
-// delete polygons
-{
-  FOREACHINDYNAMICCONTAINER(cPolygonsToDelete, CMipPolygon, itPolygon) {
+  {FOREACHINDYNAMICARRAY(mm_ampPolygons, CMipPolygon, itPolygon) {
+    CMipPolygonVertex *pmpvFirst = itPolygon->mp_pmpvFirstPolygonVertex;
+    // if this is polygon with one or two vertices
+    if ((pmpvFirst->mpv_pmpvNextInPolygon == pmpvFirst) || (pmpvFirst->mpv_pmpvNextInPolygon->mpv_pmpvNextInPolygon == pmpvFirst)) {
+      // add it to container for deleting
+      cPolygonsToDelete.Add(&itPolygon.Current());
+    }
+  }}
+
+  // delete polygons
+  {FOREACHINDYNAMICCONTAINER(cPolygonsToDelete, CMipPolygon, itPolygon) {
     mm_ampPolygons.Delete(&itPolygon.Current());
-  }
-}
+  }}
 }
 
 void CMipModel::FindBestVertexPair(CMipVertex *&pmvBestSource, CMipVertex *&pmvBestTarget) {
@@ -316,32 +306,31 @@ void CMipModel::FindBestVertexPair(CMipVertex *&pmvBestSource, CMipVertex *&pmvB
   pmvBestTarget = NULL;
   FLOAT fBestGoodnes = -999999.9f;
   // for all polygons
-  {
-    FOREACHINDYNAMICARRAY(mm_ampPolygons, CMipPolygon, itPolygon) {
-      // for all vertices in this polygon
-      CMipPolygonVertex *pmpvCurrentInPolygon = itPolygon->mp_pmpvFirstPolygonVertex;
-      do {
-        CMipVertex *pmvSource = pmpvCurrentInPolygon->mpv_pmvVertex;
-        CMipVertex *pmvDestination = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon->mpv_pmvVertex;
-        FLOAT fCurrentGoodnes = GetGoodness(pmvSource, pmvDestination);
-        if (fCurrentGoodnes > fBestGoodnes) {
-          fBestGoodnes = fCurrentGoodnes;
-          pmvBestSource = pmvSource;
-          pmvBestTarget = pmvDestination;
-        }
-        // now for inverted order
-        pmvSource = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon->mpv_pmvVertex;
-        pmvDestination = pmpvCurrentInPolygon->mpv_pmvVertex;
-        fCurrentGoodnes = GetGoodness(pmvSource, pmvDestination);
-        if (fCurrentGoodnes > fBestGoodnes) {
-          fBestGoodnes = fCurrentGoodnes;
-          pmvBestSource = pmvSource;
-          pmvBestTarget = pmvDestination;
-        }
-        pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
-      } while (pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
-    }
-  }
+  {FOREACHINDYNAMICARRAY(mm_ampPolygons, CMipPolygon, itPolygon) {
+    // for all vertices in this polygon
+    CMipPolygonVertex *pmpvCurrentInPolygon = itPolygon->mp_pmpvFirstPolygonVertex;
+    do {
+      CMipVertex *pmvSource = pmpvCurrentInPolygon->mpv_pmvVertex;
+      CMipVertex *pmvDestination = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon->mpv_pmvVertex;
+      FLOAT fCurrentGoodnes = GetGoodness(pmvSource, pmvDestination);
+      if (fCurrentGoodnes > fBestGoodnes) {
+        fBestGoodnes = fCurrentGoodnes;
+        pmvBestSource = pmvSource;
+        pmvBestTarget = pmvDestination;
+      }
+      // now for inverted order
+      pmvSource = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon->mpv_pmvVertex;
+      pmvDestination = pmpvCurrentInPolygon->mpv_pmvVertex;
+      fCurrentGoodnes = GetGoodness(pmvSource, pmvDestination);
+      if (fCurrentGoodnes > fBestGoodnes) {
+        fBestGoodnes = fCurrentGoodnes;
+        pmvBestSource = pmvSource;
+        pmvBestTarget = pmvDestination;
+      }
+      pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
+    } while (pmpvCurrentInPolygon != itPolygon->mp_pmpvFirstPolygonVertex);
+  }}
+
   ASSERT((pmvBestSource != NULL) && (pmvBestTarget != NULL));
   ASSERT(pmvBestSource != pmvBestTarget);
 }
@@ -354,56 +343,52 @@ void CMipModel::RemoveUnusedVertices(void) {
   }
 
   // clear all vertex tags
-  {FOREACHINDYNAMICARRAY(mm_amvVertices, CMipVertex, itmvtx) {itmvtx->mv_bUsed = FALSE;
-}
-}
+  {FOREACHINDYNAMICARRAY(mm_amvVertices, CMipVertex, itmvtx) {
+    itmvtx->mv_bUsed = FALSE;
+  }}
 
-// mark all vertices that are used by some polygon
-{
-  FOREACHINDYNAMICARRAY(mm_ampPolygons, CMipPolygon, itpo) {
+  // mark all vertices that are used by some polygon
+  {FOREACHINDYNAMICARRAY(mm_ampPolygons, CMipPolygon, itpo) {
     CMipPolygonVertex *pmpvCurrentInPolygon = itpo->mp_pmpvFirstPolygonVertex;
     do {
       pmpvCurrentInPolygon->mpv_pmvVertex->mv_bUsed = TRUE;
       pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
     } while (pmpvCurrentInPolygon != itpo->mp_pmpvFirstPolygonVertex);
-  }
-}
+  }}
 
-// find number of used vertices
-INDEX ctUsedVertices = 0;
-{
-  FOREACHINDYNAMICARRAY(mm_amvVertices, CMipVertex, itmvtx) {
+  // find number of used vertices
+  INDEX ctUsedVertices = 0;
+  {FOREACHINDYNAMICARRAY(mm_amvVertices, CMipVertex, itmvtx) {
     if (itmvtx->mv_bUsed) {
       ctUsedVertices++;
     }
-  }
-}
+  }}
 
-// create a new array with as much vertices as we have counted in last pass
-CDynamicArray<CMipVertex> amvxNew;
-CMipVertex *pmvxUsed = amvxNew.New(ctUsedVertices);
+  // create a new array with as much vertices as we have counted in last pass
+  CDynamicArray<CMipVertex> amvxNew;
+  CMipVertex *pmvxUsed = amvxNew.New(ctUsedVertices);
 
-// for each vertex
-{FOREACHINDYNAMICARRAY(mm_amvVertices, CMipVertex, itmvtx) {                       // if it is used
-                                                            if (itmvtx->mv_bUsed) {// copy it to new array
-                                                                                     *pmvxUsed = itmvtx.Current();
-// set its remap pointer into new array
-itmvtx->mv_pmvxRemap = pmvxUsed;
-pmvxUsed++;
-// if it is not used
-}
-else {
-// clear its remap pointer (for debugging)
-#ifndef NDEBUG
-  itmvtx->mv_pmvxRemap = NULL;
-#endif
-}
-}
-}
+  // for each vertex
+  {FOREACHINDYNAMICARRAY(mm_amvVertices, CMipVertex, itmvtx) {
+    // if it is used
+    if (itmvtx->mv_bUsed) {
+      // copy it to new array
+      *pmvxUsed = itmvtx.Current();
 
-// for each polygon
-{
-  FOREACHINDYNAMICARRAY(mm_ampPolygons, CMipPolygon, itpo) {
+      // set its remap pointer into new array
+      itmvtx->mv_pmvxRemap = pmvxUsed;
+      pmvxUsed++;
+    // if it is not used
+    } else {
+      // clear its remap pointer (for debugging)
+      #ifndef NDEBUG
+      itmvtx->mv_pmvxRemap = NULL;
+      #endif
+    }
+  }}
+
+  // for each polygon
+  {FOREACHINDYNAMICARRAY(mm_ampPolygons, CMipPolygon, itpo) {
     // for each polygon vertex in polygon
     CMipPolygonVertex *pmpvCurrentInPolygon = itpo->mp_pmpvFirstPolygonVertex;
     do {
@@ -411,12 +396,11 @@ else {
       pmpvCurrentInPolygon->mpv_pmvVertex = pmpvCurrentInPolygon->mpv_pmvVertex->mv_pmvxRemap;
       pmpvCurrentInPolygon = pmpvCurrentInPolygon->mpv_pmpvNextInPolygon;
     } while (pmpvCurrentInPolygon != itpo->mp_pmpvFirstPolygonVertex);
-  }
-}
+  }}
 
-// use new array of vertices instead of the old one
-mm_amvVertices.Clear();
-mm_amvVertices.MoveArray(amvxNew);
+  // use new array of vertices instead of the old one
+  mm_amvVertices.Clear();
+  mm_amvVertices.MoveArray(amvxNew);
 }
 
 BOOL CMipModel::CreateMipModel_t(INDEX ctVerticesToRemove, INDEX iSurfacePreservingFactor) {

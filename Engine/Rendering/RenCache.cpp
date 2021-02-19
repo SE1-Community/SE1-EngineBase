@@ -256,8 +256,7 @@ void CRenderer::SetupFogAndHaze(void) {
         // if there is a viewer
         else if (re_penViewer != NULL) {
           // check rest of sectors the viewer is in
-          {
-            FOREACHSRCOFDST(re_penViewer->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+          {FOREACHSRCOFDST(re_penViewer->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
             CHazeParameters hpDummy;
             if (pbsc->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity->GetHaze(pbsc->GetHazeType(), hpDummy, vViewDir)) {
               // if viewer is in this sector
@@ -267,8 +266,7 @@ void CRenderer::SetupFogAndHaze(void) {
                 break;
               }
             }
-            ENDFOR
-          }
+          ENDFOR}
         }
       }
       // if viewer is in haze, or haze can be viewed from outside

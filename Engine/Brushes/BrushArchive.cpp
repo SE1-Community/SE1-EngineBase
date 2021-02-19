@@ -167,8 +167,10 @@ void CBrushArchive::LinkPortalsAndSectors(void) {
 void CBrushArchive::RemoveDummyLayers(void) {
   // for each brush
   FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr) { // for each mip
-    if (itbr->br_penEntity == NULL)
-      continue;                                                          // skip brush without entity
+    if (itbr->br_penEntity == NULL) {
+      continue; // skip brush without entity
+    }
+
     FOREACHINLIST(CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) { // for each sector in the brush mip
       FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) { // for each polygon in the sector
         FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
@@ -184,47 +186,47 @@ void CBrushArchive::RemoveDummyLayers(void) {
 void CBrushArchive::CacheAllShadowmaps(void) {
   // count all shadowmaps
   INDEX ctShadowMaps = 0;
-  {
-    FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr) { // for each mip
-      if (itbr->br_penEntity == NULL)
-        continue;                                                          // skip brush without entity
-      FOREACHINLIST(CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) { // for each sector in the brush mip
-        FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) { // for each polygon in the sector
-          FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
-            if (!itbpo->bpo_smShadowMap.bsm_lhLayers.IsEmpty())
-              ctShadowMaps++; // count shadowmap if the one exist
-          }
+  {FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr) { // for each mip
+    if (itbr->br_penEntity == NULL) {
+      continue; // skip brush without entity
+    }
+    FOREACHINLIST(CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) { // for each sector in the brush mip
+      FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) { // for each polygon in the sector
+        FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
+          if (!itbpo->bpo_smShadowMap.bsm_lhLayers.IsEmpty())
+            ctShadowMaps++; // count shadowmap if the one exist
         }
       }
     }
-  }
+  }}
 
   try {
     SetProgressDescription(TRANS("caching shadowmaps"));
     CallProgressHook_t(0.0f);
     // for each brush
     INDEX iCurrentShadowMap = 0;
-    {
-      FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr) { // for each mip
-        if (itbr->br_penEntity == NULL)
-          continue;                                                          // skip brush without entity
-        FOREACHINLIST(CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) { // for each sector in the brush mip
-          FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) { // for each polygon in the sector
-            FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
-              // cache shadowmap if the one exist
-              CBrushShadowMap &bsm = itbpo->bpo_smShadowMap;
-              if (bsm.bsm_lhLayers.IsEmpty())
-                continue;
-              bsm.CheckLayersUpToDate();
-              bsm.Prepare();
-              bsm.SetAsCurrent();
-              iCurrentShadowMap++;
-              CallProgressHook_t((FLOAT)iCurrentShadowMap / ctShadowMaps);
-            }
+    {FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr) { // for each mip
+      if (itbr->br_penEntity == NULL) {
+        continue; // skip brush without entity
+      }
+
+      FOREACHINLIST(CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) { // for each sector in the brush mip
+        FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) { // for each polygon in the sector
+          FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
+            // cache shadowmap if the one exist
+            CBrushShadowMap &bsm = itbpo->bpo_smShadowMap;
+            if (bsm.bsm_lhLayers.IsEmpty())
+              continue;
+            bsm.CheckLayersUpToDate();
+            bsm.Prepare();
+            bsm.SetAsCurrent();
+            iCurrentShadowMap++;
+            CallProgressHook_t((FLOAT)iCurrentShadowMap / ctShadowMaps);
           }
         }
       }
-    }
+    }}
+
     // all done
     CallProgressHook_t(1.0f);
   } catch (char *) {
@@ -372,31 +374,30 @@ void CBrushArchive::WritePortalSectorLinks_t(CTStream &strm) // throw char *
   strm << SLONG(0);
 
   // for each sector
-  {
-    FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr) {
-      FOREACHINLIST(CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) {
-        FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
-          CBrushSector *pbsc = itbsc;
-          // get number of portal links that it has
-          INDEX ctLinks = pbsc->bsc_rdOtherSidePortals.Count();
-          // if it has no links
-          if (ctLinks == 0) {
-            // skip it
-            continue;
-          }
-          // write sector index and number of links
-          strm << pbsc->bsc_iInWorld << ctLinks;
-          // for each link
-          {
-            FOREACHSRCOFDST(pbsc->bsc_rdOtherSidePortals, CBrushPolygon, bpo_rsOtherSideSectors, pbpo)
-            // write the polygon index
-            strm << pbpo->bpo_iInWorld;
-            ENDFOR
-          }
+  {FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr) {
+    FOREACHINLIST(CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) {
+      FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
+        CBrushSector *pbsc = itbsc;
+        // get number of portal links that it has
+        INDEX ctLinks = pbsc->bsc_rdOtherSidePortals.Count();
+        // if it has no links
+        if (ctLinks == 0) {
+          // skip it
+          continue;
+        }
+        // write sector index and number of links
+        strm << pbsc->bsc_iInWorld << ctLinks;
+        // for each link
+        {
+          FOREACHSRCOFDST(pbsc->bsc_rdOtherSidePortals, CBrushPolygon, bpo_rsOtherSideSectors, pbpo)
+          // write the polygon index
+          strm << pbpo->bpo_iInWorld;
+          ENDFOR
         }
       }
     }
-  }
+  }}
+
   // write sector index -1 as end marker
   strm << INDEX(-1);
 
@@ -423,31 +424,30 @@ void CBrushArchive::WriteEntitySectorLinks_t(CTStream &strm) // throw char *
   strm << SLONG(0);
 
   // for each sector
-  {
-    FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr) {
-      FOREACHINLIST(CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) {
-        FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
-          CBrushSector *pbsc = itbsc;
-          // get number of entity links that it has
-          INDEX ctLinks = pbsc->bsc_rsEntities.Count();
-          // if it has no links
-          if (ctLinks == 0) {
-            // skip it
-            continue;
-          }
-          // write sector index and number of links
-          strm << pbsc->bsc_iInWorld << ctLinks;
-          // for each link
-          {
-            FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
-            // write the entity index
-            strm << pen->en_ulID;
-            ENDFOR
-          }
+  {FOREACHINDYNAMICARRAY(ba_abrBrushes, CBrush3D, itbr) {
+    FOREACHINLIST(CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) {
+      FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
+        CBrushSector *pbsc = itbsc;
+        // get number of entity links that it has
+        INDEX ctLinks = pbsc->bsc_rsEntities.Count();
+
+        // if it has no links
+        if (ctLinks == 0) {
+          // skip it
+          continue;
         }
+
+        // write sector index and number of links
+        strm << pbsc->bsc_iInWorld << ctLinks;
+        // for each link
+        {FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
+          // write the entity index
+          strm << pen->en_ulID;
+        ENDFOR}
       }
     }
-  }
+  }}
+
   // write sector index -1 as end marker
   strm << INDEX(-1);
 

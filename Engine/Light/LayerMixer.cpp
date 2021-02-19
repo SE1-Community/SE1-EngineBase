@@ -1228,19 +1228,17 @@ void CLayerMixer::MixOneMipmap(CBrushShadowMap *pbsm, INDEX iMipmap) {
   if (!bDynamicOnly) {
     colAmbient = AdjustColor(lm_pbpoPolygon->bpo_pbscSector->bsc_colAmbient, _slShdHueShift, _slShdSaturation);
     if (lm_pbpoPolygon->bpo_ulFlags & BPOF_HASDIRECTIONALAMBIENT) {
-      {
-        FOREACHINLIST(CBrushShadowLayer, bsl_lnInShadowMap, lm_pbsmShadowMap->bsm_lhLayers, itbsl) {
-          CBrushShadowLayer &bsl = *itbsl;
-          CLightSource &ls = *bsl.bsl_plsLightSource;
-          ASSERT(&ls != NULL);
-          if (&ls == NULL)
-            continue; // safety check
-          if (!(ls.ls_ulFlags & LSF_DIRECTIONAL))
-            continue; // skip non-directional layers
-          COLOR col = AdjustColor(ls.GetLightAmbient(), _slShdHueShift, _slShdSaturation);
-          colAmbient = AddColors(colAmbient, col);
-        }
-      }
+      {FOREACHINLIST(CBrushShadowLayer, bsl_lnInShadowMap, lm_pbsmShadowMap->bsm_lhLayers, itbsl) {
+        CBrushShadowLayer &bsl = *itbsl;
+        CLightSource &ls = *bsl.bsl_plsLightSource;
+        ASSERT(&ls != NULL);
+        if (&ls == NULL)
+          continue; // safety check
+        if (!(ls.ls_ulFlags & LSF_DIRECTIONAL))
+          continue; // skip non-directional layers
+        COLOR col = AdjustColor(ls.GetLightAmbient(), _slShdHueShift, _slShdSaturation);
+        colAmbient = AddColors(colAmbient, col);
+      }}
     }
   } // set initial color
   __asm {
@@ -1270,45 +1268,43 @@ void CLayerMixer::MixOneMipmap(CBrushShadowMap *pbsm, INDEX iMipmap) {
 
   // for each shadow layer
   lm_pbsmShadowMap->sm_ulFlags &= ~SMF_ANIMATINGLIGHTS;
-  {
-    FORDELETELIST(CBrushShadowLayer, bsl_lnInShadowMap, lm_pbsmShadowMap->bsm_lhLayers, itbsl) {
-      CBrushShadowLayer &bsl = *itbsl;
-      CLightSource &ls = *bsl.bsl_plsLightSource;
-      ASSERT(&ls != NULL);
-      if (&ls == NULL)
-        continue; // safety check
+  {FORDELETELIST(CBrushShadowLayer, bsl_lnInShadowMap, lm_pbsmShadowMap->bsm_lhLayers, itbsl) {
+    CBrushShadowLayer &bsl = *itbsl;
+    CLightSource &ls = *bsl.bsl_plsLightSource;
+    ASSERT(&ls != NULL);
+    if (&ls == NULL)
+      continue; // safety check
 
-      // skip if should not be applied
-      if ((bDynamicOnly && !(ls.ls_ulFlags & LSF_NONPERSISTENT)) || ls.ls_ulFlags & LSF_DYNAMIC)
-        continue;
+    // skip if should not be applied
+    if ((bDynamicOnly && !(ls.ls_ulFlags & LSF_NONPERSISTENT)) || ls.ls_ulFlags & LSF_DYNAMIC)
+      continue;
 
-      // set corresponding shadowmap flag if this is an animating light
-      if (ls.ls_paoLightAnimation != NULL)
-        lm_pbsmShadowMap->sm_ulFlags |= SMF_ANIMATINGLIGHTS;
+    // set corresponding shadowmap flag if this is an animating light
+    if (ls.ls_paoLightAnimation != NULL)
+      lm_pbsmShadowMap->sm_ulFlags |= SMF_ANIMATINGLIGHTS;
 
-      // if the layer is calculated
-      if (bsl.bsl_pubLayer != NULL) {
-        UBYTE *pub;
-        UBYTE ubMask;
-        FindLayerMipmap(itbsl, pub, ubMask);
-        // add the layer to the shadow map with masking
-        if (ls.ls_ulFlags & LSF_DIRECTIONAL) {
-          AddOneLayerDirectional(itbsl, pub, ubMask);
-        } else {
-          AddOneLayerPoint(itbsl, pub, ubMask);
-        }
-      }
-      // if the layer is all light
-      else if (!(bsl.bsl_ulFlags & BSLF_CALCULATED) || (bsl.bsl_ulFlags & BSLF_ALLLIGHT)) {
-        // add the layer to the shadow map without masking
-        if (ls.ls_ulFlags & LSF_DIRECTIONAL) {
-          AddOneLayerDirectional(itbsl, NULL);
-        } else {
-          AddOneLayerPoint(itbsl, NULL);
-        }
+    // if the layer is calculated
+    if (bsl.bsl_pubLayer != NULL) {
+      UBYTE *pub;
+      UBYTE ubMask;
+      FindLayerMipmap(itbsl, pub, ubMask);
+      // add the layer to the shadow map with masking
+      if (ls.ls_ulFlags & LSF_DIRECTIONAL) {
+        AddOneLayerDirectional(itbsl, pub, ubMask);
+      } else {
+        AddOneLayerPoint(itbsl, pub, ubMask);
       }
     }
-  }
+    // if the layer is all light
+    else if (!(bsl.bsl_ulFlags & BSLF_CALCULATED) || (bsl.bsl_ulFlags & BSLF_ALLLIGHT)) {
+      // add the layer to the shadow map without masking
+      if (ls.ls_ulFlags & LSF_DIRECTIONAL) {
+        AddOneLayerDirectional(itbsl, NULL);
+      } else {
+        AddOneLayerPoint(itbsl, NULL);
+      }
+    }
+  }}
 
   // if gradient is dark, substract gradient
   if (bHasGradient && gpGradient.gp_bDark)
@@ -1372,22 +1368,20 @@ void CLayerMixer::MixOneMipmapDynamic(CBrushShadowMap *pbsm, INDEX iMipmap) {
   }
 
   // for each shadow layer
-  {
-    FORDELETELIST(CBrushShadowLayer, bsl_lnInShadowMap, lm_pbsmShadowMap->bsm_lhLayers,
-                  itbsl) { // the layer's light source must be valid
-      CBrushShadowLayer &bsl = *itbsl;
-      CLightSource &ls = *bsl.bsl_plsLightSource;
-      ASSERT(&ls != NULL);
-      if (!(ls.ls_ulFlags & LSF_DYNAMIC))
-        continue;
-      COLOR colLight = ls.GetLightColor() & ~CT_AMASK;
-      if (IsBlack(colLight))
-        continue;
-      // apply one layer
-      colLight = AdjustColor(colLight, _slShdHueShift, _slShdSaturation);
-      AddOneLayerPoint(itbsl, NULL);
-    }
-  }
+  {FORDELETELIST(CBrushShadowLayer, bsl_lnInShadowMap, lm_pbsmShadowMap->bsm_lhLayers, itbsl) {
+    // the layer's light source must be valid
+    CBrushShadowLayer &bsl = *itbsl;
+    CLightSource &ls = *bsl.bsl_plsLightSource;
+    ASSERT(&ls != NULL);
+    if (!(ls.ls_ulFlags & LSF_DYNAMIC))
+      continue;
+    COLOR colLight = ls.GetLightColor() & ~CT_AMASK;
+    if (IsBlack(colLight))
+      continue;
+    // apply one layer
+    colLight = AdjustColor(colLight, _slShdHueShift, _slShdSaturation);
+    AddOneLayerPoint(itbsl, NULL);
+  }}
 }
 
 // constructor
@@ -1397,18 +1391,19 @@ CLayerMixer::CLayerMixer(CBrushShadowMap *pbsm, INDEX iFirstMip, INDEX iLastMip,
     // check dynamic layers for complete blackness
     BOOL bAllBlack = TRUE;
     pbsm->sm_ulFlags &= ~SMF_DYNAMICBLACK;
-    {
-      FORDELETELIST(CBrushShadowLayer, bsl_lnInShadowMap, pbsm->bsm_lhLayers, itbsl) {
-        CLightSource &ls = *itbsl->bsl_plsLightSource;
-        ASSERT(&ls != NULL);
-        if (!(ls.ls_ulFlags & LSF_DYNAMIC))
-          continue;
-        COLOR colLight = ls.GetLightColor() & ~CT_AMASK;
-        itbsl->bsl_colLastAnim = colLight;
-        if (!IsBlack(colLight))
-          bAllBlack = FALSE; // must continue because of layer info update (light anim and such stuff)
+
+    {FORDELETELIST(CBrushShadowLayer, bsl_lnInShadowMap, pbsm->bsm_lhLayers, itbsl) {
+      CLightSource &ls = *itbsl->bsl_plsLightSource;
+      ASSERT(&ls != NULL);
+      if (!(ls.ls_ulFlags & LSF_DYNAMIC))
+        continue;
+      COLOR colLight = ls.GetLightColor() & ~CT_AMASK;
+      itbsl->bsl_colLastAnim = colLight;
+      if (!IsBlack(colLight)) {
+        bAllBlack = FALSE; // must continue because of layer info update (light anim and such stuff)
       }
-    }
+    }}
+
     // skip mixing if dynamic layers were all black
     if (bAllBlack) {
       pbsm->sm_ulFlags |= SMF_DYNAMICBLACK;

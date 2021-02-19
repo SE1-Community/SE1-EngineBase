@@ -821,14 +821,12 @@ void CSoundLibrary::Clear(void) {
   CTSingleLock slSounds(&sl_csSound, TRUE);
 
   // clear all sounds and datas buffers
-  {
-    FOREACHINLIST(CSoundData, sd_Node, sl_ClhAwareList, itCsdStop) {
-      FOREACHINLIST(CSoundObject, so_Node, (itCsdStop->sd_ClhLinkList), itCsoStop) {
-        itCsoStop->Stop();
-      }
-      itCsdStop->ClearBuffer();
+  {FOREACHINLIST(CSoundData, sd_Node, sl_ClhAwareList, itCsdStop) {
+    FOREACHINLIST(CSoundObject, so_Node, (itCsdStop->sd_ClhLinkList), itCsoStop) {
+      itCsoStop->Stop();
     }
-  }
+    itCsdStop->ClearBuffer();
+  }}
 
   // clear wave out data
   ClearLibrary();
@@ -955,11 +953,9 @@ CSoundLibrary::SoundFormat CSoundLibrary::SetFormat(CSoundLibrary::SoundFormat E
   CTSingleLock slSounds(&sl_csSound, TRUE);
 
   // pause playing all sounds
-  {
-    FOREACHINLIST(CSoundData, sd_Node, sl_ClhAwareList, itCsdStop) {
-      itCsdStop->PausePlayingObjects();
-    }
-  }
+  {FOREACHINLIST(CSoundData, sd_Node, sl_ClhAwareList, itCsdStop) {
+    itCsdStop->PausePlayingObjects();
+  }}
 
   // change format and keep console variable states
   SetFormat_internal(*this, EsfNew, bReport);
@@ -971,18 +967,17 @@ CSoundLibrary::SoundFormat CSoundLibrary::SetFormat(CSoundLibrary::SoundFormat E
   // continue playing all sounds
   CListHead lhToReload;
   lhToReload.MoveList(sl_ClhAwareList);
-  {
-    FORDELETELIST(CSoundData, sd_Node, lhToReload, itCsdContinue) {
-      CSoundData &sd = *itCsdContinue;
-      if (!(sd.sd_ulFlags & SDF_ENCODED)) {
-        sd.Reload();
-      } else {
-        sd.sd_Node.Remove();
-        sl_ClhAwareList.AddTail(sd.sd_Node);
-      }
-      sd.ResumePlayingObjects();
+
+  {FORDELETELIST(CSoundData, sd_Node, lhToReload, itCsdContinue) {
+    CSoundData &sd = *itCsdContinue;
+    if (!(sd.sd_ulFlags & SDF_ENCODED)) {
+      sd.Reload();
+    } else {
+      sd.sd_Node.Remove();
+      sl_ClhAwareList.AddTail(sd.sd_Node);
     }
-  }
+    sd.ResumePlayingObjects();
+  }}
 
   // done
   return sl_EsfFormat;
@@ -1009,12 +1004,11 @@ void CSoundLibrary::UpdateSounds(void) {
   // determine number of listeners and get listener
   INDEX ctListeners = 0;
   CSoundListener *sli;
-  {
-    FOREACHINLIST(CSoundListener, sli_lnInActiveListeners, _pSound->sl_lhActiveListeners, itsli) {
-      sli = itsli;
-      ctListeners++;
-    }
-  }
+  {FOREACHINLIST(CSoundListener, sli_lnInActiveListeners, _pSound->sl_lhActiveListeners, itsli) {
+    sli = itsli;
+    ctListeners++;
+  }}
+
   // if there's only one listener environment properties have been changed (in split-screen EAX is not supported)
   if (ctListeners == 1 && (_iLastEnvType != sli->sli_iEnvironmentType || _fLastEnvSize != sli->sli_fEnvironmentSize)) {
     // keep new properties and eventually update environment (EAX)
@@ -1050,44 +1044,41 @@ void CSoundLibrary::UpdateSounds(void) {
   }
 
   // for each sound
-  {FOREACHINLIST(CSoundData, sd_Node, sl_ClhAwareList,
-                 itCsdSoundData) {FORDELETELIST(CSoundObject, so_Node, itCsdSoundData->sd_ClhLinkList,
-                                                itCsoSoundObject) {_sfStats.IncrementCounter(CStatForm::SCI_SOUNDSACTIVE);
-  itCsoSoundObject->Update3DEffects();
-}
-}
-}
+  {FOREACHINLIST(CSoundData, sd_Node, sl_ClhAwareList, itCsdSoundData) {
+    FORDELETELIST(CSoundObject, so_Node, itCsdSoundData->sd_ClhLinkList, itCsoSoundObject) {
+      _sfStats.IncrementCounter(CStatForm::SCI_SOUNDSACTIVE);
+      itCsoSoundObject->Update3DEffects();
+    }
+  }}
 
-// for each sound
-{FOREACHINLIST(CSoundData, sd_Node, sl_ClhAwareList, itCsdSoundData) {
-  FORDELETELIST(CSoundObject, so_Node, itCsdSoundData->sd_ClhLinkList, itCsoSoundObject) {CSoundObject &so = *itCsoSoundObject;
-// if sound is playing
-if (so.so_slFlags & SOF_PLAY) {
-  // copy parameters
-  so.so_sp = so.so_spNew;
-  // prepare sound if not prepared already
-  if (!(so.so_slFlags & SOF_PREPARE)) {
-    so.PrepareSound();
-    so.so_slFlags |= SOF_PREPARE;
-  }
-  // if it is not playing
-} else {
-  // remove it from list
-  so.so_Node.Remove();
-}
-}
-}
-}
+  // for each sound
+  {FOREACHINLIST(CSoundData, sd_Node, sl_ClhAwareList, itCsdSoundData) {
+    FORDELETELIST(CSoundObject, so_Node, itCsdSoundData->sd_ClhLinkList, itCsoSoundObject) {
+      CSoundObject &so = *itCsoSoundObject;
+      // if sound is playing
+      if (so.so_slFlags & SOF_PLAY) {
+        // copy parameters
+        so.so_sp = so.so_spNew;
+        // prepare sound if not prepared already
+        if (!(so.so_slFlags & SOF_PREPARE)) {
+          so.PrepareSound();
+          so.so_slFlags |= SOF_PREPARE;
+        }
+        // if it is not playing
+      } else {
+        // remove it from list
+        so.so_Node.Remove();
+      }
+    }
+  }}
 
-// remove all listeners
-{
-  FORDELETELIST(CSoundListener, sli_lnInActiveListeners, sl_lhActiveListeners, itsli) {
+  // remove all listeners
+  {FORDELETELIST(CSoundListener, sli_lnInActiveListeners, sl_lhActiveListeners, itsli) {
     itsli->sli_lnInActiveListeners.Remove();
-  }
-}
+  }}
 
-_pfSoundProfile.StopTimer(CSoundProfile::PTI_UPDATESOUNDS);
-_sfStats.StopTimer(CStatForm::STI_SOUNDUPDATE);
+  _pfSoundProfile.StopTimer(CSoundProfile::PTI_UPDATESOUNDS);
+  _sfStats.StopTimer(CStatForm::STI_SOUNDUPDATE);
 }
 
 /*

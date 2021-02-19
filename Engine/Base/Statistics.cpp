@@ -112,11 +112,9 @@ void CStatForm::Report(CTString &strReport) {
   // sort the container here !!!!
 
   // for each entry
-  {
-    FOREACHINDYNAMICCONTAINER(cse, CStatEntry, itse) {
-      strReport += itse->Report();
-    }
-  }
+  {FOREACHINDYNAMICCONTAINER(cse, CStatEntry, itse) {
+    strReport += itse->Report();
+  }}
 }
 
 // initialize component

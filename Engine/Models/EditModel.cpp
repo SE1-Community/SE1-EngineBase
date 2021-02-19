@@ -173,64 +173,62 @@ void CEditModel::LoadModelAnimationData_t(CTStream *pFile, const FLOATmatrix3D &
       bOrigin = TRUE;
     }
 
-    {
-      FOREACHINLIST(CFileNameNode, cfnn_Node, FrameNamesList, itFr) {
-        CFileNameNode &fnnFileNameNode = itFr.Current();
-        if (ProgresRoutines.SetProgressState != NULL)
-          ProgresRoutines.SetProgressState(iO3D);
-        OB3D.Clear();
-        OB3D.LoadAny3DFormat_t(CTString(itFr->cfnn_FileName), mStretch);
-        if (edm_md.md_VerticesCt != OB3D.ob_aoscSectors[0].osc_aovxVertices.Count()) {
-          ThrowF_t("File %s, one of animation frame files has wrong number of points.", (CTString)fnnFileNameNode.cfnn_FileName);
-        }
-        if (bOrigin) {
-          // calc matrix for vertex transform
-          FLOAT3D vY = DOUBLEtoFLOAT(OB3D.ob_aoscSectors[0].osc_aovxVertices[aiTransVtx[2]]
-                                     - OB3D.ob_aoscSectors[0].osc_aovxVertices[aiTransVtx[0]]);
-          FLOAT3D vZ = DOUBLEtoFLOAT(OB3D.ob_aoscSectors[0].osc_aovxVertices[aiTransVtx[0]]
-                                     - OB3D.ob_aoscSectors[0].osc_aovxVertices[aiTransVtx[1]]);
-          FLOAT3D vX = vY * vZ;
-          vY = vZ * vX;
-          // make a rotation matrix from those vectors
-          vX.Normalize();
-          vY.Normalize();
-          vZ.Normalize();
-
-          mOrientation(1, 1) = vX(1);
-          mOrientation(1, 2) = vY(1);
-          mOrientation(1, 3) = vZ(1);
-          mOrientation(2, 1) = vX(2);
-          mOrientation(2, 2) = vY(2);
-          mOrientation(2, 3) = vZ(2);
-          mOrientation(3, 1) = vX(3);
-          mOrientation(3, 2) = vY(3);
-          mOrientation(3, 3) = vZ(3);
-          mOrientation = !mOrientation;
-        }
-
-        // normalize (clear) our Bounding Box
-        OB3D.ob_aoscSectors[0].LockAll();
-        OneFrameBB = FLOATaabbox3D();
-        // Bounding Box makes union with all points in this frame
-        for (i = 0; i < edm_md.md_VerticesCt; i++) {
-          FLOAT3D vVtx = DOUBLEtoFLOAT(OB3D.ob_aoscSectors[0].osc_aovxVertices[i]);
-          if (bOrigin) {
-            // transform vertex
-            vVtx -= DOUBLEtoFLOAT(OB3D.ob_aoscSectors[0].osc_aovxVertices[aiTransVtx[0]]);
-            vVtx *= mOrientation;
-          }
-          OneFrameBB |= FLOATaabbox3D(vVtx);
-          avVertices.Push() = vVtx; // cache vertex
-        }
-        OB3D.ob_aoscSectors[0].UnlockAll();
-        // remember this frame's Bounding Box
-        edm_md.md_FrameInfos[iO3D].mfi_Box = OneFrameBB;
-        // make union with Bounding Box of all frames
-        AllFramesBB |= OneFrameBB;
-        // load next frame
-        iO3D++;
+    {FOREACHINLIST(CFileNameNode, cfnn_Node, FrameNamesList, itFr) {
+      CFileNameNode &fnnFileNameNode = itFr.Current();
+      if (ProgresRoutines.SetProgressState != NULL)
+        ProgresRoutines.SetProgressState(iO3D);
+      OB3D.Clear();
+      OB3D.LoadAny3DFormat_t(CTString(itFr->cfnn_FileName), mStretch);
+      if (edm_md.md_VerticesCt != OB3D.ob_aoscSectors[0].osc_aovxVertices.Count()) {
+        ThrowF_t("File %s, one of animation frame files has wrong number of points.", (CTString)fnnFileNameNode.cfnn_FileName);
       }
-    }
+      if (bOrigin) {
+        // calc matrix for vertex transform
+        FLOAT3D vY = DOUBLEtoFLOAT(OB3D.ob_aoscSectors[0].osc_aovxVertices[aiTransVtx[2]]
+                                    - OB3D.ob_aoscSectors[0].osc_aovxVertices[aiTransVtx[0]]);
+        FLOAT3D vZ = DOUBLEtoFLOAT(OB3D.ob_aoscSectors[0].osc_aovxVertices[aiTransVtx[0]]
+                                    - OB3D.ob_aoscSectors[0].osc_aovxVertices[aiTransVtx[1]]);
+        FLOAT3D vX = vY * vZ;
+        vY = vZ * vX;
+        // make a rotation matrix from those vectors
+        vX.Normalize();
+        vY.Normalize();
+        vZ.Normalize();
+
+        mOrientation(1, 1) = vX(1);
+        mOrientation(1, 2) = vY(1);
+        mOrientation(1, 3) = vZ(1);
+        mOrientation(2, 1) = vX(2);
+        mOrientation(2, 2) = vY(2);
+        mOrientation(2, 3) = vZ(2);
+        mOrientation(3, 1) = vX(3);
+        mOrientation(3, 2) = vY(3);
+        mOrientation(3, 3) = vZ(3);
+        mOrientation = !mOrientation;
+      }
+
+      // normalize (clear) our Bounding Box
+      OB3D.ob_aoscSectors[0].LockAll();
+      OneFrameBB = FLOATaabbox3D();
+      // Bounding Box makes union with all points in this frame
+      for (i = 0; i < edm_md.md_VerticesCt; i++) {
+        FLOAT3D vVtx = DOUBLEtoFLOAT(OB3D.ob_aoscSectors[0].osc_aovxVertices[i]);
+        if (bOrigin) {
+          // transform vertex
+          vVtx -= DOUBLEtoFLOAT(OB3D.ob_aoscSectors[0].osc_aovxVertices[aiTransVtx[0]]);
+          vVtx *= mOrientation;
+        }
+        OneFrameBB |= FLOATaabbox3D(vVtx);
+        avVertices.Push() = vVtx; // cache vertex
+      }
+      OB3D.ob_aoscSectors[0].UnlockAll();
+      // remember this frame's Bounding Box
+      edm_md.md_FrameInfos[iO3D].mfi_Box = OneFrameBB;
+      // make union with Bounding Box of all frames
+      AllFramesBB |= OneFrameBB;
+      // load next frame
+      iO3D++;
+    }}
 
     // calculate stretch vector
     edm_md.md_Stretch = AllFramesBB.Size() / 2.0f; // get size of bounding box
@@ -255,50 +253,49 @@ void CEditModel::LoadModelAnimationData_t(CTStream *pFile, const FLOATmatrix3D &
 
     // loop thru polygons
     INDEX iPolyNo = 0;
-    {
-      FOREACHINDYNAMICARRAY(OB3D.ob_aoscSectors[0].osc_aopoPolygons, CObjectPolygon, itPoly) {
-        CObjectPolygon &opo = *itPoly;
-        // only triangles are supported!
-        ASSERT(opo.opo_PolygonEdges.Count() == 3);
-        if (opo.opo_PolygonEdges.Count() != 3) {
-          ThrowF_t("Non-triangle polygon encountered in model file %s !", fnmFirstFrame);
-        }
-        // get all 3 vetrices of current polygon and sorted them
-        opo.opo_PolygonEdges.Lock();
-        CObjectPolygonEdge &opeCurr = opo.opo_PolygonEdges[0];
-        CObjectPolygonEdge &opeNext = opo.opo_PolygonEdges[1];
-        CObjectVertex *povxCurr, *povxPrev, *povxNext;
-        if (!opeCurr.ope_Backward) {
-          povxCurr = opeCurr.ope_Edge->oed_Vertex1;
-          povxPrev = opeCurr.ope_Edge->oed_Vertex0;
-          ASSERT(opeNext.ope_Edge->oed_Vertex0 == povxCurr);
-        } else {
-          povxCurr = opeCurr.ope_Edge->oed_Vertex0;
-          povxPrev = opeCurr.ope_Edge->oed_Vertex1;
-          ASSERT(opeNext.ope_Edge->oed_Vertex1 == povxCurr);
-        }
-        if (!opeNext.ope_Backward) {
-          povxNext = opeNext.ope_Edge->oed_Vertex1;
-          ASSERT(opeNext.ope_Edge->oed_Vertex0 == povxCurr);
-        } else {
-          povxNext = opeNext.ope_Edge->oed_Vertex0;
-          ASSERT(opeNext.ope_Edge->oed_Vertex1 == povxCurr);
-        }
-        INDEX iVtx0 = OB3D.ob_aoscSectors[0].osc_aovxVertices.Index(povxPrev);
-        INDEX iVtx1 = OB3D.ob_aoscSectors[0].osc_aovxVertices.Index(povxCurr);
-        INDEX iVtx2 = OB3D.ob_aoscSectors[0].osc_aovxVertices.Index(povxNext);
-        // add neighbor vertices for each of this vertices
-        avnVertices[iVtx0].vp_aiNeighbors.Push() = iVtx2;
-        avnVertices[iVtx0].vp_aiNeighbors.Push() = iVtx1;
-        avnVertices[iVtx1].vp_aiNeighbors.Push() = iVtx0;
-        avnVertices[iVtx1].vp_aiNeighbors.Push() = iVtx2;
-        avnVertices[iVtx2].vp_aiNeighbors.Push() = iVtx1;
-        avnVertices[iVtx2].vp_aiNeighbors.Push() = iVtx0;
-        // advance to next poly
-        opo.opo_PolygonEdges.Unlock();
-        iPolyNo++;
+    {FOREACHINDYNAMICARRAY(OB3D.ob_aoscSectors[0].osc_aopoPolygons, CObjectPolygon, itPoly) {
+      CObjectPolygon &opo = *itPoly;
+      // only triangles are supported!
+      ASSERT(opo.opo_PolygonEdges.Count() == 3);
+      if (opo.opo_PolygonEdges.Count() != 3) {
+        ThrowF_t("Non-triangle polygon encountered in model file %s !", fnmFirstFrame);
       }
-    }
+      // get all 3 vetrices of current polygon and sorted them
+      opo.opo_PolygonEdges.Lock();
+      CObjectPolygonEdge &opeCurr = opo.opo_PolygonEdges[0];
+      CObjectPolygonEdge &opeNext = opo.opo_PolygonEdges[1];
+      CObjectVertex *povxCurr, *povxPrev, *povxNext;
+      if (!opeCurr.ope_Backward) {
+        povxCurr = opeCurr.ope_Edge->oed_Vertex1;
+        povxPrev = opeCurr.ope_Edge->oed_Vertex0;
+        ASSERT(opeNext.ope_Edge->oed_Vertex0 == povxCurr);
+      } else {
+        povxCurr = opeCurr.ope_Edge->oed_Vertex0;
+        povxPrev = opeCurr.ope_Edge->oed_Vertex1;
+        ASSERT(opeNext.ope_Edge->oed_Vertex1 == povxCurr);
+      }
+      if (!opeNext.ope_Backward) {
+        povxNext = opeNext.ope_Edge->oed_Vertex1;
+        ASSERT(opeNext.ope_Edge->oed_Vertex0 == povxCurr);
+      } else {
+        povxNext = opeNext.ope_Edge->oed_Vertex0;
+        ASSERT(opeNext.ope_Edge->oed_Vertex1 == povxCurr);
+      }
+      INDEX iVtx0 = OB3D.ob_aoscSectors[0].osc_aovxVertices.Index(povxPrev);
+      INDEX iVtx1 = OB3D.ob_aoscSectors[0].osc_aovxVertices.Index(povxCurr);
+      INDEX iVtx2 = OB3D.ob_aoscSectors[0].osc_aovxVertices.Index(povxNext);
+      // add neighbor vertices for each of this vertices
+      avnVertices[iVtx0].vp_aiNeighbors.Push() = iVtx2;
+      avnVertices[iVtx0].vp_aiNeighbors.Push() = iVtx1;
+      avnVertices[iVtx1].vp_aiNeighbors.Push() = iVtx0;
+      avnVertices[iVtx1].vp_aiNeighbors.Push() = iVtx2;
+      avnVertices[iVtx2].vp_aiNeighbors.Push() = iVtx1;
+      avnVertices[iVtx2].vp_aiNeighbors.Push() = iVtx0;
+      // advance to next poly
+      opo.opo_PolygonEdges.Unlock();
+      iPolyNo++;
+    }}
+
     // vertex->polygons links created
     OB3D.ob_aoscSectors[0].UnlockAll();
 
@@ -387,7 +384,9 @@ void CEditModel::LoadModelAnimationData_t(CTStream *pFile, const FLOATmatrix3D &
     }
 
     // list of filenames is no longer needed
-    FORDELETELIST(CFileNameNode, cfnn_Node, FrameNamesList, litDel) delete &litDel.Current();
+    FORDELETELIST(CFileNameNode, cfnn_Node, FrameNamesList, litDel) {
+      delete &litDel.Current();
+    }
 
     // create compressed vector center that will be used for setting object handle
     edm_md.md_vCompressedCenter(1) = -edm_md.md_vCenter(1) * f1oStretchX;
@@ -1329,17 +1328,14 @@ void CEditModel::AddMipModel(CObject3D *pO3D) {
   CStaticArray<CExtractSurfaceVertex> aesv;
   aesv.New(pvct); // array with same number of members as polygon vertex array
 
-  {
-    FOREACHINDYNAMICARRAY(pO3D->ob_aoscSectors[0].osc_aopoPolygons, CObjectPolygon, it1) {
-      INDEX iPolySurface = pO3D->ob_aoscSectors[0].osc_aomtMaterials.Index(it1->opo_Material); // this polygon's surface index
-      FOREACHINDYNAMICARRAY(it1->opo_PolygonEdges, CObjectPolygonEdge, it2) {
-        aesv[esvct].esv_Surface = iPolySurface; // all these vertices are members of same polygon so they have same surface index
-        aesv[esvct].esv_MipGlobalIndex
-          = pO3D->ob_aoscSectors[0].osc_aovxVertices.Index(it2->ope_Edge->oed_Vertex0); // global index
-        esvct++;
-      }
+  {FOREACHINDYNAMICARRAY(pO3D->ob_aoscSectors[0].osc_aopoPolygons, CObjectPolygon, it1) {
+    INDEX iPolySurface = pO3D->ob_aoscSectors[0].osc_aomtMaterials.Index(it1->opo_Material); // this polygon's surface index
+    FOREACHINDYNAMICARRAY(it1->opo_PolygonEdges, CObjectPolygonEdge, it2) {
+      aesv[esvct].esv_Surface = iPolySurface; // all these vertices are members of same polygon so they have same surface index
+      aesv[esvct].esv_MipGlobalIndex = pO3D->ob_aoscSectors[0].osc_aovxVertices.Index(it2->ope_Edge->oed_Vertex0); // global index
+      esvct++;
     }
-  }
+  }}
 
   /*
    * Then we will choose one verice from this array and see if there is any vertice

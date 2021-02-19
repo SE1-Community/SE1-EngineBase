@@ -1626,8 +1626,9 @@ void ProcessScript_t(const CTFileName &inFileName) // throw char *
   tex.Save_t(outFileName);
 
   // clear list
-  FORDELETELIST(CFileNameNode, cfnn_Node, FrameNamesList, itDel)
-  delete &itDel.Current();
+  FORDELETELIST(CFileNameNode, cfnn_Node, FrameNamesList, itDel) {
+    delete &itDel.Current();
+  }
 }
 
 void CreateTexture_t(const CTFileName &inFileName, const CTFileName &outFileName, MEX inMex, INDEX inMipmaps, BOOL bForce32bit) {

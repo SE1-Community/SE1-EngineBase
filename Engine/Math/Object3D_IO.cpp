@@ -389,19 +389,16 @@ void RemapVertices(BOOL bAsOpened) {
   {
     INDEX ctSurf = 0;
     // fill remap array with indices of vertices in order how they appear per polygons
-    {
-      FOREACHINDYNAMICCONTAINER(acmMaterials, ConversionMaterial, itcm) {
-        _RPT1(_CRT_WARN, "Indices of polygons in surface %d:", ctSurf);
-        // for each polygon in surface
-        {
-          FOREACHINDYNAMICCONTAINER(itcm->ms_Polygons, INDEX, itipol) {
-            _RPT1(_CRT_WARN, " %d,", *itipol);
-          }
-        }
-        _RPT0(_CRT_WARN, "\n");
-        ctSurf++;
-      }
-    }
+    {FOREACHINDYNAMICCONTAINER(acmMaterials, ConversionMaterial, itcm) {
+      _RPT1(_CRT_WARN, "Indices of polygons in surface %d:", ctSurf);
+      // for each polygon in surface
+      {FOREACHINDYNAMICCONTAINER(itcm->ms_Polygons, INDEX, itipol) {
+        _RPT1(_CRT_WARN, " %d,", *itipol);
+      }}
+
+      _RPT0(_CRT_WARN, "\n");
+      ctSurf++;
+    }}
 
     _RPT0(_CRT_WARN, "Polygons and their vertex indices:\n");
     for (INDEX ipol = 0; ipol < actTriangles.Count(); ipol++) {
@@ -425,54 +422,50 @@ void RemapVertices(BOOL bAsOpened) {
     INDEX ctvx = 0;
 
     // for each polygon in surface
-    {
-      FOREACHINDYNAMICCONTAINER(itcm->ms_Polygons, INDEX, itipol) {
-        INDEX idxPol = *itipol;
-        // for each vertex in polygon
-        for (INDEX iVtx = 0; iVtx < 3; iVtx++) {
-          // get vertex's index
-          INDEX idxVtx = actTriangles[idxPol].ct_iVtx[iVtx];
-          if (aiRemap[idxVtx] == -1) {
-            aiRemap[idxVtx] = ctvx;
-            ctvx++;
-          }
+    {FOREACHINDYNAMICCONTAINER(itcm->ms_Polygons, INDEX, itipol) {
+      INDEX idxPol = *itipol;
+      // for each vertex in polygon
+      for (INDEX iVtx = 0; iVtx < 3; iVtx++) {
+        // get vertex's index
+        INDEX idxVtx = actTriangles[idxPol].ct_iVtx[iVtx];
+        if (aiRemap[idxVtx] == -1) {
+          aiRemap[idxVtx] = ctvx;
+          ctvx++;
         }
       }
-    }
+    }}
 
     INDEX ctOld = avDst.Count();
     // allocate new block of vertices used in this surface
     FLOAT3D *pavDst = avDst.Push(ctvx);
 
     // for each polygon in surface
-    {
-      FOREACHINDYNAMICCONTAINER(itcm->ms_Polygons, INDEX, itipol) {
-        INDEX iPol = *itipol;
-        // for each vertex in polygon
-        for (INDEX iVtx = 0; iVtx < 3; iVtx++) {
-          // get vertex's index
-          INDEX idxVtx = actTriangles[iPol].ct_iVtx[iVtx];
-          // get remapped index
-          INDEX iRemap = aiRemap[idxVtx];
-          // if cutting object
-          if (bAsOpened) {
-            // copy vertex coordinate
-            pavDst[iRemap] = avVertices[idxVtx];
-          }
-          // if creating unwrapped mapping
-          else {
-            // copy texture coordinate
-            FLOAT3D vMap;
-            vMap(1) = avTextureVertices[actTriangles[iPol].ct_iTVtx[iVtx]](1);
-            vMap(2) = -avTextureVertices[actTriangles[iPol].ct_iTVtx[iVtx]](2);
-            vMap(3) = 0;
-            pavDst[iRemap] = vMap;
-          }
-          // remap index of polygon vertex
-          actTriangles[iPol].ct_iVtx[iVtx] = iRemap + ctOld;
+    {FOREACHINDYNAMICCONTAINER(itcm->ms_Polygons, INDEX, itipol) {
+      INDEX iPol = *itipol;
+      // for each vertex in polygon
+      for (INDEX iVtx = 0; iVtx < 3; iVtx++) {
+        // get vertex's index
+        INDEX idxVtx = actTriangles[iPol].ct_iVtx[iVtx];
+        // get remapped index
+        INDEX iRemap = aiRemap[idxVtx];
+        // if cutting object
+        if (bAsOpened) {
+          // copy vertex coordinate
+          pavDst[iRemap] = avVertices[idxVtx];
         }
+        // if creating unwrapped mapping
+        else {
+          // copy texture coordinate
+          FLOAT3D vMap;
+          vMap(1) = avTextureVertices[actTriangles[iPol].ct_iTVtx[iVtx]](1);
+          vMap(2) = -avTextureVertices[actTriangles[iPol].ct_iTVtx[iVtx]](2);
+          vMap(3) = 0;
+          pavDst[iRemap] = vMap;
+        }
+        // remap index of polygon vertex
+        actTriangles[iPol].ct_iVtx[iVtx] = iRemap + ctOld;
       }
-    }
+    }}
   }
   aiRemap.Clear();
 
@@ -487,19 +480,16 @@ void RemapVertices(BOOL bAsOpened) {
   {
     INDEX ctSurf = 0;
     // fill remap array with indices of vertices in order how they appear per polygons
-    {
-      FOREACHINDYNAMICCONTAINER(acmMaterials, ConversionMaterial, itcm) {
-        _RPT1(_CRT_WARN, "Indices of polygons in surface %d:", ctSurf);
-        // for each polygon in surface
-        {
-          FOREACHINDYNAMICCONTAINER(itcm->ms_Polygons, INDEX, itipol) {
-            _RPT1(_CRT_WARN, " %d,", *itipol);
-          }
-        }
-        _RPT0(_CRT_WARN, "\n");
-        ctSurf++;
-      }
-    }
+    {FOREACHINDYNAMICCONTAINER(acmMaterials, ConversionMaterial, itcm) {
+      _RPT1(_CRT_WARN, "Indices of polygons in surface %d:", ctSurf);
+      // for each polygon in surface
+      {FOREACHINDYNAMICCONTAINER(itcm->ms_Polygons, INDEX, itipol) {
+        _RPT1(_CRT_WARN, " %d,", *itipol);
+      }}
+
+      _RPT0(_CRT_WARN, "\n");
+      ctSurf++;
+    }}
 
     _RPT0(_CRT_WARN, "Polygons and their vertex indices:\n");
     for (INDEX ipol = 0; ipol < actTriangles.Count(); ipol++) {

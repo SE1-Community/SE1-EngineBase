@@ -955,22 +955,19 @@ void CEntity::SetPlacement_internal(const CPlacement3D &plNew, const FLOATmatrix
     // for all brush mips
     FOREACHINLIST(CBrushMip, bm_lnInBrush, en_pbrBrush->br_lhBrushMips, itbm) {
       // for all sectors in the mip
-      {
-        FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
-          // for all polygons in this sector
-          {
-            FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
-              // if the polygon has shadows
-              if (!(itbpo->bpo_ulFlags & BPOF_FULLBRIGHT)) {
-                // discard shadows
-                itbpo->DiscardShadows();
-                bHasShadows = TRUE;
-              }
-            }
+      {FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
+        // for all polygons in this sector
+        {FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
+          // if the polygon has shadows
+          if (!(itbpo->bpo_ulFlags & BPOF_FULLBRIGHT)) {
+            // discard shadows
+            itbpo->DiscardShadows();
+            bHasShadows = TRUE;
           }
-        }
-      }
+        }}
+      }}
     }
+
     // find possible shadow layers near affected area
     if (bHasShadows) {
       if (en_ulFlags & ENF_DYNAMICSHADOWS) {
@@ -990,12 +987,10 @@ void CEntity::SetPlacement_internal(const CPlacement3D &plNew, const FLOATmatrix
       // for all brush mips
       FOREACHINLIST(CBrushMip, bm_lnInBrush, en_pbrBrush->br_lhBrushMips, itbm) {
         // for all sectors in the mip
-        {
-          FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
-            // find entities in sector
-            itbsc->FindEntitiesInSector();
-          }
-        }
+        {FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
+          // find entities in sector
+          itbsc->FindEntitiesInSector();
+        }}
       }
     }
 
@@ -1047,13 +1042,11 @@ void CEntity::SetPlacement_internal(const CPlacement3D &plNew, const FLOATmatrix
   // NOTE: this is outside profile because it uses recursion
 
   // for each child of this entity
-  {
-    FOREACHINLIST(CEntity, en_lnInParent, en_lhChildren, itenChild) {
-      CPlacement3D plNew = itenChild->en_plRelativeToParent;
-      plNew.RelativeToAbsoluteSmooth(en_plPlacement);
-      itenChild->SetPlacement(plNew);
-    }
-  }
+  {FOREACHINLIST(CEntity, en_lnInParent, en_lhChildren, itenChild) {
+    CPlacement3D plNew = itenChild->en_plRelativeToParent;
+    plNew.RelativeToAbsoluteSmooth(en_plPlacement);
+    itenChild->SetPlacement(plNew);
+  }}
 }
 // this one is used in rendering - gets lerped placement between ticks
 CPlacement3D CEntity::GetLerpedPlacement(void) const {
@@ -1122,14 +1115,13 @@ void CEntity::SetParent(CEntity *penNewParent) {
 // find first child of given class
 CEntity *CEntity::GetChildOfClass(const char *strClass) {
   // for each child of this entity
-  {
-    FOREACHINLIST(CEntity, en_lnInParent, en_lhChildren, itenChild) {
-      // if it is of given class
-      if (IsOfClass(itenChild, strClass)) {
-        return itenChild;
-      }
+  {FOREACHINLIST(CEntity, en_lnInParent, en_lhChildren, itenChild) {
+    // if it is of given class
+    if (IsOfClass(itenChild, strClass)) {
+      return itenChild;
     }
-  }
+  }}
+
   // not found
   return NULL;
 }
@@ -1162,12 +1154,11 @@ void CEntity::Destroy(void) {
     en_penParent = NULL;
     en_lnInParent.Remove();
   }
-  {
-    FORDELETELIST(CEntity, en_lnInParent, en_lhChildren, itenChild) {
-      itenChild->en_penParent = NULL;
-      itenChild->en_lnInParent.Remove();
-    }
-  }
+
+  {FORDELETELIST(CEntity, en_lnInParent, en_lhChildren, itenChild) {
+    itenChild->en_penParent = NULL;
+    itenChild->en_lnInParent.Remove();
+  }}
 
   // set its flags to mark that it doesn't not exist anymore
   en_ulFlags |= ENF_DELETED;
@@ -1307,98 +1298,86 @@ void CEntity::FindShadingInfo(void) {
   }
 
   // for each sector that this entity is in
-  {
-    FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+  {FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     // for each brush or terrain in this sector
-    {
-      FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
+    {FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
       if (pen->en_RenderType == CEntity::RT_TERRAIN) {
         CheckTerrainForShadingInfo(pen->GetTerrain());
       } else if (pen->en_RenderType != CEntity::RT_BRUSH && pen->en_RenderType != CEntity::RT_FIELDBRUSH) {
         break;
       }
-    }
-  }
-  ENDFOR
-}
+    ENDFOR}
+  ENDFOR}
 
-// if this is non-movable entity, or no polygon or terrain found so far
-if (_pbpoNear == NULL && _ptrTerrainNear == NULL) {
-  // for each sector that this entity is in
-  {
-    FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
-    // for each polygon in the sector
-    {
-      FOREACHINSTATICARRAY(pbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
+  // if this is non-movable entity, or no polygon or terrain found so far
+  if (_pbpoNear == NULL && _ptrTerrainNear == NULL) {
+    // for each sector that this entity is in
+    {FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+      // for each polygon in the sector
+      {FOREACHINSTATICARRAY(pbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
         CBrushPolygon &bpo = *itbpo;
         CheckPolygonForShadingInfo(bpo);
-      }
-    }
-    ENDFOR
+      }}
+    ENDFOR}
   }
-}
 
-// if there is some polygon found
-if (_pbpoNear != NULL) {
-  // remember shading info
-  en_psiShadingInfo->si_pbpoPolygon = _pbpoNear;
-  _pbpoNear->bpo_lhShadingInfos.AddTail(en_psiShadingInfo->si_lnInPolygon);
-  en_psiShadingInfo->si_vNearPoint = _vNearPoint;
+  // if there is some polygon found
+  if (_pbpoNear != NULL) {
+    // remember shading info
+    en_psiShadingInfo->si_pbpoPolygon = _pbpoNear;
+    _pbpoNear->bpo_lhShadingInfos.AddTail(en_psiShadingInfo->si_lnInPolygon);
+    en_psiShadingInfo->si_vNearPoint = _vNearPoint;
 
-  CEntity *penWithPolygon = _pbpoNear->bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
-  ASSERT(penWithPolygon != NULL);
-  const FLOATmatrix3D &mPolygonRotation = penWithPolygon->en_mRotation;
-  const FLOAT3D &vPolygonTranslation = penWithPolygon->GetPlacement().pl_PositionVector;
+    CEntity *penWithPolygon = _pbpoNear->bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
+    ASSERT(penWithPolygon != NULL);
+    const FLOATmatrix3D &mPolygonRotation = penWithPolygon->en_mRotation;
+    const FLOAT3D &vPolygonTranslation = penWithPolygon->GetPlacement().pl_PositionVector;
 
-  _vNearPoint = (_vNearPoint - vPolygonTranslation) * !mPolygonRotation;
+    _vNearPoint = (_vNearPoint - vPolygonTranslation) * !mPolygonRotation;
 
-  MEX2D vmexShadow;
-  _pbpoNear->bpo_mdShadow.GetTextureCoordinates(_pbpoNear->bpo_pbplPlane->bpl_pwplWorking->wpl_mvRelative, _vNearPoint,
-                                                vmexShadow);
-  CBrushShadowMap &bsm = _pbpoNear->bpo_smShadowMap;
-  INDEX iMipLevel = bsm.sm_iFirstMipLevel;
-  FLOAT fpixU = FLOAT(vmexShadow(1) + bsm.sm_mexOffsetX) * (1.0f / (1 << iMipLevel));
-  FLOAT fpixV = FLOAT(vmexShadow(2) + bsm.sm_mexOffsetY) * (1.0f / (1 << iMipLevel));
-  en_psiShadingInfo->si_pixShadowU = floor(fpixU);
-  en_psiShadingInfo->si_pixShadowV = floor(fpixV);
-  en_psiShadingInfo->si_fUDRatio = fpixU - en_psiShadingInfo->si_pixShadowU;
-  en_psiShadingInfo->si_fLRRatio = fpixV - en_psiShadingInfo->si_pixShadowV;
+    MEX2D vmexShadow;
+    _pbpoNear->bpo_mdShadow.GetTextureCoordinates(_pbpoNear->bpo_pbplPlane->bpl_pwplWorking->wpl_mvRelative, _vNearPoint,
+                                                  vmexShadow);
+    CBrushShadowMap &bsm = _pbpoNear->bpo_smShadowMap;
+    INDEX iMipLevel = bsm.sm_iFirstMipLevel;
+    FLOAT fpixU = FLOAT(vmexShadow(1) + bsm.sm_mexOffsetX) * (1.0f / (1 << iMipLevel));
+    FLOAT fpixV = FLOAT(vmexShadow(2) + bsm.sm_mexOffsetY) * (1.0f / (1 << iMipLevel));
+    en_psiShadingInfo->si_pixShadowU = floor(fpixU);
+    en_psiShadingInfo->si_pixShadowV = floor(fpixV);
+    en_psiShadingInfo->si_fUDRatio = fpixU - en_psiShadingInfo->si_pixShadowU;
+    en_psiShadingInfo->si_fLRRatio = fpixV - en_psiShadingInfo->si_pixShadowV;
 
-  // else if there is some terrain found
-} else if (_ptrTerrainNear != NULL) {
-  // remember shading info
-  en_psiShadingInfo->si_ptrTerrain = _ptrTerrainNear;
-  en_psiShadingInfo->si_vNearPoint = _vNearPoint;
+    // else if there is some terrain found
+  } else if (_ptrTerrainNear != NULL) {
+    // remember shading info
+    en_psiShadingInfo->si_ptrTerrain = _ptrTerrainNear;
+    en_psiShadingInfo->si_vNearPoint = _vNearPoint;
 
-  FLOAT2D vTc = CalculateShadingTexCoords(_ptrTerrainNear, _vNearPoint);
-  en_psiShadingInfo->si_pixShadowU = floor(vTc(1));
-  en_psiShadingInfo->si_pixShadowV = floor(vTc(2));
-  en_psiShadingInfo->si_fLRRatio = vTc(1) - en_psiShadingInfo->si_pixShadowU;
-  en_psiShadingInfo->si_fUDRatio = vTc(2) - en_psiShadingInfo->si_pixShadowV;
+    FLOAT2D vTc = CalculateShadingTexCoords(_ptrTerrainNear, _vNearPoint);
+    en_psiShadingInfo->si_pixShadowU = floor(vTc(1));
+    en_psiShadingInfo->si_pixShadowV = floor(vTc(2));
+    en_psiShadingInfo->si_fLRRatio = vTc(1) - en_psiShadingInfo->si_pixShadowU;
+    en_psiShadingInfo->si_fUDRatio = vTc(2) - en_psiShadingInfo->si_pixShadowV;
 
-  _ptrTerrainNear->tr_lhShadingInfos.AddTail(en_psiShadingInfo->si_lnInPolygon);
-}
+    _ptrTerrainNear->tr_lhShadingInfos.AddTail(en_psiShadingInfo->si_lnInPolygon);
+  }
 }
 
 CBrushSector *CEntity::GetFirstSector(void) {
-  {
-    FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+  {FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     return pbsc;
-    ENDFOR
-  };
+  ENDFOR}
   return NULL;
 }
 
 CBrushSector *CEntity::GetFirstSectorWithName(void) {
   CBrushSector *pbscResult = NULL;
-  {
-    FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+  {FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     if (pbsc->bsc_strName != "") {
       pbscResult = pbsc;
       break;
     }
-    ENDFOR
-  };
+  ENDFOR}
   return pbscResult;
 }
 
@@ -1527,18 +1506,14 @@ void CCollisionInfo::FromBrush(CBrush3D *pbrBrush) {
   // get first brush mip
   CBrushMip *pbm = pbrBrush->GetFirstMip();
   // for each sector in the brush mip
-  {
-    FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbsc) {
-      // for each vertex in the sector
-      {
-        FOREACHINSTATICARRAY(itbsc->bsc_abvxVertices, CBrushVertex, itbvx) {
-          CBrushVertex &bvx = *itbvx;
-          // add it to bounding box
-          box |= DOUBLEtoFLOAT(bvx.bvx_vdPreciseRelative);
-        }
-      }
-    }
-  }
+  {FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbsc) {
+    // for each vertex in the sector
+    {FOREACHINSTATICARRAY(itbsc->bsc_abvxVertices, CBrushVertex, itbvx) {
+      CBrushVertex &bvx = *itbvx;
+      // add it to bounding box
+      box |= DOUBLEtoFLOAT(bvx.bvx_vdPreciseRelative);
+    }}
+  }}
 
   // create a sphere from the relative box
   ci_absSpheres[0].ms_vCenter = box.Center();
@@ -1784,14 +1759,12 @@ void CEntity::FindSectorsAroundEntityNear(void) {
 
   CListHead lhActive;
   // for each sector around this entity
-  {
-    FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+  {FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     // remember its link
     pbsc->bsc_prlLink = pbsc_iter;
     // add it to list of active sectors
     lhActive.AddTail(pbsc->bsc_lnInActiveSectors);
-    ENDFOR
-  }
+  ENDFOR}
 
   CStaticStackArray<CBrushPolygon *> &apbpo = pen->en_apbpoNearPolygons;
   // for each cached polygon
@@ -1842,12 +1815,11 @@ void CEntity::FindSectorsAroundEntityNear(void) {
   }
 
   // clear list of active sectors
-  {
-    FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, lhActive, itbsc) {
-      itbsc->bsc_prlLink = NULL;
-      itbsc->bsc_lnInActiveSectors.Remove();
-    }
-  }
+  {FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, lhActive, itbsc) {
+    itbsc->bsc_prlLink = NULL;
+    itbsc->bsc_lnInActiveSectors.Remove();
+  }}
+
   ASSERT(lhActive.IsEmpty());
 
   // if there is no link found
@@ -1869,20 +1841,16 @@ void CEntity::UncacheShadowsForGradient(INDEX iGradient) {
   // for all brush mips
   FOREACHINLIST(CBrushMip, bm_lnInBrush, en_pbrBrush->br_lhBrushMips, itbm) {
     // for all sectors in the mip
-    {
-      FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
-        // for all polygons in this sector
-        {
-          FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
-            // if the polygon has shadows
-            if (itbpo->bpo_bppProperties.bpp_ubGradientType == iGradient) {
-              // uncache shadows
-              itbpo->bpo_smShadowMap.Uncache();
-            }
-          }
+    {FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
+      // for all polygons in this sector
+      {FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
+        // if the polygon has shadows
+        if (itbpo->bpo_bppProperties.bpp_ubGradientType == iGradient) {
+          // uncache shadows
+          itbpo->bpo_smShadowMap.Uncache();
         }
-      }
-    }
+      }}
+    }}
   }
 }
 
@@ -1958,8 +1926,7 @@ void CEntity::FindEntitiesInRange(const FLOATaabbox3D &boxRange, CDynamicContain
         }
 
         // for all entities in the sector
-        {
-          FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
+        {FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
           // if the model entity touches the box
           if ((pen->en_RenderType == RT_MODEL || pen->en_RenderType == RT_EDITORMODEL)
               && boxRange.HasContactWith(
@@ -2024,8 +1991,7 @@ void CEntity::FindEntitiesInRange(const FLOATaabbox3D &boxRange, CDynamicContain
             }
           }
         next_entity:;
-          ENDFOR
-        }
+        ENDFOR}
       }
     }
   }
@@ -2671,15 +2637,14 @@ void CEntity::GetEntityPointFixed(const FLOAT3D &vFixed, FLOAT3D &vAbsPoint) {
 // Get sector that given point is in - point must be inside this entity.
 CBrushSector *CEntity::GetSectorFromPoint(const FLOAT3D &vPointAbs) {
   // for each sector around entity
-  {
-    FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+  {FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     // if point is in this sector
     if (pbsc->bsc_bspBSPTree.TestSphere(FLOATtoDOUBLE(vPointAbs), 0.01) >= 0) {
       // return that
       return pbsc;
     }
-    ENDFOR;
-  }
+  ENDFOR}
+
   return NULL;
 }
 
@@ -2838,6 +2803,7 @@ static BOOL CheckModelRangeDamage(CEntity &en, const FLOAT3D &vCenter, FLOAT &fM
   // find minimum distance
   fMinD = UpperLimit(0.0f);
   vHitPos = vO;
+
   // for each sphere
   FOREACHINSTATICARRAY(pci->ci_absSpheres, CMovingSphere, itms) {
     // project it
@@ -2848,9 +2814,11 @@ static BOOL CheckModelRangeDamage(CEntity &en, const FLOAT3D &vCenter, FLOAT &fM
       vHitPos = itms->ms_vRelativeCenter0;
     }
   }
+
   if (fMinD < 0) {
     fMinD = 0;
   }
+
   return TRUE;
 }
 
@@ -2968,25 +2936,20 @@ void CEntity::NotifyGravityChanged(void) {
       // get first brush mip
       CBrushMip *pbm = pbr->GetFirstMip();
       // for each sector in the brush mip
-      {
-        FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbsc) {
-          // if controlled by this entity
-          if (penBrush->GetForceController(itbsc->GetForceType()) == this) {
-            // for each entity in the sector
-            {
-              FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen) {
-                // if movable
-                if (pen->en_ulPhysicsFlags & EPF_MOVABLE) {
-                  CMovableEntity *pmen = (CMovableEntity *)pen;
-                  // add to movers
-                  pmen->AddToMovers();
-                }
-                ENDFOR
-              }
+      {FOREACHINDYNAMICARRAY(pbm->bm_abscSectors, CBrushSector, itbsc) {
+        // if controlled by this entity
+        if (penBrush->GetForceController(itbsc->GetForceType()) == this) {
+          // for each entity in the sector
+          {FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen) {
+            // if movable
+            if (pen->en_ulPhysicsFlags & EPF_MOVABLE) {
+              CMovableEntity *pmen = (CMovableEntity *)pen;
+              // add to movers
+              pmen->AddToMovers();
             }
-          }
+          ENDFOR}}
         }
-      }
+      }}
     }
   }
 }

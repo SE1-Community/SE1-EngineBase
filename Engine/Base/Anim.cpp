@@ -68,8 +68,9 @@ class CTmpListHead : public CListHead {
 };
 
 CTmpListHead::~CTmpListHead() {
-  FORDELETELIST(COneAnimNode, coan_Node, *this, it)
-  delete &it.Current();
+  FORDELETELIST(COneAnimNode, coan_Node, *this, it) {
+    delete &it.Current();
+  }
 };
 
 // Remember ptr to animation and add this node at the end of given animation list
@@ -393,8 +394,9 @@ void CAnimData::LoadFromScript_t(CTStream *File, CListHead *pFrameFileList) // t
       ad_Anims[lc].oa_FrameIndices[i] = it2->coan_OneAnim->oa_FrameIndices[i];
     lc++;
   }
-  FORDELETELIST(COneAnimNode, coan_Node, TempAnimationList, litDel)
-  delete &litDel.Current();
+  FORDELETELIST(COneAnimNode, coan_Node, TempAnimationList, litDel) {
+    delete &litDel.Current();
+  }
 };
 
 void CAnimData::Write_t(CTStream *ostrFile) // throw char *

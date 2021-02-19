@@ -393,52 +393,51 @@ static void TexturesInfo(void) {
   SLONG slKB04A = 0, slKB64A = 0, slKBMXA = 0;
 
   // walk thru all textures on stock
-  {
-    FOREACHINDYNAMICCONTAINER(_pTextureStock->st_ctObjects, CTextureData, ittd) { // get texture info
-      CTextureData &td = *ittd;
-      BOOL bAlpha = td.td_ulFlags & TEX_ALPHACHANNEL;
-      INDEX ctFrames = td.td_ctFrames;
-      SLONG slBytes = td.GetUsedMemory();
-      ASSERT(slBytes >= 0);
-      // get texture size
-      PIX pixTextureSize = td.GetPixWidth() * td.GetPixHeight();
-      PIX pixMipmapSize = pixTextureSize;
-      if (!gap_bAllowSingleMipmap || td.td_ctFineMipLevels > 1)
-        pixMipmapSize = pixMipmapSize * 4 / 3;
-      // increase corresponding counters
-      if (pixTextureSize < 4096) {
-        if (bAlpha) {
-          pixK04A += pixMipmapSize;
-          slKB04A += slBytes;
-          ctNo04A += ctFrames;
-        } else {
-          pixK04O += pixMipmapSize;
-          slKB04O += slBytes;
-          ctNo04O += ctFrames;
-        }
-      } else if (pixTextureSize <= 65536) {
-        if (bAlpha) {
-          pixK64A += pixMipmapSize;
-          slKB64A += slBytes;
-          ctNo64A += ctFrames;
-        } else {
-          pixK64O += pixMipmapSize;
-          slKB64O += slBytes;
-          ctNo64O += ctFrames;
-        }
+  {FOREACHINDYNAMICCONTAINER(_pTextureStock->st_ctObjects, CTextureData, ittd) {
+    // get texture info
+    CTextureData &td = *ittd;
+    BOOL bAlpha = td.td_ulFlags & TEX_ALPHACHANNEL;
+    INDEX ctFrames = td.td_ctFrames;
+    SLONG slBytes = td.GetUsedMemory();
+    ASSERT(slBytes >= 0);
+    // get texture size
+    PIX pixTextureSize = td.GetPixWidth() * td.GetPixHeight();
+    PIX pixMipmapSize = pixTextureSize;
+    if (!gap_bAllowSingleMipmap || td.td_ctFineMipLevels > 1)
+      pixMipmapSize = pixMipmapSize * 4 / 3;
+    // increase corresponding counters
+    if (pixTextureSize < 4096) {
+      if (bAlpha) {
+        pixK04A += pixMipmapSize;
+        slKB04A += slBytes;
+        ctNo04A += ctFrames;
       } else {
-        if (bAlpha) {
-          pixKMXA += pixMipmapSize;
-          slKBMXA += slBytes;
-          ctNoMXA += ctFrames;
-        } else {
-          pixKMXO += pixMipmapSize;
-          slKBMXO += slBytes;
-          ctNoMXO += ctFrames;
-        }
+        pixK04O += pixMipmapSize;
+        slKB04O += slBytes;
+        ctNo04O += ctFrames;
+      }
+    } else if (pixTextureSize <= 65536) {
+      if (bAlpha) {
+        pixK64A += pixMipmapSize;
+        slKB64A += slBytes;
+        ctNo64A += ctFrames;
+      } else {
+        pixK64O += pixMipmapSize;
+        slKB64O += slBytes;
+        ctNo64O += ctFrames;
+      }
+    } else {
+      if (bAlpha) {
+        pixKMXA += pixMipmapSize;
+        slKBMXA += slBytes;
+        ctNoMXA += ctFrames;
+      } else {
+        pixKMXO += pixMipmapSize;
+        slKBMXO += slBytes;
+        ctNoMXO += ctFrames;
       }
     }
-  }
+  }}
 
   // report
   const PIX pixNormDim = sqrt((FLOAT)TS.ts_pixNormSize);
@@ -903,13 +902,11 @@ extern void ReloadTextures(void) {
   // update texture settings
   UpdateTextureSettings();
   // loop thru texture stock
-  {
-    FOREACHINDYNAMICCONTAINER(_pTextureStock->st_ctObjects, CTextureData, ittd) {
-      CTextureData &td = *ittd;
-      td.Reload();
-      td.td_tpLocal.Clear();
-    }
-  }
+  {FOREACHINDYNAMICCONTAINER(_pTextureStock->st_ctObjects, CTextureData, ittd) {
+    CTextureData &td = *ittd;
+    td.Reload();
+    td.td_tpLocal.Clear();
+  }}
 
   // reset fog/haze texture
   _fog_pixSizeH = 0;
@@ -958,12 +955,11 @@ static void ReloadModels(void) {
   // mute all sounds
   _pSound->Mute();
   // loop thru model stock
-  {
-    FOREACHINDYNAMICCONTAINER(_pModelStock->st_ctObjects, CModelData, itmd) {
-      CModelData &md = *itmd;
-      md.Reload();
-    }
-  }
+  {FOREACHINDYNAMICCONTAINER(_pModelStock->st_ctObjects, CModelData, itmd) {
+    CModelData &md = *itmd;
+    md.Reload();
+  }}
+
   // mark that we need pretouching
   _bNeedPretouch = TRUE;
   // all done
@@ -1675,34 +1671,34 @@ void CGfxLibrary::ReduceShadows(void) {
     ctCachedShadows = 0;
     ctFlatShadows = 0;
     ctDynamicShadows = 0;
-    {
-      FORDELETELIST(CShadowMap, sm_lnInGfx, _pGfx->gl_lhCachedShadows, itsm) {
-        CShadowMap &sm = *itsm;
-        ASSERT(sm.sm_pulCachedShadowMap != NULL);                               // must be cached
-        ASSERT(sm.sm_slMemoryUsed > 0 && sm.sm_slMemoryUsed <= SHADOWMAXBYTES); // and have valid size
-        // remove acient shadowmaps from list (if allowed)
-        const TIME tmDelta = (tvNow - sm.sm_tvLastDrawn).GetSeconds();
-        if (tmDelta > tmAcientDelay && !(sm.sm_ulFlags & SMF_PROBED) && !shd_bCacheAll) {
-          sm.Uncache();
-          continue;
-        }
-        // determine type and occupied space
-        const BOOL bDynamic = sm.sm_pulDynamicShadowMap != NULL;
-        const BOOL bFlat = sm.sm_pulCachedShadowMap == &sm.sm_colFlat;
-        if (bDynamic) {
-          slDynamicShadowMemory += sm.sm_slMemoryUsed;
-          ctDynamicShadows++;
-        }
-        if (!bFlat) {
-          slCachedShadowMemory += sm.sm_slMemoryUsed;
-          ctCachedShadows++;
-        } else {
-          slCachedShadowMemory += sizeof(sm.sm_colFlat);
-          ctFlatShadows++;
-        }
+
+    {FORDELETELIST(CShadowMap, sm_lnInGfx, _pGfx->gl_lhCachedShadows, itsm) {
+      CShadowMap &sm = *itsm;
+      ASSERT(sm.sm_pulCachedShadowMap != NULL);                               // must be cached
+      ASSERT(sm.sm_slMemoryUsed > 0 && sm.sm_slMemoryUsed <= SHADOWMAXBYTES); // and have valid size
+      // remove acient shadowmaps from list (if allowed)
+      const TIME tmDelta = (tvNow - sm.sm_tvLastDrawn).GetSeconds();
+      if (tmDelta > tmAcientDelay && !(sm.sm_ulFlags & SMF_PROBED) && !shd_bCacheAll) {
+        sm.Uncache();
+        continue;
       }
-    }
+      // determine type and occupied space
+      const BOOL bDynamic = sm.sm_pulDynamicShadowMap != NULL;
+      const BOOL bFlat = sm.sm_pulCachedShadowMap == &sm.sm_colFlat;
+      if (bDynamic) {
+        slDynamicShadowMemory += sm.sm_slMemoryUsed;
+        ctDynamicShadows++;
+      }
+      if (!bFlat) {
+        slCachedShadowMemory += sm.sm_slMemoryUsed;
+        ctCachedShadows++;
+      } else {
+        slCachedShadowMemory += sizeof(sm.sm_colFlat);
+        ctFlatShadows++;
+      }
+    }}
   }
+
   // update statistics counters
   _pfGfxProfile.IncrementCounter(CGfxProfile::PCI_CACHEDSHADOWBYTES, slCachedShadowMemory);
   _pfGfxProfile.IncrementCounter(CGfxProfile::PCI_CACHEDSHADOWS, ctCachedShadows);
@@ -1740,19 +1736,18 @@ void CGfxLibrary::ReduceShadows(void) {
   }
 
   // loop thru cached shadowmaps list
-  {
-    FORDELETELIST(CShadowMap, sm_lnInGfx, _pGfx->gl_lhCachedShadows,
-                  itsm) { // stop iteration if current shadow map it is not too old (list is sorted by time)
-      // or we have enough memory for cached shadows that remain
-      CShadowMap &sm = *itsm;
-      const TIME tmDelta = (tvNow - sm.sm_tvLastDrawn).GetSeconds();
-      if (tmDelta < tmFlushDelay || ulUsedShadowMemory < ulShadowCacheSize)
-        break;
-      // uncache shadow (this returns ammount of memory that has been freed)
-      ulUsedShadowMemory -= sm.Uncache();
-      ASSERT(ulUsedShadowMemory >= 0);
-    }
-  }
+  {FORDELETELIST(CShadowMap, sm_lnInGfx, _pGfx->gl_lhCachedShadows, itsm) {
+    // stop iteration if current shadow map it is not too old (list is sorted by time)
+    // or we have enough memory for cached shadows that remain
+    CShadowMap &sm = *itsm;
+    const TIME tmDelta = (tvNow - sm.sm_tvLastDrawn).GetSeconds();
+    if (tmDelta < tmFlushDelay || ulUsedShadowMemory < ulShadowCacheSize)
+      break;
+    // uncache shadow (this returns ammount of memory that has been freed)
+    ulUsedShadowMemory -= sm.Uncache();
+    ASSERT(ulUsedShadowMemory >= 0);
+  }}
+
   // done
   _sfStats.StopTimer(CStatForm::STI_SHADOWUPDATE);
 }

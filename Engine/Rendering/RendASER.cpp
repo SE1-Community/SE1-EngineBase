@@ -282,8 +282,7 @@ void CRenderer::PassPortal(CScreenPolygon &spo) {
   RemovePortal(spo);
 
   // for all sectors related to the portal
-  {
-    FOREACHDSTOFSRC(spo.spo_pbpoBrushPolygon->bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbsc)
+  {FOREACHDSTOFSRC(spo.spo_pbpoBrushPolygon->bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbsc)
     // if the sector is hidden when not rendering shadows
     if ((pbsc->bsc_ulFlags & BSCF_HIDDEN) && !re_bRenderingShadows) {
       // skip it
@@ -307,8 +306,8 @@ void CRenderer::PassPortal(CScreenPolygon &spo) {
       // add that sector to active sectors
       AddActiveSector(*pbsc);
     }
-    ENDFOR
-  }
+  ENDFOR}
+
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_PASSPORTAL);
   ChangeStatsMode(CStatForm::STI_WORLDVISIBILITY);
 }
@@ -809,14 +808,14 @@ void CRenderer::ScanEdges(void) {
     // add spans in this line to the scene
     AddSpansToScene();
 
-// uncomment this for extreme checking of surface stack management -- very slow
-#if 0
-      // all surfaces must have in-stack counter of zero
-      FOREACHINDYNAMICARRAY(re_aspoScreenPolygons, CScreenPolygon, itspo) {
-        CScreenPolygon &spo = itspo.Current();
-        ASSERT(spo.spo_iInStack == 0);
-      }
-#endif
+    // uncomment this for extreme checking of surface stack management -- very slow
+    #if 0
+    // all surfaces must have in-stack counter of zero
+    FOREACHINDYNAMICARRAY(re_aspoScreenPolygons, CScreenPolygon, itspo) {
+      CScreenPolygon &spo = itspo.Current();
+      ASSERT(spo.spo_iInStack == 0);
+    }
+    #endif
 
     // remove all edges that stop on this scan from active list and from other lists.
     RemRemoveListFromActiveList(re_apsedRemoveFirst[re_iCurrentScan]);

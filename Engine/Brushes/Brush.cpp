@@ -241,12 +241,10 @@ void CBrush3D::SwitchToNonZoning(void) {
   // for all brush mips
   FOREACHINLIST(CBrushMip, bm_lnInBrush, br_lhBrushMips, itbm) {
     // for all sectors in the mip
-    {
-      FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
-        // unset spatial clasification
-        itbsc->bsc_rsEntities.Clear();
-      }
-    }
+    {FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
+      // unset spatial clasification
+      itbsc->bsc_rsEntities.Clear();
+    }}
   }
 }
 
@@ -257,11 +255,9 @@ void CBrush3D::SwitchToZoning(void) {
   // for all brush mips
   FOREACHINLIST(CBrushMip, bm_lnInBrush, br_lhBrushMips, itbm) {
     // for all sectors in the mip
-    {
-      FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
-        // find entities in sector
-        itbsc->FindEntitiesInSector();
-      }
-    }
+    {FOREACHINDYNAMICARRAY(itbm->bm_abscSectors, CBrushSector, itbsc) {
+      // find entities in sector
+      itbsc->FindEntitiesInSector();
+    }}
   }
 }

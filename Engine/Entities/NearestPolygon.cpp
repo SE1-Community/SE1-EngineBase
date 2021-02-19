@@ -69,73 +69,71 @@ void SearchThroughSectors(void) {
   for (INDEX ias = 0; ias < _aas.Count(); ias++) {
     CBrushSector *pbsc = _aas[ias].as_pbsc;
     // for each polygon in the sector
-    {FOREACHINSTATICARRAY(pbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {CBrushPolygon &bpo = *itbpo;
-    // if it is not a wall
-    if (bpo.bpo_ulFlags & BPOF_PORTAL) {
-      // skip it
-      continue;
-    }
-    const FLOATplane3D &plPolygon = bpo.bpo_pbplPlane->bpl_plAbsolute;
-    // find distance of the polygon plane from the handle
-    FLOAT fDistance = plPolygon.PointDistance(_vHandle);
-    // if it is behind the plane or further than nearest found
-    if (fDistance < 0.0f || fDistance > _fNearDistance) {
-      // skip it
-      continue;
-    }
-    // find projection of handle to the polygon plane
-    FLOAT3D vOnPlane = plPolygon.ProjectPoint(_vHandle);
-    // if it is not in the bounding box of polygon
-    const FLOATaabbox3D &boxPolygon = bpo.bpo_boxBoundingBox;
-    const FLOAT EPSILON = 0.01f;
-    if ((boxPolygon.Min()(1) - EPSILON > vOnPlane(1)) || (boxPolygon.Max()(1) + EPSILON < vOnPlane(1))
-        || (boxPolygon.Min()(2) - EPSILON > vOnPlane(2)) || (boxPolygon.Max()(2) + EPSILON < vOnPlane(2))
-        || (boxPolygon.Min()(3) - EPSILON > vOnPlane(3)) || (boxPolygon.Max()(3) + EPSILON < vOnPlane(3))) {
-      // skip it
-      continue;
-    }
+    {FOREACHINSTATICARRAY(pbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
+      CBrushPolygon &bpo = *itbpo;
+      // if it is not a wall
+      if (bpo.bpo_ulFlags & BPOF_PORTAL) {
+        // skip it
+        continue;
+      }
+      const FLOATplane3D &plPolygon = bpo.bpo_pbplPlane->bpl_plAbsolute;
+      // find distance of the polygon plane from the handle
+      FLOAT fDistance = plPolygon.PointDistance(_vHandle);
+      // if it is behind the plane or further than nearest found
+      if (fDistance < 0.0f || fDistance > _fNearDistance) {
+        // skip it
+        continue;
+      }
+      // find projection of handle to the polygon plane
+      FLOAT3D vOnPlane = plPolygon.ProjectPoint(_vHandle);
+      // if it is not in the bounding box of polygon
+      const FLOATaabbox3D &boxPolygon = bpo.bpo_boxBoundingBox;
+      const FLOAT EPSILON = 0.01f;
+      if ((boxPolygon.Min()(1) - EPSILON > vOnPlane(1)) || (boxPolygon.Max()(1) + EPSILON < vOnPlane(1))
+          || (boxPolygon.Min()(2) - EPSILON > vOnPlane(2)) || (boxPolygon.Max()(2) + EPSILON < vOnPlane(2))
+          || (boxPolygon.Min()(3) - EPSILON > vOnPlane(3)) || (boxPolygon.Max()(3) + EPSILON < vOnPlane(3))) {
+        // skip it
+        continue;
+      }
 
-    // find major axes of the polygon plane
-    INDEX iMajorAxis1, iMajorAxis2;
-    GetMajorAxesForPlane(plPolygon, iMajorAxis1, iMajorAxis2);
+      // find major axes of the polygon plane
+      INDEX iMajorAxis1, iMajorAxis2;
+      GetMajorAxesForPlane(plPolygon, iMajorAxis1, iMajorAxis2);
 
-    // create an intersector
-    CIntersector isIntersector(_vHandle(iMajorAxis1), _vHandle(iMajorAxis2));
-    // for all edges in the polygon
-    FOREACHINSTATICARRAY(bpo.bpo_abpePolygonEdges, CBrushPolygonEdge, itbpePolygonEdge) {
-      // get edge vertices (edge direction is irrelevant here!)
-      const FLOAT3D &vVertex0 = itbpePolygonEdge->bpe_pbedEdge->bed_pbvxVertex0->bvx_vAbsolute;
-      const FLOAT3D &vVertex1 = itbpePolygonEdge->bpe_pbedEdge->bed_pbvxVertex1->bvx_vAbsolute;
-      // pass the edge to the intersector
-      isIntersector.AddEdge(vVertex0(iMajorAxis1), vVertex0(iMajorAxis2), vVertex1(iMajorAxis1), vVertex1(iMajorAxis2));
-    }
+      // create an intersector
+      CIntersector isIntersector(_vHandle(iMajorAxis1), _vHandle(iMajorAxis2));
+      // for all edges in the polygon
+      FOREACHINSTATICARRAY(bpo.bpo_abpePolygonEdges, CBrushPolygonEdge, itbpePolygonEdge) {
+        // get edge vertices (edge direction is irrelevant here!)
+        const FLOAT3D &vVertex0 = itbpePolygonEdge->bpe_pbedEdge->bed_pbvxVertex0->bvx_vAbsolute;
+        const FLOAT3D &vVertex1 = itbpePolygonEdge->bpe_pbedEdge->bed_pbvxVertex1->bvx_vAbsolute;
+        // pass the edge to the intersector
+        isIntersector.AddEdge(vVertex0(iMajorAxis1), vVertex0(iMajorAxis2), vVertex1(iMajorAxis1), vVertex1(iMajorAxis2));
+      }
 
-    // if the point is not inside polygon
-    if (!isIntersector.IsIntersecting()) {
-      // skip it
-      continue;
-    }
+      // if the point is not inside polygon
+      if (!isIntersector.IsIntersecting()) {
+        // skip it
+        continue;
+      }
 
-    // remember the polygon
-    _pbpoNear = &bpo;
-    _fNearDistance = fDistance;
-    _vNearPoint = vOnPlane;
+      // remember the polygon
+      _pbpoNear = &bpo;
+      _fNearDistance = fDistance;
+      _vNearPoint = vOnPlane;
+    }}
+
+    // for each entity in the sector
+    {FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
+      // if it is a brush
+      if (pen->en_RenderType == CEntity::RT_BRUSH) {
+        // get its brush
+        CBrush3D &brBrush = *pen->en_pbrBrush;
+        // add all sectors in the brush
+        AddAllSectorsOfBrush(&brBrush);
+      }
+    ENDFOR}
   }
-}
-
-// for each entity in the sector
-{
-  FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
-  // if it is a brush
-  if (pen->en_RenderType == CEntity::RT_BRUSH) {
-    // get its brush
-    CBrush3D &brBrush = *pen->en_pbrBrush;
-    // add all sectors in the brush
-    AddAllSectorsOfBrush(&brBrush);
-  }
-  ENDFOR
-}
-}
 }
 
 // Get nearest position of nearest brush polygon to this entity if available.
@@ -152,12 +150,10 @@ CBrushPolygon *CEntity::GetNearestPolygon(FLOAT3D &vPoint, FLOATplane3D &plPlane
   _fNearDistance = UpperLimit(1.0f);
 
   // for each zoning sector that this entity is in
-  {
-    FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+  {FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     // add the sector
     AddSector(pbsc);
-    ENDFOR
-  }
+  ENDFOR}
 
   // start the search
   SearchThroughSectors();

@@ -111,13 +111,12 @@ CEntity *CEntity::FindRemappedEntityPointer(CEntity *penOriginal) {
   }
 
   // try to find valid remap
-  {
-    FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {
-      if (itpr->pr_penOriginal == penOriginal) {
-        return itpr->pr_penCopy;
-      }
+  {FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {
+    if (itpr->pr_penOriginal == penOriginal) {
+      return itpr->pr_penCopy;
     }
-  }
+  }}
+
   // if none found, copy is either null or original
   return _bRemapPointersToNULLs ? NULL : penOriginal;
 }
@@ -392,82 +391,81 @@ void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy
 
   // for each entity to copy
   INDEX iRemap = 0;
-  {FOREACHINDYNAMICCONTAINER(cenToCopy, CEntity, itenToCopy) {CEntity &enToCopy = *itenToCopy;
+  {FOREACHINDYNAMICCONTAINER(cenToCopy, CEntity, itenToCopy) {
+    CEntity &enToCopy = *itenToCopy;
 
-  CEntity *penNew;
-  CPlacement3D plEntity;
-  // thansform the entity placement from the system of other world
-  plEntity = enToCopy.en_plPlacement;
-  plEntity.RelativeToAbsolute(plOtherSystem);
+    CEntity *penNew;
+    CPlacement3D plEntity;
+    // thansform the entity placement from the system of other world
+    plEntity = enToCopy.en_plPlacement;
+    plEntity.RelativeToAbsolute(plOtherSystem);
 
-  // mirror and stretch placement if needed
-  if (_bMirrorAndStretch) {
-    MirrorAndStretchPlacement(plEntity);
-  }
+    // mirror and stretch placement if needed
+    if (_bMirrorAndStretch) {
+      MirrorAndStretchPlacement(plEntity);
+    }
 
-  /*
-   * NOTE: We must use CreateEntity_t() overload with class name instead with class pointer
-   * because the entity class must be obtained by the target world too!
-   */
-  // try to
-  try {
-    // create an entity of same class as the one to copy
-    penNew = CreateEntity_t(plEntity, enToCopy.en_pecClass->GetName());
-    // if not successfull
-  } catch (char *strError) {
-    (void)strError;
-    ASSERT(FALSE); // this should not happen
-    FatalError(TRANS("Cannot CopyEntity():\n%s"), strError);
-  }
+    /*
+     * NOTE: We must use CreateEntity_t() overload with class name instead with class pointer
+     * because the entity class must be obtained by the target world too!
+     */
+    // try to
+    try {
+      // create an entity of same class as the one to copy
+      penNew = CreateEntity_t(plEntity, enToCopy.en_pecClass->GetName());
+      // if not successfull
+    } catch (char *strError) {
+      (void)strError;
+      ASSERT(FALSE); // this should not happen
+      FatalError(TRANS("Cannot CopyEntity():\n%s"), strError);
+    }
 
-  // remember its remap pointer
-  _aprRemaps[iRemap].pr_penOriginal = &enToCopy;
-  _aprRemaps[iRemap].pr_penCopy = penNew;
-  iRemap++;
-}
-}
+    // remember its remap pointer
+    _aprRemaps[iRemap].pr_penOriginal = &enToCopy;
+    _aprRemaps[iRemap].pr_penCopy = penNew;
+    iRemap++;
+  }}
 
-// PASS 2: copy properties
+  // PASS 2: copy properties
 
-// for each of the created entities
-{FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {CEntity *penOriginal = itpr->pr_penOriginal;
-CEntity *penCopy = itpr->pr_penCopy;
+  // for each of the created entities
+  {FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {
+    CEntity *penOriginal = itpr->pr_penOriginal;
+    CEntity *penCopy = itpr->pr_penCopy;
 
-// copy the entity from its original
-penCopy->Copy(*penOriginal, ulCopyFlags);
-// if this is a brush
-if (penOriginal->en_RenderType == CEntity::RT_BRUSH || penOriginal->en_RenderType == CEntity::RT_FIELDBRUSH) {
-  // update the bounding boxes of the brush
-  penCopy->en_pbrBrush->CalculateBoundingBoxes();
-}
-if (_bMirrorAndStretch) {
-  penCopy->MirrorAndStretch(_fStretch, _wmtMirror != WMT_NONE);
-}
-}
-}
+    // copy the entity from its original
+    penCopy->Copy(*penOriginal, ulCopyFlags);
+    // if this is a brush
+    if (penOriginal->en_RenderType == CEntity::RT_BRUSH || penOriginal->en_RenderType == CEntity::RT_FIELDBRUSH) {
+      // update the bounding boxes of the brush
+      penCopy->en_pbrBrush->CalculateBoundingBoxes();
+    }
+    if (_bMirrorAndStretch) {
+      penCopy->MirrorAndStretch(_fStretch, _wmtMirror != WMT_NONE);
+    }
+  }}
 
-// PASS 3: initialize
+  // PASS 3: initialize
 
-// for each of the created entities
-{FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {CEntity *penOriginal = itpr->pr_penOriginal;
-CEntity *penCopy = itpr->pr_penCopy;
-if (_bReinitEntitiesWhileCopying) {
-  // init the new copy
-  penCopy->Initialize();
-} else {
-  penCopy->UpdateSpatialRange();
-  penCopy->FindCollisionInfo();
-  // set spatial clasification
-  penCopy->FindSectorsAroundEntity();
-}
-}
-}
+  // for each of the created entities
+  {FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {
+    CEntity *penOriginal = itpr->pr_penOriginal;
+    CEntity *penCopy = itpr->pr_penCopy;
+    if (_bReinitEntitiesWhileCopying) {
+      // init the new copy
+      penCopy->Initialize();
+    } else {
+      penCopy->UpdateSpatialRange();
+      penCopy->FindCollisionInfo();
+      // set spatial clasification
+      penCopy->FindSectorsAroundEntity();
+    }
+  }}
 
-// PASS 4: find shadows
+  // PASS 4: find shadows
 
-// for each of the created entities
-{
-  FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {
+  // for each of the created entities
+  {FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {
     CEntity *penOriginal = itpr->pr_penOriginal;
     CEntity *penCopy = itpr->pr_penCopy;
 
@@ -490,11 +488,10 @@ if (_bReinitEntitiesWhileCopying) {
 
     // select it
     senCopied.Select(*penCopy);
-  }
-}
+  }}
 
-// make sure someone doesn't reuse the remap array accidentially
-_aprRemaps.Clear();
+  // make sure someone doesn't reuse the remap array accidentially
+  _aprRemaps.Clear();
 }
 
 // Copy one entity from another world into this one.
@@ -506,11 +503,10 @@ CEntity *CWorld::CopyOneEntity(CEntity &enToCopy, const CPlacement3D &plOtherSys
   CEntitySelection senCopied;
   CopyEntities(*enToCopy.en_pwoWorld, cenToCopy, senCopied, plOtherSystem);
 
-  {
-    FOREACHINDYNAMICCONTAINER(senCopied, CEntity, itenCopied) {
-      return itenCopied;
-    }
-  }
+  {FOREACHINDYNAMICCONTAINER(senCopied, CEntity, itenCopied) {
+    return itenCopied;
+  }}
+
   ASSERT(FALSE);
   return NULL;
 }
@@ -577,16 +573,14 @@ CEntity *CWorld::CopyEntityInWorld(CEntity &enOriginal, const CPlacement3D &plOt
   // if descendants should be copied too
   if (bWithDescendants) {
     // for each child of this entity
-    {
-      FOREACHINLIST(CEntity, en_lnInParent, enOriginal.en_lhChildren, itenChild) {
-        // copy it relatively to the new entity
-        CPlacement3D plChild = itenChild->en_plRelativeToParent;
-        plChild.RelativeToAbsoluteSmooth(penNew->en_plPlacement);
-        CEntity *penNewChild = CopyEntityInWorld(*itenChild, plChild, TRUE);
-        // add new child to its new parent
-        penNewChild->SetParent(penNew);
-      }
-    }
+    {FOREACHINLIST(CEntity, en_lnInParent, enOriginal.en_lhChildren, itenChild) {
+      // copy it relatively to the new entity
+      CPlacement3D plChild = itenChild->en_plRelativeToParent;
+      plChild.RelativeToAbsoluteSmooth(penNew->en_plPlacement);
+      CEntity *penNewChild = CopyEntityInWorld(*itenChild, plChild, TRUE);
+      // add new child to its new parent
+      penNewChild->SetParent(penNew);
+    }}
   }
 
   return penNew;
@@ -631,12 +625,10 @@ void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy) {
   extern INDEX cli_bReportPredicted;
   if (cli_bReportPredicted) {
     CPrintF(TRANS("Predicting %d entities:\n"), ctEntities);
-    {
-      FOREACHINDYNAMICCONTAINER(cenToCopy, CEntity, itenToCopy) {
-        CEntity &enToCopy = *itenToCopy;
-        CPrintF("  %s:%s\n", enToCopy.GetClass()->ec_pdecDLLClass->dec_strName, (const char *)enToCopy.GetName());
-      }
-    }
+    {FOREACHINDYNAMICCONTAINER(cenToCopy, CEntity, itenToCopy) {
+      CEntity &enToCopy = *itenToCopy;
+      CPrintF("  %s:%s\n", enToCopy.GetClass()->ec_pdecDLLClass->dec_strName, (const char *)enToCopy.GetName());
+    }}
   }
 
   // clear current tick to prevent timer setting from assertions
@@ -653,22 +645,20 @@ void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy) {
 
   // for each entity to copy
   INDEX iRemap = 0;
-  {
-    FOREACHINDYNAMICCONTAINER(cenToCopy, CEntity, itenToCopy) {
-      CEntity &enToCopy = *itenToCopy;
+  {FOREACHINDYNAMICCONTAINER(cenToCopy, CEntity, itenToCopy) {
+    CEntity &enToCopy = *itenToCopy;
+    CEntity *penNew;
 
-      CEntity *penNew;
+    // create an entity of same class as the one to copy
+    penNew = CreateEntity(enToCopy.en_plPlacement, enToCopy.en_pecClass);
 
-      // create an entity of same class as the one to copy
-      penNew = CreateEntity(enToCopy.en_plPlacement, enToCopy.en_pecClass);
+    // remember its remap pointer
+    _aprRemaps[iRemap].pr_penOriginal = &enToCopy;
+    _aprRemaps[iRemap].pr_penCopy = penNew;
+    iRemap++;
+    _ctPredictorEntities++;
+  }}
 
-      // remember its remap pointer
-      _aprRemaps[iRemap].pr_penOriginal = &enToCopy;
-      _aprRemaps[iRemap].pr_penCopy = penNew;
-      iRemap++;
-      _ctPredictorEntities++;
-    }
-  }
   // unfound pointers must be kept unremapped
   _bRemapPointersToNULLs = FALSE;
 
@@ -676,50 +666,47 @@ void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy) {
 
   // for each of the created entities
   {FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {CEntity *penOriginal = itpr->pr_penOriginal;
-  CEntity *penCopy = itpr->pr_penCopy;
+    CEntity *penCopy = itpr->pr_penCopy;
 
-  // copy the entity from its original
-  penCopy->Copy(*penOriginal, ulCopyFlags);
-  // if this is a brush
-  if (penOriginal->en_RenderType == CEntity::RT_BRUSH || penOriginal->en_RenderType == CEntity::RT_FIELDBRUSH) {
-    ASSERT(FALSE); // should we allow prediction of brushes?
-    // update the bounding boxes of the brush
-    // penCopy->en_pbrBrush->CalculateBoundingBoxes();
-  }
-}
-}
+    // copy the entity from its original
+    penCopy->Copy(*penOriginal, ulCopyFlags);
+    // if this is a brush
+    if (penOriginal->en_RenderType == CEntity::RT_BRUSH || penOriginal->en_RenderType == CEntity::RT_FIELDBRUSH) {
+      ASSERT(FALSE); // should we allow prediction of brushes?
+      // update the bounding boxes of the brush
+      // penCopy->en_pbrBrush->CalculateBoundingBoxes();
+    }
+  }}
 
-// PASS 3: initialize
+  // PASS 3: initialize
 
-// for each of the created entities
-{FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {CEntity *penOriginal = itpr->pr_penOriginal;
-CEntity *penCopy = itpr->pr_penCopy;
+  // for each of the created entities
+  {FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {
+    CEntity *penOriginal = itpr->pr_penOriginal;
+    CEntity *penCopy = itpr->pr_penCopy;
 
-// copy spatial classification
-penCopy->en_fSpatialClassificationRadius = penOriginal->en_fSpatialClassificationRadius;
-penCopy->en_boxSpatialClassification = penOriginal->en_boxSpatialClassification;
-// copy collision info
-penCopy->CopyCollisionInfo(*penOriginal);
-// for each sector around the original
-{
-  FOREACHSRCOFDST(penOriginal->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
-  // copy the link
-  if (penOriginal->en_RenderType == CEntity::RT_BRUSH || penOriginal->en_RenderType == CEntity::RT_FIELDBRUSH
-      || penOriginal->en_RenderType == CEntity::RT_TERRAIN) { // brushes first
-    AddRelationPairHeadHead(pbsc->bsc_rsEntities, penCopy->en_rdSectors);
-  } else {
-    AddRelationPairTailTail(pbsc->bsc_rsEntities, penCopy->en_rdSectors);
-  }
-  ENDFOR
-}
-}
-}
+    // copy spatial classification
+    penCopy->en_fSpatialClassificationRadius = penOriginal->en_fSpatialClassificationRadius;
+    penCopy->en_boxSpatialClassification = penOriginal->en_boxSpatialClassification;
+    // copy collision info
+    penCopy->CopyCollisionInfo(*penOriginal);
 
-// PASS 4: find shadows
+    // for each sector around the original
+    {FOREACHSRCOFDST(penOriginal->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+      // copy the link
+      if (penOriginal->en_RenderType == CEntity::RT_BRUSH || penOriginal->en_RenderType == CEntity::RT_FIELDBRUSH
+          || penOriginal->en_RenderType == CEntity::RT_TERRAIN) { // brushes first
+        AddRelationPairHeadHead(pbsc->bsc_rsEntities, penCopy->en_rdSectors);
+      } else {
+        AddRelationPairTailTail(pbsc->bsc_rsEntities, penCopy->en_rdSectors);
+      }
+    ENDFOR}
+  }}
 
-// for each of the created entities
-{
-  FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {
+  // PASS 4: find shadows
+
+  // for each of the created entities
+  {FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {
     CEntity *penOriginal = itpr->pr_penOriginal;
     CEntity *penCopy = itpr->pr_penCopy;
 
@@ -738,14 +725,13 @@ penCopy->CopyCollisionInfo(*penOriginal);
         pls->FindShadowLayers(FALSE);
       }
     }
-  }
-}
+  }}
 
-// make sure someone doesn't reuse the remap array accidentially
-_aprRemaps.Clear();
+  // make sure someone doesn't reuse the remap array accidentially
+  _aprRemaps.Clear();
 
-_bRemapPointersToNULLs = TRUE;
+  _bRemapPointersToNULLs = TRUE;
 
-// return current tick
-_pTimer->SetGameTick(llCurrentTickOld);
+  // return current tick
+  _pTimer->SetGameTick(llCurrentTickOld);
 }

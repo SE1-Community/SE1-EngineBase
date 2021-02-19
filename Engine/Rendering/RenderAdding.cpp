@@ -546,8 +546,7 @@ void CRenderer::AddEntitiesInSector(CBrushSector *pbscSectorInside) {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_ADDENTITIESINSECTOR);
 
   // for all entities in the sector
-  {
-    FOREACHDSTOFSRC(pbscSectorInside->bsc_rsEntities, CEntity, en_rdSectors, pen)
+  {FOREACHDSTOFSRC(pbscSectorInside->bsc_rsEntities, CEntity, en_rdSectors, pen)
     // if it is brush
     if (pen->en_RenderType == CEntity::RT_BRUSH
         || (pen->en_RenderType == CEntity::RT_FIELDBRUSH && _wrpWorldRenderPrefs.IsFieldBrushesOn())) {
@@ -565,8 +564,8 @@ void CRenderer::AddEntitiesInSector(CBrushSector *pbscSectorInside) {
     } else if (pen->en_RenderType == CEntity::RT_TERRAIN) {
       AddTerrainEntity(pen);
     }
-    ENDFOR
-  }
+  ENDFOR}
+
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDENTITIESINSECTOR);
 };
 
@@ -663,15 +662,13 @@ void CRenderer::AddZoningSectorsAroundEntity(CEntity *pen, const FLOAT3D &vEyesP
 
   CListHead lhToAdd;
   // for all sectors this entity is in
-  {
-    FOREACHSRCOFDST(pen->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
+  {FOREACHSRCOFDST(pen->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     // if the sector is not active
     if (!pbsc->bsc_lnInActiveSectors.IsLinked()) {
       // add to list of sectors to add
       lhToAdd.AddTail(pbsc->bsc_lnInActiveSectors);
     }
-    ENDFOR
-  }
+  ENDFOR}
 
   // for each active sector
   while (!lhToAdd.IsEmpty()) {
@@ -693,8 +690,7 @@ void CRenderer::AddZoningSectorsAroundEntity(CEntity *pen, const FLOAT3D &vEyesP
         continue;
       }
       // for each sector related to the portal
-      {
-        FOREACHDSTOFSRC(pbpo->bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbscRelated)
+      {FOREACHDSTOFSRC(pbpo->bpo_rsOtherSideSectors, CBrushSector, bsc_rdOtherSidePortals, pbscRelated)
         // if the sector is not active
         if (!pbscRelated->bsc_lnInActiveSectors.IsLinked()) {
           // if the view sphere is in the sector
@@ -703,8 +699,7 @@ void CRenderer::AddZoningSectorsAroundEntity(CEntity *pen, const FLOAT3D &vEyesP
             lhToAdd.AddTail(pbscRelated->bsc_lnInActiveSectors);
           }
         }
-        ENDFOR
-      }
+      ENDFOR}
     }
   }
   _pfRenderProfile.StopTimer(CRenderProfile::PTI_ADDZONINGSECTORS);

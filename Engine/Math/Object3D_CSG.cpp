@@ -414,122 +414,116 @@ void CObjectCSG::DoCSGSplitting(CObject3D &obResult, CObject3D &obA, INDEX iSect
                                 CObject3D &obB, INDEX iSectorOffsetB) {
   obResult.ob_aoscSectors.Lock();
   // for each sector in A
-  {
-    FOREACHINDYNAMICARRAY(obA.ob_aoscSectors, CObjectSector, itoscA) {
-      // make sector reference in result
-      oc_poscSectorA = &obResult.ob_aoscSectors[iSectorOffsetA + itoscA->osc_Index];
-      // copy sector properties from operand A to result
-      oc_poscSectorA->osc_colColor = itoscA->osc_colColor;
-      oc_poscSectorA->osc_colAmbient = itoscA->osc_colAmbient;
-      oc_poscSectorA->osc_ulFlags[0] = itoscA->osc_ulFlags[0];
-      oc_poscSectorA->osc_ulFlags[1] = itoscA->osc_ulFlags[1];
-      oc_poscSectorA->osc_ulFlags[2] = itoscA->osc_ulFlags[2];
-      oc_poscSectorA->osc_strName = itoscA->osc_strName;
+  {FOREACHINDYNAMICARRAY(obA.ob_aoscSectors, CObjectSector, itoscA) {
+    // make sector reference in result
+    oc_poscSectorA = &obResult.ob_aoscSectors[iSectorOffsetA + itoscA->osc_Index];
+    // copy sector properties from operand A to result
+    oc_poscSectorA->osc_colColor = itoscA->osc_colColor;
+    oc_poscSectorA->osc_colAmbient = itoscA->osc_colAmbient;
+    oc_poscSectorA->osc_ulFlags[0] = itoscA->osc_ulFlags[0];
+    oc_poscSectorA->osc_ulFlags[1] = itoscA->osc_ulFlags[1];
+    oc_poscSectorA->osc_ulFlags[2] = itoscA->osc_ulFlags[2];
+    oc_poscSectorA->osc_strName = itoscA->osc_strName;
 
-      // for each of polygons in that sector
-      {
-        FOREACHINDYNAMICARRAY(itoscA->osc_aopoPolygons, CObjectPolygon, itopoA) {
-          oc_popoA = itopoA;
-          // prepare appropriate actions for it
-          enum CSGAction csgaInside, csgaOutside, csgaBorderInside, csgaBorderOutside, csgaSkip;
-          if (itopoA->opo_ulFlags & OPOF_PORTAL) {
-            csgaInside = pcsgotA->cot_PortalA1A2InsideB1;
-            csgaOutside = pcsgotA->cot_PortalA1A2OutsideB;
-            csgaBorderInside = pcsgotA->cot_PortalA1A2OnB1BorderInside;
-            csgaBorderOutside = pcsgotA->cot_PortalA1A2OnB1BorderOutside;
-            csgaSkip = CSGA_PortalA1A2;
-          } else {
-            csgaInside = pcsgotA->cot_WallA1InsideB1;
-            csgaOutside = pcsgotA->cot_WallA1OutsideB;
-            csgaBorderInside = pcsgotA->cot_WallA1OnB1BorderInside;
-            csgaBorderOutside = pcsgotA->cot_WallA1OnB1BorderOutside;
-            csgaSkip = CSGA_WallA1;
-          }
-
-          // create temporary array for holding remaining edges
-          CDynamicArray<DOUBLEbspedge3D> abedRemaining;
-          // fill the array with edges from the polygon
-          PolygonEdgesToBSPEdges(itopoA->opo_PolygonEdges, abedRemaining);
-
-          // create wall A1 polygon
-          oc_popoWallA1 = NULL;
-          oc_popoWallA1_2 = NULL;
-
-          // create portal A1-A2 polygon
-          oc_popoPortalA1A2 = NULL;
-          oc_popoPortalA1A2_2 = NULL;
-
-          // if the polygon should be skipped
-          if (oc_bCSGIngoringEnabled && (itopoA->opo_ulFlags & OPOF_IGNOREDBYCSG)) {
-            // add entire polygon according to _skip_ action
-            AddEdgeArrayAccordingToAction(abedRemaining, csgaSkip);
-            // skip splitting
-            continue;
-          }
-
-          // for each sector in B
-          {
-            FOREACHINDYNAMICARRAY(obB.ob_aoscSectors, CObjectSector, itoscB) {
-              // clear array of proceeding edges
-              oc_abedProceeding.Clear();
-
-              // make sector references in result
-              oc_poscSectorB = &obResult.ob_aoscSectors[iSectorOffsetB + itoscB->osc_Index];
-              // copy sector properties from operand B to result
-              oc_poscSectorB->osc_colColor = itoscB->osc_colColor;
-              oc_poscSectorB->osc_colAmbient = itoscB->osc_colAmbient;
-              oc_poscSectorB->osc_ulFlags[0] = itoscB->osc_ulFlags[0];
-              oc_poscSectorB->osc_ulFlags[1] = itoscB->osc_ulFlags[1];
-              oc_poscSectorB->osc_ulFlags[2] = itoscB->osc_ulFlags[2];
-              oc_poscSectorB->osc_strName = itoscB->osc_strName;
-
-              // create portal A1-B1 polygon
-              oc_popoPortalA1B1 = NULL;
-
-              // create portal B1-A1 polygon
-              oc_popoPortalB1A1 = NULL;
-
-              // create wall B1 polygon
-              oc_popoWallB1 = NULL;
-
-              // create portal B1-B2 polygon
-              oc_popoPortalB1B2 = NULL;
-
-              // create a bsp polygon from first temporary array
-              DOUBLEbsppolygon3D bpoA(*itopoA->opo_Plane, abedRemaining, (ULONG)itopoA->opo_Plane);
-
-              // create a BSP cutter for B's sector BSP and A's polygon
-              DOUBLEbspcutter3D bcCutter(bpoA, *itoscB->osc_BSPTree.bt_pbnRoot);
-              // optimize all parts of the polygon
-              DOUBLEbspedge3D::OptimizeBSPEdges(bcCutter.bc_abedInside);
-              DOUBLEbspedge3D::OptimizeBSPEdges(bcCutter.bc_abedBorderInside);
-              DOUBLEbspedge3D::OptimizeBSPEdges(bcCutter.bc_abedBorderOutside);
-              DOUBLEbspedge3D::OptimizeBSPEdges(bcCutter.bc_abedOutside);
-
-              // add all parts that are inside according to _inside_ action
-              AddEdgeArrayAccordingToAction(bcCutter.bc_abedInside, csgaInside);
-
-              // add all parts that are on border inside according to _on_border_inside_ action
-              AddEdgeArrayAccordingToAction(bcCutter.bc_abedBorderInside, csgaBorderInside);
-
-              // add all parts that are on border outside according to _on_border_outside_ action
-              AddEdgeArrayAccordingToAction(bcCutter.bc_abedBorderOutside, csgaBorderOutside);
-
-              // clear the temporary array
-              abedRemaining.Clear();
-
-              // move all parts that are outside or proceeding to the temporary array
-              abedRemaining.MoveArray(bcCutter.bc_abedOutside);
-              abedRemaining.MoveArray(oc_abedProceeding);
-            }
-          }
-
-          // add all parts that are still remaining according to _outside_ action
-          AddEdgeArrayAccordingToAction(abedRemaining, csgaOutside);
-        }
+    // for each of polygons in that sector
+    {FOREACHINDYNAMICARRAY(itoscA->osc_aopoPolygons, CObjectPolygon, itopoA) {
+      oc_popoA = itopoA;
+      // prepare appropriate actions for it
+      enum CSGAction csgaInside, csgaOutside, csgaBorderInside, csgaBorderOutside, csgaSkip;
+      if (itopoA->opo_ulFlags & OPOF_PORTAL) {
+        csgaInside = pcsgotA->cot_PortalA1A2InsideB1;
+        csgaOutside = pcsgotA->cot_PortalA1A2OutsideB;
+        csgaBorderInside = pcsgotA->cot_PortalA1A2OnB1BorderInside;
+        csgaBorderOutside = pcsgotA->cot_PortalA1A2OnB1BorderOutside;
+        csgaSkip = CSGA_PortalA1A2;
+      } else {
+        csgaInside = pcsgotA->cot_WallA1InsideB1;
+        csgaOutside = pcsgotA->cot_WallA1OutsideB;
+        csgaBorderInside = pcsgotA->cot_WallA1OnB1BorderInside;
+        csgaBorderOutside = pcsgotA->cot_WallA1OnB1BorderOutside;
+        csgaSkip = CSGA_WallA1;
       }
-    }
-  }
+
+      // create temporary array for holding remaining edges
+      CDynamicArray<DOUBLEbspedge3D> abedRemaining;
+      // fill the array with edges from the polygon
+      PolygonEdgesToBSPEdges(itopoA->opo_PolygonEdges, abedRemaining);
+
+      // create wall A1 polygon
+      oc_popoWallA1 = NULL;
+      oc_popoWallA1_2 = NULL;
+
+      // create portal A1-A2 polygon
+      oc_popoPortalA1A2 = NULL;
+      oc_popoPortalA1A2_2 = NULL;
+
+      // if the polygon should be skipped
+      if (oc_bCSGIngoringEnabled && (itopoA->opo_ulFlags & OPOF_IGNOREDBYCSG)) {
+        // add entire polygon according to _skip_ action
+        AddEdgeArrayAccordingToAction(abedRemaining, csgaSkip);
+        // skip splitting
+        continue;
+      }
+
+      // for each sector in B
+      {FOREACHINDYNAMICARRAY(obB.ob_aoscSectors, CObjectSector, itoscB) {
+        // clear array of proceeding edges
+        oc_abedProceeding.Clear();
+
+        // make sector references in result
+        oc_poscSectorB = &obResult.ob_aoscSectors[iSectorOffsetB + itoscB->osc_Index];
+        // copy sector properties from operand B to result
+        oc_poscSectorB->osc_colColor = itoscB->osc_colColor;
+        oc_poscSectorB->osc_colAmbient = itoscB->osc_colAmbient;
+        oc_poscSectorB->osc_ulFlags[0] = itoscB->osc_ulFlags[0];
+        oc_poscSectorB->osc_ulFlags[1] = itoscB->osc_ulFlags[1];
+        oc_poscSectorB->osc_ulFlags[2] = itoscB->osc_ulFlags[2];
+        oc_poscSectorB->osc_strName = itoscB->osc_strName;
+
+        // create portal A1-B1 polygon
+        oc_popoPortalA1B1 = NULL;
+
+        // create portal B1-A1 polygon
+        oc_popoPortalB1A1 = NULL;
+
+        // create wall B1 polygon
+        oc_popoWallB1 = NULL;
+
+        // create portal B1-B2 polygon
+        oc_popoPortalB1B2 = NULL;
+
+        // create a bsp polygon from first temporary array
+        DOUBLEbsppolygon3D bpoA(*itopoA->opo_Plane, abedRemaining, (ULONG)itopoA->opo_Plane);
+
+        // create a BSP cutter for B's sector BSP and A's polygon
+        DOUBLEbspcutter3D bcCutter(bpoA, *itoscB->osc_BSPTree.bt_pbnRoot);
+        // optimize all parts of the polygon
+        DOUBLEbspedge3D::OptimizeBSPEdges(bcCutter.bc_abedInside);
+        DOUBLEbspedge3D::OptimizeBSPEdges(bcCutter.bc_abedBorderInside);
+        DOUBLEbspedge3D::OptimizeBSPEdges(bcCutter.bc_abedBorderOutside);
+        DOUBLEbspedge3D::OptimizeBSPEdges(bcCutter.bc_abedOutside);
+
+        // add all parts that are inside according to _inside_ action
+        AddEdgeArrayAccordingToAction(bcCutter.bc_abedInside, csgaInside);
+
+        // add all parts that are on border inside according to _on_border_inside_ action
+        AddEdgeArrayAccordingToAction(bcCutter.bc_abedBorderInside, csgaBorderInside);
+
+        // add all parts that are on border outside according to _on_border_outside_ action
+        AddEdgeArrayAccordingToAction(bcCutter.bc_abedBorderOutside, csgaBorderOutside);
+
+        // clear the temporary array
+        abedRemaining.Clear();
+
+        // move all parts that are outside or proceeding to the temporary array
+        abedRemaining.MoveArray(bcCutter.bc_abedOutside);
+        abedRemaining.MoveArray(oc_abedProceeding);
+      }}
+
+      // add all parts that are still remaining according to _outside_ action
+      AddEdgeArrayAccordingToAction(abedRemaining, csgaOutside);
+    }}
+  }}
 
   obResult.ob_aoscSectors.Unlock();
 }

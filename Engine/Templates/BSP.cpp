@@ -258,27 +258,26 @@ void BSPEdge<Type, iDimensions>::RemoveMarkedBSPEdges(CDynamicArray<BSPEdge<Type
   typedef BSPEdge<Type, iDimensions> edge_t; // local declaration, to fix macro expansion in FOREACHINDYNAMICARRAY
   // conut edges left
   INDEX ctEdgesLeft = 0;
-  {
-    FOREACHINDYNAMICARRAY(abed, edge_t, itbed) {
-      if (itbed->bed_ulEdgeTag != 0) {
-        ctEdgesLeft++;
-      }
+  {FOREACHINDYNAMICARRAY(abed, edge_t, itbed) {
+    if (itbed->bed_ulEdgeTag != 0) {
+      ctEdgesLeft++;
     }
-  }
+  }}
+
   // make a copy of array without removed edges
   CDynamicArray<BSPEdge<Type, iDimensions>> abed2;
   abed2.New(ctEdgesLeft);
   abed2.Lock();
+
   INDEX iedNew = 0;
-  {
-    FOREACHINDYNAMICARRAY(abed, edge_t, itbed) {
-      edge_t &bed = *itbed;
-      if (bed.bed_ulEdgeTag != 0) {
-        abed2[iedNew] = bed;
-        iedNew++;
-      }
+  {FOREACHINDYNAMICARRAY(abed, edge_t, itbed) {
+    edge_t &bed = *itbed;
+    if (bed.bed_ulEdgeTag != 0) {
+      abed2[iedNew] = bed;
+      iedNew++;
     }
-  }
+  }}
+
   abed2.Unlock();
   // use that copy instead the original array
   abed.Clear();
@@ -300,66 +299,62 @@ void BSPEdge<Type, iDimensions>::OptimizeBSPEdges(CDynamicArray<BSPEdge<Type, iD
   do {
     bSomeJoined = FALSE;
     // for each edge
-    {
-      FOREACHINDYNAMICARRAY(abed, edge_t, itbed1) {
-        edge_t &bed1 = *itbed1;
-        // if it is already marked
-        if (bed1.bed_ulEdgeTag == 0) {
-          // skip it
-          continue;
-        }
-        // if it is dummy edge
-        if (bed1.bed_vVertex0 == bed1.bed_vVertex1) {
-          // mark it for removal
-          bSomeJoined = TRUE;
-          bed1.bed_ulEdgeTag = 0;
-          // skip it
-          continue;
-        }
+    {FOREACHINDYNAMICARRAY(abed, edge_t, itbed1) {
+      edge_t &bed1 = *itbed1;
+      // if it is already marked
+      if (bed1.bed_ulEdgeTag == 0) {
+        // skip it
+        continue;
+      }
+      // if it is dummy edge
+      if (bed1.bed_vVertex0 == bed1.bed_vVertex1) {
+        // mark it for removal
+        bSomeJoined = TRUE;
+        bed1.bed_ulEdgeTag = 0;
+        // skip it
+        continue;
+      }
 
-        // for each other edge
-        {
-          FOREACHINDYNAMICARRAY(abed, edge_t, itbed2) {
-            edge_t &bed2 = *itbed2;
-            if (&bed1 == &bed2) {
-              continue;
-            }
-            // if it is already marked
-            if (bed2.bed_ulEdgeTag == 0) {
-              // skip it
-              continue;
-            }
-            // if they originate from same edge (plane)
-            if (bed1.bed_ulEdgeTag == bed2.bed_ulEdgeTag) {
-              // if they are complemented
-              if (bed1.bed_vVertex0 == bed2.bed_vVertex1 && bed1.bed_vVertex1 == bed2.bed_vVertex0) {
-                // marked them both
-                bSomeJoined = TRUE;
-                bed1.bed_ulEdgeTag = 0;
-                bed2.bed_ulEdgeTag = 0;
-                // skip them both
-                break;
-              }
-              // if second one continues after first one
-              if (bed1.bed_vVertex1 == bed2.bed_vVertex0) {
-                // extend end of first edge to the end of second one
-                bed1.bed_vVertex1 = bed2.bed_vVertex1;
-                bSomeJoined = TRUE;
-                // marked second edge
-                bed2.bed_ulEdgeTag = 0;
-                // if second one continues before first one
-              } else if (bed1.bed_vVertex0 == bed2.bed_vVertex1) {
-                // extend start of first edge to the start of second one
-                bed1.bed_vVertex0 = bed2.bed_vVertex0;
-                bSomeJoined = TRUE;
-                // marked second edge
-                bed2.bed_ulEdgeTag = 0;
-              }
-            }
+      // for each other edge
+      {FOREACHINDYNAMICARRAY(abed, edge_t, itbed2) {
+        edge_t &bed2 = *itbed2;
+        if (&bed1 == &bed2) {
+          continue;
+        }
+        // if it is already marked
+        if (bed2.bed_ulEdgeTag == 0) {
+          // skip it
+          continue;
+        }
+        // if they originate from same edge (plane)
+        if (bed1.bed_ulEdgeTag == bed2.bed_ulEdgeTag) {
+          // if they are complemented
+          if (bed1.bed_vVertex0 == bed2.bed_vVertex1 && bed1.bed_vVertex1 == bed2.bed_vVertex0) {
+            // marked them both
+            bSomeJoined = TRUE;
+            bed1.bed_ulEdgeTag = 0;
+            bed2.bed_ulEdgeTag = 0;
+            // skip them both
+            break;
+          }
+          // if second one continues after first one
+          if (bed1.bed_vVertex1 == bed2.bed_vVertex0) {
+            // extend end of first edge to the end of second one
+            bed1.bed_vVertex1 = bed2.bed_vVertex1;
+            bSomeJoined = TRUE;
+            // marked second edge
+            bed2.bed_ulEdgeTag = 0;
+            // if second one continues before first one
+          } else if (bed1.bed_vVertex0 == bed2.bed_vVertex1) {
+            // extend start of first edge to the start of second one
+            bed1.bed_vVertex0 = bed2.bed_vVertex0;
+            bSomeJoined = TRUE;
+            // marked second edge
+            bed2.bed_ulEdgeTag = 0;
           }
         }
-      }
-    }
+      }}
+    }}
     // while some edges can be joined
   } while (bSomeJoined);
 
@@ -762,13 +757,10 @@ BOOL BSPCutter<Type, iDimensions>::SplitPolygon(BSPPolygon<Type, iDimensions> &b
 
     typedef BSPEdge<Type, iDimensions> edge_t; // local declaration, to fix macro expansion in FOREACHINDYNAMICARRAY
     // for each edge in polygon
-    {
-      FOREACHINDYNAMICARRAY(bpoPolygon.bpo_abedPolygonEdges, edge_t, itbed) {
-        // split the edge
-        SplitEdge(itbed->bed_vVertex0, itbed->bed_vVertex1, itbed->bed_ulEdgeTag, plSplitPlane, bpoFront, bpoBack, bvcFront,
-                  bvcBack);
-      }
-    }
+    {FOREACHINDYNAMICARRAY(bpoPolygon.bpo_abedPolygonEdges, edge_t, itbed) {
+      // split the edge
+      SplitEdge(itbed->bed_vVertex0, itbed->bed_vVertex1, itbed->bed_ulEdgeTag, plSplitPlane, bpoFront, bpoBack, bvcFront, bvcBack);
+    }}
 
     // sort vertex containers
     bvcFront.Sort();
@@ -947,43 +939,41 @@ BSPTree<Type, iDimensions>::CreateSubTree(CDynamicArray<BSPPolygon<Type, iDimens
   CDynamicArray<BSPPolygon<Type, iDimensions>> abpoFront, abpoBack;
 
   // for each polygon in this array
-  {
-    FOREACHINDYNAMICARRAY(abpoPolygons, polygon_t, itbpo) {
-      BSPPolygon<Type, iDimensions> bpoFront, bpoBack;
+  {FOREACHINDYNAMICARRAY(abpoPolygons, polygon_t, itbpo) {
+    BSPPolygon<Type, iDimensions> bpoFront, bpoBack;
 
-      // tags must be valid
-      ASSERT(itbpo->bpo_ulPlaneTag != -1);
-      // if the polygon has plane tag same as the tag of the splitter
-      if (itbpo->bpo_ulPlaneTag == bpoSplitter.bpo_ulPlaneTag) {
-        // they are assumed coplanar, so skip it
-        continue;
+    // tags must be valid
+    ASSERT(itbpo->bpo_ulPlaneTag != -1);
+    // if the polygon has plane tag same as the tag of the splitter
+    if (itbpo->bpo_ulPlaneTag == bpoSplitter.bpo_ulPlaneTag) {
+      // they are assumed coplanar, so skip it
+      continue;
+    }
+
+    // split it by the plane of splitter polygon
+    BOOL bOnPlane
+      = BSPCutter<Type, iDimensions>::SplitPolygon(itbpo.Current(), bpoSplitter, bpoSplitter.bpo_ulPlaneTag, bpoFront, bpoBack);
+
+    // if the polygon is not coplanar with the splitter
+    if (!bOnPlane) {
+      // if there are some parts that are front
+      if (bpoFront.bpo_abedPolygonEdges.Count() > 0) {
+        // create a polygon in front array and add all inside parts to it
+        BSPPolygon<Type, iDimensions> *pbpo = abpoFront.New(1);
+        pbpo->bpo_abedPolygonEdges.MoveArray(bpoFront.bpo_abedPolygonEdges);
+        *(Plane<Type, iDimensions> *)pbpo = itbpo.Current();
+        pbpo->bpo_ulPlaneTag = itbpo->bpo_ulPlaneTag;
       }
-
-      // split it by the plane of splitter polygon
-      BOOL bOnPlane
-        = BSPCutter<Type, iDimensions>::SplitPolygon(itbpo.Current(), bpoSplitter, bpoSplitter.bpo_ulPlaneTag, bpoFront, bpoBack);
-
-      // if the polygon is not coplanar with the splitter
-      if (!bOnPlane) {
-        // if there are some parts that are front
-        if (bpoFront.bpo_abedPolygonEdges.Count() > 0) {
-          // create a polygon in front array and add all inside parts to it
-          BSPPolygon<Type, iDimensions> *pbpo = abpoFront.New(1);
-          pbpo->bpo_abedPolygonEdges.MoveArray(bpoFront.bpo_abedPolygonEdges);
-          *(Plane<Type, iDimensions> *)pbpo = itbpo.Current();
-          pbpo->bpo_ulPlaneTag = itbpo->bpo_ulPlaneTag;
-        }
-        // if there are some parts that are back
-        if (bpoBack.bpo_abedPolygonEdges.Count() > 0) {
-          // create a polygon in back array and add all outside parts to it
-          BSPPolygon<Type, iDimensions> *pbpo = abpoBack.New(1);
-          pbpo->bpo_abedPolygonEdges.MoveArray(bpoBack.bpo_abedPolygonEdges);
-          *(Plane<Type, iDimensions> *)pbpo = itbpo.Current();
-          pbpo->bpo_ulPlaneTag = itbpo->bpo_ulPlaneTag;
-        }
+      // if there are some parts that are back
+      if (bpoBack.bpo_abedPolygonEdges.Count() > 0) {
+        // create a polygon in back array and add all outside parts to it
+        BSPPolygon<Type, iDimensions> *pbpo = abpoBack.New(1);
+        pbpo->bpo_abedPolygonEdges.MoveArray(bpoBack.bpo_abedPolygonEdges);
+        *(Plane<Type, iDimensions> *)pbpo = itbpo.Current();
+        pbpo->bpo_ulPlaneTag = itbpo->bpo_ulPlaneTag;
       }
     }
-  }
+  }}
 
   // free this array (to not consume too much memory)
   abpoPolygons.Clear();

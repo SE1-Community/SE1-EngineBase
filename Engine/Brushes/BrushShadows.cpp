@@ -361,34 +361,35 @@ void CBrushShadowMap::WriteLayers_t(CTStream *pstrm) // throw char *
 
   // write number of layers
   INDEX ctLayers = 0;
-  {FOREACHINLIST(CBrushShadowLayer, bsl_lnInShadowMap, bsm_lhLayers,
-                 itbsl) {if (itbsl->bsl_plsLightSource->ls_ulFlags & LSF_NONPERSISTENT) {continue;
-}
-ctLayers++;
-}
-}
-*pstrm << ctLayers;
-// for each shadow layer
-FOREACHINLIST(CBrushShadowLayer, bsl_lnInShadowMap, bsm_lhLayers, itbsl) {
-  CBrushShadowLayer &bsl = *itbsl;
-  if (itbsl->bsl_plsLightSource->ls_ulFlags & LSF_NONPERSISTENT) {
-    continue;
+  {FOREACHINLIST(CBrushShadowLayer, bsl_lnInShadowMap, bsm_lhLayers, itbsl) {
+    if (itbsl->bsl_plsLightSource->ls_ulFlags & LSF_NONPERSISTENT) {
+      continue;
+    }
+    ctLayers++;
+  }}
+
+  *pstrm << ctLayers;
+  // for each shadow layer
+  FOREACHINLIST(CBrushShadowLayer, bsl_lnInShadowMap, bsm_lhLayers, itbsl) {
+    CBrushShadowLayer &bsl = *itbsl;
+    if (itbsl->bsl_plsLightSource->ls_ulFlags & LSF_NONPERSISTENT) {
+      continue;
+    }
+    // write the layer data
+    *pstrm << bsl.bsl_ulFlags; // flags
+    if (bsl.bsl_pubLayer == NULL) {
+      *pstrm << SLONG(0);
+    } else {
+      *pstrm << bsl.bsl_slSizeInPixels;
+      SLONG slLayerSize = (bsl.bsl_slSizeInPixels + 7) / 8;
+      pstrm->Write_t(bsl.bsl_pubLayer, slLayerSize); // the bit packed layer mask
+    }
+    // write layer rectangle
+    *pstrm << bsl.bsl_pixMinU;
+    *pstrm << bsl.bsl_pixMinV;
+    *pstrm << bsl.bsl_pixSizeU;
+    *pstrm << bsl.bsl_pixSizeV;
   }
-  // write the layer data
-  *pstrm << bsl.bsl_ulFlags; // flags
-  if (bsl.bsl_pubLayer == NULL) {
-    *pstrm << SLONG(0);
-  } else {
-    *pstrm << bsl.bsl_slSizeInPixels;
-    SLONG slLayerSize = (bsl.bsl_slSizeInPixels + 7) / 8;
-    pstrm->Write_t(bsl.bsl_pubLayer, slLayerSize); // the bit packed layer mask
-  }
-  // write layer rectangle
-  *pstrm << bsl.bsl_pixMinU;
-  *pstrm << bsl.bsl_pixMinV;
-  *pstrm << bsl.bsl_pixSizeU;
-  *pstrm << bsl.bsl_pixSizeV;
-}
 }
 
 // constructor
@@ -533,8 +534,9 @@ void CBrushShadowMap::FindLightRectangle(CLightSource &ls, class CLightRectangle
 void CBrushShadowMap::CheckLayersUpToDate(void) {
   // do nothing if the shadow map is not cached at all or hasn't got any animating lights
   if (((sm_pulDynamicShadowMap == NULL || (sm_ulFlags & SMF_DYNAMICBLACK)) && !(sm_ulFlags & SMF_ANIMATINGLIGHTS))
-      || sm_pulCachedShadowMap == NULL)
+      || sm_pulCachedShadowMap == NULL) {
     return;
+  }
 
   // for each layer
   FOREACHINLIST(CBrushShadowLayer, bsl_lnInShadowMap, bsm_lhLayers, itbsl) { // ignore if the layer is all dark
@@ -568,6 +570,7 @@ BOOL CBrushShadowMap::HasDynamicLayers(void) {
     if (ls.ls_ulFlags & LSF_DYNAMIC)
       return TRUE;
   }
+
   // hasn't
   return FALSE;
 }
@@ -738,8 +741,9 @@ SLONG CBrushShadowMap::GetUsedMemory(void) {
   FOREACHINLIST(CBrushShadowLayer, bsl_lnInShadowMap, bsm_lhLayers, itbsl) { // count shadow layers
     CBrushShadowLayer &bsl = *itbsl;
     slUsedMemory += sizeof(CBrushShadowLayer);
-    if (bsl.bsl_pubLayer != NULL)
+    if (bsl.bsl_pubLayer != NULL) {
       slUsedMemory += bsl.bsl_pixSizeU * bsl.bsl_pixSizeV / 8;
+    }
   }
 
   // done
