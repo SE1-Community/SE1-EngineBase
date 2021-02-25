@@ -42,37 +42,45 @@ struct TileArrays {
     this->ta_atlLayers = taOther.ta_atlLayers;
     this->ta_ptdTopMap = taOther.ta_ptdTopMap;
   }
+
   CStaticStackArray<GFXVertex4> ta_avVertices;    // Array of vertices for one tile
   CStaticStackArray<GFXTexCoord> ta_auvTexCoords; // Array of texcoords for one tile (not used in highest lod)
   CStaticStackArray<GFXTexCoord> ta_auvShadowMap; // Array of texcoords for shadow map
   CStaticStackArray<GFXTexCoord> ta_auvDetailMap; // Array of texcoords for detail map
   CStaticStackArray<INDEX> ta_auiIndices;         // Array of indices for one tile
   CStaticStackArray<TileLayer> ta_atlLayers;      // Array if layers per tile (used only in highest lod)
-  CTextureData *ta_ptdTopMap;                     // Pointer to tile top map
+  CTextureData *ta_ptdTopMap; // Pointer to tile top map
 };
 
 class ENGINE_API CArrayHolder {
   public:
+    // Constructor
     CArrayHolder();
+    // Destructor
     ~CArrayHolder();
+
     void operator=(const CArrayHolder &ahOther);
 
-    // Returns index of new tile arrays
+    // Return index of new tile arrays
     INDEX GetNewArrays();
+
     // Mark tile arrays as unused
     void FreeArrays(INT iOldArraysIndex);
+
     // Just do popall on all arrays
     void EmptyArrays(INDEX iArrayIndex);
+
     // Release array holder
     void Clear(void);
+
     // Count used memory
     SLONG GetUsedMemory(void);
 
   public:
-    CTerrain *ah_ptrTerrain;                        // Terrain that owns this array holder
+    CTerrain *ah_ptrTerrain; // terrain that owns this array holder
     CStaticStackArray<TileArrays> ah_ataTileArrays; // array of tile arrays
-    CStaticStackArray<INDEX> ah_aiFreeArrays;       // array of indices of free arrays
-    INDEX ah_iLod;                                  // this array holder works in this lod
+    CStaticStackArray<INDEX> ah_aiFreeArrays; // array of indices of free arrays
+    INDEX ah_iLod; // this array holder works in this lod
 };
 
 #endif

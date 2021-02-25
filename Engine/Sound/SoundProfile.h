@@ -21,10 +21,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/Profiling.h>
 
-// Class for holding profiling information for sound operations.
+// Class for holding profiling information for sound operations
 class CSoundProfile : public CProfileForm {
   public:
-    // indices for profiling counters and timers
+    // Indices for profiling counters and timers
     enum ProfileTimerIndex {
       PTI_MIXSOUNDS,    // MixSounds()
       PTI_DECODESOUND,  // DecodeSound()
@@ -34,6 +34,7 @@ class CSoundProfile : public CProfileForm {
 
       PTI_COUNT
     };
+
     enum ProfileCounterIndex {
       PCI_MIXINGS, // number of mixings
 
@@ -44,7 +45,8 @@ class CSoundProfile : public CProfileForm {
 
       PCI_COUNT
     };
-    // constructor
+
+    // Constructor
     CSoundProfile(void);
 };
 

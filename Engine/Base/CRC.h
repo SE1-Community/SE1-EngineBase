@@ -21,12 +21,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 extern ENGINE_API ULONG crc_aulCRCTable[256];
 
-// begin crc calculation
+// Begin crc calculation
 inline void CRC_Start(ULONG &ulCRC) {
   ulCRC = 0xFFFFFFFF;
 };
 
-// add data to a crc value
+// Add data to a crc value
 inline void CRC_AddBYTE(ULONG &ulCRC, UBYTE ub) {
   ulCRC = (ulCRC >> 8) ^ crc_aulCRCTable[UBYTE(ulCRC) ^ ub];
 };
@@ -47,13 +47,14 @@ inline void CRC_AddFLOAT(ULONG &ulCRC, FLOAT f) {
   CRC_AddLONG(ulCRC, *(ULONG *)&f);
 };
 
-// add memory block to a CRC value
+// Add memory block to a CRC value
 inline void CRC_AddBlock(ULONG &ulCRC, UBYTE *pubBlock, ULONG ulSize) {
-  for (INDEX i = 0; i < ulSize; i++)
+  for (INDEX i = 0; i < ulSize; i++) {
     CRC_AddBYTE(ulCRC, pubBlock[i]);
+  }
 };
 
-// end crc calculation
+// End crc calculation
 inline void CRC_Finish(ULONG &ulCRC) {
   ulCRC ^= 0xFFFFFFFF;
 };

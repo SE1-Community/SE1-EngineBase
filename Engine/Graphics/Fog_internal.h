@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Graphics/Fog.h>
 
-// current fog parameters
+// Current fog parameters
 extern BOOL _fog_bActive;
 extern CFogParameters _fog_fp;
 extern CTexParams _fog_tpLocal;
@@ -41,12 +41,13 @@ extern ULONG _fog_ulAlpha;
 extern ULONG _fog_ulTexture;
 extern UBYTE *_fog_pubTable;
 
-// start fog with given parameters
+// Start fog with given parameters
 extern void StartFog(CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix3D &mAbsToView);
-// stop fog
+
+// Stop fog
 extern void StopFog(void);
 
-// current haze parameters
+// Current haze parameters
 extern BOOL _haze_bActive;
 extern CHazeParameters _haze_hp;
 extern CTexParams _haze_tpLocal;
@@ -60,16 +61,18 @@ extern ULONG _haze_ulAlpha;
 extern ULONG _haze_ulTexture;
 extern FLOAT _haze_fStart;
 
-// start haze with given parameters
+// Start haze with given parameters
 extern void StartHaze(CHazeParameters &hp, const FLOAT3D &vViewPosAbs, const FLOATmatrix3D &mAbsToView);
-// stop haze
+
+// Stop haze
 extern void StopHaze(void);
 
-// returns lineary-interpolated fog strength in fog texture
+// Returns lineary-interpolated fog strength in fog texture
 __forceinline ULONG GetFogAlpha(const GFXTexCoord &tex) {
   // point sampling of height
   PIX pixT = FloatToInt(tex.t * _fog_pixSizeH);
   pixT = Clamp(pixT, 0L, _fog_pixSizeH - 1L) * _fog_pixSizeL;
+
   // linear interpolation of depth
   const PIX pixSF = FloatToInt(tex.s * (FLOAT)_fog_pixSizeL * 255.499f);
   const PIX pixS1 = Clamp((PIX)((pixSF >> 8) + 0), 0L, _fog_pixSizeL - 1L);
@@ -77,15 +80,16 @@ __forceinline ULONG GetFogAlpha(const GFXTexCoord &tex) {
   const ULONG ulF = pixSF & 255;
   const ULONG ulA1 = _fog_pubTable[pixT + pixS1];
   const ULONG ulA2 = _fog_pubTable[pixT + pixS2];
+
   return ((ulA1 * (ulF ^ 255) + ulA2 * ulF) * _fog_ulAlpha) >> 16;
 }
 
-// check if texture coord is in fog
+// Check if texture coord is in fog
 __forceinline BOOL InFog(const FLOAT fT) {
   return (fT > _fog_fStart && fT < _fog_fEnd);
 }
 
-// returns lineary-interpolated haze strength in haze texture
+// Return lineary-interpolated haze strength in haze texture
 __forceinline ULONG GetHazeAlpha(const FLOAT fS) {
   // linear interpolation of depth
   const PIX pixSH = FloatToInt(fS * (FLOAT)_haze_pixSize * 255.4999f);
@@ -94,10 +98,11 @@ __forceinline ULONG GetHazeAlpha(const FLOAT fS) {
   const ULONG ulH = pixSH & 255;
   const ULONG ulA1 = _haze_pubTable[pixS1];
   const ULONG ulA2 = _haze_pubTable[pixS2];
+
   return ((ulA1 * (ulH ^ 255) + ulA2 * ulH) * _haze_ulAlpha) >> 16;
 }
 
-// check if texture coord is in haze
+// Check if texture coord is in haze
 __forceinline BOOL InHaze(const FLOAT fS) {
   return (fS > _haze_fStart);
 }

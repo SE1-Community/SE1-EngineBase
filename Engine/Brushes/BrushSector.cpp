@@ -155,38 +155,34 @@ void CBrushSector::CalculateBoundingBoxes(CSimpleProjection3D_DOUBLE &prRelative
   bsc_ulTempFlags &= ~BSCTF_PRELOADEDBSP;
   bsc_ulTempFlags &= ~BSCTF_PRELOADEDLINKS;
 
-// if in debug version
-#ifndef NDEBUG
+  // if in debug version
+  #ifndef NDEBUG
   // for each vertex in sector
-  {
-    for (INDEX ivx = 0; ivx < bsc_abvxVertices.Count(); ivx++) {
-      // discard absolute vertex pointer
-      bsc_abvxVertices[ivx].bvx_pvdPreciseAbsolute = NULL;
-    }
-  }
+  {for (INDEX ivx = 0; ivx < bsc_abvxVertices.Count(); ivx++) {
+    // discard absolute vertex pointer
+    bsc_abvxVertices[ivx].bvx_pvdPreciseAbsolute = NULL;
+  }}
+
   // for each plane in sector
-  {
-    for (INDEX ipl = 0; ipl < bsc_abplPlanes.Count(); ipl++) {
-      // discard absolute plane pointer
-      bsc_abplPlanes[ipl].bpl_ppldPreciseAbsolute = NULL;
-    }
-  }
-#endif
+  {for (INDEX ipl = 0; ipl < bsc_abplPlanes.Count(); ipl++) {
+    // discard absolute plane pointer
+    bsc_abplPlanes[ipl].bpl_ppldPreciseAbsolute = NULL;
+  }}
+  #endif
 
   // !!!! remove this after loading all old levels
   // but should save size of polygon in mex (not shadow map)
   // NOTE: but this is also called in FromObject3D (?!)
   // for each polygon
-  {
-    for (INDEX iPolygon = 0; iPolygon < bsc_abpoPolygons.Count(); iPolygon++) {
-      CBrushPolygon &bpo = bsc_abpoPolygons[iPolygon]; // brush polygon alias
-      // if the shadow map of the polygon is not initialized
-      if (bpo.bpo_smShadowMap.sm_mexWidth == 0 || bpo.bpo_smShadowMap.sm_pixPolygonSizeU < 0) {
-        // initialize the shadow map of the polygon
-        bpo.InitializeShadowMap();
-      }
+  {for (INDEX iPolygon = 0; iPolygon < bsc_abpoPolygons.Count(); iPolygon++) {
+    CBrushPolygon &bpo = bsc_abpoPolygons[iPolygon]; // brush polygon alias
+
+    // if the shadow map of the polygon is not initialized
+    if (bpo.bpo_smShadowMap.sm_mexWidth == 0 || bpo.bpo_smShadowMap.sm_pixPolygonSizeU < 0) {
+      // initialize the shadow map of the polygon
+      bpo.InitializeShadowMap();
     }
-  }
+  }}
 }
 
 // Uncache lightmaps on all shadows on the sector.

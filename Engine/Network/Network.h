@@ -27,23 +27,21 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticArray.h>
 
 #define NET_MAXGAMECOMPUTERS SERVER_CLIENTS // max overall computers in game
-#define NET_MAXGAMEPLAYERS   16             // max overall players in game
-#define NET_MAXLOCALPLAYERS  4              // max players on a single machine
+#define NET_MAXGAMEPLAYERS 16 // max overall players in game
+#define NET_MAXLOCALPLAYERS 4 // max players on a single machine
 
 #define NET_WAITMESSAGE_DELAY 50 // wait time between receive message attempts
 
 #define NET_MAXSESSIONPROPERTIES 2048 // size of buffer for custom use by CGame and entities
 
-/*
- * Timer handler for network timer loop.
- */
+// Timer handler for network timer loop
 class ENGINE_API CNetworkTimerHandler : public CTimerHandler {
   public:
-    // This is called every TickQuantum seconds.
+    // This is called every TickQuantum seconds
     virtual void HandleTimer(void);
 };
 
-// demo synchronization constants
+// Demo synchronization constants
 #define DEMOSYNC_REALTIME (0.0f)
 #define DEMOSYNC_STOP     (-1.0f)
 
@@ -54,44 +52,44 @@ enum NetGraphEntryType {
   NGET_SKIPPEDACTION,
   NGET_REPLICATEDACTION,
 };
+
 struct NetGraphEntry {
   enum NetGraphEntryType nge_ngetType; // type of packet/event
-  FLOAT nge_fLatency;                  // latency in seconds
+  FLOAT nge_fLatency; // latency in seconds
   void Clear(void);
 };
 
-/*
- * Network session description.
- */
+// Network session description
 class ENGINE_API CNetworkSession {
   public:
-    CListNode ns_lnNode;    // for linking in list of available sessions
+    CListNode ns_lnNode; // for linking in list of available sessions
     CTString ns_strAddress; // session address
 
-    CTString ns_strSession;  // session name
-    CTString ns_strWorld;    // world name
-    TIME ns_tmPing;          // current players
-    INDEX ns_ctPlayers;      // current players
-    INDEX ns_ctMaxPlayers;   // max number of players
+    CTString ns_strSession; // session name
+    CTString ns_strWorld; // world name
+
+    TIME ns_tmPing; // current players
+    INDEX ns_ctPlayers; // current players
+    INDEX ns_ctMaxPlayers; // max number of players
+
     CTString ns_strGameType; // game type
-    CTString ns_strMod;      // active mod
-    CTString ns_strVer;      // version
+    CTString ns_strMod; // active mod
+    CTString ns_strVer; // version
 
   public:
     void Copy(const CNetworkSession &nsOriginal);
 
-    // Default constructor.
+    // Constructor
     CNetworkSession(void);
-    // Construct a session for connecting to certain server.
+
+    // Construct a session for connecting to certain server
     CNetworkSession(const CTString &strAddress);
 };
 
-/*
- * Game, used for general game initialization/manipulation
- */
+// Game, used for general game initialization/manipulation
 class ENGINE_API CNetworkLibrary : public CMessageDispatcher {
   public:
-    BOOL ga_IsServer;      // set if this is a server computer
+    BOOL ga_IsServer; // set if this is a server computer
     CServer &ga_srvServer; // server (active only if this is server computer)
 
     CTCriticalSection ga_csNetwork; // critical section for access to network data
@@ -130,163 +128,190 @@ class ENGINE_API CNetworkLibrary : public CMessageDispatcher {
 
     CTString ga_strRequiredMod; // set if connection failed due to a different mod running on the server
 
-    // buffer for custom use by CGame and entities
-    UBYTE ga_aubProperties[NET_MAXSESSIONPROPERTIES];
+    UBYTE ga_aubProperties[NET_MAXSESSIONPROPERTIES]; // Buffer for custom use by CGame and entities
 
     BOOL IsServer(void) {
       return ga_IsServer;
     };
 
-    // make actions packet for local players and send to server
+    // Make actions packet for local players and send to server
     void SendActionsToServer(void);
 
-    // Loop executed in timer interrupt, every game tick.
+    // Loop executed in timer interrupt, every game tick
     void TimerLoop(void);
 
-    // Add the timer handler.
+    // Add the timer handler
     void AddTimerHandler(void);
-    // Remove the timer handler.
+
+    // Remove the timer handler
     void RemoveTimerHandler(void);
 
-    // really do the level change
+    // Really do the level change
     void ChangeLevel_internal(void);
 
-    // save current version of engine
+    // Save current version of engine
     void WriteVersion_t(CTStream &strm);
-    // load version of engine saved in file and check against current
+
+    // Load version of engine saved in file and check against current
     void CheckVersion_t(CTStream &strm, BOOL bAllowReinit, BOOL &bNeedsReinit);
 
-    // add a value to the netgraph
+    // Add a value to the netgraph
     void AddNetGraphValue(enum NetGraphEntryType nget, FLOAT fLatency);
 
-    // call this while game is not running - to update server enumeration lists
+    // Call this while game is not running - to update server enumeration lists
     void GameInactive(void);
 
-    // automatically adjust network settings
+    // Automatically adjust network settings
     void AutoAdjustSettings(void);
 
-    // make default state data for creating deltas
+    // Make default state data for creating deltas
     void MakeDefaultState(const CTFileName &fnmWorld, ULONG ulSpawnFlags, void *pvSessionProperties);
 
-    // initialize gathering of file CRCs to CRC table
+    // Initialize gathering of file CRCs to CRC table
     void InitCRCGather(void);
-    // finish gathering of file CRCs to CRC table (call for server only!)
+
+    // Finish gathering of file CRCs to CRC table (call for server only!)
     void FinishCRCGather(void);
 
   public:
-    CWorld ga_World;                                    // local copy of world
-    FLOAT ga_fDemoTimer;                                // timer for demo playback (in seconds)
-    FLOAT ga_fDemoRealTimeFactor;                       // slow/fast playback factor (for DEMOSYNC_REALTIME only)
-    FLOAT ga_fGameRealTimeFactor;                       // game time accelerator
-    FLOAT ga_fDemoSyncRate;                             // demo sync speed in FPS (or realtime/stop)
+    CWorld ga_World; // local copy of world
+    FLOAT ga_fDemoTimer; // timer for demo playback (in seconds)
+    FLOAT ga_fDemoRealTimeFactor; // slow/fast playback factor (for DEMOSYNC_REALTIME only)
+    FLOAT ga_fGameRealTimeFactor; // game time accelerator
+    FLOAT ga_fDemoSyncRate; // demo sync speed in FPS (or realtime/stop)
     CStaticArray<struct NetGraphEntry> ga_angeNetGraph; // array of netgraph entries
 
-    // interface
-    // Default constructor.
+    // Constructor
     CNetworkLibrary(void);
+
+    // Destructor
     ~CNetworkLibrary(void);
+
     DECLARE_NOCOPYING(CNetworkLibrary);
 
-    // Initialize game management.
+    // Initialize game management
     void Init(const CTString &strGameID);
-    // Start a peer-to-peer game session.
+
+    // Start a peer-to-peer game session
     void StartPeerToPeer_t(const CTString &strSessionName, const CTFileName &fnmWorld, ULONG ulSpawnFlags, INDEX ctMaxPlayers,
                            BOOL bWaitAllPlayers,
                            void *pvSessionProperties); // throw char *
-    // Trigger sessions enumeration over LAN and iNet.
+
+    // Trigger sessions enumeration over LAN and iNet
     void EnumSessions(BOOL bInternet);
-    // Join a running multi-player game.
+
+    // Join a running multi-player game
     void JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctLocalPlayers); // throw char *
-    // Start playing a demo.
+
+    // Start playing a demo
     void StartDemoPlay_t(const CTFileName &fnDemo); // throw char *
-    // Test if currently playing a demo.
+
+    // Test if currently playing a demo
     BOOL IsPlayingDemo(void);
-    // Test if currently recording a demo.
+
+    // Test if currently recording a demo
     BOOL IsRecordingDemo(void);
-    // Test if currently playing demo has finished.
+
+    // Test if currently playing demo has finished
     BOOL IsDemoPlayFinished(void);
-    // Stop currently running game.
+
+    // Stop currently running game
     void StopGame(void);
 
-    // pause/unpause game
+    // Pause/unpause the game
     void TogglePause(void);
-    // test if game is paused
+
+    // Check if game is paused
     BOOL IsPaused(void);
-    // test if game is waiting for more players to connect
+
+    // Check if game is waiting for more players to connect
     BOOL IsWaitingForPlayers(void);
-    // test if game is waiting for server
+
+    // Check if game is waiting for server
     BOOL IsWaitingForServer(void);
-    // mark that the game has finished -- called from AI
+
+    // Mark that the game has finished - called from AI
     void SetGameFinished(void);
     BOOL IsGameFinished(void);
-    // manipulation with realtime factor for slower/faster time -- called from AI
+
+    // Manipulation with realtime factor for slower/faster time - called from AI
     void SetRealTimeFactor(FLOAT fSpeed);
     FLOAT GetRealTimeFactor(void);
-    // test if having connnection problems (not getting messages from server regulary)
+
+    // Check if having connnection problems (not getting messages from server regulary)
     BOOL IsConnectionStable(void);
-    // test if completely disconnected and why
+
+    // Check if completely disconnected and why
     BOOL IsDisconnected(void);
     const CTString &WhyDisconnected(void);
 
-    // set/get server side pause (for single player or demo only)
+    // Server side pause (for single player or demo only)
     void SetLocalPause(BOOL bPause);
     BOOL GetLocalPause(void);
 
-    // get server/client name and address
+    // Get server/client name and address
     void GetHostName(CTString &strName, CTString &strAddress);
 
-    // test if playing in network or locally
+    // Check if playing in network or locally
     BOOL IsNetworkEnabled(void);
 
-    // test if game session is currently doing prediction
+    // Check if game session is currently doing prediction
     BOOL IsPredicting(void);
 
-    // initiate level change
+    // Initiate level change
     void ChangeLevel(const CTFileName &fnmNextLevel, BOOL bRemember, INDEX iUserData);
 
-    // Obtain file name of world that is currently loaded.
+    // Obtain file name of world that is currently loaded
     CTFileName &GetCurrentWorld(void) {
       return ga_fnmWorld;
     };
 
-    // Start recording a demo.
+    // Start recording a demo
     void StartDemoRec_t(const CTFileName &fnDemo); // throw char *
-    // Stop recording a demo.
+
+    // Stop recording a demo
     void StopDemoRec(void);
 
-    // Read current game situation from a stream.
+    // Read current game situation from a stream
     void Read_t(CTStream *pstr); // throw char *
-    // Write current game situation into a stream.
+
+    // Write current game situation into a stream
     void Write_t(CTStream *pstr); // throw char *
 
-    // Save the game.
+    // Save the game
     void Save_t(const CTFileName &fnmGame); // throw char *
-    // Load the game.
+
+    // Load the game
     void Load_t(const CTFileName &fnmGame); // throw char *
 
-    // Save a debugging game.
+    // Save a debugging game
     void DebugSave(void); // this doesn't throw anything
 
-    // Add a new player to game.
+    // Add a new player to game
     CPlayerSource *AddPlayer_t(CPlayerCharacter &pcCharacter); // throw char *
 
-    // Loop executed in main application thread.
+    // Loop executed in main application thread
     void MainLoop(void);
 
-    // Get player entity for a given local player.
+    // Get player entity for a given local player
     CEntity *GetLocalPlayerEntity(CPlayerSource *ppls);
-    // Get player entity for a given player by name.
+
+    // Get player entity for a given player by name
     CEntity *GetPlayerEntityByName(const CTString &strName);
-    // Get number of entities with given name.
+
+    // Get number of entities with given name
     INDEX GetNumberOfEntitiesWithName(const CTString &strName);
-    // Get n-th entity with given name.
+
+    // Get n-th entity with given name
     CEntity *GetEntityWithName(const CTString &strName, INDEX iEntityWithThatName);
-    // Test if a given player is local to this computer.
+
+    // Check if a given player is local to this computer
     BOOL IsPlayerLocal(CEntity *pen);
-    // get player source for a given player if it is local to this computer
+
+    // Get player source for a given player if it is local to this computer
     CPlayerSource *GetPlayerSource(CEntity *pen);
 
-    // get game time in currently running game
+    // Get game time in currently running game
     TICK NetworkGameTime(void);
 
     // Get session properties for current game.
@@ -296,16 +321,17 @@ class ENGINE_API CNetworkLibrary : public CMessageDispatcher {
     void SendChat(ULONG ulFrom, ULONG ulTo, const CTString &strMessage);
 };
 
-// make default state for a network game
+// Make default state for a network game
 extern void NET_MakeDefaultState_t(const CTFileName &fnmWorld, ULONG ulSpawnFlags, void *pvSessionProperties,
                                    CTStream &strmState); // throw char *
 
-// pointer to global instance of the only network object in the application
+// Pointer to global instance of the only network object in the application
 ENGINE_API extern CNetworkLibrary *_pNetwork;
 
-// convert string address to a number
+// Convert string address to a number
 ENGINE_API extern ULONG StringToAddress(const CTString &strAddress);
-// convert address to a printable string
+
+// Convert address to a printable string
 ENGINE_API extern CTString AddressToString(ULONG ulHost);
 
 #endif /* include-once check. */

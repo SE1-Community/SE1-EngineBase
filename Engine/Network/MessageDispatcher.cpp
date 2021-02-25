@@ -231,6 +231,7 @@ static void UpdateReceivedMessageStats(const CNetworkMessage &nmMessage) {
     CPrintF("Rcvd: %d\n", nmMessage.nm_slSize);
   }
 }
+
 static void UpdateReceivedStreamStats(SLONG slSize) {
   if (net_bReportTraffic) {
     CPrintF("STREAM Rcvd: %d\n", slSize);
@@ -239,14 +240,14 @@ static void UpdateReceivedStreamStats(SLONG slSize) {
 
 // Send a message from server to client.
 void CMessageDispatcher::SendToClient(INDEX iClient, const CNetworkMessage &nmMessage) {
-// if testing for packet-loss recovery
-#ifdef LOSEPACKETS_THRESHOLD
+  // if testing for packet-loss recovery
+  #ifdef LOSEPACKETS_THRESHOLD
   // every once a while
   if (rand() < LOSEPACKETS_THRESHOLD) {
     // don't send it
     return;
   }
-#endif
+  #endif
 
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_SENDMESSAGE);
   // send the message
@@ -255,6 +256,7 @@ void CMessageDispatcher::SendToClient(INDEX iClient, const CNetworkMessage &nmMe
   UpdateSentMessageStats(nmMessage);
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_SENDMESSAGE);
 }
+
 void CMessageDispatcher::SendToClientReliable(INDEX iClient, const CNetworkMessage &nmMessage) {
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_SENDMESSAGE);
 

@@ -19,21 +19,32 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #pragma once
 #endif
 
-/*
- * Smart pointer to entity objects, does the book-keeping for reference counting.
- */
+// Smart pointer to entity objects, does the book-keeping for reference counting
 class CEntityPointer {
   public:
     CEntity *ep_pen; // the pointer itself
+
   public:
-    // all standard smart pointer functions are defined as inlines in Entity.h
+    // All standard smart pointer functions are defined as inlines in Entity.h
     // (due to strange order of inclusion needed for events and enums)
+
+    // Constructor
     inline CEntityPointer(void);
-    inline ~CEntityPointer(void);
+
+    // Copy constructor
     inline CEntityPointer(const CEntityPointer &penOther);
+    
+    // Constructor from a pointer
     inline CEntityPointer(CEntity *pen);
+    
+    // Destructor
+    inline ~CEntityPointer(void);
+
+    // Assignment
     inline const CEntityPointer &operator=(CEntity *pen);
     inline const CEntityPointer &operator=(const CEntityPointer &penOther);
+
+    // Get pointer to the entity itself
     inline CEntity *operator->(void) const;
     inline operator CEntity *(void) const;
     inline CEntity &operator*(void) const;

@@ -178,11 +178,11 @@ class CTriangularizer {
 };
 // get a vertex coordinates
 inline DOUBLE3D CTriangularizer::GetVertex(CBrushVertex *pbvx) const {
-#ifdef OPERATEIN2D
+  #ifdef OPERATEIN2D
   return DOUBLE3D(pbvx->bvx_vdPreciseRelative(tr_iAxis0), pbvx->bvx_vdPreciseRelative(tr_iAxis1), 0);
-#else
+  #else
   return pbvx->bvx_vdPreciseRelative;
-#endif
+  #endif
 }
 
 /*
@@ -762,7 +762,7 @@ tr_bpoOriginalPolygon(bpoOriginalPolygon),
 tr_abpeOriginalEdges(bpoOriginalPolygon.bpo_abpePolygonEdges) // remember original edges
 {
   // find polygon normal and major axes
-#ifdef OPERATEIN2D
+  #ifdef OPERATEIN2D
   INDEX iMaxNormal = bpoOriginalPolygon.bpo_pbplPlane->bpl_pldPreciseRelative.GetMaxNormal();
   INDEX iMaxSign = Sgn(bpoOriginalPolygon.bpo_pbplPlane->bpl_pldPreciseRelative(iMaxNormal));
   ASSERT(iMaxSign != 0);
@@ -807,11 +807,11 @@ tr_abpeOriginalEdges(bpoOriginalPolygon.bpo_abpePolygonEdges) // remember origin
       tr_vPolygonNormal = DOUBLE3D(1, 0, 0);
   }
   tr_vPolygonNormal = DOUBLE3D(0, 0, 1);
-#else
+  #else
   tr_iAxis0 = -1;
   tr_iAxis1 = -1;
   tr_vPolygonNormal = bpoOriginalPolygon.bpo_pbplPlane->bpl_pldPreciseRelative;
-#endif
+  #endif
 
   // create a dynamic array of edges
   MakeEdgesForTriangularization();
@@ -825,9 +825,9 @@ tr_abpeOriginalEdges(bpoOriginalPolygon.bpo_abpePolygonEdges) // remember origin
   iBottomEdgeOffset = 0;
   iTopEdgeOffset = 0;
 
-#ifdef DUMP_ALLSTEPS
+  #ifdef DUMP_ALLSTEPS
   DPrintF("PolygonBegin\n");
-#endif
+  #endif
 
   //  ASSERT(tr_abedEdges.Count() != 8);
   // while the array of edges is not empty
@@ -842,16 +842,16 @@ tr_abpeOriginalEdges(bpoOriginalPolygon.bpo_abpePolygonEdges) // remember origin
       return;
     }
 
-#ifdef DUMP_ALLSTEPS
+    #ifdef DUMP_ALLSTEPS
     // dump remaining edges
     DumpEdges();
-#endif
+    #endif
 
     // find best triangle
     FindBestTriangle();
-#ifdef DUMP_ALLSTEPS
+    #ifdef DUMP_ALLSTEPS
     DPrintF("BestQuality=%f\n", tr_fQualityBest);
-#endif
+    #endif
     // if no triangle is found
     if (tr_fQualityBest < 0.0) {
       // quit searching
@@ -872,10 +872,11 @@ tr_abpeOriginalEdges(bpoOriginalPolygon.bpo_abpePolygonEdges) // remember origin
     // remove best triangle from edges
     RemoveBestTriangleFromPolygon();
 
-#ifndef NDEBUG
+    #ifndef NDEBUG
     // check that there are no invalid edges after creating
     CheckForInvalidEdges();
-#endif
+    #endif
+
     iPasses++;
   }
   tr_iError = 0;

@@ -33,34 +33,28 @@ class CStatEntry {
     virtual CTString Report(void) = 0;
 };
 
-/*
- * Statistics counter.
- */
+// Statistics counter
 class CStatCounter : public CStatEntry {
   public:
     CTString sc_strFormat; // printing format (must contain one %f or %g or %e)
-    FLOAT sc_fCount;       // the counter itself
-    FLOAT sc_fFactor;      // printout factor
+    FLOAT sc_fCount; // the counter itself
+    FLOAT sc_fFactor; // printout factor
     inline void Clear(void) {};
     virtual CTString Report(void);
 };
 
-/*
- * Statistics timer.
- */
+// Statistics timer
 class CStatTimer : public CStatEntry {
   public:
-    CTString st_strFormat;    // printing format (must contain one %f or %g or %e)
+    CTString st_strFormat; // printing format (must contain one %f or %g or %e)
     CTimerValue st_tvStarted; // time when the timer was started last time
     CTimerValue st_tvElapsed; // total elapsed time of the timer
-    FLOAT st_fFactor;         // printout factor
+    FLOAT st_fFactor; // printout factor
     inline void Clear(void) {};
     virtual CTString Report(void);
 };
 
-/*
- * Statistics label.
- */
+// Statistics label
 class CStatLabel : public CStatEntry {
   public:
     CTString sl_strFormat; // printing format
@@ -68,18 +62,17 @@ class CStatLabel : public CStatEntry {
     virtual CTString Report(void);
 };
 
-/*
- * Class for gathering and reporting statistics information.
- */
+// Class for gathering and reporting statistics information
 class CStatForm {
   public:
-    // implementation:
     CStaticArray<class CStatCounter> sf_ascCounters; // profiling counters
-    CStaticArray<class CStatTimer> sf_astTimers;     // profiling timers
-    CStaticArray<class CStatLabel> sf_aslLabels;     // profiling labels
+    CStaticArray<class CStatTimer> sf_astTimers; // profiling timers
+    CStaticArray<class CStatLabel> sf_aslLabels; // profiling labels
 
-    // interface:
-    enum StatLabelIndex { SLI_COUNT };
+    enum StatLabelIndex {
+      SLI_COUNT,
+    };
+
     enum StatTimerIndex {
       STI_WORLDTRANSFORM,
       STI_WORLDVISIBILITY,
@@ -102,8 +95,9 @@ class CStatForm {
       STI_GFXAPI,
       STI_SWAPBUFFERS,
 
-      STI_COUNT
+      STI_COUNT,
     };
+
     enum StatCounterIndex {
       SCI_SCENE_TRIANGLES,
       SCI_SCENE_TRIANGLEPASSES,
@@ -137,24 +131,25 @@ class CStatForm {
       SCI_SHADOWTRIANGLES_USEDMIP,
       SCI_SHADOWTRIANGLES_FIRSTMIP,
 
-      SCI_COUNT
+      SCI_COUNT,
     };
 
     CStatForm(void);
     void Clear(void);
 
-    // Increment counter by given count.
+    // Increment counter by given count
     inline void IncrementCounter(INDEX iCounter, FLOAT fAdd = 1) {
       sf_ascCounters[iCounter].sc_fCount += fAdd;
     };
 
-    // Start a timer.
+    // Start a timer
     inline void StartTimer(INDEX iTimer) {
       CStatTimer &st = sf_astTimers[iTimer];
       ASSERT(sf_astTimers[iTimer].st_tvStarted.tv_llValue == -1);
       st.st_tvStarted = _pTimer->GetHighPrecisionTimer();
     };
-    // Stop a timer.
+
+    // Stop a timer
     inline void StopTimer(INDEX iTimer) {
       CStatTimer &st = sf_astTimers[iTimer];
       ASSERT(sf_astTimers[iTimer].st_tvStarted.tv_llValue != -1);
@@ -162,24 +157,25 @@ class CStatForm {
       st.st_tvStarted.tv_llValue = -1;
     };
 
-    // Check whether the timer is counting.
+    // Check whether the timer is counting
     inline BOOL CheckTimer(INDEX iTimer) {
       CStatTimer &st = sf_astTimers[iTimer];
       return (st.st_tvStarted.tv_llValue != -1);
     };
 
-    // initialize component
+    // Initialize component
     void InitCounter(INDEX iCounter, INDEX iOrder, const char *strFormat, FLOAT fFactor);
     void InitTimer(INDEX iTimer, INDEX iOrder, const char *strFormat, FLOAT fFactor);
     void InitLabel(INDEX iLabel, INDEX iOrder, const char *strFormat);
 
-    // reset all values
+    // Reset all values
     void Reset(void);
-    // make a new report
+
+    // Make a new report
     void Report(CTString &strReport);
 };
 
-// one globaly used stats report
+// One globaly used stats report
 ENGINE_API extern CStatForm _sfStats;
 
 #endif /* include-once check. */

@@ -158,8 +158,8 @@ void MSJExceptionHandler::GenerateExceptionReport(PEXCEPTION_POINTERS pException
 
   PCONTEXT pCtx = pExceptionInfo->ContextRecord;
 
-// Show the registers
-#ifdef _M_IX86 // Intel Only!
+  // Show the registers
+  #ifdef _M_IX86 // Intel Only!
   _tprintf("\nRegisters:\n");
 
   _tprintf("EAX:%08X\nEBX:%08X\nECX:%08X\nEDX:%08X\nESI:%08X\nEDI:%08X\n", pCtx->Eax, pCtx->Ebx, pCtx->Ecx, pCtx->Edx, pCtx->Esi,
@@ -170,12 +170,9 @@ void MSJExceptionHandler::GenerateExceptionReport(PEXCEPTION_POINTERS pException
   _tprintf("DS:%04X  ES:%04X  FS:%04X  GS:%04X\n", pCtx->SegDs, pCtx->SegEs, pCtx->SegFs, pCtx->SegGs);
   _tprintf("Flags:%08X\n", pCtx->EFlags);
 
-#endif
-
-#ifdef _M_IX86 // Intel Only!
   // Walk the stack using x86 specific code
   IntelStackWalk(pCtx);
-#endif
+  #endif
 
   _tprintf("\n");
 }

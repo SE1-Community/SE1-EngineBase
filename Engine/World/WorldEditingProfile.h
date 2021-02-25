@@ -21,10 +21,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/Profiling.h>
 
-// Class for holding profiling information for world editing operations.
+// Class for holding profiling information for world editing operations
 class CWorldEditingProfile : public CProfileForm {
   public:
-    // indices for profiling counters and timers
+    // Indices for profiling counters and timers
     enum ProfileTimerIndex {
       PTI_CSGTOTAL,               // total time spent for CSG operations
       PTI_OBJECTOPTIMIZE,         // time spent in CObject3D::Optimize()
@@ -61,6 +61,7 @@ class CWorldEditingProfile : public CProfileForm {
 
       PTI_COUNT
     };
+
     enum ProfileCounterIndex {
       PCI_SECTORSOPTIMIZED, // total number of sectors optimized
       PCI_SHADOWIMAGES,     // number of shadow images generated
@@ -68,7 +69,8 @@ class CWorldEditingProfile : public CProfileForm {
       PCI_POLYGONSHADOWS,   // total number of polygon shadows cast
       PCI_COUNT
     };
-    // constructor
+
+    // Constructor
     CWorldEditingProfile(void);
 };
 

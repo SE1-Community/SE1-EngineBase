@@ -19,9 +19,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #pragma once
 #endif
 
-// reset all values
+// Reset all values
 ENGINE_API void STAT_Reset(void);
-// make a new report
+
+// Make a new report
 ENGINE_API void STAT_Report(CTString &strReport);
 
 #endif /* include-once check. */

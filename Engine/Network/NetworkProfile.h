@@ -20,7 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Class for holding profiling information for network.
 class CNetworkProfile : public CProfileForm {
   public:
-    // indices for profiling counters and timers
+    // Indices for profiling counters and timers
     enum ProfileTimerIndex {
       PTI_MAINLOOP,  // time spent in main game loop
       PTI_TIMERLOOP, // time spent in timer game loop
@@ -33,6 +33,7 @@ class CNetworkProfile : public CProfileForm {
       PTI_RECEIVEMESSAGE, // time spend receiving message
       PTI_COUNT
     };
+
     enum ProfileCounterIndex {
       PCI_GAMESTREAMRESENDS, // how many times gamestream block was resent from server
 
@@ -47,6 +48,7 @@ class CNetworkProfile : public CProfileForm {
       PCI_BYTESRECEIVED,    // total number of bytes received
       PCI_COUNT
     };
-    // constructor
+
+    // Constructor
     CNetworkProfile(void);
 };

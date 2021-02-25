@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 class CTranslationPair {
   public:
-    BOOL m_bUsed;       // for internal use while building the table
+    BOOL m_bUsed; // for internal use while building the table
     CTString tp_strSrc; // original string
     CTString tp_strDst; // translated string
 
@@ -34,7 +34,7 @@ class CTranslationPair {
       tp_strDst.Clear();
     };
 
-    // getname function for addinf to nametable
+    // GetName function for addinf to nametable
     inline const CTString &GetName(void) const {
       return tp_strSrc;
     };

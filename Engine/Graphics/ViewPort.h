@@ -24,10 +24,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <d3d8.h>
 #endif // SE1_D3D
 
-/*
- *  ViewPort
- */
-
 // rcg !!! FIXME: This will need to go away.
 #ifdef PLATFORM_WIN32
 class CTempDC {
@@ -39,32 +35,36 @@ class CTempDC {
 };
 #endif
 
-// base abstract class for viewport
+// Base abstract class for viewport
 class ENGINE_API CViewPort {
   public:
-    // implementation
-    HWND vp_hWnd;       // canvas (child) window
+    HWND vp_hWnd; // canvas (child) window
     HWND vp_hWndParent; // window of the viewport
-    CRaster vp_Raster;  // the used Raster
+    CRaster vp_Raster; // the used Raster
+
     #ifdef SE1_D3D
     LPDIRECT3DSWAPCHAIN8 vp_pSwapChain; // swap chain for D3D
-    LPDIRECT3DSURFACE8 vp_pSurfDepth;   // z-buffer for D3D
-    #endif                              // SE1_D3D
+    LPDIRECT3DSURFACE8 vp_pSurfDepth; // z-buffer for D3D
+    #endif // SE1_D3D
+
     INDEX vp_ctDisplayChanges; // number of display driver
 
-    // open/close canvas window
+    // Open canvas window
     void OpenCanvas(void);
+
+    // Close canvas window
     void CloseCanvas(BOOL bRelease = FALSE);
 
-    // interface
-    // Constructor for given window.
+    // Constructor for given window
     CViewPort(PIX pixWidth, PIX pixHeight, HWND hWnd);
-    // Destructor.
+
+    // Destructor
     ~CViewPort(void);
 
-    // Display the back buffer on screen.
+    // Display the back buffer on screen
     void SwapBuffers(void);
-    // change size of this viewport, it's raster and all it's drawports to fit it window
+
+    // Change size of this viewport, it's raster and all it's drawports to fit it window
     void Resize(void);
 };
 

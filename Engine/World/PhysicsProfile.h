@@ -20,10 +20,10 @@ Copyright (c) 1997-1998, CroTeam. */
 #include <Engine/Base/Profiling.h>
 #endif
 
-// Class for holding profiling information for physics.
+// Class for holding profiling information for physics
 class CPhysicsProfile : public CProfileForm {
   public:
-    // indices for profiling counters and timers
+    // Indices for profiling counters and timers
     enum ProfileTimerIndex {
       PTI_PROCESSGAMETICK,
       PTI_APPLYACTIONS,
@@ -86,9 +86,10 @@ class CPhysicsProfile : public CProfileForm {
       PTI_MOVEENTITYINGRID,
       PTI_COUNT
     };
+
     enum ProfileCounterIndex {
       PCI_GRAVITY_NONTRIVIAL, // non-trivial gravity moves
-      PCI_GRAVITY_TRIVIAL,    // trivial gravity moves
+      PCI_GRAVITY_TRIVIAL, // trivial gravity moves
 
       PCI_CLIPMOVES,            // number of tested movements
       PCI_XXTESTS,              // number of x-x tests
@@ -118,6 +119,7 @@ class CPhysicsProfile : public CProfileForm {
       PCI_NEARENTITIESFOUND,      // near entities found in FindEntitiesNearBox()
       PCI_COUNT
     };
-    // constructor
+
+    // Constructor
     CPhysicsProfile(void);
 };

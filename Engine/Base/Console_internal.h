@@ -21,51 +21,58 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/Synchronization.h>
 
-// Object that takes care of game console.
+// Object that takes care of game console
 #define CONSOLE_MAXLASTLINES 15 // how many last-line times to remember
+
 class CConsole {
   public:
-    // implementation:
     CTCriticalSection con_csConsole; // critical section for access to console data
-    char *con_strBuffer;             // the allocated buffer
-    char *con_strCurrent;            // next char to print
-    char *con_strLastLine;           // start of last line in buffer
-    char *con_strLineBuffer;         // one-line-sized buffer for temp usage
-    INDEX con_ctCharsPerLine;        // number of characters per line
-    INDEX con_ctLines;               // number of total lines
-    TICK *con_allLines;              // time stamp for each line
-    INDEX con_ctLinesPrinted;        // number of lines printed
-    FILE *con_fLog;                  // log file for streaming the console to
+    char *con_strBuffer; // the allocated buffer
+    char *con_strCurrent; // next char to print
+    char *con_strLastLine; // start of last line in buffer
+    char *con_strLineBuffer; // one-line-sized buffer for temp usage
+    INDEX con_ctCharsPerLine; // number of characters per line
+    INDEX con_ctLines; // number of total lines
+    TICK *con_allLines; // time stamp for each line
+    INDEX con_ctLinesPrinted; // number of lines printed
+    FILE *con_fLog; // log file for streaming the console to
 
-    // clear line buffer
-    void ClearLineBuffer();
-    // clear one given line in buffer
-    void ClearLine(INDEX iLine);
-    // scroll buffer up, discarding lines at the start
-    void ScrollBufferUp(INDEX ctBytesToFree);
-
-    // interface:
-
-    // Constructor.
+    // Constructor
     CConsole(void);
-    // Destructor.
+
+    // Destructor
     ~CConsole(void);
 
-    // Initialize the console.
+    // Initialize the console
     void Initialize(const CTFileName &fnmLog, INDEX ctCharsPerLine, INDEX ctLines);
 
-    // Get current console buffer.
+    // Clear line buffer
+    void ClearLineBuffer();
+
+    // Clear one given line in buffer
+    void ClearLine(INDEX iLine);
+
+    // Scroll buffer up, discarding lines at the start
+    void ScrollBufferUp(INDEX ctBytesToFree);
+
+    // Get current console buffer
     ENGINE_API const char *GetBuffer(void);
+
+    // Get console buffer size
     ENGINE_API INDEX GetBufferSize(void);
+
     // Add a string of text to console
     void PutString(const char *strString);
+
     // Close console log file buffers (call only when force-exiting!)
     void CloseLog(void);
 
     // Get number of lines newer than given time
     INDEX NumberOfLinesAfter(TICK llLast);
+
     // Get one of last lines
     CTString GetLastLine(INDEX iLine);
+
     // Discard timing info for last lines
     void DiscardLastLineTimes(void);
 };

@@ -48,28 +48,33 @@ struct SType {
     bCrossesStates = 0;
     iLine = -1;
   };
+
   SType(const char *str) {
     strString = strdup(str);
     bCrossesStates = 0;
     iLine = -1;
   };
+
   SType(const SType &other) {
     strString = strdup(other.strString);
     bCrossesStates = other.bCrossesStates;
     iLine = other.iLine;
   };
+
   const SType &operator=(const SType &other) {
     strString = strdup(other.strString);
     bCrossesStates = other.bCrossesStates;
     iLine = other.iLine;
     return *this;
   };
+
   const SType &operator=(char *str) {
     strString = strdup(str);
     bCrossesStates = 0;
     iLine = -1;
     return *this;
   };
+
   SType operator+(const SType &other);
 };
 

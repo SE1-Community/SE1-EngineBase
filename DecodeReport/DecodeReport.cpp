@@ -14,22 +14,22 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 // DecodeReport.cpp : Defines the entry point for the console application.
-//
 
 #include "stdafx.h"
 
 void SubMain(int argc, char *argv[]);
 
+// Entry point
 int main(int argc, char *argv[]) {
   CTSTREAM_BEGIN {
     SubMain(argc, argv);
-  }
-  CTSTREAM_END;
+  } CTSTREAM_END;
+
   return 0;
 }
 
-void FindInMapFile(const CTFileName &fnSymbols, const CTString &strImage, ULONG ulSeg, ULONG ulOff, CTString &strFunction,
-                   SLONG &slDelta) {
+void FindInMapFile(const CTFileName &fnSymbols, const CTString &strImage,
+                   ULONG ulSeg, ULONG ulOff, CTString &strFunction, SLONG &slDelta) {
   CTFileName fnmImage = strImage;
   CTFileName fnmMap = fnSymbols + fnmImage.FileName() + ".map";
   strFunction = CTString("<not found in '") + fnmMap + "'>";
@@ -37,14 +37,17 @@ void FindInMapFile(const CTFileName &fnSymbols, const CTString &strImage, ULONG 
   try {
     CTFileStream strmMap;
     strmMap.Open_t(fnmMap, CTStream::OM_READ);
+
     // find beginning of functions in map file
     for (;;) {
       if (strmMap.AtEOF()) {
         return;
       }
+
       // read the line
       CTString strLine;
       strmMap.GetLine_t(strLine);
+
       if (strncmp(strLine, "  Address", 9) == 0) {
         break;
       }
@@ -57,24 +60,28 @@ void FindInMapFile(const CTFileName &fnSymbols, const CTString &strImage, ULONG 
       // read the line
       CTString strLine;
       strmMap.GetLine_t(strLine);
+
       char strFunctionLine[1024];
       strFunctionLine[0] = 0;
+
       ULONG ulSegLine = -1;
       ULONG ulOfsLine = -1;
       strLine.ScanF("%x:%x %s", &ulSegLine, &ulOfsLine, strFunctionLine);
+
       if (ulSegLine != ulSeg) {
         continue;
       }
+
       if (ulOfsLine > ulOff) {
         return;
       }
+
       strFunction = strFunctionLine;
       slDelta = ulOff - ulOfsLine;
     }
 
   } catch (char *strError) {
     (void)strError;
-    return;
   }
 }
 
@@ -102,6 +109,7 @@ void SubMain(int argc, char *argv[]) {
 
     CTFileStream strmSrc;
     strmSrc.Open_t(fnSrc, CTStream::OM_READ);
+
     CTFileStream strmDst;
     strmDst.Create_t(fnDst);
 
@@ -113,12 +121,13 @@ void SubMain(int argc, char *argv[]) {
 
       // try to find address marker in it
       const char *strAdr = strstr(strLine, "$adr:");
+
       // if there is no marker
       if (strAdr == NULL) {
         // just copy the line
         strmDst.PutLine_t(strLine);
 
-        // if there is marker
+      // if there is marker
       } else {
         // parse the line
         char strImage[1024];
@@ -126,10 +135,12 @@ void SubMain(int argc, char *argv[]) {
         ULONG ulSegment = -1;
         ULONG ulOffset = -1;
         sscanf(strAdr, "$adr: %s %x:%x", strImage, &ulSegment, &ulOffset);
+
         // find the function
         CTString strFunction;
         SLONG slDelta;
         FindInMapFile(fnSymbols, CTString(strImage), ulSegment, ulOffset, strFunction, slDelta);
+
         // out put the result
         CTString strResult;
         strResult.PrintF("%s (%s+0X%X)", strLine, strFunction, slDelta);

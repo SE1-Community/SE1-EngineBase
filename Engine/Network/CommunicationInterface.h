@@ -39,18 +39,24 @@ class ENGINE_API CCommunicationInterface {
     SOCKET cci_hSocket; // the socket handle itself
 
   public:
-    // client
+    // Client
     void Client_OpenLocal(void);
     void Client_OpenNet_t(ULONG ulServerAddress);
-    // update master UDP socket and route its messages
+
+    // Update master UDP socket and route its messages
     void UpdateMasterBuffers(void);
 
   public:
+    // Constructor
     CCommunicationInterface(void);
+
+    // Destructor
     ~CCommunicationInterface(void) {};
 
-    // start/stop protocols
+    // Start protocols
     void Init(void);
+
+    // Stop protocols
     void Close(void);
 
     void InitWinsock(void);
@@ -58,29 +64,36 @@ class ENGINE_API CCommunicationInterface {
     void PrepareForUse(BOOL bUseNetwork, BOOL bClient);
     void Unprepare(void);
     BOOL IsNetworkEnabled(void);
-    // get address of local machine
+
+    // Get address of local machine
     void GetHostName(CTString &strName, CTString &strAddress);
 
-    // create an inet-family socket
+    // Create an inet-family socket
     void CreateSocket_t();
-    // bind socket to the given address
+
+    // Bind socket to the given address
     void Bind_t(ULONG ulLocalHost, ULONG ulLocalPort);
-    // set socket to non-blocking mode
+
+    // Set socket to non-blocking mode
     void SetNonBlocking_t(void);
-    // get generic socket error info string and last error
+
+    // Get generic socket error info string and last error
     CTString GetSocketError(INDEX iError);
-    // open an UDP socket at given port
+
+    // Open an UDP socket at given port
     void OpenSocket_t(ULONG ulLocalHost, ULONG ulLocalPort);
 
-    // get address of this host
+    // Get address of this host
     void GetLocalAddress_t(ULONG &ulHost, ULONG &ulPort);
-    // get address of the peer host connected to this socket
+
+    // Get address of the peer host connected to this socket
     void GetRemoteAddress_t(ULONG &ulHost, ULONG &ulPort);
 
-    // broadcast communication
+    // Broadcast communication
     void Broadcast_Send(const void *pvSend, SLONG slSendSize, CAddress &adrDestination);
     BOOL Broadcast_Receive(void *pvReceive, SLONG &slReceiveSize, CAddress &adrAddress);
-    // here we receive connect requests
+
+    // Here we receive connect requests
     void Broadcast_Update_t(void);
 
     // Server

@@ -145,24 +145,28 @@ static void none_void(void) {
 // error checkers (this is for debug version only)
 
 extern void OGL_CheckError(void) {
-#ifndef NDEBUG
+  #ifndef NDEBUG
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-  if (eAPI == GAT_OGL)
+
+  if (eAPI == GAT_OGL) {
     ASSERT(pglGetError() == GL_NO_ERROR);
-  else
+  } else {
     ASSERT(eAPI == GAT_NONE);
-#endif
+  }
+  #endif
 }
 
 #ifdef SE1_D3D
 extern void D3D_CheckError(HRESULT hr) {
-#ifndef NDEBUG
+  #ifndef NDEBUG
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-  if (eAPI == GAT_D3D)
+
+  if (eAPI == GAT_D3D) {
     ASSERT(hr == D3D_OK);
-  else
+  } else {
     ASSERT(eAPI == GAT_NONE);
-#endif
+  }
+  #endif
 }
 #endif // SE1_D3D
 
@@ -189,11 +193,11 @@ extern FLOAT _fCurrentLODBias = 0; // LOD bias adjuster
 extern void UpdateLODBias(const FLOAT fLODBias) {
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
+  #else // SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  #endif // SE1_D3D
   // only if supported and needed
   if (_fCurrentLODBias == fLODBias && _pGfx->gl_fMaxTextureLODBias == 0)
     return;
@@ -219,7 +223,7 @@ extern void UpdateLODBias(const FLOAT fLODBias) {
     }
   }
   // Direct3D
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   else if (eAPI == GAT_D3D) { // just set it
     HRESULT hr;
     for (INDEX iUnit = 0; iUnit < _pGfx->gl_ctTextureUnits; iUnit++) { // loop thru tex units
@@ -227,7 +231,7 @@ extern void UpdateLODBias(const FLOAT fLODBias) {
       D3D_CHECKERROR(hr);
     }
   }
-#endif // SE1_D3D
+  #endif // SE1_D3D
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 
@@ -256,7 +260,7 @@ extern void gfxSetTextureFiltering(INDEX &iFilterType, INDEX &iAnisotropyDegree)
   _tpGlobal[0].tp_iAnisotropy = iAnisotropyDegree;
 
   // for OpenGL, that's about it
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   if (_pGfx->gl_eCurrentAPI != GAT_D3D)
     return;
 
@@ -286,7 +290,7 @@ extern void gfxSetTextureFiltering(INDEX &iFilterType, INDEX &iAnisotropyDegree)
   }
   // done
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
-#endif // SE1_D3D
+  #endif // SE1_D3D
 }
 
 // set new texture LOD biasing
@@ -303,27 +307,31 @@ extern void gfxSetTextureBiasing(FLOAT &fLODBias) {
 extern void gfxSetTextureUnit(INDEX iUnit) {
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
+
+  #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
+  #else // SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  #endif // SE1_D3D
   ASSERT(iUnit >= 0 && iUnit < 4); // supports 4 layers (for now)
 
   // check consistency
-#ifndef NDEBUG
+  #ifndef NDEBUG
   if (eAPI == GAT_OGL) {
     GLint gliRet;
     pglGetIntegerv(GL_ACTIVE_TEXTURE_ARB, &gliRet);
     ASSERT(GFX_iActiveTexUnit == (gliRet - GL_TEXTURE0_ARB));
+
     pglGetIntegerv(GL_CLIENT_ACTIVE_TEXTURE_ARB, &gliRet);
     ASSERT(GFX_iActiveTexUnit == (gliRet - GL_TEXTURE0_ARB));
   }
-#endif
+  #endif
 
   // cached?
-  if (GFX_iActiveTexUnit == iUnit)
+  if (GFX_iActiveTexUnit == iUnit) {
     return;
+  }
+
   GFX_iActiveTexUnit = iUnit;
 
   // really set only for OpenGL
@@ -352,11 +360,11 @@ extern void gfxSetTexture(ULONG &ulTexObject, CTexParams &tpLocal) {
 
   // determine API and enable texturing
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
+  #else // SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  #endif // SE1_D3D
   gfxEnableTexture();
 
   _sfStats.StartTimer(CStatForm::STI_BINDTEXTURE);
@@ -368,14 +376,15 @@ extern void gfxSetTexture(ULONG &ulTexObject, CTexParams &tpLocal) {
     pglBindTexture(GL_TEXTURE_2D, ulTexObject);
     MimicTexParams_OGL(tpLocal);
   }
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   else if (eAPI == GAT_D3D) { // Direct3D
     _ppd3dCurrentTexture = (LPDIRECT3DTEXTURE8 *)&ulTexObject;
     HRESULT hr = _pGfx->gl_pd3dDevice->SetTexture(GFX_iActiveTexUnit, *_ppd3dCurrentTexture);
     D3D_CHECKERROR(hr);
     MimicTexParams_D3D(tpLocal);
   }
-#endif // SE1_D3D
+  #endif // SE1_D3D
+
   // done
   _pfGfxProfile.StopTimer(CGfxProfile::PTI_SETCURRENTTEXTURE);
   _sfStats.StopTimer(CStatForm::STI_BINDTEXTURE);
@@ -386,18 +395,18 @@ extern void gfxSetTexture(ULONG &ulTexObject, CTexParams &tpLocal) {
 extern void gfxUploadTexture(ULONG *pulTexture, PIX pixWidth, PIX pixHeight, ULONG ulFormat, BOOL bNoDiscard) {
   // determine API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
+  #else // SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  #endif // SE1_D3D
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
   if (eAPI == GAT_OGL) { // OpenGL
     UploadTexture_OGL(pulTexture, pixWidth, pixHeight, (GLenum)ulFormat, bNoDiscard);
   }
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   else if (eAPI == GAT_D3D) { // Direct3D
     const LPDIRECT3DTEXTURE8 _pd3dLastTexture = *_ppd3dCurrentTexture;
     UploadTexture_D3D(_ppd3dCurrentTexture, pulTexture, pixWidth, pixHeight, (D3DFORMAT)ulFormat, !bNoDiscard);
@@ -407,7 +416,8 @@ extern void gfxUploadTexture(ULONG *pulTexture, PIX pixWidth, PIX pixHeight, ULO
       D3D_CHECKERROR(hr);
     }
   }
-#endif // SE1_D3D
+  #endif // SE1_D3D
+
   _sfStats.StopTimer(CStatForm::STI_GFXAPI);
 }
 
@@ -419,11 +429,11 @@ extern SLONG gfxGetTextureSize(ULONG ulTexObject, BOOL bHasMipmaps /*=TRUE*/) {
 
   // determine API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
+  #else // SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  #endif // SE1_D3D
   SLONG slMipSize;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -452,7 +462,7 @@ extern SLONG gfxGetTextureSize(ULONG ulTexObject, BOOL bHasMipmaps /*=TRUE*/) {
     }
   }
   // Direct3D
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   else if (eAPI == GAT_D3D) {
     // we can determine exact size from texture surface (i.e. mipmap)
     D3DSURFACE_DESC d3dSurfDesc;
@@ -460,7 +470,7 @@ extern SLONG gfxGetTextureSize(ULONG ulTexObject, BOOL bHasMipmaps /*=TRUE*/) {
     D3D_CHECKERROR(hr);
     slMipSize = d3dSurfDesc.Size;
   }
-#endif // SE1_D3D
+  #endif // SE1_D3D
 
   // eventually count in all the mipmaps (takes extra 33% of texture size)
   extern INDEX gap_bAllowSingleMipmap;
@@ -474,40 +484,46 @@ extern SLONG gfxGetTextureSize(ULONG ulTexObject, BOOL bHasMipmaps /*=TRUE*/) {
 extern INDEX gfxGetTexturePixRatio(ULONG ulTextureObject) {
   // determine API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
+  #else // SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  #endif // SE1_D3D
+
   if (eAPI == GAT_OGL) {
     return GetTexturePixRatio_OGL((GLuint)ulTextureObject);
   }
-#ifdef SE1_D3D
-  else if (eAPI == GAT_D3D)
+  #ifdef SE1_D3D
+  else if (eAPI == GAT_D3D) {
     return GetTexturePixRatio_D3D((LPDIRECT3DTEXTURE8)ulTextureObject);
-#endif // SE1_D3D
-  else
+  }
+  #endif // SE1_D3D
+  else {
     return 0;
+  }
 }
 
 // returns bytes/pixels ratio for uploaded texture
 extern INDEX gfxGetFormatPixRatio(ULONG ulTextureFormat) {
   // determine API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
+  #else // SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  #endif // SE1_D3D
+
   if (eAPI == GAT_OGL) {
     return GetFormatPixRatio_OGL((GLenum)ulTextureFormat);
   }
-#ifdef SE1_D3D
-  else if (eAPI == GAT_D3D)
+  #ifdef SE1_D3D
+  else if (eAPI == GAT_D3D) {
     return GetFormatPixRatio_D3D((D3DFORMAT)ulTextureFormat);
-#endif // SE1_D3D
-  else
+  }
+  #endif // SE1_D3D
+  else {
     return 0;
+  }
 }
 
 // PATTERN TEXTURE FOR LINES
@@ -547,14 +563,18 @@ extern void SetVertexArray_D3D(INDEX iType, ULONG *pulVtx);
 
 extern void gfxUnlockArrays(void) {
   // only if locked (OpenGL can lock 'em)
-  if (!_bCVAReallyLocked)
+  if (!_bCVAReallyLocked) {
     return;
+  }
+
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+
+  #ifndef NDEBUG
   INDEX glctRet;
   pglGetIntegerv(GL_ARRAY_ELEMENT_LOCK_COUNT_EXT, (GLint *)&glctRet);
   ASSERT(glctRet == GFX_ctVertices);
-#endif
+  #endif
+
   pglUnlockArraysEXT();
   OGL_CHECKERROR;
   _bCVAReallyLocked = FALSE;
@@ -633,11 +653,11 @@ extern void gfxSetTruform(INDEX iLevel, BOOL bLinearNormals) {
 
   // determine API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
+  #else // SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  #endif // SE1_D3D
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -649,13 +669,13 @@ extern void gfxSetTruform(INDEX iLevel, BOOL bLinearNormals) {
     OGL_CHECKERROR;
   }
   // if disabled, Direct3D will set tessellation level at "enable" call
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   else if (eAPI == GAT_D3D && GFX_bTruform) {
     FLOAT fSegments = iLevel + 1;
     HRESULT hr = _pGfx->gl_pd3dDevice->SetRenderState(D3DRS_PATCHSEGMENTS, *((DWORD *)&fSegments));
     D3D_CHECKERROR(hr);
   }
-#endif // SE1_D3D
+  #endif // SE1_D3D
 
   // keep current truform params
   truform_iLevel = iLevel;
@@ -785,7 +805,7 @@ extern void GFX_SetFunctionPointers(INDEX iAPI) {
     gfxSetColorMask = &ogl_SetColorMask;
   }
   // Direct3D?
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   else if (iAPI == (INDEX)GAT_D3D) {
     gfxEnableDepthWrite = &d3d_EnableDepthWrite;
     gfxEnableDepthBias = &d3d_EnableDepthBias;
@@ -834,7 +854,7 @@ extern void GFX_SetFunctionPointers(INDEX iAPI) {
     gfxLockArrays = &d3d_LockArrays;
     gfxSetColorMask = &d3d_SetColorMask;
   }
-#endif // SE1_D3D
+  #endif // SE1_D3D
   // NONE!
   else {
     gfxEnableDepthWrite = &none_void;

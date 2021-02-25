@@ -15,12 +15,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 class CLightRectangle {
   public:
-    // the rectangle coordinates
+    // The rectangle coordinates
     PIX lr_pixMinU;
     PIX lr_pixMinV;
     PIX lr_pixSizeU;
     PIX lr_pixSizeV;
-    // point on the plane closest to the light
+
+    // Point on the plane closest to the light
     FLOAT lr_fpixHotU;
     FLOAT lr_fpixHotV;
     FLOAT lr_fLightPlaneDistance;

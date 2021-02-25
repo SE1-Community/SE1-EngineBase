@@ -19,9 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #pragma once
 #endif
 
-/*
- * FPU control functions and classes.
- */
+// FPU control functions and classes
 
 // FPU precision setting values
 enum FPUPrecisionType {
@@ -29,23 +27,24 @@ enum FPUPrecisionType {
   FPT_53BIT,
   FPT_64BIT,
 };
-// Get current precision setting of FPU.
+
+// Get current precision setting of FPU
 ENGINE_API enum FPUPrecisionType GetFPUPrecision(void);
-// Set current precision setting of FPU.
+
+// Set current precision setting of FPU
 ENGINE_API void SetFPUPrecision(enum FPUPrecisionType fptNew);
 
-/*
- * Class that provides automatic saving/setting/restoring of FPU precision setting.
- */
+// Class that provides automatic saving/setting/restoring of FPU precision setting
 class ENGINE_API CSetFPUPrecision {
   private:
     enum FPUPrecisionType sfp_fptOldPrecision;
     enum FPUPrecisionType sfp_fptNewPrecision;
 
   public:
-    // Constructor with automatic setting of FPU precision.
+    // Constructor with automatic setting of FPU precision
     CSetFPUPrecision(enum FPUPrecisionType fptNew);
-    // Destructor with automatic restoring of FPU precision.
+
+    // Destructor with automatic restoring of FPU precision
     ~CSetFPUPrecision(void);
 };
 

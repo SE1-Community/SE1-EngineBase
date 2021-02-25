@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 class CRenderProfile : public CProfileForm {
   public:
-    // indices for profiling counters and timers
+    // Indices for profiling counters and timers
     enum ProfileTimerIndex {
       PTI_RENDERING,       // overall rendering time for CRenderer
       PTI_INITIALIZATION,  // time spent in initialization
@@ -65,6 +65,7 @@ class CRenderProfile : public CProfileForm {
       PTI_RENDERINTERFACE,   // time spent in CPlayerEntity::RenderInterface()
       PTI_COUNT
     };
+
     enum ProfileCounterIndex {
       PCI_POLYGONSRENDERED, // total number of polygons rendered
 

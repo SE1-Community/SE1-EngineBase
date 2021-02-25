@@ -19,11 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #pragma once
 #endif
 
-/*
- *
- * Enumerations
- *
- */
+// Enumerations
 
 // !!! FIXME: rcg10042001 Christ I hope this are the same on the Linux ABI...
 
@@ -328,9 +324,9 @@ typedef enum {
   GL_NONE = 0,
   GL_LEFT = 0x0406,
   GL_RIGHT = 0x0407,
-  // GL_FRONT      = 0x0404,
-  // GL_BACK      = 0x0405,
-  // GL_FRONT_AND_BACK    = 0x0408,
+  //GL_FRONT = 0x0404,
+  //GL_BACK = 0x0405,
+  //GL_FRONT_AND_BACK = 0x0408,
   GL_FRONT_LEFT = 0x0400,
   GL_FRONT_RIGHT = 0x0401,
   GL_BACK_LEFT = 0x0402,
@@ -655,9 +651,7 @@ typedef enum {
   GL_STACK_UNDERFLOW = 0x0504,
   GL_OUT_OF_MEMORY = 0x0505,
 
-  /*
-   * Extensions
-   */
+  // Extensions
 
   // GL_EXT_blend_minmax and GL_EXT_blend_color
   GL_CONSTANT_COLOR_EXT = 0x8001,
@@ -1031,26 +1025,22 @@ enum { GL_CLIENT_PIXEL_STORE_BIT = 0x00000001, GL_CLIENT_VERTEX_ARRAY_BIT = 0x00
 
 typedef unsigned int GLbitfield;
 
-/*
- *
- * Data types (may be architecture dependent in some cases)
- *
- */
+// Data types (may be architecture dependent in some cases)
 
-//  C type    GL type    storage
+//  C type             GL type      storage
 /*-------------------------------------------------------------------------*/
-typedef void GLvoid;
-typedef unsigned char GLboolean;
-typedef signed char GLbyte;      // 1-byte signed
-typedef short GLshort;           // 2-byte signed
-typedef int GLint;               // 4-byte signed
-typedef unsigned char GLubyte;   // 1-byte unsigned
+typedef void           GLvoid;
+typedef unsigned char  GLboolean;
+typedef signed char    GLbyte;   // 1-byte signed
+typedef short          GLshort;  // 2-byte signed
+typedef int            GLint;    // 4-byte signed
+typedef unsigned char  GLubyte;  // 1-byte unsigned
 typedef unsigned short GLushort; // 2-byte unsigned
-typedef unsigned int GLuint;     // 4-byte unsigned
-typedef int GLsizei;             // 4-byte signed
-typedef float GLfloat;           // single precision float
-typedef float GLclampf;          // single precision float in [0,1]
-typedef double GLdouble;         // double precision float
-typedef double GLclampd;         // double precision float in [0,1]
+typedef unsigned int   GLuint;   // 4-byte unsigned
+typedef int            GLsizei;  // 4-byte signed
+typedef float          GLfloat;  // single precision float
+typedef float          GLclampf; // single precision float in [0,1]
+typedef double         GLdouble; // double precision float
+typedef double         GLclampd; // double precision float in [0,1]
 
 #endif /* include-once check. */

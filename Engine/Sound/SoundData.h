@@ -29,55 +29,67 @@ class ENGINE_API CSoundData : public CSerial {
   public:
     // Sound Mode Aware class (notify class when sound mode change)
     CListNode sd_Node; // for linking in list
-    ULONG sd_ulFlags;  // flags
+    ULONG sd_ulFlags; // flags
 
-  // private:
+  //private:
   public:
-    // Call-back called when sound mode changes.
+    // Call-back called when sound mode changes
     void ModeChanged(void);
 
     inline BOOL IsHooked(void) const {
       return sd_Node.IsLinked();
     };
+
     CListHead sd_ClhLinkList; // list of objects linked to data
 
     void PausePlayingObjects(void);
     void ResumePlayingObjects(void);
 
     // Sound Buffer
-    WAVEFORMATEX sd_wfeFormat;   // primary sound buffer format
-    SWORD *sd_pswBuffer;         // pointer on buffer
+    WAVEFORMATEX sd_wfeFormat; // primary sound buffer format
+    SWORD *sd_pswBuffer; // pointer on buffer
     SLONG sd_slBufferSampleSize; // buffer sample size
-    double sd_dSecondsLength;    // sound length in seconds
+    double sd_dSecondsLength; // sound length in seconds
 
-    // free Buffer (and all linked Objects)
+    // Free buffer (and all linked Objects)
     void ClearBuffer(void);
+
     // Add object in sound aware list
     void AddObjectLink(CSoundObject &CsoAdd);
+
     // Remove an object from aware list
     void RemoveObjectLink(CSoundObject &CsoRemove);
-    // reference counting functions
+
+    // Reference counting functions
     void AddReference(void);
     void RemReference(void);
 
   public:
     // Constructor
     CSoundData();
+
     // Destructor
     ~CSoundData();
-    // get sound length in seconds
+
+    // Get sound length in seconds
     double GetSecondsLength(void);
-    // read sound from file and convert it to the current sound format
+
+    // Read sound from file and convert it to the current sound format
     void Read_t(CTStream *inFile); // throw char *
-    // write sound to file (not implemented)
+
+    // Write sound to file (not implemented)
     void Write_t(CTStream *outFile); // throw char *
-    // Get the description of this object.
+
+    // Get the description of this object
     CTString GetDescription(void);
-    // free allocated memory for sound and Sound in DXBuffer
+
+    // Free allocated memory for sound and Sound in DXBuffer
     void Clear(void);
-    // check if this kind of objects is auto-freed
+
+    // Check if this kind of objects is auto-freed
     virtual BOOL IsAutoFreed(void);
-    // get amount of memory used by this object
+
+    // Get amount of memory used by this object
     SLONG GetUsedMemory(void);
 };
 

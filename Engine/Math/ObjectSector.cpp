@@ -750,12 +750,12 @@ void CObjectSector::RemapClonedVertices(void) {
 
         // otherwise
       } else {
-#ifndef NDEBUG
+        #ifndef NDEBUG
         // check that it is really ok
         CObjectVertex &vx1 = *apvxSortedVertices[iSortedVertex];
         CObjectVertex &vx2 = *apvxSortedVertices[iSortedVertex + 1];
         ASSERT((&vx1 == &vx2) || (CompareVertices(vx1, vx2) != 0));
-#endif
+        #endif
       }
     }
   } else {
@@ -1724,10 +1724,10 @@ void CObjectSector::Optimize(void) {
   // remove polygons with less than 3 edges
   RemoveDummyPolygons();
 
-#ifndef NDEBUG
+  #ifndef NDEBUG
   // check the optimization algorithm
   CheckOptimizationAlgorithm();
-#endif
+  #endif
 }
 
 /*

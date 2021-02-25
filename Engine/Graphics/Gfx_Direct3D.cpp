@@ -1386,10 +1386,10 @@ elemEnd:
     _pGfx->gl_dwVertexShader = _dwCurrentVS;
   }
 
-#ifndef NDEBUG
+  #ifndef NDEBUG
   // Paranoid Android (by Radiohead:)
   CheckStreams();
-#endif
+  #endif
 
   // determine vertex range
   INDEX iVtxStart, ctVtxUsed;

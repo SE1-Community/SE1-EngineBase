@@ -22,17 +22,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Math/TextureMapping.h>
 //#include <Engine/Graphics/Vertex.h>
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-// WORLD RENDER CONSTANTS
+// World render constants
 
-// scene polygon flags
+// Scene polygon flags
 #define SPOF_SELECTED    (1UL << 0)  // is polygon currently selected or not?
 #define SPOF_TRANSPARENT (1UL << 1)  // polygon has alpha keying
 #define SPOF_RENDERFOG   (1UL << 9)  // polygon has fog
 #define SPOF_RENDERHAZE  (1UL << 10) // polygon has haze
 #define SPOF_BACKLIGHT   (1UL << 31) // used internaly
 
-// scene texture flags
+// Scene texture flags
 #define STXF_CLAMPU      (0x01) // clamp u coordinate in texture
 #define STXF_CLAMPV      (0x02) // clamp v coordinate in texture
 #define STXF_REFLECTION  (0x04) // clamp v coordinate in texture
@@ -45,26 +44,26 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #define STXF_BLEND_MASK (0x70)
 
-/*
- * RENDER SCENE structures (for world purposes)
- */
-// structure that holds information about a polygon that is fully on partially visible
+// Render scene structures (for world purposes)
+
+// Structure that holds information about a polygon that is fully on partially visible
 struct ScenePolygon {
   ScenePolygon *spo_pspoSucc; // next polygon in list
-  INDEX spo_iVtx0;            // first vertex in arrays
-  INDEX spo_ctVtx;            // number of vertices in arrays
-  INDEX *spo_piElements;      // array of triangle elements
-  INDEX spo_ctElements;       // element count
+  INDEX spo_iVtx0; // first vertex in arrays
+  INDEX spo_ctVtx; // number of vertices in arrays
+  INDEX *spo_piElements; // array of triangle elements
+  INDEX spo_ctElements; // element count
 
-  // texture and shadow parameters: 0, 1, 2 are texture maps, 3 is shadow
+  // Texture and shadow parameters: 0, 1, 2 are texture maps, 3 is shadow
   CMappingVectors spo_amvMapping[4]; // texture colors and alpha
-  COLOR spo_acolColors[4];           // texture flags
-  UBYTE spo_aubTextureFlags[4];      // current mip factors for each texture
-  // textures and shadowmap
+  COLOR spo_acolColors[4]; // texture flags
+  UBYTE spo_aubTextureFlags[4]; // current mip factors for each texture
+
+  // Textures and shadowmap
   class CTextureObject *spo_aptoTextures[3];
   class CShadowMap *spo_psmShadowMap;
 
-  // internal for rendering
+  // Internal for rendering
   INDEX spo_iVtx0Pass; // index of first coordinate in per-pass arrays
   COLOR spo_cColor;    // polygon color (for flat or shadow modes)
   ULONG spo_ulFlags;   // polygon flags (selected or not? ...)
@@ -72,11 +71,13 @@ struct ScenePolygon {
   void *spo_pvPolygon; // user data for high level renderer (brush polygon)
 };
 
-// renders whole scene (all visible polygons) to screen drawport
+// Renders whole scene (all visible polygons) to screen drawport
 void RenderScene(CDrawPort *pDP, ScenePolygon *pspoFirst, CAnyProjection3D &prProjection, COLOR colSelection, BOOL bTranslucent);
-// renders only scene z-buffer
+
+// Renders only scene z-buffer
 void RenderSceneZOnly(CDrawPort *pDP, ScenePolygon *pspoFirst, CAnyProjection3D &prProjection);
-// renders flat background of the scene
+
+// Renders flat background of the scene
 void RenderSceneBackground(CDrawPort *pDP, COLOR col);
 
 #endif /* include-once check. */

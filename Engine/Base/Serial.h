@@ -22,55 +22,66 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Changeable.h>
 #include <Engine/Base/FileName.h>
 
-/*
- * Abstract base class for objects that can be saved and loaded.
- */
+// Abstract base class for objects that can be saved and loaded
 class ENGINE_API CSerial : public CChangeable {
   public:
-    INDEX ser_ctUsed;        // use count
+    INDEX ser_ctUsed; // use count
     CTFileName ser_FileName; // last file name loaded
 
   public:
-    // Default constructor.
+    // Constructor
     CSerial(void);
-    // Destructor.
+
+    // Destructor
     virtual ~CSerial(void);
 
-    // Get the file name of this object.
+    // Get the file name of this object
     inline const CTFileName &GetName(void) {
       return ser_FileName;
     };
-    // Get the description of this object.
+
+    // Get the description of this object
     virtual CTString GetDescription(void);
-    // Load from file.
+
+    // Load from file
     void Load_t(const CTFileName fnFileName); // throw char *
-    // Save to file.
+
+    // Save to file
     void Save_t(const CTFileName fnFileName); // throw char *
-    // Reload from file.
+
+    // Reload from file
     void Reload(void);
-    // Mark that object is used once more.
+
+    // Mark that object is used once more
     void MarkUsed(void);
-    // Mark that object is used once less.
+
+    // Mark that object is used once less
     void MarkUnused(void);
-    // Check if object is used at least once.
+
+    // Check if object is used at least once
     BOOL IsUsed(void);
     INDEX GetUsedCount(void);
 
-    // Clear the object.
+    // Clear the object
     virtual void Clear(void);
-    // Read from stream.
-    virtual void Read_t(CTStream *istrFile) = 0; // throw char *
-    // Write to stream.
+
+    // Write to stream
     virtual void Write_t(CTStream *ostrFile) = 0; // throw char *
-    // check if this kind of objects is auto-freed
+
+    // Read from stream
+    virtual void Read_t(CTStream *istrFile) = 0; // throw char *
+
+    // Check if this kind of objects is auto-freed
     virtual BOOL IsAutoFreed(void) {
       return TRUE;
     };
-    // get amount of memory used by this object
+
+    // Get amount of memory used by this object
     virtual SLONG GetUsedMemory(void) {
       return -1;
     };
-    // gather the CRC of the file
+
+    // Gather the CRC of the file
     virtual void AddToCRCTable(void);
 };
 

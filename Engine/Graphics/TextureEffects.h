@@ -26,9 +26,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 struct TextureEffectPixel {
   char tepp_achDummy[8];
 };
+
 struct TextureEffectSourceProperties {
   char tesp_achDummy[64];
 };
+
 class CTextureEffectSource {
   public:
     class CTextureEffectGlobal *tes_ptegGlobalEffect; // global effect of this effect source
@@ -37,10 +39,11 @@ class CTextureEffectSource {
     struct TextureEffectSourceProperties tes_tespEffectSourceProperties;
     CStaticArray<struct TextureEffectPixel> tes_atepPixels;
 
-    // Initialize the texture effect source.
-    void Initialize(class CTextureEffectGlobal *ptegGlobalEffect, ULONG ulEffectSourceType, PIX pixU0, PIX pixV0, PIX pixU1,
-                    PIX pixV1);
-    // Animate the texture effect source.
+    // Initialize the texture effect source
+    void Initialize(class CTextureEffectGlobal *ptegGlobalEffect, ULONG ulEffectSourceType,
+                    PIX pixU0, PIX pixV0, PIX pixU1, PIX pixV1);
+
+    // Animate the texture effect source
     void Animate(void);
 };
 
@@ -51,27 +54,33 @@ class CTextureEffectGlobal {
     CUpdateable teg_updTexture; // when the texture was last updated
     CDynamicArray<CTextureEffectSource> teg_atesEffectSources;
 
-    // Constructor.
+    // Constructor
     CTextureEffectGlobal(CTextureData *ptdTexture, ULONG ulGlobalEffect);
 
-    // Add a new effect source.
+    // Add a new effect source
     ENGINE_API void AddEffectSource(ULONG ulEffectSourceType, PIX pixU0, PIX pixV0, PIX pixU1, PIX pixV1);
-    // animate effect texture
+
+    // Animate effect texture
     void Animate(void);
-    // render effect texture in required mip level
+
+    // Render effect texture in required mip level
     void Render(INDEX iWantedMipLevel, PIX pixTexWidth, PIX pixTexHeight);
 
-    // get effect type (true if water type effect, false if plasma or fire effect)
+    // Get effect type (true if water type effect, false if plasma or fire effect)
     BOOL IsWater(void);
-    // returns number of second it took to render effect texture
+
+    // Returns number of second it took to render effect texture
     ENGINE_API DOUBLE GetRenderingTime(void);
 };
 
 struct TextureEffectSourceType {
   char *test_strName; // name used for browsing
-  void (*test_Initialize)(CTextureEffectSource *ptes, PIX pixU0, PIX pixV0, PIX pixU1,
-                          PIX pixV1);               // function for initalization of a new effect source
-  void (*test_Animate)(CTextureEffectSource *ptes); // function for animation of one effect source
+
+  // Function for initalization of a new effect source
+  void (*test_Initialize)(CTextureEffectSource *ptes, PIX pixU0, PIX pixV0, PIX pixU1, PIX pixV1);
+
+  // Function for animation of one effect source
+  void (*test_Animate)(CTextureEffectSource *ptes);
 };
 
 struct TextureEffectGlobalType {
@@ -79,7 +88,7 @@ struct TextureEffectGlobalType {
   void (*tegt_Initialize)(void);
   void (*tegt_Animate)(void);
 
-  // all types of effect sources
+  // All types of effect sources
   INDEX tet_ctEffectSourceTypes;
   struct TextureEffectSourceType *tet_atestEffectSourceTypes;
 };

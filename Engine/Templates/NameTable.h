@@ -21,54 +21,57 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 class CNameTableSlot_TYPE {
   public:
-    ULONG nts_ulKey;     // hashing key
+    ULONG nts_ulKey; // hashing key
     TYPE *nts_ptElement; // the element inhere
+
     CNameTableSlot_TYPE(void) {
       nts_ptElement = NULL;
     };
+
     void Clear(void) {
       nts_ptElement = NULL;
     };
 };
 
-/*
- * Template class for storing pointers to objects for fast access by name.
- */
+// Template class for storing pointers to objects for fast access by name
 class CNameTable_TYPE {
-  // implementation:
   public:
-    INDEX nt_ctCompartments;                        // number of compartments in table
-    INDEX nt_ctSlotsPerComp;                        // number of slots in one compartment
-    INDEX nt_ctSlotsPerCompStep;                    // allocation step for number of slots in one compartment
+    INDEX nt_ctCompartments; // number of compartments in table
+    INDEX nt_ctSlotsPerComp; // number of slots in one compartment
+    INDEX nt_ctSlotsPerCompStep; // allocation step for number of slots in one compartment
     CStaticArray<CNameTableSlot_TYPE> nt_antsSlots; // all slots are here
 
-    // internal finding
+    // Internal finding
     CNameTableSlot_TYPE *FindSlot(ULONG ulKey, const CTString &strName);
-    // expand the name table to next step
+
+    // Expand the name table to next step
     void Expand(void);
 
-  // interface:
   public:
-    // default constructor
+    // Constructor
     CNameTable_TYPE(void);
-    // destructor -- frees all memory
+
+    // Destructor - frees all memory
     ~CNameTable_TYPE(void);
-    // remove all slots, and reset the nametable to initial (empty) state
+
+    // Remove all slots and reset the nametable to initial (empty) state
     void Clear(void);
 
-    // Set allocation parameters.
+    // Set allocation parameters
     void SetAllocationParameters(INDEX ctCompartments, INDEX ctSlotsPerComp, INDEX ctSlotsPerCompStep);
 
-    // find an object by name
+    // Find an object by name
     TYPE *Find(const CTString &strName);
-    // add a new object
+
+    // Add a new object
     void Add(TYPE *ptNew);
-    // remove an object
+
+    // Remove an object
     void Remove(TYPE *ptOld);
 
-    // remove all objects but keep slots
+    // Remove all objects but keep slots
     void Reset(void);
 
-    // get estimated efficiency of the nametable
+    // Get estimated efficiency of the nametable
     CTString GetEfficiency(void);
 };

@@ -22,20 +22,21 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticArray.h>
 #include <Engine/Math/Vector.h>
 
-// last positions for particle systems
+// Last positions for particle systems
 class ENGINE_API CLastPositions {
   public:
     CStaticArray<FLOAT3D> lp_avPositions;
-    INDEX lp_iLast;      // where entity was last placed
-    INDEX lp_ctUsed;     // how many positions are actually used
+    INDEX lp_iLast; // where entity was last placed
+    INDEX lp_ctUsed; // how many positions are actually used
     TICK lp_llLastAdded; // time when last updated
 
     CLastPositions() {};
     CLastPositions(const CLastPositions &lpOrg);
 
-    // add a new position
+    // Add a new position
     void AddPosition(const FLOAT3D &vPos);
-    // get a position
+
+    // Get a position
     const FLOAT3D &GetPosition(INDEX iPre);
 };
 

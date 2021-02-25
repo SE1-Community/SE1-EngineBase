@@ -22,46 +22,49 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/FileName.h>
 #include <Engine/Entities/Entity.h>
 
-/////////////////////////////////////////////////////////////////////
 // Classes and macros for defining enums for entity properties
-
 class CEntityPropertyEnumValue {
   public:
-    INDEX epev_iValue;  // value
+    INDEX epev_iValue; // value
     char *epev_strName; // descriptive name of the enum value (for editor)
 };
+
 class CEntityPropertyEnumType {
   public:
     CEntityPropertyEnumValue *epet_aepevValues; // array of values
-    INDEX epet_ctValues;                        // number of values
-    // convert value of an enum to its name
+    INDEX epet_ctValues; // number of values
+
+    // Convert value of an enum to its name
     ENGINE_API const char *NameForValue(INDEX iValue);
 };
+
 #define EP_ENUMBEG(typename) extern _declspec(dllexport) CEntityPropertyEnumValue typename##_values[] = {
-#define EP_ENUMVALUE(value, name) \
-  { value, name }
-#define EP_ENUMEND(typename) \
-  } \
-  ; \
+
+#define EP_ENUMVALUE(value, name) { value, name }
+
+#define EP_ENUMEND(typename) }; \
   CEntityPropertyEnumType typename##_enum = {typename##_values, sizeof(typename##_values) / sizeof(CEntityPropertyEnumValue)}
 
-// types that are used only for properties.
-// range, edited visually as sphere around entity
+// Types that are used only for properties
+
+// Range, edited visually as sphere around entity
 typedef FLOAT RANGE;
-// type of illumination (for lights that illuminate through polygons)
+
+// Type of illumination (for lights that illuminate through polygons)
 typedef INDEX ILLUMINATIONTYPE;
-// type of light animation
+
+// Type of light animation
 typedef INDEX ANIMATION;
+
 // CTString browsed like a file - doesn't cause dependencies
 typedef CTString CTFileNameNoDep;
+
 // CTString that gets translated to different languages
 typedef CTString CTStringTrans;
 
-/////////////////////////////////////////////////////////////////////
-// Classes and macros for defining entity properties
-
 #define EPROPF_HIDEINPERSPECTIVE (1UL << 0) // not visualized in perspective view (for ranges)
 
+// Classes and macros for defining entity properties
 class ENGINE_API CEntityProperty {
   public:
     enum PropertyType {
@@ -100,7 +103,8 @@ class ENGINE_API CEntityProperty {
       EPT_MODELINSTANCE = 26,
       EPT_TICK = 27, // [Cecil] New timer: 64-bit integer
       // next free number: 28
-    } ep_eptType;                              // type of property
+    } ep_eptType; // type of property
+
     CEntityPropertyEnumType *ep_pepetEnumType; // if the type is EPT_ENUM or EPT_FLAGS
 
     ULONG ep_ulID;      // property ID for this class
@@ -112,122 +116,127 @@ class ENGINE_API CEntityProperty {
 
     CEntityProperty(PropertyType eptType, CEntityPropertyEnumType *pepetEnumType, ULONG ulID, SLONG slOffset, char *strName,
                     char chShortcut, COLOR colColor, ULONG ulFlags) :
-    ep_eptType(eptType),
-    ep_pepetEnumType(pepetEnumType),
-    ep_ulID(ulID),
-    ep_slOffset(slOffset),
-    ep_strName(strName),
-    ep_chShortcut(chShortcut),
-    ep_colColor(colColor),
-    ep_ulFlags(ulFlags) {};
-    CEntityProperty(void) {};
+      ep_eptType(eptType),
+      ep_pepetEnumType(pepetEnumType),
+      ep_ulID(ulID),
+      ep_slOffset(slOffset),
+      ep_strName(strName),
+      ep_chShortcut(chShortcut),
+      ep_colColor(colColor),
+      ep_ulFlags(ulFlags) {};
+      CEntityProperty(void) {};
 };
 
-// macro for accessing property inside an entity
+// Macro for accessing property inside an entity
 #define ENTITYPROPERTY(entityptr, offset, type) (*((type *)(((UBYTE *)entityptr) + offset)))
 
-/////////////////////////////////////////////////////////////////////
 // Classes and macros for defining entity event handler functions
 
 // one entry in function table
 class CEventHandlerEntry {
   public:
-    SLONG ehe_slState;                        // code of the automaton state
-    SLONG ehe_slBaseState;                    // code of the base state if overridden
+    SLONG ehe_slState; // code of the automaton state
+    SLONG ehe_slBaseState; // code of the base state if overridden
     CEntity::pEventHandler ehe_pEventHandler; // handler function
-    const char *ehe_strName;                  // symbolic name of handler for debugging
+    const char *ehe_strName; // symbolic name of handler for debugging
 };
 
-/////////////////////////////////////////////////////////////////////
 // Classes and macros for defining entity components
 
-enum EntityComponentType { // DO NOT RENUMBER!
-  ECT_TEXTURE = 1,         // texture data
-  ECT_MODEL = 2,           // model data
-  ECT_CLASS = 3,           // entity class
-  ECT_SOUND = 4,           // sound data
+// DO NOT RENUMBER!
+enum EntityComponentType {
+  ECT_TEXTURE = 1, // texture data
+  ECT_MODEL = 2, // model data
+  ECT_CLASS = 3, // entity class
+  ECT_SOUND = 4, // sound data
 };
 
 class ENGINE_API CEntityComponent {
   public:
-    // Obtain the component.
+    // Obtain the component
     void Obtain_t(void); // throw char *
     void ObtainWithCheck(void);
-    // add component to crc table
+
+    // Add component to CRC table
     void AddToCRCTable(void);
-    // Release the component.
+
+    // Release the component
     void Release(void);
 
   public:
     EntityComponentType ec_ectType; // type of component
-    ULONG ec_slID;                  // component ID in this class
+    ULONG ec_slID; // component ID in this class
 
     CTFileName ec_fnmComponent; // component file name
 
-    // this one is auto-filled by SCape on DLL initialization
-    union {                            // pointer to component
+    // Pointer to component (auto-filled by engine on DLL initialization)
+    union {
       CTextureData *ec_ptdTexture;     // for textures
       CModelData *ec_pmdModel;         // for models
       CSoundData *ec_psdSound;         // for sounds
       CEntityClass *ec_pecEntityClass; // for entity classes
-      void *ec_pvPointer;              // for comparison needs
+      void *ec_pvPointer; // for comparison needs
     };
 
     // NOTE: This uses special EFNM initialization for CTFileName class!
     CEntityComponent(EntityComponentType ectType, ULONG ulID, char *strEFNMComponent) :
-    ec_ectType(ectType), ec_slID(ulID), ec_fnmComponent(strEFNMComponent, 4) {
-      ec_pvPointer = NULL;
-    };
+      ec_ectType(ectType), ec_slID(ulID), ec_fnmComponent(strEFNMComponent, 4), ec_pvPointer(NULL) {};
+
     CEntityComponent(void) {
       ec_slID = (ULONG)-1;
       ec_pvPointer = NULL;
     };
 };
 
-/////////////////////////////////////////////////////////////////////
-// The class defining an entity class DLL itself
-
+// Class defining an entity class DLL itself
 class ENGINE_API CDLLEntityClass {
   public:
     CEntityProperty *dec_aepProperties; // array of properties
-    INDEX dec_ctProperties;             // number of properties
+    INDEX dec_ctProperties; // number of properties
 
     CEventHandlerEntry *dec_aeheHandlers; // array of event handlers
-    INDEX dec_ctHandlers;                 // number of handlers
+    INDEX dec_ctHandlers; // number of handlers
 
     CEntityComponent *dec_aecComponents; // array of components
-    INDEX dec_ctComponents;              // number of components
+    INDEX dec_ctComponents; // number of components
 
-    char *dec_strName;         // descriptive name of the class
+    char *dec_strName; // descriptive name of the class
     char *dec_strIconFileName; // filename of texture or thumbnail
-    INDEX dec_iID;             // class ID
+    INDEX dec_iID; // class ID
 
     CDLLEntityClass *dec_pdecBase; // pointer to the base class
 
-    CEntity *(*dec_New)(void);                                  // pointer to function that creates a member of class
-    void (*dec_OnInitClass)(void);                              // pointer to function for connecting DLL
-    void (*dec_OnEndClass)(void);                               // pointer to function for disconnecting DLL
+    CEntity *(*dec_New)(void); // pointer to function that creates a member of class
+    void (*dec_OnInitClass)(void); // pointer to function for connecting DLL
+    void (*dec_OnEndClass)(void);  // pointer to function for disconnecting DLL
     void (*dec_OnPrecache)(CDLLEntityClass *pdec, INDEX iUser); // function for precaching data
-    void (*dec_OnWorldInit)(CWorld *pwoWorld);                  // function called on world initialization
-    void (*dec_OnWorldTick)(CWorld *pwoWorld);                  // function called for each tick
-    void (*dec_OnWorldRender)(CWorld *pwoWorld);                // function called for each rendering
-    void (*dec_OnWorldEnd)(CWorld *pwoWorld);                   // function called on world cleanup
+    void (*dec_OnWorldInit)(CWorld *pwoWorld);   // function called on world initialization
+    void (*dec_OnWorldTick)(CWorld *pwoWorld);   // function called for each tick
+    void (*dec_OnWorldRender)(CWorld *pwoWorld); // function called for each rendering
+    void (*dec_OnWorldEnd)(CWorld *pwoWorld);    // function called on world cleanup
 
-    // Get pointer to entity property from its name.
+    // Get pointer to entity property from its name
     class CEntityProperty *PropertyForName(const CTString &strPropertyName);
-    // Get pointer to entity property from its packed identifier.
+
+    // Get pointer to entity property from its packed identifier
     class CEntityProperty *PropertyForTypeAndID(CEntityProperty::PropertyType eptType, ULONG ulID);
-    // Get event handler given state and event code.
+
+    // Get event handler given state and event code
     CEntity::pEventHandler HandlerForStateAndEvent(SLONG slState, SLONG slEvent);
-    // Get event handler name for given state.
+
+    // Get event handler name for given state
     const char *HandlerNameForState(SLONG slState);
-    // Get derived class override for given state.
+
+    // Get derived class override for given state
     SLONG GetOverridenState(SLONG slState);
-    // Get pointer to component from its type and identifier.
+
+    // Get pointer to component from its type and identifier
     class CEntityComponent *ComponentForTypeAndID(EntityComponentType ectType, SLONG slID);
-    // Get pointer to component from the component.
+
+    // Get pointer to component from the component
     class CEntityComponent *ComponentForPointer(void *pv);
-    // precache given component
+
+    // Precache given component
     void PrecacheModel(SLONG slID);
     void PrecacheTexture(SLONG slID);
     void PrecacheSound(SLONG slID);
@@ -241,7 +250,7 @@ class ENGINE_API CDLLEntityClass {
 #define DECLSPEC_DLLEXPORT
 #endif
 
-// macro for defining entity class DLL structures
+// Macro for defining entity class DLL structures
 #define ENTITY_CLASSDEFINITION(classname, basename, descriptivename, iconfilename, id) \
   extern "C" DECLSPEC_DLLEXPORT CDLLEntityClass classname##_DLLClass; \
   CDLLEntityClass classname##_DLLClass = {classname##_properties, \
@@ -272,30 +281,39 @@ class ENGINE_API CDLLEntityClass {
 inline ENGINE_API void ClearToDefault(FLOAT &f) {
   f = 0.0f;
 };
+
 inline ENGINE_API void ClearToDefault(INDEX &i) {
   i = 0;
 };
+
 inline ENGINE_API void ClearToDefault(BOOL &b) {
   b = FALSE;
 };
+
 inline ENGINE_API void ClearToDefault(CEntityPointer &pen) {
   pen = NULL;
 };
+
 inline ENGINE_API void ClearToDefault(CTString &str) {
   str = "";
 };
+
 inline ENGINE_API void ClearToDefault(FLOATplane3D &pl) {
   pl = FLOATplane3D(FLOAT3D(0.0f, 1.0f, 0.0f), 0);
 };
+
 inline ENGINE_API void ClearToDefault(FLOAT3D &v) {
   v = FLOAT3D(0.0f, 1.0f, 0.0f);
 };
+
 inline ENGINE_API void ClearToDefault(COLOR &c) {
   c = 0xFFFFFFFF;
 };
+
 inline ENGINE_API void ClearToDefault(CModelData *&pmd) {
   pmd = NULL;
 };
+
 inline ENGINE_API void ClearToDefault(CTextureData *&pmt) {
   pmt = NULL;
 };

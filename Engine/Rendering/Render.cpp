@@ -684,16 +684,25 @@ void CRenderer::Render(void) {
 
   // force finishing of all OpenGL pending operations, if required
   ChangeStatsMode(CStatForm::STI_SWAPBUFFERS);
+
   extern INDEX ogl_iFinish;
   ogl_iFinish = Clamp(ogl_iFinish, 0L, 3L);
+
   extern INDEX d3d_iFinish;
   d3d_iFinish = Clamp(d3d_iFinish, 0L, 3L);
-  if ((ogl_iFinish == 1 && _pGfx->gl_eCurrentAPI == GAT_OGL)
-#ifdef SE1_D3D
-      || (d3d_iFinish == 1 && _pGfx->gl_eCurrentAPI == GAT_D3D)
-#endif // SE1_D3D
-  )
+
+  // [Cecil] 2021-02-20: Get API values before checking
+  const BOOL bFinishOGL = (ogl_iFinish == 1 && _pGfx->gl_eCurrentAPI == GAT_OGL);
+
+  #ifdef SE1_D3D
+  const BOOL bFinishD3D = (d3d_iFinish == 1 && _pGfx->gl_eCurrentAPI == GAT_D3D);
+  #else
+  const BOOL bFinishD3D = FALSE;
+  #endif // SE1_D3D
+
+  if (bFinishOGL || bFinishD3D) {
     gfxFinish();
+  }
 
   // check any eventual delayed depth points outside the mirror (if API and time allows)
   if (!re_bRenderingShadows && re_iIndex == 0) {
@@ -854,18 +863,20 @@ void CRenderer::Render(void) {
   // disable fog/haze
   StopFog();
   StopHaze();
+
   // reset vertex arrays if this is the last renderer
-  if (re_iIndex == 0)
+  if (re_iIndex == 0) {
     _avtxScene.PopAll();
+  }
 
     // for D3D (or mirror) we have to check depth points now, because we need back (not depth!) buffer for it,
     // and D3D can't guarantee that it won't be discarded upon swapbuffers (especially if multisampling is on!) :(
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   if (!re_bRenderingShadows && ((_pGfx->gl_eCurrentAPI == GAT_D3D && !d3d_bAlternateDepthReads) || re_iIndex > 0)) {
     extern void CheckDelayedDepthPoints(const CDrawPort *pdp, INDEX iMirrorLevel = 0);
     CheckDelayedDepthPoints(re_pdpDrawPort, re_iIndex);
   }
-#endif // SE1_D3D
+  #endif // SE1_D3D
 
   // end select-on-render functionality
   extern void EndSelectOnRender(void);

@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Math/Functions.h>
 
-// color definition constants (in CroTeam RGBA format)
+// Color definition constants (in CroTeam RGBA format)
 #define C_BLACK  0x00000000UL
 #define C_vdGRAY 0x1F1F1F00UL
 #define C_dGRAY  0x3F3F3F00UL
@@ -114,7 +114,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define CT_BSHIFT 8
 #define CT_ASHIFT 0
 
-// reversed (OpenGL) RGBA masks and shifts
+// Reversed (OpenGL) RGBA masks and shifts
 #define CT_rRMASK  0x000000FFUL
 #define CT_rGMASK  0x0000FF00UL
 #define CT_rBMASK  0x00FF0000UL
@@ -124,29 +124,32 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define CT_rBSHIFT 16
 #define CT_rASHIFT 24
 
-// global factors for saturation and stuff
+// Global factors for saturation and stuff
 extern SLONG _slTexSaturation;
 extern SLONG _slTexHueShift;
 extern SLONG _slShdSaturation;
 extern SLONG _slShdHueShift;
 
-// COLOR FORMAT CONVERSION ROUTINES
+// Color format conversion routinse
 
-// convert separate R,G and B color components to CroTeam COLOR format (ULONG type)
+// Convert separate R,G and B color components to CroTeam COLOR format (ULONG type)
 __forceinline COLOR RGBToColor(UBYTE const ubR, UBYTE const ubG, UBYTE const ubB) {
   return ((ULONG)ubR << CT_RSHIFT) | ((ULONG)ubG << CT_GSHIFT) | ((ULONG)ubB << CT_BSHIFT);
 }
-// convert CroTeam COLOR format to separate R,G and B color components
+
+// Convert CroTeam COLOR format to separate R, G and B color components
 __forceinline void ColorToRGB(COLOR const col, UBYTE &ubR, UBYTE &ubG, UBYTE &ubB) {
   ubR = (col & CT_RMASK) >> CT_RSHIFT;
   ubG = (col & CT_GMASK) >> CT_GSHIFT;
   ubB = (col & CT_BMASK) >> CT_BSHIFT;
 }
-// combine CroTeam COLOR format from separate R,G and B color components
+
+// Combine CroTeam COLOR format from separate R, G and B color components
 __forceinline COLOR RGBAToColor(UBYTE const ubR, UBYTE const ubG, UBYTE const ubB, UBYTE const ubA) {
   return ((ULONG)ubR << CT_RSHIFT) | ((ULONG)ubG << CT_GSHIFT) | ((ULONG)ubB << CT_BSHIFT) | ((ULONG)ubA << CT_ASHIFT);
 }
-// separate CroTeam COLOR format to R,G and B color components
+
+// Separate CroTeam COLOR format to R, G and B color components
 __forceinline void ColorToRGBA(COLOR const col, UBYTE &ubR, UBYTE &ubG, UBYTE &ubB, UBYTE &ubA) {
   ubR = (col & CT_RMASK) >> CT_RSHIFT;
   ubG = (col & CT_GMASK) >> CT_GSHIFT;
@@ -154,46 +157,50 @@ __forceinline void ColorToRGBA(COLOR const col, UBYTE &ubR, UBYTE &ubG, UBYTE &u
   ubA = (col & CT_AMASK) >> CT_ASHIFT;
 }
 
-// convert HSV components to CroTeam COLOR format
+// Convert HSV components to CroTeam COLOR format
 ENGINE_API extern COLOR HSVToColor(UBYTE const ubH, UBYTE const ubS, UBYTE const ubV);
-// convert CroTeam COLOR format to HSV components
+
+// Convert CroTeam COLOR format to HSV components
 ENGINE_API extern void ColorToHSV(COLOR const colSrc, UBYTE &ubH, UBYTE &ubS, UBYTE &ubV);
 
-// convert HSVA components to CroTeam COLOR format
+// Convert HSVA components to CroTeam COLOR format
 __forceinline COLOR HSVAToColor(UBYTE const ubH, UBYTE const ubS, UBYTE const ubV, UBYTE const ubA) {
   return HSVToColor(ubH, ubS, ubV) | ((ULONG)ubA << CT_ASHIFT);
 }
-// convert CroTeam COLOR format to HSVA components
+
+// Convert CroTeam COLOR format to HSVA components
 __forceinline void ColorToHSVA(COLOR const colSrc, UBYTE &ubH, UBYTE &ubS, UBYTE &ubV, UBYTE &ubA) {
   ColorToHSV(colSrc, ubH, ubS, ubV);
   ubA = (colSrc & CT_AMASK) >> CT_ASHIFT;
 }
 
-// is color gray, black or white?
+// Is color gray, black or white?
 ENGINE_API extern BOOL IsGray(COLOR const col);
 ENGINE_API extern BOOL IsBlack(COLOR const col);
 ENGINE_API extern BOOL IsWhite(COLOR const col);
 
-// find corresponding desaturated color (it's not same as gray!)
+// Find corresponding desaturated color (it's not same as gray!)
 ENGINE_API extern COLOR DesaturateColor(COLOR const col);
 
-// is color1 bigger than color2 (gray comparison)
+// Is color1 bigger than color2 (gray comparison)
 ENGINE_API extern BOOL IsBigger(COLOR const col1, COLOR const col2);
-// has color same hue and saturation (with little tolerance) ?
+
+// Has color same hue and saturation (with little tolerance) ?
 ENGINE_API extern BOOL CompareChroma(COLOR col1, COLOR col2);
 
-// adjust color saturation and/or hue (hue shift in 0-255 range!)
+// Adjust color saturation and/or hue (hue shift in 0-255 range!)
 ENGINE_API extern COLOR AdjustColor(COLOR const col, SLONG const slHueShift, SLONG const slSaturation);
 ENGINE_API extern COLOR AdjustGamma(COLOR const col, FLOAT const fGamma);
-// color lerping functions
+
+// Color lerping functions
 ENGINE_API extern COLOR LerpColor(COLOR col0, COLOR col1, FLOAT fRatio);
 ENGINE_API extern void LerpColor(COLOR col0, COLOR col1, FLOAT fRatio, UBYTE &ubR, UBYTE &ubG, UBYTE &ubB);
 
-// some fast color manipulation functions
+// Some fast color manipulation functions
 ENGINE_API extern COLOR MulColors(COLOR col1, COLOR col2); // fast color multiply function - RES = 1ST * 2ND /255
 ENGINE_API extern COLOR AddColors(COLOR col1, COLOR col2); // fast color additon function - RES = clamp (1ST + 2ND)
 
-// converts colors between Croteam, OpenGL and DirectX
+// Converts colors between Croteam, OpenGL and DirectX
 
 __forceinline ULONG ByteSwap(ULONG ul) {
 // rcg10052001 Platform-wrappers.
@@ -256,10 +263,10 @@ __forceinline ULONG abgr2argb(ULONG ul) {
 #endif
 }
 
-// multiple conversion from OpenGL color to DirectX color
+// Multiple conversion from OpenGL color to DirectX color
 extern void abgr2argb(ULONG *pulSrc, ULONG *pulDst, INDEX ct);
 
-// fast memory copy of ULONGs
+// Fast memory copy of ULONGs
 inline void CopyLongs(ULONG *pulSrc, ULONG *pulDst, INDEX ctLongs) {
 #if (defined _MSC_VER)
   __asm {
@@ -274,7 +281,7 @@ inline void CopyLongs(ULONG *pulSrc, ULONG *pulDst, INDEX ctLongs) {
 #endif
 }
 
-// fast memory set of ULONGs
+// Fast memory set of ULONGs
 inline void StoreLongs(ULONG ulVal, ULONG *pulDst, INDEX ctLongs) {
 #if (defined _MSC_VER)
   __asm {

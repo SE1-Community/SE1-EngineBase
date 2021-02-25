@@ -20,6 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 
 #include <Engine/Terrain/Terrain.h>
+
 // Extract polygons in given box and returns clipped rectangle
 Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bbox, GFXVertex4 **pavVtx, INDEX **paiInd, INDEX &ctVtx,
                           INDEX &ctInd, BOOL bFixSize = FALSE);
@@ -31,6 +32,7 @@ BOOL IsTerrainBelowPoint(CTerrain *ptrTerrain, const FLOAT3D &vPoint, FLOAT fMax
 
 // Extract all tiles that intersect with given box
 void FindTilesInBox(CTerrain *ptrTerrain, FLOATaabbox3D &bbox);
+
 // Add these flags to all tiles that have been extracted
 void AddFlagsToExtractedTiles(ULONG ulFlags);
 
@@ -48,6 +50,7 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate = NU
 
 // Get value from layer at given point
 ENGINE_API UBYTE GetValueFromMask(CTerrain *ptrTerrain, INDEX iLayer, FLOAT3D vHitPoint);
+
 // Calculate 2d relative point in terrain from absolute 3d point in world
 ENGINE_API Point Calculate2dHitPoint(CTerrain *ptrTerrain, FLOAT3D &vHitPoint);
 FLOAT2D CalculateShadingTexCoords(CTerrain *ptrTerrain, FLOAT3D &vPoint);

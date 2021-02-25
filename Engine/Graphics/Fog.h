@@ -26,6 +26,7 @@ enum AttenuationType {
   AT_EXP,    // 1-exp(-t*density)
   AT_EXP2,   // 1-exp(-(t*density)^2)
 };
+
 enum FogGraduationType {
   FGT_CONSTANT, // constant density
   FGT_LINEAR,   // h*graduation
@@ -51,6 +52,7 @@ class CFogParameters {
 };
 
 #define HPF_VISIBLEFROMOUTSIDE (1UL << 0) // can be viewed from sectors that are not hazed
+
 class CHazeParameters {
   public:
     ULONG hp_ulFlags;

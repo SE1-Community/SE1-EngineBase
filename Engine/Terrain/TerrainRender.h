@@ -21,16 +21,22 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // Prepare scene for terrain render
 void PrepareScene(CAnyProjection3D &apr, CDrawPort *pdp, CTerrain *ptrTerrain);
+
 // Render one terrain
 void RenderTerrain(void);
+
 // Render one terrain in wireframe mode
 void RenderTerrainWire(COLOR &colEdges);
+
 // Regenerate terrain tile
 void ReGenerateTile(INDEX itt);
+
 // Draw terrain quad tree
 void DrawQuadTree(void);
+
 // Draw box in wireframe
 void gfxDrawWireBox(FLOATaabbox3D &bbox, COLOR col);
+
 // Draw selected vertices
 void DrawSelectedVertices(GFXVertex *pavVertices, GFXColor *pacolColors, INDEX ctVertices);
 

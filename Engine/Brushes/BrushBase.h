@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #pragma once
 #endif
 
-// this is base class for brushes and terrains
+// This is base class for brushes and terrains
 class ENGINE_API CBrushBase {
   public:
     virtual INDEX GetBrushType() {

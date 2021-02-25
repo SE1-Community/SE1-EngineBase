@@ -24,9 +24,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Network/SessionState.h>
 #include <Engine/Templates/StaticArray.h>
 
-/*
- * Server, manages game joining and similar, routes messages from PlayerSource to PlayerTarget
- */
+// Server, manages game joining and similar, routes messages from PlayerSource to PlayerTarget
 class CServer {
   public:
     BOOL srv_bActive; // set if started
@@ -38,69 +36,88 @@ class CServer {
     TICK srv_llLastProcessedTick;     // last tick when all actions have been resent
     INDEX srv_iLastProcessedSequence; // sequence of last sent game stream block
 
-    BOOL srv_bPause;        // set while game is paused
+    BOOL srv_bPause; // set while game is paused
     BOOL srv_bGameFinished; // set while game is finished
-    FLOAT srv_fServerStep;  // counter for smooth time slowdown/speedup
+    FLOAT srv_fServerStep; // counter for smooth time slowdown/speedup
+
   public:
-    // Send disconnect message to some client.
+    // Send disconnect message to some client
     void SendDisconnectMessage(INDEX iClient, const char *strExplanation, BOOL bStream = FALSE);
-    // Get total number of active players.
+
+    // Get total number of active players
     INDEX GetPlayersCount(void);
-    // Get number of active vip players.
+
+    // Get number of active vip players
     INDEX GetVIPPlayersCount(void);
-    // Get total number of active clients.
+
+    // Get total number of active clients
     INDEX GetClientsCount(void);
-    // Get number of active vip clients.
+
+    // Get number of active vip clients
     INDEX GetVIPClientsCount(void);
-    // Get number of active observers.
+
+    // Get number of active observers
     INDEX GetObserversCount(void);
-    // Get number of active players on one client.
+
+    // Get number of active players on one client
     INDEX GetPlayersCountForClient(INDEX iClient);
-    // Find first inactive player.
+
+    // Find first inactive player
     CPlayerBuffer *FirstInactivePlayer(void);
-    // Check if some character name already exists in this session.
+
+    // Check if some character name already exists in this session
     BOOL CharacterNameIsUsed(CPlayerCharacter &pcCharacter);
 
-    // Send initialization info to local client.
+    // Send initialization info to local client
     void ConnectLocalSessionState(INDEX iClient, CNetworkMessage &nm);
-    // Send initialization info to remote client.
+
+    // Send initialization info to remote client
     void ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm);
-    // Send session state data to remote client.
+
+    // Send session state data to remote client
     void SendSessionStateData(INDEX iClient);
 
-    // Send one regular batch of sequences to a client.
+    // Send one regular batch of sequences to a client
     void SendGameStreamBlocks(INDEX iClient);
-    // Resend a batch of game stream blocks to a client.
+
+    // Resend a batch of game stream blocks to a client
     void ResendGameStreamBlocks(INDEX iClient, INDEX iSequence0, INDEX ctSequences);
 
-    // add a new sync check to buffer
+    // Add a new sync check to buffer
     void AddSyncCheck(const CSyncCheck &sc);
-    // try to find a sync check for given time in the buffer (-1 == too old, 0 == found, 1 == toonew)
+
+    // Try to find a sync check for given time in the buffer (-1 = too old, 0 = found, 1 = toonew)
     INDEX FindSyncCheck(TICK llTick, CSyncCheck &sc);
 
-    // make allaction messages for one tick
+    // Make allaction messages for one tick
     void MakeAllActions(void);
-    // add a block to streams for all sessions
+
+    // Add a block to streams for all sessions
     void AddBlockToAllSessions(CNetworkStreamBlock &nsb);
-    // find a mask of all players on a certain client
+
+    // Find a mask of all players on a certain client
     ULONG MaskOfPlayersOnClient(INDEX iClient);
 
   public:
-    // Constructor.
+    // Constructor
     CServer(void);
-    // Destructor.
+
+    // Destructor
     ~CServer();
 
-    // Start server.
+    // Start server
     void Start_t(void);
-    // Stop server.
+
+    // Stop server
     void Stop(void);
-    // Run server loop.
+
+    // Run server loop
     void ServerLoop(void);
-    // Make synchronization test message and add it to game stream.
+
+    // Make synchronization test message and add it to game stream
     void MakeSynchronisationCheck(void);
 
-    // Handle incoming network messages.
+    // Handle incoming network messages
     void HandleAll();
     void HandleAllForAClient(INDEX iClient);
     void HandleClientDisconected(INDEX iClient);

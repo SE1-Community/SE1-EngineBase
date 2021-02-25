@@ -19,12 +19,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #pragma once
 #endif
 
-// key defines for all keys
+// Key defines for all keys
 
-// reserved for 'no-key-pressed'
+// Reserved for 'no-key-pressed'
 #define KID_NONE 0x00
 
-// numbers row
+// Numbers row
 #define KID_1      0x11
 #define KID_2      0x12
 #define KID_3      0x13
@@ -78,7 +78,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define KID_PERIOD 0x48
 #define KID_SLASH  0x49
 
-// row with F-keys
+// Row with F-keys
 #define KID_F1  0x51
 #define KID_F2  0x52
 #define KID_F3  0x53
@@ -92,7 +92,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define KID_F11 0x5B
 #define KID_F12 0x5C
 
-// extra keys
+// Extra keys
 #define KID_ESCAPE    0x60
 #define KID_TILDE     0x61
 #define KID_BACKSPACE 0x62
@@ -101,7 +101,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define KID_ENTER     0x65
 #define KID_SPACE     0x66
 
-// modifier keys
+// Modifier keys
 #define KID_LSHIFT   0x70
 #define KID_RSHIFT   0x71
 #define KID_LCONTROL 0x72
@@ -109,7 +109,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define KID_LALT     0x74
 #define KID_RALT     0x75
 
-// navigation keys
+// Navigation keys
 #define KID_ARROWUP    0x80
 #define KID_ARROWDOWN  0x81
 #define KID_ARROWLEFT  0x82
@@ -124,7 +124,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define KID_SCROLLLOCK 0x8B
 #define KID_PAUSE      0x8C
 
-// numpad numbers
+// Numpad numbers
 #define KID_NUM0       0x90
 #define KID_NUM1       0x91
 #define KID_NUM2       0x92
@@ -137,7 +137,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define KID_NUM9       0x99
 #define KID_NUMDECIMAL 0x9A
 
-// numpad gray keys
+// Numpad gray keys
 #define KID_NUMLOCK     0xA0
 #define KID_NUMSLASH    0xA1
 #define KID_NUMMULTIPLY 0xA2
@@ -145,7 +145,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define KID_NUMPLUS     0xA4
 #define KID_NUMENTER    0xA5
 
-// mouse buttons
+// Mouse buttons
 #define KID_MOUSE1         0xC0
 #define KID_MOUSE2         0xC1
 #define KID_MOUSE3         0xC2

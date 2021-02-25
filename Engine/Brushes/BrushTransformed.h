@@ -36,40 +36,38 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Math/Plane.h>
 #include <Engine/Math/TextureMapping.h>
 
-/*
- * Cached transformed vertex.
- */
+// Cached transformed vertex
 class CWorkingVertex {
   public:
     FLOAT3D wvx_vRelative; // coordinates in brush space
+
     ALIGNED_NEW_AND_DELETE(32);
-    // Clear the object.
+
+    // Clear the object
     inline void Clear(void) {};
 };
 
-/*
- * Cached transformed plane.
- */
+// Cached transformed plane
 class CWorkingPlane {
   public:
-    FLOATplane3D wpl_plRelative;    // coordinates in brush space
+    FLOATplane3D wpl_plRelative; // coordinates in brush space
     CMappingVectors wpl_mvRelative; // mapping vectors in brush space
-    FLOATplane3D wpl_plView;        // coordinates in view space
-    CMappingVectors wpl_mvView;     // mapping vectors in view space
-    CPlanarGradients wpl_pgOoK;     // plane gradients in default mapping
-    BOOL wpl_bVisible;              // set if the plane is visible
-    // Clear the object.
+    FLOATplane3D wpl_plView; // coordinates in view space
+    CMappingVectors wpl_mvView; // mapping vectors in view space
+    CPlanarGradients wpl_pgOoK; // plane gradients in default mapping
+    BOOL wpl_bVisible; // set if the plane is visible
+
+    // Clear the object
     inline void Clear(void) {};
 };
 
-/*
- * Cached transformed edge.
- */
+// Cached transformed edge
 class CWorkingEdge {
   public:
     INDEX wed_iwvx0; // working vertices in sector
     INDEX wed_iwvx1;
-    // Clear the object.
+
+    // Clear the object
     inline void Clear(void) {};
 };
 

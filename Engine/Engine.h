@@ -167,22 +167,24 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/Selection.h>
 #include <Engine/Templates/Selection.cpp>
 
-// some global stuff
+// Global engine functions
 ENGINE_API void SE_InitEngine(CTString strGameID);
 ENGINE_API void SE_EndEngine(void);
 ENGINE_API void SE_LoadDefaultFonts(void);
 ENGINE_API void SE_UpdateWindowHandle(HWND hwndWindowed);
 ENGINE_API void SE_PretouchIfNeeded(void);
 
-extern ENGINE_API CTString _strEngineBuild; // not valid before InitEngine()!
+extern ENGINE_API CTString _strEngineBuild; // invalid before InitEngine()!
 extern ENGINE_API ULONG _ulEngineBuildMajor;
 extern ENGINE_API ULONG _ulEngineBuildMinor;
 
+// [Cecil] TODO: Replace BOOLs with a special enum type
 extern ENGINE_API BOOL _bDedicatedServer;
 extern ENGINE_API BOOL _bWorldEditorApp; // is this world edtior app
+
 extern ENGINE_API CTString _strLogFile;
 
-// temporary vars for adjustments
+// Temporary vars for adjustments
 ENGINE_API extern FLOAT tmp_af[10];
 ENGINE_API extern INDEX tmp_ai[10];
 ENGINE_API extern INDEX tmp_i;

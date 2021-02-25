@@ -1625,17 +1625,23 @@ static void RSEnd(void) {
 void RenderScene(CDrawPort *pDP, ScenePolygon *pspoFirst, CAnyProjection3D &prProjection, COLOR colSelection, BOOL bTranslucent) {
   // check API
   eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
+  #else // SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
-  if (eAPI != GAT_OGL
-#ifdef SE1_D3D
-      && eAPI != GAT_D3D
-#endif // SE1_D3D
-  )
+  #endif // SE1_D3D
+
+  // [Cecil] 2021-02-20: Get API types before checking
+  const BOOL bNotOGL = (eAPI != GAT_OGL);
+  #ifdef SE1_D3D
+  const BOOL bNotD3D = (eAPI != GAT_D3D);
+  #else
+  const BOOL bNotD3D = TRUE;
+  #endif // SE1_D3D
+
+  if (bNotOGL && bNotD3D) {
     return;
+  }
 
   // some cvars cannot be altered in multiplayer mode!
   if (_bMultiPlayer) {

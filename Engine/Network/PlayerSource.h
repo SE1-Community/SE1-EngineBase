@@ -23,42 +23,46 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Network/NetworkMessage.h>
 #include <Engine/Entities/PlayerCharacter.h>
 
-/*
- * Player source, located on client computer; creating actions and receiving updates
- */
+// Player source, located on client computer; creating actions and receiving updates
 class ENGINE_API CPlayerSource {
   public:
     INDEX pls_Index;
-    BOOL pls_Active;                  // set if this player exists
+    BOOL pls_Active; // set if this player exists
     CPlayerCharacter pls_pcCharacter; // this player's character data
 
     CTCriticalSection pls_csAction; // access to player action
     CPlayerAction pls_paAction;     // action that this player is currently doing
+
     #define PLS_MAXLASTACTIONS 3
     CPlayerAction pls_apaLastActions[PLS_MAXLASTACTIONS]; // old actions remembered for resending
+
   public:
-    // Activate a new player.
+    // Activate a new player
     void Start_t(CPlayerCharacter &pcCharacter);
-    // Deactivate removed player.
+
+    // Deactivate removed player
     void Stop(void);
-    // Check if this player is active.
+
+    // Check if this player is active
     BOOL IsActive(void) {
       return pls_Active;
     };
-    // request character change for a player
+
+    // Request character change for a player
     // NOTE: the request is asynchronious and possible failure cannot be detected
     void ChangeCharacter(CPlayerCharacter &pcNew);
 
-    // Create action packet from current player commands and for sending to server.
+    // Create action packet from current player commands and for sending to server
     void WriteActionPacket(CNetworkMessage &nm);
 
   public:
     CPlayerSource();
     ~CPlayerSource();
 
-    // Set current player action.
+    // Set current player action
     void SetAction(const CPlayerAction &paAction);
-    // get mask of this player for chat messages
+
+    // Get mask of this player for chat messages
     ULONG GetChatMask(void);
 };
 

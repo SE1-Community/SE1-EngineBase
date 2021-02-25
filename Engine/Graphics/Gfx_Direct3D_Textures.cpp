@@ -138,16 +138,17 @@ extern void MimicTexParams_D3D(CTexParams &tpLocal) {
 
     // no mipmaps?
     if (tpLocal.tp_bSingleMipmap) {
-#ifndef NDEBUG
+      #ifndef NDEBUG
       // paranoid!
       hr = _pGfx->gl_pd3dDevice->GetTextureStageState(GFX_iActiveTexUnit, D3DTSS_MIPFILTER, (ULONG *)&eMipFilter);
       D3D_CHECKERROR(hr);
       ASSERT(eMipFilter == D3DTEXF_POINT || eMipFilter == D3DTEXF_LINEAR);
-#endif // set it
+      #endif
+      // set it
       hr = _pGfx->gl_pd3dDevice->SetTextureStageState(GFX_iActiveTexUnit, D3DTSS_MIPFILTER, D3DTEXF_NONE);
-    }
+
     // yes mipmaps?
-    else {
+    } else {
       switch (iMipFilter) {
         case 0: eMipFilter = D3DTEXF_NONE; break;
         case 1: eMipFilter = D3DTEXF_POINT; break;
@@ -156,6 +157,7 @@ extern void MimicTexParams_D3D(CTexParams &tpLocal) {
       } // set it
       hr = _pGfx->gl_pd3dDevice->SetTextureStageState(GFX_iActiveTexUnit, D3DTSS_MIPFILTER, eMipFilter);
     }
+
     // check and update mipmap state
     D3D_CHECKERROR(hr);
     _tpGlobal[GFX_iActiveTexUnit].tp_bSingleMipmap = tpLocal.tp_bSingleMipmap;

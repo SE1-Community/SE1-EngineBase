@@ -21,55 +21,62 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/CTString.h>
 
-/*
- * Class describing one player character in game.
- */
+// Class describing one player character in game
 class ENGINE_API CPlayerCharacter {
   public:
-    // globally unique identifier of the player
-    // this is so that player can be identified even after renaming
+    // Globally unique identifier of the player
+    // This is so that player can be identified even after renaming
     #define PLAYERGUIDSIZE 16
     UBYTE pc_aubGUID[PLAYERGUIDSIZE];
 
   public:
     CTString pc_strName; // name of the character
     CTString pc_strTeam; // team of the character
-    // buffer for custom use by CPlayerEntity derived class to describe player
+
+    // Buffer for custom use by CPlayerEntity derived class to describe player
     #define MAX_PLAYERAPPEARANCE 32
     UBYTE pc_aubAppearance[MAX_PLAYERAPPEARANCE];
 
-    // Default constructor.
+    // Constructor
     CPlayerCharacter(void);
-    // Create a new character with its name.
+
+    // Create a new character with its name
     CPlayerCharacter(const CTString &strName);
-    // Get character name.
+
+    // Get character name
     const CTString &GetName(void) const;
     const CTString GetNameForPrinting(void) const;
-    // Set character name.
+
+    // Set character name
     void SetName(CTString strName);
-    // Get character team.
+
+    // Get character team
     const CTString &GetTeam(void) const;
     const CTString GetTeamForPrinting(void) const;
-    // Set character team.
+
+    // Set character team
     void SetTeam(CTString strTeam);
 
     void Load_t(const CTFileName &fnFile); // throw char *
     void Save_t(const CTFileName &fnFile); // throw char *
-    // Read character from a stream.
+
+    // Read character from a stream
     void Read_t(CTStream *pstr); // throw char *
-    // Write character into a stream.
+
+    // Write character into a stream
     void Write_t(CTStream *pstr); // throw char *
 
-    // Assignment operator.
+    // Assignment
     CPlayerCharacter &operator=(const CPlayerCharacter &pcOther);
 
-    // Comparison operator.
+    // Comparison
     BOOL operator==(const CPlayerCharacter &pcOther) const;
 
-    // stream operations
+    // Stream operations
     ENGINE_API friend CTStream &operator<<(CTStream &strm, CPlayerCharacter &pc);
     ENGINE_API friend CTStream &operator>>(CTStream &strm, CPlayerCharacter &pc);
-    // message operations
+
+    // Message operations
     friend CNetworkMessage &operator<<(CNetworkMessage &nm, CPlayerCharacter &pc);
     friend CNetworkMessage &operator>>(CNetworkMessage &nm, CPlayerCharacter &pc);
 };

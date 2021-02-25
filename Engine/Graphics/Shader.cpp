@@ -731,11 +731,11 @@ void CShader::Read_t(CTStream *istrFile) {
   strShaderInfo.ReadFromText_t(*istrFile, "Info: ");
 
 // create name of dll
-#ifndef NDEBUG
+  #ifndef NDEBUG
   fnmDLL = _fnmApplicationExe.FileDir() + fnmDLL.FileName() + "D" + fnmDLL.FileExt();
-#else
+  #else
   fnmDLL = _fnmApplicationExe.FileDir() + fnmDLL.FileName() + fnmDLL.FileExt();
-#endif
+  #endif
 
   CTFileName fnmExpanded;
   ExpandFilePath(EFP_READ | EFP_NOZIPS, fnmDLL, fnmExpanded);

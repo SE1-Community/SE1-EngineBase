@@ -639,10 +639,10 @@ void CEntity::Initialize(const CEntityEvent &eeInput) {
   Precache();
 }
 void CEntity::Initialize_internal(const CEntityEvent &eeInput) {
-#ifndef NDEBUG
+  #ifndef NDEBUG
   // clear settings for debugging
   en_RenderType = RT_ILLEGAL;
-#endif
+  #endif
 
   // remember brush zoning flag
   BOOL bWasZoning = en_ulFlags & ENF_ZONING;

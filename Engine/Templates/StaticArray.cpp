@@ -60,13 +60,15 @@ inline void CStaticArray<Type>::Clear(void) {
  */
 template<class Type> inline void CStaticArray<Type>::New(INDEX iCount) {
   ASSERT(this != NULL && iCount >= 0);
+
   // if no new members are needed in fact
   if (iCount == 0) {
     // do nothing
     return;
   }
+
   // ASSERT(sa_Count == 0 && sa_Array == NULL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   if (!(sa_Count == 0 && sa_Array == NULL)) {
     if (sa_Array == NULL) {
       CPrintF("CStaticArray array not set!\n");
@@ -74,7 +76,8 @@ template<class Type> inline void CStaticArray<Type>::New(INDEX iCount) {
       CPrintF("CStaticArray new(%d) called while already holding %d elements!\n", iCount, sa_Count);
     }
   }
-#endif
+  #endif
+
   sa_Count = iCount;
   sa_Array = new Type[iCount + 1]; //(+1 for cache-prefetch opt)
 };

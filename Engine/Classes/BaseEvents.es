@@ -26,76 +26,97 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // These events are used globally
 
-event EInternal {     // internal jumping event - do not use
-};                    
-event EVoid {         // general void type
-};                    
-event EReturn {       // sub procedure return notify
-};
-event EBegin {        // sent to wait handler when started
-};                    
-event ETimer {        // timer elapsed
-};                    
-event ETouch {        // one entity touched another while moving
-  CEntityPointer penOther,    // other entity
-  BOOL bThisMoved,           // if this entity has touched other entity
-  FLOATplane3D   plCollision, // plane of collision
-};
-event EPass {         // one entity passed through another while moving
-  CEntityPointer penOther,   // other entity
-  BOOL bThisMoved,           // if this entity has touched other entity
-};
-event EBlock {        // ONBLOCK_PUSH or ONBLOCK_STOP entity is blocked
-  CEntityPointer penOther,    // other entity
-  FLOATplane3D   plCollision, // plane of collision
-};
-event EWouldFall {    // entity cannot move or it would fall over an edge
-};
-event ETeleport {     // teleport has been activated in your vicinity
-};
-event EPreLevelChange { // notifying an entity that a level is about to change
-  INDEX iUserData,
-};
-event EPostLevelChange { // notifying an entity that a level has just changed
-  INDEX iUserData,
-};
-event EFirstWorldBase { // notifying an entity that it is the first worldbase in the world
+// Internal jumping event - do not use
+event EInternal {};
+
+// General void type
+event EVoid {};
+
+// Sub-procedure return notify
+event EReturn {};
+
+// Sent to wait handler when started
+event EBegin {};
+
+// Timer elapsed
+event ETimer {};
+
+// One entity touched another while moving
+event ETouch {
+  CEntityPointer penOther, // other entity
+  BOOL bThisMoved, // if this entity has touched other entity
+  FLOATplane3D plCollision, // plane of collision
 };
 
+// One entity passed through another while moving
+event EPass {
+  CEntityPointer penOther, // other entity
+  BOOL bThisMoved, // if this entity has touched other entity
+};
+
+// ONBLOCK_PUSH or ONBLOCK_STOP entity is blocked
+event EBlock {
+  CEntityPointer penOther, // other entity
+  FLOATplane3D plCollision, // plane of collision
+};
+
+// Entity cannot move or it would fall over an edge
+event EWouldFall {};
+
+// Teleport has been activated in your vicinity
+event ETeleport {};
+
+// Notifying an entity that a level is about to change
+event EPreLevelChange {
+  INDEX iUserData,
+};
+
+// Notifying an entity that a level has just changed
+event EPostLevelChange {
+  INDEX iUserData,
+};
+
+// Notifying an entity that it is the first worldbase in the world
+event EFirstWorldBase {};
+
+// [Cecil] TODO: Damage types shouldn't be strictly engine-defined
 enum DamageType {
-   1 DMT_EXPLOSION  "Explosion",    // caused by dynamites, rockets and other ordinary explosives
-   2 DMT_PROJECTILE "Projectile",   // caused by projectile (non exploding)
-   3 DMT_CLOSERANGE "Close range",  // caused by close range weapon (chainsaw, head-saw, ...)
-   4 DMT_BULLET     "Bullets",      // caused by ordinary bullets from pistols, rifles etc.
-   5 DMT_DROWNING   "Drowning",     // caused by being without air for too long
-   6 DMT_IMPACT     "Impact",       // caused by impact with some object at high relative velocity
-   7 DMT_BRUSH      "Brush",        // caused by moving brush
-   8 DMT_BURNING    "Burning",      // caused by being burned by fire or lava
-   9 DMT_ACID       "Acid",         // caused by being burned by acid
-  10 DMT_TELEPORT   "Teleport",     // applied to entities in teleport destination
-  11 DMT_FREEZING   "Freezing",     // caused by freezing in cold water
-  12 DMT_CANNONBALL "Cannon ball",  // caused by cannon ball
-  13 DMT_CANNONBALL_EXPLOSION "Cannon ball explosion",   // when cannonball explodes
-  14 DMT_SPIKESTAB  "Spike stab",   // stabbed by spikes (usually content type)
-  15 DMT_ABYSS      "Abyss",        // when someone falls off a high ledge into the void
-  16 DMT_HEAT       "Heat",         // walking under open sun too long
-  17 DMT_DAMAGER    "Damager",      // caused by damager
-  18 DMT_CHAINSAW   "Chain saw",    // caused by chainsaw
-9999 DMT_NONE       "no damage",    // internal
+   0 DMT_NONE         "no damage",    // internal
+   1 DMT_EXPLOSION    "Explosion",    // caused by dynamites, rockets and other ordinary explosives
+   2 DMT_PROJECTILE   "Projectile",   // caused by projectile (non exploding)
+   3 DMT_CLOSERANGE   "Close range",  // caused by close range weapon (chainsaw, head-saw, ...)
+   4 DMT_BULLET       "Bullets",      // caused by ordinary bullets from pistols, rifles etc.
+   5 DMT_DROWNING     "Drowning",     // caused by being without air for too long
+   6 DMT_IMPACT       "Impact",       // caused by impact with some object at high relative velocity
+   7 DMT_BRUSH        "Brush",        // caused by moving brush
+   8 DMT_BURNING      "Burning",      // caused by being burned by fire or lava
+   9 DMT_ACID         "Acid",         // caused by being burned by acid
+  10 DMT_TELEPORT     "Teleport",     // applied to entities in teleport destination
+  11 DMT_FREEZING     "Freezing",     // caused by freezing in cold water
+  12 DMT_CANNONBALL   "Cannon ball",  // caused by cannon ball
+  13 DMT_CB_EXPLOSION "Cannon ball explosion", // when cannonball explodes
+  14 DMT_SPIKESTAB    "Spike stab",   // stabbed by spikes (usually content type)
+  15 DMT_ABYSS        "Abyss",        // when someone falls off a high ledge into the void
+  16 DMT_HEAT         "Heat",         // walking under open sun too long
+  17 DMT_DAMAGER      "Damager",      // caused by damager
+  18 DMT_CHAINSAW     "Chainsaw",     // caused by chainsaw
 };
 
-event EDamage {  // entity has been damaged
-  CEntityPointer penInflictor,    // entity that inflicted the damage
-  FLOAT3D vDirection,             // where the damage came from (in absolute space)
-  FLOAT3D vHitPoint,              // where the damage hit the entity (in absolute space)
-  FLOAT fAmount,                  // amount of damage done
-  enum DamageType dmtType,        // type of damage
+// Entity has been damaged
+event EDamage {
+  CEntityPointer penInflictor, // entity that inflicted the damage
+  FLOAT3D vDirection, // where the damage came from (in absolute space)
+  FLOAT3D vHitPoint, // where the damage hit the entity (in absolute space)
+  FLOAT fAmount, // amount of damage done
+  enum DamageType dmtType, // type of damage
 };
 
-event EDeath { // when this entity dies (health reaches zero)
-  EDamage eLastDamage,  // the damage event that caused the death
+// When this entity dies (health reaches zero)
+event EDeath {
+  EDamage eLastDamage, // the damage event that caused the death
 };
 
-event ETakingBreath { // when this entity takes air after being without it for some time
-  TICK llBreathDelay,  // how long it was without air (0=little, 1=drowning)
+// When this entity takes air after being without it for some time
+event ETakingBreath {
+  TICK llBreathDelay, // how long it was without air (0 sec = little, 1 sec = drowning)
 };

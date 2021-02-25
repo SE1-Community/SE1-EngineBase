@@ -21,46 +21,53 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Templates/StaticArray.h>
 
-/*
- * Template class for BSP-tree
- */
+// Template class for BSP tree
 template<class Type, int iDimensions> class BSPTree {
   public:
     CStaticArray<BSPNode<Type, iDimensions>> bt_abnNodes; // all nodes are stored here together here
 
-    // Create bsp-subtree from array of polygons oriented inwards.
+    // Create bsp-subtree from array of polygons oriented inwards
     BSPNode<Type, iDimensions> *CreateSubTree(CDynamicArray<BSPPolygon<Type, iDimensions>> &arbpoPolygons);
-    // Move one subtree to array.
+
+    // Move one subtree to array
     void MoveSubTreeToArray(BSPNode<Type, iDimensions> *pbnSubtree);
-    // Count nodes in subtree.
+
+    // Count nodes in subtree
     INDEX CountNodes(BSPNode<Type, iDimensions> *pbnSubtree);
 
-    // Move all nodes to array.
+    // Move all nodes to array
     void MoveNodesToArray(void);
 
   public:
     BSPNode<Type, iDimensions> *bt_pbnRoot; // root node of BSP-tree
 
-    // Default constructor.
+    // Constructor
     BSPTree(void);
-    // Destructor.
+
+    // Destructor
     ~BSPTree(void);
-    // Constructor with array of polygons oriented inwards.
+
+    // Constructor with array of polygons oriented inwards
     BSPTree(CDynamicArray<BSPPolygon<Type, iDimensions>> &arbpoPolygons);
 
-    // Create bsp-tree from array of polygons oriented inwards.
+    // Create BSP tree from array of polygons oriented inwards
     void Create(CDynamicArray<BSPPolygon<Type, iDimensions>> &arbpoPolygons);
-    // Destroy bsp-tree.
+
+    // Destroy BSP tree
     void Destroy(void);
-    // find minimum/maximum parameters of points on a line that are inside
+
+    // Find minimum/maximum parameters of points on a line that are inside
     void FindLineMinMax(const Vector<Type, iDimensions> &v0, const Vector<Type, iDimensions> &v1, Type &tMin, Type &tMax) const;
-    // Test if a sphere is inside, outside, or intersecting. (Just a trivial rejection test)
+
+    // Test if a sphere is inside, outside, or intersecting (just a trivial rejection test)
     FLOAT TestSphere(const Vector<Type, iDimensions> &vSphereCenter, Type tSphereRadius) const;
-    // Test if a box is inside, outside, or intersecting. (Just a trivial rejection test)
+
+    // Test if a box is inside, outside, or intersecting (just a trivial rejection test)
     FLOAT TestBox(const OBBox<Type> &box) const;
-    // Read/write entire bsp tree to disk.
-    void Read_t(CTStream &strm);  // throw char *
+
+    // Write and read the entire BSP tree to disk
     void Write_t(CTStream &strm); // throw char *
+    void Read_t(CTStream &strm); // throw char *
 };
 
 #endif /* include-once check. */

@@ -39,11 +39,12 @@ void PrintUsage() {
 
 void SubMain(int argc, char *argv[]);
 
+// Entry point
 int main(int argc, char *argv[]) {
   CTSTREAM_BEGIN {
     SubMain(argc, argv);
-  }
-  CTSTREAM_END;
+  } CTSTREAM_END;
+
   return 0;
 }
 
@@ -55,8 +56,10 @@ void SubMain(int argc, char *argv[]) {
 
   // initialize engine
   SE_InitEngine("");
+
   // get application path from cmd line
   _fnmApplicationPath = CTString(ACHR_APP_DIR);
+
   // if not ending with backslash
   if (_fnmApplicationPath[strlen(_fnmApplicationPath) - 1] != '\\') {
     _fnmApplicationPath += "\\";
@@ -65,9 +68,11 @@ void SubMain(int argc, char *argv[]) {
   // get all filenames from command line
   CTFileName afnFiles[3];
   INDEX ctFiles = argc - 3;
+
   if (ctFiles > ARRAYCOUNT(afnFiles)) {
     PrintUsage();
   }
+
   for (INDEX iFile = 0; iFile < ctFiles; iFile++) {
     afnFiles[iFile] = CTString(argv[iFile + 3]);
   }
@@ -101,6 +106,7 @@ void SubMain(int argc, char *argv[]) {
         strmDep.Create_t(afnFiles[1], CTStream::CM_BINARY);
         dl.Write_t(&strmDep);
       } break;
+
       case 'e': {
         if (ctFiles != 2)
           PrintUsage();
@@ -114,6 +120,7 @@ void SubMain(int argc, char *argv[]) {
         // export file suitable for archivers
         dl.ExportASCII_t(afnFiles[1]);
       } break;
+
       case 'u': {
         if (ctFiles != 2)
           PrintUsage();
@@ -130,6 +137,7 @@ void SubMain(int argc, char *argv[]) {
         strmDepOut.Create_t(afnFiles[1], CTStream::CM_BINARY);
         dl.Write_t(&strmDepOut);
       } break;
+
       case 'd': { // UNTESTED!!!!
         if (ctFiles != 3)
           PrintUsage();
@@ -148,6 +156,7 @@ void SubMain(int argc, char *argv[]) {
         strmDepDiff.Create_t(afnFiles[2], CTStream::CM_BINARY);
         dl1.Write_t(&strmDepDiff);
       } break;
+
       case 't': {
         if (ctFiles != 2)
           PrintUsage();
@@ -157,6 +166,7 @@ void SubMain(int argc, char *argv[]) {
         // extract translations
         dl.ExtractTranslations_t(afnFiles[1]);
       } break;
+
       default: {
         printf("Unrecognizable option requested.\n\n");
         PrintUsage();

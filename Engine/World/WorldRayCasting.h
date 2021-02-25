@@ -22,12 +22,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Math/Vector.h>
 #include <Engine/Math/Placement.h>
 
-/*
- * Class that describes casting of a ray.
- */
+// Class that describes casting of a ray
 class ENGINE_API CCastRay {
   public:
-    // diferent types of testing
+    // Different types of testing
     enum TestType {
       TT_NONE,           // do not test at all
       TT_SIMPLE,         // do approximate testing
@@ -37,23 +35,25 @@ class ENGINE_API CCastRay {
     };
 
   public:
-    BOOL cr_bAllowOverHit;        // set if the ray can hit behind its target
-    ULONG cr_ulPassablePolygons;  // flags mask for pass-through testing
+    BOOL cr_bAllowOverHit; // set if the ray can hit behind its target
+    ULONG cr_ulPassablePolygons; // flags mask for pass-through testing
     CBrushPolygon *cr_pbpoIgnore; // polygon that is origin of the continuted ray (is never hit by the ray)
-    CEntity *cr_penIgnore;        // entity that is origin of the continuted ray (is never hit by the ray)
+    CEntity *cr_penIgnore; // entity that is origin of the continuted ray (is never hit by the ray)
 
-    // Internal construction helper.
+    // Internal construction helper
     void Init(CEntity *penOrigin, const FLOAT3D &vOrigin, const FLOAT3D &vTarget);
     void ClearSectorList(void);
 
-    // Add a sector if needed.
+    // Add a sector if needed
     inline void AddSector(CBrushSector *pbsc);
-    // Add all sectors of a brush.
+
+    // Add all sectors of a brush
     void AddAllSectorsOfBrush(CBrush3D *pbr);
-    // Add all sectors around given entity.
+
+    // Add all sectors around given entity
     void AddSectorsAroundEntity(CEntity *pen);
 
-    // Test against a model entity.
+    // Test against a model entity
     void TestModelSimple(CEntity *penModel, CModelObject &mo);
     void TestModelCollisionBox(CEntity *penModel);
     void TestModelFull(CEntity *penModel, CModelObject &mo);
@@ -65,16 +65,17 @@ class ENGINE_API CCastRay {
     // Test against a terrain
     void TestTerrain(CEntity *penTerrain);
 
-    // Test against a brush sector.
+    // Test against a brush sector
     void TestBrushSector(CBrushSector *pbscSector);
 
-    // Test entire world against ray.
+    // Test entire world against ray
     void TestWholeWorld(CWorld *pwoWorld);
-    // Test active sectors recusively.
+
+    // Test active sectors recusively
     void TestThroughSectors(void);
 
   public:
-    // these are filled by the constructor:
+    // Constructor variables
     CPlacement3D cl_plRay;      // placement of the ray in absolute space
     CEntity *cr_penOrigin;      // entity that is origin of the ray (is never hit by the ray)
     FLOAT3D cr_vOrigin;         // coordinates of ray origin
@@ -82,7 +83,7 @@ class ENGINE_API CCastRay {
     FLOAT3D cr_vOriginRelative; // coordinates of ray origin relative to current entity
     FLOAT3D cr_vTargetRelative; // coordinates of ray target relative to current entity
 
-    // these can be altered afterwards for special options
+    // Can be altered afterwards for special options
     BOOL cr_bHitPortals;              // don't pass through portals (off by default)
     BOOL cr_bHitTranslucentPortals;   // don't pass through translucent portals (on by default)
     enum TestType cr_ttHitModels;     // type of testing against models (simple by default)
@@ -92,7 +93,7 @@ class ENGINE_API CCastRay {
     BOOL cr_bPhysical;                // pass only where physical objects can pass
     FLOAT cr_fTestR;                  // additional radius of ray (default 0)
 
-    // these are filled by casting algorithm:
+    // Filled by casting algorithm
     CEntity *cr_penHit;    // entity hit by ray, NULL if ray was cast in void
     FLOAT3D cr_vHit;       // coordinate where the ray hit the entity
     FLOAT cr_fHitDistance; // how far the hit was from the origin
@@ -101,17 +102,18 @@ class ENGINE_API CCastRay {
     INDEX cr_iBoneHit; // id of the bone hit by the ray (SKA)
 
     CBrushPolygon *cr_pbpoBrushPolygon; // polygon that was hit (if brush entity hit)
-    CBrushSector *cr_pbscBrushSector;   // sector that was hit (if brush entity hit)
+    CBrushSector *cr_pbscBrushSector; // sector that was hit (if brush entity hit)
 
-    // Constructor.
+    // Constructors
     CCastRay(CEntity *penOrigin, const CPlacement3D &plOrigin); // target is very far away
     CCastRay(CEntity *penOrigin, const CPlacement3D &plOrigin, FLOAT fMaxTestDistance);
     CCastRay(CEntity *penOrigin, const FLOAT3D &vOrigin, const FLOAT3D &vTarget);
     ~CCastRay(void);
 
-    // Do the ray casting.
+    // Do the ray casting
     void Cast(CWorld *pwoWorld);
-    // Continue cast.
+
+    // Continue cast
     void ContinueCast(CWorld *pwoWorld);
 };
 

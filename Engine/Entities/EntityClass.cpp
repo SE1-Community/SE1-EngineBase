@@ -97,30 +97,29 @@ void CEntityClass::Clear(void) {
 
 // Check that all properties have been properly declared.
 void CEntityClass::CheckClassProperties(void) {
-// do nothing in release version
-#ifndef NDEBUG
+  // do nothing in release version
+  #ifndef NDEBUG
   // for all classes in hierarchy of this entity
   {for (CDLLEntityClass *pdecDLLClass1 = ec_pdecDLLClass; pdecDLLClass1 != NULL; pdecDLLClass1 = pdecDLLClass1->dec_pdecBase) {
     // for all properties
-    for (INDEX iProperty1 = 0; iProperty1 < pdecDLLClass1->dec_ctProperties;
-         iProperty1++) {CEntityProperty &epProperty1 = pdecDLLClass1->dec_aepProperties[iProperty1];
+    for (INDEX iProperty1 = 0; iProperty1 < pdecDLLClass1->dec_ctProperties; iProperty1++) {
+      CEntityProperty &epProperty1 = pdecDLLClass1->dec_aepProperties[iProperty1];
 
-// for all classes in hierarchy of this entity
-for (CDLLEntityClass *pdecDLLClass2 = ec_pdecDLLClass; pdecDLLClass2 != NULL; pdecDLLClass2 = pdecDLLClass2->dec_pdecBase) {
-  // for all properties
-  for (INDEX iProperty2 = 0; iProperty2 < pdecDLLClass2->dec_ctProperties; iProperty2++) {
-    CEntityProperty &epProperty2 = pdecDLLClass2->dec_aepProperties[iProperty2];
-    // the two properties must not have same id unless they are same property
-    ASSERTMSG(&epProperty1 == &epProperty2 || epProperty1.ep_ulID != epProperty2.ep_ulID, "No two properties may have same id!");
-  }
-}
-}
-}
-}
+      // for all classes in hierarchy of this entity
+      for (CDLLEntityClass *pdecDLLClass2 = ec_pdecDLLClass; pdecDLLClass2 != NULL; pdecDLLClass2 = pdecDLLClass2->dec_pdecBase) {
+        // for all properties
+        for (INDEX iProperty2 = 0; iProperty2 < pdecDLLClass2->dec_ctProperties; iProperty2++) {
+          CEntityProperty &epProperty2 = pdecDLLClass2->dec_aepProperties[iProperty2];
 
-// for all classes in hierarchy of this entity
-{
-  for (CDLLEntityClass *pdecDLLClass1 = ec_pdecDLLClass; pdecDLLClass1 != NULL; pdecDLLClass1 = pdecDLLClass1->dec_pdecBase) {
+          // the two properties must not have same id unless they are same property
+          ASSERTMSG(&epProperty1 == &epProperty2 || epProperty1.ep_ulID != epProperty2.ep_ulID, "No two properties may have same id!");
+        }
+      }
+    }
+  }}
+
+  // for all classes in hierarchy of this entity
+  {for (CDLLEntityClass *pdecDLLClass1 = ec_pdecDLLClass; pdecDLLClass1 != NULL; pdecDLLClass1 = pdecDLLClass1->dec_pdecBase) {
     // for all components
     for (INDEX iComponent1 = 0; iComponent1 < pdecDLLClass1->dec_ctComponents; iComponent1++) {
       CEntityComponent &ecComponent1 = pdecDLLClass1->dec_aecComponents[iComponent1];
@@ -136,9 +135,8 @@ for (CDLLEntityClass *pdecDLLClass2 = ec_pdecDLLClass; pdecDLLClass2 != NULL; pd
         }
       }
     }
-  }
-}
-#endif
+  }}
+  #endif
 }
 
 /*
@@ -257,12 +255,12 @@ void CEntityClass::Read_t(CTStream *istr) // throw char *
   CTString strClassName;
   strClassName.ReadFromText_t(*istr, "Class: ");
 
-// create name of dll
-#ifndef NDEBUG
+  // create name of dll
+  #ifndef NDEBUG
   fnmDLL = _fnmApplicationExe.FileDir() + fnmDLL.FileName() + "D" + fnmDLL.FileExt();
-#else
+  #else
   fnmDLL = _fnmApplicationExe.FileDir() + fnmDLL.FileName() + fnmDLL.FileExt();
-#endif
+  #endif
 
   // load the DLL
   CTFileName fnmExpanded;

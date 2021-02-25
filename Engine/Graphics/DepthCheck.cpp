@@ -51,11 +51,13 @@ CStaticStackArray<COLOR> _acolDelayed;
 // read depth buffer and update visibility flag of depth points
 static void UpdateDepthPointsVisibility(const CDrawPort *pdp, const INDEX iMirrorLevel, DepthInfo *pdi, const INDEX ctCount) {
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
+
+  #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
+  #else // SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  #endif // SE1_D3D
+
   ASSERT(pdp != NULL && ctCount > 0);
   const CRaster *pra = pdp->dp_Raster;
 
@@ -81,7 +83,7 @@ static void UpdateDepthPointsVisibility(const CDrawPort *pdp, const INDEX iMirro
   }
 
   // Direct3D
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   if (eAPI == GAT_D3D) {
     _sfStats.StartTimer(CStatForm::STI_GFXAPI);
     // ok, this will get really complicated ...
@@ -204,7 +206,7 @@ static void UpdateDepthPointsVisibility(const CDrawPort *pdp, const INDEX iMirro
     _sfStats.StopTimer(CStatForm::STI_GFXAPI);
     return;
   }
-#endif // SE1_D3D
+  #endif // SE1_D3D
 }
 
 // check point against depth buffer

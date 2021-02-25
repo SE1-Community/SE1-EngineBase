@@ -185,16 +185,19 @@ void CSoundDecoder::InitPlugins(void) {
   try {
     // load vorbis
     if (_hOV == NULL) {
-#ifndef NDEBUG
-#define VORBISLIB "libvorbisfile.dll"
-#else
-#define VORBISLIB "libvorbisfile.dll"
-#endif
+      #ifndef NDEBUG
+      #define VORBISLIB "libvorbisfile.dll"
+      #else
+      #define VORBISLIB "libvorbisfile.dll"
+      #endif
+
       _hOV = ::LoadLibraryA(VORBISLIB);
     }
+
     if (_hOV == NULL) {
       ThrowF_t(TRANS("Cannot load libvorbisfile.dll."));
     }
+
     // prepare function pointers
     OV_SetFunctionPointers_t();
 

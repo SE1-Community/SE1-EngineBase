@@ -19,9 +19,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #pragma once
 #endif
 
-// make a difference file from two saved games
+// Make a difference file from two saved games
 void DIFF_Diff_t(CTStream *pstrmOld, CTStream *pstrmNew, CTStream *pstrmDiff); // throw char *
-// make a new saved game from difference file and old saved game
+
+// Make a new saved game from difference file and old saved game
 void DIFF_Undiff_t(CTStream *pstrmOld, CTStream *pstrmDiff, CTStream *pstrmNew); // throw char *
 
 #endif /* include-once check. */

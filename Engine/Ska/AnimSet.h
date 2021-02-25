@@ -37,7 +37,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 struct AnimPos {
   UWORD ap_iFrameNum; // frame number
-  FLOAT3D ap_vPos;    // bone pos
+  FLOAT3D ap_vPos; // bone pos
 };
 
 struct AnimRotOpt {
@@ -47,7 +47,7 @@ struct AnimRotOpt {
 };
 
 struct AnimRot {
-  UWORD ar_iFrameNum;  // frame number
+  UWORD ar_iFrameNum; // frame number
   FLOATquat3D ar_qRot; // bone rot
 };
 
@@ -60,7 +60,7 @@ struct Animation {
   CStaticArray<struct MorphEnvelope> an_ameMorphs;
   CStaticArray<struct BoneEnvelope> an_abeBones;
   CTString an_fnSourceFile; // name of ascii aa file, used in Ska studio
-  BOOL an_bCustomSpeed;     // animation has custom speed set in animset list file, witch override speed from anim file
+  BOOL an_bCustomSpeed; // animation has custom speed set in animset list file, witch override speed from anim file
 };
 
 struct MorphEnvelope {
@@ -70,30 +70,39 @@ struct MorphEnvelope {
 
 struct BoneEnvelope {
   int be_iBoneID;
-  Matrix12 be_mDefaultPos;                     // default pos
-  CStaticArray<struct AnimPos> be_apPos;       // array of compresed bone positions
-  CStaticArray<struct AnimRot> be_arRot;       // array if compresed bone rotations
+  Matrix12 be_mDefaultPos; // default pos
+  CStaticArray<struct AnimPos> be_apPos; // array of compresed bone positions
+  CStaticArray<struct AnimRot> be_arRot; // array if compresed bone rotations
   CStaticArray<struct AnimRotOpt> be_arRotOpt; // array if optimized compresed bone rotations
   FLOAT be_OffSetLen;
 };
 
 class ENGINE_API CAnimSet : public CSerial {
   public:
+    // Constructor
     CAnimSet();
+
+    // Destructor
     ~CAnimSet();
+
     void Optimize();
     void OptimizeAnimation(Animation &an, FLOAT fTreshold);
+
     void AddAnimation(Animation *pan);
     void RemoveAnimation(Animation *pan);
-
-    void Read_t(CTStream *istrFile);  // throw char *
+    
+    // Write and read
     void Write_t(CTStream *ostrFile); // throw char *
+    void Read_t(CTStream *istrFile); // throw char *
+
     void Clear(void);
+
     SLONG GetUsedMemory(void);
 
     CStaticArray<struct Animation> as_Anims;
 };
 
-// if rotations are compresed does loader also fills array of uncompresed rotations
+// If rotations are compresed does loader also fills array of uncompresed rotations
 ENGINE_API void RememberUnCompresedRotatations(BOOL bRemember);
+
 #endif /* include-once check. */

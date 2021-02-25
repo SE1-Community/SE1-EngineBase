@@ -37,26 +37,36 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 class ENGINE_API CTerrainTile {
   public:
+    // Constructor
     CTerrainTile();
+    // Destructor
     ~CTerrainTile();
+
     // Render tile
     void Render(void);
+
     // Regenerate tile
     void ReGenerate(void);
+
     // Regenerate tile layer
     void ReGenerateTileLayer(INDEX iTileLayer);
+
     // Release tile
     void Clear(void);
+
     // Terrain tile flags handling
     inline ULONG &GetFlags() {
       return tt_ulTileFlags;
     }
+
     inline void SetFlags(ULONG ulFlags) {
       tt_ulTileFlags = ulFlags;
     }
+
     inline void AddFlag(ULONG ulFlag) {
       tt_ulTileFlags |= ulFlag;
     }
+
     inline void RemoveFlag(ULONG ulFlag) {
       tt_ulTileFlags &= ~ulFlag;
     }
@@ -70,17 +80,21 @@ class ENGINE_API CTerrainTile {
     CTextureData *GetTopMap();
 
     INDEX ChangeTileArrays(INDEX iRequestedArrayLod);
+
     void ReleaseTileArrays();
+
     void EmptyTileArrays();
 
     // Calculate lod of tile
     INDEX CalculateLOD(void);
+
     // Update quad tree node
     void UpdateQuadTreeNode();
+
     // Count used memory
     SLONG GetUsedMemory(void);
 
-    // temp:
+    // TEMP
     void AddTriangle(INDEX iind1, INDEX iind2, INDEX iind3);
     void AddVertex(INDEX ic, INDEX ir);
     void LerpVertexPos(GFXVertex4 &vtx, INDEX iVxTarget, INDEX iVxFirst, INDEX iVxLast);
@@ -89,27 +103,30 @@ class ENGINE_API CTerrainTile {
   private:
     // Regenerate left border
     void ReGenerateLeftBorder();
+
     // Regenerate top border
     void ReGenerateTopBorder();
+
     // Regenerate right border
     void ReGenerateRightBorder();
+
     // Regenerate bottom border
     void ReGenerateBottomBorder();
 
   public:
-    INDEX tt_ctVtxX;    // Number of vertices in row
-    INDEX tt_ctVtxY;    // Number of vertices in col
+    INDEX tt_ctVtxX; // Number of vertices in row
+    INDEX tt_ctVtxY; // Number of vertices in col
     INDEX tt_ctLodVtxX; // Number of vertices in row for current lod
     INDEX tt_ctLodVtxY; // Number of vertices in col for current lod
 
-    INDEX tt_iIndex;          // Index of this tile
-    INDEX tt_iLod;            // Current lod of tile
-    INDEX tt_iRequestedLod;   // Requested lod for tile
-    INDEX tt_iArrayIndex;     // Index of array holder this tile uses
+    INDEX tt_iIndex; // Index of this tile
+    INDEX tt_iLod; // Current lod of tile
+    INDEX tt_iRequestedLod; // Requested lod for tile
+    INDEX tt_iArrayIndex; // Index of array holder this tile uses
     INDEX tt_aiNeighbours[4]; // Array of tile neighbours
 
     INDEX tt_iFirstBorderVertex[4]; // Index of first border vertex inserted
-    INDEX tt_ctBorderVertices[4];   // Number of vertices inserted for each border
+    INDEX tt_ctBorderVertices[4]; // Number of vertices inserted for each border
 
     FLOAT tt_fLodLerpFactor; // Lod lerp factor
     ULONG tt_ulTileFlags;

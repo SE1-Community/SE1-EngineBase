@@ -19,65 +19,81 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #pragma once
 #endif
 
-// adjust file path automatically for application path prefix
+// Adjust file path automatically for application path prefix
 void AdjustFilePath_t(CTFileName &fnm);
 
 class CDependInfo {
   public:
-    // atributes
+    // Attributes
     CListNode di_Node;
     CTFileName di_fnFileName;
     time_t di_tTime;
     CTFileName di_fnParent;
 
-    // default constructor
+    // Default constructor
     CDependInfo(CTFileName fnFileName, CTFileName fnParent);
-    // if this file is updated
+
+    // Check if the file is updated
     BOOL IsFileOnDiskUpdated(void);
-    // if time of given file is same
+
+    // Check if time of the file is same
     inline BOOL IsUpdated(const CDependInfo &diOther) {
       return (diOther.di_tTime == di_tTime);
     };
-    // if given file is older
+
+    // Check if the file is older
     inline BOOL IsOlder(const CDependInfo &diOther) {
       return (di_tTime < diOther.di_tTime);
     };
-    // Comparison operator.
+
+    // Comparison
     inline BOOL operator==(const CDependInfo &diOther) const {
       return (diOther.di_fnFileName == di_fnFileName);
     };
-    // read and write opertaions
-    inline void Read_t(CTStream *istrFile) {
-      *istrFile >> di_fnFileName;
-      istrFile->Read_t(&di_tTime, sizeof(time_t));
-    };
+
+    // Write info
     inline void Write_t(CTStream *ostrFile) const {
       *ostrFile << di_fnFileName;
       ostrFile->Write_t(&di_tTime, sizeof(time_t));
+    };
+
+    // Read info
+    inline void Read_t(CTStream *istrFile) {
+      *istrFile >> di_fnFileName;
+      istrFile->Read_t(&di_tTime, sizeof(time_t));
     };
 };
 
 class CDependencyList {
   public:
     CListHead dl_ListHead;
-    // operations
+
+    // Extract all dependencies from the list
     void ExtractDependencies();
-    // remove updated files from list
+
+    // Remove updated files from the list
     void RemoveUpdatedFiles();
-    // create list from ascii file
+
+    // Create list from an ASCII file
     void ImportASCII(CTFileName fnAsciiFile);
-    // export list members into ascii file in form sutable for archivers
+
+    // Export list members into an ASCII file in form sutable for archivers
     void ExportASCII_t(CTFileName fnAsciiFile);
-    // substracts given list from this
+
+    // Substract other list from this one
     void Substract(CDependencyList &dlToSubstract);
-    // extract translation strings from all files in list
+
+    // Extract translation strings from all files in list
     void ExtractTranslations_t(const CTFileName &fnTranslations);
-    // clear dependency list
+
+    // Clear dependency list
     void Clear(void);
-    // if given file allready has its own DependInfo object linked in list
+
+    // Check if given file already has its own DependInfo object linked in list
     BOOL ExistsInList(CListHead &lh, CTFileName fnTestName) const;
-    // read and write opertaions
-    void Read_t(CTStream *istrFile);  // throw char *
+
+    // Write and read
+    void Read_t(CTStream *istrFile); // throw char *
     void Write_t(CTStream *ostrFile); // throw char *
 };
 

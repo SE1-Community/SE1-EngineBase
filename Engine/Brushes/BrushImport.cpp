@@ -72,10 +72,10 @@ CBrushSector *CBrushMip::AddFromObject3D_t(CObject3D &ob) // throw char *
   // optimize the object, to remove replicated and unused elements and find edge inverses
   CBrush3D::OptimizeObject3D(ob);
 
-// turn this on to dump result of all CSG operations
-#ifndef NDEBUG
-//  ob.DebugDump();
-#endif // NDEBUG
+  // turn this on to dump result of all CSG operations
+  #ifndef NDEBUG
+  //  ob.DebugDump();
+  #endif // NDEBUG
 
   // create as much new sectors in brush mip as there are sectors in object
   CBrushSector *pbscSectors = bm_abscSectors.New(ob.ob_aoscSectors.Count());

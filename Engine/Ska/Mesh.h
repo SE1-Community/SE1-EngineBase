@@ -32,20 +32,24 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define ML_FULL_FACE_FORWARD (1UL << 1) // full face forward
 
 struct ENGINE_API MeshLOD {
+  // Constructor
   MeshLOD() {
     mlod_fMaxDistance = -1;
     mlod_ulFlags = 0;
   };
+
+  // Destructor
   ~MeshLOD() {}
+
   FLOAT mlod_fMaxDistance;
   ULONG mlod_ulFlags;
-  CStaticArray<struct MeshVertex> mlod_aVertices;      // vertices
-  CStaticArray<struct MeshNormal> mlod_aNormals;       // normals
-  CStaticArray<struct MeshUVMap> mlod_aUVMaps;         // UV maps
-  CStaticArray<struct MeshSurface> mlod_aSurfaces;     // surfaces
+  CStaticArray<struct MeshVertex> mlod_aVertices;  // vertices
+  CStaticArray<struct MeshNormal> mlod_aNormals;   // normals
+  CStaticArray<struct MeshUVMap> mlod_aUVMaps;     // UV maps
+  CStaticArray<struct MeshSurface> mlod_aSurfaces; // surfaces
   CStaticArray<struct MeshWeightMap> mlod_aWeightMaps; // weight maps
   CStaticArray<struct MeshMorphMap> mlod_aMorphMaps;   // morph maps
-  CTString mlod_fnSourceFile;                          // file name of ascii am file, used in Ska studio
+  CTString mlod_fnSourceFile; // file name of ascii am file, used in Ska studio
 };
 
 struct ENGINE_API MeshVertex {
@@ -109,21 +113,32 @@ struct ENGINE_API MeshVertexMorph {
 
 class ENGINE_API CMesh : public CSerial {
   public:
+    // Constructor
     CMesh();
+
+    // Destructor
     ~CMesh();
+
     void Optimize(void);
     void OptimizeLod(MeshLOD &mLod);
+
     void NormalizeWeights(void);
     void NormalizeWeightsInLod(MeshLOD &mlod);
 
     void AddMeshLod(MeshLOD &mlod);
     void RemoveMeshLod(MeshLOD *pmlodRemove);
-    void Read_t(CTStream *istrFile);  // throw char *
+    
+    // Write and read
     void Write_t(CTStream *ostrFile); // throw char *
+    void Read_t(CTStream *istrFile); // throw char *
+
     void Clear(void);
+
     SLONG GetUsedMemory(void);
+
     CStaticArray<struct MeshLOD> msh_aMeshLODs;
 };
+
 ENGINE_API void ChangeSurfaceShader_t(MeshSurface &msrf, CTString fnNewShader);
 
 #endif /* include-once check. */

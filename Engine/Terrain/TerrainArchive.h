@@ -25,18 +25,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/DynamicArray.h>
 #include <Engine/Templates/DynamicArray.cpp>
 
-/*
- * Terrain archive class -- a collection of terrains used by a level.
- */
+// Terrain archive class -- a collection of terrains used by a level
 class ENGINE_API CTerrainArchive : public CSerial {
   public:
     CDynamicArray<CTerrain> ta_atrTerrains; // all the terrains in archive
-    CWorld *ta_pwoWorld;                    // the world
+    CWorld *ta_pwoWorld; // the world
 
-    // overrides from CSerial
-    // Read/write to/from stream.
-    void Read_t(CTStream *istrFile);  // throw char *
+    // Write and read
     void Write_t(CTStream *ostrFile); // throw char *
+    void Read_t(CTStream *istrFile); // throw char *
 };
 
 #endif /* include-once check. */

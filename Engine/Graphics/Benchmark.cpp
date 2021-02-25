@@ -331,12 +331,16 @@ void CGfxLibrary::Benchmark(CViewPort *pvp, CDrawPort *pdp) {
   _pixSizeJ = pdp->GetHeight();
 
   CTString strAPI = "";
-  if (_pGfx->gl_eCurrentAPI == GAT_OGL)
+
+  if (_pGfx->gl_eCurrentAPI == GAT_OGL) {
     strAPI = "OpenGL";
-#ifdef SE1_D3D
-  else if (_pGfx->gl_eCurrentAPI == GAT_D3D)
+  }
+  #ifdef SE1_D3D
+  else if (_pGfx->gl_eCurrentAPI == GAT_D3D) {
     strAPI = "Direct3D";
-#endif // SE1_D3D
+  }
+  #endif // SE1_D3D
+
   CPrintF(" == == == == == == == == == == == == == == == == == == =\n");
   CPrintF("%s performance testing ...\n", strAPI);
 

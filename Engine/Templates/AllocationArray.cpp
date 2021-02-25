@@ -89,14 +89,16 @@ template<class Type> inline INDEX CAllocationArray<Type>::Allocate(void) {
 }
 // Free object with given index.
 template<class Type> inline void CAllocationArray<Type>::Free(INDEX iToFree) {
-#ifndef NDEBUG
+  #ifndef NDEBUG
   // must be within pool limits
   ASSERT(iToFree >= 0 && iToFree < CStaticArray<Type>::Count());
+
   // must not be free
   if (_bAllocationArrayParanoiaCheck) {
     ASSERT(IsAllocated(iToFree));
   }
-#endif
+  #endif
+
   // push its index on top of the free stack
   aa_aiFreeElements.Push() = iToFree;
 }
@@ -133,27 +135,33 @@ template<class Type> inline BOOL CAllocationArray<Type>::IsAllocated(INDEX i) {
 
 // Random access operator.
 template<class Type> inline Type &CAllocationArray<Type>::operator[](INDEX iObject) {
-#ifndef NDEBUG
+  #ifndef NDEBUG
   ASSERT(this != NULL);
+
   // must be within pool limits
   ASSERT(iObject >= 0 && iObject < CStaticArray<Type>::Count());
+
   // must not be free
   if (_bAllocationArrayParanoiaCheck) {
     ASSERT(IsAllocated(iObject));
   }
-#endif
+  #endif
+
   return CStaticArray<Type>::operator[](iObject);
 }
 template<class Type> inline const Type &CAllocationArray<Type>::operator[](INDEX iObject) const {
-#ifndef NDEBUG
+  #ifndef NDEBUG
   ASSERT(this != NULL);
+
   // must be within pool limits
   ASSERT(iObject >= 0 && iObject < CStaticArray<Type>::Count());
+
   // must not be free
   if (_bAllocationArrayParanoiaCheck) {
     ASSERT(IsAllocated(iObject));
   }
-#endif
+  #endif
+
   return CStaticArray<Type>::operator[](iObject);
 }
 // Get number of allocated objects in array.

@@ -34,7 +34,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Graphics/Vertex.h>
 #include <Engine/Templates/StaticStackArray.cpp>
 
-// common element arrays
+// Common element arrays
 extern CStaticStackArray<GFXVertex> _avtxCommon;
 extern CStaticStackArray<GFXTexCoord> _atexCommon;
 extern CStaticStackArray<GFXColor> _acolCommon;
@@ -58,17 +58,17 @@ struct CTVERTEX {
 };
 #define D3DFVF_CTVERTEX (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 
-// Gfx API type
+// GFX API type
 enum GfxAPIType {
   GAT_NONE = -1, // no gfx API (gfx functions are disabled)
-  GAT_OGL = 0,   // OpenGL
-#ifdef SE1_D3D
+  GAT_OGL = 0, // OpenGL
+  #ifdef SE1_D3D
   GAT_D3D = 1, // Direct3D
-#endif         // SE1_D3D
+  #endif // SE1_D3D
   GAT_CURRENT = 9, // current API
 };
 
-// vertex type (for lock/unlock function)
+// Vertex type (for lock/unlock function)
 enum VtxType {
   VXT_LOC = 1, // x,y,z location
   VXT_NOR = 2, // normal
@@ -76,7 +76,7 @@ enum VtxType {
   VXT_COL = 4, // color
 };
 
-// common flags
+// Common flags
 #define GLF_HASACCELERATION    (1UL << 0) // set if current mode supports hardware acceleration
 #define GLF_INITONNEXTWINDOW   (1UL << 1) // initialize rendering context on next window
 #define GLF_ADJUSTABLEGAMMA    (1UL << 2) // set if display allows gamma adjustment
@@ -105,9 +105,7 @@ enum VtxType {
 #define GLF_EXTC_FXT1   (1UL << 29) // GL_3DFX_texture_compression_FXT1
 #define GLF_EXTC_LEGACY (1UL << 30) // GL_S3_s3tc
 
-/*
- *  Graphics library object.
- */
+// Graphics library object
 class ENGINE_API CGfxLibrary {
   public:
     CGfxAPI gl_gaAPI[2];
@@ -134,20 +132,21 @@ class ENGINE_API CGfxLibrary {
     LPDIRECT3DVERTEXBUFFER8 gl_pd3dTex[GFX_MAXLAYERS];
     LPDIRECT3DINDEXBUFFER8 gl_pd3dIdx;
     #endif // SE1_D3D
-    INDEX gl_ctVertices, gl_ctIndices;      // size of buffers
+
+    INDEX gl_ctVertices, gl_ctIndices; // size of buffers
     INDEX gl_ctColBuffers, gl_ctTexBuffers; // number of color and texture buffers (for multi-pass rendering)
-    INDEX gl_ctMaxStreams;                  // maximum number of streams
+    INDEX gl_ctMaxStreams; // maximum number of streams
     DWORD gl_dwVertexShader;
 
     // OpenGL info
-    HGLRC go_hglRC;            // rendering context
+    HGLRC go_hglRC; // rendering context
     CTString go_strExtensions; // reported extensions
     CTString go_strWinExtensions;
     CTString go_strSupportedExtensions; // supported extensions
-    INDEX go_ctSampleBuffers;     // number of rendering buffers currently on (for T-buffer's motion-blur effect) 0=not supported
+    INDEX go_ctSampleBuffers; // number of rendering buffers currently on (for T-buffer's motion-blur effect) 0=not supported
     INDEX go_iCurrentWriteBuffer; // current buffer enabled for writing
 
-    // common stuff
+    // Common stuff
 
     PIX gl_pixMaxTextureDimension;  // maximum allowed texture dimension by driver
     INDEX gl_iSwapInterval;         // current swap interval (0=immediate, n=VSyncs to wait)
@@ -166,15 +165,16 @@ class ENGINE_API CGfxLibrary {
     CListHead gl_lhRenderTextures; // list of all render-textures
     BOOL gl_bAllowProbing;
 
-    // for profiling
-    INDEX gl_ctWorldTriangles;    // how many world polygons were rendered in last frame
-    INDEX gl_ctModelTriangles;    // how many model polygons were rendered in last frame
+    // For profiling
+    INDEX gl_ctWorldTriangles; // how many world polygons were rendered in last frame
+    INDEX gl_ctModelTriangles; // how many model polygons were rendered in last frame
     INDEX gl_ctParticleTriangles; // how many particle polygons were rendered in last frame
-    INDEX gl_ctTotalTriangles;    // total = (world & lensflares) + (model & shadows) + particle + 2D
+    INDEX gl_ctTotalTriangles; // total = (world & lensflares) + (model & shadows) + particle + 2D
 
   private:
     void InitAPIs(void);
-    // start full-screen or windowed mode (pixSizeI=pixSizeJ=0 & iAdapter=0 if windowed)
+
+    // Start full-screen or windowed mode (pixSizeI=pixSizeJ=0 & iAdapter=0 if windowed)
     BOOL StartDisplayMode(enum GfxAPIType eAPI, INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ, enum DisplayDepth eColorDepth);
     void StopDisplayMode(void);
 
@@ -183,10 +183,12 @@ class ENGINE_API CGfxLibrary {
     void EndDriver_OGL(void);
     void TestExtension_OGL(ULONG ulFlag, const char *strName); // if exist, add OpenGL extension to flag and list
     void AddExtension_OGL(ULONG ulFlag, const char *strName);  // unconditionally add OpenGL extension to flag and list
+
     #ifdef PLATFORM_WIN32
     BOOL CreateContext_OGL(HDC hdc);
     BOOL SetupPixelFormat_OGL(HDC hdc, BOOL bReport = FALSE);
     #endif
+
     void InitContext_OGL(void);
     BOOL SetCurrentViewport_OGL(CViewPort *pvp);
     void UploadPattern_OGL(ULONG ulPatternEven);
@@ -202,153 +204,169 @@ class ENGINE_API CGfxLibrary {
     void SwapBuffers_D3D(CViewPort *pvpToSwap);
 
   public:
-    // common
-    CGfxLibrary();  // init cvars
+    // Common
+    CGfxLibrary(); // init cvars
     ~CGfxLibrary(); // clean up
 
-    // optimize memory used by cached shadow maps
+    // Optimize memory used by cached shadow maps
     void ReduceShadows(void);
 
-    // pretouch all textures and cached shadowmaps
+    // Pretouch all textures and cached shadowmaps
     void PretouchIfNeeded(void);
 
-    // get array of all supported display modes (do not modify array!)
+    // Get array of all supported display modes (do not modify array!)
     CDisplayMode *EnumDisplayModes(INDEX &ctModes, enum GfxAPIType eAPI = GAT_CURRENT, INDEX iAdapter = 0);
 
-    // set viewport for rendering
+    // Set viewport for rendering
     BOOL SetCurrentViewport(CViewPort *pvp);
-    // swap buffers in a viewport
+
+    // Swap buffers in a viewport
     void SwapBuffers(CViewPort *pvpToSwap);
-    // return current frame number
+
+    // Return current frame number
     inline INDEX GetFrameNumber(void) {
       return gl_iFrameNumber;
     };
 
-    // lock/unlock raster for drawing
+    // Lock/unlock raster for drawing
     BOOL LockRaster(CRaster *praToLock);
     void UnlockRaster(CRaster *praToUnlock);
-    // lock/unlock drawport for drawing
+
+    // Lock/unlock drawport for drawing
     BOOL LockDrawPort(CDrawPort *pdpToLock);
     void UnlockDrawPort(CDrawPort *pdpToUnlock);
 
-    // initialize library
+    // Initialize library
     void Init(void);
 
-    // set new display mode
+    // Set new display mode
     BOOL SetDisplayMode(enum GfxAPIType eAPI, INDEX iAdapter, PIX pixSizeI, PIX pixSizeJ, enum DisplayDepth eColorDepth);
-    // set display mode to original desktop display mode (and eventually change API)
+
+    // Set display mode to original desktop display mode (and eventually change API)
     BOOL ResetDisplayMode(enum GfxAPIType eAPI = GAT_CURRENT);
 
-    // get current API/adapter/display mode
+    // Get current API/adapter/display mode
     inline enum GfxAPIType GetCurrentAPI(void) {
       return gl_eCurrentAPI;
     };
+
     inline INDEX GetCurrentAdapter(void) {
       return gl_iCurrentAdapter;
     };
+
     inline void GetCurrentDisplayMode(CDisplayMode &dmCurrent) {
       dmCurrent = gl_dmCurrentDisplayMode;
     };
 
-    // check if 3D acceleration is on
+    // Check if 3D acceleration is on
     inline BOOL IsCurrentModeAccelerated(void) {
       return (gl_ulFlags & GLF_HASACCELERATION);
     };
-    // check if DualHead is on
+
+    // Check if DualHead is on
     inline BOOL IsCurrentModeDH(void) {
       return gl_dmCurrentDisplayMode.IsDualHead();
     };
 
-    // is API supported
+    // Is API supported
     inline BOOL HasAPI(enum GfxAPIType eAPI) {
-      if (eAPI == GAT_CURRENT)
+      if (eAPI == GAT_CURRENT) {
         return TRUE;
-      if (eAPI == GAT_OGL)
+      }
+
+      if (eAPI == GAT_OGL) {
         return (gl_gaAPI[0].ga_ctAdapters > 0);
+      }
+
       #ifdef SE1_D3D
-      if (eAPI == GAT_D3D)
+      if (eAPI == GAT_D3D) {
         return (gl_gaAPI[1].ga_ctAdapters > 0);
+      }
       #endif // SE1_D3D
+
       return FALSE;
     };
 
-    // canvas functions
+    // Canvas functions
     void CreateWindowCanvas(void *hWnd, CViewPort **ppvpNew, CDrawPort **ppdpNew); // Create a new window canvas
-    void DestroyWindowCanvas(CViewPort *pvpOld);                                   // Destroy a window canvas
-    void CreateWorkCanvas(PIX pixWidth, PIX pixHeight, CDrawPort **ppdpNew);       // Create a work canvas
-    void DestroyWorkCanvas(CDrawPort *pdpOld);                                     // Destroy a work canvas
+    void DestroyWindowCanvas(CViewPort *pvpOld); // Destroy a window canvas
+    void CreateWorkCanvas(PIX pixWidth, PIX pixHeight, CDrawPort **ppdpNew); // Create a work canvas
+    void DestroyWorkCanvas(CDrawPort *pdpOld); // Destroy a work canvas
 
-    // simple benchmark routine
+    // Simple benchmark routine
     void Benchmark(CViewPort *pvp, CDrawPort *pdp);
 };
 
 struct MipmapTable {
-  INDEX mmt_ctMipmaps;   // number of mip-maps
+  INDEX mmt_ctMipmaps; // number of mip-maps
   SLONG mmt_slTotalSize; // total size of all mip-maps (in pixels)
-  PIX mmt_pixU;          // size of first mip-map
+  PIX mmt_pixU; // size of first mip-map
   PIX mmt_pixV;
   SLONG mmt_aslOffsets[MAX_MEX_LOG2]; // offsets of each mip-map (in pixels)
 };
 
-// returns number of mip-maps to skip from original texture depending on maximum allowed texture
-// size (in pixels!) and maximum allowed texture dimension (in pixels, too!)
+// Return number of mip-maps to skip from original texture depending on maximum allowed
+// texture size (in pixels!) and maximum allowed texture dimension (in pixels, too!)
 extern INDEX ClampTextureSize(PIX pixClampSize, PIX pixClampDimension, PIX pixSizeU, PIX pixSizeV);
 
-// create mip-map table for texture or shadow of given dimensions
+// Create mip-map table for texture or shadow of given dimensions
 extern void MakeMipmapTable(PIX pixU, PIX pixV, MipmapTable &mmt);
 
-// adds 8-bit opaque alpha channel to 24-bit bitmap (in place suported)
+// Add 8-bit opaque alpha channel to 24-bit bitmap (in place suported)
 extern void AddAlphaChannel(UBYTE *pubSrcBitmap, ULONG *pulDstBitmap, PIX pixSize, UBYTE *pubAlphaBitmap = NULL);
-// removes 8-bit alpha channel from 32-bit bitmap (in place suported)
+
+// Remove 8-bit alpha channel from 32-bit bitmap (in place suported)
 extern void RemoveAlphaChannel(ULONG *pulSrcBitmap, UBYTE *pubDstBitmap, PIX pixSize);
 
-// flips 24 or 32-bit bitmap (iType: 1-horizontal, 2-vertical, 3-diagonal) - in place supported
+// Flips 24 or 32-bit bitmap (iType: 1-horizontal, 2-vertical, 3-diagonal) - in place supported
 extern void FlipBitmap(UBYTE *pubSrc, UBYTE *pubDst, PIX pixWidth, PIX pixHeight, INDEX iFlipType, BOOL bAlphaChannel);
 
-// makes ALL lower mipmaps (to size of Nx1 or 1xM) of a specified 32-bit bitmap with eventual filter appliance
+// Make ALL lower mipmaps (to size of Nx1 or 1xM) of a specified 32-bit bitmap with eventual filter appliance
 // this is done in-place! - all subsequent mip-maps will be posioned just after the original, input bitmap)
 // (only first ctFineMips number of mip-maps will be filtered with bilinear subsampling, while
-//  all others will be downsampled with nearest-neighbour method with border preservance)
+// all others will be downsampled with nearest-neighbour method with border preservance)
 extern void MakeMipmaps(INDEX ctFineMips, ULONG *pulMipmaps, PIX pixWidth, PIX pixHeight, INDEX iFilter = NONE);
 
-// colorize mipmaps
+// Colorize mipmaps
 extern void ColorizeMipmaps(INDEX i1stMipmapToColorize, ULONG *pulMipmaps, PIX pixWidth, PIX pixHeight);
 
-// performs dithering of a 32-bit bipmap (can be in-place)
-extern void DitherBitmap(INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PIX pixHeight, PIX pixCanvasWidth = 0,
-                         PIX pixCanvasHeight = 0);
-// performs dithering of a 32-bit mipmaps (can be in-place)
+// Perform dithering of a 32-bit bipmap (can be in-place)
+extern void DitherBitmap(INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PIX pixHeight,
+                         PIX pixCanvasWidth = 0, PIX pixCanvasHeight = 0);
+
+// Perform dithering of a 32-bit mipmaps (can be in-place)
 extern void DitherMipmaps(INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PIX pixHeight);
 
-// adjust bitmap's saturation and/or hue (hue 0 and saturation 256 are defaults)
+// Adjust bitmap's saturation and/or hue (hue 0 and saturation 256 are defaults)
 extern void AdjustBitmapColor(ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PIX pixHeight, SLONG const slHueShift,
                               SLONG const slSaturation);
 
-// applies filter to 32-bit bitmap (iFilter from -6 to 6; negative=sharpen, positive=blur, 0=none)
-extern void FilterBitmap(INDEX iFilter, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PIX pixHeight, PIX pixCanvasWidth = 0,
-                         PIX pixCanvasHeight = 0);
+// Apply filter to 32-bit bitmap (iFilter from -6 to 6; negative=sharpen, positive=blur, 0=none)
+extern void FilterBitmap(INDEX iFilter, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PIX pixHeight,
+                         PIX pixCanvasWidth = 0, PIX pixCanvasHeight = 0);
 
-// retrives number of mip-maps for the given bitmap size
+// Retrive number of mip-maps for the given bitmap size
 __forceinline INDEX GetNoOfMipmaps(PIX pixWidth, PIX pixHeight) {
   return (FastLog2(Min(pixWidth, pixHeight)) + 1);
 }
 
-// retrives memory offset of a specified mip-map or a size of all mip-maps (IN PIXELS!)
+// Retrives memory offset of a specified mip-map or a size of all mip-maps (IN PIXELS!)
 // (zero offset means first, i.e. largest mip-map)
 extern PIX GetMipmapOffset(INDEX iMipLevel, PIX pixWidth, PIX pixHeight);
 
-// return offset, pointer and dimensions of mipmap of specified size inside texture or shadowmap mipmaps
+// Return offset, pointer and dimensions of mipmap of specified size inside texture or shadowmap mipmaps
 extern INDEX GetMipmapOfSize(PIX pixSize, ULONG *&pulFrame, PIX &pixProbeWidth, PIX &pixProbeHeight);
 
-// flat white texture
+// Flat white texture
 ENGINE_API extern CTextureData *_ptdFlat;
 
-// global texture parameters in engine
+// Global texture parameters in engine
 ENGINE_API extern CTexParams _tpGlobal[GFX_MAXTEXUNITS];
 
-// pointer to global graphics library object
+// Pointer to global graphics library object
 ENGINE_API extern CGfxLibrary *_pGfx;
-// forced texture upload quality (0 = default, 16 = force 16-bit, 32 = force 32-bit)
+
+// Forced texture upload quality (0 = default, 16 = force 16-bit, 32 = force 32-bit)
 ENGINE_API extern INDEX _iTexForcedQuality;
 
 #endif /* include-once check. */

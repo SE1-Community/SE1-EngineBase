@@ -18,12 +18,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 static void ogl_EnableTexture(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_TEXTURE_2D);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_abTexture[GFX_iActiveTexUnit]);
-#endif
+  #endif
 
   // cached?
   if (GFX_abTexture[GFX_iActiveTexUnit] && gap_bOptimizeStateChanges)
@@ -41,12 +41,12 @@ static void ogl_EnableTexture(void) {
 static void ogl_DisableTexture(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_TEXTURE_2D);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_abTexture[GFX_iActiveTexUnit]);
-#endif
+  #endif
 
   // cached?
   if (!GFX_abTexture[GFX_iActiveTexUnit] && gap_bOptimizeStateChanges)
@@ -65,12 +65,13 @@ static void ogl_DisableTexture(void) {
 static void ogl_EnableDepthTest(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_DEPTH_TEST);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bDepthTest);
-#endif
+  #endif
+
   // cached?
   if (GFX_bDepthTest && gap_bOptimizeStateChanges)
     return;
@@ -87,12 +88,12 @@ static void ogl_EnableDepthTest(void) {
 static void ogl_DisableDepthTest(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_DEPTH_TEST);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bDepthTest);
-#endif
+  #endif
 
   // cached?
   if (!GFX_bDepthTest && gap_bOptimizeStateChanges)
@@ -136,12 +137,12 @@ static void ogl_DisableDepthBias(void) {
 static void ogl_EnableDepthWrite(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   pglGetIntegerv(GL_DEPTH_WRITEMASK, (GLint *)&bRes);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bDepthWrite);
-#endif
+  #endif
 
   // cached?
   if (GFX_bDepthWrite && gap_bOptimizeStateChanges)
@@ -159,12 +160,12 @@ static void ogl_EnableDepthWrite(void) {
 static void ogl_DisableDepthWrite(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   pglGetIntegerv(GL_DEPTH_WRITEMASK, (GLint *)&bRes);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bDepthWrite);
-#endif
+  #endif
 
   // cached?
   if (!GFX_bDepthWrite && gap_bOptimizeStateChanges)
@@ -182,12 +183,12 @@ static void ogl_DisableDepthWrite(void) {
 static void ogl_EnableDither(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_DITHER);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bDithering);
-#endif
+  #endif
 
   // cached?
   if (GFX_bDithering && gap_bOptimizeStateChanges)
@@ -205,12 +206,12 @@ static void ogl_EnableDither(void) {
 static void ogl_DisableDither(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_DITHER);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bDithering);
-#endif
+  #endif
 
   // cached?
   if (!GFX_bDithering && gap_bOptimizeStateChanges)
@@ -228,12 +229,12 @@ static void ogl_DisableDither(void) {
 static void ogl_EnableAlphaTest(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_ALPHA_TEST);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bAlphaTest);
-#endif
+  #endif
 
   // cached?
   if (GFX_bAlphaTest && gap_bOptimizeStateChanges)
@@ -251,12 +252,12 @@ static void ogl_EnableAlphaTest(void) {
 static void ogl_DisableAlphaTest(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_ALPHA_TEST);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bAlphaTest);
-#endif
+  #endif
 
   // cached?
   if (!GFX_bAlphaTest && gap_bOptimizeStateChanges)
@@ -274,12 +275,13 @@ static void ogl_DisableAlphaTest(void) {
 static void ogl_EnableBlend(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_BLEND);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bBlending);
-#endif
+  #endif
+
   // cached?
   if (GFX_bBlending && gap_bOptimizeStateChanges)
     return;
@@ -302,12 +304,12 @@ static void ogl_EnableBlend(void) {
 static void ogl_DisableBlend(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_BLEND);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bBlending);
-#endif
+  #endif
 
   // cached?
   if (!GFX_bBlending && gap_bOptimizeStateChanges)
@@ -335,13 +337,13 @@ static void ogl_EnableClipping(void) {
 
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   pglGetIntegerv(GL_CLIP_VOLUME_CLIPPING_HINT_EXT, (GLint *)&bRes);
   bRes = (bRes == GL_FASTEST) ? FALSE : TRUE;
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bClipping);
-#endif
+  #endif
 
   // cached?
   if (GFX_bClipping && gap_bOptimizeStateChanges)
@@ -363,13 +365,13 @@ static void ogl_DisableClipping(void) {
 
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   pglGetIntegerv(GL_CLIP_VOLUME_CLIPPING_HINT_EXT, (GLint *)&bRes);
   bRes = (bRes == GL_FASTEST) ? FALSE : TRUE;
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bClipping);
-#endif
+  #endif
 
   // cached?
   if (!GFX_bClipping && gap_bOptimizeStateChanges)
@@ -387,15 +389,18 @@ static void ogl_DisableClipping(void) {
 static void ogl_EnableClipPlane(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_CLIP_PLANE0);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bClipPlane);
-#endif
+  #endif
+
   // cached?
-  if (GFX_bClipPlane && gap_bOptimizeStateChanges)
+  if (GFX_bClipPlane && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bClipPlane = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -409,15 +414,18 @@ static void ogl_EnableClipPlane(void) {
 static void ogl_DisableClipPlane(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_CLIP_PLANE0);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bClipPlane);
-#endif
+  #endif
+
   // cached?
-  if (!GFX_bClipPlane && gap_bOptimizeStateChanges)
+  if (!GFX_bClipPlane && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bClipPlane = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -432,16 +440,18 @@ static void ogl_DisableClipPlane(void) {
 static void ogl_EnableColorArray(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_COLOR_ARRAY);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bColorArray);
-#endif
+  #endif
 
   // cached?
-  if (GFX_bColorArray && gap_bOptimizeStateChanges)
+  if (GFX_bColorArray && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bColorArray = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -456,12 +466,12 @@ static void ogl_EnableColorArray(void) {
 static void ogl_DisableColorArray(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_COLOR_ARRAY);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bColorArray);
-#endif
+  #endif
 
   // cached?
   if (!GFX_bColorArray && gap_bOptimizeStateChanges)
@@ -484,12 +494,12 @@ static void ogl_EnableTruform(void) {
 
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_PN_TRIANGLES_ATI);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bTruform);
-#endif
+  #endif
 
   if (GFX_bTruform && gap_bOptimizeStateChanges)
     return;
@@ -511,12 +521,12 @@ static void ogl_DisableTruform(void) {
 
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   bRes = pglIsEnabled(GL_PN_TRIANGLES_ATI);
   OGL_CHECKERROR;
   ASSERT(!bRes == !GFX_bTruform);
-#endif
+  #endif
 
   if (!GFX_bTruform && gap_bOptimizeStateChanges)
     return;
@@ -566,7 +576,7 @@ static void ogl_BlendFunc(GfxBlend eSrc, GfxBlend eDst) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
   GLenum gleSrc, gleDst;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   GfxBlend gfxSrc, gfxDst;
   pglGetIntegerv(GL_BLEND_SRC, (GLint *)&gleSrc);
   pglGetIntegerv(GL_BLEND_DST, (GLint *)&gleDst);
@@ -574,10 +584,12 @@ static void ogl_BlendFunc(GfxBlend eSrc, GfxBlend eDst) {
   gfxSrc = BlendFromOGL(gleSrc);
   gfxDst = BlendFromOGL(gleDst);
   ASSERT(gfxSrc == GFX_eBlendSrc && gfxDst == GFX_eBlendDst);
-#endif
+  #endif
+
   // cached?
-  if (eSrc == GFX_eBlendSrc && eDst == GFX_eBlendDst && gap_bOptimizeStateChanges)
+  if (eSrc == GFX_eBlendSrc && eDst == GFX_eBlendDst && gap_bOptimizeStateChanges) {
     return;
+  }
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -644,16 +656,18 @@ static void ogl_DepthFunc(GfxComp eFunc) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
   GLenum gleFunc;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   GfxComp gfxFunc;
   pglGetIntegerv(GL_DEPTH_FUNC, (GLint *)&gleFunc);
   OGL_CHECKERROR;
   gfxFunc = CompFromOGL(gleFunc);
   ASSERT(gfxFunc == GFX_eDepthFunc);
-#endif
+  #endif
+
   // cached?
-  if (eFunc == GFX_eDepthFunc && gap_bOptimizeStateChanges)
+  if (eFunc == GFX_eDepthFunc && gap_bOptimizeStateChanges) {
     return;
+  }
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -669,16 +683,18 @@ static void ogl_DepthFunc(GfxComp eFunc) {
 static void ogl_DepthRange(FLOAT fMin, FLOAT fMax) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   FLOAT fDepths[2];
   pglGetFloatv(GL_DEPTH_RANGE, (GLfloat *)&fDepths);
   OGL_CHECKERROR;
   ASSERT(fDepths[0] == GFX_fMinDepthRange && fDepths[1] == GFX_fMaxDepthRange);
-#endif
+  #endif
 
   // cached?
-  if (GFX_fMinDepthRange == fMin && GFX_fMaxDepthRange == fMax && gap_bOptimizeStateChanges)
+  if (GFX_fMinDepthRange == fMin && GFX_fMaxDepthRange == fMax && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_fMinDepthRange = fMin;
   GFX_fMaxDepthRange = fMax;
 
@@ -695,14 +711,14 @@ static void ogl_CullFace(GfxFace eFace) {
   // check consistency and face
   ASSERT(eFace == GFX_FRONT || eFace == GFX_BACK || eFace == GFX_NONE);
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   GLenum gleCull;
   BOOL bRes = pglIsEnabled(GL_CULL_FACE);
   pglGetIntegerv(GL_CULL_FACE_MODE, (GLint *)&gleCull);
   OGL_CHECKERROR;
   ASSERT((bRes == GL_FALSE && GFX_eCullFace == GFX_NONE) || (bRes == GL_TRUE && gleCull == GL_FRONT && GFX_eCullFace == GFX_FRONT)
          || (bRes == GL_TRUE && gleCull == GL_BACK && GFX_eCullFace == GFX_BACK));
-#endif
+  #endif
   // cached?
   if (GFX_eCullFace == eFace && gap_bOptimizeStateChanges)
     return;
@@ -731,16 +747,18 @@ static void ogl_FrontFace(GfxFace eFace) {
   // check consistency and face
   ASSERT(eFace == GFX_CW || eFace == GFX_CCW);
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   GLenum gleFace;
   pglGetIntegerv(GL_FRONT_FACE, (GLint *)&gleFace);
   OGL_CHECKERROR;
   ASSERT((gleFace == GL_CCW && GFX_bFrontFace) || (gleFace == GL_CW && !GFX_bFrontFace));
-#endif
+  #endif
+
   // cached?
   BOOL bFrontFace = (eFace == GFX_CCW);
-  if (!bFrontFace == !GFX_bFrontFace && gap_bOptimizeStateChanges)
+  if (!bFrontFace == !GFX_bFrontFace && gap_bOptimizeStateChanges) {
     return;
+  }
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -886,14 +904,14 @@ static void ogl_PolygonMode(GfxPolyMode ePolyMode) {
 // set texture wrapping mode
 static void ogl_SetTextureWrapping(enum GfxWrap eWrapU, enum GfxWrap eWrapV) {
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   // check texture unit consistency
   GLint gliRet;
   pglGetIntegerv(GL_ACTIVE_TEXTURE_ARB, &gliRet);
   ASSERT(GFX_iActiveTexUnit == (gliRet - GL_TEXTURE0_ARB));
   pglGetIntegerv(GL_CLIENT_ACTIVE_TEXTURE_ARB, &gliRet);
   ASSERT(GFX_iActiveTexUnit == (gliRet - GL_TEXTURE0_ARB));
-#endif
+  #endif
 
   _tpGlobal[GFX_iActiveTexUnit].tp_eWrapU = eWrapU;
   _tpGlobal[GFX_iActiveTexUnit].tp_eWrapV = eWrapV;
@@ -903,19 +921,21 @@ static void ogl_SetTextureWrapping(enum GfxWrap eWrapU, enum GfxWrap eWrapV) {
 static void ogl_SetTextureModulation(INDEX iScale) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   // check current modulation
   GLint iRet;
   pglGetTexEnviv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &iRet);
   ASSERT((GFX_iTexModulation[GFX_iActiveTexUnit] == 1 && iRet == GL_MODULATE)
-         || (GFX_iTexModulation[GFX_iActiveTexUnit] == 2 && iRet == GL_COMBINE_EXT));
+      || (GFX_iTexModulation[GFX_iActiveTexUnit] == 2 && iRet == GL_COMBINE_EXT));
   OGL_CHECKERROR;
-#endif
+  #endif
 
   // cached?
   ASSERT(iScale == 1 || iScale == 2);
-  if (GFX_iTexModulation[GFX_iActiveTexUnit] == iScale)
+  if (GFX_iTexModulation[GFX_iActiveTexUnit] == iScale) {
     return;
+  }
+
   GFX_iTexModulation[GFX_iActiveTexUnit] = iScale;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -1041,12 +1061,14 @@ static void ogl_SetConstantColor(COLOR col) {
 // draw prepared arrays
 static void ogl_DrawElements(INDEX ctElem, INDEX *pidx) {
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_OGL);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   // check if all indices are inside lock count (or smaller than 65536)
-  if (pidx != NULL)
-    for (INDEX i = 0; i < ctElem; i++)
+  if (pidx != NULL) {
+    for (INDEX i = 0; i < ctElem; i++) {
       ASSERT(pidx[i] < GFX_ctVertices);
-#endif
+    }
+  }
+  #endif
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
   _pGfx->gl_ctTotalTriangles += ctElem / 3; // for profiling

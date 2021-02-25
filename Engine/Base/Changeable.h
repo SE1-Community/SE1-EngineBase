@@ -19,18 +19,19 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #pragma once
 #endif
 
-/*
- * Object that can change in time.
- */
+// Object that can change in time
 class ENGINE_API CChangeable {
   private:
     TICK ch_llLastChange; // last time this object has been changed
+
   public:
-    // Constructor.
+    // Constructor
     CChangeable(void);
-    // Mark that something has changed in this object.
+
+    // Mark that something has changed in this object
     void MarkChanged(void);
-    // Test if some updateable object is up to date with this changeable.
+
+    // Test if some updateable object is up to date with this changeable
     BOOL IsUpToDate(const CUpdateable &ud) const;
 };
 

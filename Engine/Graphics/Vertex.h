@@ -47,9 +47,11 @@ struct GFXColor {
     struct {
       UBYTE r, g, b, a;
     };
+
+    // Reverse order - use ByteSwap()!
     struct {
       ULONG abgr;
-    }; // reverse order - use ByteSwap()!
+    };
   };
 
   GFXColor() {};
@@ -97,10 +99,12 @@ struct GFXColor {
 struct GFXVertex4 {
   GFXVertex4() {}
   FLOAT x, y, z;
+
   union {
     struct {
       struct GFXColor col;
     };
+
     struct {
       SLONG shade;
     };

@@ -20,21 +20,28 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 
 struct GameGUI_interface {
-  // initialize game and load settings
+  // Initialize game and load settings
   void (*Initialize)(const CTFileName &fnGameSettings);
-  // save settings and cleanup
+
+  // Save settings and cleanup
   void (*End)(void);
-  // run a quicktest game from within editor
+
+  // Run a quicktest game from within editor
   void (*QuickTest)(const CTFileName &fnMapName, CDrawPort *pdpDrawport, CViewPort *pvpViewport);
-  // show console window
+
+  // Show console window
   void (*OnInvokeConsole)(void);
-  // adjust players and controls
+
+  // Adjust players and controls
   void (*OnPlayerSettings)(void);
-  // adjust audio settings
+
+  // Adjust audio settings
   void (*OnAudioQuality)(void);
-  // adjust video settings
+
+  // Adjust video settings
   void (*OnVideoQuality)(void);
-  // select current active player and controls
+
+  // Select current active player and controls
   void (*OnSelectPlayerAndControls)(void);
 };
 

@@ -44,7 +44,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticArray.cpp>
 #include <Engine/Base/IFeel.h>
 
-// this version string can be referenced from outside the engine
+// This version string can be referenced from outside the engine
 ENGINE_API CTString _strEngineBuild = "";
 ENGINE_API ULONG _ulEngineBuildMajor = _SE_BUILD_MAJOR;
 ENGINE_API ULONG _ulEngineBuildMinor = _SE_BUILD_MINOR;
@@ -53,14 +53,14 @@ ENGINE_API BOOL _bDedicatedServer = FALSE;
 ENGINE_API BOOL _bWorldEditorApp = FALSE;
 ENGINE_API CTString _strLogFile = "";
 
-// global handle for application window
+// Global handle for application window
 extern HWND _hwndMain = NULL;
 extern BOOL _bFullScreen = FALSE;
 
-// critical section for access to zlib functions
+// Critical section for access to zlib functions
 CTCriticalSection zip_csLock;
 
-// to keep system gamma table
+// To keep system gamma table
 static UWORD auwSystemGamma[256 * 3];
 
 // OS info
@@ -93,23 +93,30 @@ static INDEX sys_iHDDMisc = 0;
 // MOD info
 static CTString sys_strModName = "";
 
-// enables paranoia checks for allocation array
+// Enables paranoia checks for allocation array
 extern BOOL _bAllocationArrayParanoiaCheck = FALSE;
 
+// Entry point
 BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
   switch (ul_reason_for_call) {
-    case DLL_PROCESS_ATTACH: break;
+    case DLL_PROCESS_ATTACH:
+      break;
+
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH: break;
+    case DLL_PROCESS_DETACH:
+      break;
+
     default: ASSERT(FALSE);
   }
+
   return TRUE;
 }
 
 static void DetectCPU(void) {
   char strVendor[12 + 1];
   strVendor[12] = 0;
+
   ULONG ulTFMS;
   ULONG ulFeatures;
 
@@ -153,8 +160,9 @@ static void DetectCPU(void) {
   sys_bCPUHasCMOV = bCMOV != 0;
   sys_iCPUMHz = INDEX(_pTimer->tm_llCPUSpeedHZ / 1E6);
 
-  if (!bMMX)
+  if (!bMMX) {
     FatalError(TRANS("MMX support required but not present!"));
+  }
 }
 
 static void DetectCPUWrapper(void) {
@@ -165,15 +173,17 @@ static void DetectCPUWrapper(void) {
   }
 }
 
-// reverses string
+// Reverses string
 void StrRev(char *str) {
   char ctmp;
   char *pch0 = str;
   char *pch1 = str + strlen(str) - 1;
+
   while (pch1 > pch0) {
     ctmp = *pch0;
     *pch0 = *pch1;
     *pch1 = ctmp;
+
     pch0++;
     pch1--;
   }
@@ -185,40 +195,53 @@ static char strDirPath[MAX_PATH] = "";
 static void AnalyzeApplicationPath(void) {
   strcpy(strDirPath, "D:\\");
   strcpy(strExePath, "D:\\TestExe.xbe");
+
   char strTmpPath[MAX_PATH] = "";
+
   // get full path to the exe
   GetModuleFileNameA(NULL, strExePath, sizeof(strExePath) - 1);
+
   // copy that to the path
   strncpy(strTmpPath, strExePath, sizeof(strTmpPath) - 1);
   strDirPath[sizeof(strTmpPath) - 1] = 0;
+
   // remove name from application path
   StrRev(strTmpPath);
+
   // find last backslash
   char *pstr = strchr(strTmpPath, '\\');
+
   if (pstr == NULL) {
     // not found - path is just "\"
     strcpy(strTmpPath, "\\");
     pstr = strTmpPath;
   }
+
   // remove 'debug' from app path if needed
-  if (strnicmp(pstr, "\\gubed", 6) == 0)
+  if (strnicmp(pstr, "\\gubed", 6) == 0) {
     pstr += 6;
-  if (pstr[0] = '\\')
+  }
+
+  if (pstr[0] = '\\') {
     pstr++;
+  }
+
   char *pstrFin = strchr(pstr, '\\');
+
   if (pstrFin == NULL) {
     strcpy(pstr, "\\");
     pstrFin = pstr;
   }
+
   // copy that to the path
   StrRev(pstrFin);
   strncpy(strDirPath, pstrFin, sizeof(strDirPath) - 1);
   strDirPath[sizeof(strDirPath) - 1] = 0;
 }
 
-// startup engine
+// Startup engine
 ENGINE_API void SE_InitEngine(CTString strGameID) {
-#pragma message(">> Remove this from SE_InitEngine : _bWorldEditorApp")
+  #pragma message(">> Remove this from SE_InitEngine : _bWorldEditorApp")
   if (strGameID == "SeriousEditor") {
     _bWorldEditorApp = TRUE;
   }
@@ -226,17 +249,21 @@ ENGINE_API void SE_InitEngine(CTString strGameID) {
   AnalyzeApplicationPath();
   _fnmApplicationPath = CTString(strDirPath);
   _fnmApplicationExe = CTString(strExePath);
+
   try {
     _fnmApplicationExe.RemoveApplicationPath_t();
+
   } catch (char *strError) {
     (void)strError;
     ASSERT(FALSE);
   }
 
   _pConsole = new CConsole;
+
   if (_strLogFile == "") {
     _strLogFile = CTFileName(CTString(strExePath)).FileName();
   }
+
   _pConsole->Initialize(_fnmApplicationPath + _strLogFile + ".log", 90, 512);
 
   _pAnimStock = new CStock_CAnimData;
@@ -271,14 +298,17 @@ ENGINE_API void SE_InitEngine(CTString strGameID) {
 
   // report os info
   CPrintF(TRANS("Examining underlying OS...\n"));
+
   OSVERSIONINFOA osv;
   memset(&osv, 0, sizeof(osv));
   osv.dwOSVersionInfoSize = sizeof(osv);
+
   if (GetVersionExA(&osv)) {
     switch (osv.dwPlatformId) {
       case VER_PLATFORM_WIN32s: sys_strOS = "Win32s"; break;
       case VER_PLATFORM_WIN32_WINDOWS: sys_strOS = "Win9x"; break;
       case VER_PLATFORM_WIN32_NT: sys_strOS = "WinNT"; break;
+
       default: sys_strOS = "Unknown\n"; break;
     }
 
@@ -290,9 +320,11 @@ ENGINE_API void SE_InitEngine(CTString strGameID) {
     CPrintF(TRANS("  Type: %s\n"), (const char *)sys_strOS);
     CPrintF(TRANS("  Version: %d.%d, build %d\n"), osv.dwMajorVersion, osv.dwMinorVersion, osv.dwBuildNumber & 0xFFFF);
     CPrintF(TRANS("  Misc: %s\n"), osv.szCSDVersion);
+
   } else {
     CPrintF(TRANS("Error getting OS info: %s\n"), GetWindowsError(GetLastError()));
   }
+
   CPrintF("\n");
 
   // init main shell
@@ -311,7 +343,7 @@ ENGINE_API void SE_InitEngine(CTString strGameID) {
   MEMORYSTATUS ms;
   GlobalMemoryStatus(&ms);
 
-#define MB (1024 * 1024)
+  #define MB (1024 * 1024)
   sys_iRAMPhys = ms.dwTotalPhys / MB;
   sys_iRAMSwap = ms.dwTotalPageFile / MB;
 
@@ -330,6 +362,7 @@ ENGINE_API void SE_InitEngine(CTString strGameID) {
 
   GetVolumeInformationA(strDrive, NULL, 0, &dwSerial, NULL, NULL, NULL, 0);
   GetDiskFreeSpaceA(strDrive, &dwSectors, &dwBytes, &dwFreeClusters, &dwClusters);
+
   sys_iHDDSize = __int64(dwSectors) * dwBytes * dwClusters / MB;
   sys_iHDDFree = __int64(dwSectors) * dwBytes * dwFreeClusters / MB;
   sys_iHDDMisc = dwSerial;
@@ -339,16 +372,19 @@ ENGINE_API void SE_InitEngine(CTString strGameID) {
   extern INDEX wld_bFastObjectOptimization;
   extern INDEX fil_bPreferZips;
   extern FLOAT mth_fCSGEpsilon;
+
   _pShell->DeclareSymbol("user INDEX con_bNoWarnings;", &con_bNoWarnings);
   _pShell->DeclareSymbol("user INDEX wld_bFastObjectOptimization;", &wld_bFastObjectOptimization);
   _pShell->DeclareSymbol("user FLOAT mth_fCSGEpsilon;", &mth_fCSGEpsilon);
   _pShell->DeclareSymbol("persistent user INDEX fil_bPreferZips;", &fil_bPreferZips);
+
   // OS info
   _pShell->DeclareSymbol("user const CTString sys_strOS    ;", &sys_strOS);
   _pShell->DeclareSymbol("user const INDEX sys_iOSMajor    ;", &sys_iOSMajor);
   _pShell->DeclareSymbol("user const INDEX sys_iOSMinor    ;", &sys_iOSMinor);
   _pShell->DeclareSymbol("user const INDEX sys_iOSBuild    ;", &sys_iOSBuild);
   _pShell->DeclareSymbol("user const CTString sys_strOSMisc;", &sys_strOSMisc);
+
   // CPU info
   _pShell->DeclareSymbol("user const CTString sys_strCPUVendor;", &sys_strCPUVendor);
   _pShell->DeclareSymbol("user const INDEX sys_iCPUType       ;", &sys_iCPUType);
@@ -359,12 +395,14 @@ ENGINE_API void SE_InitEngine(CTString strGameID) {
   _pShell->DeclareSymbol("user const INDEX sys_bCPUHasCMOV    ;", &sys_bCPUHasCMOV);
   _pShell->DeclareSymbol("user const INDEX sys_iCPUMHz        ;", &sys_iCPUMHz);
   _pShell->DeclareSymbol("     const INDEX sys_iCPUMisc       ;", &sys_iCPUMisc);
+
   // RAM info
   _pShell->DeclareSymbol("user const INDEX sys_iRAMPhys;", &sys_iRAMPhys);
   _pShell->DeclareSymbol("user const INDEX sys_iRAMSwap;", &sys_iRAMSwap);
   _pShell->DeclareSymbol("user const INDEX sys_iHDDSize;", &sys_iHDDSize);
   _pShell->DeclareSymbol("user const INDEX sys_iHDDFree;", &sys_iHDDFree);
   _pShell->DeclareSymbol("     const INDEX sys_iHDDMisc;", &sys_iHDDMisc);
+
   // MOD info
   _pShell->DeclareSymbol("user const CTString sys_strModName;", &sys_strModName);
 
@@ -378,35 +416,41 @@ ENGINE_API void SE_InitEngine(CTString strGameID) {
   // init MODs and stuff ...
   extern void InitStreams(void);
   InitStreams();
+
   // keep mod name in sys cvar
   sys_strModName = _strModName;
 
-// checking of crc
-#if 0
+  // checking of crc
+  #if 0
   ULONG ulCRCActual = -2;
   SLONG ulCRCExpected = -1;
+
   try {
     // get the checksum of engine
-#ifndef NDEBUG
-#define SELFFILE    "Bin\\Debug\\EngineD.dll"
-#define SELFCRCFILE "Bin\\Debug\\EngineD.crc"
-#else
-#define SELFFILE    "Bin\\Engine.dll"
-#define SELFCRCFILE "Bin\\Engine.crc"
-#endif
+    #ifndef NDEBUG
+    #define SELFFILE    "Bin\\Debug\\EngineD.dll"
+    #define SELFCRCFILE "Bin\\Debug\\EngineD.crc"
+    #else
+    #define SELFFILE    "Bin\\Engine.dll"
+    #define SELFCRCFILE "Bin\\Engine.crc"
+    #endif
+
     ulCRCActual = GetFileCRC32_t(CTString(SELFFILE));
+
     // load expected checksum from the file on disk
     ulCRCExpected = 0;
     LoadIntVar(CTString(SELFCRCFILE), ulCRCExpected);
+
   } catch (char *strError) {
     CPrintF("%s\n", strError);
   }
+
   // if not same
   if (ulCRCActual != ulCRCExpected) {
     // don't run
     //FatalError(TRANS("Engine CRC is invalid.\nExpected %08x, but found %08x.\n"), ulCRCExpected, ulCRCActual);
   }
-#endif
+  #endif
 
   _pInput->Initialize();
 
@@ -415,15 +459,20 @@ ENGINE_API void SE_InitEngine(CTString strGameID) {
 
   if (strGameID != "") {
     _pNetwork->Init(strGameID);
+
     // just make classes declare their shell variables
     try {
+      // [Cecil] TODO: Make independent from the Player class
       CEntityClass *pec = _pEntityClassStock->Obtain_t(CTString("Classes\\Player.ecl"));
+
       ASSERT(pec != NULL);
       _pEntityClassStock->Release(pec); // this must not be a dependency!
-      // if couldn't find player class
+
+    // if couldn't find player class
     } catch (char *strError) {
       FatalError(TRANS("Cannot initialize classes:\n%s"), strError);
     }
+
   } else {
     _pNetwork = NULL;
   }
@@ -435,38 +484,48 @@ ENGINE_API void SE_InitEngine(CTString strGameID) {
   // readout system gamma table
   HDC hdc = GetDC(NULL);
   BOOL bOK = GetDeviceGammaRamp(hdc, &auwSystemGamma[0]);
+
   _pGfx->gl_ulFlags |= GLF_ADJUSTABLEGAMMA;
+
   if (!bOK) {
     _pGfx->gl_ulFlags &= ~GLF_ADJUSTABLEGAMMA;
     CPrintF(TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
   } // done
+
   ReleaseDC(NULL, hdc);
 
   // init IFeel
   HWND hwnd = NULL; // GetDesktopWindow();
   HINSTANCE hInstance = GetModuleHandle(NULL);
+
   if (IFeel_InitDevice(hInstance, hwnd)) {
     CTString strDefaultProject = "Data\\Default.ifr";
+
     // get project file name for this device
     CTString strIFeel = IFeel_GetProjectFileName();
+
     // if no file name is returned use default file
-    if (strIFeel.Length() == 0)
+    if (strIFeel.Length() == 0) {
       strIFeel = strDefaultProject;
+    }
+
     if (!IFeel_LoadFile(strIFeel)) {
       if (strIFeel != strDefaultProject) {
         IFeel_LoadFile(strDefaultProject);
       }
     }
+
     CPrintF("\n");
   }
 }
 
-// shutdown entire engine
+// Shutdown entire engine
 ENGINE_API void SE_EndEngine(void) {
   // restore system gamma table (if needed)
   if (_pGfx->gl_ulFlags & GLF_ADJUSTABLEGAMMA) {
     HDC hdc = GetDC(NULL);
     BOOL bOK = SetDeviceGammaRamp(hdc, &auwSystemGamma[0]);
+
     // ASSERT(bOK);
     ReleaseDC(NULL, hdc);
   }
@@ -474,20 +533,28 @@ ENGINE_API void SE_EndEngine(void) {
   // free stocks
   delete _pEntityClassStock;
   _pEntityClassStock = NULL;
+
   delete _pModelStock;
   _pModelStock = NULL;
+
   delete _pSoundStock;
   _pSoundStock = NULL;
+
   delete _pTextureStock;
   _pTextureStock = NULL;
+
   delete _pAnimStock;
   _pAnimStock = NULL;
+
   delete _pMeshStock;
   _pMeshStock = NULL;
+
   delete _pSkeletonStock;
   _pSkeletonStock = NULL;
+
   delete _pAnimSetStock;
   _pAnimSetStock = NULL;
+
   delete _pShaderStock;
   _pShaderStock = NULL;
 
@@ -499,18 +566,25 @@ ENGINE_API void SE_EndEngine(void) {
     delete _pNetwork;
     _pNetwork = NULL;
   }
+
   delete _pInput;
   _pInput = NULL;
+
   delete _pSound;
   _pSound = NULL;
+
   delete _pGfx;
   _pGfx = NULL;
+
   delete _pTimer;
   _pTimer = NULL;
+
   delete _pShell;
   _pShell = NULL;
+
   delete _pConsole;
   _pConsole = NULL;
+
   extern void EndStreams(void);
   EndStreams();
 
@@ -536,6 +610,7 @@ ENGINE_API void SE_EndEngine(void) {
     delete _pfdDisplayFont;
     _pfdDisplayFont = NULL;
   }
+
   if (_pfdConsoleFont != NULL) {
     delete _pfdConsoleFont;
     _pfdConsoleFont = NULL;
@@ -545,7 +620,7 @@ ENGINE_API void SE_EndEngine(void) {
   IFeel_DeleteDevice();
 }
 
-// prepare and load some default fonts
+// Prepare and load some default fonts
 ENGINE_API void SE_LoadDefaultFonts(void) {
   _pfdDisplayFont = new CFontData;
   _pfdConsoleFont = new CFontData;
@@ -557,6 +632,7 @@ ENGINE_API void SE_LoadDefaultFonts(void) {
   } catch (char *strError) {
     FatalError(TRANS("Error loading font: %s."), strError);
   }
+
   // change fonts' default spacing a bit
   _pfdDisplayFont->SetCharSpacing(0);
   _pfdDisplayFont->SetLineSpacing(+1);
@@ -565,7 +641,7 @@ ENGINE_API void SE_LoadDefaultFonts(void) {
   _pfdConsoleFont->SetFixedWidth();
 }
 
-// updates main windows' handles for windowed mode and fullscreen
+// Update main windows' handles for windowed mode and fullscreen
 ENGINE_API void SE_UpdateWindowHandle(HWND hwndMain) {
   ASSERT(hwndMain != NULL);
   _hwndMain = hwndMain;
@@ -575,8 +651,10 @@ ENGINE_API void SE_UpdateWindowHandle(HWND hwndMain) {
 static BOOL TouchBlock(UBYTE *pubMemoryBlock, INDEX ctBlockSize) {
   // cannot pretouch block that are smaller than 64KB :(
   ctBlockSize -= 16 * 0x1000;
-  if (ctBlockSize < 4)
+
+  if (ctBlockSize < 4) {
     return FALSE;
+  }
 
   __try {
     // 4 times should be just enough
@@ -597,19 +675,25 @@ touchLoop:
         jnz   touchLoop
       }
     }
+
   } __except (EXCEPTION_EXECUTE_HANDLER) {
     return FALSE;
   }
+
   return TRUE;
 }
 
-// pretouch all memory commited by process
+// Pretouch all memory commited by process
 extern BOOL _bNeedPretouch = FALSE;
+
 ENGINE_API extern void SE_PretouchIfNeeded(void) {
   // only if pretouching is needed?
   extern INDEX gam_bPretouch;
-  if (!_bNeedPretouch || !gam_bPretouch)
+
+  if (!_bNeedPretouch || !gam_bPretouch) {
     return;
+  }
+
   _bNeedPretouch = FALSE;
 
   // set progress bar
@@ -620,49 +704,63 @@ ENGINE_API extern void SE_PretouchIfNeeded(void) {
   BOOL bPretouched = TRUE;
   INDEX ctFails, ctBytes, ctBlocks;
   INDEX ctPassBytes, ctTotalBlocks;
+
   for (INDEX iPass = 1; iPass <= 2; iPass++) {
     // flush variables
     ctFails = 0;
     ctBytes = 0;
     ctBlocks = 0;
     ctTotalBlocks = 0;
+
     void *pvNextBlock = NULL;
     MEMORY_BASIC_INFORMATION mbi;
+
     // lets walk thru memory blocks
     while (VirtualQuery(pvNextBlock, &mbi, sizeof(mbi))) {
       // don't mess with kernel's memory and zero-sized blocks
-      if (((ULONG)pvNextBlock) > 0x7FFF0000UL || mbi.RegionSize < 1)
+      if (((ULONG)pvNextBlock) > 0x7FFF0000UL || mbi.RegionSize < 1) {
         break;
+      }
 
       // if this region of memory belongs to our process
-      BOOL bCanAccess = (mbi.Protect == PAGE_READWRITE);                    // || (mbi.Protect == PAGE_EXECUTE_READWRITE);
+      BOOL bCanAccess = (mbi.Protect == PAGE_READWRITE); // || (mbi.Protect == PAGE_EXECUTE_READWRITE);
+
       if (mbi.State == MEM_COMMIT && bCanAccess && mbi.Type == MEM_PRIVATE) // && !IsBadReadPtr( mbi.BaseAddress, 1)
       {
         // increase counters
         ctBlocks++;
         ctBytes += mbi.RegionSize;
+
         // in first pass we only count
-        if (iPass == 1)
+        if (iPass == 1) {
           goto nextRegion;
+        }
+
         // update progress bar
         CallProgressHook_t((FLOAT)ctBytes / ctPassBytes);
+
         // pretouch
         ASSERT(mbi.RegionSize > 0);
         BOOL bOK = TouchBlock((UBYTE *)mbi.BaseAddress, mbi.RegionSize);
+
         if (!bOK) {
           // whoops!
           ctFails++;
         }
+
         // for easier debugging (didn't help much, though)
         // Sleep(5);
       }
+
     nextRegion:
       // advance to next region
       pvNextBlock = ((UBYTE *)mbi.BaseAddress) + mbi.RegionSize;
       ctTotalBlocks++;
     }
+
     // done with one pass
     ctPassBytes = ctBytes;
+
     if ((ctPassBytes / 1024 / 1024) > sys_iRAMPhys) {
       // not enough RAM, sorry :(
       bPretouched = FALSE;
@@ -679,6 +777,7 @@ ENGINE_API extern void SE_PretouchIfNeeded(void) {
     CPrintF(TRANS("Cannot pretouch due to lack of physical memory (%d KB of overflow).\n"),
             ctPassBytes / 1024 - sys_iRAMPhys * 1024);
   }
+
   // some blocks failed?
   if (ctFails > 1)
     CPrintF(TRANS("(%d blocks were skipped)\n"), ctFails);
@@ -686,44 +785,48 @@ ENGINE_API extern void SE_PretouchIfNeeded(void) {
 }
 
 #if 0
+  // printout block info
+  CPrintF("--------\n");
+  CTString strTmp1, strTmp2;
+  CPrintF("Base/Alloc Address: 0x%8X / 0x%8X - Size: %d KB\n", mbi.BaseAddress, mbi.AllocationBase, mbi.RegionSize/1024);
 
-      // printout block info
-      CPrintF("--------\n");
-      CTString strTmp1, strTmp2;
-      CPrintF("Base/Alloc Address: 0x%8X / 0x%8X - Size: %d KB\n", mbi.BaseAddress, mbi.AllocationBase, mbi.RegionSize/1024);
-      switch (mbi.Protect) {
-      case PAGE_READONLY:          strTmp1 = "PAGE_READONLY";          break;
-      case PAGE_READWRITE:         strTmp1 = "PAGE_READWRITE";         break;
-      case PAGE_WRITECOPY:         strTmp1 = "PAGE_WRITECOPY";         break;
-      case PAGE_EXECUTE:           strTmp1 = "PAGE_EXECUTE";           break;
-      case PAGE_EXECUTE_READ:      strTmp1 = "PAGE_EXECUTE_READ";      break;
-      case PAGE_EXECUTE_READWRITE: strTmp1 = "PAGE_EXECUTE_READWRITE"; break;
-      case PAGE_GUARD:             strTmp1 = "PAGE_GUARD";             break;
-      case PAGE_NOACCESS:          strTmp1 = "PAGE_NOACCESS";          break;
-      case PAGE_NOCACHE:           strTmp1 = "PAGE_NOCACHE";           break;
-      }
-      switch (mbi.AllocationProtect) {
-      case PAGE_READONLY:          strTmp2 = "PAGE_READONLY";          break;
-      case PAGE_READWRITE:         strTmp2 = "PAGE_READWRITE";         break;
-      case PAGE_WRITECOPY:         strTmp2 = "PAGE_WRITECOPY";         break;
-      case PAGE_EXECUTE:           strTmp2 = "PAGE_EXECUTE";           break;
-      case PAGE_EXECUTE_READ:      strTmp2 = "PAGE_EXECUTE_READ";      break;
-      case PAGE_EXECUTE_READWRITE: strTmp2 = "PAGE_EXECUTE_READWRITE"; break;
-      case PAGE_GUARD:             strTmp2 = "PAGE_GUARD";             break;
-      case PAGE_NOACCESS:          strTmp2 = "PAGE_NOACCESS";          break;
-      case PAGE_NOCACHE:           strTmp2 = "PAGE_NOCACHE";           break;
-      }
-      CPrintF("Current/Alloc protect: %s / %s\n", strTmp1, strTmp2);
-      switch (mbi.State) {
-      case MEM_COMMIT:  strTmp1 = "MEM_COMMIT";  break;
-      case MEM_FREE:    strTmp1 = "MEM_FREE";    break;
-      case MEM_RESERVE: strTmp1 = "MEM_RESERVE"; break;
-      }
-      switch (mbi.Type) {
-      case MEM_IMAGE:   strTmp2 = "MEM_IMAGE";   break;
-      case MEM_MAPPED:  strTmp2 = "MEM_MAPPED";  break;
-      case MEM_PRIVATE: strTmp2 = "MEM_PRIVATE"; break;
-      }
-      CPrintF("State/Type: %s / %s\n", strTmp1, strTmp2);
+  switch (mbi.Protect) {
+    case PAGE_READONLY:          strTmp1 = "PAGE_READONLY";          break;
+    case PAGE_READWRITE:         strTmp1 = "PAGE_READWRITE";         break;
+    case PAGE_WRITECOPY:         strTmp1 = "PAGE_WRITECOPY";         break;
+    case PAGE_EXECUTE:           strTmp1 = "PAGE_EXECUTE";           break;
+    case PAGE_EXECUTE_READ:      strTmp1 = "PAGE_EXECUTE_READ";      break;
+    case PAGE_EXECUTE_READWRITE: strTmp1 = "PAGE_EXECUTE_READWRITE"; break;
+    case PAGE_GUARD:             strTmp1 = "PAGE_GUARD";             break;
+    case PAGE_NOACCESS:          strTmp1 = "PAGE_NOACCESS";          break;
+    case PAGE_NOCACHE:           strTmp1 = "PAGE_NOCACHE";           break;
+  }
 
+  switch (mbi.AllocationProtect) {
+    case PAGE_READONLY:          strTmp2 = "PAGE_READONLY";          break;
+    case PAGE_READWRITE:         strTmp2 = "PAGE_READWRITE";         break;
+    case PAGE_WRITECOPY:         strTmp2 = "PAGE_WRITECOPY";         break;
+    case PAGE_EXECUTE:           strTmp2 = "PAGE_EXECUTE";           break;
+    case PAGE_EXECUTE_READ:      strTmp2 = "PAGE_EXECUTE_READ";      break;
+    case PAGE_EXECUTE_READWRITE: strTmp2 = "PAGE_EXECUTE_READWRITE"; break;
+    case PAGE_GUARD:             strTmp2 = "PAGE_GUARD";             break;
+    case PAGE_NOACCESS:          strTmp2 = "PAGE_NOACCESS";          break;
+    case PAGE_NOCACHE:           strTmp2 = "PAGE_NOCACHE";           break;
+  }
+
+  CPrintF("Current/Alloc protect: %s / %s\n", strTmp1, strTmp2);
+
+  switch (mbi.State) {
+    case MEM_COMMIT:  strTmp1 = "MEM_COMMIT";  break;
+    case MEM_FREE:    strTmp1 = "MEM_FREE";    break;
+    case MEM_RESERVE: strTmp1 = "MEM_RESERVE"; break;
+  }
+
+  switch (mbi.Type) {
+    case MEM_IMAGE:   strTmp2 = "MEM_IMAGE";   break;
+    case MEM_MAPPED:  strTmp2 = "MEM_MAPPED";  break;
+    case MEM_PRIVATE: strTmp2 = "MEM_PRIVATE"; break;
+  }
+
+  CPrintF("State/Type: %s / %s\n", strTmp1, strTmp2);
 #endif

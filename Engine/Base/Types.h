@@ -22,15 +22,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Base.h>
 #include <Engine/Graphics/gl_types.h>
 
-typedef signed long int SLONG;
+typedef signed long int  SLONG;
 typedef signed short int SWORD;
-typedef signed char SBYTE;
-typedef signed int SINT;
+typedef signed char      SBYTE;
+typedef signed int       SINT;
 
-typedef unsigned long int ULONG;
+typedef unsigned long int  ULONG;
 typedef unsigned short int UWORD;
-typedef unsigned char UBYTE;
-typedef unsigned int UINT;
+typedef unsigned char      UBYTE;
+typedef unsigned int       UINT;
 
 #ifdef PLATFORM_UNIX // rcg10042001
 #define __forceinline inline
@@ -41,7 +41,7 @@ typedef unsigned int UINT;
 
 typedef long long __int64;
 typedef unsigned long int DWORD;
-typedef signed long int LONG;
+typedef signed long int   LONG;
 
 typedef void *HWND;      // !!! FIXME this sucks.
 typedef void *HINSTANCE; // !!! FIXME this sucks.
@@ -77,20 +77,23 @@ typedef struct {
 #define MAX_UWORD ((UWORD)0xFFFF)
 #define MAX_UBYTE ((UBYTE)0xFF)
 
-typedef int BOOL;        // this is for TRUE/FALSE
+// [Cecil] TODO: Replace this abomination with 'char'
+typedef int BOOL; // this is for TRUE/FALSE
+
 typedef long int RESULT; // for error codes
-typedef long int INDEX;  // for indexed values and quantities
+typedef long int INDEX; // for indexed values and quantities
 
 #define FALSE 0
-#define TRUE  1
+#define TRUE 1
 
-#define NONE    0
+#define NONE 0
 #define NOTHING ((void)0)
 #define FOREVER for (;;)
 
 #define DECLARE_NOCOPYING(classname) \
   classname(const classname &c); \
   classname &operator=(const classname &c);
+
 #define IMPLEMENT_NOCOPYING(classname) \
   classname::classname(const classname &c) { \
     ASSERT(FALSE); \
@@ -100,19 +103,19 @@ typedef long int INDEX;  // for indexed values and quantities
     return *this; \
   };
 
-// standard angles
+// Standard angles
 #define ANGLE_0   (0.0f)
 #define ANGLE_90  (90.0f)
 #define ANGLE_180 (180.0f)
 #define ANGLE_270 (270.0f)
 #define ANGLE_360 (360.0f)
 
-// you need <stddef.h> for this!
+// You need <stddef.h> for this!
 #define structptr(structure, member, ptr) ((struct structure *)(((UBYTE *)(ptr)) - offsetof(struct structure, member)))
 
-// standard types
+// Standard types
 
-// simple types
+// Simple types
 typedef SLONG PIX; // pixel coordinates
 typedef SLONG TEX; // texel coordinates
 typedef SLONG MEX; // texels in mip-level 0
@@ -123,19 +126,19 @@ typedef float TIME;
 typedef FLOAT RANGE;
 typedef ULONG COLOR; // color is always in 32 bit true-color format
 
-// macros for windows/croteam true color conversion
+// Macros for windows/croteam true color conversion
 #define CLRF_CLR(clr)    (((clr & 0xff000000) >> 24) | ((clr & 0x00ff0000) >> 8) | ((clr & 0x0000ff00) << 8))
 #define CLR_CLRF(clrref) (((clrref & 0x000000ff) << 24) | ((clrref & 0x0000ff00) << 8) | ((clrref & 0x00ff0000) >> 8))
 
-// z-buffer depth constants
+// Z-buffer depth constants
 #define ZBUF_FRONT (0.0f)
 #define ZBUF_BACK  (1.0f)
 
-// alpha factor constants
+// Alpha factor constants
 #define CT_OPAQUE      MAX_UBYTE
 #define CT_TRANSPARENT MIN_UBYTE
 
-// line types (masks)
+// Line types (masks)
 #define _FULL_     0xFFFFFFFF
 #define _SYMMET16_ 0xFF88FF88
 #define _SYMMET32_ 0xFFFF0180
@@ -153,25 +156,26 @@ typedef ULONG COLOR; // color is always in 32 bit true-color format
 #define _TY26_  0xC0C0C0C0
 #define _TY412_ 0xF000F000
 
-// some mexels constants
+// Some mexels constants
 #define MAX_MEX_LOG2 10
 #define MIN_MEX_LOG2 0
 #define MAX_MEX      (1L << MAX_MEX_LOG2)
 #define MIN_MEX      (1L << MIN_MEX_LOG2)
 
-// macro for converting mexels to meters
+// Macro for converting mexels to meters
 #define METERS_MEX(mex)    ((FLOAT)(((FLOAT)mex) / MAX_MEX))
 #define MEX_METERS(meters) ((MEX)(meters * MAX_MEX))
 
 #define ARRAYCOUNT(array) (sizeof(array) / sizeof((array)[0]))
 
-// sound volume constants
+// Sound volume constants
 #define SL_VOLUME_MIN (0.0f)
 #define SL_VOLUME_MAX (4.0f)
 
 inline DOUBLE FLOATtoDOUBLE(const FLOAT f) {
   return DOUBLE(f);
 }
+
 inline FLOAT DOUBLEtoFLOAT(const DOUBLE d) {
   return FLOAT(d);
 }
@@ -179,29 +183,36 @@ inline FLOAT DOUBLEtoFLOAT(const DOUBLE d) {
 inline float UpperLimit(float x) {
   return +3E38f;
 }
+
 inline float LowerLimit(float x) {
   return -3E38f;
 }
+
 inline double UpperLimit(double x) {
   return +1E308;
 }
+
 inline double LowerLimit(double x) {
   return -1E308;
 }
+
 inline SLONG UpperLimit(SLONG x) {
   return MAX_SLONG;
 }
+
 inline SLONG LowerLimit(SLONG x) {
   return MIN_SLONG;
 }
+
 inline SWORD UpperLimit(SWORD x) {
   return MAX_SWORD;
 }
+
 inline SWORD LowerLimit(SWORD x) {
   return MIN_SWORD;
 }
 
-// class predeclarations
+// Class predeclarations
 class CAnimData;
 class CAnimObject;
 class CAnimSet;
@@ -336,7 +347,7 @@ class CWorkingPlane;
 class CWorkingEdge;
 class CWorld;
 
-// template class predeclarations
+// Template class predeclarations
 template<class Type, int iOffset> class CListIter;
 template<class Type> class CDynamicArray;
 template<class Type> class CDynamicStackArray;
@@ -364,7 +375,7 @@ template<class Type, int iDimensions> class BSPCutter;
 
 typedef FixInt<16, 16> FIX16_16;
 
-// vectors
+// Vectors
 typedef Vector<PIX, 2> PIX2D;
 typedef Vector<MEX, 2> MEX2D;
 typedef Vector<PIX, 3> PIX3D;
@@ -374,11 +385,11 @@ typedef Vector<FLOAT, 3> FLOAT3D;
 typedef Vector<DOUBLE, 2> DOUBLE2D;
 typedef Vector<DOUBLE, 3> DOUBLE3D;
 
-// planes
+// Planes
 typedef Plane<FLOAT, 3> FLOATplane3D;
 typedef Plane<DOUBLE, 3> DOUBLEplane3D;
 
-// axis-aligned bounding boxes
+// Axis-aligned bounding boxes
 typedef AABBox<MEX, 2> MEXaabbox2D;
 typedef AABBox<PIX, 2> PIXaabbox2D;
 typedef AABBox<FLOAT, 2> FLOATaabbox2D;
@@ -386,11 +397,11 @@ typedef AABBox<FLOAT, 3> FLOATaabbox3D;
 typedef AABBox<DOUBLE, 2> DOUBLEaabbox2D;
 typedef AABBox<DOUBLE, 3> DOUBLEaabbox3D;
 
-// oriented bounding boxes
+// Oriented bounding boxes
 typedef OBBox<FLOAT> FLOATobbox3D;
 typedef OBBox<DOUBLE> DOUBLEobbox3D;
 
-// matrices
+// Matrices
 typedef Matrix<PIX, 2, 2> PIXmatrix2D;
 typedef Matrix<PIX, 3, 3> PIXmatrix3D;
 typedef Matrix<ANGLE, 3, 3> ANGLEmatrix3D;
@@ -399,7 +410,7 @@ typedef Matrix<FLOAT, 3, 3> FLOATmatrix3D;
 typedef Matrix<DOUBLE, 3, 3> DOUBLEmatrix3D;
 typedef FLOAT Matrix12[12];
 
-// quaternions
+// Quaternions
 typedef Quaternion<FLOAT> FLOATquat3D;
 typedef Quaternion<DOUBLE> DOUBLEquat3D;
 
@@ -420,12 +431,12 @@ typedef BSPPolygon<FLOAT, 3> FLOATbsppolygon3D;
 typedef BSPTree<FLOAT, 3> FLOATbsptree3D;
 typedef BSPCutter<FLOAT, 3> FLOATbspcutter3D;
 
-// general clearing functions
+// General clearing functions
 template<class cType> inline void Clear(cType &t) {
   t.cType::Clear();
 };
 
-// specific clearing functions for built-in types
+// Specific clearing functions for built-in types
 inline void Clear(signed long int sli) {};
 inline void Clear(unsigned long int uli) {};
 inline void Clear(int i) {};

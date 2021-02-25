@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Lists.h>
 #include <Engine/Base/CTString.h>
 
-// display mode bit-depth
+// Display mode bit-depth
 enum DisplayDepth {
   DD_NODEPTH = -1,
   DD_DEFAULT = 0,
@@ -31,26 +31,26 @@ enum DisplayDepth {
   DD_24BIT = 3, // for z-buffer
 };
 
-/*
- *  Structure that holds display mode description
- */
-
+// Structure that holds display mode description
 class ENGINE_API CDisplayMode {
   public:
     PIX dm_pixSizeI; // size of screen in pixels
     PIX dm_pixSizeJ;
     enum DisplayDepth dm_ddDepth; // bits per pixel for color
 
-    // Default constructor.
+    // Constructor
     CDisplayMode(void);
 
-    // get depth string
+    // Get depth string
     CTString DepthString(void) const;
-    // check if mode is dualhead
+
+    // Check if mode is dualhead
     BOOL IsDualHead(void);
-    // check if mode is widescreen
+
+    // Check if mode is widescreen
     BOOL IsWideScreen(void);
-    // check if mode is fullscreen
+
+    // Check if mode is fullscreen
     BOOL IsFullScreen(void);
 };
 

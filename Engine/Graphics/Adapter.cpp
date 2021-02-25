@@ -151,7 +151,7 @@ void CGfxLibrary::InitAPIs(void) {
   }
 
   // try to init Direct3D 8
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   BOOL bRes = InitDriver_D3D();
   if (!bRes)
     return; // didn't made it?
@@ -224,7 +224,7 @@ void CGfxLibrary::InitAPIs(void) {
   if (gl_hiDriver != NONE)
     FreeLibrary(gl_hiDriver);
   gl_hiDriver = NONE;
-#endif // SE1_D3D
+  #endif // SE1_D3D
 }
 
 // get list of all modes avaliable through CDS -- do not modify/free the returned list

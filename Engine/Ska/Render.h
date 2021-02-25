@@ -42,6 +42,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define SRMF_WEAPON     (1UL << 8) // TEMP: weapon model is rendering so don't use ATI's Truform!
 
 typedef FLOAT FLOAT3[3];
+
 // Rendering structures
 struct RenModel {
   CModelInstance *rm_pmiModel; // pointer to model instance
@@ -61,12 +62,12 @@ struct RenModel {
 
 struct RenBone {
   SkeletonBone *rb_psbBone; // pointer to skeleton bone
-  INDEX rb_iParentIndex;    // index of parent renbone
-  INDEX rb_iRenModelIndex;  // index of renmodel
+  INDEX rb_iParentIndex; // index of parent renbone
+  INDEX rb_iRenModelIndex; // index of renmodel
   AnimPos rb_apPos;
   AnimRot rb_arRot;
-  Matrix12 rb_mTransform;     // Transformation matrix for this ren bone
-  Matrix12 rb_mStrTransform;  // Stretched transformation matrix for this ren bone
+  Matrix12 rb_mTransform; // Transformation matrix for this ren bone
+  Matrix12 rb_mStrTransform; // Stretched transformation matrix for this ren bone
   Matrix12 rb_mBonePlacement; // Placement of bone in absolute space
 };
 
@@ -87,44 +88,53 @@ struct RenMesh {
   INDEX rmsh_ctWeights;
   INDEX rmsh_iFirstMorph;
   INDEX rmsh_ctMorphs;
-  INDEX rmsh_iMeshLODIndex;    // curent LOD index of msh_aMeshLODs array in Mesh
+  INDEX rmsh_iMeshLODIndex; // curent LOD index of msh_aMeshLODs array in Mesh
   BOOL rmsh_bTransToViewSpace; // Is mesh transformed to view space
 };
 
-// initialize batch model rendering
+// Initialize batch model rendering
 ENGINE_API void RM_BeginRenderingView(CAnyProjection3D &apr, CDrawPort *pdp);
 ENGINE_API void RM_BeginModelRenderingMask(CAnyProjection3D &prProjection, UBYTE *pubMask, SLONG slMaskWidth, SLONG slMaskHeight);
-// cleanup after batch model rendering
+
+// Cleanup after batch model rendering
 ENGINE_API void RM_EndRenderingView(BOOL bRestoreOrtho = TRUE);
 ENGINE_API void RM_EndModelRenderingMask(void);
 
-// setup light parameters
+// Setup light parameters
 ENGINE_API void RM_SetLightColor(COLOR colAmbient, COLOR colLight);
 ENGINE_API void RM_SetLightDirection(FLOAT3D &vLightDir);
+
 // LOD factor management
 ENGINE_API void RM_SetCurrentDistance(FLOAT fDistFactor);
 ENGINE_API FLOAT RM_GetMipFactor(void);
-// setup object position
+
+// Setup object position
 ENGINE_API void RM_SetObjectPlacement(const CPlacement3D &pl);
 ENGINE_API void RM_SetObjectPlacement(const FLOATmatrix3D &m, const FLOAT3D &v);
 ENGINE_API void RM_SetObjectMatrices(CModelInstance &mi);
 
-// render one SKA model with its children
+// Render one SKA model with its children
 ENGINE_API void RM_RenderSKA(CModelInstance &mi);
-// render one bone in model instance
+
+// Render one bone in model instance
 ENGINE_API void RM_RenderBone(CModelInstance &mi, INDEX iBoneID);
 ENGINE_API void RM_RenderColisionBox(CModelInstance &mi, ColisionBox &cb, COLOR col);
-// lods
+
+// LODs
 ENGINE_API void RM_SetCustomMeshLodDistance(FLOAT fMeshLod);
 ENGINE_API void RM_SetCustomSkeletonLodDistance(FLOAT fSkeletonLod);
 ENGINE_API void RM_RenderGround(CTextureObject &to);
-// Returns specified renbone
+
+// Return specified renbone
 ENGINE_API RenBone *RM_FindRenBone(INDEX iBoneID);
-// Returns renbone array and sets renbone count
+
+// Return renbone array and sets renbone count
 ENGINE_API RenBone *RM_GetRenBoneArray(INDEX &ctrb);
-// Returns true if bone exists and sets two given vectors as start and end point of specified bone
+
+// Return true if bone exists and sets two given vectors as start and end point of specified bone
 ENGINE_API BOOL RM_GetBoneAbsPosition(CModelInstance &mi, INDEX iBoneID, FLOAT3D &vStartPoint, FLOAT3D &vEndPoint);
-// Returns Renbone
+
+// Return Renbone
 ENGINE_API BOOL RM_GetRenBoneAbs(CModelInstance &mi, INDEX iBoneID, RenBone &rb);
 
 ENGINE_API void RM_AddSimpleShadow_View(CModelInstance &mi, const FLOAT fIntensity, const FLOATplane3D &plShadowPlane);
@@ -132,14 +142,14 @@ ENGINE_API void RM_AddSimpleShadow_View(CModelInstance &mi, const FLOAT fIntensi
 ENGINE_API void RM_GetModelVertices(CModelInstance &mi, CStaticStackArray<FLOAT3D> &avVertices, FLOATmatrix3D &mRotation,
                                     FLOAT3D &vPosition, FLOAT fNormalOffset, FLOAT fDistance);
 
-// test if the ray hit any of model instance's triangles and return
+// Test if the ray hit any of model instance's triangles and return
 ENGINE_API FLOAT RM_TestRayCastHit(CModelInstance &mi, FLOATmatrix3D &mRotation, FLOAT3D &vPosition, const FLOAT3D &vOrigin,
                                    const FLOAT3D &vTarget, FLOAT fOldDistance, INDEX *piBoneID);
 
 ENGINE_API void RM_SetBoneAdjustCallback(void (*pAdjustBones)(void *pData), void *pData);
 ENGINE_API void RM_SetShaderParamsAdjustCallback(void (*pAdjustShaderParams)(void *pData, INDEX iSurfaceID, CShader *pShader,
-                                                                             ShaderParams &shParams),
-                                                 void *pData);
+                                                                             ShaderParams &shParams), void *pData);
+
 // Matrix12 operations
 ENGINE_API void Matrix12ToQVect(QVect &qv, const Matrix12 &m12);
 ENGINE_API void MatrixVectorToMatrix12(Matrix12 &m12, const FLOATmatrix3D &m, const FLOAT3D &v);
@@ -152,7 +162,7 @@ ENGINE_API void MatrixTranspose(Matrix12 &r, const Matrix12 &m);
 ENGINE_API void TransformVertex(GFXVertex &v, const Matrix12 &m);
 ENGINE_API void RotateVector(FLOAT3 &v, const Matrix12 &m);
 
-// model flags
+// Model flags
 ENGINE_API void RM_SetFlags(ULONG ulNewFlags);
 ENGINE_API ULONG RM_GetFlags();
 ENGINE_API void RM_AddFlag(ULONG ulFlag);

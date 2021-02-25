@@ -29,29 +29,28 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define DEBUG_SYNCSTREAMDUMPING 0
 
 #if DEBUG_SYNCSTREAMDUMPING
-/*
- * Obtain valid session dump memory stream
- */
+// Obtain valid session dump memory stream
 CTMemoryStream *GetDumpStream(void);
-/*
- * Clear session dump memory stream
- */
+
+// Clear session dump memory stream
 void ClearDumpStream(void);
 #endif
 
-// checksum of world snapshot at given point in time - used for sync-checking
+// Checksum of world snapshot at given point in time - used for sync-checking
 class CSyncCheck {
   public:
     TICK sc_llTick;     // time of snapshot
     INDEX sc_iSequence; // sequence number last processed before this checksum
     ULONG sc_ulCRC;     // checksum
     INDEX sc_iLevel;    // checksum of level filename
+
     CSyncCheck(void) {
       sc_llTick = -1;
       sc_iSequence = -1;
       sc_ulCRC = 0;
       sc_iLevel = 0;
     }
+
     void Clear(void) {
       sc_llTick = -1;
       sc_iSequence = -1;
@@ -60,7 +59,7 @@ class CSyncCheck {
     }
 };
 
-// info about an event that was predicted to happen
+// Info about an event that was predicted to happen
 class CPredictedEvent {
   public:
     TICK pe_llTick;
@@ -72,12 +71,10 @@ class CPredictedEvent {
     void Clear(void) {};
 };
 
-/*
- * Session state, manipulates local copy of the world
- */
+// Session state, manipulates local copy of the world
 class ENGINE_API CSessionState {
   public:
-    CStaticArray<CPlayerTarget> ses_apltPlayers;      // client targets for all players in game
+    CStaticArray<CPlayerTarget> ses_apltPlayers; // client targets for all players in game
     CStaticStackArray<CPredictedEvent> ses_apeEvents; // for event prediction
 
     CTString ses_strMOTD;             // MOTD as sent from the server
@@ -85,10 +82,11 @@ class ENGINE_API CSessionState {
     INDEX ses_iLastProcessedSequence; // sequence of last processed stream block
     CNetworkStream ses_nsGameStream;  // stream of blocks from server
 
-    // lerp params
+    // Lerp params
     CTimerValue ses_tvInitialization; // exact moment when the session state was started
     TICK ses_llInitializationTick;    // tick when the session state was started
-    // secondary lerp params for non-predicted movement
+
+    // Secondary lerp params for non-predicted movement
     CTimerValue ses_tvInitialization2; // exact moment when the session state was started
     TICK ses_llInitializationTick2;    // tick when the session state was started
 
@@ -126,97 +124,125 @@ class ENGINE_API CSessionState {
     CTMemoryStream *ses_pstrm; // debug stream for sync check examination
 
     CSessionSocketParams ses_sspParams; // local copy of server-side parameters
+
   public:
-    // network message waiters
-    void Start_AtServer_t(void);                 // throw char *
+    // Network message waiters
+    void Start_AtServer_t(void); // throw char *
     void Start_AtClient_t(INDEX ctLocalPlayers); // throw char *
-    // Set lerping factor for current frame.
+
+    // Set lerping factor for current frame
     void SetLerpFactor(CTimerValue tvNow);
-    // notify entities of level change
+
+    // Notify entities of level change
     void SendLevelChangeNotification(class CEntityEvent &ee);
-    // wait for a stream to come from server
+
+    // Wait for a stream to come from server
     void WaitStream_t(CTMemoryStream &strmMessage, const CTString &strName, INDEX iMsgCode);
-    // check if disconnected
+
+    // Check if disconnected
     BOOL IsDisconnected(void);
 
-    // print an incoming chat message to console
+    // Print an incoming chat message to console
     void PrintChatMessage(ULONG ulFrom, const CTString &strFrom, const CTString &strMessage);
 
   public:
-    // Constructor.
+    // Constructor
     CSessionState(void);
-    // Destructor.
+
+    // Destructor
     ~CSessionState(void);
 
-    // get a pseudo-random number (safe for network gaming)
+    // Get a pseudo-random number (safe for network gaming)
     ULONG Rnd(void);
 
-    // Stop the session state.
+    // Stop the session state
     void Stop(void);
-    // Start session state.
+
+    // Start session state
     void Start_t(INDEX ctLocalPlayers); // throw char *
 
-    // do physics for a game tick
+    // Do physics for a game tick
     void HandleMovers(void);
-    // do thinking for a game tick
+
+    // Do thinking for a game tick
     void HandleTimers(TICK llCurrentTick);
-    // do a warm-up run of the world for a few ticks
+
+    // Do a warm-up run of the world for a few ticks
     void WarmUpWorld(void);
-    // reset random number generator (always randomizes to same sequence!)
+
+    // Reset random number generator (always randomizes to same sequence!)
     void ResetRND(void);
-    // Process a game tick.
+
+    // Process a game tick
     void ProcessGameTick(CNetworkMessage &nmMessage, TICK llCurrentTick);
-    // Process a predicted game tick.
+
+    // Process a predicted game tick
     void ProcessPredictedGameTick(INDEX iPredictionStep, FLOAT fFactor, TICK llCurrentTick);
-    // Process a gamestream block.
+
+    // Process a gamestream block
     void ProcessGameStreamBlock(CNetworkMessage &nmMessage);
-    // Process all eventual avaliable gamestream blocks.
+
+    // Process all eventual avaliable gamestream blocks
     void ProcessGameStream(void);
+
     // flush prediction actions that were already processed
     void FlushProcessedPredictions(void);
-    // Find out how many prediction steps are currently pending.
+
+    // Find out how many prediction steps are currently pending
     INDEX GetPredictionStepsCount(void);
-    // Process all eventual avaliable prediction actions.
+
+    // Process all eventual avaliable prediction actions
     void ProcessPrediction(void);
-    // Get number of active players.
+
+    // Get number of active players
     INDEX GetPlayersCount(void);
-    // Remember predictor positions of all players.
+
+    // Remember predictor positions of all players
     void RememberPlayerPredictorPositions(void);
-    // Get player position.
+
+    // Get player position
     const FLOAT3D &GetPlayerPredictorPosition(INDEX iPlayer);
 
-    // check an event for prediction, returns true if already predicted
+    // Check an event for prediction, returns true if already predicted
     BOOL CheckEventPrediction(CEntity *pen, ULONG ulTypeID, ULONG ulEventID);
 
-    // make synchronization test message and send it to server (if client), or add to buffer (if server)
+    // Make synchronization test message and send it to server (if client), or add to buffer (if server)
     void MakeSynchronisationCheck(void);
-    // create a checksum value for sync-check
+
+    // Create a checksum value for sync-check
     void ChecksumForSync(ULONG &ulCRC, INDEX iExtensiveSyncCheck);
-    // dump sync data to text file
+
+    // Dump sync data to text file
     void DumpSync_t(CTStream &strm, INDEX iExtensiveSyncCheck); // throw char *
 
-    // Read session state information from a stream.
-    void Read_t(CTStream *pstr);                 // throw char *
-    void ReadWorldAndState_t(CTStream *pstr);    // throw char *
+    // Read session state information from a stream
+    void Read_t(CTStream *pstr); // throw char *
+    void ReadWorldAndState_t(CTStream *pstr); // throw char *
     void ReadRememberedLevels_t(CTStream *pstr); // throw char *
-    // Write session state information into a stream.
-    void Write_t(CTStream *pstr);                 // throw char *
-    void WriteWorldAndState_t(CTStream *pstr);    // throw char *
+
+    // Write session state information into a stream
+    void Write_t(CTStream *pstr); // throw char *
+    void WriteWorldAndState_t(CTStream *pstr); // throw char *
     void WriteRememberedLevels_t(CTStream *pstr); // throw char *
 
-    // remember current level
+    // Remember current level
     void RememberCurrentLevel(const CTString &strFileName);
-    // find a level if it is remembered
+
+    // Find a level if it is remembered
     class CRememberedLevel *FindRememberedLevel(const CTString &strFileName);
-    // restore some old level
+
+    // Restore some old level
     void RestoreOldLevel(const CTString &strFileName);
-    // forget all remembered levels
+
+    // Forget all remembered levels
     void ForgetOldLevels(void);
 
-    // Session state loop.
+    // Session state loop
     void SessionStateLoop(void);
-    // Session sync dump functions.
+
+    // Session sync dump functions
     void DumpSyncToFile_t(CTStream &strm, INDEX iExtensiveSyncCheck); // throw char *
+
     #if DEBUG_SYNCSTREAMDUMPING
     void DumpSyncToMemory(void);
     #endif

@@ -229,8 +229,7 @@ void CObject3D::GetBoundingBox(DOUBLEaabbox3D &boxObject) {
 
 // Dump the object 3D to debug window.
 void CObject3D::DebugDump(void) {
-#ifndef NDEBUG
-
+  #ifndef NDEBUG
   _RPT0(_CRT_WARN, "Object3D dump BEGIN:\n");
 
   _RPT1(_CRT_WARN, "Sectors: %d\n", ob_aoscSectors.Count());
@@ -287,6 +286,5 @@ void CObject3D::DebugDump(void) {
   }}
 
   _RPT0(_CRT_WARN, "Object3D dump END:\n");
-
-#endif // NDEBUG
+  #endif // NDEBUG
 }

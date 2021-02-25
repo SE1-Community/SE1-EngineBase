@@ -684,13 +684,14 @@ void Particle_Sort(BOOL b3D /*=FALSE*/) {
     Swap(aiInverse[iWhere], aiInverse[i]);
   }
 
-#ifndef NDEBUG
+  #ifndef NDEBUG
   // test to see whether the array is sorted
   INDEX *pidx = &aiInverse[0];
   GFXVertex4 *pvtx = &_avtxCommon[0];
+
   for (i = 0; i < ctParticles - 1; i++) {
     ASSERT(pidx[i] < pidx[i + 1]);
     ASSERT(pvtx[i * 4].z >= pvtx[(i + 1) * 4].z);
   }
-#endif
+  #endif
 }

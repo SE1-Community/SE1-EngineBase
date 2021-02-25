@@ -19,9 +19,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #pragma once
 #endif
 
-// turn secondary monitors off if neccessary
+// Turn secondary monitors off if neccessary
 extern void MonitorsOff(void);
-// turn secondary monitors on if they were turned off
+
+// Turn secondary monitors on if they were turned off
 extern void MonitorsOn(void);
 
 #endif /* include-once check. */

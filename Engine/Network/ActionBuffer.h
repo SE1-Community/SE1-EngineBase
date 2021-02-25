@@ -21,27 +21,36 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/Lists.h>
 
-// buffer of player actions, sorted by time of arrival
+// Buffer of player actions, sorted by time of arrival
 class CActionBuffer {
   public:
     CListHead ab_lhActions;
 
   public:
+    // Constructor
     CActionBuffer(void);
+
+    // Destructor
     ~CActionBuffer(void);
+
     void Clear(void);
 
-    // add a new action to the buffer
+    // Add a new action to the buffer
     void AddAction(const CPlayerAction &pa);
-    // remove oldest buffered action
+
+    // Remove oldest buffered action
     void RemoveOldest(void);
-    // flush all actions up to given time tag
+
+    // Flush all actions up to given time tag
     void FlushUntilTime(__int64 llNewest);
-    // get number of actions buffered
+
+    // Get number of actions buffered
     INDEX GetCount(void);
-    // get an action by its index (0=oldest)
+
+    // Get an action by its index (0 = oldest)
     void GetActionByIndex(INDEX i, CPlayerAction &pa);
-    // get last action older than given timetag
+
+    // Get last action older than given timetag
     CPlayerAction *GetLastOlderThan(__int64 llTime);
 };
 

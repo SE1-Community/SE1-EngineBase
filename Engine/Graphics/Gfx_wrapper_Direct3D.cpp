@@ -58,14 +58,15 @@ static void d3d_EnableTexture(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetTextureStageState(GFX_iActiveTexUnit, D3DTSS_COLOROP, (DWORD *)&bRes);
-  if (bRes == D3DTOP_DISABLE)
+  if (bRes == D3DTOP_DISABLE) {
     bRes = FALSE;
+  }
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_abTexture[GFX_iActiveTexUnit]);
-#endif
+  #endif
 
   // cached?
   if (GFX_abTexture[GFX_iActiveTexUnit] && gap_bOptimizeStateChanges)
@@ -85,14 +86,15 @@ static void d3d_DisableTexture(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetTextureStageState(GFX_iActiveTexUnit, D3DTSS_COLOROP, (DWORD *)&bRes);
-  if (bRes == D3DTOP_DISABLE)
+  if (bRes == D3DTOP_DISABLE) {
     bRes = FALSE;
+  }
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_abTexture[GFX_iActiveTexUnit]);
-#endif
+  #endif
 
   // cached?
   if (!GFX_abTexture[GFX_iActiveTexUnit] && gap_bOptimizeStateChanges)
@@ -111,12 +113,12 @@ static void d3d_EnableDepthTest(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_ZENABLE, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_bDepthTest);
-#endif
+  #endif
   // cached?
   if (GFX_bDepthTest && gap_bOptimizeStateChanges)
     return;
@@ -134,16 +136,18 @@ static void d3d_DisableDepthTest(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_ZENABLE, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_bDepthTest);
-#endif
+  #endif
 
   // cached?
-  if (!GFX_bDepthTest && gap_bOptimizeStateChanges)
+  if (!GFX_bDepthTest && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bDepthTest = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -186,16 +190,18 @@ static void d3d_EnableDepthWrite(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_ZWRITEENABLE, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_bDepthWrite);
-#endif
+  #endif
 
   // cached?
-  if (GFX_bDepthWrite && gap_bOptimizeStateChanges)
+  if (GFX_bDepthWrite && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bDepthWrite = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -210,16 +216,18 @@ static void d3d_DisableDepthWrite(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_ZWRITEENABLE, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_bDepthWrite);
-#endif
+  #endif
 
   // cached?
-  if (!GFX_bDepthWrite && gap_bOptimizeStateChanges)
+  if (!GFX_bDepthWrite && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bDepthWrite = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -234,16 +242,18 @@ static void d3d_EnableDither(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_DITHERENABLE, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_bDithering);
-#endif
+  #endif
 
   // cached?
-  if (GFX_bDithering && gap_bOptimizeStateChanges)
+  if (GFX_bDithering && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bDithering = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -258,16 +268,18 @@ static void d3d_DisableDither(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_DITHERENABLE, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_bDithering);
-#endif
+  #endif
 
   // cached?
-  if (!GFX_bDithering && gap_bOptimizeStateChanges)
+  if (!GFX_bDithering && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bDithering = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -282,16 +294,18 @@ static void d3d_EnableAlphaTest(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_ALPHATESTENABLE, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_bAlphaTest);
-#endif
+  #endif
 
   // cached?
-  if (GFX_bAlphaTest && gap_bOptimizeStateChanges)
+  if (GFX_bAlphaTest && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bAlphaTest = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -306,16 +320,18 @@ static void d3d_DisableAlphaTest(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_ALPHATESTENABLE, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_bAlphaTest);
-#endif
+  #endif
 
   // cached?
-  if (!GFX_bAlphaTest && gap_bOptimizeStateChanges)
+  if (!GFX_bAlphaTest && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bAlphaTest = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -330,15 +346,18 @@ static void d3d_EnableBlend(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_ALPHABLENDENABLE, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_bBlending);
-#endif
+  #endif
+
   // cached?
-  if (GFX_bBlending && gap_bOptimizeStateChanges)
+  if (GFX_bBlending && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bBlending = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -359,16 +378,18 @@ static void d3d_DisableBlend(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_ALPHABLENDENABLE, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_bBlending);
-#endif
+  #endif
 
   // cached?
-  if (!GFX_bBlending && gap_bOptimizeStateChanges)
+  if (!GFX_bBlending && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bBlending = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -389,16 +410,18 @@ static void d3d_EnableClipping(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes = GFX_bClipping;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_CLIPPING, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_bClipping);
-#endif
+  #endif
 
   // cached?
-  if (GFX_bClipping && gap_bOptimizeStateChanges)
+  if (GFX_bClipping && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bClipping = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -418,16 +441,18 @@ static void d3d_DisableClipping(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_CLIPPING, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_bClipping);
-#endif
+  #endif
 
   // cached?
-  if (!GFX_bClipping && gap_bOptimizeStateChanges)
+  if (!GFX_bClipping && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bClipping = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -451,16 +476,18 @@ static void d3d_EnableClipPlane(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_CLIPPLANEENABLE, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_bClipPlane);
-#endif
+  #endif
 
   // cached?
-  if (GFX_bClipPlane && gap_bOptimizeStateChanges)
+  if (GFX_bClipPlane && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bClipPlane = TRUE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -487,15 +514,18 @@ static void d3d_DisableClipPlane(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes = GFX_bClipPlane;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_CLIPPLANEENABLE, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   ASSERT(!bRes == !GFX_bClipPlane);
-#endif
+  #endif
+
   // cached?
-  if (!GFX_bClipPlane && gap_bOptimizeStateChanges)
+  if (!GFX_bClipPlane && gap_bOptimizeStateChanges) {
     return;
+  }
+
   GFX_bClipPlane = FALSE;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -515,13 +545,13 @@ static void d3d_EnableColorArray(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_LIGHTING, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   bRes = !bRes;
   ASSERT(!bRes == !GFX_bColorArray);
-#endif
+  #endif
 
   // cached?
   if (GFX_bColorArray && gap_bOptimizeStateChanges)
@@ -541,13 +571,13 @@ static void d3d_DisableColorArray(void) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_LIGHTING, (DWORD *)&bRes);
   D3D_CHECKERROR(hr);
   bRes = !bRes;
   ASSERT(!bRes == !GFX_bColorArray);
-#endif
+  #endif
 
   // cached?
   if (!GFX_bColorArray && gap_bOptimizeStateChanges)
@@ -571,13 +601,13 @@ static void d3d_EnableTruform(void) {
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
   FLOAT fSegments;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_PATCHSEGMENTS, (DWORD *)&fSegments);
   D3D_CHECKERROR(hr);
   bRes = (fSegments > 1) ? TRUE : FALSE;
   ASSERT(!bRes == !GFX_bTruform);
-#endif
+  #endif
 
   if (GFX_bTruform && gap_bOptimizeStateChanges)
     return;
@@ -601,13 +631,13 @@ static void d3d_DisableTruform(void) {
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
   FLOAT fSegments;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   BOOL bRes;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_PATCHSEGMENTS, (DWORD *)&fSegments);
   D3D_CHECKERROR(hr);
   bRes = (fSegments > 1) ? TRUE : FALSE;
   ASSERT(!bRes == !GFX_bTruform);
-#endif
+  #endif
 
   if (!GFX_bTruform && gap_bOptimizeStateChanges)
     return;
@@ -657,7 +687,7 @@ static void d3d_BlendFunc(GfxBlend eSrc, GfxBlend eDst) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   GfxBlend gfxSrc, gfxDst;
   _D3DBLEND d3dSrc, d3dDst;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_SRCBLEND, (DWORD *)&d3dSrc);
@@ -667,7 +697,8 @@ static void d3d_BlendFunc(GfxBlend eSrc, GfxBlend eDst) {
   gfxSrc = BlendFromD3D(d3dSrc);
   gfxDst = BlendFromD3D(d3dDst);
   ASSERT(gfxSrc == GFX_eBlendSrc && gfxDst == GFX_eBlendDst);
-#endif
+  #endif
+
   // cached?
   if (eSrc == GFX_eBlendSrc && eDst == GFX_eBlendDst && gap_bOptimizeStateChanges)
     return;
@@ -755,13 +786,14 @@ static void d3d_DepthFunc(GfxComp eFunc) {
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
   _D3DCMPFUNC d3dcFunc;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   GfxComp gfxFunc;
   hr = _pGfx->gl_pd3dDevice->GetRenderState(D3DRS_ZFUNC, (DWORD *)&d3dcFunc);
   D3D_CHECKERROR(hr);
   gfxFunc = CompFromD3D(d3dcFunc);
   ASSERT(gfxFunc == GFX_eDepthFunc);
-#endif
+  #endif
+
   // cached?
   if (eFunc == GFX_eDepthFunc && gap_bOptimizeStateChanges)
     return;
@@ -786,10 +818,10 @@ static void d3d_DepthRange(FLOAT fMin, FLOAT fMax) {
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
   D3DVIEWPORT8 d3dViewport;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   hr = _pGfx->gl_pd3dDevice->GetViewport(&d3dViewport);
   ASSERT(d3dViewport.MinZ == GFX_fMinDepthRange && d3dViewport.MaxZ == GFX_fMaxDepthRange);
-#endif
+  #endif
 
   // cached?
   if (GFX_fMinDepthRange == fMin && GFX_fMaxDepthRange == fMax && gap_bOptimizeStateChanges)
@@ -1022,7 +1054,7 @@ static void d3d_PolygonMode(GfxPolyMode ePolyMode) {
 static void d3d_SetTextureWrapping(enum GfxWrap eWrapU, enum GfxWrap eWrapV) {
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   // check wrapping consistency
   D3DTEXTUREADDRESS d3dtaU, d3dtaV;
   hr = _pGfx->gl_pd3dDevice->GetTextureStageState(GFX_iActiveTexUnit, D3DTSS_ADDRESSU, (ULONG *)&d3dtaU);
@@ -1035,7 +1067,7 @@ static void d3d_SetTextureWrapping(enum GfxWrap eWrapU, enum GfxWrap eWrapV) {
   ASSERT((d3dtaV == D3DTADDRESS_WRAP && _tpGlobal[GFX_iActiveTexUnit].tp_eWrapV == GFX_REPEAT)
          || (d3dtaV == D3DTADDRESS_CLAMP && _tpGlobal[GFX_iActiveTexUnit].tp_eWrapV == GFX_CLAMP)
          || (_tpGlobal[GFX_iActiveTexUnit].tp_eWrapV == 0));
-#endif
+  #endif
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
 
@@ -1060,22 +1092,25 @@ static void d3d_SetTextureModulation(INDEX iScale) {
   // check consistency
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
   HRESULT hr;
-#ifndef NDEBUG
+  #ifndef NDEBUG
   INDEX iRet;
   hr = _pGfx->gl_pd3dDevice->GetTextureStageState(GFX_iActiveTexUnit, D3DTSS_COLOROP, (DWORD *)&iRet);
   D3D_CHECKERROR(hr);
-  if (iRet == D3DTOP_MODULATE2X)
+  if (iRet == D3DTOP_MODULATE2X) {
     ASSERT(GFX_iTexModulation[GFX_iActiveTexUnit] == 2);
-  else if (iRet == D3DTOP_MODULATE)
+  } else if (iRet == D3DTOP_MODULATE) {
     ASSERT(GFX_iTexModulation[GFX_iActiveTexUnit] == 1);
-  else
+  } else {
     ASSERT(iRet == D3DTOP_DISABLE);
-#endif
+  }
+  #endif
 
   // cached?
   ASSERT(iScale == 1 || iScale == 2);
-  if (GFX_iTexModulation[GFX_iActiveTexUnit] == iScale)
+  if (GFX_iTexModulation[GFX_iActiveTexUnit] == iScale) {
     return;
+  }
+
   GFX_iTexModulation[GFX_iActiveTexUnit] = iScale;
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
@@ -1179,12 +1214,14 @@ static void d3d_SetConstantColor(COLOR col) {
 
 static void d3d_DrawElements(INDEX ctElem, INDEX *pidx) {
   ASSERT(_pGfx->gl_eCurrentAPI == GAT_D3D);
-#ifndef NDEBUG
+  #ifndef NDEBUG
   // check if all indices are inside lock count (or smaller than 65536)
-  if (pidx != NULL)
-    for (INDEX i = 0; i < ctElem; i++)
+  if (pidx != NULL) {
+    for (INDEX i = 0; i < ctElem; i++) {
       ASSERT(pidx[i] < GFX_ctVertices);
-#endif
+    }
+  }
+  #endif
 
   _sfStats.StartTimer(CStatForm::STI_GFXAPI);
   _pGfx->gl_ctTotalTriangles += ctElem / 3; // for profiling

@@ -21,14 +21,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Graphics/Texture.h>
 
-/*
- * Structure describing properties of a field entity.
- */
-
+// Structure describing properties of a field entity
 class ENGINE_API CFieldSettings {
   public:
     CTextureObject fs_toTexture; // texture for rendering field in WEd
-    COLOR fs_colColor;           // color for rendering field in WEd
+    COLOR fs_colColor; // color for rendering field in WEd
 };
 
 #endif /* include-once check. */

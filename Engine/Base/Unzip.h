@@ -19,32 +19,42 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #pragma once
 #endif
 
-// add one zip archive to current active set
+// Add one zip archive to current active set
 void UNZIPAddArchive(const CTFileName &fnm);
-// read directories of all currently added archives, in reverse alphabetical order
+
+// Read directories of all currently added archives, in reverse alphabetical order
 void UNZIPReadDirectoriesReverse_t(void);
-// check if a zip file entry exists
+
+// Check if a zip file entry exists
 BOOL UNZIPFileExists(const CTFileName &fnm);
-// open a zip file entry for reading
+
+// Open a zip file entry for reading
 INDEX UNZIPOpen_t(const CTFileName &fnm);
-// get uncompressed size of a file
+
+// Get uncompressed size of a file
 SLONG UNZIPGetSize(INDEX iHandle);
-// get CRC of a file
+
+// Get CRC of a file
 ULONG UNZIPGetCRC(INDEX iHandle);
-// read a block from zip file
+
+// Read a block from zip file
 void UNZIPReadBlock_t(INDEX iHandle, UBYTE *pub, SLONG slStart, SLONG slLen);
-// close a zip file entry
+
+// Close a zip file entry
 void UNZIPClose(INDEX iHandle);
-// get info on a zip file entry
-void UNZIPGetFileInfo(INDEX iHandle, CTFileName &fnmZip, SLONG &slOffset, SLONG &slSizeCompressed, SLONG &slSizeUncompressed,
-                      BOOL &bCompressed);
-// enumeration for all files in all zips
+
+// Get info on a zip file entry
+void UNZIPGetFileInfo(INDEX iHandle, CTFileName &fnmZip, SLONG &slOffset,
+                      SLONG &slSizeCompressed, SLONG &slSizeUncompressed, BOOL &bCompressed);
+
+// Enumeration for all files in all zips
 INDEX UNZIPGetFileCount(void);
 const CTFileName &UNZIPGetFileAtIndex(INDEX i);
 
-// get index of a file (-1 for no file)
+// Get index of a file (-1 for no file)
 INDEX UNZIPGetFileIndex(const CTFileName &fnm);
-// check if a file is from a mod's zip
+
+// Check if a file is from a mod's zip
 BOOL UNZIPIsFileAtIndexMod(INDEX i);
 
 #endif /* include-once check. */

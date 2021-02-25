@@ -29,15 +29,15 @@ enum LevelChangePhase {
   // ->change done->
   LCP_CHANGED,
   // ->post-change signalled->
-  // LCP_NOCHANGE
+  //LCP_NOCHANGE
 };
 
 extern LevelChangePhase _lphCurrent;
 
 class CRememberedLevel {
   public:
-    CListNode rl_lnInSessionState;      // for linking in list of all remembered levels
-    CTString rl_strFileName;            // file name of the level
+    CListNode rl_lnInSessionState; // for linking in list of all remembered levels
+    CTString rl_strFileName; // file name of the level
     CTMemoryStream rl_strmSessionState; // saved session state
 };
 

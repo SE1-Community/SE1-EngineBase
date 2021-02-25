@@ -21,10 +21,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/Profiling.h>
 
-// Class for holding profiling information for gfx.
+// Class for holding profiling information for GFX
 class CGfxProfile : public CProfileForm {
   public:
-    // indices for profiling counters and timers
+    // Indices for profiling counters and timers
     enum ProfileTimerIndex {
       PTI_LOCKDRAWPORT,
       PTI_SWAPBUFFERS,
@@ -79,7 +79,8 @@ class CGfxProfile : public CProfileForm {
       PCI_RS_POLYGONGROUPS,
       PCI_COUNT,
     };
-    // constructor
+
+    // Constructor
     CGfxProfile(void);
 };
 

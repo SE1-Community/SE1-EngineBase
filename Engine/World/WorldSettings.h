@@ -22,30 +22,31 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/CTString.h>
 #include <Engine/Math/TextureMapping.h>
 
-// type of dynamic texture mapping transformation
+// Type of dynamic texture mapping transformation
 class ENGINE_API CTextureTransformation {
   public:
     CTString tt_strName;
     CMappingDefinition tt_mdTransformation;
 
-    // Constructor.
+    // Constructor
     CTextureTransformation(void);
 };
 
-// type of texture blending used for a texture on a polygon
+// Type of texture blending used for a texture on a polygon
 class ENGINE_API CTextureBlending {
   public:
     CTString tb_strName;
     UBYTE tb_ubBlendingType; // uses gfx flags for texture blending (STX_BLEND_xxxx)
-    COLOR tb_colMultiply;    // original polygon color is multiplied by this
+    COLOR tb_colMultiply; // original polygon color is multiplied by this
 
-    // Constructor.
+    // Constructor
     CTextureBlending(void);
 };
 
-// type of surface of a polygon (its physical properties)
+// Type of surface of a polygon (its physical properties)
 #define STF_SLIDEDOWNSLOPE (1UL << 0) // can accelerate only across slope, not up/down
 #define STF_NOIMPACT       (1UL << 1) // cannot damage because of impact with this polygon
+
 class ENGINE_API CSurfaceType {
   public:
     FLOAT st_fFriction;            // friction coefficient on the surface
@@ -56,9 +57,11 @@ class ENGINE_API CSurfaceType {
     FLOAT st_fWalkDamageAmount;    // how much to damage when inside
     TICK st_llWalkDamageDelay;     // how much to delay before first damage
     TICK st_llWalkDamageFrequency; // how much to delay between two damages
+
     ULONG st_ulFlags;
     CTString st_strName; // name of surface type
-    // Default constructor.
+
+    // Constructor
     CSurfaceType(void) :
     st_fFriction(1.0f),
     st_fStairsHeight(1.0f),
@@ -72,7 +75,7 @@ class ENGINE_API CSurfaceType {
     st_strName("") {}
 };
 
-// type of content of a sector
+// Type of content of a sector
 #define CTF_BREATHABLE_LUNGS (1UL << 0) // breathable for creatures with lungs
 #define CTF_BREATHABLE_GILLS (1UL << 1) // breathable for creatures with gills
 #define CTF_FLYABLE          (1UL << 2) // flyable in if can fly
@@ -82,8 +85,8 @@ class ENGINE_API CSurfaceType {
 class ENGINE_API CContentType {
   public:
     CTString ct_strName; // name of surface type
-    ULONG ct_ulFlags;    // various flags
-    FLOAT ct_fDensity;   // density of the fluid inside content kg/m3 - defines buoyancy
+    ULONG ct_ulFlags; // various flags
+    FLOAT ct_fDensity; // density of the fluid inside content kg/m3 - defines buoyancy
 
     FLOAT ct_fFluidFriction;        // friction inside the fluid (stopping movements)
     FLOAT ct_fControlMultiplier;    // defines voluntary acceleration/decceleration
@@ -96,22 +99,23 @@ class ENGINE_API CContentType {
     TICK ct_llDrowningDamageDelay;  // how much to delay between two damages
     FLOAT ct_fKillImmersion;        // contents kills anything alive that gets in deeper than this
     INDEX ct_iKillDamageType;       // type of killing damage
-    // Default constructor.
+
+    // Constructor
     CContentType(void) :
-    ct_strName(""),
-    ct_ulFlags(CTF_BREATHABLE_LUNGS | CTF_FLYABLE),
-    ct_fDensity(0),
-    ct_fFluidFriction(0),
-    ct_fControlMultiplier(1),
-    ct_fSpeedMultiplier(1),
-    ct_iSwimDamageType(0),
-    ct_fSwimDamageAmount(0),
-    ct_llSwimDamageDelay(0),
-    ct_llSwimDamageFrequency(CTimer::InTicks(100.0f)),
-    ct_fDrowningDamageAmount(10),
-    ct_llDrowningDamageDelay(CTimer::InTicks(1.0f)),
-    ct_fKillImmersion(0),
-    ct_iKillDamageType(0) {}
+      ct_strName(""),
+      ct_ulFlags(CTF_BREATHABLE_LUNGS | CTF_FLYABLE),
+      ct_fDensity(0),
+      ct_fFluidFriction(0),
+      ct_fControlMultiplier(1),
+      ct_fSpeedMultiplier(1),
+      ct_iSwimDamageType(0),
+      ct_fSwimDamageAmount(0),
+      ct_llSwimDamageDelay(0),
+      ct_llSwimDamageFrequency(CTimer::InTicks(100.0f)),
+      ct_fDrowningDamageAmount(10),
+      ct_llDrowningDamageDelay(CTimer::InTicks(1.0f)),
+      ct_fKillImmersion(0),
+      ct_iKillDamageType(0) {}
 };
 
 class ENGINE_API CEnvironmentType {
@@ -119,33 +123,32 @@ class ENGINE_API CEnvironmentType {
     CTString et_strName; // name of environment type
     INDEX et_iType;
     FLOAT et_fSize;
-    // Default constructor.
+
+    // Constructor
     CEnvironmentType(void) : et_strName(""), et_iType(1), et_fSize(7.5) {}
 };
 
-/*
- * One type of illuminating polygon.
- */
+// One type of illuminating polygon
 class ENGINE_API CIlluminationType {
   public:
     CTString it_strName; // name of illumination type
 
-    // Default constructor.
+    // Constructor
     CIlluminationType(void) : it_strName("") {};
 };
 
-/*
- * One type of mirroring (or warping) polygon.
- */
+// One type of mirroring (or warping) polygon
 #define MPF_WARP (1UL << 0) // warp portal
+
 class CMirrorParameters {
   public:
     ULONG mp_ulFlags;
-    // for warps
-    CPlacement3D mp_plWarpIn;  // warp entry
+
+    // For warps
+    CPlacement3D mp_plWarpIn; // warp entry
     CPlacement3D mp_plWarpOut; // warp exit
     CEntity *mp_penWarpViewer; // which entity to view from
-    FLOAT mp_fWarpFOV;         // FOV, -1 for no change
+    FLOAT mp_fWarpFOV; // FOV, -1 for no change
 };
 
 #endif /* include-once check. */

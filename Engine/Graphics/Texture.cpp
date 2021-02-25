@@ -63,7 +63,8 @@ extern void DetermineSupportedTextureFormats(GfxAPIType eAPI) {
     TS.ts_tfLA8 = GL_LUMINANCE8_ALPHA8;
     TS.ts_tfL8 = GL_LUMINANCE8;
   }
-#ifdef SE1_D3D
+
+  #ifdef SE1_D3D
   if (eAPI == GAT_D3D) {
     extern D3DFORMAT FindClosestFormat_D3D(D3DFORMAT d3df);
     TS.ts_tfRGBA8 = FindClosestFormat_D3D(D3DFMT_A8R8G8B8);
@@ -74,18 +75,18 @@ extern void DetermineSupportedTextureFormats(GfxAPIType eAPI) {
     TS.ts_tfLA8 = FindClosestFormat_D3D(D3DFMT_A8L8);
     TS.ts_tfL8 = FindClosestFormat_D3D(D3DFMT_L8);
   }
-#endif // SE1_D3D
+  #endif // SE1_D3D
 }
 
 // update all relevant texture parameters
 extern void UpdateTextureSettings(void) {
   // determine API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else
+  #else
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  #endif // SE1_D3D
 
   // set texture formats and compression
   TS.ts_tfRGB8 = TS.ts_tfRGBA8 = NONE;
@@ -114,10 +115,11 @@ extern void UpdateTextureSettings(void) {
     iTCType = iTC; // set it
   }
   // Direct3D (just force DXTC - it's the only one)
-#ifdef SE1_D3D
-  if (eAPI == GAT_D3D && bHasTC)
+  #ifdef SE1_D3D
+  if (eAPI == GAT_D3D && bHasTC) {
     iTCType = 5;
-#endif // SE1_D3D
+  }
+  #endif // SE1_D3D
 
   // clamp and cache cvar
   extern INDEX tex_bCompressAlphaChannel;
@@ -131,25 +133,30 @@ extern void UpdateTextureSettings(void) {
       TS.ts_tfCRGBA = GL_COMPRESSED_RGBA_ARB;
       TS.ts_tfCRGB = GL_COMPRESSED_RGB_ARB;
       break;
+
     case 2: // S3TC
       TS.ts_tfCRGBA = bCAC ? GL_COMPRESSED_RGBA_S3TC_DXT5_EXT : GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
       TS.ts_tfCRGB = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
       break;
+
     case 3: // FXT1
       TS.ts_tfCRGBA = GL_COMPRESSED_RGBA_FXT1_3DFX;
       TS.ts_tfCRGB = GL_COMPRESSED_RGB_FXT1_3DFX;
       break;
+
     case 4: // LEGACY
       TS.ts_tfCRGBA = bCAC ? GL_COMPRESSED_RGB4_COMPRESSED_ALPHA4_S3TC : GL_COMPRESSED_RGBA_S3TC;
       TS.ts_tfCRGB = GL_COMPRESSED_RGB_S3TC;
       break;
-#ifdef SE1_D3D
+
+    #ifdef SE1_D3D
     case 5: // DXTC
       extern D3DFORMAT FindClosestFormat_D3D(D3DFORMAT d3df);
       TS.ts_tfCRGBA = bCAC ? FindClosestFormat_D3D(D3DFMT_DXT5) : FindClosestFormat_D3D(D3DFMT_DXT3);
       TS.ts_tfCRGB = D3DFMT_DXT1;
       break;
-#endif // SE1_D3D
+    #endif // SE1_D3D
+
     default: // none
       TS.ts_tfCRGBA = NONE;
       TS.ts_tfCRGB = NONE;
@@ -686,11 +693,11 @@ void CTextureData::Read_t(CTStream *inFile) {
 
   // determine API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
+  #else // SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  #endif // SE1_D3D
 
   // determine driver context presence (must have at least 1 texture unit!)
   const BOOL bHasContext = (_pGfx->gl_ctRealTextureUnits > 0);
@@ -983,13 +990,15 @@ void CTextureData::Read_t(CTStream *inFile) {
   INDEX iDitherType = 0;
   if (!(td_ulFlags & TEX_STATIC) || !(td_ulFlags & TEX_CONSTANT)) { // only non-static-constant textures can be dithered
     extern INDEX AdjustDitheringType_OGL(GLenum eFormat, INDEX iDitheringType);
-    if (eAPI == GAT_OGL)
+    if (eAPI == GAT_OGL) {
       iDitherType = AdjustDitheringType_OGL((GLenum)td_ulInternalFormat, tex_iDithering);
-#ifdef SE1_D3D
+    }
+    #ifdef SE1_D3D
     extern INDEX AdjustDitheringType_D3D(D3DFORMAT eFormat, INDEX iDitheringType);
-    if (eAPI == GAT_D3D)
+    if (eAPI == GAT_D3D) {
       iDitherType = AdjustDitheringType_D3D((D3DFORMAT)td_ulInternalFormat, tex_iDithering);
-#endif // SE1_D3D
+    }
+    #endif // SE1_D3D
   }
   // eventually dither texture
   if (!_bExport && iDitherType != 0) {
@@ -1165,11 +1174,11 @@ void CTextureData::Force(ULONG ulTexFlags) {
 void CTextureData::SetAsCurrent(INDEX iFrameNo /*=0*/, BOOL bForceUpload /*=FALSE*/) {
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
+  #ifdef SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
+  #else // SE1_D3D
   ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  #endif // SE1_D3D
 
   ASSERT(iFrameNo < td_ctFrames);
   BOOL bNeedUpload = bForceUpload;

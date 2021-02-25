@@ -31,10 +31,13 @@ class CTmpPrecachingNow {
   public:
     BOOL m_bOldPrecaching;
 
+    // Constructor
     inline CTmpPrecachingNow(void) {
       m_bOldPrecaching = _precache_bNowPrecaching;
       _precache_bNowPrecaching = TRUE;
     }
+    
+    // Destructor
     ~CTmpPrecachingNow(void) {
       _precache_bNowPrecaching = m_bOldPrecaching;
     }
@@ -43,22 +46,41 @@ class CTmpPrecachingNow {
 class ENGINE_API CAutoPrecacheSound {
   public:
     CSoundData *apc_psd;
+
+    // Constructor
     CAutoPrecacheSound();
+
+    // Destructor
     ~CAutoPrecacheSound();
+    
+    // Precache sound from a file
     void Precache(const CTFileName &fnm);
 };
+
 class ENGINE_API CAutoPrecacheModel {
   public:
     CModelData *apc_pmd;
+
+    // Constructor
     CAutoPrecacheModel();
+
+    // Destructor
     ~CAutoPrecacheModel();
+    
+    // Precache model from a file
     void Precache(const CTFileName &fnm);
 };
+
 class ENGINE_API CAutoPrecacheTexture {
   public:
     CTextureData *apc_ptd;
+
+    // Constructor
     CAutoPrecacheTexture();
+    // Destructor
     ~CAutoPrecacheTexture();
+
+    // Precache texture from a file
     void Precache(const CTFileName &fnm);
 };
 
