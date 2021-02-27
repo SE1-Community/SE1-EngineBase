@@ -13,9 +13,9 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
-#include <Engine/Entities/Entity.h>
+#include <Engine/Entities/BaseClasses/Entity.h>
 #include <Engine/Brushes/Brush.h>
 
 #include <Engine/Templates/DynamicArray.cpp>
@@ -34,29 +34,34 @@ static FLOATplane3D _plPlane;
 class CActiveSector {
   public:
     CBrushSector *as_pbsc;
+
     void Clear(void) {};
 };
 
 static CStaticStackArray<CActiveSector> _aas;
 
-// Add a sector if needed.
+// Add a sector if needed
 static void AddSector(CBrushSector *pbsc) {
   // if not already active and in first mip of its brush
   if (pbsc->bsc_pbmBrushMip->IsFirstMip() && !(pbsc->bsc_ulFlags & BSCF_NEARTESTED)) {
     // add it to active sectors
     _aas.Push().as_pbsc = pbsc;
+
     pbsc->bsc_ulFlags |= BSCF_NEARTESTED;
   }
 }
-// Add all sectors of a brush.
+
+// Add all sectors of a brush
 static void AddAllSectorsOfBrush(CBrush3D *pbr) {
   // get first mip
   CBrushMip *pbmMip = pbr->GetFirstMip();
+
   // if it has no brush mip for that mip factor
   if (pbmMip == NULL) {
     // skip it
     return;
   }
+
   // for each sector in the brush mip
   FOREACHINDYNAMICARRAY(pbmMip->bm_abscSectors, CBrushSector, itbsc) {
     // add the sector
@@ -68,6 +73,7 @@ void SearchThroughSectors(void) {
   // for each active sector (sectors are added during iteration!)
   for (INDEX ias = 0; ias < _aas.Count(); ias++) {
     CBrushSector *pbsc = _aas[ias].as_pbsc;
+
     // for each polygon in the sector
     {FOREACHINSTATICARRAY(pbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
       CBrushPolygon &bpo = *itbpo;
@@ -76,22 +82,28 @@ void SearchThroughSectors(void) {
         // skip it
         continue;
       }
+
       const FLOATplane3D &plPolygon = bpo.bpo_pbplPlane->bpl_plAbsolute;
+
       // find distance of the polygon plane from the handle
       FLOAT fDistance = plPolygon.PointDistance(_vHandle);
+
       // if it is behind the plane or further than nearest found
       if (fDistance < 0.0f || fDistance > _fNearDistance) {
         // skip it
         continue;
       }
+
       // find projection of handle to the polygon plane
       FLOAT3D vOnPlane = plPolygon.ProjectPoint(_vHandle);
+
       // if it is not in the bounding box of polygon
       const FLOATaabbox3D &boxPolygon = bpo.bpo_boxBoundingBox;
       const FLOAT EPSILON = 0.01f;
+
       if ((boxPolygon.Min()(1) - EPSILON > vOnPlane(1)) || (boxPolygon.Max()(1) + EPSILON < vOnPlane(1))
-          || (boxPolygon.Min()(2) - EPSILON > vOnPlane(2)) || (boxPolygon.Max()(2) + EPSILON < vOnPlane(2))
-          || (boxPolygon.Min()(3) - EPSILON > vOnPlane(3)) || (boxPolygon.Max()(3) + EPSILON < vOnPlane(3))) {
+       || (boxPolygon.Min()(2) - EPSILON > vOnPlane(2)) || (boxPolygon.Max()(2) + EPSILON < vOnPlane(2))
+       || (boxPolygon.Min()(3) - EPSILON > vOnPlane(3)) || (boxPolygon.Max()(3) + EPSILON < vOnPlane(3))) {
         // skip it
         continue;
       }
@@ -102,11 +114,13 @@ void SearchThroughSectors(void) {
 
       // create an intersector
       CIntersector isIntersector(_vHandle(iMajorAxis1), _vHandle(iMajorAxis2));
+
       // for all edges in the polygon
       FOREACHINSTATICARRAY(bpo.bpo_abpePolygonEdges, CBrushPolygonEdge, itbpePolygonEdge) {
         // get edge vertices (edge direction is irrelevant here!)
         const FLOAT3D &vVertex0 = itbpePolygonEdge->bpe_pbedEdge->bed_pbvxVertex0->bvx_vAbsolute;
         const FLOAT3D &vVertex1 = itbpePolygonEdge->bpe_pbedEdge->bed_pbvxVertex1->bvx_vAbsolute;
+
         // pass the edge to the intersector
         isIntersector.AddEdge(vVertex0(iMajorAxis1), vVertex0(iMajorAxis2), vVertex1(iMajorAxis1), vVertex1(iMajorAxis2));
       }
@@ -129,6 +143,7 @@ void SearchThroughSectors(void) {
       if (pen->en_RenderType == CEntity::RT_BRUSH) {
         // get its brush
         CBrush3D &brBrush = *pen->en_pbrBrush;
+
         // add all sectors in the brush
         AddAllSectorsOfBrush(&brBrush);
       }
@@ -136,12 +151,11 @@ void SearchThroughSectors(void) {
   }
 }
 
-// Get nearest position of nearest brush polygon to this entity if available.
-// use:
-// ->bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity
-// to get the entity
+// Get nearest position of nearest brush polygon to this entity if available
+// Use ->bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity to get the entity
 CBrushPolygon *CEntity::GetNearestPolygon(FLOAT3D &vPoint, FLOATplane3D &plPlane, FLOAT &fDistanceToEdge) {
   _pen = this;
+
   // take reference point at handle of the model entity
   _vHandle = en_plPlacement.pl_PositionVector;
 
@@ -163,6 +177,7 @@ CBrushPolygon *CEntity::GetNearestPolygon(FLOAT3D &vPoint, FLOATplane3D &plPlane
     // mark it as inactive
     _aas[ias].as_pbsc->bsc_ulFlags &= ~BSCF_NEARTESTED;
   }
+
   _aas.PopAll();
 
   // if there is some polygon found
@@ -171,8 +186,10 @@ CBrushPolygon *CEntity::GetNearestPolygon(FLOAT3D &vPoint, FLOATplane3D &plPlane
     plPlane = _pbpoNear->bpo_pbplPlane->bpl_plAbsolute;
     vPoint = _vNearPoint;
     fDistanceToEdge = _pbpoNear->GetDistanceFromEdges(_vNearPoint);
+
     return _pbpoNear;
-    // if none is found
+
+  // if none is found
   } else {
     // return failure
     return NULL;

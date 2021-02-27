@@ -13,18 +13,15 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/Relations.h>
-
 #include <Engine/Base/ListIterator.inl>
 
-/////////////////////////////////////////////////////////////////////
-// CRelationSrc
-
-// Construction/destruction.
+// CRelationSrc : Constructor
 CRelationSrc::CRelationSrc(void) {}
 
+// CRelationSrc : Destructor
 CRelationSrc::~CRelationSrc(void) {
   Clear();
 }
@@ -36,12 +33,10 @@ void CRelationSrc::Clear(void) {
   }
 }
 
-/////////////////////////////////////////////////////////////////////
-// CRelationDst
-
-// Construction/destruction.
+// CRelationDst : Constructor
 CRelationDst::CRelationDst(void) {}
 
+// CRelationDst : Destructor
 CRelationDst::~CRelationDst(void) {
   Clear();
 }
@@ -53,52 +48,55 @@ void CRelationDst::Clear(void) {
   }
 }
 
-/////////////////////////////////////////////////////////////////////
-// CRelationLnk
-
-// Construction/destruction.
+// CRelationLnk : Constructor
 CRelationLnk::CRelationLnk(void) {}
 
+// CRelationLnk : Destructor
 CRelationLnk::~CRelationLnk(void) {
   // unlink from both domain and codomain members
   rl_lnSrc.Remove();
   rl_lnDst.Remove();
 }
 
-// Get the domain member of this pair.
+// Get the domain member of this pair
 CRelationSrc &CRelationLnk::GetSrc(void) {
   return *rl_prsSrc;
 }
 
-// Get the codomain member of this pair.
+// Get the codomain member of this pair
 CRelationDst &CRelationLnk::GetDst(void) {
   return *rl_prdDst;
 }
 
-// Global functions for creating relations.
+// Global functions for creating relations
 void AddRelationPair(CRelationSrc &rsSrc, CRelationDst &rdDst) {
   // create a new link
   CRelationLnk &lnk = *new CRelationLnk;
   lnk.rl_prsSrc = &rsSrc;
   lnk.rl_prdDst = &rdDst;
+
   // add the link to the domain and codomain members
   rsSrc.AddTail(lnk.rl_lnSrc);
   rdDst.AddTail(lnk.rl_lnDst);
 }
+
 void AddRelationPairTailTail(CRelationSrc &rsSrc, CRelationDst &rdDst) {
   // create a new link
   CRelationLnk &lnk = *new CRelationLnk;
   lnk.rl_prsSrc = &rsSrc;
   lnk.rl_prdDst = &rdDst;
+
   // add the link to the domain and codomain members
   rsSrc.AddTail(lnk.rl_lnSrc);
   rdDst.AddTail(lnk.rl_lnDst);
 }
+
 void AddRelationPairHeadHead(CRelationSrc &rsSrc, CRelationDst &rdDst) {
   // create a new link
   CRelationLnk &lnk = *new CRelationLnk;
   lnk.rl_prsSrc = &rsSrc;
   lnk.rl_prdDst = &rdDst;
+
   // add the link to the domain and codomain members
   rsSrc.AddHead(lnk.rl_lnSrc);
   rdDst.AddHead(lnk.rl_lnDst);

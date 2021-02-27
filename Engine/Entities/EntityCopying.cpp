@@ -13,9 +13,9 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
-#include <Engine/Entities/Entity.h>
+#include <Engine/Entities/BaseClasses/Entity.h>
 #include <Engine/Entities/LastPositions.h>
 #include <Engine/Entities/EntityProperties.h>
 #include <Engine/Entities/EntityClass.h>
@@ -55,7 +55,7 @@ static FLOAT _fStretch = 1.0f;
 static enum WorldMirrorType _wmtMirror = WMT_NONE;
 extern INDEX _ctPredictorEntities;
 
-// mirror a placement of one entity
+// Mirror a placement of one entity
 static void MirrorAndStretchPlacement(CPlacement3D &pl) {
   ASSERT(_wmtMirror == WMT_X || _wmtMirror == WMT_Y || _wmtMirror == WMT_Z || _wmtMirror == WMT_NONE);
 
@@ -64,6 +64,7 @@ static void MirrorAndStretchPlacement(CPlacement3D &pl) {
     // make rotation matrix for the placement
     FLOATmatrix3D m;
     MakeRotationMatrix(m, pl.pl_OrientationAngle);
+
     // get row vectors, with object x flipped
     FLOAT3D vX(-m(1, 1), m(1, 2), m(1, 3));
     FLOAT3D vY(-m(2, 1), m(2, 2), m(2, 3));
@@ -75,14 +76,17 @@ static void MirrorAndStretchPlacement(CPlacement3D &pl) {
         pl.pl_PositionVector(1) = -pl.pl_PositionVector(1);
         vX = -vX;
         break;
+
       case WMT_Y:
         pl.pl_PositionVector(2) = -pl.pl_PositionVector(2);
         vY = -vY;
         break;
+
       case WMT_Z:
         pl.pl_PositionVector(3) = -pl.pl_PositionVector(3);
         vZ = -vZ;
         break;
+
       default: ASSERT(FALSE);
     }
 
@@ -96,6 +100,7 @@ static void MirrorAndStretchPlacement(CPlacement3D &pl) {
     m(1, 3) = vX(3);
     m(2, 3) = vY(3);
     m(3, 3) = vZ(3);
+
     // decompose matrix into angles
     DecomposeRotationMatrix(pl.pl_OrientationAngle, m);
   }
@@ -121,13 +126,10 @@ CEntity *CEntity::FindRemappedEntityPointer(CEntity *penOriginal) {
   return _bRemapPointersToNULLs ? NULL : penOriginal;
 }
 
-/*
- * Copy entity from another entity of same class.
- * NOTES:
- *  - Doesn't copy placement, it must be done on creation.
- *  - Entity must be initialized afterwards.
- */
+
+// Copy entity from another entity of same class
 void CEntity::Copy(CEntity &enOther, ULONG ulFlags) {
+  // NOTE: Doesn't copy placement, it must be done on creation; entity must be initialized afterwards
   BOOL bRemapPointers = ulFlags & COPY_REMAP;
   BOOL bMakePredictor = ulFlags & COPY_PREDICTOR;
 
@@ -143,6 +145,7 @@ void CEntity::Copy(CEntity &enOther, ULONG ulFlags) {
     // set flags
     en_ulFlags = (en_ulFlags & ~(ENF_PREDICTED | ENF_PREDICTABLE)) | ENF_PREDICTOR;
     enOther.en_ulFlags = (enOther.en_ulFlags & ~ENF_PREDICTOR) | ENF_PREDICTED;
+
   } else {
     en_ulFlags = (en_ulFlags & ~(ENF_PREDICTED | ENF_PREDICTABLE | ENF_PREDICTOR));
   }
@@ -151,21 +154,25 @@ void CEntity::Copy(CEntity &enOther, ULONG ulFlags) {
   if (enOther.en_RenderType == RT_BRUSH || en_RenderType == RT_FIELDBRUSH) {
     // there must be no existing brush
     ASSERT(en_pbrBrush == NULL);
+
     // create a new empty brush in the brush archive of current world
     en_pbrBrush = en_pwoWorld->wo_baBrushes.ba_abrBrushes.New();
     en_pbrBrush->br_penEntity = this;
+
     // copy the brush
     if (_bMirrorAndStretch) {
       en_pbrBrush->Copy(*enOther.en_pbrBrush, _fStretch, _wmtMirror != WMT_NONE);
     } else {
       en_pbrBrush->Copy(*enOther.en_pbrBrush, 1.0f, FALSE);
     }
-    // if this is a terrain
+
+  // if this is a terrain
   } else if (enOther.en_RenderType == RT_TERRAIN) {
-#pragma message(">> CEntity::Copy")
+    #pragma message(">> CEntity::Copy")
     ASSERT(FALSE);
-    // if this is a model
   }
+
+  // if this is a model
   if (enOther.en_RenderType == RT_MODEL || en_RenderType == RT_EDITORMODEL) {
     // if will not initialize
     if (!(ulFlags & COPY_REINIT)) {
@@ -173,14 +180,17 @@ void CEntity::Copy(CEntity &enOther, ULONG ulFlags) {
       en_pmoModelObject = new CModelObject;
       en_psiShadingInfo = new CShadingInfo;
       en_ulFlags &= ~ENF_VALIDSHADINGINFO;
+
       // copy it
       en_pmoModelObject->Copy(*enOther.en_pmoModelObject);
     }
-    // if this is ska model
+
+  // if this is ska model
   } else if (enOther.en_RenderType == RT_SKAMODEL || en_RenderType == RT_SKAEDITORMODEL) {
     en_psiShadingInfo = new CShadingInfo;
     en_ulFlags &= ~ENF_VALIDSHADINGINFO;
     en_pmiModelInstance = CreateModelInstance("Temp");
+
     // copy it
     GetModelInstance()->Copy(*enOther.GetModelInstance());
   }
@@ -191,11 +201,13 @@ void CEntity::Copy(CEntity &enOther, ULONG ulFlags) {
   } else {
     en_penParent = enOther.en_penParent;
   }
+
   // if the entity has a parent
   if (en_penParent != NULL) {
     // create relative offset
     en_plRelativeToParent = en_plPlacement;
     en_plRelativeToParent.AbsoluteToRelativeSmooth(en_penParent->en_plPlacement);
+
     // link to parent
     en_penParent->en_lhChildren.AddTail(en_lnInParent);
   }
@@ -210,6 +222,7 @@ void CEntity::Copy(CEntity &enOther, ULONG ulFlags) {
     enOther.SetPredictionPair(this);
     enOther.en_pwoWorld->wo_cenPredicted.Add(&enOther);
     enOther.en_pwoWorld->wo_cenPredictor.Add(this);
+
     // copy last positions
     if (enOther.en_plpLastPositions != NULL) {
       en_plpLastPositions = new CLastPositions(*enOther.en_plpLastPositions);
@@ -217,14 +230,11 @@ void CEntity::Copy(CEntity &enOther, ULONG ulFlags) {
   }
 }
 
-/*
- * Copy one entity property from property of another entity.
- */
+// Copy one entity property from property of another entity
 void CEntity::CopyOneProperty(CEntityProperty &epPropertySrc, CEntityProperty &epPropertyDest, CEntity &enOther, ULONG ulFlags) {
-// a helper macro
-#define COPYPROPERTY(type) \
-  (type &)ENTITYPROPERTY(this, epPropertyDest.ep_slOffset, type) \
-    = (type &)ENTITYPROPERTY(&enOther, epPropertySrc.ep_slOffset, type)
+  // a helper macro
+  #define COPYPROPERTY(type) (type &)ENTITYPROPERTY(this, epPropertyDest.ep_slOffset, type) \
+                           = (type &)ENTITYPROPERTY(&enOther, epPropertySrc.ep_slOffset, type)
 
   // depending on the property type
   switch (epPropertySrc.ep_eptType) {
@@ -233,6 +243,7 @@ void CEntity::CopyOneProperty(CEntityProperty &epPropertySrc, CEntityProperty &e
       // copy BOOL
       COPYPROPERTY(INDEX);
       break;
+
     // if it is INDEX
     case CEntityProperty::EPT_INDEX:
     case CEntityProperty::EPT_ENUM:
@@ -246,7 +257,9 @@ void CEntity::CopyOneProperty(CEntityProperty &epPropertySrc, CEntityProperty &e
       break;
 
     // [Cecil] New timer: 64-bit integer
-    case CEntityProperty::EPT_TICK: COPYPROPERTY(TICK); break;
+    case CEntityProperty::EPT_TICK:
+      COPYPROPERTY(TICK);
+      break;
 
     // if it is FLOAT
     case CEntityProperty::EPT_FLOAT:
@@ -254,27 +267,32 @@ void CEntity::CopyOneProperty(CEntityProperty &epPropertySrc, CEntityProperty &e
       // copy FLOAT
       COPYPROPERTY(FLOAT);
       break;
+
     // if it is STRING
     case CEntityProperty::EPT_STRING:
     case CEntityProperty::EPT_STRINGTRANS:
       // copy STRING
       COPYPROPERTY(CTString);
       break;
+
     // if it is FILENAME
     case CEntityProperty::EPT_FILENAME:
       // copy FILENAME
       COPYPROPERTY(CTFileName);
       break;
+
     // if it is FILENAMENODEP
     case CEntityProperty::EPT_FILENAMENODEP:
       // copy FILENAMENODEP
       COPYPROPERTY(CTFileNameNoDep);
       break;
+
     // if it is FLOATAABBOX3D
     case CEntityProperty::EPT_FLOATAABBOX3D:
       // copy FLOATAABBOX3D
       COPYPROPERTY(FLOATaabbox3D);
       break;
+
     // if it is FLOATMATRIX3D
     case CEntityProperty::EPT_FLOATMATRIX3D:
       // copy FLOATMATRIX3D
@@ -286,32 +304,38 @@ void CEntity::CopyOneProperty(CEntityProperty &epPropertySrc, CEntityProperty &e
       // copy FLOAT3D
       COPYPROPERTY(FLOAT3D);
       break;
+
     // if it is ANGLE3D
     case CEntityProperty::EPT_ANGLE3D:
       // copy ANGLE3D
       COPYPROPERTY(ANGLE3D);
       break;
+
     // if it is QUATERNION3D
     case CEntityProperty::EPT_FLOATQUAT3D:
       // copy ANGLE3D
       COPYPROPERTY(FLOATquat3D);
       break;
+
     // if it is FLOATplane3D
     case CEntityProperty::EPT_FLOATplane3D:
       // copy FLOATplane3D
       COPYPROPERTY(FLOATplane3D);
       break;
+
     // if it is ENTITYPTR
     case CEntityProperty::EPT_ENTITYPTR:
       // remap and copy the pointer
       if (ulFlags & COPY_REMAP) {
         ENTITYPROPERTY(this, epPropertyDest.ep_slOffset, CEntityPointer)
           = FindRemappedEntityPointer(ENTITYPROPERTY(&enOther, epPropertySrc.ep_slOffset, CEntityPointer));
-        // copy CEntityPointer
+
+      // copy CEntityPointer
       } else {
         COPYPROPERTY(CEntityPointer);
       }
       break;
+
     // if it is MODELOBJECT
     case CEntityProperty::EPT_MODELOBJECT:
       // copy CModelObject
@@ -319,6 +343,7 @@ void CEntity::CopyOneProperty(CEntityProperty &epPropertySrc, CEntityProperty &e
         .Copy(ENTITYPROPERTY(&enOther, epPropertySrc.ep_slOffset, CModelObject));
       // model objects are not copied, but should be initialized in Main()
       break;
+
     // if it is MODELINSTANCE
     case CEntityProperty::EPT_MODELINSTANCE:
       // copy CModelInstance
@@ -326,12 +351,14 @@ void CEntity::CopyOneProperty(CEntityProperty &epPropertySrc, CEntityProperty &e
         .Copy(ENTITYPROPERTY(&enOther, epPropertySrc.ep_slOffset, CModelInstance));
       // model objects are not copied, but should be initialized in Main()
       break;
+
     // if it is ANIMOBJECT
     case CEntityProperty::EPT_ANIMOBJECT:
       // copy CAnimObject
       ENTITYPROPERTY(this, epPropertyDest.ep_slOffset, CAnimObject)
         .Copy(ENTITYPROPERTY(&enOther, epPropertySrc.ep_slOffset, CAnimObject));
       break;
+
     // if it is SOUNDOBJECT
     case CEntityProperty::EPT_SOUNDOBJECT: {
       if (!(ulFlags & COPY_PREDICTOR)) {
@@ -341,24 +368,25 @@ void CEntity::CopyOneProperty(CEntityProperty &epPropertySrc, CEntityProperty &e
         so.so_penEntity = this;
       }
     } break;
+
     // if it is CPlacement3D
     case CEntityProperty::EPT_PLACEMENT3D:
       // copy CPlacement3D
       COPYPROPERTY(CPlacement3D);
       break;
+
     default: ASSERTALWAYS("Unknown property type");
   }
 }
 
-/*
- * Copy entity properties from another entity of same class.
- */
+// Copy entity properties from another entity of same class
 void CEntity::CopyEntityProperties(CEntity &enOther, ULONG ulFlags) {
   // other entity must have same class
   ASSERT(enOther.en_pecClass == en_pecClass);
 
   // for all classes in hierarchy of this entity
-  for (CDLLEntityClass *pdecDLLClass = en_pecClass->ec_pdecDLLClass; pdecDLLClass != NULL;
+  for (CDLLEntityClass *pdecDLLClass = en_pecClass->ec_pdecDLLClass;
+       pdecDLLClass != NULL;
        pdecDLLClass = pdecDLLClass->dec_pdecBase) {
     // for all properties
     for (INDEX iProperty = 0; iProperty < pdecDLLClass->dec_ctProperties; iProperty++) {
@@ -368,10 +396,11 @@ void CEntity::CopyEntityProperties(CEntity &enOther, ULONG ulFlags) {
   }
 }
 
-// Copy container of entities from another world to this one and select them.
+// Copy container of entities from another world to this one and select them
 void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy, CEntitySelection &senCopied,
                           const CPlacement3D &plOtherSystem) {
   INDEX ctEntities = cenToCopy.Count();
+
   if (ctEntities <= 0) {
     return;
   }
@@ -379,6 +408,7 @@ void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy
   CSetFPUPrecision FPUPrecision(FPT_24BIT);
 
   ULONG ulCopyFlags = COPY_REMAP;
+
   if (_bReinitEntitiesWhileCopying) {
     ulCopyFlags |= COPY_REINIT;
   };
@@ -396,6 +426,7 @@ void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy
 
     CEntity *penNew;
     CPlacement3D plEntity;
+
     // thansform the entity placement from the system of other world
     plEntity = enToCopy.en_plPlacement;
     plEntity.RelativeToAbsolute(plOtherSystem);
@@ -405,24 +436,25 @@ void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy
       MirrorAndStretchPlacement(plEntity);
     }
 
-    /*
-     * NOTE: We must use CreateEntity_t() overload with class name instead with class pointer
-     * because the entity class must be obtained by the target world too!
-     */
-    // try to
+    // NOTE: We must use CreateEntity_t() overload with class name instead with class pointer
+    // because the entity class must be obtained by the target world too!
+
+    // create an entity of same class as the one to copy
     try {
-      // create an entity of same class as the one to copy
       penNew = CreateEntity_t(plEntity, enToCopy.en_pecClass->GetName());
-      // if not successfull
+
+    // if not successfull
     } catch (char *strError) {
       (void)strError;
       ASSERT(FALSE); // this should not happen
+
       FatalError(TRANS("Cannot CopyEntity():\n%s"), strError);
     }
 
     // remember its remap pointer
     _aprRemaps[iRemap].pr_penOriginal = &enToCopy;
     _aprRemaps[iRemap].pr_penCopy = penNew;
+
     iRemap++;
   }}
 
@@ -435,11 +467,13 @@ void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy
 
     // copy the entity from its original
     penCopy->Copy(*penOriginal, ulCopyFlags);
+
     // if this is a brush
     if (penOriginal->en_RenderType == CEntity::RT_BRUSH || penOriginal->en_RenderType == CEntity::RT_FIELDBRUSH) {
       // update the bounding boxes of the brush
       penCopy->en_pbrBrush->CalculateBoundingBoxes();
     }
+
     if (_bMirrorAndStretch) {
       penCopy->MirrorAndStretch(_fStretch, _wmtMirror != WMT_NONE);
     }
@@ -451,12 +485,15 @@ void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy
   {FOREACHINSTATICARRAY(_aprRemaps, CPointerRemapping, itpr) {
     CEntity *penOriginal = itpr->pr_penOriginal;
     CEntity *penCopy = itpr->pr_penCopy;
+
     if (_bReinitEntitiesWhileCopying) {
       // init the new copy
       penCopy->Initialize();
+
     } else {
       penCopy->UpdateSpatialRange();
       penCopy->FindCollisionInfo();
+
       // set spatial clasification
       penCopy->FindSectorsAroundEntity();
     }
@@ -481,6 +518,7 @@ void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy
       if (pls != NULL) {
         // find all shadow maps that should have layers from this light source
         pls->FindShadowLayers(FALSE);
+
         // update shadow map on terrains
         pls->UpdateTerrains();
       }
@@ -494,11 +532,12 @@ void CWorld::CopyEntities(CWorld &woOther, CDynamicContainer<CEntity> &cenToCopy
   _aprRemaps.Clear();
 }
 
-// Copy one entity from another world into this one.
+// Copy one entity from another world into this one
 CEntity *CWorld::CopyOneEntity(CEntity &enToCopy, const CPlacement3D &plOtherSystem) {
   // prepare container for copying
   CDynamicContainer<CEntity> cenToCopy;
   cenToCopy.Add(&enToCopy);
+
   // copy the entities in container
   CEntitySelection senCopied;
   CopyEntities(*enToCopy.en_pwoWorld, cenToCopy, senCopied, plOtherSystem);
@@ -511,47 +550,49 @@ CEntity *CWorld::CopyOneEntity(CEntity &enToCopy, const CPlacement3D &plOtherSys
   return NULL;
 }
 
-/*
- * Copy all entities except one from another world to this one.
- */
+// Copy all entities except one from another world to this one
 void CWorld::CopyAllEntitiesExceptOne(CWorld &woOther, CEntity &enExcepted, const CPlacement3D &plOtherSystem) {
   // prepare container for copying, without excepted entity
   CDynamicContainer<CEntity> cenToCopy;
   cenToCopy = woOther.wo_cenEntities;
   cenToCopy.Remove(&enExcepted);
+
   // copy the entities in container and ignore the selection (we don't need it)
   CEntitySelection senCopied;
   CopyEntities(woOther, cenToCopy, senCopied, plOtherSystem);
+
   senCopied.Clear();
 }
 
-// Copy entity in world.
+// Copy entity in world
 CEntity *CWorld::CopyEntityInWorld(CEntity &enOriginal, const CPlacement3D &plOtherEntity, BOOL bWithDescendants /*= TRUE*/) {
   // new entity
   CEntity *penNew;
 
-  /*
-   * NOTE: We must use CreateEntity_t() overload with class name instead with class pointer
-   * because the entity class must be obtained by the target world too!
-   */
-  // try to
+  // NOTE: We must use CreateEntity_t() overload with class name instead with class pointer
+  // because the entity class must be obtained by the target world too!
+
+  // create an entity of same class as the one to copy
   try {
-    // create an entity of same class as the one to copy
     penNew = CreateEntity_t(plOtherEntity, enOriginal.en_pecClass->GetName());
-    // if not successfull
+
+  // if not successfull
   } catch (char *strError) {
     (void)strError;
     ASSERT(FALSE); // this should not happen
+
     FatalError(TRANS("Cannot CopyEntity():\n%s"), strError);
   }
 
   // copy the entity from its original
   penNew->Copy(enOriginal, COPY_REINIT);
+
   // if this is a brush
   if (enOriginal.en_RenderType == CEntity::RT_BRUSH || enOriginal.en_RenderType == CEntity::RT_FIELDBRUSH) {
     // update the bounding boxes of the brush
     penNew->en_pbrBrush->CalculateBoundingBoxes();
   }
+
   // init the new copy
   penNew->Initialize();
 
@@ -577,7 +618,9 @@ CEntity *CWorld::CopyEntityInWorld(CEntity &enOriginal, const CPlacement3D &plOt
       // copy it relatively to the new entity
       CPlacement3D plChild = itenChild->en_plRelativeToParent;
       plChild.RelativeToAbsoluteSmooth(penNew->en_plPlacement);
+
       CEntity *penNewChild = CopyEntityInWorld(*itenChild, plChild, TRUE);
+
       // add new child to its new parent
       penNewChild->SetParent(penNew);
     }}
@@ -586,7 +629,7 @@ CEntity *CWorld::CopyEntityInWorld(CEntity &enOriginal, const CPlacement3D &plOt
   return penNew;
 }
 
-// mirror and stretch another world into this one
+// Mirror and stretch another world into this one
 void CWorld::MirrorAndStretch(CWorld &woOriginal, FLOAT fStretch, enum WorldMirrorType wmt) {
   _bMirrorAndStretch = TRUE;
   _fStretch = fStretch;
@@ -598,11 +641,13 @@ void CWorld::MirrorAndStretch(CWorld &woOriginal, FLOAT fStretch, enum WorldMirr
   // make container for copying
   CDynamicContainer<CEntity> cenToCopy;
   cenToCopy = woOriginal.wo_cenEntities;
+
   // dummy selection for copied entities, we don't need that info
   CEntitySelection senCopied;
+
   // make mirroring placement
-  CPlacement3D plOtherSystem;
-  plOtherSystem = CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));
+  CPlacement3D plOtherSystem = CPlacement3D(FLOAT3D(0.0f, 0.0f, 0.0f), ANGLE3D(0.0f, 0.0f, 0.0f));
+
   // copy entities with mirror and stretch
   CopyEntities(woOriginal, cenToCopy, senCopied, plOtherSystem);
 
@@ -615,16 +660,19 @@ void CWorld::MirrorAndStretch(CWorld &woOriginal, FLOAT fStretch, enum WorldMirr
   _bMirrorAndStretch = FALSE;
 }
 
-// Copy entities for prediction.
+// Copy entities for prediction
 void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy) {
   INDEX ctEntities = cenToCopy.Count();
+
   if (ctEntities <= 0) {
     return;
   }
 
   extern INDEX cli_bReportPredicted;
+
   if (cli_bReportPredicted) {
     CPrintF(TRANS("Predicting %d entities:\n"), ctEntities);
+
     {FOREACHINDYNAMICCONTAINER(cenToCopy, CEntity, itenToCopy) {
       CEntity &enToCopy = *itenToCopy;
       CPrintF("  %s:%s\n", enToCopy.GetClass()->ec_pdecDLLClass->dec_strName, (const char *)enToCopy.GetName());
@@ -655,6 +703,7 @@ void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy) {
     // remember its remap pointer
     _aprRemaps[iRemap].pr_penOriginal = &enToCopy;
     _aprRemaps[iRemap].pr_penCopy = penNew;
+
     iRemap++;
     _ctPredictorEntities++;
   }}
@@ -670,11 +719,13 @@ void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy) {
 
     // copy the entity from its original
     penCopy->Copy(*penOriginal, ulCopyFlags);
+
     // if this is a brush
     if (penOriginal->en_RenderType == CEntity::RT_BRUSH || penOriginal->en_RenderType == CEntity::RT_FIELDBRUSH) {
       ASSERT(FALSE); // should we allow prediction of brushes?
+
       // update the bounding boxes of the brush
-      // penCopy->en_pbrBrush->CalculateBoundingBoxes();
+      //penCopy->en_pbrBrush->CalculateBoundingBoxes();
     }
   }}
 
@@ -688,6 +739,7 @@ void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy) {
     // copy spatial classification
     penCopy->en_fSpatialClassificationRadius = penOriginal->en_fSpatialClassificationRadius;
     penCopy->en_boxSpatialClassification = penOriginal->en_boxSpatialClassification;
+
     // copy collision info
     penCopy->CopyCollisionInfo(*penOriginal);
 
@@ -695,7 +747,7 @@ void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy) {
     {FOREACHSRCOFDST(penOriginal->en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
       // copy the link
       if (penOriginal->en_RenderType == CEntity::RT_BRUSH || penOriginal->en_RenderType == CEntity::RT_FIELDBRUSH
-          || penOriginal->en_RenderType == CEntity::RT_TERRAIN) { // brushes first
+       || penOriginal->en_RenderType == CEntity::RT_TERRAIN) { // brushes first
         AddRelationPairHeadHead(pbsc->bsc_rsEntities, penCopy->en_rdSectors);
       } else {
         AddRelationPairTailTail(pbsc->bsc_rsEntities, penCopy->en_rdSectors);
@@ -714,12 +766,13 @@ void CWorld::CopyEntitiesToPredictors(CDynamicContainer<CEntity> &cenToCopy) {
     if (penCopy->en_RenderType == CEntity::RT_BRUSH || penCopy->en_RenderType == CEntity::RT_FIELDBRUSH) {
       ASSERT(FALSE); // should we allow prediction of brushes?
       // find possible shadow layers near affected area
-      // FindShadowLayers(penCopy->en_pbrBrush->GetFirstMip()->bm_boxBoundingBox);
+      //FindShadowLayers(penCopy->en_pbrBrush->GetFirstMip()->bm_boxBoundingBox);
     }
 
     // if this is a light source
     {
       CLightSource *pls = penCopy->GetLightSource();
+
       if (pls != NULL) {
         // find all shadow maps that should have layers from this light source
         pls->FindShadowLayers(FALSE);

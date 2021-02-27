@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #pragma once
 #endif
 
-#include <Engine/Base/Anim.h>
+#include <Engine/Anim/AnimData.h>
 
 #define TYPE                CAnimData
 #define CStock_TYPE         CStock_CAnimData

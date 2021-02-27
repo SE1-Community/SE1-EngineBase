@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 #include <Engine/Base/Stream.h>
 #include <Engine/Base/FileName.h>
 #include <Engine/Base/Unzip.h>
@@ -43,6 +43,7 @@ void FillDirList_internal(const CTFileName &fnmBasePath, CDynamicStackArray<CTFi
   // add the directory to list of directories to search
   CListHead lhDirs;
   CDirToRead *pdrFirst = new CDirToRead;
+
   pdrFirst->dr_strDir = fnmDir;
   lhDirs.AddTail(pdrFirst->dr_lnNode);
 
@@ -51,6 +52,7 @@ void FillDirList_internal(const CTFileName &fnmBasePath, CDynamicStackArray<CTFi
     // take the first one
     CDirToRead *pdr = LIST_HEAD(lhDirs, CDirToRead, dr_lnNode);
     CTFileName fnmDir = pdr->dr_strDir;
+
     delete pdr;
 
     // if the dir is not allowed
@@ -84,7 +86,8 @@ void FillDirList_internal(const CTFileName &fnmBasePath, CDynamicStackArray<CTFi
           pdrNew->dr_strDir = fnm + "\\";
           lhDirs.AddTail(pdrNew->dr_lnNode);
         }
-        // if it matches the pattern
+
+      // if it matches the pattern
       } else if (strPattern == "" || fnm.Matches(strPattern)) {
         // add that file
         afnm.Push() = fnm;
@@ -93,9 +96,8 @@ void FillDirList_internal(const CTFileName &fnmBasePath, CDynamicStackArray<CTFi
   }
 }
 
-// make a list of all files in a directory
-ENGINE_API void MakeDirList(CDynamicStackArray<CTFileName> &afnmDir, const CTFileName &fnmDir, const CTString &strPattern,
-                            ULONG ulFlags) {
+// Make a list of all files in a directory
+ENGINE_API void MakeDirList(CDynamicStackArray<CTFileName> &afnmDir, const CTFileName &fnmDir, const CTString &strPattern, ULONG ulFlags) {
   afnmDir.PopAll();
   BOOL bRecursive = ulFlags & DLI_RECURSIVE;
   BOOL bSearchCD = ulFlags & DLI_SEARCHCD;
@@ -105,12 +107,16 @@ ENGINE_API void MakeDirList(CDynamicStackArray<CTFileName> &afnmDir, const CTFil
 
   if (_fnmMod != "") {
     FillDirList_internal(_fnmApplicationPath, afnm, fnmDir, strPattern, bRecursive, &_afnmBaseBrowseInc, &_afnmBaseBrowseExc);
+
     if (bSearchCD) {
       FillDirList_internal(_fnmCDPath, afnm, fnmDir, strPattern, bRecursive, &_afnmBaseBrowseInc, &_afnmBaseBrowseExc);
     }
+
     FillDirList_internal(_fnmApplicationPath + _fnmMod, afnm, fnmDir, strPattern, bRecursive, NULL, NULL);
+
   } else {
     FillDirList_internal(_fnmApplicationPath, afnm, fnmDir, strPattern, bRecursive, NULL, NULL);
+
     if (bSearchCD) {
       FillDirList_internal(_fnmCDPath, afnm, fnmDir, strPattern, bRecursive, NULL, NULL);
     }
@@ -119,6 +125,7 @@ ENGINE_API void MakeDirList(CDynamicStackArray<CTFileName> &afnmDir, const CTFil
   // for each file in zip archives
   CTString strDirPattern = fnmDir;
   INDEX ctFilesInZips = UNZIPGetFileCount();
+
   for (INDEX iFileInZip = 0; iFileInZip < ctFilesInZips; iFileInZip++) {
     const CTFileName &fnm = UNZIPGetFileAtIndex(iFileInZip);
 
@@ -127,6 +134,7 @@ ENGINE_API void MakeDirList(CDynamicStackArray<CTFileName> &afnmDir, const CTFil
       if (!fnm.HasPrefix(strDirPattern)) {
         continue;
       }
+
     } else {
       if (fnm.FileDir() != fnmDir) {
         continue;
@@ -163,6 +171,7 @@ ENGINE_API void MakeDirList(CDynamicStackArray<CTFileName> &afnmDir, const CTFil
 
   // for each file
   INDEX ctFiles = afnm.Count();
+
   for (INDEX iFile = 0; iFile < ctFiles; iFile++) {
     // if not same as last one
     if (iFile == 0 || afnm[iFile] != afnm[iFile - 1]) {

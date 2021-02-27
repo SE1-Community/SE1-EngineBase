@@ -119,11 +119,20 @@
     <Filter Include="Header Files\GameAgent Headers">
       <UniqueIdentifier>{213d6870-6a86-43c8-b4be-01096c1ccddf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Anim">
+      <UniqueIdentifier>{06b4f534-ef5a-4f9e-a99c-afd5566083f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Anim Headers">
+      <UniqueIdentifier>{10a3f43b-67a0-4ca0-a549-61f5fa64057c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities Headers\BaseClasses Headers">
+      <UniqueIdentifier>{3d0354c1-5041-4d9c-b4bc-ddeb6130477e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities\BaseClasses">
+      <UniqueIdentifier>{0013ef1f-1ed4-460c-aa30-e28ece33c2e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Base\Anim.cpp">
-      <Filter>Source Files\Base</Filter>
-    </ClCompile>
     <ClCompile Include="Base\Changeable.cpp">
       <Filter>Source Files\Base</Filter>
     </ClCompile>
@@ -565,9 +574,6 @@
     <ClCompile Include="Rendering\SelectOnRender.cpp">
       <Filter>Source Files\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Entities\Entity.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="Entities\EntityClass.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
@@ -751,11 +757,26 @@
     <ClCompile Include="GameAgent\GameAgent.cpp">
       <Filter>Source Files\GameAgent</Filter>
     </ClCompile>
+    <ClCompile Include="Anim\Anim.cpp">
+      <Filter>Source Files\Anim</Filter>
+    </ClCompile>
+    <ClCompile Include="Anim\AnimData.cpp">
+      <Filter>Source Files\Anim</Filter>
+    </ClCompile>
+    <ClCompile Include="Anim\AnimObject.cpp">
+      <Filter>Source Files\Anim</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\BaseClasses\LiveEntity.cpp">
+      <Filter>Source Files\Entities\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\BaseClasses\RationalEntity.cpp">
+      <Filter>Source Files\Entities\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\BaseClasses\Entity.cpp">
+      <Filter>Source Files\Entities\BaseClasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Base\Anim.h">
-      <Filter>Header Files\Base Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Base\Assert.h">
       <Filter>Header Files\Base Headers</Filter>
     </ClInclude>
@@ -1134,9 +1155,6 @@
     <ClInclude Include="Rendering\RenderProfile.h">
       <Filter>Header Files\Rendering Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Entities\Entity.h">
-      <Filter>Header Files\Entities Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Entities\EntityClass.h">
       <Filter>Header Files\Entities Headers</Filter>
     </ClInclude>
@@ -1371,6 +1389,24 @@
     <ClInclude Include="Base\TimerTick.h">
       <Filter>Header Files\Base Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Anim\Anim_internal.h">
+      <Filter>Header Files\Anim Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Anim\AnimData.h">
+      <Filter>Header Files\Anim Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Anim\AnimObject.h">
+      <Filter>Header Files\Anim Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\BaseClasses\Entity.h">
+      <Filter>Header Files\Entities Headers\BaseClasses Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\BaseClasses\LiveEntity.h">
+      <Filter>Header Files\Entities Headers\BaseClasses Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\BaseClasses\RationalEntity.h">
+      <Filter>Header Files\Entities Headers\BaseClasses Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Base\CTString.inl">
@@ -1429,5 +1465,10 @@
     </CustomBuild>
     <CustomBuild Include="ReadMe.txt" />
     <CustomBuild Include="..\..\Flesh\Help\ShellSymbols.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Entities\BaseClasses\Entity.inl">
+      <Filter>Header Files\Entities Headers\BaseClasses Headers</Filter>
+    </None>
   </ItemGroup>
 </Project>

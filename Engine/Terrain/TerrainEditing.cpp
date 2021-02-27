@@ -13,12 +13,12 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 #include <Engine/Terrain/Terrain.h>
 #include <Engine/Terrain/TerrainRender.h>
 #include <Engine/Terrain/TerrainEditing.h>
 #include <Engine/Terrain/TerrainMisc.h>
-#include <Engine/Entities/Entity.h>
+#include <Engine/Entities/BaseClasses/Entity.h>
 
 extern FLOAT3D _vViewerAbs; // Viewer pos
 extern CStaticStackArray<GFXColor> _aiExtColors;

@@ -20,17 +20,19 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Network/CommunicationInterface.h>
 
 static void (*_pLoadingHook_t)(CProgressHookInfo *pgli) = NULL; // hook for loading/connecting
-static CProgressHookInfo _phiLoadingInfo;                       // info passed to the hook
+static CProgressHookInfo _phiLoadingInfo; // info passed to the hook
+
 BOOL _bRunNetUpdates = FALSE;
 static CTimerValue tvLastUpdate;
 static BOOL bTimeInitialized = FALSE;
 extern FLOAT net_fSendRetryWait;
 
-// set hook for loading/connecting
+// Set hook for loading/connecting
 void SetProgressHook(void (*pHook)(CProgressHookInfo *pgli)) {
   _pLoadingHook_t = pHook;
 }
-// call loading/connecting hook
+
+// Call loading/connecting hook
 void SetProgressDescription(const CTString &strDescription) {
   _phiLoadingInfo.phi_strDescription = strDescription;
 }
@@ -44,15 +46,19 @@ void CallProgressHook_t(FLOAT fCompleted) {
       tvLastUpdate = _pTimer->GetHighPrecisionTimer();
       bTimeInitialized = TRUE;
     }
+
     CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
+
     if ((tvNow - tvLastUpdate) > CTimerValue(net_fSendRetryWait * 1.1)) {
       if (_pNetwork->ga_IsServer) {
         // handle server messages
         _cmiComm.Server_Update();
+
       } else {
         // handle client messages
         _cmiComm.Client_Update();
       }
+
       tvLastUpdate = _pTimer->GetHighPrecisionTimer();
     }
   }

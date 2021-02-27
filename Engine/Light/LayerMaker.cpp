@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Rendering/Render_internal.h>
 
@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/ListIterator.inl>
 #include <Engine/Graphics/Color.h>
 #include <Engine/World/World.h>
-#include <Engine/Entities/Entity.h>
+#include <Engine/Entities/BaseClasses/Entity.h>
 #include <Engine/Templates/StaticArray.cpp>
 #include <Engine/Graphics/GfxLibrary.h>
 #include <Engine/Math/Clipping.inl>

@@ -13,60 +13,48 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/Updateable.h>
 #include <Engine/Base/UpdateableRT.h>
 #include <Engine/Base/Timer.h>
 
-/*
- * Constructor.
- */
+// Constructor
 CUpdateable::CUpdateable(void) {
   ud_llLastUpdate = -1;
 }
 
-/*
- * Mark that the object has been updated.
- */
+// Mark that the object has been updated
 void CUpdateable::MarkUpdated(void) {
   ud_llLastUpdate = _pTimer->GetTimeTick();
 }
 
-/*
- * Get time when last updated.
- */
+// Get time when last updated
 TICK CUpdateable::LastUpdateTime(void) const {
   return ud_llLastUpdate;
 }
 
-// Mark that the object has become invalid in spite of its time stamp.
+// Mark that the object has become invalid in spite of its time stamp
 void CUpdateable::Invalidate(void) {
   ud_llLastUpdate = -1;
 }
 
-/*
- * Constructor.
- */
+// Constructor
 CUpdateableRT::CUpdateableRT(void) {
   ud_llLastUpdate = -1;
 }
 
-/*
- * Mark that the object has been updated.
- */
+// Mark that the object has been updated
 void CUpdateableRT::MarkUpdated(void) {
   ud_llLastUpdate = _pTimer->GetTimeTick();
 }
 
-/*
- * Get time when last updated.
- */
+// Get time when last updated
 TICK CUpdateableRT::LastUpdateTime(void) const {
   return ud_llLastUpdate;
 }
 
-// Mark that the object has become invalid in spite of its time stamp.
+// Mark that the object has become invalid in spite of its time stamp
 void CUpdateableRT::Invalidate(void) {
   ud_llLastUpdate = -1;
 }

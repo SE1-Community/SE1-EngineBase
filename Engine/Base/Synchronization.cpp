@@ -73,7 +73,7 @@ INDEX OPTEX_Enter(POPTEX poptex) {
     poptex->dwThreadId = dwThreadId;
     poptex->lRecurseCount = 1;
 
-    // if already owned
+  // if already owned
   } else {
     // if owned by this thread
     if (poptex->dwThreadId == dwThreadId) {
@@ -81,7 +81,7 @@ INDEX OPTEX_Enter(POPTEX poptex) {
       poptex->lRecurseCount++;
       ASSERT(poptex->lRecurseCount > 1);
 
-      // if owned by some other thread
+    // if owned by some other thread
     } else {
       // wait for the owning thread to release the OPTEX
       DWORD dwRet = WaitForSingleObject(poptex->hEvent, INFINITE);
@@ -94,8 +94,10 @@ INDEX OPTEX_Enter(POPTEX poptex) {
       poptex->lRecurseCount = 1;
     }
   }
+
   ASSERT(poptex->lRecurseCount >= 1);
   ASSERT(poptex->lLockCount >= 0);
+
   return poptex->lRecurseCount;
 }
 
@@ -114,10 +116,11 @@ INDEX OPTEX_TryToEnter(POPTEX poptex) {
     ASSERT(poptex->lRecurseCount == 0);
     poptex->dwThreadId = dwThreadId;
     poptex->lRecurseCount = 1;
+
     // lock succeeded
     return poptex->lRecurseCount;
 
-    // if already owned
+  // if already owned
   } else {
     // if owned by this thread
     if (poptex->dwThreadId == dwThreadId) {
@@ -128,7 +131,7 @@ INDEX OPTEX_TryToEnter(POPTEX poptex) {
       // lock succeeded
       return poptex->lRecurseCount;
 
-      // if owned by some other thread
+    // if owned by some other thread
     } else {
       // give up taking it
       INDEX ctLocked = InterlockedDecrement(&poptex->lLockCount);
@@ -161,13 +164,15 @@ INDEX OPTEX_Leave(POPTEX poptex) {
     InterlockedDecrement(&poptex->lLockCount);
     ASSERT(poptex->lLockCount >= -1);
 
-    // if no more multiple locks from this thread
+  // if no more multiple locks from this thread
   } else {
     // mark that this thread doesn't own it
     poptex->dwThreadId = 0;
+
     // decrement the lock count
     INDEX ctLocked = InterlockedDecrement(&poptex->lLockCount);
     ASSERT(poptex->lLockCount >= -1);
+
     // if some threads are waiting for it
     if (ctLocked >= 0) {
       // wake one of them
@@ -177,10 +182,11 @@ INDEX OPTEX_Leave(POPTEX poptex) {
 
   ASSERT(poptex->lRecurseCount >= 0);
   ASSERT(poptex->lLockCount >= -1);
+
   return ctResult;
 }
 
-// these are just wrapper classes for locking/unlocking
+// These are just wrapper classes for locking/unlocking
 
 CTCriticalSection::CTCriticalSection(void) {
   // index must be set before using the mutex
@@ -188,16 +194,20 @@ CTCriticalSection::CTCriticalSection(void) {
   cs_pvObject = new OPTEX;
   OPTEX_Initialize((OPTEX *)cs_pvObject);
 }
+
 CTCriticalSection::~CTCriticalSection(void) {
   OPTEX_Delete((OPTEX *)cs_pvObject);
   delete (OPTEX *)cs_pvObject;
 }
+
 INDEX CTCriticalSection::Lock(void) {
   return OPTEX_Enter((OPTEX *)cs_pvObject);
 }
+
 INDEX CTCriticalSection::TryToLock(void) {
   return OPTEX_TryToEnter((OPTEX *)cs_pvObject);
 }
+
 INDEX CTCriticalSection::Unlock(void) {
   return OPTEX_Leave((OPTEX *)cs_pvObject);
 }
@@ -206,13 +216,16 @@ CTSingleLock::CTSingleLock(CTCriticalSection *pcs, BOOL bLock) : sl_cs(*pcs) {
   // initially not locked
   sl_bLocked = FALSE;
   sl_iLastLockedIndex = -2;
+
   // critical section must have index assigned
   ASSERT(sl_cs.cs_iIndex >= 1 || sl_cs.cs_iIndex == -1);
+
   // if should lock immediately
   if (bLock) {
     Lock();
   }
 }
+
 CTSingleLock::~CTSingleLock(void) {
   // if locked
   if (sl_bLocked) {
@@ -220,6 +233,7 @@ CTSingleLock::~CTSingleLock(void) {
     Unlock();
   }
 }
+
 void CTSingleLock::Lock(void) {
   // must not be locked
   ASSERT(!sl_bLocked);
@@ -229,6 +243,7 @@ void CTSingleLock::Lock(void) {
   if (!sl_bLocked) {
     // lock
     INDEX ctLocks = sl_cs.Lock();
+
     // if this mutex was not locked already
     if (ctLocks == 1) {
       // check that locking in given order
@@ -239,16 +254,19 @@ void CTSingleLock::Lock(void) {
       }
     }
   }
+
   sl_bLocked = TRUE;
 }
 
 BOOL CTSingleLock::TryToLock(void) {
   // must not be locked
   ASSERT(!sl_bLocked);
+
   // if not locked
   if (!sl_bLocked) {
     // if can lock
     INDEX ctLocks = sl_cs.TryToLock();
+
     if (ctLocks >= 1) {
       sl_bLocked = TRUE;
 
@@ -263,8 +281,10 @@ BOOL CTSingleLock::TryToLock(void) {
       }
     }
   }
+
   return sl_bLocked;
 }
+
 BOOL CTSingleLock::IsLocked(void) {
   return sl_bLocked;
 }
@@ -272,10 +292,12 @@ BOOL CTSingleLock::IsLocked(void) {
 void CTSingleLock::Unlock(void) {
   // must be locked
   ASSERT(sl_bLocked);
+
   // if locked
   if (sl_bLocked) {
     // unlock
     INDEX ctLocks = sl_cs.Unlock();
+
     // if unlocked completely
     if (ctLocks == 0) {
       // check that unlocking in exact reverse order
@@ -286,5 +308,6 @@ void CTSingleLock::Unlock(void) {
       }
     }
   }
+
   sl_bLocked = FALSE;
 }

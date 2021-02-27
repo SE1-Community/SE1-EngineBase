@@ -17,7 +17,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Engine.h>
 #include <Engine/CurrentVersion.h>
-#include <Engine/Entities/Entity.h>
+#include <Engine/Entities/BaseClasses/Entity.h>
 #include <Engine/Base/Shell.h>
 #include <Engine/Base/Console.h>
 #include <Engine/Base/CTString.h>

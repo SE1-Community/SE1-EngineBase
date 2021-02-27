@@ -189,12 +189,9 @@ copy Release\$(TargetName).lib $(SolutionDir)..\Bin\ &gt;nul</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Base\Anim.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdH.h</PrecompiledHeaderFile>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdH.h</PrecompiledHeaderFile>
-    </ClCompile>
+    <ClCompile Include="Anim\Anim.cpp" />
+    <ClCompile Include="Anim\AnimData.cpp" />
+    <ClCompile Include="Anim\AnimObject.cpp" />
     <ClCompile Include="Base\Changeable.cpp" />
     <ClCompile Include="Base\Console.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
@@ -295,6 +292,9 @@ copy Release\$(TargetName).lib $(SolutionDir)..\Bin\ &gt;nul</Command>
     <ClCompile Include="Base\Translation.cpp" />
     <ClCompile Include="Base\Unzip.cpp" />
     <ClCompile Include="Base\Updateable.cpp" />
+    <ClCompile Include="Entities\BaseClasses\Entity.cpp" />
+    <ClCompile Include="Entities\BaseClasses\LiveEntity.cpp" />
+    <ClCompile Include="Entities\BaseClasses\RationalEntity.cpp" />
     <ClCompile Include="GameAgent\GameAgent.cpp" />
     <ClCompile Include="Math\Float.cpp" />
     <ClCompile Include="Math\Functions.cpp" />
@@ -537,7 +537,6 @@ copy Release\$(TargetName).lib $(SolutionDir)..\Bin\ &gt;nul</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Rendering\SelectOnRender.cpp" />
-    <ClCompile Include="Entities\Entity.cpp" />
     <ClCompile Include="Entities\EntityClass.cpp" />
     <ClCompile Include="Entities\EntityCollision.cpp" />
     <ClCompile Include="Entities\EntityCopying.cpp" />
@@ -681,7 +680,9 @@ copy Release\$(TargetName).lib $(SolutionDir)..\Bin\ &gt;nul</Command>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Base\Anim.h" />
+    <ClInclude Include="Anim\AnimData.h" />
+    <ClInclude Include="Anim\AnimObject.h" />
+    <ClInclude Include="Anim\Anim_internal.h" />
     <ClInclude Include="Base\Assert.h" />
     <ClInclude Include="Base\Base.h" />
     <ClInclude Include="Base\Changeable.h" />
@@ -723,6 +724,9 @@ copy Release\$(TargetName).lib $(SolutionDir)..\Bin\ &gt;nul</Command>
     <ClInclude Include="Base\Unzip.h" />
     <ClInclude Include="Base\Updateable.h" />
     <ClInclude Include="Base\UpdateableRT.h" />
+    <ClInclude Include="Entities\BaseClasses\Entity.h" />
+    <ClInclude Include="Entities\BaseClasses\LiveEntity.h" />
+    <ClInclude Include="Entities\BaseClasses\RationalEntity.h" />
     <ClInclude Include="GameAgent\GameAgent.h" />
     <ClInclude Include="GameAgent\MSLegacy.h" />
     <ClInclude Include="Math\AABBox.h" />
@@ -812,7 +816,6 @@ copy Release\$(TargetName).lib $(SolutionDir)..\Bin\ &gt;nul</Command>
     <ClInclude Include="Rendering\Render.h" />
     <ClInclude Include="Rendering\Render_internal.h" />
     <ClInclude Include="Rendering\RenderProfile.h" />
-    <ClInclude Include="Entities\Entity.h" />
     <ClInclude Include="Entities\EntityClass.h" />
     <ClInclude Include="Entities\EntityCollision.h" />
     <ClInclude Include="Entities\EntityEvent.h" />
@@ -1021,6 +1024,9 @@ ecc Engine/Classes/%(Filename).es </Command>
     </CustomBuild>
     <CustomBuild Include="ReadMe.txt" />
     <CustomBuild Include="..\..\Flesh\Help\ShellSymbols.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Entities\BaseClasses\Entity.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

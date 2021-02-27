@@ -20,6 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Timer.h>
 #include <Engine/Templates/StaticArray.cpp>
 
+// Copy constructor
 CLastPositions::CLastPositions(const CLastPositions &lpOrg) {
   lp_avPositions = lpOrg.lp_avPositions;
   lp_iLast = lpOrg.lp_iLast;
@@ -27,22 +28,26 @@ CLastPositions::CLastPositions(const CLastPositions &lpOrg) {
   lp_llLastAdded = lpOrg.lp_llLastAdded;
 }
 
-// add a new position
+// Add a new position
 void CLastPositions::AddPosition(const FLOAT3D &vPos) {
   lp_iLast++;
+
   if (lp_iLast >= lp_avPositions.Count()) {
     lp_iLast = 0;
   }
+
   lp_ctUsed = Min(INDEX(lp_ctUsed + 1), lp_avPositions.Count());
   lp_avPositions[lp_iLast] = vPos;
   lp_llLastAdded = _pTimer->GetGameTick();
 }
 
-// get a position
+// Get a position
 const FLOAT3D &CLastPositions::GetPosition(INDEX iPre) {
   INDEX iPos = lp_iLast - iPre;
+
   if (iPos < 0) {
     iPos += lp_avPositions.Count();
   }
+
   return lp_avPositions[iPos];
 }

@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/Shell.h>
 #include <Engine/Base/Shell_internal.h>
@@ -25,10 +25,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/DynamicArray.cpp>
 #include <Engine/Templates/DynamicStackArray.cpp>
 
-// all types are allocated here
+// All types are allocated here
 CAllocationArray<ShellType> _shell_ast;
 
-// make a new type
+// Make a new type
 INDEX ShellTypeNew(void) {
   INDEX ist = _shell_ast.Allocate();
   ShellType &st = _shell_ast[ist];
@@ -44,7 +44,7 @@ INDEX ShellTypeNew(void) {
   return ist;
 }
 
-// make a new type for a basic type
+// Make a new type for a basic type
 INDEX ShellTypeNewVoid(void) {
   INDEX ist = ShellTypeNew();
   ShellType &st = _shell_ast[ist];
@@ -72,6 +72,7 @@ INDEX ShellTypeNewString(void) {
   st.st_sttType = STT_STRING;
   return ist;
 }
+
 INDEX ShellTypeNewByType(enum ShellTypeType stt) {
   switch (stt) {
     default: ASSERT(FALSE);
@@ -82,7 +83,7 @@ INDEX ShellTypeNewByType(enum ShellTypeType stt) {
   }
 }
 
-// make a new pointer type
+// Make a new pointer type
 INDEX ShellTypeNewPointer(INDEX istBaseType) {
   INDEX ist = ShellTypeNew();
   ShellType &st = _shell_ast[ist];
@@ -91,7 +92,7 @@ INDEX ShellTypeNewPointer(INDEX istBaseType) {
   return ist;
 }
 
-// make a new array type
+// Make a new array type
 INDEX ShellTypeNewArray(INDEX istMemberType, int iArraySize) {
   INDEX ist = ShellTypeNew();
   ShellType &st = _shell_ast[ist];
@@ -101,7 +102,7 @@ INDEX ShellTypeNewArray(INDEX istMemberType, int iArraySize) {
   return ist;
 }
 
-// make a new function type
+// Make a new function type
 INDEX ShellTypeNewFunction(INDEX istReturnType) {
   INDEX ist = ShellTypeNew();
   ShellType &st = _shell_ast[ist];
@@ -112,7 +113,7 @@ INDEX ShellTypeNewFunction(INDEX istReturnType) {
   return ist;
 }
 
-// add an argument to a function from the left
+// Add an argument to a function from the left
 void ShellTypeAddFunctionArgument(INDEX istFunction, INDEX istArgument) {
   ShellType &stFunction = _shell_ast[istFunction];
   ShellType &stArgument = _shell_ast[istArgument];
@@ -126,9 +127,8 @@ void ShellTypeAddFunctionArgument(INDEX istFunction, INDEX istArgument) {
   stFunction.st_istFirstArgument = istArgument;
 }
 
-// This mess is neccessary to prevent code optimizer to create aliases
-// to _shell_ast array across recursive function calls, since the array can be
-// reallocated!
+// This mess is neccessary to prevent code optimizer to create aliases to _shell_ast array
+// across recursive function calls, since the array can be reallocated!
 // The problem is in the evaluation order created by VisualC6 optimizer.
 #pragma optimize("", off)
 #pragma optimize("w", off)
@@ -136,7 +136,7 @@ static volatile INDEX iTmp;
 #define stDuplicate _shell_ast[istDuplicate]
 #define stOriginal  _shell_ast[istOriginal]
 
-// make a copy of a type tree
+// Make a copy of a type tree
 INDEX ShellTypeMakeDuplicate(INDEX istOriginal) {
   INDEX istDuplicate = ShellTypeNew();
 
@@ -168,9 +168,11 @@ INDEX ShellTypeMakeDuplicate(INDEX istOriginal) {
 
       // for each argument (backwards)
       INDEX istArgOrg, istArgDup;
+
       for (istArgOrg = stOriginal.st_istLastArgument; istArgOrg != -1; istArgOrg = _shell_ast[istArgOrg].st_istPrevInArguments) {
         // copy it
         istArgDup = ShellTypeMakeDuplicate(istArgOrg);
+
         // add it
         ShellTypeAddFunctionArgument(istDuplicate, istArgDup);
       }
@@ -179,6 +181,7 @@ INDEX ShellTypeMakeDuplicate(INDEX istOriginal) {
 
   return istDuplicate;
 }
+
 #undef stDuplicate
 #undef stOriginal
 #pragma optimize("", on)
@@ -189,6 +192,7 @@ BOOL ShellTypeIsSame(INDEX ist1, INDEX ist2) {
     // same
     return TRUE;
   }
+
   // if only one is end of list
   if (ist1 == -1 || ist2 == -1) {
     // different
@@ -201,26 +205,28 @@ BOOL ShellTypeIsSame(INDEX ist1, INDEX ist2) {
 
   // if types or base types or sizes don't match
   if (st1.st_sttType != st2.st_sttType || !ShellTypeIsSame(st1.st_istBaseType, st2.st_istBaseType)
-      || st1.st_ctArraySize != st2.st_ctArraySize) {
+   || st1.st_ctArraySize != st2.st_ctArraySize) {
     // different
     return FALSE;
   }
 
   // match arguments recursively
   return ShellTypeIsSame(st1.st_istFirstArgument, st2.st_istFirstArgument)
-         && ShellTypeIsSame(st1.st_istNextInArguments, st2.st_istNextInArguments);
+      && ShellTypeIsSame(st1.st_istNextInArguments, st2.st_istNextInArguments);
 }
 
-// delete an entire type tree
+// Delete an entire type tree
 void ShellTypeDelete(INDEX istToDelete) {
   ShellType &st = _shell_ast[istToDelete];
 
   if (st.st_istBaseType > 0) {
     ShellTypeDelete(st.st_istBaseType);
   }
+
   if (st.st_istFirstArgument > 0) {
     ShellTypeDelete(st.st_istFirstArgument);
   }
+
   if (st.st_istNextInArguments > 0) {
     ShellTypeDelete(st.st_istNextInArguments);
   }

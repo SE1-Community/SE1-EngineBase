@@ -19,7 +19,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #pragma once
 #endif
 
-#include <Engine/Entities/Entity.h>
+#include <Engine/Entities/BaseClasses/Entity.h>
+#include <Engine/Entities/BaseClasses/LiveEntity.h>
+#include <Engine/Entities/BaseClasses/RationalEntity.h>
+
 #include <Engine/Entities/EntityProperties.h>
 #include <Engine/Base/CTString.h>
 #include <Engine/Base/FileName.h>

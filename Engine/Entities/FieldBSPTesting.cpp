@@ -13,9 +13,9 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
-#include <Engine/Entities/Entity.h>
+#include <Engine/Entities/BaseClasses/Entity.h>
 #include <Engine/Entities/EntityCollision.h>
 #include <Engine/Base/Console.h>
 #include <Engine/Base/ListIterator.inl>
@@ -41,6 +41,7 @@ static BOOL EntityIsInside(CEntity *pen) {
     // make oriented bounding box of the entity
     const FLOAT3D &v = pen->en_plPlacement.pl_PositionVector;
     const FLOATmatrix3D &m = pen->en_mRotation;
+
     FLOATobbox3D boxEntity = FLOATobbox3D(pen->en_boxSpatialClassification, v, m);
     DOUBLEobbox3D boxdEntity = FLOATtoDOUBLE(boxEntity);
 
@@ -48,9 +49,11 @@ static BOOL EntityIsInside(CEntity *pen) {
     if (boxEntity.HasContactWith(FLOATobbox3D(_pbsc->bsc_boxBoundingBox)) && _pbsc->bsc_bspBSPTree.TestBox(boxdEntity) <= 0) {
       // for each collision sphere
       CStaticArray<CMovingSphere> &absSpheres = pen->en_pciCollisionInfo->ci_absSpheres;
+
       for (INDEX iSphere = 0; iSphere < absSpheres.Count(); iSphere++) {
         CMovingSphere &ms = absSpheres[iSphere];
         ms.ms_vRelativeCenter0 = ms.ms_vCenter * m + v;
+
         // if the sphere is in the sector
         if (_pbsc->bsc_bspBSPTree.TestSphere(FLOATtoDOUBLE(ms.ms_vRelativeCenter0), ms.ms_fR) <= 0) {
           return TRUE;
@@ -63,7 +66,7 @@ static BOOL EntityIsInside(CEntity *pen) {
   return FALSE;
 }
 
-// find first entity touching a field (this entity must be a field brush)
+// Find first entity touching a field (this entity must be a field brush)
 CEntity *CEntity::TouchingEntity(BOOL (*ConsiderEntity)(CEntity *), CEntity *penHintMaybeInside) {
   // if not a field brush
   if (en_RenderType != RT_FIELDBRUSH) {
@@ -74,6 +77,7 @@ CEntity *CEntity::TouchingEntity(BOOL (*ConsiderEntity)(CEntity *), CEntity *pen
 
   // remember the entity and its first sector
   penField = this;
+
   CBrushMip *pbm = en_pbrBrush->GetBrushMipByDistance(0.0f);
   _pbsc = NULL;
 
@@ -99,29 +103,35 @@ CEntity *CEntity::TouchingEntity(BOOL (*ConsiderEntity)(CEntity *), CEntity *pen
   }
 
   CEntity *penTouched = NULL;
+
   // no entities active initially
   _apenActive.PopAll();
+
   // for each zoning sector that this entity is in
   {FOREACHSRCOFDST(en_rdSectors, CBrushSector, bsc_rsEntities, pbsc)
     // for all movable model entities that should be considered in the sector
     {FOREACHDSTOFSRC(pbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
-      if (!(pen->en_ulPhysicsFlags & EPF_MOVABLE) || (pen->en_RenderType != RT_MODEL && pen->en_RenderType != RT_EDITORMODEL)
-          || (!ConsiderEntity(pen))) {
+      if (!(pen->en_ulPhysicsFlags & EPF_MOVABLE)
+       || (pen->en_RenderType != RT_MODEL && pen->en_RenderType != RT_EDITORMODEL) || (!ConsiderEntity(pen))) {
         continue;
       }
+
       // if already active
       if (pen->en_ulFlags & ENF_FOUNDINGRIDSEARCH) {
         // skip it
         continue;
       }
+
       // if it is inside
       if (EntityIsInside(pen)) {
         // stop the search
         penTouched = pen;
         break;
       }
+
       // add it to active
       _apenActive.Push() = pen;
+
       pen->en_ulFlags |= ENF_FOUNDINGRIDSEARCH;
     ENDFOR}
   ENDFOR}

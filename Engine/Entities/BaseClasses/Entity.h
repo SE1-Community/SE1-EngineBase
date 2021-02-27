@@ -56,7 +56,7 @@ class CForceStrength {
 
 // Flags determining whether some entity is active in some game type or difficulty level
 
-// difficulty levels
+// Difficulty levels
 #define SPF_EASY    (1L << 0) // active at easy difficulty
 #define SPF_NORMAL  (1L << 1) // active at normal difficulty
 #define SPF_HARD    (1L << 2) // active at hard difficulty
@@ -340,8 +340,10 @@ class ENGINE_API CEntity {
     // Initialize for beeing a field brush object
     void InitAsFieldBrush(void);
 
-    // Switch to Model/Editor model
+    // Switch to model
     void SwitchToModel(void);
+
+    // Switch to editor model
     void SwitchToEditorModel(void);
 
     // Set all properties to default values - overridden by ECC
@@ -526,7 +528,7 @@ class ENGINE_API CEntity {
     virtual BOOL HandleEvent(const CEntityEvent &ee);
 
     // Set new entity placement
-    void SetPlacement(const CPlacement3D &plNew); // use this only in WEd
+    void SetPlacement(const CPlacement3D &plNew); // use this only in WED
     void FallDownToFloor(void);
     
     // Get entity placement in the world
@@ -856,196 +858,12 @@ BOOL ENGINE_API IsOfSameClass(CEntity *pen1, CEntity *pen2);
 // Check if entity is of given class or derived from
 BOOL ENGINE_API IsDerivedFromClass(CEntity *pen, const char *pstrClassName);
 
-// All standard smart pointer functions are here as inlines
-inline CEntityPointer::CEntityPointer(void) : ep_pen(NULL) {};
-
-inline CEntityPointer::~CEntityPointer(void) {
-  ep_pen->RemReference();
-};
-
-inline CEntityPointer::CEntityPointer(const CEntityPointer &penOther) : ep_pen(penOther.ep_pen) {
-  ep_pen->AddReference();
-};
-
-inline CEntityPointer::CEntityPointer(CEntity *pen) : ep_pen(pen) {
-  ep_pen->AddReference();
-};
-
-inline const CEntityPointer &CEntityPointer::operator=(CEntity *pen) {
-  pen->AddReference(); // must first add, then remove!
-  ep_pen->RemReference();
-  ep_pen = pen;
-
-  return *this;
-}
-
-inline const CEntityPointer &CEntityPointer::operator=(const CEntityPointer &penOther) {
-  penOther.ep_pen->AddReference(); // must first add, then remove!
-  ep_pen->RemReference();
-  ep_pen = penOther.ep_pen;
-
-  return *this;
-}
-
-inline CEntity *CEntityPointer::operator->(void) const {
-  return ep_pen;
-}
-
-inline CEntityPointer::operator CEntity *(void) const {
-  return ep_pen;
-}
-
-inline CEntity &CEntityPointer::operator*(void) const {
-  return *ep_pen;
-}
-
-// Reference counting functions
-inline void CEntity::AddReference(void) {
-  if (this != NULL) {
-    ASSERT(en_ctReferences >= 0);
-    en_ctReferences++;
-  }
-};
-
-inline void CEntity::RemReference(void) {
-  if (this != NULL) {
-    ASSERT(en_ctReferences > 0);
-    en_ctReferences--;
-
-    if (en_ctReferences == 0) {
-      delete this;
-    }
-  }
-};
-
-// Entity that is alive (has health)
-class ENGINE_API CLiveEntity : public CEntity {
-  public:
-    FLOAT en_fHealth; // health of the entity
-
-    // Copy entity from another entity of same class
-    virtual void Copy(CEntity &enOther, ULONG ulFlags);
-
-    // Read from stream
-    virtual void Read_t(CTStream *istr); // throw char *
-
-    // Write to stream
-    virtual void Write_t(CTStream *ostr); // throw char *
-
-  public:
-    // Set health of the entity
-    void SetHealth(FLOAT fHealth) {
-      en_fHealth = fHealth;
-    };
-
-  public:
-    // Constructor
-    CLiveEntity(void);
-
-    // Get health of the entity
-    FLOAT GetHealth(void) const {
-      return en_fHealth;
-    };
-
-    // Apply some damage to the entity (see event EDamage for more info)
-    virtual void ReceiveDamage(CEntity *penInflictor, enum DamageType dmtType, FLOAT fDamageAmount,
-                               const FLOAT3D &vHitPoint, const FLOAT3D &vDirection);
-
-    // Return bytes of memory used by this object
-    inline SLONG GetUsedMemory(void) {
-      return (sizeof(CLiveEntity) - sizeof(CEntity) + CEntity::GetUsedMemory());
-    };
-};
-
-// Flag for entities that are not waiting for thinking
-#define THINKTIME_NEVER (-100.0f) //(-1.f)
-// [Cecil] New timer: Think time in ticks
-#define THINKTICK_NEVER (-100) //(-9223372036854775807)
-
-// Entity that can percept things and make decisions (one that has its own AI)
-class ENGINE_API CRationalEntity : public CLiveEntity {
-  public:
-    CListNode en_lnInTimers; // node in list of waiting timers - sorted by wait time
-
-  public:
-    TICK en_llTimer; // moment in time this entity waits for timer
-
-    CStaticStackArray<SLONG> en_stslStateStack; // stack of states for entity AI
-
-    // Calculate physics for moving
-    virtual void ClearMovingTemp(void);
-    virtual void PreMoving(void);
-    virtual void DoMoving(void);
-    virtual void PostMoving(void);
-
-    // Create a checksum value for sync-check
-    virtual void ChecksumForSync(ULONG &ulCRC, INDEX iExtensiveSyncCheck);
-
-    // Dump sync data to text file
-    virtual void DumpSync_t(CTStream &strm, INDEX iExtensiveSyncCheck); // throw char *
-
-    // Copy entity from another entity of same class
-    virtual void Copy(CEntity &enOther, ULONG ulFlags);
-
-    // Read from stream
-    virtual void Read_t(CTStream *istr); // throw char *
-
-    // Write to stream
-    virtual void Write_t(CTStream *ostr); // throw char *
-
-    // Unwind stack to a given state
-    void UnwindStack(SLONG slThisState);
-
-  public:
-    // Jump to a new state
-    void Jump(SLONG slThisState, SLONG slTargetState, BOOL bOverride, const CEntityEvent &eeInput);
-
-    // Call a subautomaton
-    void Call(SLONG slThisState, SLONG slTargetState, BOOL bOverride, const CEntityEvent &eeInput);
-
-    // Return from a subautomaton
-    void Return(SLONG slThisState, const CEntityEvent &eeReturn);
-
-    // Print stack to debug output
-    const char *PrintStackDebug(void);
-
-    // Set next timer event to occur at given moment time
-    void TimerAt(TICK llAbsolute);
-
-    // Set next timer event to occur after given time has elapsed
-    void TimerAfter(TICK llDelta);
-    void SetTimerAfter(TIME tmDelta);
-
-    // Cancel eventual pending timer
-    void UnsetTimer(void);
-
-    // Called after creating and setting its properties
-    virtual void OnInitialize(const CEntityEvent &eeInput);
-
-    // Called before releasing entity
-    virtual void OnEnd(void);
-
-  public:
-    // Constructor
-    CRationalEntity(void);
-
-    // Handle an event - return false if event was not handled
-    virtual BOOL HandleEvent(const CEntityEvent &ee);
-
-    // Return bytes of memory used by this object
-    inline SLONG GetUsedMemory(void) {
-      SLONG slUsedMemory = sizeof(CRationalEntity) - sizeof(CLiveEntity) + CLiveEntity::GetUsedMemory();
-      slUsedMemory += en_stslStateStack.sa_Count * sizeof(SLONG);
-
-      return slUsedMemory;
-    };
-};
-
 ENGINE_API void EntityAdjustBonesCallback(void *pData);
 ENGINE_API void EntityAdjustShaderParamsCallback(void *pData, INDEX iSurfaceID, CShader *pShader, ShaderParams &spParams);
 
 extern "C" ENGINE_API class CDLLEntityClass CEntity_DLLClass;
-extern "C" ENGINE_API class CDLLEntityClass CLiveEntity_DLLClass;
-extern "C" ENGINE_API class CDLLEntityClass CRationalEntity_DLLClass;
+
+// [Cecil] Inline function definitions
+#include <Engine/Entities/BaseClasses/Entity.inl>
 
 #endif /* include-once check. */

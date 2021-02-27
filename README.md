@@ -20,6 +20,5 @@ Serious Engine is licensed under the GNU GPL v2 (see LICENSE file).
 
 Some of the code included with the engine sources is not licensed under the GNU GPL v2:
 
-* zlib (located in `Sources/Engine/zlib`) by Jean-loup Gailly and Mark Adler
-* LightWave SDK (located in `Sources/LWSkaExporter/SDK`) by NewTek Inc.
-* libogg/libvorbis (located in `Sources/libogg` and `Sources/libvorbis`) by Xiph.Org Foundation
+* zlib (located in `Engine/zlib`) by Jean-loup Gailly and Mark Adler
+* libogg/libvorbis (located in `libogg` and `libvorbis`) by Xiph.Org Foundation

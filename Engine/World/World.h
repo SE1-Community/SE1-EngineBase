@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/CTString.h>
 #include <Engine/Base/Lists.h>
 #include <Engine/Brushes/Brush.h>
-#include <Engine/Entities/Entity.h>
+#include <Engine/Entities/BaseClasses/Entity.h>
 #include <Engine/Math/Placement.h>
 #include <Engine/Templates/StaticArray.h>
 #include <Engine/Templates/DynamicContainer.h>

@@ -48,7 +48,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Network/NetworkProfile.h>
 #include <Engine/Network/LevelChange.h>
 #include <Engine/Brushes/BrushArchive.h>
-#include <Engine/Entities/Entity.h>
+#include <Engine/Entities/BaseClasses/Entity.h>
 #include <Engine/Models/ModelObject.h>
 #include <Engine/Ska/ModelInstance.h>
 #include <Engine/Entities/ShadingInfo.h>

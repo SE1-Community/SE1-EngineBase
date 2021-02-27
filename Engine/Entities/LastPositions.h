@@ -30,7 +30,10 @@ class ENGINE_API CLastPositions {
     INDEX lp_ctUsed; // how many positions are actually used
     TICK lp_llLastAdded; // time when last updated
 
+    // Constructor
     CLastPositions() {};
+
+    // Copy constructor
     CLastPositions(const CLastPositions &lpOrg);
 
     // Add a new position

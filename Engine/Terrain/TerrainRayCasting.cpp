@@ -13,12 +13,12 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 #include <Engine/Terrain/Terrain.h>
 #include <Engine/Math/Plane.h>
 #include <Engine/Math/Clipping.inl>
 #include <Engine/Math/Geometry.inl>
-#include <Engine/Entities/Entity.h>
+#include <Engine/Entities/BaseClasses/Entity.h>
 
 static CTerrain *_ptrTerrain = NULL;
 static FLOAT3D _vOrigin;        // Origin of ray

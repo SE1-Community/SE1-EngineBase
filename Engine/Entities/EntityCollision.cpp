@@ -13,9 +13,9 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
-#include <Engine/Entities/Entity.h>
+#include <Engine/Entities/BaseClasses/Entity.h>
 #include <Engine/Entities/EntityCollision.h>
 #include <Engine/Base/ListIterator.inl>
 #include <Engine/Math/Geometry.inl>
@@ -38,22 +38,26 @@ class CClipTest {
     CListHead ct_lhActiveSectors; // sectors that may be of interest
 
     BOOL PointTouchesSphere(const FLOAT3D &vPoint, const FLOAT3D &vSphereCenter, const FLOAT fSphereRadius);
-    BOOL PointTouchesCylinder(const FLOAT3D &vPoint, const FLOAT3D &vCylinderBottomCenter, const FLOAT3D &vCylinderTopCenter,
-                              const FLOAT fCylinderRadius);
-    // project spheres of a collision info to given placement
+    BOOL PointTouchesCylinder(const FLOAT3D &vPoint, const FLOAT3D &vCylinderBottomCenter,
+                              const FLOAT3D &vCylinderTopCenter, const FLOAT fCylinderRadius);
+
+    // Project spheres of a collision info to given placement
     void ProjectSpheresToPlacement(CCollisionInfo &ci, FLOAT3D &vPosition, FLOATmatrix3D &mRotation);
 
-    // test if a sphere touches brush polygon
+    // Check if a sphere touches brush polygon
     BOOL SphereTouchesBrushPolygon(const CMovingSphere &msMoving, CBrushPolygon *pbpoPolygon);
-    // test if entity touches brush polygon
+
+    // Check if entity touches brush polygon
     BOOL EntityTouchesBrushPolygon(CBrushPolygon *pbpoPolygon);
-    // test if an entity can change to a new collision box without intersecting anything
+
+    // Check if an entity can change to a new collision box without intersecting anything
     BOOL CanChange(CEntity *pen, INDEX iNewCollisionBox);
 
+    // Destructor
     ~CClipTest(void);
 };
 
-// test if an entity can change to a new collision box without intersecting anything
+// Check if an entity can change to a new collision box without intersecting anything
 BOOL CanEntityChangeCollisionBox(CEntity *pen, INDEX iNewCollisionBox, CEntity **ppenObstacle) {
   // if the entity is not linked to any sectors
   if (pen->en_rdSectors.IsEmpty()) {
@@ -64,9 +68,11 @@ BOOL CanEntityChangeCollisionBox(CEntity *pen, INDEX iNewCollisionBox, CEntity *
   CClipTest ct;
   BOOL bCan = ct.CanChange(pen, iNewCollisionBox);
   *ppenObstacle = ct.ct_penObstacle;
+
   return bCan;
 }
-// project spheres of a collision info to given placement
+
+// Project spheres of a collision info to given placement
 void CClipTest::ProjectSpheresToPlacement(CCollisionInfo &ci, FLOAT3D &vPosition, FLOATmatrix3D &mRotation) {
   // for each sphere
   FOREACHINSTATICARRAY(ci.ci_absSpheres, CMovingSphere, itms) {
@@ -75,13 +81,13 @@ void CClipTest::ProjectSpheresToPlacement(CCollisionInfo &ci, FLOAT3D &vPosition
   }
 }
 
-// test point to a sphere
+// Check point to a sphere
 BOOL CClipTest::PointTouchesSphere(const FLOAT3D &vPoint, const FLOAT3D &vSphereCenter, const FLOAT fSphereRadius) {
   FLOAT fD = (vSphereCenter - vPoint).Length();
   return fD < fSphereRadius;
 }
 
-// test sphere to the edge (point to the edge cylinder)
+// Check sphere to the edge (point to the edge cylinder)
 BOOL CClipTest::PointTouchesCylinder(const FLOAT3D &vPoint, const FLOAT3D &vCylinderBottomCenter,
                                      const FLOAT3D &vCylinderTopCenter, const FLOAT fCylinderRadius) {
   const FLOAT3D vCylinderBottomToTop = vCylinderTopCenter - vCylinderBottomCenter;
@@ -103,9 +109,10 @@ BOOL CClipTest::PointTouchesCylinder(const FLOAT3D &vPoint, const FLOAT3D &vCyli
   return fD < fCylinderRadius;
 }
 
-// test if a sphere touches brush polygon
+// Check if a sphere touches brush polygon
 BOOL CClipTest::SphereTouchesBrushPolygon(const CMovingSphere &msMoving, CBrushPolygon *pbpoPolygon) {
   const FLOATplane3D &plPolygon = pbpoPolygon->bpo_pbplPlane->bpl_plAbsolute;
+
   // calculate point distance from polygon plane
   FLOAT fDistance = plPolygon.PointDistance(msMoving.ms_vRelativeCenter0);
 
@@ -118,20 +125,24 @@ BOOL CClipTest::SphereTouchesBrushPolygon(const CMovingSphere &msMoving, CBrushP
   // calculate coordinate projected to the polygon plane
   FLOAT3D vPosMid = msMoving.ms_vRelativeCenter0;
   FLOAT3D vHitPoint = plPolygon.ProjectPoint(vPosMid);
+
   // find major axes of the polygon plane
   INDEX iMajorAxis1, iMajorAxis2;
   GetMajorAxesForPlane(plPolygon, iMajorAxis1, iMajorAxis2);
 
   // create an intersector
   CIntersector isIntersector(vHitPoint(iMajorAxis1), vHitPoint(iMajorAxis2));
+
   // for all edges in the polygon
   FOREACHINSTATICARRAY(pbpoPolygon->bpo_abpePolygonEdges, CBrushPolygonEdge, itbpePolygonEdge) {
     // get edge vertices (edge direction is irrelevant here!)
     const FLOAT3D &vVertex0 = itbpePolygonEdge->bpe_pbedEdge->bed_pbvxVertex0->bvx_vAbsolute;
     const FLOAT3D &vVertex1 = itbpePolygonEdge->bpe_pbedEdge->bed_pbvxVertex1->bvx_vAbsolute;
+
     // pass the edge to the intersector
     isIntersector.AddEdge(vVertex0(iMajorAxis1), vVertex0(iMajorAxis2), vVertex1(iMajorAxis1), vVertex1(iMajorAxis2));
   }
+
   // if the polygon is intersected by the ray
   if (isIntersector.IsIntersecting()) {
     return TRUE;
@@ -144,19 +155,14 @@ BOOL CClipTest::SphereTouchesBrushPolygon(const CMovingSphere &msMoving, CBrushP
     itbpe->GetVertexCoordinatesAbsolute(vVertex0, vVertex1);
 
     // test sphere to the edge (point to the edge cylinder)
-    if (PointTouchesCylinder(msMoving.ms_vRelativeCenter0, // point,
-                             vVertex0,                     // cylinder bottom center,
-                             vVertex1,                     // cylinder top center,
-                             msMoving.ms_fR                // cylinder radius
-                             )) {
+    // point, cylinder bottom center, cylinder top center, cylinder radius
+    if (PointTouchesCylinder(msMoving.ms_vRelativeCenter0, vVertex0, vVertex1, msMoving.ms_fR)) {
       return TRUE;
     }
-    // test sphere to the first vertex
-    // NOTE: using point to sphere collision
-    if (PointTouchesSphere(msMoving.ms_vRelativeCenter0, // pount
-                           vVertex0,                     // sphere center
-                           msMoving.ms_fR                // sphere radius
-                           )) {
+
+    // test sphere to the first vertex (using point to sphere collision)
+    // pount, sphere center, sphere radius
+    if (PointTouchesSphere(msMoving.ms_vRelativeCenter0, vVertex0, msMoving.ms_fR)) {
       return TRUE;
     }
   }
@@ -164,7 +170,7 @@ BOOL CClipTest::SphereTouchesBrushPolygon(const CMovingSphere &msMoving, CBrushP
   return FALSE;
 }
 
-// test if entity touches brush polygon
+// Check if entity touches brush polygon
 BOOL CClipTest::EntityTouchesBrushPolygon(CBrushPolygon *pbpoPolygon) {
   // for each sphere
   FOREACHINSTATICARRAY(ct_ciNew.ci_absSpheres, CMovingSphere, itms) {
@@ -173,14 +179,15 @@ BOOL CClipTest::EntityTouchesBrushPolygon(CBrushPolygon *pbpoPolygon) {
       return TRUE;
     }
   }
+
   return FALSE;
 }
 
-// test if an entity can change to a new collision box without intersecting anything
+// Check if an entity can change to a new collision box without intersecting anything
 BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox) {
   // can be used only for models
   ASSERT(pen->en_RenderType == CEntity::RT_MODEL || pen->en_RenderType == CEntity::RT_EDITORMODEL
-         || pen->en_RenderType == CEntity::RT_SKAMODEL || pen->en_RenderType == CEntity::RT_SKAEDITORMODEL);
+      || pen->en_RenderType == CEntity::RT_SKAMODEL || pen->en_RenderType == CEntity::RT_SKAEDITORMODEL);
 
   // safety check
   if (pen->en_pciCollisionInfo == NULL) {
@@ -194,12 +201,15 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox) {
 
   // create new temporary collision info
   ct_ciNew.FromModel(pen, iNewCollisionBox);
+
   // project it to entity placement
   ProjectSpheresToPlacement(ct_ciNew, pen->en_plPlacement.pl_PositionVector, pen->en_mRotation);
 
   // get total bounding box encompassing both old and new collision boxes
   FLOATaabbox3D boxOld, boxNew;
+
   ASSERT(ct_penEntity->en_pciCollisionInfo != NULL);
+
   CCollisionInfo &ciOld = *ct_penEntity->en_pciCollisionInfo;
   ciOld.MakeBoxAtPlacement(ct_penEntity->en_plPlacement.pl_PositionVector, ct_penEntity->en_mRotation, boxOld);
   ct_ciNew.MakeBoxAtPlacement(ct_penEntity->en_plPlacement.pl_PositionVector, ct_penEntity->en_mRotation, boxNew);
@@ -218,12 +228,13 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox) {
     // for non-zoning brush entities in the sector
     {FOREACHDSTOFSRC(itbsc->bsc_rsEntities, CEntity, en_rdSectors, pen)
       if (pen->en_RenderType != CEntity::RT_BRUSH
-          && (_pNetwork->ga_ulDemoMinorVersion <= 4 || pen->en_RenderType != CEntity::RT_FIELDBRUSH)) {
+       && (_pNetwork->ga_ulDemoMinorVersion <= 4 || pen->en_RenderType != CEntity::RT_FIELDBRUSH)) {
         break; // brushes are sorted first in list
       }
 
       // get first mip
       CBrushMip *pbm = pen->en_pbrBrush->GetFirstMip();
+
       // if brush mip exists for that mip factor
       if (pbm != NULL) {
         // for each sector in the mip
@@ -239,8 +250,9 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox) {
 
     // if the sector's brush doesn't have collision
     CEntity *penSectorBrush = itbsc->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
+
     if (penSectorBrush->en_ulCollisionFlags == 0
-        || (_pNetwork->ga_ulDemoMinorVersion > 2 && penSectorBrush->en_RenderType != CEntity::RT_BRUSH)) {
+     || (_pNetwork->ga_ulDemoMinorVersion > 2 && penSectorBrush->en_RenderType != CEntity::RT_BRUSH)) {
       // skip it
       continue;
     }
@@ -248,6 +260,7 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox) {
     // for each polygon in the sector
     FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
       CBrushPolygon *pbpo = itbpo;
+
       // if its bbox has no contact with bbox to test
       if (!pbpo->bpo_boxBoundingBox.HasContactWith(ct_boxTotal)) {
         // skip it
@@ -265,12 +278,13 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox) {
           }
         ENDFOR}
 
-        // if it is not passable
+      // if it is not passable
       } else {
         // if entity touches it
         if (EntityTouchesBrushPolygon(pbpo)) {
           // test fails
           ct_penObstacle = pbpo->bpo_pbscSector->bsc_pbmBrushMip->bm_pbrBrush->br_penEntity;
+
           return FALSE;
         }
       }
@@ -279,6 +293,7 @@ BOOL CClipTest::CanChange(CEntity *pen, INDEX iNewCollisionBox) {
   return TRUE;
 }
 
+// Destructor
 CClipTest::~CClipTest(void) {
   // clear list of active sectors
   {FORDELETELIST(CBrushSector, bsc_lnInActiveSectors, ct_lhActiveSectors, itbsc) {

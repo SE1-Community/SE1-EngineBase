@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "stdh.h"
+#include "StdH.h"
 
 #include <Engine/Base/Statistics.h>
 #include <Engine/Base/Statistics_Internal.h>
@@ -25,7 +25,7 @@ template CStaticArray<CStatCounter>;
 template CStaticArray<CStatTimer>;
 template CStaticArray<CStatLabel>;
 
-// one globaly used stats report
+// One globaly used stats report
 CStatForm _sfStats;
 
 CStatForm::CStatForm() {
@@ -92,19 +92,22 @@ void CStatForm::Clear(void) {
   sf_aslLabels.Clear();
 }
 
-// make a new report
+// Make a new report
 void CStatForm::Report(CTString &strReport) {
   // clear the report initially
   strReport = "";
 
   // add all entries to print to a container
   CDynamicContainer<CStatEntry> cse;
+
   for (INDEX iCounter = 0; iCounter < sf_ascCounters.Count(); iCounter++) {
     cse.Add(&sf_ascCounters[iCounter]);
   }
+
   for (INDEX iTimer = 0; iTimer < sf_astTimers.Count(); iTimer++) {
     cse.Add(&sf_astTimers[iTimer]);
   }
+
   for (INDEX iLabel = 0; iLabel < sf_aslLabels.Count(); iLabel++) {
     cse.Add(&sf_aslLabels[iLabel]);
   }
@@ -117,7 +120,7 @@ void CStatForm::Report(CTString &strReport) {
   }}
 }
 
-// initialize component
+// Initialize component
 void CStatForm::InitCounter(INDEX iCounter, INDEX iOrder, const char *strFormat, FLOAT fFactor) {
   CStatCounter &sc = sf_ascCounters[iCounter];
   sc.se_iOrder = iOrder;
@@ -148,12 +151,15 @@ void CStatForm::Reset(void) {
     // reset it
     sf_ascCounters[iCounter].sc_fCount = 0;
   }
+
   // for each timer
   for (INDEX iTimer = 0; iTimer < sf_astTimers.Count(); iTimer++) {
     // double-check that timer has been stopped (only for timers in main thread!)
     if (iTimer != STI_TIMER && iTimer != STI_SOUNDMIXING) {
       ASSERT(sf_astTimers[iTimer].st_tvStarted.tv_llValue == -1);
-    } // reset it
+    }
+
+    // reset it
     sf_astTimers[iTimer].st_tvElapsed.Clear();
   }
 }
@@ -172,12 +178,12 @@ CTString CStatLabel::Report(void) {
   return sl_strFormat;
 }
 
-// reset all values
+// Reset all values
 void STAT_Reset(void) {
   _sfStats.Reset();
 }
 
-// make a new report
+// Make a new report
 void STAT_Report(CTString &strReport) {
   _sfStats.Report(strReport);
 }

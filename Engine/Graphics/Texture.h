@@ -20,7 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 
 #include <Engine/Base/Lists.h>
-#include <Engine/Base/Anim.h>
+#include <Engine/Anim/AnimObject.h>
 #include <Engine/Graphics/GfxLibrary.h>
 
 // All textures in engine are 4 bytes per pixel

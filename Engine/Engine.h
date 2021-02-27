@@ -72,7 +72,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Entities/EntityClass.h>
 #include <Engine/Entities/EntityCollision.h>
 #include <Engine/Entities/EntityProperties.h>
-#include <Engine/Entities/Entity.h>
+#include <Engine/Entities/BaseClasses/Entity.h>
 #include <Engine/Entities/InternalClasses.h>
 #include <Engine/Entities/LastPositions.h>
 #include <Engine/Entities/EntityCollision.h>
