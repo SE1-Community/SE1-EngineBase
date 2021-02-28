@@ -27,14 +27,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Templates/Stock_CSoundData.h>
 
-/* == == == == == == == == == == == == == == == == == == == == == == == == == ==
- *
- *  Sound data awareness functions
- */
-
-/*
- *  Pause all playing
- */
+// Pause all playing
 void CSoundData::PausePlayingObjects(void) {
   // for all objects linked to data pause playing
   FOREACHINLIST(CSoundObject, so_Node, sd_ClhLinkList, itCsoPause) {
@@ -43,9 +36,7 @@ void CSoundData::PausePlayingObjects(void) {
   }
 }
 
-/*
- *  For all objects resume play
- */
+// For all objects resume play
 void CSoundData::ResumePlayingObjects(void) {
   // for all objects resume play
   FOREACHINLIST(CSoundObject, so_Node, sd_ClhLinkList, itCsoResume) {
@@ -54,26 +45,17 @@ void CSoundData::ResumePlayingObjects(void) {
   }
 }
 
-/*
- *  Add object in sound aware list
- */
+// Add object in sound aware list
 void CSoundData::AddObjectLink(CSoundObject &CsoAdd) {
   // add object to list tail
   sd_ClhLinkList.AddTail(CsoAdd.so_Node);
 }
 
-/*
- *  Remove a object from aware list
- */
+// Remove a object from aware list
 void CSoundData::RemoveObjectLink(CSoundObject &CsoRemove) {
   // remove it from list
   CsoRemove.so_Node.Remove();
 }
-
-/* == == == == == == == == == == == == == == == == == == == == == == == == == ==
- *
- *  Class global methods
- */
 
 // Constructor
 CSoundData::CSoundData() {
@@ -95,28 +77,24 @@ void CSoundData::ClearBuffer(void) {
   }
 }
 
-// Get Sound Length in seconds
+// Get sound Length in seconds
 double CSoundData::GetSecondsLength(void) {
   // if not encoded
   if (!(sd_ulFlags & SDF_ENCODED)) {
     // len is read from wave
     return sd_dSecondsLength;
-    // if encoded
+
+  // if encoded
   } else {
     // implement this!!!!
     ASSERT(FALSE);
+
     return 0;
   }
 }
 
-/* == == == == == == == == == == == == == == == == == == == == == == == == == ==
- *
- *  Input methods (load sound in SoundData class)
- */
-
 // Read sound in memory
-void CSoundData::Read_t(CTStream *inFile) // throw char *
-{
+void CSoundData::Read_t(CTStream *inFile) {
   // synchronize access to sounds
   CTSingleLock slSounds(&_pSound->sl_csSound, TRUE);
 
@@ -125,21 +103,26 @@ void CSoundData::Read_t(CTStream *inFile) // throw char *
 
   // get filename
   CTFileName fnm = inFile->GetDescription();
+
   // if this is encoded file
   if (fnm.FileExt() == ".ogg" || fnm.FileExt() == ".mp3") {
     CSoundDecoder *pmpd = new CSoundDecoder(fnm);
+
     if (pmpd->IsOpen()) {
       pmpd->GetFormat(sd_wfeFormat);
     }
+
     delete pmpd;
+
     // mark that this is streaming encoded file
     sd_ulFlags = SDF_ENCODED | SDF_STREAMING;
 
-    // if this is wave file
+  // if this is wave file
   } else {
     // load wave info
     PCMWaveInput CpwiLoad;
     sd_wfeFormat = CpwiLoad.LoadInfo_t(inFile);
+
     // store sample length in seconds and average byte rate
     sd_dSecondsLength = CpwiLoad.GetSecondsLength();
 
@@ -147,6 +130,7 @@ void CSoundData::Read_t(CTStream *inFile) // throw char *
     if ((_pSound->sl_SwfeFormat).nSamplesPerSec < sd_wfeFormat.nSamplesPerSec) {
       sd_wfeFormat.nSamplesPerSec = (_pSound->sl_SwfeFormat).nSamplesPerSec;
     }
+
     // same goes for bits/sample (must be 16)
     sd_wfeFormat.wBitsPerSample = 16;
 
@@ -156,8 +140,10 @@ void CSoundData::Read_t(CTStream *inFile) // throw char *
       sd_slBufferSampleSize = CpwiLoad.GetDataLength(sd_wfeFormat);
       SLONG slBufferSize = CpwiLoad.DetermineBufferSize(sd_wfeFormat);
       sd_pswBuffer = (SWORD *)AllocMemory(slBufferSize + 8);
+
       // load data into buffer
       CpwiLoad.LoadData_t(inFile, sd_pswBuffer, sd_wfeFormat);
+
       // copy first sample to the last one (this is needed for linear interpolation)
       (ULONG &)(((UBYTE *)sd_pswBuffer)[slBufferSize]) = *(ULONG *)sd_pswBuffer;
     }
@@ -173,18 +159,14 @@ void CSoundData::Write_t(CTStream *outFile) {
   throw TRANS("Cannot write sounds!");
 }
 
-// Get the description of this object.
+// Get the description of this object
 CTString CSoundData::GetDescription(void) {
   CTString str;
   str.PrintF("%dkHz %dbit %s %.2lfs", sd_wfeFormat.nSamplesPerSec / 1000, sd_wfeFormat.wBitsPerSample,
              sd_wfeFormat.nChannels == 1 ? "mono" : "stereo", sd_dSecondsLength);
+  
   return str;
 }
-
-/* == == == == == == == == == == == == == == == == == == == == == == == == == ==
- *
- *  Class CLEAR method
- */
 
 // Free memory allocated for sound and Release DXBuffer
 void CSoundData::Clear(void) {
@@ -203,25 +185,22 @@ void CSoundData::Clear(void) {
   }
 }
 
-// check if this kind of objects is auto-freed
+// Check if this kind of objects is auto-freed
 BOOL CSoundData::IsAutoFreed(void) {
   return FALSE;
 }
 
-// get amount of memory used by this object
+// Get amount of memory used by this object
 SLONG CSoundData::GetUsedMemory(void) {
   SLONG slUsed = sizeof(*this);
+
   if (sd_pswBuffer != NULL) {
     ASSERT(sd_wfeFormat.nChannels == 1 || sd_wfeFormat.nChannels == 2);
     slUsed += sd_slBufferSampleSize * sd_wfeFormat.nChannels * 2; // all sounds are 16-bit
   }
+
   return slUsed;
 }
-
-/* == == == == == == == == == == == == == == == == == == == == == == == == == ==
- *
- *  Reference counting functions
- */
 
 // Add one reference
 void CSoundData::AddReference(void) {

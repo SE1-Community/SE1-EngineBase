@@ -17,13 +17,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Sound/SoundProfile.h>
 
-// profile form for profiling sounds
+// Profile form for profiling sounds
 CSoundProfile _spSoundProfile;
 CProfileForm &_pfSoundProfile = _spSoundProfile;
 
-/////////////////////////////////////////////////////////////////////
-// CSoundProfile
-
+// Constructor
 CSoundProfile::CSoundProfile(void) : CProfileForm("Sound", "updates", CSoundProfile::PCI_COUNT, CSoundProfile::PTI_COUNT) {
   SETTIMERNAME(PTI_MIXSOUNDS, "MixSounds()", "");
   SETTIMERNAME(PTI_DECODESOUND, "  DecodeSound()", "");
