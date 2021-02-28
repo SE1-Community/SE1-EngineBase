@@ -79,36 +79,13 @@ event EPostLevelChange {
 // Notifying an entity that it is the first worldbase in the world
 event EFirstWorldBase {};
 
-// [Cecil] TODO: Damage types shouldn't be strictly engine-defined
-enum DamageType {
-   0 DMT_NONE         "no damage",    // internal
-   1 DMT_EXPLOSION    "Explosion",    // caused by dynamites, rockets and other ordinary explosives
-   2 DMT_PROJECTILE   "Projectile",   // caused by projectile (non exploding)
-   3 DMT_CLOSERANGE   "Close range",  // caused by close range weapon (chainsaw, head-saw, ...)
-   4 DMT_BULLET       "Bullets",      // caused by ordinary bullets from pistols, rifles etc.
-   5 DMT_DROWNING     "Drowning",     // caused by being without air for too long
-   6 DMT_IMPACT       "Impact",       // caused by impact with some object at high relative velocity
-   7 DMT_BRUSH        "Brush",        // caused by moving brush
-   8 DMT_BURNING      "Burning",      // caused by being burned by fire or lava
-   9 DMT_ACID         "Acid",         // caused by being burned by acid
-  10 DMT_TELEPORT     "Teleport",     // applied to entities in teleport destination
-  11 DMT_FREEZING     "Freezing",     // caused by freezing in cold water
-  12 DMT_CANNONBALL   "Cannon ball",  // caused by cannon ball
-  13 DMT_CB_EXPLOSION "Cannon ball explosion", // when cannonball explodes
-  14 DMT_SPIKESTAB    "Spike stab",   // stabbed by spikes (usually content type)
-  15 DMT_ABYSS        "Abyss",        // when someone falls off a high ledge into the void
-  16 DMT_HEAT         "Heat",         // walking under open sun too long
-  17 DMT_DAMAGER      "Damager",      // caused by damager
-  18 DMT_CHAINSAW     "Chainsaw",     // caused by chainsaw
-};
-
 // Entity has been damaged
 event EDamage {
   CEntityPointer penInflictor, // entity that inflicted the damage
   FLOAT3D vDirection, // where the damage came from (in absolute space)
   FLOAT3D vHitPoint, // where the damage hit the entity (in absolute space)
   FLOAT fAmount, // amount of damage done
-  enum DamageType dmtType, // type of damage
+  INDEX dmtType, // type of damage
 };
 
 // When this entity dies (health reaches zero)

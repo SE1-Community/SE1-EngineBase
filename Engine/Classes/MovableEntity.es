@@ -1083,7 +1083,7 @@ functions:
       // if it was without air for too long
       if (llBreathDelay > CTimer::InTicks(en_tmMaxHoldBreath)) {
         // inflict drowning damage 
-        InflictDirectDamage(this, MiscDamageInflictor(), DMT_DROWNING, ctUp.ct_fDrowningDamageAmount, en_plPlacement.pl_PositionVector, -en_vGravityDir);
+        InflictDirectDamage(this, MiscDamageInflictor(), _bdtEntityDamageTypes.iDrowning, ctUp.ct_fDrowningDamageAmount, en_plPlacement.pl_PositionVector, -en_vGravityDir);
 
         // prolongue breathing a bit, so not to come here every frame
         en_llLastBreathed = llTickNow - (CTimer::InTicks(en_tmMaxHoldBreath) + ctUp.ct_llDrowningDamageDelay);
@@ -1108,7 +1108,7 @@ functions:
 
       if (llTickNow - en_llLastSwimDamage > ctDn.ct_llSwimDamageFrequency) {
         // inflict drowning damage 
-        InflictDirectDamage(this, MiscDamageInflictor(), (DamageType)ctDn.ct_iSwimDamageType, ctDn.ct_fSwimDamageAmount*fImmersion, en_plPlacement.pl_PositionVector, -en_vGravityDir);
+        InflictDirectDamage(this, MiscDamageInflictor(), ctDn.ct_iSwimDamageType, ctDn.ct_fSwimDamageAmount*fImmersion, en_plPlacement.pl_PositionVector, -en_vGravityDir);
         en_llLastSwimDamage = llTickNow;
       }
     }
@@ -1116,7 +1116,7 @@ functions:
     // if the content kills
     if (ctDn.ct_fKillImmersion > 0 && fImmersion >= ctDn.ct_fKillImmersion && (en_ulFlags & ENF_ALIVE)) {
       // inflict killing damage 
-      InflictDirectDamage(this, MiscDamageInflictor(), (DamageType)ctDn.ct_iKillDamageType, GetHealth() * 10.0f, en_plPlacement.pl_PositionVector, -en_vGravityDir);
+      InflictDirectDamage(this, MiscDamageInflictor(), ctDn.ct_iKillDamageType, GetHealth() * 10.0f, en_plPlacement.pl_PositionVector, -en_vGravityDir);
     }
   }
 
@@ -1137,7 +1137,7 @@ functions:
 
       if (llTickNow - en_llLastSwimDamage > stDn.st_llWalkDamageFrequency) {
         // inflict walking damage 
-        InflictDirectDamage(this, MiscDamageInflictor(), (DamageType)stDn.st_iWalkDamageType, stDn.st_fWalkDamageAmount, en_plPlacement.pl_PositionVector, -en_vGravityDir);
+        InflictDirectDamage(this, MiscDamageInflictor(), stDn.st_iWalkDamageType, stDn.st_fWalkDamageAmount, en_plPlacement.pl_PositionVector, -en_vGravityDir);
         en_llLastSwimDamage = llTickNow;
       }
     }
@@ -2677,7 +2677,7 @@ functions:
     if (fSpeedDelta > en_fCollisionSpeedLimit && !(en_ulPhysicsFlags & EPF_NOIMPACTTHISTICK)) {
       // inflict impact damage
       FLOAT fDamage = ((fSpeedDelta - en_fCollisionSpeedLimit) / en_fCollisionSpeedLimit) * en_fCollisionDamageFactor;
-      InflictDirectDamage(this, MiscDamageInflictor(), DMT_IMPACT, fDamage, en_plPlacement.pl_PositionVector, -vSpeedDelta.Normalize());
+      InflictDirectDamage(this, MiscDamageInflictor(), _bdtEntityDamageTypes.iImpact, fDamage, en_plPlacement.pl_PositionVector, -vSpeedDelta.Normalize());
     }
 
     en_ulPhysicsFlags &= ~EPF_NOIMPACTTHISTICK;

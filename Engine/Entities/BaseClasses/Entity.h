@@ -98,6 +98,17 @@ class CForceStrength {
 #define ENF_HIDDEN            (1L << 21) // set if the entity is hidden (for editing)
 #define ENF_NOSHADINGINFO     (1L << 22) // the entity doesn't need FindShadingInfo(), it will set its own shading
 
+// [Cecil] 2021-02-28: Basic damage types
+struct ENGINE_API SBasicDamageTypes {
+  // Damage types for internal entity functions
+  INDEX iDrowning;
+  INDEX iImpact;
+  INDEX iTeleport;
+};
+
+// [Cecil] 2021-02-28: Structure with basic damage types
+extern ENGINE_API SBasicDamageTypes _bdtEntityDamageTypes;
+
 // Selections of entities
 typedef CSelection<CEntity, ENF_SELECTED> CEntitySelection;
 
@@ -441,15 +452,15 @@ class ENGINE_API CEntity {
     CEntity *CreateEntity(const CPlacement3D &plPlacement, SLONG idModelComponent);
 
     // Apply some damage directly to one entity
-    void InflictDirectDamage(CEntity *penToDamage, CEntity *penInflictor, enum DamageType dmtType, FLOAT fDamageAmount,
+    void InflictDirectDamage(CEntity *penToDamage, CEntity *penInflictor, INDEX dmtType, FLOAT fDamageAmount,
                              const FLOAT3D &vHitPoint, const FLOAT3D &vDirection);
 
     // Apply some damage to all entities in some range (this tests for obstacles)
-    void InflictRangeDamage(CEntity *penInflictor, enum DamageType dmtType, FLOAT fDamageAmount, const FLOAT3D &vCenter,
+    void InflictRangeDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamageAmount, const FLOAT3D &vCenter,
                             FLOAT fHotSpotRange, FLOAT fFallOffRange);
 
     // Apply some damage to all entities in a box (this doesn't test for obstacles)
-    void InflictBoxDamage(CEntity *penInflictor, enum DamageType dmtType, FLOAT fDamageAmount, const FLOATaabbox3D &box);
+    void InflictBoxDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamageAmount, const FLOATaabbox3D &box);
 
     // Notify engine that gravity defined by this entity has changed
     void NotifyGravityChanged(void);
@@ -457,10 +468,9 @@ class ENGINE_API CEntity {
     // Notify engine that collision of this entity was changed
     void NotifyCollisionChanged(void);
 
-    // [Cecil] TODO: Make them static
     // Get a pseudo-random number (safe for network gaming)
-    ULONG IRnd(void); // [0x0000 , 0xFFFF]
-    FLOAT FRnd(void); // [0.0f , 1.0f]
+    static ULONG IRnd(void); // [0x0000 , 0xFFFF]
+    static FLOAT FRnd(void); // [0.0f , 1.0f]
 
     // DLL class overridables
 
@@ -831,7 +841,7 @@ class ENGINE_API CEntity {
     void SendEventInRange(const CEntityEvent &ee, const FLOATaabbox3D &boxRange);
 
     // Apply some damage to the entity (see event EDamage for more info)
-    virtual void ReceiveDamage(CEntity *penInflictor, enum DamageType dmtType, FLOAT fDamageAmount,
+    virtual void ReceiveDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamageAmount,
                                const FLOAT3D &vHitPoint, const FLOAT3D &vDirection);
     
     // [Cecil] TODO: This shouldn't be a thing in the entity base

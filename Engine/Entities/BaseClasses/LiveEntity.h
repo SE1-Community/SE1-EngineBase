@@ -51,7 +51,7 @@ class ENGINE_API CLiveEntity : public CEntity {
     };
 
     // Apply some damage to the entity (see event EDamage for more info)
-    virtual void ReceiveDamage(CEntity *penInflictor, enum DamageType dmtType, FLOAT fDamageAmount,
+    virtual void ReceiveDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamageAmount,
                                const FLOAT3D &vHitPoint, const FLOAT3D &vDirection);
 
     // Return bytes of memory used by this object

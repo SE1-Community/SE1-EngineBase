@@ -45,7 +45,7 @@ void CLiveEntity::Write_t(CTStream *ostr) {
 }
 
 // Apply some damage to the entity (see event EDamage for more info)
-void CLiveEntity::ReceiveDamage(CEntity *penInflictor, enum DamageType dmtType, FLOAT fDamage,
+void CLiveEntity::ReceiveDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamage,
                                 const FLOAT3D &vHitPoint, const FLOAT3D &vDirection) {
   CEntityPointer penThis = this; // keep this entity alive during this function
 
