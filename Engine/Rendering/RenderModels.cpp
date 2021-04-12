@@ -388,6 +388,7 @@ void CRenderer::RenderOneModel(CEntity &en, CModelObject &moModel, const CPlacem
     bRenderModelShadow = FALSE;
   }
 
+  // [Cecil] TODO: How is this even a thing?
   // TEMP: disable Truform usage on weapon models
   if (IsOfClass(&en, "Player Weapons"))
     rm.rm_ulFlags |= RMF_WEAPON;

@@ -1229,9 +1229,12 @@ void CEntity::SetParent(CEntity *penNewParent) {
 CEntity *CEntity::GetChildOfClass(const char *strClass) {
   // for each child of this entity
   {FOREACHINLIST(CEntity, en_lnInParent, en_lhChildren, itenChild) {
+    // [Cecil] 2021-04-12: For safety
+    CEntity *pen = itenChild;
+
     // if it is of given class
-    if (IsOfClass(itenChild, strClass)) {
-      return itenChild;
+    if (IsOfClass(pen, strClass)) {
+      return pen;
     }
   }}
 

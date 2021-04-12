@@ -848,10 +848,12 @@ class ENGINE_API CEntity {
     // Receive item through event - for AI purposes only
     virtual BOOL ReceiveItem(const CEntityEvent &ee);
 
+    // [Cecil] TODO: Maybe replace with a pointer that's set to class-specific EntityInfo
+    //               by default and could be swapped to some unique one
     // Get entity info - for AI purposes only
     virtual void *GetEntityInfo(void);
 
-    // Fill in entity statistics - for AI purposes only
+    // Fill in entity statistics - for debug purposes only
     virtual BOOL FillEntityStatistics(struct EntityStats *pes);
 
     // Model change notify
