@@ -83,8 +83,8 @@ void CMappingDefinition::FromUI(const CMappingDefinitionUI &mdui) {
   // extract all values from mapping definition
   md_fUoS = +Cos(-(mdui.mdui_aVRotation));
   md_fUoT = +Sin(-(mdui.mdui_aVRotation));
-  md_fVoS = +Cos(-(mdui.mdui_aURotation) + AngleDeg(90.0f));
-  md_fVoT = +Sin(-(mdui.mdui_aURotation) + AngleDeg(90.0f));
+  md_fVoS = +Cos(-(mdui.mdui_aURotation) + 90.0f);
+  md_fVoT = +Sin(-(mdui.mdui_aURotation) + 90.0f);
 
   md_fUoS /= mdui.mdui_fUStretch;
   md_fUoT /= mdui.mdui_fUStretch;

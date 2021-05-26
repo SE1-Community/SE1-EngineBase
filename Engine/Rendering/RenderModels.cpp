@@ -344,7 +344,7 @@ void CRenderer::RenderOneModel(CEntity &en, CModelObject &moModel, const CPlacem
 
   CPlacement3D plLight;
   plLight.pl_PositionVector = plModel.pl_PositionVector + FLOAT3D(3.0f, 3.0f, 3.0f);
-  plLight.pl_OrientationAngle = ANGLE3D(AngleDeg(30.0f), AngleDeg(-45.0f), 0);
+  plLight.pl_OrientationAngle = ANGLE3D(30.0f, -45.0f, 0);
 
   // create a default light
   COLOR colLight = C_GRAY;
@@ -479,7 +479,7 @@ void CRenderer::RenderOneSkaModel(CEntity &en, const CPlacement3D &plModel, cons
 
   CPlacement3D plLight;
   plLight.pl_PositionVector = plModel.pl_PositionVector + FLOAT3D(3.0f, 3.0f, 3.0f);
-  plLight.pl_OrientationAngle = ANGLE3D(AngleDeg(30.0f), AngleDeg(-45.0f), 0);
+  plLight.pl_OrientationAngle = ANGLE3D(30.0f, -45.0f, 0);
 
   // create a default light
   COLOR colLight = C_GRAY;

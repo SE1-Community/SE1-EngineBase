@@ -118,11 +118,11 @@ wo_ulSpawnFlags(0) {
   wo_ulNextEntityID = 1;
 
   // set default placement
-  wo_plFocus = CPlacement3D(FLOAT3D(3.0f, 4.0f, 10.0f), ANGLE3D(AngleDeg(20.0f), AngleDeg(-20.0f), 0));
+  wo_plFocus = CPlacement3D(FLOAT3D(3.0f, 4.0f, 10.0f), ANGLE3D(20.0f, -20.0f, 0));
   wo_fTargetDistance = 10.0f;
 
   // set default thumbnail placement
-  wo_plThumbnailFocus = CPlacement3D(FLOAT3D(3.0f, 4.0f, 10.0f), ANGLE3D(AngleDeg(20.0f), AngleDeg(-20.0f), 0));
+  wo_plThumbnailFocus = CPlacement3D(FLOAT3D(3.0f, 4.0f, 10.0f), ANGLE3D(20.0f, -20.0f, 0));
   wo_fThumbnailTargetDistance = 10.0f;
 }
 
