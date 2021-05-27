@@ -252,7 +252,7 @@ void CShadowMap::MarkDrawn(void) {
   _pGfx->gl_lhCachedShadows.AddTail(sm_lnInGfx);
 }
 
-// uncache the shadow map (returns total ammount of memory that has been freed)
+// uncache the shadow map (returns total amount of memory that has been freed)
 SLONG CShadowMap::Uncache(void) {
   _bShadowsUpdated = TRUE;
   // discard uploaded portion

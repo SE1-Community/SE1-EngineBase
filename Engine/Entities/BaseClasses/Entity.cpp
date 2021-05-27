@@ -3033,7 +3033,7 @@ void CEntity::PlaySound(CSoundObject &so, const CTFileName &fnmSound, SLONG slPl
 }
 
 // Apply some damage directly to one entity
-void CEntity::InflictDirectDamage(CEntity *penToDamage, CEntity *penInflictor, INDEX dmtType, FLOAT fDamageAmount,
+void CEntity::InflictDirectDamage(CEntity *penToDamage, CEntity *penInflictor, INDEX dmtType, FLOAT fDamage,
                                   const FLOAT3D &vHitPoint, const FLOAT3D &vDirection) {
   ASSERT(GetFPUPrecision() == FPT_24BIT);
 
@@ -3044,13 +3044,13 @@ void CEntity::InflictDirectDamage(CEntity *penToDamage, CEntity *penInflictor, I
   }
 
   // if any damage
-  if (dmtType > 0 && fDamageAmount > 0.0f) {
-    penToDamage->ReceiveDamage(penInflictor, dmtType, fDamageAmount, vHitPoint, vDirection);
+  if (dmtType > 0 && fDamage > 0.0f) {
+    penToDamage->ReceiveDamage(penInflictor, dmtType, fDamage, vHitPoint, vDirection);
   }
 }
 
 // Find intensity of current entity at given distance
-static inline FLOAT IntensityAtDistance(FLOAT fDamageAmount, FLOAT fHotSpotRange, FLOAT fFallOffRange, FLOAT fDistance) {
+static inline FLOAT IntensityAtDistance(FLOAT fDamage, FLOAT fHotSpotRange, FLOAT fFallOffRange, FLOAT fDistance) {
   // if further than fall-off range
   if (fDistance > fFallOffRange) {
     // intensity is zero
@@ -3059,12 +3059,12 @@ static inline FLOAT IntensityAtDistance(FLOAT fDamageAmount, FLOAT fHotSpotRange
   // if closer than hot-spot range
   } else if (fDistance < fHotSpotRange) {
     // intensity is maximum
-    return fDamageAmount;
+    return fDamage;
 
   // if between fall-off and hot-spot range
   } else {
     // interpolate
-    return fDamageAmount * (fFallOffRange - fDistance) / (fFallOffRange - fHotSpotRange);
+    return fDamage * (fFallOffRange - fDistance) / (fFallOffRange - fHotSpotRange);
   }
 }
 
@@ -3148,7 +3148,7 @@ static BOOL CheckBrushRangeDamage(CEntity &en, const FLOAT3D &vCenter, FLOAT &fM
 }
 
 // Apply some damage to all entities in some range.
-void CEntity::InflictRangeDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamageAmount,
+void CEntity::InflictRangeDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamage,
                                  const FLOAT3D &vCenter, FLOAT fHotSpotRange, FLOAT fFallOffRange) {
   ASSERT(GetFPUPrecision() == FPT_24BIT);
 
@@ -3159,7 +3159,7 @@ void CEntity::InflictRangeDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDa
   }
 
   // [Cecil] 2021-02-28: No damage
-  if (dmtType <= 0 && fDamageAmount <= 0.0f) {
+  if (dmtType <= 0 && fDamage <= 0.0f) {
     return;
   }
 
@@ -3186,8 +3186,8 @@ void CEntity::InflictRangeDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDa
      && CheckModelRangeDamage(en, vCenter, fMinD, vHitPos)
      || (en.en_RenderType == RT_BRUSH) && CheckBrushRangeDamage(en, vCenter, fMinD, vHitPos))
     {
-      // find damage ammount
-      FLOAT fAmount = IntensityAtDistance(fDamageAmount, fHotSpotRange, fFallOffRange, fMinD);
+      // find damage amount
+      FLOAT fAmount = IntensityAtDistance(fDamage, fHotSpotRange, fFallOffRange, fMinD);
 
       // if significant
       if (fAmount > 0) {
@@ -3199,7 +3199,7 @@ void CEntity::InflictRangeDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDa
 }
 
 // Apply some damage to all entities in a box (this doesn't test for obstacles).
-void CEntity::InflictBoxDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamageAmount, const FLOATaabbox3D &box) {
+void CEntity::InflictBoxDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamage, const FLOATaabbox3D &box) {
   ASSERT(GetFPUPrecision() == FPT_24BIT);
 
   // if any of the entities are not allowed to execute now
@@ -3209,7 +3209,7 @@ void CEntity::InflictBoxDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDama
   }
 
   // [Cecil] 2021-02-28: No damage
-  if (dmtType <= 0 && fDamageAmount <= 0.0f) {
+  if (dmtType <= 0 && fDamage <= 0.0f) {
     return;
   }
 
@@ -3236,7 +3236,7 @@ void CEntity::InflictBoxDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDama
     }
 
     // inflict damage
-    en.ReceiveDamage(penInflictor, dmtType, fDamageAmount, box.Center(), (box.Center() - en.GetPlacement().pl_PositionVector).Normalize());
+    en.ReceiveDamage(penInflictor, dmtType, fDamage, box.Center(), (box.Center() - en.GetPlacement().pl_PositionVector).Normalize());
   }
 }
 
@@ -3315,8 +3315,7 @@ void CEntity::NotifyCollisionChanged(void) {
 }
 
 // Apply some damage to the entity (see event EDamage for more info)
-void CEntity::ReceiveDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamageAmount,
-                            const FLOAT3D &vHitPoint, const FLOAT3D &vDirection) {
+void CEntity::ReceiveDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamage, const FLOAT3D &vHitPoint, const FLOAT3D &vDirection) {
   CEntityPointer penThis = this; // keep this entity alive during this function
 
   // just throw an event that you are damaged (base entities don't really have health)
@@ -3324,7 +3323,7 @@ void CEntity::ReceiveDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamageA
   eDamage.penInflictor = penInflictor;
   eDamage.vDirection = vDirection;
   eDamage.vHitPoint = vHitPoint;
-  eDamage.fAmount = fDamageAmount;
+  eDamage.fAmount = fDamage;
   eDamage.dmtType = dmtType;
 
   SendEvent(eDamage);

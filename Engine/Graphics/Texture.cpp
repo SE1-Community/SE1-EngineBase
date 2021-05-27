@@ -336,7 +336,7 @@ void CTextureData::Create_t(const CImageInfo *pII, MEX mexWanted, INDEX ctFineMi
   // get frame size (includes only one mip-map)
   td_slFrameSize = GetMipmapOffset(15, pixSizeU, pixSizeV) * BYTES_PER_TEXEL;
 
-  // allocate small ammount of memory just for Realloc sake
+  // allocate small amount of memory just for Realloc sake
   td_pulFrames = (ULONG *)AllocMemory(16);
   AddFrame_t(pII);
 }
@@ -866,7 +866,7 @@ void CTextureData::Read_t(CTStream *inFile) {
         *inFile >> ctEffectSourcePixels;
         // if there are any effect pixels
         if (ctEffectSourcePixels > 0) {
-          // alocate needed ammount of members
+          // alocate needed amount of members
           itEffectSource->tes_atepPixels.New(ctEffectSourcePixels);
           // read all effect pixels in one block
           inFile->Read_t(&itEffectSource->tes_atepPixels[0], sizeof(struct TextureEffectPixel) * ctEffectSourcePixels);

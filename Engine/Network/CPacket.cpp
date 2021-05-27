@@ -250,7 +250,7 @@ void CPacketBufferStats::Clear(void) {
   pbs_tvTimeNextPacketStart = _pTimer->GetHighPrecisionTimer();
 };
 
-// when can a certian ammount of data be sent?
+// when can a certian amount of data be sent?
 CTimerValue CPacketBufferStats::GetPacketSendTime(SLONG slSize) {
   CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
 

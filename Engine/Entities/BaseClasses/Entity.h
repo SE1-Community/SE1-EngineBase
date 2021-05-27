@@ -452,15 +452,15 @@ class ENGINE_API CEntity {
     CEntity *CreateEntity(const CPlacement3D &plPlacement, SLONG idModelComponent);
 
     // Apply some damage directly to one entity
-    void InflictDirectDamage(CEntity *penToDamage, CEntity *penInflictor, INDEX dmtType, FLOAT fDamageAmount,
+    void InflictDirectDamage(CEntity *penToDamage, CEntity *penInflictor, INDEX dmtType, FLOAT fDamage,
                              const FLOAT3D &vHitPoint, const FLOAT3D &vDirection);
 
     // Apply some damage to all entities in some range (this tests for obstacles)
-    void InflictRangeDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamageAmount, const FLOAT3D &vCenter,
-                            FLOAT fHotSpotRange, FLOAT fFallOffRange);
+    void InflictRangeDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamage,
+                            const FLOAT3D &vCenter, FLOAT fHotSpotRange, FLOAT fFallOffRange);
 
     // Apply some damage to all entities in a box (this doesn't test for obstacles)
-    void InflictBoxDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamageAmount, const FLOATaabbox3D &box);
+    void InflictBoxDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamage, const FLOATaabbox3D &box);
 
     // Notify engine that gravity defined by this entity has changed
     void NotifyGravityChanged(void);
@@ -841,8 +841,7 @@ class ENGINE_API CEntity {
     void SendEventInRange(const CEntityEvent &ee, const FLOATaabbox3D &boxRange);
 
     // Apply some damage to the entity (see event EDamage for more info)
-    virtual void ReceiveDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamageAmount,
-                               const FLOAT3D &vHitPoint, const FLOAT3D &vDirection);
+    virtual void ReceiveDamage(CEntity *penInflictor, INDEX dmtType, FLOAT fDamage, const FLOAT3D &vHitPoint, const FLOAT3D &vDirection);
     
     // [Cecil] TODO: This shouldn't be a thing in the entity base
     // Receive item through event - for AI purposes only

@@ -1774,7 +1774,7 @@ void CGfxLibrary::ReduceShadows(void) {
     const TIME tmDelta = (tvNow - sm.sm_tvLastDrawn).GetSeconds();
     if (tmDelta < tmFlushDelay || ulUsedShadowMemory < ulShadowCacheSize)
       break;
-    // uncache shadow (this returns ammount of memory that has been freed)
+    // uncache shadow (this returns amount of memory that has been freed)
     ulUsedShadowMemory -= sm.Uncache();
     ASSERT(ulUsedShadowMemory >= 0);
   }}
@@ -1908,7 +1908,7 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp) {
   GFX_fLastL = GFX_fLastR = GFX_fLastT = GFX_fLastB = GFX_fLastN = GFX_fLastF = 0;
   GFX_bViewMatrix = TRUE;
 
-  // set maximum allowed upload ammount
+  // set maximum allowed upload amount
   gfx_iProbeSize = Clamp(gfx_iProbeSize, 1L, 16384L);
   gl_slAllowedUploadBurst = gfx_iProbeSize * 1024;
   _ctProbeTexs = 0;

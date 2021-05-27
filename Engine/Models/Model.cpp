@@ -1389,7 +1389,7 @@ void CModelData::Read_t(CTStream *pFile) // throw char *
     INDEX ctCollisionBoxes;
     // get count of collision boxes
     pFile->Read_t(&ctCollisionBoxes, sizeof(INDEX));
-    // add needed ammount of members
+    // add needed amount of members
     md_acbCollisionBox.New(ctCollisionBoxes);
     md_acbCollisionBox.Lock();
     // for all saved collision boxes
