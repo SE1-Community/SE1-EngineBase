@@ -17,12 +17,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Network/NetworkProfile.h>
 
-// profile form for profiling world editing
+// Profile form for profiling world editing
 CNetworkProfile npNetworkProfile;
 CProfileForm &_pfNetworkProfile = npNetworkProfile;
 
 CNetworkProfile::CNetworkProfile(void) :
-CProfileForm("Network", "ticks", CNetworkProfile::PCI_COUNT, CNetworkProfile::PTI_COUNT) {
+  CProfileForm("Network", "ticks", CNetworkProfile::PCI_COUNT, CNetworkProfile::PTI_COUNT)
+{
   // initialize network profile form
   SETTIMERNAME(CNetworkProfile::PTI_MAINLOOP, "MainLoop()", "");
   SETTIMERNAME(CNetworkProfile::PTI_TIMERLOOP, "TimerLoop()", "");

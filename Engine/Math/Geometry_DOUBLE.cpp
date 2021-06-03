@@ -21,6 +21,3 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Math/Functions.h>
 #include <Engine/Math/Placement.h>
 #include <Engine/Math/Projection.h>
-
-/////////////////////////////////////////////////////////////////////
-//  CSimpleProjection3D_DOUBLE

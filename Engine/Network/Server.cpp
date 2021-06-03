@@ -49,6 +49,9 @@ extern INDEX ser_bInverseBanning;
 extern BOOL MatchesBanMask(const CTString &strString, const CTString &strMask);
 extern CClientInterface cm_aciClients[SERVER_CLIENTS];
 
+// CSessionSocket
+
+// Constructor
 CSessionSocket::CSessionSocket(void) {
   sso_bActive = FALSE;
   sso_bVIP = FALSE;
@@ -59,6 +62,8 @@ CSessionSocket::CSessionSocket(void) {
   sso_tvLastMessageSent.Clear();
   sso_tvLastPingSent.Clear();
 }
+
+// Destructor
 CSessionSocket::~CSessionSocket(void) {
   sso_bActive = FALSE;
   sso_bVIP = FALSE;
@@ -68,6 +73,7 @@ CSessionSocket::~CSessionSocket(void) {
   sso_tvLastMessageSent.Clear();
   sso_tvLastPingSent.Clear();
 }
+
 void CSessionSocket::Clear(void) {
   sso_bActive = FALSE;
   sso_bVIP = FALSE;
@@ -100,7 +106,7 @@ void CSessionSocket::Activate(void) {
   sso_iDisconnectedState = 0;
   sso_ctBadSyncs = 0;
   sso_sspParams.Clear();
-  //  sso_nsBuffer.Clear();
+  //sso_nsBuffer.Clear();
 }
 
 void CSessionSocket::Deactivate(void) {
@@ -113,6 +119,7 @@ void CSessionSocket::Deactivate(void) {
   sso_nsBuffer.Clear();
   sso_sspParams.Clear();
 }
+
 BOOL CSessionSocket::IsActive(void) {
   return sso_bActive;
 }
@@ -137,13 +144,13 @@ static void ClampParams(void) {
   cli_iMinBPS = Clamp(cli_iMinBPS, INDEX(100), INDEX(1000000));
 }
 
-// check if up to date with current params
+// Check if up to date with current params
 BOOL CSessionSocketParams::IsUpToDate(void) {
   ClampParams();
   return ssp_iBufferActions == cli_iBufferActions && ssp_iMaxBPS == cli_iMaxBPS && ssp_iMinBPS == cli_iMinBPS;
 }
 
-// update
+// Update
 void CSessionSocketParams::Update(void) {
   ClampParams();
   ssp_iBufferActions = cli_iBufferActions;
@@ -151,42 +158,41 @@ void CSessionSocketParams::Update(void) {
   ssp_iMinBPS = cli_iMinBPS;
 }
 
-// message operations
+// Message operations
 CNetworkMessage &operator<<(CNetworkMessage &nm, CSessionSocketParams &ssp) {
   nm << ssp.ssp_iBufferActions << ssp.ssp_iMaxBPS << ssp.ssp_iMinBPS;
   return nm;
 }
+
 CNetworkMessage &operator>>(CNetworkMessage &nm, CSessionSocketParams &ssp) {
   nm >> ssp.ssp_iBufferActions >> ssp.ssp_iMaxBPS >> ssp.ssp_iMinBPS;
   return nm;
 }
 
-/*
- * Constructor.
- */
+// CServer
+
+// Constructor
 CServer::CServer(void) {
   srv_bActive = FALSE;
 
   srv_assoSessions.New(NET_MAXGAMECOMPUTERS);
   srv_aplbPlayers.New(NET_MAXGAMEPLAYERS);
+
   // initialize player indices
   INDEX iPlayer = 0;
+
   FOREACHINSTATICARRAY(srv_aplbPlayers, CPlayerBuffer, itplb) {
     itplb->plb_Index = iPlayer;
     iPlayer++;
   }
 }
 
-/*
- * Destructor.
- */
+// Destructor
 CServer::~CServer() {
   srv_bActive = FALSE;
 }
 
-/*
- * Clear the object.
- */
+// Clear the object
 void CServer::Stop(void) {
   // stop gameagent
   GameAgent_ServerEnd();
@@ -194,6 +200,7 @@ void CServer::Stop(void) {
   // tell all clients to disconnect
   INDEX ctClients = srv_assoSessions.sa_Count;
   INDEX iClient;
+
   for (iClient = 0; iClient < ctClients; iClient++) {
     if (srv_assoSessions[iClient].sso_bActive == TRUE) {
       SendDisconnectMessage(iClient, "Server stopped.");
@@ -203,14 +210,17 @@ void CServer::Stop(void) {
   // run a few updates, so the message gets sent
   for (int ctUpdates = 0; ctUpdates < 10; ctUpdates++) {
     BOOL bFound = FALSE;
+
     for (iClient = 0; iClient < ctClients; iClient++) {
       if (srv_assoSessions[iClient].sso_bActive == TRUE) {
         bFound = TRUE;
         break;
       }
     }
+
     if (bFound == FALSE) {
       break;
+
     } else {
       _cmiComm.Server_Update();
       Sleep(100);
@@ -223,11 +233,14 @@ void CServer::Stop(void) {
   // clear all session
   srv_assoSessions.Clear();
   srv_assoSessions.New(NET_MAXGAMECOMPUTERS);
+
   // clear list of players
   srv_aplbPlayers.Clear();
   srv_aplbPlayers.New(NET_MAXGAMEPLAYERS);
+
   // initialize player indices
   INDEX iPlayer = 0;
+
   {FOREACHINSTATICARRAY(srv_aplbPlayers, CPlayerBuffer, itplb) {
     itplb->plb_Index = iPlayer;
     iPlayer++;
@@ -239,9 +252,7 @@ void CServer::Stop(void) {
   srv_bActive = FALSE;
 };
 
-/*
- * Initialize server and start message handlers.
- */
+// Initialize server and start message handlers
 void CServer::Start_t(void) {
   // init buffer for sync checks
   srv_ascChecks.Clear();
@@ -263,18 +274,19 @@ void CServer::Start_t(void) {
   }
 }
 
-/*
- * Send disconnect message to some node.
- */
+// Send disconnect message to some node
 void CServer::SendDisconnectMessage(INDEX iClient, const char *strExplanation, BOOL bStream) {
   CSessionSocket &sso = srv_assoSessions[iClient];
 
   if (!bStream) {
     CNetworkMessage nmDisconnect(MSG_INF_DISCONNECTED);
+
     // compose message
     nmDisconnect << CTString(strExplanation);
+
     // send it
     _pNetwork->SendToClientReliable(iClient, nmDisconnect);
+
   } else {
     CTMemoryStream strmDisconnect;
     strmDisconnect << INDEX(MSG_INF_DISCONNECTED);
@@ -283,13 +295,16 @@ void CServer::SendDisconnectMessage(INDEX iClient, const char *strExplanation, B
     // send the stream to the remote session state
     _pNetwork->SendToClientReliable(iClient, strmDisconnect);
   }
+
   // report that it has gone away
   CPrintF(TRANS("Client '%s' ordered to disconnect: %s\n"), _cmiComm.Server_GetClientName(iClient), strExplanation);
+
   // if not disconnected before
   if (sso.sso_iDisconnectedState == 0) {
     // mark the disconnection
     sso.sso_iDisconnectedState = 1;
-    // if the client was already kicked before, but is still hanging here
+
+  // if the client was already kicked before, but is still hanging here
   } else {
     // force the disconnection
     CPrintF(TRANS("Forcing client '%s' to disconnect\n"), _cmiComm.Server_GetClientName(iClient));
@@ -297,15 +312,18 @@ void CServer::SendDisconnectMessage(INDEX iClient, const char *strExplanation, B
   }
 }
 
-// add a new sync check to buffer
+// Add a new sync check to buffer
 void CServer::AddSyncCheck(const CSyncCheck &sc) {
   ser_iSyncCheckBuffer = ClampDn(ser_iSyncCheckBuffer, INDEX(1));
+
   if (srv_ascChecks.Count() != ser_iSyncCheckBuffer) {
     srv_ascChecks.Clear();
     srv_ascChecks.New(ser_iSyncCheckBuffer);
   }
+
   // find the oldest one
   INDEX iOldest = 0;
+
   for (INDEX i = 1; i < srv_ascChecks.Count(); i++) {
     if (srv_ascChecks[i].sc_llTick < srv_ascChecks[iOldest].sc_llTick) {
       iOldest = i;
@@ -316,17 +334,21 @@ void CServer::AddSyncCheck(const CSyncCheck &sc) {
   srv_ascChecks[iOldest] = sc;
 }
 
-// try to find a sync check for given time in the buffer (-1 == too old, 0 == found, 1 == toonew)
+// Try to find a sync check for given time in the buffer (-1 == too old, 0 == found, 1 == toonew)
 INDEX CServer::FindSyncCheck(TICK llTick, CSyncCheck &sc) {
   BOOL bHasEarlier = FALSE;
   BOOL bHasLater = FALSE;
+
   for (INDEX i = 0; i < srv_ascChecks.Count(); i++) {
     TICK llInTable = srv_ascChecks[i].sc_llTick;
+
     if (llInTable == llTick) {
       sc = srv_ascChecks[i];
       return 0;
+
     } else if (llInTable < llTick) {
       bHasEarlier = TRUE;
+
     } else if (llInTable > llTick) {
       bHasLater = TRUE;
     }
@@ -335,16 +357,18 @@ INDEX CServer::FindSyncCheck(TICK llTick, CSyncCheck &sc) {
   if (!bHasEarlier) {
     ASSERT(bHasLater);
     return -1;
+
   } else if (!bHasLater) {
     ASSERT(bHasEarlier);
     return +1;
+
   } else {
     ASSERT(FALSE); // cannot have both earlier and later and not be found
     return +1;
   }
 }
 
-// Send one regular batch of sequences to a client.
+// Send one regular batch of sequences to a client
 void CServer::SendGameStreamBlocks(INDEX iClient) {
   // get corresponding session socket
   CSessionSocket &sso = srv_assoSessions[iClient];
@@ -353,9 +377,11 @@ void CServer::SendGameStreamBlocks(INDEX iClient) {
   INDEX iLastSent = sso.sso_iLastSentSequence;
   INDEX ctMinBytes = sso.sso_sspParams.ssp_iMinBPS / 20;
   INDEX ctMaxBytes = sso.sso_sspParams.ssp_iMaxBPS / 20;
+
   // make sure outgoing message doesn't overflow UDP size
   ctMinBytes = Clamp(ctMinBytes, 0L, 1000L);
   ctMaxBytes = Clamp(ctMaxBytes, 0L, 1000L);
+
   // limit the clients BPS by server's local settings
   extern INDEX ser_iMaxAllowedBPS;
   ctMinBytes = ClampUp(ctMinBytes, (INDEX)(ser_iMaxAllowedBPS / 20L - MAX_HEADER_SIZE));
@@ -363,20 +389,23 @@ void CServer::SendGameStreamBlocks(INDEX iClient) {
 
   // prevent server/singleplayer from flooding itself
   extern INDEX cli_bPredictIfServer;
+
   if (iClient == 0 && !cli_bPredictIfServer) {
     ctMinBytes = 0;
     ctMaxBytes = 1E6;
   }
 
-  //  CPrintF("Send%d(%d, %d, %d): ", iClient, iLastSent, ctMinBytes, ctMaxBytes);
+  //CPrintF("Send%d(%d, %d, %d): ", iClient, iLastSent, ctMinBytes, ctMaxBytes);
 
   // start after last sequence that was sent and go upwards
   INDEX iSequence = iLastSent + 1;
   INDEX iStep = +1;
-  //  CPrintF("last=%d -- ", iLastSent);
+
+  //CPrintF("last=%d -- ", iLastSent);
 
   // initialize the message that is to be sent
   CNetworkMessage nmGameStreamBlocks(MSG_GAMESTREAMBLOCKS);
+
   // get one message for last compressed message of valid size
   CNetworkMessage nmPackedBlocks(MSG_GAMESTREAMBLOCKS);
   CNetworkMessage nmPackedBlocksNew(MSG_GAMESTREAMBLOCKS);
@@ -384,45 +413,56 @@ void CServer::SendGameStreamBlocks(INDEX iClient) {
   // repeat for max 100 sequences
   INDEX iBlocksOk = 0;
   INDEX iMaxSent = -1;
+
   for (INDEX i = 0; i < 100; i++) {
     if (iStep < 0 && iBlocksOk >= 3) {
-      //      break;
+      //break;
     }
+
     // get the stream block with current sequence
-    //    CPrintF("%d: ", iSequence);
+    //CPrintF("%d: ", iSequence);
+
     CNetworkStreamBlock *pnsbBlock;
     CNetworkStream::Result res = sso.sso_nsBuffer.GetBlockBySequence(iSequence, pnsbBlock);
+
     // if it is not found
     if (res != CNetworkStream::R_OK) {
       // if going upward
       if (iStep > 0) {
-        //        // if this block is missing
-        //        && res == CNetworkStream::R_BLOCKMISSING
+        // if this block is missing
+        // && res == CNetworkStream::R_BLOCKMISSING
+
         // if none sent so far
         if (iBlocksOk <= 0) {
           // give up
-          //          CPrintF("giving up\n");
+          //CPrintF("giving up\n");
           break;
         }
-        //        CPrintF("rewind ", iSequence);
+
+        //CPrintF("rewind %d\n", iSequence);
+
         // rewind and continue downward
         if (iSequence == iLastSent + 1) {
           iSequence = iLastSent - 1;
         } else {
           iSequence = iLastSent;
         }
+
         iStep = -1;
+
         // retry
         continue;
-        // otherwise
+
+      // otherwise
       } else {
         // stop adding more blocks
         break;
       }
     }
+
     // if uncompressed message would overflow
     if (nmGameStreamBlocks.nm_slSize + pnsbBlock->nm_slSize + 32 > MAX_NETWORKMESSAGE_SIZE) {
-      //      CPrintF("overflow ");
+      //CPrintF("overflow\n");
       break;
     }
 
@@ -430,18 +470,22 @@ void CServer::SendGameStreamBlocks(INDEX iClient) {
     pnsbBlock->WriteToMessage(nmGameStreamBlocks);
     nmPackedBlocksNew.Reinit();
     nmGameStreamBlocks.PackDefault(nmPackedBlocksNew);
+
     // if some blocks written already and the batch is too large
     if (iBlocksOk > 0) {
       if (iStep > 0 && nmPackedBlocksNew.nm_slSize >= ctMaxBytes || iStep < 0 && nmPackedBlocksNew.nm_slSize >= ctMinBytes) {
         // stop
-        //        CPrintF("toomuch ");
+        //CPrintF("too much\n");
         break;
       }
     }
+
     // use new pack
-    //    CPrintF("added ");
+    //CPrintF("added\n");
+
     nmPackedBlocks = nmPackedBlocksNew;
     iMaxSent = Max(iMaxSent, iSequence);
+
     iSequence += iStep;
     iBlocksOk++;
   }
@@ -451,19 +495,23 @@ void CServer::SendGameStreamBlocks(INDEX iClient) {
     // if not sent anything for some time
     CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
     extern FLOAT ser_tmKeepAlive;
+
     if ((tvNow - sso.sso_tvLastMessageSent).GetSeconds() > ser_tmKeepAlive) {
       // send keepalive
       CNetworkMessage nmKeepalive(MSG_KEEPALIVE);
       _pNetwork->SendToClient(iClient, nmKeepalive);
+
       sso.sso_tvLastMessageSent = tvNow;
     }
-    //    CPrintF("nothing\n");
+
+    //CPrintF("nothing\n");
     return;
   }
 
   // send the message to the client
-  //  CPrintF("sent: %d=%dB\n", iBlocksOk, nmPackedBlocks.nm_slSize);
+  //CPrintF("sent: %d=%dB\n", iBlocksOk, nmPackedBlocks.nm_slSize);
   _pNetwork->SendToClient(iClient, nmPackedBlocks);
+
   sso.sso_iLastSentSequence = Max(sso.sso_iLastSentSequence, iMaxSent);
   sso.sso_tvLastMessageSent = _pTimer->GetHighPrecisionTimer();
 
@@ -474,28 +522,34 @@ void CServer::SendGameStreamBlocks(INDEX iClient) {
   // if haven't sent pings for some time
   CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
   extern FLOAT ser_tmPingUpdate;
+
   if ((tvNow - sso.sso_tvLastPingSent).GetSeconds() > ser_tmPingUpdate) {
     // send ping info
     CNetworkMessage nmPings(MSG_INF_PINGS);
+
     for (INDEX i = 0; i < NET_MAXGAMEPLAYERS; i++) {
       CPlayerBuffer &plb = srv_aplbPlayers[i];
+
       if (plb.IsActive()) {
         BOOL b = 1;
         nmPings.WriteBits(&b, 1);
         nmPings.WriteBits(&plb.plb_iPing, 10);
+
       } else {
         BOOL b = 0;
         nmPings.WriteBits(&b, 1);
       }
     }
+
     _pNetwork->SendToClient(iClient, nmPings);
     sso.sso_tvLastPingSent = tvNow;
   }
 }
 
-// Resend a batch of game stream blocks to a client.
+// Resend a batch of game stream blocks to a client
 void CServer::ResendGameStreamBlocks(INDEX iClient, INDEX iSequence0, INDEX ctSequences) {
   extern INDEX net_bReportMiscErrors;
+
   if (net_bReportMiscErrors) {
     CPrintF(TRANS("Server: Resending sequences %d-%d(%d) to '%s'..."), iSequence0, iSequence0 + ctSequences - 1, ctSequences,
             _cmiComm.Server_GetClientName(iClient));
@@ -510,10 +564,12 @@ void CServer::ResendGameStreamBlocks(INDEX iClient, INDEX iSequence0, INDEX ctSe
 
   // for each sequence
   INDEX iSequence = iSequence0;
+
   for (; iSequence < iSequence0 + ctSequences; iSequence++) {
     // get the stream block with that sequence
     CNetworkStreamBlock *pnsbBlock;
     CNetworkStream::Result res = sso.sso_nsBuffer.GetBlockBySequence(iSequence, pnsbBlock);
+
     // if it is not found
     if (res != CNetworkStream::R_OK) {
       // tell the requesting session state to disconnect
@@ -522,14 +578,17 @@ void CServer::ResendGameStreamBlocks(INDEX iClient, INDEX iSequence0, INDEX ctSe
     }
 
     CNetworkMessage nmPackedBlocksNew(MSG_GAMESTREAMBLOCKS);
+
     // pack it in the batch
     pnsbBlock->WriteToMessage(nmGameStreamBlocks);
     nmGameStreamBlocks.PackDefault(nmPackedBlocksNew);
+
     // if the batch is too large
     if (nmPackedBlocksNew.nm_slSize > 512) {
       // stop
       break;
     }
+
     // use new pack
     nmPackedBlocks = nmPackedBlocksNew;
   }
@@ -537,55 +596,69 @@ void CServer::ResendGameStreamBlocks(INDEX iClient, INDEX iSequence0, INDEX ctSe
   // send the last batch of valid size
   _pfNetworkProfile.IncrementCounter(CNetworkProfile::PCI_GAMESTREAMRESENDS);
   _pNetwork->SendToClient(iClient, nmPackedBlocks);
+
   extern INDEX net_bReportMiscErrors;
   if (net_bReportMiscErrors) {
     CPrintF(TRANS(" sent %d-%d(%d - %db)\n"), iSequence0, iSequence, iSequence - iSequence0 - 1, nmPackedBlocks.nm_slSize);
   }
 }
 
-// Get number of active players.
+// Get number of active players
 INDEX CServer::GetPlayersCount(void) {
   INDEX ctPlayers = 0;
+
   FOREACHINSTATICARRAY(srv_aplbPlayers, CPlayerBuffer, itplb) {
     if (itplb->IsActive()) {
       ctPlayers++;
     }
   }
+
   return ctPlayers;
 }
-// Get number of active vip players.
+
+// Get number of active vip players
 INDEX CServer::GetVIPPlayersCount(void) {
   INDEX ctPlayers = 0;
+
   FOREACHINSTATICARRAY(srv_aplbPlayers, CPlayerBuffer, itplb) {
     if (itplb->IsActive() && srv_assoSessions[itplb->plb_iClient].sso_bVIP) {
       ctPlayers++;
     }
   }
+
   return ctPlayers;
 }
-// Get total number of active clients.
+
+// Get total number of active clients
 INDEX CServer::GetClientsCount(void) {
   INDEX ctClients = 0;
+
   // for each active session
   for (INDEX iSession = 0; iSession < srv_assoSessions.Count(); iSession++) {
     CSessionSocket &sso = srv_assoSessions[iSession];
+
     if (iSession > 0 && !sso.IsActive()) {
       continue;
     }
+
     ctClients++;
   }
 
   return ctClients;
 }
-// Get number of active vip clients.
+
+// Get number of active vip clients
 INDEX CServer::GetVIPClientsCount(void) {
   INDEX ctClients = 0;
+
   // for each active session
   for (INDEX iSession = 0; iSession < srv_assoSessions.Count(); iSession++) {
     CSessionSocket &sso = srv_assoSessions[iSession];
+
     if (iSession > 0 && !sso.IsActive()) {
       continue;
     }
+
     if (sso.sso_bVIP) {
       ctClients++;
     }
@@ -593,15 +666,19 @@ INDEX CServer::GetVIPClientsCount(void) {
 
   return ctClients;
 }
-// Get number of active observers.
+
+// Get number of active observers
 INDEX CServer::GetObserversCount(void) {
   INDEX ctClients = 0;
+
   // for each active session
   for (INDEX iSession = 0; iSession < srv_assoSessions.Count(); iSession++) {
     CSessionSocket &sso = srv_assoSessions[iSession];
+
     if (iSession > 0 && !sso.IsActive()) {
       continue;
     }
+
     if (sso.sso_ctLocalPlayers == 0) {
       ctClients++;
     }
@@ -610,20 +687,20 @@ INDEX CServer::GetObserversCount(void) {
   return ctClients;
 }
 
-// Get number of active players on one client.
+// Get number of active players on one client
 INDEX CServer::GetPlayersCountForClient(INDEX iClient) {
   INDEX ctPlayers = 0;
+
   FOREACHINSTATICARRAY(srv_aplbPlayers, CPlayerBuffer, itplb) {
     if (itplb->IsActive() && itplb->plb_iClient == iClient) {
       ctPlayers++;
     }
   }
+
   return ctPlayers;
 }
 
-/*
- * Find first inactive client.
- */
+// Find first inactive client
 CPlayerBuffer *CServer::FirstInactivePlayer(void) {
   // for all players in game
   FOREACHINSTATICARRAY(srv_aplbPlayers, CPlayerBuffer, itplb) {
@@ -633,13 +710,12 @@ CPlayerBuffer *CServer::FirstInactivePlayer(void) {
       return &itplb.Current();
     }
   }
+
   // if no inactive players found, return error
   return NULL;
 }
 
-/*
- * Check if some character already exists in this session.
- */
+// Check if some character already exists in this session
 BOOL CServer::CharacterNameIsUsed(CPlayerCharacter &pcCharacter) {
   // for all players in game
   FOREACHINSTATICARRAY(srv_aplbPlayers, CPlayerBuffer, itplb) {
@@ -649,25 +725,27 @@ BOOL CServer::CharacterNameIsUsed(CPlayerCharacter &pcCharacter) {
       return TRUE;
     }
   }
+
   // otherwise, it doesn't exist
   return FALSE;
 }
 
-// find a mask of all players on a certain client
+// Find a mask of all players on a certain client
 ULONG CServer::MaskOfPlayersOnClient(INDEX iClient) {
   ULONG ulClientPlayers = 0;
+
   for (INDEX ipl = 0; ipl < srv_aplbPlayers.Count(); ipl++) {
     CPlayerBuffer &plb = srv_aplbPlayers[ipl];
+
     if (plb.IsActive() && plb.plb_iClient == iClient) {
       ulClientPlayers |= 1UL << ipl;
     }
   }
+
   return ulClientPlayers;
 }
 
-/*
- * Handle network messages.
- */
+// Handle network messages
 void CServer::ServerLoop(void) {
   // if not started
   if (!srv_bActive) {
@@ -678,11 +756,12 @@ void CServer::ServerLoop(void) {
 
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_SERVER_LOOP);
 
-  //  try {
-  //    _cmiComm.Server_Accept_t();
-  //  } catch (char *strError) {
-  //    CPrintF(TRANS("Accepting failed, no more clients can connect: %s\n"), strError);
-  //  }
+  /*try {
+    _cmiComm.Server_Accept_t();
+  } catch (char *strError) {
+    CPrintF(TRANS("Accepting failed, no more clients can connect: %s\n"), strError);
+  }*/
+
   // handle all incoming messages
   HandleAll();
 
@@ -690,11 +769,11 @@ void CServer::ServerLoop(void) {
   extern INDEX ser_bWaitFirstPlayer;
 
   // if the local session is keeping up with time and not paused
-  BOOL bPaused
-    = srv_bPause || _pNetwork->ga_bLocalPause || _pNetwork->IsWaitingForPlayers() || srv_bGameFinished || ser_bWaitFirstPlayer;
+  BOOL bPaused = srv_bPause || _pNetwork->ga_bLocalPause || _pNetwork->IsWaitingForPlayers()
+              || srv_bGameFinished || ser_bWaitFirstPlayer;
 
   if (_pNetwork->ga_sesSessionState.ses_bKeepingUpWithTime && !bPaused
-      && (_pTimer->GetTimeTick() - _pNetwork->ga_sesSessionState.ses_llLastUpdated <= /*_pTimer->TickQuantum* */ 2)) {
+   && (_pTimer->GetTimeTick() - _pNetwork->ga_sesSessionState.ses_llLastUpdated <= /*_pTimer->TickQuantum * */ 2)) {
     // advance time
     srv_fServerStep += _pNetwork->ga_fGameRealTimeFactor * _pNetwork->ga_sesSessionState.ses_fRealTimeFactor;
 
@@ -715,9 +794,11 @@ void CServer::ServerLoop(void) {
   // for each active session
   for (INDEX iSession = 0; iSession < srv_assoSessions.Count(); iSession++) {
     CSessionSocket &sso = srv_assoSessions[iSession];
+
     if (iSession > 0 && (!sso.IsActive() || !sso.sso_bSendStream)) {
       continue;
     }
+
     // send one regular batch of sequences to the client
     SendGameStreamBlocks(iSession);
   }
@@ -725,7 +806,7 @@ void CServer::ServerLoop(void) {
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_SERVER_LOOP);
 }
 
-// make allaction messages for one tick
+// Make allaction messages for one tick
 void CServer::MakeAllActions(void) {
   // increment tick counter and processed sequence
   srv_llLastProcessedTick += 1; //_pTimer->TickQuantum;
@@ -734,26 +815,31 @@ void CServer::MakeAllActions(void) {
   // for each active session
   for (INDEX iSession = 0; iSession < srv_assoSessions.Count(); iSession++) {
     CSessionSocket &sso = srv_assoSessions[iSession];
+
     if (iSession > 0 && !sso.IsActive()) {
       continue;
     }
 
     // create all-actions message
     CNetworkStreamBlock nsbAllActions(MSG_SEQ_ALLACTIONS, srv_iLastProcessedSequence);
+
     // write time there
     nsbAllActions << srv_llLastProcessedTick;
 
     // for all players in game
     INDEX iPlayer = 0;
+
     FOREACHINSTATICARRAY(srv_aplbPlayers, CPlayerBuffer, itplb) {
       // if player is active
       if (itplb->IsActive()) {
         // player indices transmission is unneccessary unless if debugging
-        //            // write its index
-        //            nsbAllActions << iPlayer;
+        // write its index
+        //nsbAllActions << iPlayer;
+
         // write its action
         itplb->CreateActionPacket(&nsbAllActions, iSession);
       }
+
       iPlayer++;
     }
 
@@ -771,11 +857,12 @@ void CServer::MakeAllActions(void) {
   }}
 }
 
-// add a block to streams for all sessions
+// Add a block to streams for all sessions
 void CServer::AddBlockToAllSessions(CNetworkStreamBlock &nsb) {
   // for each active session
   for (INDEX iSession = 0; iSession < srv_assoSessions.Count(); iSession++) {
     CSessionSocket &sso = srv_assoSessions[iSession];
+
     if (iSession > 0 && !sso.IsActive()) {
       continue;
     }
@@ -785,16 +872,19 @@ void CServer::AddBlockToAllSessions(CNetworkStreamBlock &nsb) {
   }
 }
 
-// Send initialization info to local client.
+// Send initialization info to local client
 void CServer::ConnectLocalSessionState(INDEX iClient, CNetworkMessage &nm) {
   // find session of this client
   CSessionSocket &sso = srv_assoSessions[iClient];
+
   // activate it
   sso.Activate();
+
   // prepare his initialization message
   CNetworkMessage nmInitMainServer(MSG_REP_CONNECTLOCALSESSIONSTATE);
   nmInitMainServer << srv_llLastProcessedTick;
   nmInitMainServer << srv_iLastProcessedSequence;
+
   sso.sso_ctLocalPlayers = -1;
   nm >> sso.sso_sspParams;
 
@@ -802,9 +892,10 @@ void CServer::ConnectLocalSessionState(INDEX iClient, CNetworkMessage &nm) {
   _pNetwork->SendToClientReliable(iClient, nmInitMainServer);
 }
 
-// Send initialization info to remote client.
+// Send initialization info to remote client
 void CServer::ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm) {
   ASSERT(iClient > 0);
+
   // find session of this client
   CSessionSocket &sso = srv_assoSessions[iClient];
 
@@ -818,54 +909,65 @@ void CServer::ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm) {
   // read version info
   INDEX iTag, iMajor, iMinor;
   nm >> iTag;
+
   if (iTag == 'VTAG') {
     nm >> iMajor >> iMinor;
   } else {
     iMajor = 109;
     iMinor = 1;
   }
+
   // if wrong
   if (iMajor != _SE_BUILD_MAJOR || iMinor != _SE_BUILD_MINOR) {
     // disconnect the client
     CTString strExplanation;
     strExplanation.PrintF(TRANS("This server runs version %d.%d, your version is %d.%d.\n"
                                 "Please visit http://www.croteam.com for information on version updating."),
-                          _SE_BUILD_MAJOR, _SE_BUILD_MINOR, iMajor, iMinor);
-    SendDisconnectMessage(iClient, strExplanation, /*bStream=*/TRUE);
+                                _SE_BUILD_MAJOR, _SE_BUILD_MINOR, iMajor, iMinor);
+    SendDisconnectMessage(iClient, strExplanation, TRUE);
     return;
   }
+
   extern CTString net_strConnectPassword;
   extern CTString net_strVIPPassword;
   extern CTString net_strObserverPassword;
   extern INDEX net_iVIPReserve;
   extern INDEX net_iMaxObservers;
   extern INDEX net_iMaxClients;
+
   CTString strGivenMod;
   CTString strGivenPassword;
   nm >> strGivenMod >> strGivenPassword;
+
   INDEX ctWantedLocalPlayers;
   nm >> ctWantedLocalPlayers;
+
   // if wrong mod
   if (_strModName != strGivenMod) {
     // disconnect the client
     // NOTE: DO NOT TRANSLATE THIS STRING!
     CTString strMod(0, "MOD:%s\\%s", _strModName, _strModURL);
-    SendDisconnectMessage(iClient, strMod, /*bStream=*/TRUE);
+    SendDisconnectMessage(iClient, strMod, TRUE);
+
     return;
   }
 
   // get counts of allowed players, clients, vips and  check for connection allowance
   INDEX ctMaxAllowedPlayers = _pNetwork->ga_sesSessionState.ses_ctMaxPlayers;
   INDEX ctMaxAllowedClients = ctMaxAllowedPlayers;
+
   if (net_iMaxClients > 0) {
     ctMaxAllowedClients = ClampUp(net_iMaxClients, (INDEX)NET_MAXGAMECOMPUTERS);
   }
+
   INDEX ctMaxAllowedVIPPlayers = 0;
   INDEX ctMaxAllowedVIPClients = 0;
+
   if (net_iVIPReserve > 0 && net_strVIPPassword != "") {
     ctMaxAllowedVIPPlayers = ClampDn(net_iVIPReserve - GetVIPPlayersCount(), 0L);
     ctMaxAllowedVIPClients = ClampDn(net_iVIPReserve - GetVIPClientsCount(), 0L);
   }
+
   INDEX ctMaxAllowedObservers = net_iMaxObservers;
 
   // get current counts
@@ -877,14 +979,17 @@ void CServer::ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm) {
   BOOL bAutorizedAsVIP = FALSE;
   BOOL bAutorizedAsObserver = FALSE;
   BOOL bAutorizedAsPlayer = FALSE;
+
   if (net_strVIPPassword != "" && net_strVIPPassword == strGivenPassword) {
     bAutorizedAsVIP = TRUE;
     bAutorizedAsPlayer = TRUE;
     bAutorizedAsObserver = TRUE;
   }
+
   if (net_strConnectPassword == "" || net_strConnectPassword == strGivenPassword) {
     bAutorizedAsPlayer = TRUE;
   }
+
   if ((net_strObserverPassword == "" && bAutorizedAsPlayer) || net_strObserverPassword == strGivenPassword) {
     bAutorizedAsObserver = TRUE;
   }
@@ -899,7 +1004,7 @@ void CServer::ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm) {
   // if too many clients or players
   if (ctCurrentPlayers + ctWantedLocalPlayers > ctMaxAllowedPlayers || ctCurrentClients + 1 > ctMaxAllowedClients) {
     // disconnect the client
-    SendDisconnectMessage(iClient, TRANS("Server full!"), /*bStream=*/TRUE);
+    SendDisconnectMessage(iClient, TRANS("Server full!"), TRUE);
     return;
   }
 
@@ -908,33 +1013,36 @@ void CServer::ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm) {
     // if too many observers already
     if (ctCurrentObservers >= ctMaxAllowedObservers && !bAutorizedAsVIP) {
       // disconnect the client
-      SendDisconnectMessage(iClient, TRANS("Too many observers!"), /*bStream=*/TRUE);
+      SendDisconnectMessage(iClient, TRANS("Too many observers!"), TRUE);
       return;
     }
+
     // if observer password is wrong
     if (!bAutorizedAsObserver) {
       // disconnect the client
       if (strGivenPassword == "") {
-        SendDisconnectMessage(iClient, TRANS("This server requires password for observers!"), /*bStream=*/TRUE);
+        SendDisconnectMessage(iClient, TRANS("This server requires password for observers!"), TRUE);
       } else {
-        SendDisconnectMessage(iClient, TRANS("Wrong observer password!"), /*bStream=*/TRUE);
+        SendDisconnectMessage(iClient, TRANS("Wrong observer password!"), TRUE);
       }
     }
-    // if the user is trying to connect as player
+
+  // if the user is trying to connect as player
   } else {
     // if player password is wrong
     if (!bAutorizedAsPlayer) {
       // disconnect the client
       if (strGivenPassword == "") {
-        SendDisconnectMessage(iClient, TRANS("This server requires password to connect!"), /*bStream=*/TRUE);
+        SendDisconnectMessage(iClient, TRANS("This server requires password to connect!"), TRUE);
       } else {
-        SendDisconnectMessage(iClient, TRANS("Wrong password!"), /*bStream=*/TRUE);
+        SendDisconnectMessage(iClient, TRANS("Wrong password!"), TRUE);
       }
     }
   }
 
   // activate it
   sso.Activate();
+
   // load parameters for it
   sso.sso_ctLocalPlayers = ctWantedLocalPlayers;
   sso.sso_bVIP = bAutorizedAsVIP;
@@ -944,20 +1052,22 @@ void CServer::ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm) {
   try {
     // create base info to be sent
     extern CTString ser_strMOTD;
+
     CTMemoryStream strmInfo;
     strmInfo << INDEX(MSG_REP_CONNECTREMOTESESSIONSTATE);
     strmInfo << ser_strMOTD;
     strmInfo << _pNetwork->ga_World.wo_fnmFileName;
     strmInfo << _pNetwork->ga_sesSessionState.ses_ulSpawnFlags;
     strmInfo.Write_t(_pNetwork->ga_aubDefaultProperties, NET_MAXSESSIONPROPERTIES);
+
     SLONG slSize = strmInfo.GetStreamSize();
 
     // send the stream to the remote session state
     _pNetwork->SendToClientReliable(iClient, strmInfo);
 
-    CPrintF(TRANS("Server: Sent initialization info to '%s' (%dk)\n"), (const char *)_cmiComm.Server_GetClientName(iClient),
-            slSize / 1024);
-    // if failed
+    CPrintF(TRANS("Server: Sent initialization info to '%s' (%dk)\n"),
+            (const char *)_cmiComm.Server_GetClientName(iClient), slSize / 1024);
+  // if failed
   } catch (char *strError) {
     // deactivate it
     sso.Deactivate();
@@ -967,11 +1077,13 @@ void CServer::ConnectRemoteSessionState(INDEX iClient, CNetworkMessage &nm) {
   }
 }
 
-// Send session state data to remote client.
+// Send session state data to remote client
 void CServer::SendSessionStateData(INDEX iClient) {
   ASSERT(iClient > 0);
+
   // find session of this client
   CSessionSocket &sso = srv_assoSessions[iClient];
+
   // copy its buffer from local session state
   sso.sso_nsBuffer.Copy(srv_assoSessions[0].sso_nsBuffer);
 
@@ -987,23 +1099,26 @@ void CServer::SendSessionStateData(INDEX iClient) {
     extern INDEX net_bDumpConnectionInfo;
 
     UBYTE *pubSrc = NULL;
+
     /*if (net_bDumpConnectionInfo) {
       strmStateFile.Create_t(CTString("Temp\\State.bin"));
       strmDeltaFile.Create_t(CTString("Temp\\Delta.bin"));
       pstrmState = &strmStateFile;
       pstrmDelta = &strmDeltaFile;
-    } else {*/
-    pstrmState = &strmStateMem;
-    pstrmDelta = &strmDeltaMem;
 
-    pubSrc = strmDeltaMem.mstrm_pubBuffer + strmDeltaMem.mstrm_slLocation;
-    //}
+    } else*/ {
+      pstrmState = &strmStateMem;
+      pstrmDelta = &strmDeltaMem;
+
+      pubSrc = strmDeltaMem.mstrm_pubBuffer + strmDeltaMem.mstrm_slLocation;
+    }
 
     ASSERT(pubSrc != NULL);
 
     // write main session state
     _pNetwork->ga_sesSessionState.Write_t(pstrmState);
     pstrmState->SetPos_t(0);
+
     SLONG slFullSize = pstrmState->GetStreamSize();
 
     CTMemoryStream strmInfo;
@@ -1013,8 +1128,10 @@ void CServer::SendSessionStateData(INDEX iClient) {
     CTMemoryStream strmDefaultState;
     strmDefaultState.Write_t(_pNetwork->ga_pubDefaultState, _pNetwork->ga_slDefaultStateSize);
     strmDefaultState.SetPos_t(0);
+
     DIFF_Diff_t(&strmDefaultState, pstrmState, pstrmDelta);
     pstrmDelta->SetPos_t(0);
+
     SLONG slDeltaSize = pstrmDelta->GetStreamSize();
     CzlibCompressor comp;
     comp.PackStream_t(*pstrmDelta, strmInfo);
@@ -1024,13 +1141,14 @@ void CServer::SendSessionStateData(INDEX iClient) {
     // send the stream to the remote session state
     _pNetwork->SendToClientReliable(iClient, strmInfo);
 
-    CPrintF(TRANS("Server: Sent connection data to '%s' (%dk->%dk->%dk)\n"), (const char *)_cmiComm.Server_GetClientName(iClient),
-            slFullSize / 1024, slDeltaSize / 1024, slSize / 1024);
+    CPrintF(TRANS("Server: Sent connection data to '%s' (%dk->%dk->%dk)\n"),
+            (const char *)_cmiComm.Server_GetClientName(iClient), slFullSize / 1024, slDeltaSize / 1024, slSize / 1024);
+
     if (net_bDumpConnectionInfo) {
       CPrintF(TRANS("Server: Connection data dumped.\n"));
     }
 
-    // if failed
+  // if failed
   } catch (char *strError) {
     // deactivate it
     sso.Deactivate();
@@ -1040,15 +1158,14 @@ void CServer::SendSessionStateData(INDEX iClient) {
   }
 }
 
-// Handle incoming network messages.
+// Handle incoming network messages
 void CServer::HandleAll() {
   // clear last accepted client info
   INDEX iClient = -1;
-  /*  if (_cmiComm.GetLastAccepted(iClient)) {
-      CPrintF(TRANS("Server: Accepted session connection by '%s'\n"),
-        _cmiComm.Server_GetClientName(iClient));
-    }
-    */
+
+  /*if (_cmiComm.GetLastAccepted(iClient)) {
+    CPrintF(TRANS("Server: Accepted session connection by '%s'\n"), _cmiComm.Server_GetClientName(iClient));
+  }*/
 
   // for each active client
   {
@@ -1067,35 +1184,39 @@ void CServer::HandleAllForAClient(INDEX iClient) {
   }
 
   // update the client's max BPS limit from the session socket parameters
-  cm_aciClients[iClient].ci_pbOutputBuffer.pb_pbsLimits.pbs_fBandwidthLimit
-    = srv_assoSessions[iClient].sso_sspParams.ssp_iMaxBPS * 8;
+  cm_aciClients[iClient].ci_pbOutputBuffer.pb_pbsLimits.pbs_fBandwidthLimit = srv_assoSessions[iClient].sso_sspParams.ssp_iMaxBPS * 8;
 
   // find session of this client
   CSessionSocket &sso = srv_assoSessions[iClient];
+
   // if hasn't received sync check for too long
   extern INDEX ser_bKickOnSyncLate;
   if (ser_bKickOnSyncLate && sso.sso_bActive && sso.sso_llLastSyncReceived > 0
-      && sso.sso_llLastSyncReceived
-           < _pNetwork->ga_sesSessionState.ses_llLastSyncCheck
-               - CTimer::InTicks(2 * ser_iSyncCheckBuffer * _pNetwork->ga_sesSessionState.ses_tmSyncCheckFrequency)) {
+   && sso.sso_llLastSyncReceived < _pNetwork->ga_sesSessionState.ses_llLastSyncCheck
+    - CTimer::InTicks(2 * ser_iSyncCheckBuffer * _pNetwork->ga_sesSessionState.ses_tmSyncCheckFrequency))
+  {
     SendDisconnectMessage(iClient, TRANS("No valid SYNCCHECK received for too long!"));
   }
 
   if (iClient > 0 && sso.sso_bActive && sso.sso_bSendStream && sso.sso_tvMessageReceived.tv_llValue > 0
-      && (_pTimer->GetHighPrecisionTimer() - sso.sso_tvMessageReceived).GetSeconds() > net_tmDisconnectTimeout) {
+   && (_pTimer->GetHighPrecisionTimer() - sso.sso_tvMessageReceived).GetSeconds() > net_tmDisconnectTimeout)
+  {
     SendDisconnectMessage(iClient, TRANS("Connection timeout"));
   }
 
   // if the client is disconnected
   if (!_cmiComm.Server_IsClientUsed(iClient) || sso.sso_iDisconnectedState > 1) {
     CPrintF(TRANS("Server: Client '%s' disconnected.\n"), _cmiComm.Server_GetClientName(iClient));
+
     // clear it
     _cmiComm.Server_ClearClient(iClient);
+
     // free all that data that was allocated for the client
     HandleClientDisconected(iClient);
   }
 
   CNetworkMessage nmReceived;
+
   // repeat
   FOREVER {
     // if there is some reliable message
@@ -1103,7 +1224,7 @@ void CServer::HandleAllForAClient(INDEX iClient) {
       // process it
       Handle(iClient, nmReceived);
 
-      // if there are no more messages
+    // if there are no more messages
     } else {
       // skip to receiving unreliable
       break;
@@ -1113,8 +1234,10 @@ void CServer::HandleAllForAClient(INDEX iClient) {
   // if the client has confirmed disconnect in this loop
   if (!_cmiComm.Server_IsClientUsed(iClient) || sso.sso_iDisconnectedState > 1) {
     CPrintF(TRANS("Server: Client '%s' disconnected.\n"), _cmiComm.Server_GetClientName(iClient));
+
     // clear it
     _cmiComm.Server_ClearClient(iClient);
+
     // free all that data that was allocated for the client
     HandleClientDisconected(iClient);
   }
@@ -1125,7 +1248,8 @@ void CServer::HandleAllForAClient(INDEX iClient) {
     if (_pNetwork->ReceiveFromClient(iClient, nmReceived)) {
       // process it
       Handle(iClient, nmReceived);
-      // if there are no more messages
+
+    // if there are no more messages
     } else {
       // finish with this client
       break;
@@ -1136,26 +1260,31 @@ void CServer::HandleAllForAClient(INDEX iClient) {
 void CServer::HandleClientDisconected(INDEX iClient) {
   // find session of this client
   CSessionSocket &sso = srv_assoSessions[iClient];
+
   // deactivate it
   sso.Deactivate();
 
   INDEX iPlayer = 0;
+
   FOREACHINSTATICARRAY(srv_aplbPlayers, CPlayerBuffer, itplb) {
     // if player is on that client
     if (itplb->plb_iClient == iClient) {
       // create message for removing player from all session
       CNetworkStreamBlock nsbRemPlayerData(MSG_SEQ_REMPLAYER, ++srv_iLastProcessedSequence);
       nsbRemPlayerData << iPlayer; // player index
+
       // put the message in buffer to be sent to all sessions
       AddBlockToAllSessions(nsbRemPlayerData);
+
       // deactivate it
       itplb->Deactivate();
     }
+
     iPlayer++;
   }
 }
 
-// split the rcon response string into lines and send one by one to the client
+// Split the rcon response string into lines and send one by one to the client
 static void SendAdminResponse(INDEX iClient, const CTString &strResponse) {
   CTString str = strResponse;
 
@@ -1164,9 +1293,11 @@ static void SendAdminResponse(INDEX iClient, const CTString &strResponse) {
     strLine.OnlyFirstLine();
     str.RemovePrefix(strLine);
     str.DeleteChar(0);
+
     if (strLine.Length() > 0) {
       CNetworkMessage nm(MSG_ADMIN_RESPONSE);
       nm << strLine;
+
       _pNetwork->SendToClientReliable(iClient, nm);
     }
   }
@@ -1188,15 +1319,18 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage) {
     case MSG_REQ_CONNECTLOCALSESSIONSTATE: {
       ConnectLocalSessionState(iClient, nmMessage);
     } break;
+
     // if remote server asks for registration
     case MSG_REQ_CONNECTREMOTESESSIONSTATE: {
       ConnectRemoteSessionState(iClient, nmMessage);
     } break;
+
     // if remote server asks for data
     case MSG_REQ_STATEDELTA: {
       CPrintF(TRANS("Sending statedelta response\n"));
       SendSessionStateData(iClient);
     } break;
+
     // if player asks for registration
     case MSG_REQ_CONNECTPLAYER: {
       // check that someone doesn't add too many players
@@ -1221,6 +1355,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage) {
 
       // find some inactive player
       pplbNewClient = FirstInactivePlayer();
+
       // if there is some active player with same character name
       if (CharacterNameIsUsed(pcCharacter)) {
         // send refusal message
@@ -1228,7 +1363,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage) {
         strMessage.PrintF(TRANS("Player character '%s' already exists in this session."), pcCharacter.GetName());
         SendDisconnectMessage(iClient, strMessage);
 
-        // if the max. number of clients is not reached
+      // if the max number of clients is not reached
       } else if (pplbNewClient != NULL) {
         // activate it
         pplbNewClient->Activate(iClient);
@@ -1241,6 +1376,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage) {
         CNetworkStreamBlock nsbAddClientData(MSG_SEQ_ADDPLAYER, ++srv_iLastProcessedSequence);
         nsbAddClientData << iNewPlayer;  // client index
         nsbAddClientData << pcCharacter; // client character data
+
         extern INDEX ser_bWaitFirstPlayer;
         ser_bWaitFirstPlayer = 0; // player is here don't wait any more
 
@@ -1254,7 +1390,8 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage) {
 
         // notify gameagent
         GameAgent_ServerStateChanged();
-        // if refused
+
+      // if refused
       } else {
         // send him refusal message
         SendDisconnectMessage(iClient, TRANS("Too many players in session."));
@@ -1267,11 +1404,14 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage) {
       INDEX iPlayer;
       CPlayerCharacter pcCharacter;
       nmMessage >> iPlayer >> pcCharacter;
+
       // first check if the request is valid
       if (iPlayer < 0 || iPlayer > srv_aplbPlayers.Count()) {
         break;
       }
+
       CPlayerBuffer &plb = srv_aplbPlayers[iPlayer];
+
       if (plb.plb_iClient != iClient || !(plb.plb_pcCharacter == pcCharacter)) {
         break;
       }
@@ -1285,42 +1425,50 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage) {
 
       // put the message in buffer to be sent to all clients
       AddBlockToAllSessions(nsbChangeChar);
-
     } break;
 
     // if client source sends action packet
     case MSG_ACTION: {
       CSessionSocket &sso = srv_assoSessions[iClient];
+
       // for each possible player on that client
       for (INDEX ipls = 0; ipls < NET_MAXLOCALPLAYERS; ipls++) {
         // see if saved in the message
         BOOL bSaved = 0;
         nmMessage.ReadBits(&bSaved, 1);
+
         // if saved
         if (bSaved) {
           // read client index
           INDEX iPlayer = 0;
           nmMessage.ReadBits(&iPlayer, 4);
+
           CPlayerBuffer &plb = srv_aplbPlayers[iPlayer];
+
           // if the player is not on that client
           if (plb.plb_iClient != iClient) {
             // consider the entire message invalid
             CPrintF("Wrong Client!\n");
             break;
           }
+
           // read ping
           plb.plb_iPing = 0;
           nmMessage.ReadBits(&plb.plb_iPing, 10);
+
           // let the corresponding client buffer receive the message
           INDEX iMaxBuffer = sso.sso_sspParams.ssp_iBufferActions;
+
           extern INDEX cli_bPredictIfServer;
           if (iClient == 0 && !cli_bPredictIfServer) {
             iMaxBuffer = 1;
           }
+
           plb.ReceiveActionPacket(&nmMessage, iMaxBuffer);
         }
       }
     } break;
+
     // if client sent a synchronization check
     case MSG_SYNCCHECK: {
       extern INDEX ser_bReportSyncOK;
@@ -1337,6 +1485,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage) {
       // try to find it in buffer
       CSyncCheck scLocal;
       INDEX iFound = FindSyncCheck(scRemote.sc_llTick, scLocal);
+
       // if found
       if (iFound == 0) {
         // flush the clients stream buffer up to that sequence
@@ -1348,22 +1497,28 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage) {
         if (scLocal.sc_iLevel != scRemote.sc_iLevel) {
           // disconnect the client
           SendDisconnectMessage(iClient, TRANS("Level change in progress. Please retry."));
-          // if it is wrong crc
+
+        // if it is wrong crc
         } else if (scLocal.sc_ulCRC != scRemote.sc_ulCRC) {
           sso.sso_ctBadSyncs++;
+
           if (ser_bReportSyncBad) {
             CPrintF(TRANS("SYNCBAD: Client '%s', Sequence %d Tick %.2f - bad %d\n"), _cmiComm.Server_GetClientName(iClient),
                     scRemote.sc_iSequence, CTimer::InSeconds(scRemote.sc_llTick), sso.sso_ctBadSyncs);
           }
+
           if (ser_iKickOnSyncBad > 0) {
             if (sso.sso_ctBadSyncs >= ser_iKickOnSyncBad) {
               SendDisconnectMessage(iClient, TRANS("Too many bad syncs"));
             }
+
           } else if (ser_bPauseOnSyncBad) {
             _pNetwork->ga_sesSessionState.ses_bWantPause = TRUE;
           }
+
         } else {
           sso.sso_ctBadSyncs = 0;
+
           if (ser_bReportSyncOK) {
             CPrintF(TRANS("SYNCOK: Client '%s', Tick %.2f\n"), _cmiComm.Server_GetClientName(iClient),
                     CTimer::InSeconds(scRemote.sc_llTick));
@@ -1382,55 +1537,65 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage) {
           CPrintF(TRANS("SYNCLATE: Client '%s', Tick %.2f\n"), _cmiComm.Server_GetClientName(iClient),
                   CTimer::InSeconds(scRemote.sc_llTick));
         }
-        // if too new
+
+      // if too new
       } else {
         if (ser_bReportSyncEarly) {
           CPrintF(TRANS("SYNCEARLY: Client '%s', Tick %.2f\n"), _cmiComm.Server_GetClientName(iClient),
                   CTimer::InSeconds(scRemote.sc_llTick));
         }
+
         // remember that this client has sent sync for that tick
         // (even though we cannot really check that it is valid)
         if (srv_assoSessions[iClient].sso_llLastSyncReceived < scRemote.sc_llTick) {
           srv_assoSessions[iClient].sso_llLastSyncReceived = scRemote.sc_llTick;
         }
       }
-
     } break;
+
     // if a server requests resend of some game stream packets
     case MSG_REQUESTGAMESTREAMRESEND: {
       // get the sequences from the block
       INDEX iSequence0, ctSequences;
       nmMessage >> iSequence0;
       nmMessage >> ctSequences;
+
       // resend the game stream blocks to the server
       ResendGameStreamBlocks(iClient, iSequence0, ctSequences);
     } break;
+
     // if a client wants to toggle pause
     case MSG_REQ_PAUSE: {
       // read the pause state from the message
       BOOL bWantPause;
       nmMessage >> (INDEX &)bWantPause;
+
       // if state is new
       if (!srv_bPause != !bWantPause) {
         // if the client may pause
         extern INDEX ser_bClientsMayPause;
+
         if (_cmiComm.Server_IsClientLocal(iClient) || ser_bClientsMayPause) {
           // change it
           srv_bPause = bWantPause;
+
           // add the pause state block to the buffer to be sent to all clients
           CNetworkStreamBlock nsbPause(MSG_SEQ_PAUSE, ++srv_iLastProcessedSequence);
           nsbPause << (INDEX &)srv_bPause;
           nsbPause << _cmiComm.Server_GetClientName(iClient);
+
           AddBlockToAllSessions(nsbPause);
         }
       }
     } break;
+
     // if a player wants to change its buffer settings
     case MSG_SET_CLIENTSETTINGS: {
       // read data
       CSessionSocket &sso = srv_assoSessions[iClient];
       nmMessage >> sso.sso_sspParams;
     } break;
+
     // if a chat message was sent
     case MSG_CHAT_IN: {
       // get it
@@ -1440,6 +1605,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage) {
 
       // filter the from address by the client's players
       ulFrom &= MaskOfPlayersOnClient(iClient);
+
       // if the source has no players
       if (ulFrom == 0) {
         // make it public message
@@ -1449,84 +1615,101 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage) {
       // make the outgoing message
       CNetworkMessage nmOut(MSG_CHAT_OUT);
       nmOut << ulFrom;
+
       if (ulFrom == 0) {
         CTString strFrom;
+
         if (iClient == 0) {
           strFrom = TRANS("Server");
         } else {
           strFrom.PrintF(TRANS("Client %d"), iClient);
         }
+
         nmOut << strFrom;
       }
+
       nmOut << strMessage;
 
       // for each active client
       for (INDEX iSession = 0; iSession < srv_assoSessions.Count(); iSession++) {
         CSessionSocket &sso = srv_assoSessions[iSession];
+
         if (iSession > 0 && !sso.IsActive()) {
           continue;
         }
+
         // if message is public or the client has some of destination players
         if (ulTo == -1 || ulTo & MaskOfPlayersOnClient(iSession)) {
           // send the message to that computer
           _pNetwork->SendToClient(iSession, nmOut);
         }
       }
-
     } break;
-      // if a crc response is received
+
+    // if a crc response is received
     case MSG_REQ_CRCLIST: {
       CPrintF(TRANS("Sending CRC response\n"));
+
       // create CRC challenge
       CTMemoryStream strmCRC;
       strmCRC << INDEX(MSG_REQ_CRCCHECK);
       strmCRC.Write_t(_pNetwork->ga_pubCRCList, _pNetwork->ga_slCRCList);
+
       SLONG slSize = strmCRC.GetStreamSize();
 
       // send the stream to the remote session state
       _pNetwork->SendToClientReliable(iClient, strmCRC);
-      CPrintF(TRANS("Server: Sent CRC challenge to '%s' (%dk)\n"), (const char *)_cmiComm.Server_GetClientName(iClient),
-              slSize / 1024);
-
+      CPrintF(TRANS("Server: Sent CRC challenge to '%s' (%dk)\n"),
+              (const char *)_cmiComm.Server_GetClientName(iClient), slSize / 1024);
     } break;
+
     // if a crc response is received
     case MSG_REP_CRCCHECK: {
       // get it
       ULONG ulCRC;
       INDEX iLastSequence;
       nmMessage >> ulCRC >> iLastSequence;
+
       // if not same
       if (_pNetwork->ga_ulCRC != ulCRC) {
         // disconnect the client
         SendDisconnectMessage(iClient, TRANS("Wrong CRC check."));
-        // if same
+
+      // if same
       } else {
         CPrintF(TRANS("Server: Client '%s', CRC check OK\n"), (const char *)_cmiComm.Server_GetClientName(iClient));
+
         // use the piggybacked sequence number to initiate sending stream to it
         CSessionSocket &sso = srv_assoSessions[iClient];
         sso.sso_bSendStream = TRUE;
         sso.sso_nsBuffer.RemoveOlderBlocksBySequence(iLastSequence);
         sso.sso_iLastSentSequence = iLastSequence;
       }
-
     } break;
+
     // if a rcon request is received
     case MSG_ADMIN_COMMAND: {
       extern CTString net_strAdminPassword;
+
       // get it
       CTString strPassword, strCommand;
       nmMessage >> strPassword >> strCommand;
+
       if (net_strAdminPassword == "") {
         CNetworkMessage nmRes(MSG_ADMIN_RESPONSE);
         nmRes << CTString(TRANS("Remote administration not allowed on this server.\n"));
         CPrintF(TRANS("Server: Client '%s', Tried to use remote administration.\n"),
                 (const char *)_cmiComm.Server_GetClientName(iClient));
+
         _pNetwork->SendToClientReliable(iClient, nmRes);
+
       } else if (net_strAdminPassword != strPassword) {
         CPrintF(TRANS("Server: Client '%s', Wrong password for remote administration.\n"),
                 (const char *)_cmiComm.Server_GetClientName(iClient));
+
         SendDisconnectMessage(iClient, TRANS("Wrong admin password. The attempt was logged."));
         break;
+
       } else {
         CPrintF(TRANS("Server: Client '%s', Admin cmd: %s\n"), (const char *)_cmiComm.Server_GetClientName(iClient), strCommand);
 
@@ -1540,6 +1723,7 @@ void CServer::Handle(INDEX iClient, CNetworkMessage &nmMessage) {
         con_strCapture = "";
       }
     } break;
+
     // otherwise
     default: ASSERT(FALSE);
   }

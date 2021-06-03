@@ -54,4 +54,10 @@ class CActionBuffer {
     CPlayerAction *GetLastOlderThan(__int64 llTime);
 };
 
+class CActionEntry {
+  public:
+    CListNode ae_ln;
+    CPlayerAction ae_pa;
+};
+
 #endif /* include-once check. */

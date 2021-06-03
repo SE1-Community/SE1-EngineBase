@@ -17,14 +17,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Math/Projection.h>
 
-/////////////////////////////////////////////////////////////////////
-//  CProjection3D
-/////////////////////////////////////////////////////////////////////
-// Construction / destruction
-
-/*
- * Default constructor.
- */
+// Constructor
 CProjection3D::CProjection3D(void) {
   pr_Prepared = FALSE;
   pr_ObjectStretch = FLOAT3D(1.0f, 1.0f, 1.0f);

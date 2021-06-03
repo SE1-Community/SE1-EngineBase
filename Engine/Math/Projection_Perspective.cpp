@@ -23,18 +23,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Math/Geometry.inl>
 #include <Engine/Math/Clipping.inl>
 
-/////////////////////////////////////////////////////////////////////
-//  CPerspectiveProjection3D
-
-// constructor
+// Constructor
 CPerspectiveProjection3D::CPerspectiveProjection3D(void) {
   ppr_fMetersPerPixel = -1.0f; // never used by default
   ppr_fViewerDistance = -1.0f;
 }
 
-/*
- * Prepare for projecting.
- */
+// Prepare for projecting
 void CPerspectiveProjection3D::Prepare(void) {
   FLOATmatrix3D t3dObjectStretch;  // matrix for object stretch
   FLOATmatrix3D t3dObjectRotation; // matrix for object angles
@@ -43,6 +38,7 @@ void CPerspectiveProjection3D::Prepare(void) {
   MakeRotationMatrixFast(t3dObjectRotation, pr_ObjectPlacement.pl_OrientationAngle);
   MakeInverseRotationMatrixFast(pr_ViewerRotationMatrix, pr_ViewerPlacement.pl_OrientationAngle);
   t3dObjectStretch.Diagonal(pr_ObjectStretch);
+
   pr_vViewerPosition = pr_ViewerPlacement.pl_PositionVector;
   BOOL bXInverted = pr_ObjectStretch(1) < 0;
   BOOL bYInverted = pr_ObjectStretch(2) < 0;
@@ -55,12 +51,15 @@ void CPerspectiveProjection3D::Prepare(void) {
     // reflect viewer
     ReflectPositionVectorByPlane(pr_plMirror, pr_vViewerPosition);
     ReflectRotationMatrixByPlane_rows(pr_plMirror, pr_ViewerRotationMatrix);
+
     // get mirror plane in view space
     pr_plMirrorView = pr_plMirror;
     pr_plMirrorView -= pr_vViewerPosition;
     pr_plMirrorView *= pr_ViewerRotationMatrix;
+
     // invert inversion
     pr_bInverted = !pr_bInverted;
+
   } else if (pr_bWarp) {
     // get mirror plane in view space
     pr_plMirrorView = pr_plMirror;
@@ -72,12 +71,15 @@ void CPerspectiveProjection3D::Prepare(void) {
     if (pr_bHalfFaceForward) {
       // get the y-axis vector of object rotation
       FLOAT3D vY(t3dObjectRotation(1, 2), t3dObjectRotation(2, 2), t3dObjectRotation(3, 2));
+
       // find z axis of viewer
       FLOAT3D vViewerZ(pr_ViewerRotationMatrix(3, 1), pr_ViewerRotationMatrix(3, 2), pr_ViewerRotationMatrix(3, 3));
+
       // calculate x and z axis vectors to make object head towards viewer
       FLOAT3D vX = (-vViewerZ) * vY;
       vX.Normalize();
       FLOAT3D vZ = vY * vX;
+
       // compose the rotation matrix back from those angles
       t3dObjectRotation(1, 1) = vX(1);
       t3dObjectRotation(1, 2) = vY(1);
@@ -92,7 +94,8 @@ void CPerspectiveProjection3D::Prepare(void) {
       // first apply object stretch then object rotation and then viewer rotation
       pr_mDirectionRotation = pr_ViewerRotationMatrix * t3dObjectRotation;
       pr_RotationMatrix = pr_mDirectionRotation * t3dObjectStretch;
-      // if it is fully face forward
+
+    // if it is fully face forward
     } else {
       // apply object stretch and banking only
       FLOATmatrix3D mBanking;
@@ -100,6 +103,7 @@ void CPerspectiveProjection3D::Prepare(void) {
       pr_mDirectionRotation = mBanking;
       pr_RotationMatrix = mBanking * t3dObjectStretch;
     }
+
   } else {
     // first apply object stretch then object rotation and then viewer rotation
     pr_mDirectionRotation = pr_ViewerRotationMatrix * t3dObjectRotation;
@@ -108,12 +112,15 @@ void CPerspectiveProjection3D::Prepare(void) {
 
   // calc. offset of object from viewer
   pr_TranslationVector = pr_ObjectPlacement.pl_PositionVector - pr_vViewerPosition;
+
   // rotate offset only by viewer angles
   pr_TranslationVector = pr_TranslationVector * pr_ViewerRotationMatrix;
+
   // transform handle from object space to viewer space and add it to the offset
   pr_TranslationVector -= pr_vObjectHandle * pr_RotationMatrix;
 
   FLOAT2D vMin, vMax;
+
   // if using a shadow projection
   if (ppr_fMetersPerPixel > 0) {
     // caclulate factors
@@ -124,11 +131,13 @@ void CPerspectiveProjection3D::Prepare(void) {
 
     vMin = pr_ScreenBBox.Min();
     vMax = pr_ScreenBBox.Max();
-    // if using normal projection
+
+  // if using normal projection
   } else if (ppr_boxSubScreen.IsEmpty()) {
     // calculate perspective constants
     FLOAT2D v2dScreenSize = pr_ScreenBBox.Size();
     pr_ScreenCenter = pr_ScreenBBox.Center();
+
     /* calculate FOVHeight from FOVWidth by formula:
        halfanglej = atan( tan(halfanglei)*jsize*aspect/isize ) */
     ANGLE aHalfI = ppr_FOVWidth / 2;
@@ -144,11 +153,13 @@ void CPerspectiveProjection3D::Prepare(void) {
 
     vMin = pr_ScreenBBox.Min() - pr_ScreenCenter;
     vMax = pr_ScreenBBox.Max() - pr_ScreenCenter;
-    // if using sub-drawport projection
+
+  // if using sub-drawport projection
   } else {
     // calculate perspective constants
     FLOAT2D v2dScreenSize = pr_ScreenBBox.Size();
     pr_ScreenCenter = pr_ScreenBBox.Center();
+
     /* calculate FOVHeight from FOVWidth by formula:
        halfanglej = atan( tan(halfanglei)*jsize*aspect/isize ) */
     ANGLE aHalfI = ppr_FOVWidth / 2;
@@ -167,16 +178,14 @@ void CPerspectiveProjection3D::Prepare(void) {
 
     pr_ScreenCenter -= ppr_boxSubScreen.Min();
   }
-  // find factors for left, right, up and down clipping
 
+  // find factors for left, right, up and down clipping
   FLOAT fMinI = vMin(1);
   FLOAT fMinJ = vMin(2);
   FLOAT fMaxI = vMax(1);
   FLOAT fMaxJ = vMax(2);
   FLOAT fRatioX = ppr_PerspectiveRatios(1);
   FLOAT fRatioY = ppr_PerspectiveRatios(2);
-
-#define MySgn(x) ((x) >= 0 ? 1 : -1)
 
   FLOAT fDZ = -1.0f;
   FLOAT fDXL = fDZ * fMinI / fRatioX;
@@ -226,9 +235,7 @@ void CPerspectiveProjection3D::Prepare(void) {
   ppr_fMipRatio = pr_ScreenBBox.Size()(1) / (ppr_PerspectiveRatios(1) * 640.0f);
 }
 
-/*
- * Project 3D object point into 3D view space, before clipping.
- */
+// Project 3D object point into 3D view space, before clipping
 void CPerspectiveProjection3D::PreClip(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dTransformedPoint) const {
   // check that the projection object is prepared for projecting
   ASSERT(pr_Prepared);
@@ -237,32 +244,34 @@ void CPerspectiveProjection3D::PreClip(const FLOAT3D &v3dObjectPoint, FLOAT3D &v
   v3dTransformedPoint = v3dObjectPoint * pr_RotationMatrix + pr_TranslationVector;
 }
 
-/*
- * Project 3D object point into 3D view space, after clipping.
- */
+// Project 3D object point into 3D view space, after clipping
 void CPerspectiveProjection3D::PostClip(const FLOAT3D &v3dTransformedPoint, FLOAT3D &v3dViewPoint) const {
   // check that the projection object is prepared for projecting
   ASSERT(pr_Prepared);
+
   // divide X and Y with Z and add the center of screen
   const FLOAT f1oTransZ = 1.0f / v3dTransformedPoint(3);
   v3dViewPoint(1) = pr_ScreenCenter(1) + v3dTransformedPoint(1) * ppr_PerspectiveRatios(1) * f1oTransZ;
   v3dViewPoint(2) = pr_ScreenCenter(2) - v3dTransformedPoint(2) * ppr_PerspectiveRatios(2) * f1oTransZ;
 }
 
-void CPerspectiveProjection3D::PostClip(const FLOAT3D &v3dTransformedPoint, FLOAT fTransformedR, FLOAT3D &v3dViewPoint,
-                                        FLOAT &fViewR) const {
+void CPerspectiveProjection3D::PostClip(const FLOAT3D &v3dTransformedPoint, FLOAT fTransformedR,
+                                        FLOAT3D &v3dViewPoint, FLOAT &fViewR) const {
   // check that the projection object is prepared for projecting
   ASSERT(pr_Prepared);
+
   // multiply X and Y coordinates with zoom factor and add the center of screen
   v3dViewPoint(3) = 1.0f / v3dTransformedPoint(3);
   v3dViewPoint(1) = pr_ScreenCenter(1) + v3dTransformedPoint(1) * ppr_PerspectiveRatios(1) * v3dViewPoint(3);
   v3dViewPoint(2) = pr_ScreenCenter(2) - v3dTransformedPoint(2) * ppr_PerspectiveRatios(2) * v3dViewPoint(3);
+
   fViewR = fTransformedR * ppr_PerspectiveRatios(1) * v3dViewPoint(3);
 }
 
-// Test if a sphere in view space is inside view frustum.
+// Test if a sphere in view space is inside view frustum
 INDEX CPerspectiveProjection3D::TestSphereToFrustum(const FLOAT3D &vViewPoint, FLOAT fRadius) const {
   ASSERT(pr_Prepared && fRadius >= 0);
+
   const FLOAT fX = vViewPoint(1);
   const FLOAT fY = vViewPoint(2);
   const FLOAT fZ = vViewPoint(3);
@@ -271,106 +280,130 @@ INDEX CPerspectiveProjection3D::TestSphereToFrustum(const FLOAT3D &vViewPoint, F
   // check to near
   if (fZ - fRadius > -pr_NearClipDistance) {
     return -1;
+
   } else if (fZ + fRadius > -pr_NearClipDistance) {
     iPass = 0;
   }
+
   // check to far
   if (pr_FarClipDistance > 0) {
     if (fZ + fRadius < -pr_FarClipDistance) {
       return -1;
+
     } else if (fZ - fRadius < -pr_FarClipDistance) {
       iPass = 0;
     }
   }
+
   // check to left
   FLOAT fL = fX * pr_plClipL(1) + fZ * pr_plClipL(3) - pr_plClipL.Distance();
   if (fL < -fRadius) {
     return -1;
+
   } else if (fL < fRadius) {
     iPass = 0;
   }
+
   // check to right
   FLOAT fR = fX * pr_plClipR(1) + fZ * pr_plClipR(3) - pr_plClipR.Distance();
   if (fR < -fRadius) {
     return -1;
+
   } else if (fR < fRadius) {
     iPass = 0;
   }
+
   // check to up
   FLOAT fU = fY * pr_plClipU(2) + fZ * pr_plClipU(3) - pr_plClipU.Distance();
   if (fU < -fRadius) {
     return -1;
+
   } else if (fU < fRadius) {
     iPass = 0;
   }
+
   // check to down
   FLOAT fD = fY * pr_plClipD(2) + fZ * pr_plClipD(3) - pr_plClipD.Distance();
   if (fD < -fRadius) {
     return -1;
+
   } else if (fD < fRadius) {
     iPass = 0;
   }
+
   // all done
   return iPass;
 }
 
-// Test if an oriented box in view space is inside view frustum.
+// Test if an oriented box in view space is inside view frustum
 INDEX CPerspectiveProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const {
   ASSERT(pr_Prepared);
+
   INDEX iPass = 1;
   INDEX iTest;
 
   // check to near
-  iTest = box.TestAgainstPlane(FLOATplane3D(FLOAT3D(0, 0, -1), pr_NearClipDistance));
+  iTest = box.TestAgainstPlane(FLOATplane3D(FLOAT3D(0.0f, 0.0f, -1.0f), pr_NearClipDistance));
+
   if (iTest < 0) {
     return -1;
+
   } else if (iTest == 0) {
     iPass = 0;
   }
+
   // check to far
   if (pr_FarClipDistance > 0) {
     iTest = box.TestAgainstPlane(FLOATplane3D(FLOAT3D(0.0f, 0.0f, 1.0f), -pr_FarClipDistance));
     if (iTest < 0) {
       return -1;
+
     } else if (iTest == 0) {
       iPass = 0;
     }
   }
+
   // check to left
   iTest = box.TestAgainstPlane(pr_plClipL);
   if (iTest < 0) {
     return -1;
+
   } else if (iTest == 0) {
     iPass = 0;
   }
+
   // check to right
   iTest = box.TestAgainstPlane(pr_plClipR);
   if (iTest < 0) {
     return -1;
+
   } else if (iTest == 0) {
     iPass = 0;
   }
+
   // check to up
   iTest = box.TestAgainstPlane(pr_plClipU);
   if (iTest < 0) {
     return -1;
+
   } else if (iTest == 0) {
     iPass = 0;
   }
+
   // check to down
   iTest = box.TestAgainstPlane(pr_plClipD);
   if (iTest < 0) {
     return -1;
+
   } else if (iTest == 0) {
     iPass = 0;
   }
+
   // all done
   return iPass;
 }
 
-/*
- * Project 3D object point into 3D view space.
- */
+// Project 3D object point into 3D view space
 void CPerspectiveProjection3D::ProjectCoordinate(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dViewPoint) const {
   // rotate and translate the point
   v3dViewPoint = v3dObjectPoint * pr_RotationMatrix + pr_TranslationVector;
@@ -380,33 +413,25 @@ void CPerspectiveProjection3D::ProjectCoordinate(const FLOAT3D &v3dObjectPoint, 
   v3dViewPoint(2) = pr_ScreenCenter(2) + v3dViewPoint(2) * ppr_PerspectiveRatios(2) / v3dViewPoint(3);
 }
 
-/*
- * Get a distance of object point from the viewer.
- */
+// Get a distance of object point from the viewer
 FLOAT CPerspectiveProjection3D::GetDistance(const FLOAT3D &v3dObjectPoint) const {
   // get just the z coordinate of the point in viewer space
   return v3dObjectPoint(1) * pr_RotationMatrix(3, 1) + v3dObjectPoint(2) * pr_RotationMatrix(3, 2)
-         + v3dObjectPoint(3) * pr_RotationMatrix(3, 3) + pr_TranslationVector(3);
+       + v3dObjectPoint(3) * pr_RotationMatrix(3, 3) + pr_TranslationVector(3);
 }
 
-/*
- * Project 3D object direction vector into 3D view space.
- */
+// Project 3D object direction vector into 3D view space
 void CPerspectiveProjection3D::ProjectDirection(const FLOAT3D &v3dObjectPoint, FLOAT3D &v3dViewPoint) const {
   // rotate the direction
   v3dViewPoint = v3dObjectPoint * pr_mDirectionRotation;
 }
 
-/*
- * Project 3D object axis aligned bounding box into 3D view space.
- */
+// Project 3D object axis aligned bounding box into 3D view space
 void CPerspectiveProjection3D::ProjectAABBox(const FLOATaabbox3D &boxObject, FLOATaabbox3D &boxView) const {
   ASSERTALWAYS("This is not yet implemented");
 }
 
-/*
- * Project 3D object plane into 3D view space.
- */
+// Project 3D object plane into 3D view space
 void CPerspectiveProjection3D::Project(const FLOATplane3D &p3dObjectPlane, FLOATplane3D &p3dTransformedPlane) const {
   // check that the projection object is prepared for projecting
   ASSERT(pr_Prepared);
@@ -415,7 +440,7 @@ void CPerspectiveProjection3D::Project(const FLOATplane3D &p3dObjectPlane, FLOAT
   p3dTransformedPlane = p3dObjectPlane * pr_mDirectionRotation + pr_TranslationVector;
 }
 
-// Calculate plane gradient for a plane in 3D view space.
+// Calculate plane gradient for a plane in 3D view space
 void CPerspectiveProjection3D::MakeOoKGradient(const FLOATplane3D &plViewerPlane, CPlanarGradients &pgOoK) const {
   // check that the projection object is prepared for projecting
   ASSERT(pr_Prepared);
@@ -433,6 +458,7 @@ void CPerspectiveProjection3D::MakeOoKGradient(const FLOATplane3D &plViewerPlane
   FLOAT ny = plViewerPlane(2) * fn;
   FLOAT nz = plViewerPlane(3) * fn;
   FLOAT oond = 1 / plViewerPlane.Distance();
+
   // calculate gradients
   FLOAT dookodi = nx * oond * oorx;
   FLOAT dookodj = ny * oond * oory;
@@ -443,9 +469,8 @@ void CPerspectiveProjection3D::MakeOoKGradient(const FLOATplane3D &plViewerPlane
   pgOoK.pg_fDOverDI = dookodi;
   pgOoK.pg_fDOverDJ = dookodj;
 }
-/*
- * Clip a line.
- */
+
+// Clip a line
 ULONG CPerspectiveProjection3D::ClipLine(FLOAT3D &v3dPoint0, FLOAT3D &v3dPoint1) const {
   // check that the projection object is prepared for projecting
   ASSERT(pr_Prepared);
@@ -455,21 +480,18 @@ ULONG CPerspectiveProjection3D::ClipLine(FLOAT3D &v3dPoint0, FLOAT3D &v3dPoint1)
 
   // clip the line by each plane at the time, skip if some removes entire line
   if (ClipLineByNearPlane(v3dPoint0, v3dPoint1, pr_NearClipDistance, ulCode0, ulCode1, LCF_NEAR)
-      && ((pr_FarClipDistance < 0) || ClipLineByFarPlane(v3dPoint0, v3dPoint1, pr_FarClipDistance, ulCode0, ulCode1, LCF_FAR))
-      // if something remains
-  ) {
-    // return the clip code for both vertices
+   && (pr_FarClipDistance < 0 || ClipLineByFarPlane(v3dPoint0, v3dPoint1, pr_FarClipDistance, ulCode0, ulCode1, LCF_FAR))) {
+    // return the clip code for both vertices if something remains
     return ulCode0 | ulCode1;
-    // if some of the planes removed entire line
+
+  // if some of the planes removed entire line
   } else {
     // return the code that tells that entire line is removed
     return LCF_EDGEREMOVED;
   }
 }
 
-/*
- * Get placement for a ray through a projected point.
- */
+// Get placement for a ray through a projected point
 void CPerspectiveProjection3D::RayThroughPoint(const FLOAT3D &v3dViewPoint, CPlacement3D &plRay) const {
   // check that the projection object is prepared for projecting
   ASSERT(pr_Prepared);
@@ -497,67 +519,58 @@ void CPerspectiveProjection3D::RayThroughPoint(const FLOAT3D &v3dViewPoint, CPla
   plRay.pl_PositionVector = pr_vViewerPosition;
 }
 
-/*
- * Check if an object-space plane is visible.
- */
+// Check if an object-space plane is visible
 BOOL CPerspectiveProjection3D::IsObjectPlaneVisible(const FLOATplane3D &p3dObjectPlane) const {
   // check that the projection object is prepared for projecting
   ASSERT(pr_Prepared);
 
-  /*
-    In perspective projection, plane is invisible if viewer is not in front of plane.
-    NOTES: 1) Could add a check for plane beeing inside view frustum.
-   */
+  // In perspective projection, plane is invisible if viewer is not in front of plane.
+  // NOTES: 1) Could add a check for plane beeing inside view frustum.
+
   // if viewer is in front of plane, after plane is transformed into viewer space
-  // (viewer is at 0,0,0)
+  // (viewer is at 0, 0, 0)
   if ((p3dObjectPlane * pr_mDirectionRotation + pr_TranslationVector).Distance() < 0.0f) {
     // plane might be visible (although it still might be out of the view frustum)
     return TRUE;
-    // if viewer is on the plane or behind it
-  } else {
-    // plane is surely not visible
-    return FALSE;
   }
+
+  // plane is surely not visible if viewer is on the plane or behind it
+  return FALSE;
 }
 
-/*
- * Check if a viewer-space plane is visible.
- */
+// Check if a viewer-space plane is visible
 BOOL CPerspectiveProjection3D::IsViewerPlaneVisible(const FLOATplane3D &p3dViewerPlane) const {
   // check that the projection object is prepared for projecting
   ASSERT(pr_Prepared);
 
-  /*
-    In perspective projection, plane is invisible if viewer is not in front of plane.
-    NOTES: 1) Could add a check for plane beeing inside view frustum.
-   */
-  // if viewer is in front of plane (viewer is at 0,0,0)
+  // In perspective projection, plane is invisible if viewer is not in front of plane.
+  // NOTES: 1) Could add a check for plane beeing inside view frustum.
+
+  // if viewer is in front of plane (viewer is at 0, 0, 0)
   if (p3dViewerPlane.Distance() < -0.01f) {
     // plane might be visible (although it still might be out of the view frustum)
     return TRUE;
-    // if viewer is on the plane or behind it
-  } else {
-    // plane is surely not visible
-    return FALSE;
   }
+
+  // plane is surely not visible if viewer is on the plane or behind it
+  return FALSE;
 }
 
-/*
- * Calculate a mip-factor for a given object.
- */
-// by its distance from viewer
+// Calculate a mip-factor for a given object by its distance from viewer
 FLOAT CPerspectiveProjection3D::MipFactor(FLOAT fDistance) const {
   // check that the projection object is prepared for projecting
   ASSERT(pr_Prepared);
+
   // calculated using following formula: k = log2(1024*z/xratio);
   return Log2((FLOAT)Abs(1024.0f * fDistance * ppr_fMipRatio));
 }
 
-// general mip-factor for target object
+// General mip-factor for target object
 FLOAT CPerspectiveProjection3D::MipFactor(void) const {
   // check that the projection object is prepared for projecting
   ASSERT(pr_Prepared);
+
   // calculated using following formula: k = log2(1024*z/xratio);
   // the distance is, in fact, the z coordinate of the translation vector
-  return -pr_TranslationVector(3) * TanFast(ppr_FOVWidth / 2.0f); // /Tan(90.0f/2.0f)=1;
+  return -pr_TranslationVector(3) * TanFast(ppr_FOVWidth / 2.0f); // Tan(90.0f / 2.0f) = 1;
 }

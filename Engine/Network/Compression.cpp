@@ -22,19 +22,22 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 extern CTCriticalSection zip_csLock; // critical section for access to zlib functions
 
-// Unpack from stream to stream.
-void CCompressor::UnpackStream_t(CTMemoryStream &strmSrc, CTStream &strmDst) // throw char *
-{
+// Unpack from stream to stream
+void CCompressor::UnpackStream_t(CTMemoryStream &strmSrc, CTStream &strmDst) {
   // read the header
   SLONG slSizeDst, slSizeSrc;
   strmSrc >> slSizeDst;
   strmSrc >> slSizeSrc;
+
   // get the buffer of source stream
   UBYTE *pubSrc = strmSrc.mstrm_pubBuffer + strmSrc.mstrm_slLocation;
+
   // allocate buffer for decompression
   UBYTE *pubDst = (UBYTE *)AllocMemory(slSizeDst);
+
   // compress there
   BOOL bOk = Unpack(pubSrc, slSizeSrc, pubDst, slSizeDst);
+
   // if failed
   if (!bOk) {
     // report error
@@ -45,19 +48,22 @@ void CCompressor::UnpackStream_t(CTMemoryStream &strmSrc, CTStream &strmDst) // 
   // write the uncompressed data to destination
   strmDst.Write_t(pubDst, slSizeDst);
   strmDst.SetPos_t(0);
+
   FreeMemory(pubDst);
 }
 
-void CCompressor::PackStream_t(CTMemoryStream &strmSrc, CTStream &strmDst) // throw char *
-{
+void CCompressor::PackStream_t(CTMemoryStream &strmSrc, CTStream &strmDst) {
   // get the buffer of source stream
   UBYTE *pubSrc = strmSrc.mstrm_pubBuffer + strmSrc.mstrm_slLocation;
   SLONG slSizeSrc = strmSrc.GetStreamSize();
+
   // allocate buffer for compression
   SLONG slSizeDst = NeededDestinationSize(slSizeSrc);
   UBYTE *pubDst = (UBYTE *)AllocMemory(slSizeDst);
+
   // compress there
   BOOL bOk = Pack(pubSrc, slSizeSrc, pubDst, slSizeDst);
+
   // if failed
   if (!bOk) {
     // report error
@@ -68,51 +74,49 @@ void CCompressor::PackStream_t(CTMemoryStream &strmSrc, CTStream &strmDst) // th
   // write the header to destination
   strmDst << slSizeSrc;
   strmDst << slSizeDst;
+
   // write the compressed data to destination
   strmDst.Write_t(pubDst, slSizeDst);
+
   FreeMemory(pubDst);
 }
 
-/////////////////////////////////////////////////////////////////////
 // RLE compressor
 
-/*
-RLE packed format(s):
-NOTE:
-  In order to decompress packed data, size of original data must be known, it is not
-  written in the packed data by the algorithms. Depending on the usage, data size may be
-  included in the header by the called function. This generally saves even more space
-  if smaller chunks of known size are compressed (e.g. small networks packets).
+/* RLE packed format(s):
+  NOTE:
+    In order to decompress packed data, size of original data must be known, it is not
+    written in the packed data by the algorithms. Depending on the usage, data size may be
+    included in the header by the called function. This generally saves even more space
+    if smaller chunks of known size are compressed (e.g. small networks packets).
 
-Basic implemented packing format here is BYTE-BYTE. It packes data by bytes and uses bytes
-for packing codes. Other sized RLE formats can be implemented as needed (WORD-WORD,
-LONG-LONG, BYTE-WORD, WORD-BYTE etc.).
+  Basic implemented packing format here is BYTE-BYTE. It packes data by bytes and uses bytes
+  for packing codes. Other sized RLE formats can be implemented as needed (WORD-WORD,
+  LONG-LONG, BYTE-WORD, WORD-BYTE etc.).
 
-Packed data is divided in sections, each section has a leading byte as code and compressed
-data following it. The data is interpreted differently, depending on the code.
+  Packed data is divided in sections, each section has a leading byte as code and compressed
+  data following it. The data is interpreted differently, depending on the code.
 
-  1) CODE<0 => REPLICATION
-  If the code is negative, following data is one byte that is replicated given number of
-  times:
-  CODE DATA                 -> DATA DATA DATA ... DATA ((-CODE)+1 times)
-  (note that it is not possible to encode just one byte this way, since one byte can be coded
-   well with copying)
-  (count = -code+1  =>  code = -count+1)
+    1) CODE<0 => REPLICATION
+    If the code is negative, following data is one byte that is replicated given number of
+    times:
+    CODE DATA                 -> DATA DATA DATA ... DATA ((-CODE)+1 times)
+    (note that it is not possible to encode just one byte this way, since one byte can be coded
+     well with copying)
+    (count = -code+1  =>  code = -count+1)
 
-  2) CODE >= 0 => COPYING
-  If the code is positive, following data is given number of bytes that are just copied:
-  CODE DAT0 DAT1 ... DATn   -> DAT0 DAT1 ... DATn (n=CODE)
-  (note that CODE=0 means copy next one byte)
-  (count = code+1  =>  code = count-1)
+    2) CODE >= 0 => COPYING
+    If the code is positive, following data is given number of bytes that are just copied:
+    CODE DAT0 DAT1 ... DATn   -> DAT0 DAT1 ... DATn (n=CODE)
+    (note that CODE=0 means copy next one byte)
+    (count = code+1  =>  code = count-1)
 
-Packing algorithm used here relies on the destination buffer being big enough to
-hold packed data. Generally, for BYTE-BYTE packing, maximum buffer is 129/128 of
-original size (degenerate case with no data replication).
+  Packing algorithm used here relies on the destination buffer being big enough to
+  hold packed data. Generally, for BYTE-BYTE packing, maximum buffer is 129/128 of
+  original size (degenerate case with no data replication).
 */
 
-/*
- * Calculate needed size for destination buffer when packing memory.
- */
+// Calculate needed size for destination buffer when packing memory
 SLONG CRLEBBCompressor::NeededDestinationSize(SLONG slSourceSize) {
   // calculate worst case possible for size of RLEBB packed data
   // *129/128+1 would be enough, but we add some more to ensure that we don't
@@ -122,36 +126,38 @@ SLONG CRLEBBCompressor::NeededDestinationSize(SLONG slSourceSize) {
 
 // on entry, slDstSize holds maximum size of output buffer,
 // on exit, it is filled with resulting size
-// Pack a chunk of data using given compression.
+// Pack a chunk of data using given compression
 BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize) {
   // cannot pack zero bytes
   ASSERT(slSrcSize >= 1);
 
   // calculate limits for source and destination buffers
-  const SBYTE *pbSourceFirst = (const SBYTE *)pvSrc;             // start marker
+  const SBYTE *pbSourceFirst = (const SBYTE *)pvSrc; // start marker
   const SBYTE *pbSourceLimit = (const SBYTE *)pvSrc + slSrcSize; // end marker
 
-  //  SLONG slDestinationSize=NeededDestinationSize(slSrcSize);
-  SBYTE *pbDestinationFirst = (SBYTE *)pvDst;             // start marker
+  //SLONG slDestinationSize=NeededDestinationSize(slSrcSize);
+  SBYTE *pbDestinationFirst = (SBYTE *)pvDst; // start marker
   SBYTE *pbDestinationLimit = (SBYTE *)pvDst + slDstSize; // end marker
 
   UBYTE *pbCountFirst = (UBYTE *)pbDestinationLimit - slSrcSize; // start marker
-  UBYTE *pbCountLimit = (UBYTE *)pbDestinationLimit;             // end marker
+  UBYTE *pbCountLimit = (UBYTE *)pbDestinationLimit; // end marker
 
   {
-    // PASS 1: Use destination buffer to cache number of forward-same bytes.
+    // PASS 1: Use destination buffer to cache number of forward-same bytes
 
     // set the count of the last byte to one
     UBYTE *pbCount = pbCountLimit - 1;
     *pbCount-- = 1;
 
     // for all bytes from one before last to the first one
-    for (const SBYTE *pbSource = pbSourceLimit - 2; pbSource >= pbSourceFirst; pbSource--, pbCount--) {
+    for (const SBYTE *pbSource = pbSourceLimit - 2; pbSource >= pbSourceFirst; pbSource--, pbCount--)
+    {
       // if the byte is same as its successor, and the count will fit in code
       if (pbSource[0] == pbSource[1] && (SLONG)pbCount[1] + 1 <= -(SLONG)MIN_SBYTE) {
         // set its count to the count of its successor plus one
         pbCount[0] = pbCount[1] + 1;
-        // if the byte is different than its successor
+
+      // if the byte is different than its successor
       } else {
         // set its count to one
         pbCount[0] = 1;
@@ -159,7 +165,7 @@ BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLO
     }
   }
 
-  // PASS 2: Pack bytes from source to the destination buffer.
+  // PASS 2: Pack bytes from source to the destination buffer
 
   // start at the beginning of the buffers
   const SBYTE *pbSource = pbSourceFirst;
@@ -175,15 +181,20 @@ BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLO
       // write the replicate-packed data
       INDEX ctSameBytes = (INDEX)*pbCount;
       SLONG slCode = -ctSameBytes + 1;
+
       ASSERT((SLONG)MIN_SBYTE <= slCode && slCode < 0);
+
       *pbDestination++ = (SBYTE)slCode;
       *pbDestination++ = pbSource[0];
+
       pbSource += ctSameBytes;
       pbCount += ctSameBytes;
-      // if current byte is not replicated
+
+    // if current byte is not replicated
     } else {
       // count bytes to copy before encountering byte replicated more than 3 times
       INDEX ctDiffBytes = 1;
+
       while ((ctDiffBytes < (SLONG)MAX_SBYTE + 1) && (&pbSource[ctDiffBytes] < pbSourceLimit)) {
         if ((SLONG)pbCount[ctDiffBytes - 1] <= 3) {
           ctDiffBytes++;
@@ -191,54 +202,64 @@ BOOL CRLEBBCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLO
           break;
         }
       }
+
       // write the copy-packed data
       SLONG slCode = ctDiffBytes - 1;
+
       ASSERT(0 <= slCode && slCode <= (SLONG)MAX_SBYTE);
+
       *pbDestination++ = (SBYTE)slCode;
       memcpy(pbDestination, pbSource, ctDiffBytes);
+
       pbSource += ctDiffBytes;
       pbCount += ctDiffBytes;
       pbDestination += ctDiffBytes;
     }
   }
+
   // packing must exactly be finished now
   ASSERT(pbSource == pbSourceLimit);
   ASSERT(pbCount == pbCountLimit);
 
   // calculate size of packed data
   slDstSize = pbDestination - pbDestinationFirst;
+
   return TRUE;
 }
 
 // on entry, slDstSize holds maximum size of output buffer,
 // on exit, it is filled with resulting size
-// Unpack a chunk of data using given compression.
+// Unpack a chunk of data using given compression
 BOOL CRLEBBCompressor::Unpack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize) {
-  const SBYTE *pbSource = (const SBYTE *)pvSrc;                  // current pointer
+  const SBYTE *pbSource = (const SBYTE *)pvSrc; // current pointer
   const SBYTE *pbSourceLimit = (const SBYTE *)pvSrc + slSrcSize; // end marker
 
-  SBYTE *pbDestination = (SBYTE *)pvDst;      // current pointer
+  SBYTE *pbDestination = (SBYTE *)pvDst; // current pointer
   SBYTE *pbDestinationFirst = (SBYTE *)pvDst; // start marker
 
   // repeat
   do {
     // get code
     SLONG slCode = *pbSource++;
+
     // if it is replication
     if (slCode < 0) {
       // get next byte and replicate it given number of times
       INDEX ctSameBytes = -slCode + 1;
       memset(pbDestination, *pbSource++, ctSameBytes);
       pbDestination += ctSameBytes;
-      // if it is copying
+
+    // if it is copying
     } else {
       // copy given number of next bytes
       INDEX ctCopyBytes = slCode + 1;
       memcpy(pbDestination, pbSource, ctCopyBytes);
+
       pbSource += ctCopyBytes;
       pbDestination += ctCopyBytes;
     }
-    // until all data is unpacked
+
+  // until all data is unpacked
   } while (pbSource < pbSourceLimit);
 
   // data must be unpacked correctly
@@ -246,23 +267,24 @@ BOOL CRLEBBCompressor::Unpack(const void *pvSrc, SLONG slSrcSize, void *pvDst, S
 
   // calculate size of data that was unpacked
   slDstSize = pbDestination - pbDestinationFirst;
+
   return TRUE;
 }
 
-/////////////////////////////////////////////////////////////////////
 // LZRW1 compressor
 // uses algorithm by Ross Williams
 
 //#define TRUE 1
 
-//#define UBYTE unsigned char /* Unsigned     byte (1 byte )        */
-//#define UWORD unsigned int  /* Unsigned     word (2 bytes)        */
-//#define ULONG unsigned long /* Unsigned longword (4 bytes)        */
-#define FLAG_BYTES    1 // Number of bytes used by copy flag.
-#define FLAG_COMPRESS 0 // Signals that compression occurred.
-#define FLAG_COPY     1 // Signals that a copyover occurred.
-// void fast_copy(p_src,p_dst,len) // Fast copy routine.
-// UBYTE *p_src,*p_dst; {while (len--) *p_dst++=*p_src++;}
+//#define UBYTE unsigned char /* Unsigned     byte (1 byte ) */
+//#define UWORD unsigned int  /* Unsigned     word (2 bytes) */
+//#define ULONG unsigned long /* Unsigned longword (4 bytes) */
+#define FLAG_BYTES    1 // Number of bytes used by copy flag
+#define FLAG_COMPRESS 0 // Signals that compression occurred
+#define FLAG_COPY     1 // Signals that a copyover occurred
+
+//void fast_copy(p_src, p_dst, len) // Fast copy routine
+//UBYTE *p_src, *p_dst; { while (len--) *p_dst++ = *p_src++; }
 inline void fast_copy(const UBYTE *p_src, UBYTE *p_dst, SLONG len) {
   memcpy(p_dst, p_src, len);
 }
@@ -394,9 +416,7 @@ void lzrw1_decompress(const UBYTE *p_src_first, ULONG src_len, UBYTE *p_dst_firs
   *p_dst_len = p_dst - p_dst_first;
 }
 
-/*
- * Calculate needed size for destination buffer when packing memory.
- */
+// Calculate needed size for destination buffer when packing memory
 SLONG CLZCompressor::NeededDestinationSize(SLONG slSourceSize) {
   // calculate worst case possible for size of LZ packed data
   return slSourceSize + 256;
@@ -404,27 +424,29 @@ SLONG CLZCompressor::NeededDestinationSize(SLONG slSourceSize) {
 
 // on entry, slDstSize holds maximum size of output buffer,
 // on exit, it is filled with resulting size
-// Pack a chunk of data using given compression.
+// Pack a chunk of data using given compression
 BOOL CLZCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize) {
   // this is just wrapper for original function by Ross Williams
   SLONG slDestinationSizeResult = slDstSize;
   lzrw1_compress((const UBYTE *)pvSrc, (ULONG)slSrcSize, (UBYTE *)pvDst, (ULONG *)&slDestinationSizeResult);
+
   slDstSize = slDestinationSizeResult;
   return TRUE;
 }
 
 // on entry, slDstSize holds maximum size of output buffer,
 // on exit, it is filled with resulting size
-// Unpack a chunk of data using given compression.
+// Unpack a chunk of data using given compression
 BOOL CLZCompressor::Unpack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize) {
   // this is just wrapper for original function by Ross Williams
   SLONG slDestinationSizeResult = slDstSize;
   lzrw1_decompress((const UBYTE *)pvSrc, (ULONG)slSrcSize, (UBYTE *)pvDst, (ULONG *)&slDestinationSizeResult);
+
   slDstSize = slDestinationSizeResult;
   return TRUE;
 }
 
-// Calculate needed size for destination buffer when packing memory.
+// Calculate needed size for destination buffer when packing memory
 SLONG CzlibCompressor::NeededDestinationSize(SLONG slSourceSize) {
   // calculate worst case possible for size of zlib packed data
   // NOTE: zlib docs state 0.1% of uncompressed size + 12 bytes,
@@ -434,7 +456,7 @@ SLONG CzlibCompressor::NeededDestinationSize(SLONG slSourceSize) {
 
 // on entry, slDstSize holds maximum size of output buffer,
 // on exit, it is filled with resulting size
-// Pack a chunk of data using given compression.
+// Pack a chunk of data using given compression
 BOOL CzlibCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize) {
   /*
   int ZEXPORT compress (dest, destLen, source, sourceLen)
@@ -446,6 +468,7 @@ BOOL CzlibCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLON
 
   CTSingleLock slZip(&zip_csLock, TRUE);
   int iResult = compress((UBYTE *)pvDst, (ULONG *)&slDstSize, (const UBYTE *)pvSrc, (ULONG)slSrcSize);
+
   if (iResult == Z_OK) {
     return TRUE;
   } else {
@@ -455,7 +478,7 @@ BOOL CzlibCompressor::Pack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLON
 
 // on entry, slDstSize holds maximum size of output buffer,
 // on exit, it is filled with resulting size
-// Unpack a chunk of data using given compression.
+// Unpack a chunk of data using given compression
 BOOL CzlibCompressor::Unpack(const void *pvSrc, SLONG slSrcSize, void *pvDst, SLONG &slDstSize) {
   /*
   int ZEXPORT uncompress (dest, destLen, source, sourceLen)

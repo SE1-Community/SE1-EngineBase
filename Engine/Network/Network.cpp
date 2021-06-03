@@ -72,7 +72,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/GameAgent/GameAgent.h>
 
-// pointer to global instance of the only game object in the application
+// Pointer to global instance of the only game object in the application
 CNetworkLibrary *_pNetwork = NULL;
 
 extern BOOL _bNeedPretouch;
@@ -90,7 +90,7 @@ static FLOAT _bStartDemoRecordingNextTime = FALSE;
 static FLOAT _bStopDemoRecordingNextTime = FALSE;
 static INDEX dem_iRecordedNumber = 0;
 
-// network control
+// Network control
 extern INDEX ser_bReportSyncOK = FALSE;
 extern INDEX ser_bReportSyncBad = TRUE;
 extern INDEX ser_bReportSyncLate = FALSE;
@@ -181,18 +181,19 @@ extern BOOL _bPredictionActive = FALSE;
 class CGatherCRC {
   public:
     BOOL bOld;
-    CGatherCRC();
-    ~CGatherCRC();
+
+    // Contructor
+    CGatherCRC(){
+      bOld = CRCT_bGatherCRCs;
+    }
+
+    // Destructor
+    ~CGatherCRC(){
+      CRCT_bGatherCRCs = bOld;
+    }
 };
 
-CGatherCRC::CGatherCRC() {
-  bOld = CRCT_bGatherCRCs;
-}
-CGatherCRC::~CGatherCRC() {
-  CRCT_bGatherCRCs = bOld;
-}
-
-// precache control
+// Precache control
 extern INDEX _precache_NONE = PRECACHE_NONE;
 extern INDEX _precache_SMART = PRECACHE_SMART;
 extern INDEX _precache_ALL = PRECACHE_ALL;
@@ -209,7 +210,7 @@ extern FLOAT cli_fPredictionFilter = 0.5f;
 
 extern INDEX shd_bCacheAll;
 
-// input
+// Input
 extern INDEX inp_iKeyboardReadingMethod = 2; // 0=getasynckey, 1=virtkeytrap, 2=scancodetrap
 extern INDEX inp_bAllowMouseAcceleration = TRUE;
 extern FLOAT inp_fMouseSensitivity = 1.0f;
@@ -244,24 +245,28 @@ extern INDEX wed_bUseGenericTextureReplacement = FALSE;
 extern void RendererInfo(void);
 extern void ClearRenderer(void);
 
-// cache all shadowmaps now
+// Cache all shadowmaps now
 extern void CacheShadows(void) {
   // mute all sounds
   _pSound->Mute();
   CWorld *pwo = (CWorld *)_pShell->GetINDEX("pwoCurrentWorld");
+
   if (pwo != NULL) {
     pwo->wo_baBrushes.CacheAllShadowmaps();
     CPrintF(TRANS("All shadows recached"));
-    if (shd_bCacheAll)
+
+    if (shd_bCacheAll) {
       CPrintF(".\n");
-    else
+    } else {
       CPrintF(TRANS(", but not for long.\n(precache all shadows function is disabled)\n"));
+    }
   }
+
   // mark that we need pretouching
   _bNeedPretouch = TRUE;
 }
 
-// check if a name or IP matches a mask
+// Check if a name or IP matches a mask
 extern BOOL MatchesBanMask(const CTString &strString, const CTString &strMask) {
   CTString strRest = strMask;
   CTString strLine;
@@ -276,6 +281,7 @@ extern BOOL MatchesBanMask(const CTString &strString, const CTString &strMask) {
       return TRUE;
     }
   }
+
   return FALSE;
 }
 
@@ -285,14 +291,17 @@ static void AddIPMask(void *pArgs) {
   CTString strIP = *NEXTARGUMENT(CTString *);
   ser_strIPMask += strIP + "\n";
 }
+
 static void RemIPMask(void *pArgs) {
   CTString strIP = *NEXTARGUMENT(CTString *);
   ser_strIPMask = RemoveSubstring(ser_strIPMask, strIP + "\n");
 }
+
 static void AddNameMask(void *pArgs) {
   CTString strName = *NEXTARGUMENT(CTString *);
   ser_strNameMask += strName + "\n";
 }
+
 static void RemNameMask(void *pArgs) {
   CTString strName = *NEXTARGUMENT(CTString *);
   ser_strNameMask = RemoveSubstring(ser_strNameMask, strName + "\n");
@@ -311,24 +320,31 @@ static void NetworkInfo(void) {
   CPrintF("Entities existing: %d\n", _ctEntities);
   CPrintF("Predictor entities existing: %d\n", _ctPredictorEntities);
   CPrintF("Server:\n");
+
   if (_pNetwork->ga_srvServer.srv_bActive) {
     CPrintF("  last processed tick: %g\n", CTimer::InSeconds(_pNetwork->ga_srvServer.srv_llLastProcessedTick));
     CPrintF("  last processed sequence: %d\n", _pNetwork->ga_srvServer.srv_iLastProcessedSequence);
     CPrintF("  players:\n");
+
     for (INDEX iplb = 0; iplb < _pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
       CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iplb];
+
       if (plb.plb_Active) {
         CPrintF("    %2d(%2d):'%s'@client%2d: (%dact)\n", iplb, plb.plb_Index, plb.plb_pcCharacter.GetNameForPrinting(),
                 plb.plb_iClient, plb.plb_abReceived.GetCount());
       }
     }
+
     CPrintF("  clients:\n");
+
     for (INDEX iSession = 0; iSession < _pNetwork->ga_srvServer.srv_assoSessions.Count(); iSession++) {
       CSessionSocket &sso = _pNetwork->ga_srvServer.srv_assoSessions[iSession];
+
       if (sso.sso_bActive) {
-        CPrintF("  %2d:'%s'\n", iSession, _cmiComm.Server_GetClientName(iSession)),
-          CPrintF("    buffer: %dblk=%dk\n", sso.sso_nsBuffer.GetUsedBlocks(), sso.sso_nsBuffer.GetUsedMemory() / 1024);
+        CPrintF("  %2d:'%s'\n", iSession, _cmiComm.Server_GetClientName(iSession));
+        CPrintF("    buffer: %dblk=%dk\n", sso.sso_nsBuffer.GetUsedBlocks(), sso.sso_nsBuffer.GetUsedMemory() / 1024);
         CPrintF("    state:");
+
         if (sso.sso_iDisconnectedState > 0) {
           CPrintF("    disconnecting");
         } else if (sso.sso_bSendStream) {
@@ -336,25 +352,32 @@ static void NetworkInfo(void) {
         } else {
           CPrintF("    connecting");
         }
+
         CPrintF("\n");
       }
     }
+
   } else {
     CPrintF("  not a server\n");
   }
+
   CPrintF("Session state:\n");
   CPrintF("  buffer: (%dblk)%dk\n", _pNetwork->ga_sesSessionState.ses_nsGameStream.GetUsedBlocks(),
           _pNetwork->ga_sesSessionState.ses_nsGameStream.GetUsedMemory() / 1024);
   CPrintF("  last processed tick: %g\n", CTimer::InSeconds(_pNetwork->ga_sesSessionState.ses_llLastProcessedTick));
   CPrintF("  last processed sequence: %d\n", _pNetwork->ga_sesSessionState.ses_iLastProcessedSequence);
   CPrintF("  level change: %d\n", _pNetwork->ga_sesSessionState.ses_iLevel);
+
   for (INDEX iplt = 0; iplt < _pNetwork->ga_sesSessionState.ses_apltPlayers.Count(); iplt++) {
     CPlayerTarget &plt = _pNetwork->ga_sesSessionState.ses_apltPlayers[iplt];
+
     if (plt.plt_bActive) {
       ULONG ulID = -1;
+
       if (plt.plt_penPlayerEntity != NULL) {
         ulID = plt.plt_penPlayerEntity->en_ulID;
       }
+
       CPrintF("  player %2d (ID:%d): (%dact)\n", iplt, ulID, plt.plt_abPrediction.GetCount());
     }
   }
@@ -362,12 +385,14 @@ static void NetworkInfo(void) {
   if (TIMER_PROFILING) {
     CTString strNetProfile;
     _pfNetworkProfile.Report(strNetProfile);
+
     CPrintF(strNetProfile);
   }
 }
 
 static void ListPlayers(void) {
   CPrintF("player list:\n");
+
   if (!_pNetwork->ga_srvServer.srv_bActive) {
     CPrintF("  <not a server>\n");
     return;
@@ -375,12 +400,15 @@ static void ListPlayers(void) {
 
   CPrintF("  client# name\n");
   CPrintF("  ----------------------\n");
+
   for (INDEX iplb = 0; iplb < _pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
     CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iplb];
+
     if (plb.plb_Active) {
       CPrintF("     %-2d   %s\n", plb.plb_iClient, plb.plb_pcCharacter.GetNameForPrinting());
     }
   }
+
   CPrintF("  ----------------------\n");
 }
 
@@ -389,28 +417,35 @@ static void KickClient(INDEX iClient, const CTString &strReason) {
     CPrintF(TRANS("Only server can kick people!\n"));
     return;
   }
+
   iClient = Clamp(iClient, INDEX(0), INDEX(NET_MAXGAMECOMPUTERS));
+
   if (!_pNetwork->ga_srvServer.srv_assoSessions[iClient].IsActive()) {
     CPrintF(TRANS("Client not connected!\n"));
     return;
   }
+
   if (iClient == 0) {
     CPrintF(TRANS("Can't kick local client!\n"));
     return;
   }
+
   CPrintF(TRANS("Kicking %d with explanation '%s'...\n"), iClient, strReason);
   _pNetwork->ga_srvServer.SendDisconnectMessage(iClient, "Admin: " + strReason);
 }
+
 static void KickClientCfunc(void *pArgs) {
   INDEX iClient = NEXTARGUMENT(INDEX);
   CTString strReason = *NEXTARGUMENT(CTString *);
   KickClient(iClient, strReason);
 }
+
 static void KickByName(const CTString &strName, const CTString &strReason) {
   if (!_pNetwork->IsServer()) {
     CPrintF(TRANS("Only server can kick people!\n"));
     return;
   }
+
   for (INDEX iplb = 0; iplb < _pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
     CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iplb];
     if (plb.plb_Active && plb.plb_pcCharacter.GetNameForPrinting().Undecorated().Matches(strName)) {
@@ -418,6 +453,7 @@ static void KickByName(const CTString &strName, const CTString &strReason) {
     }
   }
 }
+
 static void KickByNameCfunc(void *pArgs) {
   CTString strName = *NEXTARGUMENT(CTString *);
   CTString strReason = *NEXTARGUMENT(CTString *);
@@ -429,6 +465,7 @@ static void Admin(void *pArgs) {
 
   CNetworkMessage nm(MSG_ADMIN_COMMAND);
   nm << net_strAdminPassword << strCommand;
+
   _pNetwork->SendToServerReliable(nm);
 }
 
@@ -442,26 +479,33 @@ static void StockInfo(void) {
 
   if (_pGfx != NULL) {
     FLOAT fSlackRatio;
+
     FOREACHINLIST(CShadowMap, sm_lnInGfx, _pGfx->gl_lhCachedShadows, itsm) {
       // get polygon size in pixels (used portion of shadowmap)
       SLONG slStaticSize, slDynamicSize, slUploadSize;
       BOOL bIsFlat = itsm->GetUsedMemory(slStaticSize, slDynamicSize, slUploadSize, fSlackRatio);
       SLONG slTotalSize = slDynamicSize + slUploadSize;
+
       if (bIsFlat) {
         slStaticMemory += 4;
         slTotalSize += 4;
         slFlatMemory += slStaticSize;
         ctFlatShadows++;
+
       } else {
         slStaticMemory += slStaticSize;
         slTotalSize += slStaticSize;
-        if (slTotalSize > 0)
+
+        if (slTotalSize > 0) {
           ctCachedShadows++;
+        }
       }
+
       if (slDynamicSize > 0) {
         slDynamicMemory += slDynamicSize;
         ctDynamicShadows++;
       }
+
       slUploadMemory += slUploadSize;
       slShdBytes += slTotalSize + sizeof(CShadowMap);
       slSlackMemory += slTotalSize * fSlackRatio;
@@ -470,21 +514,26 @@ static void StockInfo(void) {
         if (slStaticSize > 128 * 1024) {
           ct256++;
           sl256Memory += slTotalSize;
+
         } else if (slStaticSize > 64 * 1024) {
           ct128++;
           sl128Memory += slTotalSize;
+
         } else if (slStaticSize > 32 * 1024) {
           ct64++;
           sl64Memory += slTotalSize;
+
         } else if (slStaticSize > 16 * 1024) {
           ct32++;
           sl32Memory += slTotalSize;
+
         } else if (slStaticSize > 0) {
           ct16++;
           sl16Memory += slTotalSize;
         }
       }
     }
+
     // report shadowmap memory usage (if any)
     if (slShdBytes > 0) {
       CPrintF("\nCached shadowmaps:\n");
@@ -493,10 +542,13 @@ static void StockInfo(void) {
       CPrintF("   Static: %d KB\n", slStaticMemory / 1024);
       CPrintF("   Upload: %d KB\n", slUploadMemory / 1024);
       CPrintF("  Dynamic: %d in %d KB\n", ctDynamicShadows, slDynamicMemory / 1024);
-      if (ctCachedShadows < 1)
+
+      if (ctCachedShadows < 1) {
         ctCachedShadows = 1; // for percentage calc
-      CPrintF("    Flats: %d (%d%%) with %d KB saved\n", ctFlatShadows, ctFlatShadows * 100 / ctCachedShadows,
-              slFlatMemory / 1024);
+      }
+
+      CPrintF("    Flats: %d (%d%%) with %d KB saved\n",
+              ctFlatShadows, ctFlatShadows * 100 / ctCachedShadows, slFlatMemory / 1024);
       CPrintF("of size:\n");
       CPrintF("    >128K: %4d in %d KB\n", ct256, sl256Memory / 1024);
       CPrintF("  128-64K: %4d in %d KB\n", ct128, sl128Memory / 1024);
@@ -520,11 +572,13 @@ static void StockInfo(void) {
     }
 
     // report shadow layers and world geometry memory usage
-    FOREACHINDYNAMICARRAY(pwo->wo_baBrushes.ba_abrBrushes, CBrush3D, itbr) // for all brush entities in the world
-    {
+
+    // for all brush entities in the world
+    FOREACHINDYNAMICARRAY(pwo->wo_baBrushes.ba_abrBrushes, CBrush3D, itbr) {
       // skip brush without entity
-      if (itbr->br_penEntity == NULL)
+      if (itbr->br_penEntity == NULL) {
         continue;
+      }
 
       // for each mip
       FOREACHINLIST(CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) {
@@ -536,45 +590,57 @@ static void StockInfo(void) {
 
           // add each vertex and working vertex in sector
           ctVertices += itbsc->bsc_abvxVertices.Count();
+
           FOREACHINSTATICARRAY(itbsc->bsc_abvxVertices, CBrushVertex, itbvx) {
             slVtxBytes += itbvx->GetUsedMemory();
           }
+
           FOREACHINSTATICARRAY(itbsc->bsc_awvxVertices, CWorkingVertex, itwvx) {
             slVtxBytes += 32; // aligned to 32 bytes!
           }
 
           // add each plane and working plane in sector
           ctPlanes += itbsc->bsc_abplPlanes.Count();
+
           FOREACHINSTATICARRAY(itbsc->bsc_abplPlanes, CBrushPlane, itbpl) {
             slPlnBytes += itbpl->GetUsedMemory();
           }
+
           FOREACHINSTATICARRAY(itbsc->bsc_awplPlanes, CWorkingPlane, itwpl) {
             slPlnBytes += sizeof(CWorkingPlane);
           }
 
           // add each edge and working edge in sector
           ctEdges += itbsc->bsc_abedEdges.Count();
+
           FOREACHINSTATICARRAY(itbsc->bsc_abedEdges, CBrushEdge, itbed) {
             slEdgBytes += itbed->GetUsedMemory();
           }
+
           FOREACHINSTATICARRAY(itbsc->bsc_awedEdges, CWorkingEdge, itwed) {
             slEdgBytes += sizeof(CWorkingEdge);
           }
 
           // for each polygon in sector
           ctPolys += itbsc->bsc_abpoPolygons.Count();
+
           FOREACHINSTATICARRAY(itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
             CBrushPolygon &bpo = *itbpo;
             slPlyBytes += bpo.GetUsedMemory();
+
             // count in the shadow layers (if any)
-            if (bpo.bpo_smShadowMap.bsm_lhLayers.IsEmpty())
+            if (bpo.bpo_smShadowMap.bsm_lhLayers.IsEmpty()) {
               continue; // skip polygon without shadowmap
+            }
+
             ctShadowLayers += bpo.bpo_smShadowMap.GetShadowLayersCount();
             slLyrBytes += bpo.bpo_smShadowMap.GetUsedMemory();
           }
         }
       }
-    } // add in memory used by collision grid
+    }
+    
+    // add in memory used by collision grid
     extern SLONG GetCollisionGridMemory(CCollisionGrid * pcg);
     slCgrBytes += GetCollisionGridMemory(pwo->wo_pcgCollisionGrid);
   }
@@ -612,8 +678,7 @@ static void StockInfo(void) {
   CPrintF("--------------\n");
   CPrintF("        Total: %.2f MB\n",
           fTexBytes + fSndBytes + fMdlBytes + fMshBytes + fSkaBytes + fAstBytes + fShaBytes
-            + (slShdBytes + slEntBytes + slSecBytes + slPlnBytes + slEdgBytes + slPlyBytes + slVtxBytes + slLyrBytes + slCgrBytes)
-                * dToMB);
+          + (slShdBytes + slEntBytes + slSecBytes + slPlnBytes + slEdgBytes + slPlyBytes + slVtxBytes + slLyrBytes + slCgrBytes) * dToMB);
   CPrintF("\n");
 }
 
@@ -621,24 +686,32 @@ static void StockDump(void) {
   try {
     CTFileStream strm;
     CTFileName fnm = CTString("Temp\\StockDump.txt");
+
     strm.Create_t(fnm);
+
     strm.PutLine_t("Animations:");
     _pAnimStock->DumpMemoryUsage_t(strm);
+
     strm.PutLine_t("Textures:");
     _pTextureStock->DumpMemoryUsage_t(strm);
+
     strm.PutLine_t("Models:");
     _pModelStock->DumpMemoryUsage_t(strm);
+
     strm.PutLine_t("Sounds:");
     _pSoundStock->DumpMemoryUsage_t(strm);
+
     strm.PutLine_t("Classes:");
     _pEntityClassStock->DumpMemoryUsage_t(strm);
+
     CPrintF("Dumped to '%s'\n", CTString(fnm));
+
   } catch (char *strError) {
     CPrintF("Error: %s\n", strError);
   }
 }
 
-// free all unused stocks
+// Free all unused stocks
 extern void FreeUnusedStock(void) {
   // free all unused stocks
   _pEntityClassStock->FreeUnused();
@@ -648,31 +721,27 @@ extern void FreeUnusedStock(void) {
   _pAnimStock->FreeUnused();
 }
 
-/*
- * This is called every TickQuantum seconds.
- */
+// This is called every TickQuantum seconds
 void CNetworkTimerHandler::HandleTimer(void) {
   if (this == NULL || _bTempNetwork) {
     return; // this can happen during NET_MakeDefaultState_t()!
   }
+
   // enable stream handling during timer
   CTSTREAM_BEGIN {
     // do the timer loop
     _pNetwork->TimerLoop();
-  }
-  CTSTREAM_END;
+  } CTSTREAM_END;
 }
 
-/*
- * Default constructor.
- */
+// Default constructor
 CNetworkLibrary::CNetworkLibrary(void) :
-ga_IsServer(FALSE),          // is not server
-ga_bDemoRec(FALSE),          // not recording demo
-ga_bDemoPlay(FALSE),         // not playing demo
-ga_bDemoPlayFinished(FALSE), // demo not finished
-ga_srvServer(*new CServer),
-ga_sesSessionState(*new CSessionState) {
+  ga_IsServer(FALSE), // is not server
+  ga_bDemoRec(FALSE), // not recording demo
+  ga_bDemoPlay(FALSE), // not playing demo
+  ga_bDemoPlayFinished(FALSE), // demo not finished
+  ga_srvServer(*new CServer), ga_sesSessionState(*new CSessionState)
+{
   ga_aplsPlayers.New(NET_MAXLOCALPLAYERS);
 
   // default demo syncronization is real-time, with 1:1 playback speed
@@ -682,6 +751,7 @@ ga_sesSessionState(*new CSessionState) {
   ga_pubDefaultState = NULL;
   ga_slDefaultStateSize = 0;
   memset(ga_aubDefaultProperties, 0, sizeof(ga_aubDefaultProperties));
+
   ga_pubCRCList = NULL;
   ga_slCRCList = 0;
   ga_ulDemoMinorVersion = _SE_BUILD_MINOR;
@@ -693,9 +763,7 @@ ga_sesSessionState(*new CSessionState) {
   ga_bEnumerationChange = FALSE;
 }
 
-/*
- * Destructor.
- */
+// Destructor
 CNetworkLibrary::~CNetworkLibrary(void) {
   // clear the global world
   ga_World.DeletePredictors();
@@ -711,9 +779,7 @@ CNetworkLibrary::~CNetworkLibrary(void) {
   delete &ga_srvServer;
 }
 
-/*
- * Initialize game management.
- */
+// Initialize game management
 void CNetworkLibrary::Init(const CTString &strGameID) {
   // remember the game ID
   CMessageDispatcher::Init(strGameID);
@@ -885,33 +951,27 @@ void CNetworkLibrary::Init(const CTString &strGameID) {
   _pShell->DeclareSymbol("INDEX pwoCurrentWorld;", &_pwoCurrentWorld);
 }
 
-/*
- * Add the timer handler.
- */
+// Add the timer handler
 void CNetworkLibrary::AddTimerHandler(void) {
   if (this == NULL || _bTempNetwork) {
     return; // this can happen during NET_MakeDefaultState_t()!
   }
+
   _pTimer->AddHandler(&ga_thTimerHandler);
 }
-/*
- * Remove the timer handler.
- */
+
+// Remove the timer handler
 void CNetworkLibrary::RemoveTimerHandler(void) {
   if (this == NULL || _bTempNetwork) {
     return; // this can happen during NET_MakeDefaultState_t()!
   }
+
   _pTimer->RemHandler(&ga_thTimerHandler);
 }
 
-/*
- * Start a peer-to-peer game session.
- *
- * remember to keep this routine up to date with CNetworkLibrary::Read()
- */
+// Start a peer-to-peer game session. Remember to keep this routine up to date with CNetworkLibrary::Read()
 void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName, const CTFileName &fnmWorld, ULONG ulSpawnFlags,
-                                        INDEX ctMaxPlayers, BOOL bWaitAllPlayers,
-                                        void *pvSessionProperties) // throw char *
+                                        INDEX ctMaxPlayers, BOOL bWaitAllPlayers, void *pvSessionProperties) // throw char *
 {
   // mute all sounds
   _pSound->Mute();
@@ -928,17 +988,20 @@ void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName, const CT
   // if starting in network
   if (_cmiComm.IsNetworkEnabled()) {
     CPrintF(TRANS("  network is on\n"));
+
     // start gathering CRCs
     InitCRCGather();
 
     // make default state data for creating deltas
     MakeDefaultState(fnmWorld, ulSpawnFlags, pvSessionProperties);
+
   } else {
     CPrintF(TRANS("  network is off\n"));
   }
 
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
+
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
   ga_ctTimersPending = -1; // disable timer pending
@@ -955,31 +1018,38 @@ void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName, const CT
   // remember the world filename
   ga_fnmWorld = fnmWorld;
   ga_fnmNextLevel = CTString("");
+
   try {
     // load the world
     _pTimer->SetGameTick(0); // must have timer at 0 while loading
     ga_World.Load_t(fnmWorld);
+
     // delete all entities that don't fit given spawn flags
     ga_World.FilterEntitiesBySpawnFlags(ga_sesSessionState.ses_ulSpawnFlags);
+
   } catch (char *) {
     ga_fnmWorld = CTString("");
     _cmiComm.Server_Close();
     _cmiComm.Client_Close();
     throw;
   }
+
   // remember the world pointer
   _pShell->SetINDEX("pwoCurrentWorld", (INDEX)&ga_World);
 
   SetProgressDescription(TRANS("starting server"));
   CallProgressHook_t(0.0f);
+
   // initialize server
   try {
     ga_srvServer.Start_t();
+
   } catch (char *) {
     ga_World.DeletePredictors();
     ga_World.Clear();
     throw;
   }
+
   ga_IsServer = TRUE;
   ga_ulDemoMinorVersion = _SE_BUILD_MINOR;
   CallProgressHook_t(1.0f);
@@ -989,9 +1059,11 @@ void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName, const CT
 
   SetProgressDescription(TRANS("starting session"));
   CallProgressHook_t(0.0f);
+
   // initialize session state
   try {
     ga_sesSessionState.Start_t(-1);
+
   } catch (char *strError) {
     (void)strError;
     RemoveTimerHandler();
@@ -1000,6 +1072,7 @@ void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName, const CT
     ga_World.Clear();
     throw;
   }
+
   CallProgressHook_t(1.0f);
 
   // remember maximum number of players
@@ -1010,24 +1083,25 @@ void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName, const CT
   ga_sesSessionState.ses_fRealTimeFactor = 1.0f;
 
   // eventually cache all shadowmaps in world (memory eater!)
-  if (shd_bCacheAll)
+  if (shd_bCacheAll) {
     ga_World.wo_baBrushes.CacheAllShadowmaps();
+  }
+
   // flush stale caches
   FreeUnusedStock();
+
   // mark that pretouching is required
   _bNeedPretouch = TRUE;
 
   // start timer sync anew
   ga_ctTimersPending = 0;
+
   FinishCRCGather();
   CPrintF(TRANS("  started.\n"));
 }
 
-/*
- * Save the game.
- */
-void CNetworkLibrary::Save_t(const CTFileName &fnmGame) // throw char *
-{
+// Save the game
+void CNetworkLibrary::Save_t(const CTFileName &fnmGame) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
 
@@ -1046,20 +1120,17 @@ void CNetworkLibrary::Save_t(const CTFileName &fnmGame) // throw char *
   strmFile.WriteID_t("GEND"); // game end
 }
 
-/*
- * Load the game.
- *
- * remember to keep this routine up to date with CNetworkLibrary::StartPeerToPeer()
- */
-void CNetworkLibrary::Load_t(const CTFileName &fnmGame) // throw char *
-{
+// Load the game. Remember to keep this routine up to date with CNetworkLibrary::StartPeerToPeer()
+void CNetworkLibrary::Load_t(const CTFileName &fnmGame) {
   // mute all sounds
   _pSound->Mute();
 
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
+
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
+
   ga_ctTimersPending = -1; // disable timer pending
   CGatherCRC gc;
 
@@ -1086,19 +1157,23 @@ void CNetworkLibrary::Load_t(const CTFileName &fnmGame) // throw char *
   AddTimerHandler();
 
   strmFile.ExpectID_t("GAME");
+
   // read session state
   try {
     ga_sesSessionState.Start_t(-1);
     ga_sesSessionState.Read_t(&strmFile);
+
     // if starting in network
     if (_cmiComm.IsNetworkEnabled()) {
       // make default state data for creating deltas
       MakeDefaultState(ga_fnmWorld, ga_sesSessionState.ses_ulSpawnFlags, ga_aubProperties);
     }
+
     // players will be connected later
     ga_sesSessionState.ses_apltPlayers.Clear();
     ga_sesSessionState.ses_apltPlayers.New(NET_MAXGAMEPLAYERS);
     strmFile.ExpectID_t("GEND"); // game end
+
   } catch (char *) {
     RemoveTimerHandler();
     ga_srvServer.Stop();
@@ -1113,15 +1188,19 @@ void CNetworkLibrary::Load_t(const CTFileName &fnmGame) // throw char *
   ga_srvServer.srv_bPause = ga_sesSessionState.ses_bPause;
   ga_srvServer.srv_bGameFinished = ga_sesSessionState.ses_bGameFinished;
   ga_sesSessionState.ses_llPredictionHeadTick = ga_sesSessionState.ses_llLastProcessedTick;
+
   // start sending stream to local state
   ga_srvServer.srv_assoSessions[0].sso_bSendStream = TRUE;
   ga_srvServer.srv_assoSessions[0].sso_iLastSentSequence = ga_srvServer.srv_iLastProcessedSequence;
 
   // eventually cache all shadowmaps in world (memory eater!)
-  if (shd_bCacheAll)
+  if (shd_bCacheAll) {
     ga_World.wo_baBrushes.CacheAllShadowmaps();
+  }
+
   // flush stale caches
   FreeUnusedStock();
+
   // mark that pretouching is required
   _bNeedPretouch = TRUE;
 
@@ -1130,9 +1209,7 @@ void CNetworkLibrary::Load_t(const CTFileName &fnmGame) // throw char *
   FinishCRCGather();
 }
 
-/*
- * Save a debugging game.
- */
+// Save a debugging game
 void CNetworkLibrary::DebugSave(void) {
   // try to save game
   try {
@@ -1143,7 +1220,7 @@ void CNetworkLibrary::DebugSave(void) {
   }
 }
 
-// Enumerate existing sessions.
+// Enumerate existing sessions
 void CNetworkLibrary::EnumSessions(BOOL bInternet) {
   // clear old list
   FORDELETELIST(CNetworkSession, ns_lnNode, ga_lhEnumeratedSessions, itns) {
@@ -1152,18 +1229,15 @@ void CNetworkLibrary::EnumSessions(BOOL bInternet) {
 
   // make sure network is on
   if (!_cmiComm.IsNetworkEnabled()) {
-    _cmiComm.PrepareForUse(/*network*/ TRUE, /*client*/ FALSE); // have to enumerate as server
+    _cmiComm.PrepareForUse(TRUE, FALSE); // have to enumerate as server
   }
 
   // request enumeration
   GameAgent_EnumTrigger(bInternet);
 }
 
-/*
- * Join a running multi-player game.
- */
-void CNetworkLibrary::JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctLocalPlayers) // throw char *
-{
+// Join a running multi-player game
+void CNetworkLibrary::JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctLocalPlayers) {
   // mute all sounds
   _pSound->Mute();
 
@@ -1174,9 +1248,12 @@ void CNetworkLibrary::JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctL
 
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
+
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
+
   ga_ctTimersPending = -1; // disable timer pending
+
   // start gathering CRCs
   CGatherCRC gc;
   InitCRCGather();
@@ -1190,11 +1267,13 @@ void CNetworkLibrary::JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctL
 
   ga_IsServer = FALSE;
   ga_ulDemoMinorVersion = _SE_BUILD_MINOR;
+
   // start the timer loop
   AddTimerHandler();
 
   SetProgressDescription(TRANS("connecting"));
   CallProgressHook_t(0.0f);
+
   // initialize session state
   try {
     ga_sesSessionState.Start_t(ctLocalPlayers);
@@ -1207,33 +1286,38 @@ void CNetworkLibrary::JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctL
   _pShell->SetINDEX("pwoCurrentWorld", (INDEX)&ga_World);
 
   // eventually cache all shadowmaps in world (memory eater!)
-  if (shd_bCacheAll)
+  if (shd_bCacheAll) {
     ga_World.wo_baBrushes.CacheAllShadowmaps();
+  }
+
   // flush stale caches
   FreeUnusedStock();
+
   // mark that pretouching is required
   _bNeedPretouch = TRUE;
 
   // run main loop to let session state process messages from server
   MainLoop();
+
   // start timer sync anew
   ga_ctTimersPending = 0;
 
   // initially auto adjust prediction on
-  //  AdjustPredictionOn();
+  //AdjustPredictionOn();
   CPrintF("  joined\n");
 }
 
-// Start playing a demo.
-void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo) // throw char *
-{
+// Start playing a demo
+void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo) {
   // mute all sounds
   _pSound->Mute();
 
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
+
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
+
   ga_ctTimersPending = -1; // disable timer pending
   ga_bLocalPause = FALSE;
 
@@ -1249,19 +1333,25 @@ void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo) // throw char *
   ga_strSessionName = strSessionName;
 
   ga_IsServer = FALSE;
+
   // start the timer loop
   AddTimerHandler();
+
   // initialize server
   try {
     // read initial info to stream
     ga_strmDemoPlay.ExpectID_t("DEMO");
+
     if (ga_strmDemoPlay.PeekID_t() == CChunkID("MVER")) {
       ga_strmDemoPlay.ExpectID_t("MVER");
       ga_strmDemoPlay >> ga_ulDemoMinorVersion;
+
     } else {
       ga_ulDemoMinorVersion = 2;
     }
+
     ga_sesSessionState.Read_t(&ga_strmDemoPlay);
+
   } catch (char *) {
     RemoveTimerHandler();
     ga_strmDemoPlay.Close();
@@ -1270,10 +1360,13 @@ void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo) // throw char *
   }
 
   // eventually cache all shadowmaps in world (memory eater!)
-  if (shd_bCacheAll)
+  if (shd_bCacheAll) {
     ga_World.wo_baBrushes.CacheAllShadowmaps();
+  }
+
   // flush stale caches
   FreeUnusedStock();
+
   // mark that pretouching is required
   _bNeedPretouch = TRUE;
 
@@ -1289,41 +1382,45 @@ void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo) // throw char *
 
   // run main loop to let server process messages from host
   MainLoop();
+
   // start timer sync anew
   ga_ctTimersPending = 0;
 }
 
-// Test if currently playing demo has finished.
+// Test if currently playing demo has finished
 BOOL CNetworkLibrary::IsDemoPlayFinished(void) {
   return ga_bDemoPlay && ga_bDemoPlayFinished;
 }
 
-// Test if currently playing a demo.
+// Test if currently playing a demo
 BOOL CNetworkLibrary::IsPlayingDemo(void) {
   return ga_bDemoPlay;
 }
 
-// Test if currently recording a demo.
+// Test if currently recording a demo
 BOOL CNetworkLibrary::IsRecordingDemo(void) {
   return ga_bDemoRec;
 }
+
 BOOL CNetworkLibrary::IsNetworkEnabled(void) {
   return _cmiComm.IsNetworkEnabled();
 }
-// pause/unpause game
+
+// Pause/unpause game
 void CNetworkLibrary::TogglePause(void) {
   ga_sesSessionState.ses_bWantPause = !ga_sesSessionState.ses_bWantPause;
 }
 
-// test if game is paused
+// Test if game is paused
 BOOL CNetworkLibrary::IsPaused(void) {
   if (this == NULL || _bTempNetwork) {
     return TRUE; // this can happen during NET_MakeDefaultState_t()!
   }
+
   return ga_sesSessionState.ses_bPause;
 }
 
-// test if having connnection problems (not getting messages from server regulary)
+// Test if having connnection problems (not getting messages from server regulary)
 BOOL CNetworkLibrary::IsConnectionStable(void) {
   // if network is not enabled
   if (!_cmiComm.IsNetworkEnabled()) {
@@ -1334,7 +1431,8 @@ BOOL CNetworkLibrary::IsConnectionStable(void) {
   // check when last message was received.
   return (_pTimer->GetHighPrecisionTimer() - ga_sesSessionState.ses_tvMessageReceived).GetSeconds() < net_tmProblemsTimeout;
 }
-// test if completely disconnected and why
+
+// Test if completely disconnected and why
 BOOL CNetworkLibrary::IsDisconnected(void) {
   return ga_sesSessionState.ses_strDisconnected != "";
 }
@@ -1343,35 +1441,39 @@ const CTString &CNetworkLibrary::WhyDisconnected(void) {
   return ga_sesSessionState.ses_strDisconnected;
 }
 
-// set/get server side pause (for single player only)
+// Set server side pause (for single player only)
 void CNetworkLibrary::SetLocalPause(BOOL bPause) {
   ga_bLocalPause = bPause;
 }
 
+// Get server side pause (for single player only)
 BOOL CNetworkLibrary::GetLocalPause(void) {
   if (this == NULL || _bTempNetwork) {
     return TRUE; // this can happen during NET_MakeDefaultState_t()!
   }
+
   return ga_bLocalPause;
 }
 
-// get server/client name and address
+// Get server/client name and address
 void CNetworkLibrary::GetHostName(CTString &strName, CTString &strAddress) {
   _cmiComm.GetHostName(strName, strAddress);
 }
 
-// mark that the game has finished -- called from AI
+// Mark that the game has finished - called from AI
 void CNetworkLibrary::SetGameFinished(void) {
   ga_sesSessionState.ses_bGameFinished = TRUE;
+
   if (IsServer()) {
     ga_srvServer.srv_bGameFinished = TRUE;
   }
 }
+
 BOOL CNetworkLibrary::IsGameFinished(void) {
   return ga_sesSessionState.ses_bGameFinished;
 }
 
-// manipulation with realtime factor for slower/faster time -- called from AI
+// Manipulation with realtime factor for slower/faster time - called from AI
 void CNetworkLibrary::SetRealTimeFactor(FLOAT fSpeed) {
   ga_sesSessionState.ses_fRealTimeFactor = fSpeed;
 }
@@ -1380,45 +1482,49 @@ FLOAT CNetworkLibrary::GetRealTimeFactor(void) {
   return ga_sesSessionState.ses_fRealTimeFactor;
 }
 
-// test if game is waiting for more players to connect
+// Test if game is waiting for more players to connect
 BOOL CNetworkLibrary::IsWaitingForPlayers(void) {
   // if game mode does not include waiting for players
   if (!ga_sesSessionState.ses_bWaitAllPlayers) {
     // not waiting
     return FALSE;
   }
+
   // if server
   if (IsServer()) {
     // check number of players on server
     return ga_srvServer.GetPlayersCount() < ga_sesSessionState.ses_ctMaxPlayers;
-    // if not server
+
+  // if not server
   } else {
     // check number of players in session
     return ga_sesSessionState.GetPlayersCount() < ga_sesSessionState.ses_ctMaxPlayers;
   }
 }
-// test if game is waiting for server
+
+// Test if game is waiting for server
 BOOL CNetworkLibrary::IsWaitingForServer(void) {
   return ga_sesSessionState.ses_bWaitingForServer;
 }
 
-// test if game session is currently doing prediction
+// Test if game session is currently doing prediction
 BOOL CNetworkLibrary::IsPredicting(void) {
   return ga_sesSessionState.ses_bPredicting;
 }
 
-/*
- * Stop currently running game.
- */
+// Stop currently running game
 void CNetworkLibrary::StopGame(void) {
   // mute all sounds
   _pSound->Mute();
 
   CPrintF(TRANS("stopping game.\n"));
+
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
+
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
+
   ga_ctTimersPending = -1; // disable timer pending
 
   // stop demo recording if active
@@ -1428,6 +1534,7 @@ void CNetworkLibrary::StopGame(void) {
   if (ga_bDemoPlay) {
     // close the demo file
     ga_strmDemoPlay.Close();
+
     // remember that not playing demo
     ga_bDemoPlay = FALSE;
     ga_bDemoPlayFinished = FALSE;
@@ -1444,6 +1551,7 @@ void CNetworkLibrary::StopGame(void) {
     ga_srvServer.Stop();
     ga_IsServer = FALSE;
   }
+
   ga_ulDemoMinorVersion = _SE_BUILD_MINOR;
 
   ga_strSessionName = "";
@@ -1454,10 +1562,12 @@ void CNetworkLibrary::StopGame(void) {
   // free default state if existing
   if (ga_pubDefaultState != NULL) {
     FreeMemory(ga_pubDefaultState);
+
     ga_pubDefaultState = NULL;
     ga_slDefaultStateSize = 0;
     memset(ga_aubDefaultProperties, 0, sizeof(ga_aubDefaultProperties));
   }
+
   if (ga_pubCRCList != NULL) {
     FreeMemory(ga_pubCRCList);
     ga_pubCRCList = NULL;
@@ -1466,6 +1576,7 @@ void CNetworkLibrary::StopGame(void) {
 
   ga_aplsPlayers.Clear();
   ga_aplsPlayers.New(NET_MAXLOCALPLAYERS);
+
   // remember the world pointer
   _pShell->SetINDEX("pwoCurrentWorld", (INDEX)NULL);
 
@@ -1473,7 +1584,7 @@ void CNetworkLibrary::StopGame(void) {
   _pTimer->SetGameTick(0);
 }
 
-// initiate level change
+// Initiate level change
 void CNetworkLibrary::ChangeLevel(const CTFileName &fnmNextLevel, BOOL bRemember, INDEX iUserData) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
@@ -1490,7 +1601,7 @@ void CNetworkLibrary::ChangeLevel(const CTFileName &fnmNextLevel, BOOL bRemember
   }
 }
 
-// really do the level change
+// Really do the level change
 void CNetworkLibrary::ChangeLevel_internal(void) {
   CSetFPUPrecision FPUPrecision(FPT_24BIT);
 
@@ -1505,6 +1616,7 @@ void CNetworkLibrary::ChangeLevel_internal(void) {
 
   // find all entities that are to cross to next level
   CEntitySelection senToCross;
+
   {FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
     if (iten->en_ulFlags & ENF_CROSSESLEVELS) {
       senToCross.Select(*iten);
@@ -1520,10 +1632,12 @@ void CNetworkLibrary::ChangeLevel_internal(void) {
   CPlayerCharacter apc[NET_MAXGAMEPLAYERS];
   BOOL abWasActive[NET_MAXGAMEPLAYERS];
   CPlayerAction apaActions[NET_MAXGAMEPLAYERS][2];
+
   {
     for (INDEX i = 0; i < NET_MAXGAMEPLAYERS; i++) {
       CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[i];
       abWasActive[i] = plt.IsActive();
+
       if (plt.IsActive()) {
         apc[i] = plt.plt_penPlayerEntity->en_pcCharacter;
         apaActions[i][0] = plt.plt_paLastAction;
@@ -1564,33 +1678,40 @@ void CNetworkLibrary::ChangeLevel_internal(void) {
       // load the new world
       _pTimer->SetGameTick(0); // must have timer at 0 while loading
       ga_World.Load_t(ga_fnmNextLevel);
+
       // delete all entities that don't fit given spawn flags
       ga_World.FilterEntitiesBySpawnFlags(ga_sesSessionState.ses_ulSpawnFlags);
-      // if failed
+
+    // if failed
     } catch (char *strError) {
       // report error
       CPrintF(TRANS("Cannot change level:\n%s"), strError);
+
       // try to
       try {
         // load the old world
         ga_fnmNextLevel = fnmOldWorld;
         ga_World.Load_t(ga_fnmNextLevel);
+
         // delete all entities that don't fit given spawn flags
         ga_World.FilterEntitiesBySpawnFlags(ga_sesSessionState.ses_ulSpawnFlags);
-        // if that fails
+
+      // if that fails
       } catch (char *strError2) {
         // fatal error
         FatalError(TRANS("Cannot change level because:\n%s\n"
-                         "and cannot go back to original one because:\n%s"),
-                   strError, strError2);
+                         "and cannot go back to original one because:\n%s"), strError, strError2);
         return;
       }
     }
+
     // remember the world filename
     ga_fnmWorld = ga_fnmNextLevel;
+
     // remember the world pointer
     _pShell->SetINDEX("pwoCurrentWorld", (INDEX)&ga_World);
-    // if there is remembered level
+
+  // if there is remembered level
   } else {
     // restore it
     ga_sesSessionState.RestoreOldLevel(ga_fnmNextLevel);
@@ -1607,6 +1728,7 @@ void CNetworkLibrary::ChangeLevel_internal(void) {
   {
     for (INDEX i = 0; i < NET_MAXGAMEPLAYERS; i++) {
       CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[i];
+
       if (abWasActive[i]) {
         plt.Activate();
         plt.plt_paLastAction = apaActions[i][0];
@@ -1628,7 +1750,8 @@ void CNetworkLibrary::ChangeLevel_internal(void) {
   if (!IsServer()) {
     // start waiting for server
     ga_sesSessionState.ses_bWaitingForServer = TRUE;
-    // if server
+
+  // if server
   } else {
     // flush sync check buffer
     ga_srvServer.srv_ascChecks.Clear();
@@ -1637,31 +1760,38 @@ void CNetworkLibrary::ChangeLevel_internal(void) {
     {
       for (INDEX iClient = 0; iClient < NET_MAXGAMECOMPUTERS; iClient++) {
         CSessionSocket &sso = ga_srvServer.srv_assoSessions[iClient];
+
         // reset message timer
         sso.sso_tvMessageReceived = -1I64;
+
         // reset sync timer
         sso.sso_llLastSyncReceived = -1;
       }
     }
+
     // for each player
     {
       for (INDEX iPlayer = 0; iPlayer < NET_MAXGAMEPLAYERS; iPlayer++) {
         CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iPlayer];
+
         if (plb.plb_Active) {
           // add one dummy action
           CPlayerAction pa;
           pa.Clear();
           pa.pa_aRotation = plb.plb_paLastAction.pa_aRotation;
           pa.pa_aViewRotation = plb.plb_paLastAction.pa_aViewRotation;
+
           plb.plb_abReceived.AddAction(pa);
         }
       }
     }
   }
+
   ga_sesSessionState.ses_iLevel += 1;
 
   // flush stale caches
   FreeUnusedStock();
+
   // mark that pretouching is required
   _bNeedPretouch = TRUE;
 
@@ -1670,9 +1800,8 @@ void CNetworkLibrary::ChangeLevel_internal(void) {
   FinishCRCGather();
 }
 
-// Start recording a demo.
-void CNetworkLibrary::StartDemoRec_t(const CTFileName &fnDemo) // throw char *
-{
+// Start recording a demo
+void CNetworkLibrary::StartDemoRec_t(const CTFileName &fnDemo) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
 
@@ -1695,7 +1824,7 @@ void CNetworkLibrary::StartDemoRec_t(const CTFileName &fnDemo) // throw char *
   ga_bDemoRec = TRUE;
 }
 
-// Stop recording a demo.
+// Stop recording a demo
 void CNetworkLibrary::StopDemoRec(void) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
@@ -1705,15 +1834,18 @@ void CNetworkLibrary::StopDemoRec(void) {
     // do nothing
     return;
   }
+
   // write terminal info to the stream
   ga_strmDemoRec.WriteID_t("DEND"); // game end
+
   // close the file
   ga_strmDemoRec.Close();
+
   // remember that not recording demo
   ga_bDemoRec = FALSE;
 }
 
-// split the rcon response string into lines and send one by one to the client
+// Split the rcon response string into lines and send one by one to the client
 static void SendAdminResponse(ULONG ulAdr, UWORD uwPort, ULONG ulCode, const CTString &strResponse) {
   CTString str = strResponse;
   INDEX iLineCt = 0;
@@ -1723,17 +1855,17 @@ static void SendAdminResponse(ULONG ulAdr, UWORD uwPort, ULONG ulCode, const CTS
     strLine.OnlyFirstLine();
     str.RemovePrefix(strLine);
     str.DeleteChar(0);
+
     if (strLine.Length() > 0) {
       CNetworkMessage nm(MSG_EXTRA);
       nm << CTString(0, "log %u %d %s\n", ulCode, iLineCt++, strLine);
+
       _pNetwork->SendBroadcast(nm, ulAdr, uwPort);
     }
   }
 }
 
-/*
- * Main loop.
- */
+// Main loop
 void CNetworkLibrary::MainLoop(void) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
@@ -1750,19 +1882,23 @@ void CNetworkLibrary::MainLoop(void) {
 
   if (_bStartDemoRecordingNextTime) {
     _bStartDemoRecordingNextTime = 0.0f;
+
     if (!ga_bDemoRec) {
       try {
         CTString strName;
         strName.PrintF("Temp\\Recorded%02d.dem", (INDEX)dem_iRecordedNumber);
         StartDemoRec_t(strName);
         dem_iRecordedNumber += 1;
+
       } catch (char *strError) {
         CPrintF(TRANS("Demo recording error: %s\n"), strError);
       }
     }
   }
+
   if (_bStopDemoRecordingNextTime) {
     _bStopDemoRecordingNextTime = 0.0f;
+
     if (ga_bDemoRec) {
       StopDemoRec();
     }
@@ -1777,12 +1913,15 @@ void CNetworkLibrary::MainLoop(void) {
       ga_sesSessionState.Stop();
       return;
     }
+
     ga_sesSessionState.SessionStateLoop();
+
     if (_cmiComm.Client_Update() == FALSE) {
       ga_sesSessionState.Stop();
       return;
     }
   }
+
   // if this is server computer
   if (ga_IsServer) {
     // handle server messages
@@ -1793,12 +1932,10 @@ void CNetworkLibrary::MainLoop(void) {
   TICK llBefore = _pTimer->GetTimeTick();
   _pTimer->SetLerp(0.0f);
 
-  /*
-    // automatically adjust network settings
-    if (cli_bAutoAdjustSettings) {
-      AutoAdjustSettings();
-    }
-    */
+  // automatically adjust network settings
+  /*if (cli_bAutoAdjustSettings) {
+    AutoAdjustSettings();
+  }*/
 
   // determine whether to use prediction
   BOOL bUsePrediction = cli_bPrediction && (cli_bPredictIfServer || !IsServer());
@@ -1808,16 +1945,20 @@ void CNetworkLibrary::MainLoop(void) {
   if (bUsePrediction) {
     ga_World.MarkForPrediction();
   }
+
   // process the game stream coming from the server
   ga_sesSessionState.ProcessGameStream();
+
   // flush actions that don't need to be predicted any more
   ga_sesSessionState.FlushProcessedPredictions();
+
   // process additional prediction steps
   if (bUsePrediction) {
     // mark all new predictable entities that might have been spawned
     ga_World.UnmarkForPrediction();
     ga_World.MarkForPrediction();
     ga_sesSessionState.ProcessPrediction();
+
     // unmark all predictable entities marked for prediction
     ga_World.UnmarkForPrediction();
   }
@@ -1825,9 +1966,10 @@ void CNetworkLibrary::MainLoop(void) {
   ga_sesSessionState.ses_llLastUpdated = _pTimer->GetTimeTick();
 
   TICK llAfter = _pTimer->GetTimeTick();
-  ga_sesSessionState.ses_bKeepingUpWithTime = (llAfter - llBefore) <= /*_pTimer->TickQuantum* */ 2;
+  ga_sesSessionState.ses_bKeepingUpWithTime = (llAfter - llBefore) <= /*_pTimer->TickQuantum * */ 2;
 
   CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
+
   // set the lerping factor for current frame
   if (!ga_bDemoPlay) {
     ga_sesSessionState.SetLerpFactor(tvNow);
@@ -1843,18 +1985,21 @@ void CNetworkLibrary::MainLoop(void) {
       if (ga_sesSessionState.ses_bKeepingUpWithTime) {
         // add passed time with slow/fast factor
         ga_fDemoTimer += FLOAT((tvNow - ga_tvDemoTimerLastTime).GetSeconds()) * ga_fDemoRealTimeFactor
-                         * ga_sesSessionState.ses_fRealTimeFactor;
+                       * ga_sesSessionState.ses_fRealTimeFactor;
       }
-      // if synchronizing is stopped
+
+    // if synchronizing is stopped
     } else if (ga_fDemoSyncRate == DEMOSYNC_STOP) {
       // don't step
       NOTHING;
-      // if synchronizing by given steps
+
+    // if synchronizing by given steps
     } else {
       // just add the step
       ga_fDemoTimer += 1.0f / ga_fDemoSyncRate;
     }
   }
+
   // remember the demo timer
   ga_tvDemoTimerLastTime = tvNow;
 
@@ -1863,16 +2008,18 @@ void CNetworkLibrary::MainLoop(void) {
     // do services for gameagent querying
     GameAgent_ServerUpdate();
 
-    //    _cmiComm.Broadcast_Update();
+    //_cmiComm.Broadcast_Update();
 
     // repeat
     FOREVER {
       CNetworkMessage nmReceived;
 
-      //      _cmiComm.Broadcast_Update();
+      //_cmiComm.Broadcast_Update();
+
       ULONG ulFrom;
       UWORD uwPort;
       BOOL bHasMsg = ReceiveBroadcast(nmReceived, ulFrom, uwPort);
+
       // if there are no more messages
       if (!bHasMsg) {
         // finish
@@ -1884,6 +2031,7 @@ void CNetworkLibrary::MainLoop(void) {
         // skip it
         continue;
       }
+
       // get the string from the message
       CTString strMsg;
       nmReceived >> strMsg;
@@ -1894,10 +2042,12 @@ void CNetworkLibrary::MainLoop(void) {
         if (!strMsg.RemovePrefix("rcmd ")) {
           continue;
         }
+
         ULONG ulCode;
         char strPass[80];
         char strCmd[256];
         strMsg.ScanF("%u \"%80[^\"]\"%256[^\n]", &ulCode, strPass, strCmd);
+
         CTString strAdr = AddressToString(ulFrom);
 
         if (net_strAdminPassword == "" || net_strAdminPassword != strPass) {
@@ -1923,7 +2073,7 @@ void CNetworkLibrary::MainLoop(void) {
   _sfStats.StopTimer(CStatForm::STI_MAINLOOP);
 }
 
-// make actions packet for local players and send to server
+// Make actions packet for local players and send to server
 void CNetworkLibrary::SendActionsToServer(void) {
   // make the packet
   CNetworkMessage nmAction(MSG_ACTION);
@@ -1934,17 +2084,17 @@ void CNetworkLibrary::SendActionsToServer(void) {
     // create action packet if the player exists
     pls.WriteActionPacket(nmAction);
   }
+
   // send the packet
   SendToServer(nmAction);
 }
 
-/*
- * Client loop.
- */
+// Client loop
 void CNetworkLibrary::TimerLoop(void) {
   if (this == NULL || _bTempNetwork) {
     return; // this can happen during NET_MakeDefaultState_t()!
   }
+
   _pfNetworkProfile.StartTimer(CNetworkProfile::PTI_TIMERLOOP);
 
   // count number of timer interrupts that happened
@@ -1954,22 +2104,27 @@ void CNetworkLibrary::TimerLoop(void) {
 
   // if can synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, FALSE);
+
   // initially, no timer functions needed
   INDEX ct = 0;
+
   // if timer exactness level is full
   if (net_iExactTimer == 2) {
     // lock network mutex
     slNetwork.Lock();
+
     // execute exactly one
     ct = 1;
-    // if timer exactness level is partial
+
+  // if timer exactness level is partial
   } else if (net_iExactTimer == 1) {
     // if network mutex can be locked
     if (slNetwork.TryToLock()) {
       // execute all pending
       ct = ga_ctTimersPending;
     }
-    // if timer exactness level is low
+
+  // if timer exactness level is low
   } else if (net_iExactTimer == 0) {
     // if network mutex can be locked
     if (slNetwork.TryToLock()) {
@@ -1977,12 +2132,15 @@ void CNetworkLibrary::TimerLoop(void) {
       ct = 1;
     }
   }
+
   // for each pending interrupt
   while (ct) {
     ct--;
     ga_ctTimersPending--;
+
     // if not disconnected
-    //    if (!IsDisconnected()) {
+    //if (!IsDisconnected()) {
+
     if (_cmiComm.cci_bClientInitialized) {
       // make actions packet for all local players and send to server
       SendActionsToServer();
@@ -2001,18 +2159,20 @@ void CNetworkLibrary::TimerLoop(void) {
   _pfNetworkProfile.StopTimer(CNetworkProfile::PTI_TIMERLOOP);
 }
 
-// Get player entity for a given local player.
+// Get player entity for a given local player
 CEntity *CNetworkLibrary::GetLocalPlayerEntity(CPlayerSource *ppls) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
 
   // get the index of the player target in game state
   INDEX iPlayerTarget = ppls->pls_Index;
+
   // if player is not added
   if (iPlayerTarget < 0) {
     // no entity
     return NULL;
-    // if player is added
+
+  // if player is added
   } else {
     // get the entity from player target
     CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[iPlayerTarget];
@@ -2021,13 +2181,14 @@ CEntity *CNetworkLibrary::GetLocalPlayerEntity(CPlayerSource *ppls) {
   }
 }
 
-// Get player entity for a given player by name.
+// Get player entity for a given player by name
 CEntity *CNetworkLibrary::GetPlayerEntityByName(const CTString &strName) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
 
   // for each player in game
   CStaticArray<CPlayerTarget> &aplt = ga_sesSessionState.ses_apltPlayers;
+
   for (INDEX iplt = 0; iplt < aplt.Count(); iplt++) {
     // if it is active and has that name
     if (aplt[iplt].IsActive() && aplt[iplt].plt_penPlayerEntity->en_pcCharacter.GetName() == strName) {
@@ -2035,25 +2196,29 @@ CEntity *CNetworkLibrary::GetPlayerEntityByName(const CTString &strName) {
       return aplt[iplt].plt_penPlayerEntity;
     }
   }
+
   // else not found
   return NULL;
 }
 
-// Get number of entities with given name.
+// Get number of entities with given name
 INDEX CNetworkLibrary::GetNumberOfEntitiesWithName(const CTString &strName) {
   INDEX ctEntities = 0;
+
   {FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
     if (iten->GetName() == strName) {
       ctEntities++;
     }
   }}
+
   return ctEntities;
 }
 
-// Get n-th entity with given name.
+// Get n-th entity with given name
 CEntity *CNetworkLibrary::GetEntityWithName(const CTString &strName, INDEX iEntityWithThatName) {
   INDEX ctEntities = 0;
   CEntity *pen = NULL;
+
   {FOREACHINDYNAMICCONTAINER(ga_World.wo_cenEntities, CEntity, iten) {
     if (iten->GetName() == strName) {
       pen = iten;
@@ -2063,13 +2228,16 @@ CEntity *CNetworkLibrary::GetEntityWithName(const CTString &strName, INDEX iEnti
       ctEntities++;
     }
   }}
+
   return pen;
 }
-// Test if a given player is local to this computer.
+
+// Test if a given player is local to this computer
 BOOL CNetworkLibrary::IsPlayerLocal(CEntity *pen) {
   return GetPlayerSource(pen) != NULL;
 }
-// get player source for a given player if it is local to this computer
+
+// Get player source for a given player if it is local to this computer
 CPlayerSource *CNetworkLibrary::GetPlayerSource(CEntity *pen) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
@@ -2078,10 +2246,12 @@ CPlayerSource *CNetworkLibrary::GetPlayerSource(CEntity *pen) {
   {FOREACHINSTATICARRAY(ga_aplsPlayers, CPlayerSource, itpls) {
     // get the index of the player target in game state
     INDEX iPlayerTarget = itpls->pls_Index;
+
     // if player is added
     if (iPlayerTarget >= 0) {
       // get the player target
       CPlayerTarget &plt = ga_sesSessionState.ses_apltPlayers[iPlayerTarget];
+
       // if it is that one
       if (plt.plt_penPlayerEntity == pen) {
         // return it
@@ -2094,16 +2264,13 @@ CPlayerSource *CNetworkLibrary::GetPlayerSource(CEntity *pen) {
   return NULL;
 }
 
-// get game time in currently running game
+// Get game time in currently running game
 TICK CNetworkLibrary::NetworkGameTime(void) {
   return ga_sesSessionState.ses_llLastProcessedTick;
 }
 
-/*
- * Add a new client to game.
- */
-CPlayerSource *CNetworkLibrary::AddPlayer_t(CPlayerCharacter &pcCharacter) // throw char *
-{
+// Add a new client to game
+CPlayerSource *CNetworkLibrary::AddPlayer_t(CPlayerCharacter &pcCharacter) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
   CPrintF(TRANS("Adding player: '%s'\n"), pcCharacter.GetNameForPrinting());
@@ -2115,6 +2282,7 @@ CPlayerSource *CNetworkLibrary::AddPlayer_t(CPlayerCharacter &pcCharacter) // th
       // activate it
       itcls->Start_t(pcCharacter);
       CPrintF(TRANS("  done.\n"));
+
       return &itcls.Current();
     }
   }
@@ -2122,10 +2290,11 @@ CPlayerSource *CNetworkLibrary::AddPlayer_t(CPlayerCharacter &pcCharacter) // th
   // number of local clients is limited with NET_MAXLOCALCLIENTS
   ASSERTALWAYS("Adding too much local clients!");
   throw TRANS("Cannot add more local clients");
+
   return NULL;
 }
 
-// Get session properties for current game.
+// Get session properties for current game
 void *CNetworkLibrary::GetSessionProperties(void) {
   // synchronize access to network
   CTSingleLock slNetwork(&ga_csNetwork, TRUE);
@@ -2133,7 +2302,7 @@ void *CNetworkLibrary::GetSessionProperties(void) {
   return ga_aubProperties;
 }
 
-// Send chat message from some players to some other players.
+// Send chat message from some players to some other players
 void CNetworkLibrary::SendChat(ULONG ulFrom, ULONG ulTo, const CTString &strMessage) {
   // if the string is too long and we're not server
   if (strlen(strMessage) > 256 && !_pNetwork->IsServer()) {
@@ -2146,15 +2315,17 @@ void CNetworkLibrary::SendChat(ULONG ulFrom, ULONG ulTo, const CTString &strMess
   nm << ulFrom;
   nm << ulTo;
   nm << strMessage;
+
   SendToServer(nm);
 }
 
-// save current version of engine
+// Save current version of engine
 void CNetworkLibrary::WriteVersion_t(CTStream &strm) {
   strm.WriteID_t("BUIV"); // build version
   strm << INDEX(_SE_BUILD_MAJOR);
 }
-// load version of engine saved in file and check against current
+
+// Load version of engine saved in file and check against current
 void CNetworkLibrary::CheckVersion_t(CTStream &strm, BOOL bAllowReinit, BOOL &bNeedsReinit) {
   // if not saved
   if (strm.PeekID_t() != CChunkID("BUIV")) { // build version
@@ -2162,12 +2333,16 @@ void CNetworkLibrary::CheckVersion_t(CTStream &strm, BOOL bAllowReinit, BOOL &bN
     bNeedsReinit = FALSE;
     return;
   }
+
   strm.ExpectID_t("BUIV"); // build version
+
   // read the saved one
   INDEX iSaved;
   strm >> iSaved;
+
   // get current one
   INDEX iCurrent = _SE_BUILD_MAJOR;
+
   // if current version is an internal build
   if (iCurrent == 0) {
     // it is never forced to reinit
@@ -2200,13 +2375,15 @@ void CNetworkLibrary::CheckVersion_t(CTStream &strm, BOOL bAllowReinit, BOOL &bN
     }
     return;
   }
+
   // this should not happen
   ASSERT(FALSE);
   bNeedsReinit = FALSE;
+
   return;
 }
 
-// add a value to the netgraph
+// Add a value to the netgraph
 void CNetworkLibrary::AddNetGraphValue(enum NetGraphEntryType nget, FLOAT fLatency) {
   net_iGraphBuffer = Clamp(net_iGraphBuffer, INDEX(20), INDEX(1000));
 
@@ -2225,9 +2402,9 @@ void CNetworkLibrary::AddNetGraphValue(enum NetGraphEntryType nget, FLOAT fLaten
   ga_angeNetGraph[0].nge_fLatency = fLatency;
 }
 
-// make default state for a network game
-extern void NET_MakeDefaultState_t(const CTFileName &fnmWorld, ULONG ulSpawnFlags, void *pvSessionProperties,
-                                   CTStream &strmState) // throw char *
+// Make default state for a network game
+extern void NET_MakeDefaultState_t(const CTFileName &fnmWorld, ULONG ulSpawnFlags,
+                                   void *pvSessionProperties, CTStream &strmState)
 {
   // mute all sounds
   _pSound->Mute();
@@ -2246,12 +2423,14 @@ extern void NET_MakeDefaultState_t(const CTFileName &fnmWorld, ULONG ulSpawnFlag
   try {
     // create new network object
     CNetworkLibrary *pNewNet = new CNetworkLibrary;
+
     // it must have new mutex index since both will be locked
     pNewNet->ga_csNetwork.cs_iIndex = 2001;
 
     // lock the new network access
     CTSingleLock slNetwork(&pNewNet->ga_csNetwork, TRUE);
     pNewNet->ga_ctTimersPending = -1; // disable timer pending
+
     // only after locking it, we may allow the new pointer to be remembered
     // otherwise, the other thread can jump in between
     _pNetwork = pNewNet;
@@ -2260,6 +2439,7 @@ extern void NET_MakeDefaultState_t(const CTFileName &fnmWorld, ULONG ulSpawnFlag
     _pNetwork->ga_sesSessionState.ses_ulSpawnFlags = ulSpawnFlags;
     _pNetwork->ga_sesSessionState.ses_tmSyncCheckFrequency = 10.0f;
     _pNetwork->ga_sesSessionState.ses_iExtensiveSyncCheck = 0;
+
     memcpy(_pNetwork->ga_aubProperties, pvSessionProperties, NET_MAXSESSIONPROPERTIES);
     _pNetwork->ga_fnmWorld = fnmWorld;
     _pNetwork->ga_fnmNextLevel = CTString("");
@@ -2268,19 +2448,24 @@ extern void NET_MakeDefaultState_t(const CTFileName &fnmWorld, ULONG ulSpawnFlag
       // load the world
       _pTimer->SetGameTick(0); // must have timer at 0 while loading
       _pNetwork->ga_World.Load_t(fnmWorld);
+
       // delete all entities that don't fit given spawn flags
       _pNetwork->ga_World.FilterEntitiesBySpawnFlags(_pNetwork->ga_sesSessionState.ses_ulSpawnFlags);
+
     } catch (char *) {
       throw;
     }
+
     // remember the world filename
     _pNetwork->ga_fnmWorld = fnmWorld;
     _pNetwork->ga_fnmNextLevel = CTString("");
+
     // remember the world pointer
     _pShell->SetINDEX("pwoCurrentWorld", (INDEX)&_pNetwork->ga_World);
 
     // reset random number generator
     _pNetwork->ga_sesSessionState.ResetRND();
+
     // flush stale caches
     FreeUnusedStock();
 
@@ -2290,15 +2475,18 @@ extern void NET_MakeDefaultState_t(const CTFileName &fnmWorld, ULONG ulSpawnFlag
     // save the session state to the stream
     _pNetwork->ga_sesSessionState.Write_t(&strmState);
 
-    // if any error
+  // if any error
   } catch (char *) {
     // restore original network pointer
     CNetworkLibrary *pnlTemp = _pNetwork;
     _pNetwork = pnlOld;
+
     if (pnlTemp != NULL) {
       delete pnlTemp;
     }
+
     _bTempNetwork = FALSE;
+
     // fail
     throw;
   }
@@ -2306,11 +2494,12 @@ extern void NET_MakeDefaultState_t(const CTFileName &fnmWorld, ULONG ulSpawnFlag
   // restore original network pointer
   CNetworkLibrary *pnlTemp = _pNetwork;
   _pNetwork = pnlOld;
+
   delete pnlTemp;
   _bTempNetwork = FALSE;
 }
 
-// handle broadcast messages (server enumeration)
+// Handle broadcast messages (server enumeration)
 void CNetworkLibrary::GameInactive(void) {
   GameAgent_EnumUpdate();
 
@@ -2320,28 +2509,29 @@ void CNetworkLibrary::GameInactive(void) {
     return;
   }
 
-  //  _cmiComm.Broadcast_Update();
+  //_cmiComm.Broadcast_Update();
 
   // repeat
   FOREVER {
     CNetworkMessage nmReceived;
 
-    //  _cmiComm.Broadcast_Update();
+    //_cmiComm.Broadcast_Update();
+
     ULONG ulFrom;
     UWORD uwPort;
     BOOL bHasMsg = ReceiveBroadcast(nmReceived, ulFrom, uwPort);
+
     // if there are no more messages
     if (!bHasMsg) {
       // finish
       break;
     }
 
-    /* This is handled by GameAgent.
+    // this is handled by GameAgent
 
     // if requesting enumeration and this is server and enumeration is allowed
-    if (nmReceived.GetType() == MSG_REQ_ENUMSERVERS
-      && IsServer()
-      && (ser_bEnumeration && ga_sesSessionState.ses_ctMaxPlayers>1)) {
+    /*if (nmReceived.GetType() == MSG_REQ_ENUMSERVERS
+       && IsServer() && (ser_bEnumeration && ga_sesSessionState.ses_ctMaxPlayers > 1)) {
       // create response
       CNetworkMessage nmEnum(MSG_SERVERINFO);
       nmEnum << ga_strSessionName;
@@ -2351,16 +2541,19 @@ void CNetworkLibrary::GameInactive(void) {
 
       // send it
       SendBroadcast(nmEnum, ulFrom, uwPort);
+
     // if receiving enumeration
     } else if (nmReceived.GetType() == MSG_SERVERINFO) {
       // create a new session
       CNetworkSession &ns = *new CNetworkSession;
       ga_lhEnumeratedSessions.AddTail(ns.ns_lnNode);
+
       // read it
       nmReceived >> ns.ns_strSession;
       nmReceived >> ns.ns_strWorld;
       nmReceived >> ns.ns_ctPlayers;
       nmReceived >> ns.ns_ctMaxPlayers;
+
       ns.ns_strAddress = AddressToString(ulFrom);
     }*/
   }
@@ -2372,7 +2565,7 @@ void CNetworkLibrary::InitCRCGather(void) {
   CRCT_AddFile_t(CTString("Classes\\Player.ecl"));
 }
 
-// finish gathering of file CRCs to CRC table (call for server only!)
+// Finish gathering of file CRCs to CRC table (call for server only!)
 void CNetworkLibrary::FinishCRCGather(void) {
   try {
     // make the list
@@ -2394,25 +2587,30 @@ void CNetworkLibrary::FinishCRCGather(void) {
   }
 }
 
-// make default state data for creating deltas
+// Make default state data for creating deltas
 void CNetworkLibrary::MakeDefaultState(const CTFileName &fnmWorld, ULONG ulSpawnFlags, void *pvSessionProperties) {
   // prepare file or memory stream for state
   CTFileStream strmStateFile;
   CTMemoryStream strmStateMem;
   CTStream *pstrmState;
+
   extern INDEX net_bDumpConnectionInfo;
+
   if (net_bDumpConnectionInfo) {
     strmStateFile.Create_t(CTString("Temp\\DefaultState.bin"));
     pstrmState = &strmStateFile;
+
   } else {
     pstrmState = &strmStateMem;
   }
+
   // make default state for a network game
   NET_MakeDefaultState_t(fnmWorld, ulSpawnFlags, pvSessionProperties, *pstrmState);
   pstrmState->SetPos_t(0);
 
   ga_slDefaultStateSize = pstrmState->GetStreamSize();
   ga_pubDefaultState = (UBYTE *)AllocMemory(ga_slDefaultStateSize);
+
   pstrmState->Read_t(ga_pubDefaultState, ga_slDefaultStateSize);
   memcpy(ga_aubDefaultProperties, pvSessionProperties, sizeof(ga_aubDefaultProperties));
 }

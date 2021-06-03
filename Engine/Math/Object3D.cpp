@@ -26,14 +26,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 inline void Clear(CObjectEdge *poed) {};
 
-/*
- * Default constructor.
- */
+// Constructor
 CObject3D::CObject3D() {};
 
-/*
- * Destructor.
- */
+// Destructor
 CObject3D::~CObject3D() {
   Clear();
 };
@@ -41,14 +37,14 @@ CObject3D::~CObject3D() {
 void CObject3D::Clear(void) {
   ob_aoscSectors.Clear(); // clear sectors array
 }
-/*
- * Create indices for all sectors.
- */
+
+// Create indices for all sectors
 void CObject3D::CreateSectorIndices(void) {
   ob_aoscSectors.Lock();
 
   // get the number of sectors in object
   INDEX ctSectors = ob_aoscSectors.Count();
+
   // set sectors indices
   for (INDEX iSector = 0; iSector < ctSectors; iSector++) {
     ob_aoscSectors[iSector].osc_Index = iSector;
@@ -64,14 +60,14 @@ BOOL CObject3D::ArePolygonsPlanar(void) {
       return FALSE;
     }
   }
+
   return TRUE;
 }
 
-/*
- * Project the whole object into some other space.
- */
+// Project the whole object into some other space
 void CObject3D::Project(CSimpleProjection3D_DOUBLE &pr) {
   ASSERT(GetFPUPrecision() == FPT_53BIT);
+
   // check if projection is mirrored
   const FLOAT3D &vObjectStretch = pr.ObjectStretchR();
   BOOL bXInverted = vObjectStretch(1) < 0;
@@ -87,8 +83,9 @@ void CObject3D::Project(CSimpleProjection3D_DOUBLE &pr) {
       pr.ProjectCoordinate(*itvx, *itvx);
     }
 
-    /* NOTE: We must project polygons _before_ planes, since projecting
-       of texture mapping coefficients requires unprojected plane! */
+    // NOTE: We must project polygons _before_ planes, since projecting
+    //       of texture mapping coefficients requires unprojected plane!
+
     // for all polygons in sector
     FOREACHINDYNAMICARRAY(itsc->osc_aopoPolygons, CObjectPolygon, itpo) {
       // project mapping
@@ -96,6 +93,7 @@ void CObject3D::Project(CSimpleProjection3D_DOUBLE &pr) {
       pr.ProjectMapping(itpo->opo_amdMappings[1], *itpo->opo_Plane, itpo->opo_amdMappings[1]);
       pr.ProjectMapping(itpo->opo_amdMappings[2], *itpo->opo_Plane, itpo->opo_amdMappings[2]);
       pr.ProjectMapping(itpo->opo_amdMappings[3], *itpo->opo_Plane, itpo->opo_amdMappings[3]);
+
       // if projection is inverted
       if (bInverted) {
         // invert all polygon edges
@@ -105,6 +103,7 @@ void CObject3D::Project(CSimpleProjection3D_DOUBLE &pr) {
         }}
       }
     }
+
     // for all planes in sector
     FOREACHINDYNAMICARRAY(itsc->osc_aoplPlanes, CObjectPlane, itpl) {
       // project the plane
@@ -113,9 +112,7 @@ void CObject3D::Project(CSimpleProjection3D_DOUBLE &pr) {
   }
 }
 
-/*
- * Assignment operator.
- */
+// Assignment operator
 CObject3D &CObject3D::operator=(CObject3D &obOriginal) {
   // copy array of sectors from original object, sectors will copy their contents
   ob_aoscSectors = obOriginal.ob_aoscSectors;
@@ -123,11 +120,10 @@ CObject3D &CObject3D::operator=(CObject3D &obOriginal) {
   return *this;
 }
 
-/*
- * Create BSP trees for all sectors.
- */
+// Create BSP trees for all sectors
 void CObject3D::CreateSectorBSPs(void) {
   ASSERT(GetFPUPrecision() == FPT_53BIT);
+
   // for each sector in object
   FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
     // create its BSP tree
@@ -135,9 +131,7 @@ void CObject3D::CreateSectorBSPs(void) {
   }
 }
 
-/*
- * Remove sectors with no polygons.
- */
+// Remove sectors with no polygons
 void CObject3D::RemoveEmptySectors(void) {
   // create a container for empty sectors
   CDynamicContainer<CObjectSector> coscEmpty;
@@ -158,9 +152,7 @@ void CObject3D::RemoveEmptySectors(void) {
   }}
 }
 
-/*
- * Remove unused and replicated elements.
- */
+// Remove unused and replicated elements
 void CObject3D::Optimize(void) {
   ASSERT(GetFPUPrecision() == FPT_53BIT);
 
@@ -174,11 +166,10 @@ void CObject3D::Optimize(void) {
   RemoveEmptySectors();
 }
 
-/*
- * Turn all sectors in object inside-out. (not recommended for multi sector objects)
- */
+// Turn all sectors in object inside-out (not recommended for multi sector objects)
 void CObject3D::Inverse(void) {
   ASSERT(GetFPUPrecision() == FPT_53BIT);
+
   // for all sectors in object
   {FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
     // inverse the sector
@@ -189,6 +180,7 @@ void CObject3D::Inverse(void) {
 // Recalculate all planes from vertices. (used when stretching vertices)
 void CObject3D::RecalculatePlanes(void) {
   ASSERT(GetFPUPrecision() == FPT_53BIT);
+
   // for all sectors in object
   {FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
     // recalculate all planes in sector
@@ -196,9 +188,7 @@ void CObject3D::RecalculatePlanes(void) {
   }}
 }
 
-/*
- * Turn all portals to walls.
- */
+// Turn all portals to walls
 void CObject3D::TurnPortalsToWalls(void) {
   // for all sectors in object
   {FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
@@ -210,24 +200,25 @@ void CObject3D::TurnPortalsToWalls(void) {
   }}
 }
 
-/*
- * Find bounding box of the object.
- */
+// Find bounding box of the object
 void CObject3D::GetBoundingBox(DOUBLEaabbox3D &boxObject) {
   ASSERT(GetFPUPrecision() == FPT_53BIT);
+
   // clear the bounding box
   boxObject = DOUBLEaabbox3D();
+
   // for each sector in the object
   FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itosc) {
     // get box of the sector
     DOUBLEaabbox3D boxSector;
     itosc->GetBoundingBox(boxSector);
+
     // add the sector box to the bounding box
     boxObject |= boxSector;
   }
 }
 
-// Dump the object 3D to debug window.
+// Dump the object 3D to debug window
 void CObject3D::DebugDump(void) {
   #ifndef NDEBUG
   _RPT0(_CRT_WARN, "Object3D dump BEGIN:\n");

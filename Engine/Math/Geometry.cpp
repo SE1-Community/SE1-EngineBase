@@ -19,20 +19,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Math/Functions.h>
 
-/////////////////////////////////////////////////////////////////////
-//
-//      General functions
-//
-/////////////////////////////////////////////////////////////////////
-
-/*
- * Calculate rotation matrix from angles in 3D.
- */
-/*void operator^=(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles)
-{
+// Calculate rotation matrix from angles in 3D
+/*void operator^=(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles) {
   MakeRotationMatrix(t3dRotation, a3dAngles);
-}
-*/
+}*/
 
 void MakeRotationMatrix(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles) {
   FLOAT fSinH = Sin(a3dAngles(1)); // heading
@@ -52,6 +42,7 @@ void MakeRotationMatrix(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles) {
   t3dRotation(3, 2) = fSinP * fCosH * fCosB + fSinH * fSinB;
   t3dRotation(3, 3) = fCosP * fCosH;
 }
+
 void MakeRotationMatrixFast(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles) {
   FLOAT fSinH = SinFast(a3dAngles(1)); // heading
   FLOAT fCosH = CosFast(a3dAngles(1));
@@ -71,14 +62,11 @@ void MakeRotationMatrixFast(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles
   t3dRotation(3, 3) = fCosP * fCosH;
 }
 
-/*
- * Calculate inverse rotation matrix from angles in 3D.
- */
-/*void operator != (FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles)
-{
+// Calculate inverse rotation matrix from angles in 3D
+/*void operator!=(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles) {
   MakeInverseRotationMatrix(t3dRotation, a3dAngles);
-}
-*/
+}*/
+
 void MakeInverseRotationMatrix(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles) {
   FLOAT fSinH = Sin(a3dAngles(1)); // heading
   FLOAT fCosH = Cos(a3dAngles(1));
@@ -98,6 +86,7 @@ void MakeInverseRotationMatrix(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAng
   t3dRotation(2, 3) = fSinP * fCosH * fCosB + fSinH * fSinB;
   t3dRotation(3, 3) = fCosP * fCosH;
 }
+
 void MakeInverseRotationMatrixFast(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3dAngles) {
   FLOAT fSinH = SinFast(a3dAngles(1)); // heading
   FLOAT fCosH = CosFast(a3dAngles(1));
@@ -118,15 +107,13 @@ void MakeInverseRotationMatrixFast(FLOATmatrix3D &t3dRotation, const ANGLE3D &a3
   t3dRotation(3, 3) = fCosP * fCosH;
 }
 
-/*
- * Decompose rotation matrix into angles in 3D.
- */
+// Decompose rotation matrix into angles in 3D
 // NOTE: for derivation of the algorithm, see mathlib.doc
 void DecomposeRotationMatrixNoSnap(ANGLE3D &a3dAngles, const FLOATmatrix3D &t3dRotation) {
   ANGLE &h = a3dAngles(1); // heading
   ANGLE &p = a3dAngles(2); // pitch
   ANGLE &b = a3dAngles(3); // banking
-  FLOAT a;                 // temporary
+  FLOAT a; // temporary
 
   // calculate pitch
   FLOAT f23 = t3dRotation(2, 3);
@@ -137,10 +124,12 @@ void DecomposeRotationMatrixNoSnap(ANGLE3D &a3dAngles, const FLOATmatrix3D &t3dR
   if (a < 0.001) {
     // we choose to have banking of 0
     b = 0;
+
     // and calculate heading for that
-    ASSERT(Abs(t3dRotation(2, 3)) > 0.5);                                   // must be around 1, what is far from 0
+    ASSERT(Abs(t3dRotation(2, 3)) > 0.5); // must be around 1, what is far from 0
+
     h = ATan2(t3dRotation(1, 2) / (-t3dRotation(2, 3)), t3dRotation(1, 1)); // no division by 0
-    // otherwise
+
   } else {
     // calculate banking and heading normally
     b = ATan2(t3dRotation(2, 1), t3dRotation(2, 2));
@@ -151,6 +140,7 @@ void DecomposeRotationMatrixNoSnap(ANGLE3D &a3dAngles, const FLOATmatrix3D &t3dR
 void DecomposeRotationMatrix(ANGLE3D &a3dAngles, const FLOATmatrix3D &t3dRotation) {
   // decompose the matrix without snapping
   DecomposeRotationMatrixNoSnap(a3dAngles, t3dRotation);
+
   // snap angles to compensate for errors when converting to and from matrix notation
   Snap(a3dAngles(1), ANGLE_SNAP);
   Snap(a3dAngles(2), ANGLE_SNAP);
@@ -159,23 +149,19 @@ void DecomposeRotationMatrix(ANGLE3D &a3dAngles, const FLOATmatrix3D &t3dRotatio
 
 /*void operator^=(ANGLE3D &a3dAngles, const FLOATmatrix3D &t3dRotation) {
   DecomposeRotationMatrix(a3dAngles, t3dRotation);
-}
-*/
+}*/
 
-/*
- * Create direction vector from angles in 3D (ignoring banking).
- */
+// Create direction vector from angles in 3D (ignoring banking)
 void AnglesToDirectionVector(const ANGLE3D &a3dAngles, FLOAT3D &vDirection) {
   // find the rotation matrix from the angles
   FLOATmatrix3D mDirection;
   MakeRotationMatrix(mDirection, a3dAngles);
+
   // rotate a front oriented vector by the matrix
   vDirection = FLOAT3D(0.0f, 0.0f, -1.0f) * mDirection;
 }
 
-/*
- * Create angles in 3D from direction vector(ignoring banking).
- */
+// Create angles in 3D from direction vector (ignoring banking)
 void DirectionVectorToAnglesNoSnap(const FLOAT3D &vDirection, ANGLE3D &a3dAngles) {
   // now calculate the angles
   ANGLE &h = a3dAngles(1);
@@ -188,6 +174,7 @@ void DirectionVectorToAnglesNoSnap(const FLOAT3D &vDirection, ANGLE3D &a3dAngles
 
   // banking is always irrelevant
   b = 0;
+
   // calculate pitch
   p = ASin(y);
 
@@ -195,12 +182,14 @@ void DirectionVectorToAnglesNoSnap(const FLOAT3D &vDirection, ANGLE3D &a3dAngles
   if (y > 0.99 || y < -0.99) {
     // heading is irrelevant
     h = 0;
-    // otherwise
+
+  // otherwise
   } else {
     // calculate heading
     h = ATan2(-x, -z);
   }
 }
+
 void DirectionVectorToAngles(const FLOAT3D &vDirection, ANGLE3D &a3dAngles) {
   DirectionVectorToAnglesNoSnap(vDirection, a3dAngles);
 
@@ -210,20 +199,23 @@ void DirectionVectorToAngles(const FLOAT3D &vDirection, ANGLE3D &a3dAngles) {
   Snap(a3dAngles(3), ANGLE_SNAP);
 }
 
-/* Create angles in 3D from up vector (ignoring objects relative heading).
-   (up vector must be normalized!)*/
+// Create angles in 3D from up vector (ignoring objects relative heading) - up vector must be normalized!
 void UpVectorToAngles(const FLOAT3D &vY, ANGLE3D &a3dAngles) {
   // create any front vector
   FLOAT3D vZ;
+
   if (Abs(vY(2)) > 0.5f) {
     vZ = FLOAT3D(1.0f, 0.0f, 0.0f) * vY;
   } else {
     vZ = FLOAT3D(0.0f, 1.0f, 0.0f) * vY;
   }
+
   vZ.Normalize();
+
   // side vector is cross product
   FLOAT3D vX = vY * vZ;
   vX.Normalize();
+
   // create the rotation matrix
   FLOATmatrix3D m;
   m(1, 1) = vX(1);
@@ -240,9 +232,7 @@ void UpVectorToAngles(const FLOAT3D &vY, ANGLE3D &a3dAngles) {
   DecomposeRotationMatrixNoSnap(a3dAngles, m);
 }
 
-/*
- * Calculate rotation matrix from angles in 3D.
- */
+// Calculate rotation matrix from angles in 3D
 void operator^=(DOUBLEmatrix3D &t3dRotation, const ANGLE3D &a3dAngles) {
   const ANGLE &h = a3dAngles(1); // heading
   const ANGLE &p = a3dAngles(2); // pitch
@@ -259,9 +249,7 @@ void operator^=(DOUBLEmatrix3D &t3dRotation, const ANGLE3D &a3dAngles) {
   t3dRotation(3, 3) = Cos(p) * Cos(h);
 }
 
-/*
- * Calculate inverse rotation matrix from angles in 3D.
- */
+// Calculate inverse rotation matrix from angles in 3D
 void operator!=(DOUBLEmatrix3D &t3dRotation, const ANGLE3D &a3dAngles) {
   const ANGLE &h = a3dAngles(1); // heading
   const ANGLE &p = a3dAngles(2); // pitch
@@ -279,15 +267,13 @@ void operator!=(DOUBLEmatrix3D &t3dRotation, const ANGLE3D &a3dAngles) {
   t3dRotation(3, 3) = Cos(p) * Cos(h);
 }
 
-/*
- * Decompose rotation matrix into angles in 3D.
- */
+// Decompose rotation matrix into angles in 3D
 // NOTE: for derivation of the algorithm, see mathlib.doc
 void operator^=(ANGLE3D &a3dAngles, const DOUBLEmatrix3D &t3dRotation) {
   ANGLE &h = a3dAngles(1); // heading
   ANGLE &p = a3dAngles(2); // pitch
   ANGLE &b = a3dAngles(3); // banking
-  DOUBLE a;                // temporary
+  DOUBLE a; // temporary
 
   // calculate pitch
   p = ASin(-t3dRotation(2, 3));
@@ -297,15 +283,18 @@ void operator^=(ANGLE3D &a3dAngles, const DOUBLEmatrix3D &t3dRotation) {
   if (a < 0.0001) {
     // we choose to have banking of 0
     b = 0;
+
     // and calculate heading for that
-    ASSERT(Abs(t3dRotation(2, 3)) > 0.5);                                   // must be around 1, what is far from 0
+    ASSERT(Abs(t3dRotation(2, 3)) > 0.5); // must be around 1, what is far from 0
+
     h = ATan2(t3dRotation(1, 2) / (-t3dRotation(2, 3)), t3dRotation(1, 1)); // no division by 0
-    // otherwise
+
   } else {
     // calculate banking and heading normally
     b = ATan2(t3dRotation(2, 1) / a, t3dRotation(2, 2) / a);
     h = ATan2(t3dRotation(1, 3) / a, t3dRotation(3, 3) / a);
   }
+
   // snap angles to compensate for errors when converting to and from matrix notation
   Snap(h, ANGLE_SNAP);
   Snap(p, ANGLE_SNAP);

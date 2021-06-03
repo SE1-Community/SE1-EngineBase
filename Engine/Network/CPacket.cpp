@@ -24,29 +24,24 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/Listiterator.inl>
 
-// should the packet transfers in/out of the buffer be reported to the console
+// Should the packet transfers in/out of the buffer be reported to the console
 extern INDEX net_bReportPackets;
 extern INDEX net_iMaxSendRetries;
 extern FLOAT net_fSendRetryWait;
 
-#define MAX_RETRIES    10
+#define MAX_RETRIES 10
 #define RETRY_INTERVAL 3.0f
 
-// make the address broadcast
+// Make the address broadcast
 void CAddress::MakeBroadcast(void) {
   adr_ulAddress = INADDR_BROADCAST;
+
   extern INDEX net_iPort;
   adr_uwPort = net_iPort;
   adr_uwID = 0;
 }
 
-/*
- *
- *  CPacket class implementation
- *
- */
-
-// copy constructor
+// Copy constructor
 CPacket::CPacket(CPacket& paOriginal) {
   ASSERT(paOriginal.pa_pubPacketData != NULL && paOriginal.pa_slSize > 0);
 
@@ -64,7 +59,7 @@ CPacket::CPacket(CPacket& paOriginal) {
   memcpy(pa_pubPacketData, paOriginal.pa_pubPacketData, pa_slSize);
 };
 
-// initialization of the packet - clear all data and remove the packet from any list (buffer) it is in
+// Initialization of the packet - clear all data and remove the packet from any list (buffer) it is in
 void CPacket::Clear() {
   pa_slSize = 0;
   pa_slTransferSize = 0;
@@ -72,8 +67,10 @@ void CPacket::Clear() {
   pa_ubRetryNumber = 0;
 
   pa_tvSendWhen = CTimerValue(0.0f);
-  if (pa_lnListNode.IsLinked())
+
+  if (pa_lnListNode.IsLinked()) {
     pa_lnListNode.Remove();
+  }
 };
 
 void CPacket::operator=(const CPacket& paOriginal) {
@@ -139,10 +136,13 @@ BOOL CPacket::WriteToPacketRaw(void* pv, SLONG slSize) {
   pubData = (UBYTE*)pv;
   pa_ubReliable = *pubData;
   pubData++;
+
   pa_ulSequence = *(ULONG*)pubData;
   pubData += sizeof(pa_ulSequence);
+
   pa_adrAddress.adr_uwID = *(UWORD*)pubData;
   pubData += sizeof(pa_adrAddress.adr_uwID);
+
   pa_slTransferSize = *(SLONG*)pubData;
   pubData += sizeof(pa_slTransferSize);
 
@@ -154,8 +154,7 @@ BOOL CPacket::WriteToPacketRaw(void* pv, SLONG slSize) {
   return TRUE;
 };
 
-// Copies the data from the packet to the location specified by the *pv.
-// packet header data is skipped
+// Copies the data from the packet to the location specified by the *pv, packet header data is skipped
 BOOL CPacket::ReadFromPacket(void* pv, SLONG& slExpectedSize) {
   UBYTE* pubData;
 
@@ -171,36 +170,36 @@ BOOL CPacket::ReadFromPacket(void* pv, SLONG& slExpectedSize) {
   slExpectedSize = pa_slSize - MAX_HEADER_SIZE;
 
   // skip the header data
-  pubData = pa_pubPacketData + sizeof(pa_ubReliable) + sizeof(pa_ulSequence) + sizeof(pa_adrAddress.adr_uwID)
-            + sizeof(pa_slTransferSize);
+  pubData = pa_pubPacketData + sizeof(pa_ubReliable) + sizeof(pa_ulSequence)
+          + sizeof(pa_adrAddress.adr_uwID) + sizeof(pa_slTransferSize);
 
   memcpy(pv, pubData, slExpectedSize);
 
   return TRUE;
 };
 
-// is the packet reliable?
+// Check if the packet is reliable
 BOOL CPacket::IsReliable() {
   return pa_ubReliable;
 };
 
-// is the packet a head of a reliable stream
+// Check if the packet is a head of a reliable stream
 BOOL CPacket::IsReliableHead() {
   return pa_ubReliable & UDP_PACKET_RELIABLE_HEAD;
 };
 
-// is the packet a tail of a reliable stream
+// Check if the packet is a tail of a reliable stream
 BOOL CPacket::IsReliableTail() {
   return pa_ubReliable & UDP_PACKET_RELIABLE_TAIL;
 };
 
-// return the sequence of a packet
+// Return the sequence of a packet
 ULONG CPacket::GetSequence() {
   ASSERT(pa_ubReliable);
   return pa_ulSequence;
 };
 
-// return the retry status of a packet - can retry now, later or not at all
+// Return the retry status of a packet - can retry now, later or not at all
 UBYTE CPacket::CanRetry() {
   if (pa_ubRetryNumber >= net_iMaxSendRetries) {
     return RS_NOTATALL;
@@ -215,7 +214,7 @@ UBYTE CPacket::CanRetry() {
   return RS_NOW;
 };
 
-// drop the packet from a list (buffer)
+// Drop the packet from a list (buffer)
 void CPacket::Drop() {
   if (pa_lnListNode.IsLinked()) {
     pa_lnListNode.Remove();
@@ -234,15 +233,7 @@ BOOL CPacket::IsBroadcast() {
   return FALSE;
 };
 
-/*
- *
- *
- *  CPacketBufferStats Class implementation
- *
- *
- */
-
-// this class is used for MaxBPS limitation (prevets flooding the client) and for bandwidth limit and latency emulation
+// This class is used for MaxBPS limitation (prevets flooding the client) and for bandwidth limit and latency emulation
 void CPacketBufferStats::Clear(void) {
   pbs_fBandwidthLimit = 0;
   pbs_fLatencyLimit = 0.0f;
@@ -250,18 +241,21 @@ void CPacketBufferStats::Clear(void) {
   pbs_tvTimeNextPacketStart = _pTimer->GetHighPrecisionTimer();
 };
 
-// when can a certian amount of data be sent?
+// When can a certian amount of data be sent?
 CTimerValue CPacketBufferStats::GetPacketSendTime(SLONG slSize) {
   CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
 
   // calculate how much should the packet be delayed due to latency and due to bandwidth
   CTimerValue tvBandwidth;
+
   if (pbs_fBandwidthLimit <= 0.0f) {
     tvBandwidth = CTimerValue(0.0);
   } else {
     tvBandwidth = CTimerValue(DOUBLE((slSize * 8) / pbs_fBandwidthLimit));
   }
+
   CTimerValue tvLatency;
+
   if (pbs_fLatencyLimit <= 0.0f && pbs_fLatencyVariation <= 0.0f) {
     tvLatency = CTimerValue(0.0);
   } else {
@@ -274,16 +268,12 @@ CTimerValue CPacketBufferStats::GetPacketSendTime(SLONG slSize) {
     (tvNow + tvLatency).tv_llValue,
     // next free point in time
     pbs_tvTimeNextPacketStart.tv_llValue));
+
   // remember next free time and return it
   pbs_tvTimeNextPacketStart = tvStart + tvBandwidth;
+
   return pbs_tvTimeNextPacketStart;
 };
-
-/*
- *
- *  CPacketBuffer Class implementation
- *
- */
 
 // Empty the packet buffer
 void CPacketBuffer::Clear() {
@@ -297,7 +287,7 @@ void CPacketBuffer::Clear() {
   pb_pbsLimits.Clear();
 };
 
-// Is the packet buffer empty?
+// Check if the packet buffer is empty
 BOOL CPacketBuffer::IsEmpty() {
   if (pb_ulNumOfPackets > 0) {
     return FALSE;
@@ -315,11 +305,13 @@ CTimerValue CPacketBuffer::GetPacketSendTime(SLONG slSize) {
     if (pb_ppbsStats->pbs_fBandwidthLimit > 0.0f && pb_ppbsStats->pbs_fBandwidthLimit < pb_pbsLimits.pbs_fBandwidthLimit) {
       tvSendTime = pb_ppbsStats->GetPacketSendTime(slSize);
       pb_pbsLimits.pbs_tvTimeNextPacketStart = tvSendTime;
+
     } else {
       tvSendTime = pb_pbsLimits.GetPacketSendTime(slSize);
       pb_ppbsStats->pbs_tvTimeNextPacketStart = tvSendTime;
     }
-    // else just use the MaxBPS control
+
+  // else just use the MaxBPS control
   } else {
     tvSendTime = pb_pbsLimits.GetPacketSendTime(slSize);
   }
@@ -327,7 +319,7 @@ CTimerValue CPacketBuffer::GetPacketSendTime(SLONG slSize) {
   return tvSendTime;
 };
 
-// Adds the packet to the end of the list
+// Add the packet to the end of the list
 BOOL CPacketBuffer::AppendPacket(CPacket& paPacket, BOOL bDelay) {
   // bDelay regulates if the packet should be delayed because of the bandwidth limits or not
   // internal buffers (reliable, waitack and master buffers) do not pay attention to bandwidth limits
@@ -348,6 +340,7 @@ BOOL CPacketBuffer::AppendPacket(CPacket& paPacket, BOOL bDelay) {
 
   // update the total size of data stored in the buffer
   pb_ulTotalSize += paPacket.pa_slSize - MAX_HEADER_SIZE;
+
   return TRUE;
 };
 
@@ -398,7 +391,7 @@ BOOL CPacketBuffer::InsertPacket(CPacket& paPacket, BOOL bDelay) {
   return TRUE;
 };
 
-// Bumps up the retry count and time, and appends the packet to the buffer
+// Bump up the retry count and time, and appends the packet to the buffer
 BOOL CPacketBuffer::Retry(CPacket& paPacket) {
   paPacket.pa_ubRetryNumber++;
 
@@ -409,13 +402,13 @@ BOOL CPacketBuffer::Retry(CPacket& paPacket) {
   return AppendPacket(paPacket, TRUE);
 };
 
-// Reads the data from the first packet in the bufffer, but does not remove it
+// Read the data from the first packet in the bufffer, but don't remove it
 CPacket* CPacketBuffer::PeekFirstPacket() {
   ASSERT(pb_ulNumOfPackets != 0);
   return LIST_HEAD(pb_lhPacketStorage, CPacket, pa_lnListNode);
 };
 
-// Reads the first packet in the bufffer, and removes it from the buffer
+// Read the first packet in the bufffer, and remove it from the buffer
 CPacket* CPacketBuffer::GetFirstPacket() {
   ASSERT(pb_ulNumOfPackets != 0);
 
@@ -424,6 +417,7 @@ CPacket* CPacketBuffer::GetFirstPacket() {
   // remove the first packet from the start of the list
   pb_lhPacketStorage.RemHead();
   pb_ulNumOfPackets--;
+
   if (ppaHead->pa_ubReliable & UDP_PACKET_RELIABLE) {
     pb_ulNumOfReliablePackets--;
   }
@@ -439,7 +433,7 @@ CPacket* CPacketBuffer::GetFirstPacket() {
   return ppaHead;
 };
 
-// Reads the data from the packet with the requested sequence, but does not remove it
+// Read the data from the packet with the requested sequence, but don't remove it
 CPacket* CPacketBuffer::PeekPacket(ULONG ulSequence) {
   FOREACHINLIST(CPacket, pa_lnListNode, pb_lhPacketStorage, litPacketIter) {
     if (litPacketIter->pa_ulSequence == ulSequence) {
@@ -449,13 +443,14 @@ CPacket* CPacketBuffer::PeekPacket(ULONG ulSequence) {
   return NULL;
 };
 
-// Returns te packet with the matching sequence from the buffer
+// Return the packet with the matching sequence from the buffer
 CPacket* CPacketBuffer::GetPacket(ULONG ulSequence) {
   FOREACHINLIST(CPacket, pa_lnListNode, pb_lhPacketStorage, litPacketIter) {
     if (litPacketIter->pa_ulSequence == ulSequence) {
       litPacketIter->pa_lnListNode.Remove();
 
       pb_ulNumOfPackets--;
+
       if (litPacketIter->pa_ubReliable & UDP_PACKET_RELIABLE) {
         pb_ulNumOfReliablePackets--;
       }
@@ -466,16 +461,18 @@ CPacket* CPacketBuffer::GetPacket(ULONG ulSequence) {
       return litPacketIter;
     }
   }
+
   return NULL;
 };
 
-// Reads the first connection request packet from the buffer
+// Read the first connection request packet from the buffer
 CPacket* CPacketBuffer::GetConnectRequestPacket() {
   FOREACHINLIST(CPacket, pa_lnListNode, pb_lhPacketStorage, litPacketIter) {
     if (litPacketIter->pa_ubReliable & UDP_PACKET_CONNECT_REQUEST) {
       litPacketIter->pa_lnListNode.Remove();
 
       pb_ulNumOfPackets--;
+
       // connect request packets are allways reliable
       pb_ulNumOfReliablePackets--;
 
@@ -485,15 +482,18 @@ CPacket* CPacketBuffer::GetConnectRequestPacket() {
       return litPacketIter;
     }
   }
+
   return NULL;
 };
 
-// Removes the first packet from the buffer
+// Remove the first packet from the buffer
 BOOL CPacketBuffer::RemoveFirstPacket(BOOL bDelete) {
   ASSERT(pb_ulNumOfPackets > 0);
+
   CPacket* lnHead = LIST_HEAD(pb_lhPacketStorage, CPacket, pa_lnListNode);
 
   pb_ulNumOfPackets--;
+
   if (lnHead->pa_ubReliable & UDP_PACKET_RELIABLE) {
     pb_ulNumOfReliablePackets--;
   }
@@ -506,20 +506,24 @@ BOOL CPacketBuffer::RemoveFirstPacket(BOOL bDelete) {
   }
 
   pb_lhPacketStorage.RemHead();
+
   if (bDelete) {
     delete lnHead;
   }
+
   return TRUE;
 };
 
-// Removes the packet with the requested sequence from the buffer
+// Remove the packet with the requested sequence from the buffer
 BOOL CPacketBuffer::RemovePacket(ULONG ulSequence, BOOL bDelete) {
-  //  ASSERT(pb_ulNumOfPackets > 0);
+  //ASSERT(pb_ulNumOfPackets > 0);
+
   FORDELETELIST(CPacket, pa_lnListNode, pb_lhPacketStorage, litPacketIter) {
     if (litPacketIter->pa_ulSequence == ulSequence) {
       litPacketIter->pa_lnListNode.Remove();
 
       pb_ulNumOfPackets--;
+
       if (litPacketIter->pa_ubReliable & UDP_PACKET_RELIABLE) {
         pb_ulNumOfReliablePackets--;
       }
@@ -532,6 +536,7 @@ BOOL CPacketBuffer::RemovePacket(ULONG ulSequence, BOOL bDelete) {
       }
     }
   }
+
   return FALSE;
 };
 
@@ -552,24 +557,25 @@ BOOL CPacketBuffer::RemoveConnectResponsePackets() {
       delete litPacketIter;
     }
   }
+
   return NULL;
 };
 
-// Gets the sequence number of the first packet in the buffer
+// Get the sequence number of the first packet in the buffer
 ULONG CPacketBuffer::GetFirstSequence() {
   ASSERT(pb_ulNumOfPackets > 0);
 
   return LIST_HEAD(pb_lhPacketStorage, CPacket, pa_lnListNode)->pa_ulSequence;
 };
 
-// Gets the sequence number of the last packet in the buffer
+// Get the sequence number of the last packet in the buffer
 ULONG CPacketBuffer::GetLastSequence() {
   ASSERT(pb_ulNumOfPackets > 0);
 
   return LIST_TAIL(pb_lhPacketStorage, CPacket, pa_lnListNode)->pa_ulSequence;
 };
 
-// Removes the packet with the requested sequence from the buffer
+// Remove the packet with the requested sequence from the buffer
 BOOL CPacketBuffer::IsSequenceInBuffer(ULONG ulSequence) {
   FOREACHINLIST(CPacket, pa_lnListNode, pb_lhPacketStorage, litPacketIter) {
     if (litPacketIter->pa_ulSequence == ulSequence) {
@@ -605,11 +611,13 @@ BOOL CPacketBuffer::CheckSequence(SLONG& slSize) {
     if (litPacketIter->pa_ulSequence != ulSequence) {
       return FALSE;
     }
+
     // if it's a tail of the reliable sequence the message is complete (all packets so far
     // have been in order)
     if (litPacketIter->pa_ubReliable & UDP_PACKET_RELIABLE_TAIL) {
       return TRUE;
     }
+
     slSize += litPacketIter->pa_slSize - MAX_HEADER_SIZE;
     ulSequence++;
   }

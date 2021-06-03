@@ -77,13 +77,13 @@ class ENGINE_API CNetworkSession {
     CTString ns_strVer; // version
 
   public:
-    void Copy(const CNetworkSession &nsOriginal);
-
     // Constructor
     CNetworkSession(void);
 
     // Construct a session for connecting to certain server
     CNetworkSession(const CTString &strAddress);
+
+    void Copy(const CNetworkSession &nsOriginal);
 };
 
 // Game, used for general game initialization/manipulation
@@ -298,6 +298,8 @@ class ENGINE_API CNetworkLibrary : public CMessageDispatcher {
 
     // Get player entity for a given player by name
     CEntity *GetPlayerEntityByName(const CTString &strName);
+
+    // [Cecil] TODO: Remake and optimize these functions; add functions for iteration through classes
 
     // Get number of entities with given name
     INDEX GetNumberOfEntitiesWithName(const CTString &strName);
