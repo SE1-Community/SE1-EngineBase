@@ -25,8 +25,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/ListIterator.inl>
 #include <Engine/Templates/StaticStackArray.cpp>
 
-#include <Engine/Templates/Stock_CModelData.h>
-
 extern FLOAT mdl_fLODMul;
 extern FLOAT mdl_fLODAdd;
 extern const FLOAT *pfSinTable;

@@ -25,11 +25,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Math/Quaternion.h>
 #include <Engine/Templates/DynamicStackArray.cpp>
 #include <Engine/Templates/DynamicContainer.cpp>
-#include <Engine/Templates/Stock_CMesh.h>
-#include <Engine/Templates/Stock_CSkeleton.h>
-#include <Engine/Templates/Stock_CAnimSet.h>
-#include <Engine/Templates/Stock_CTextureData.h>
-#include <Engine/Templates/Stock_CShader.h>
+#include <Engine/Sound/SoundData.h>
+#include <Engine/SKA/AnimSet.h>
+#include <Engine/Graphics/Texture.h>
+#include <Engine/Graphics/Shader.h>
 
 // does parser remember smc source files?
 BOOL bRememberSourceFN = FALSE;

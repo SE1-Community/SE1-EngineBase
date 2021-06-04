@@ -25,7 +25,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Graphics/MultiMonitor.h>
 
 #include <Engine/Templates/DynamicContainer.cpp>
-#include <Engine/Templates/Stock_CTextureData.h>
+#include <Engine/Graphics/Texture.h>
 
 #include <Engine/Base/ListIterator.inl>
 

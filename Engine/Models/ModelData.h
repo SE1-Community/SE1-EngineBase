@@ -25,6 +25,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Math/Placement.h>
 #include <Engine/Graphics/Texture.h>
 #include <Engine/Models/Model.h>
+#include <Engine/Models/Model_internal.h>
 #include <Engine/Templates/DynamicArray.h>
 #include <Engine/Templates/StaticArray.h>
 

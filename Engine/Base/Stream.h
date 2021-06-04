@@ -95,7 +95,7 @@ class ENGINE_API CTStream {
 
     SLONG strm_slDictionaryPos; // dictionary position in file (0 for no dictionary)
     INDEX strm_ctDictionaryImported; // how many filenames were imported
-    class CNameTable_CTFileName &strm_ntDictionary; // name table for the dictionary
+    CNameTable_CTFileName &strm_ntDictionary; // name table for the dictionary
     CDynamicStackArray<CTFileName> strm_afnmDictionary; // dictionary is stored here
 
     // Throw an exception of formatted string

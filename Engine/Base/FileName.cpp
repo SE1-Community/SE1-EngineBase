@@ -19,7 +19,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/ErrorReporting.h>
 #include <Engine/Base/Stream.h>
-#include <Engine/Templates/NameTable_CTFileName.h>
 #include <Engine/Templates/DynamicStackArray.cpp>
 
 template CDynamicArray<CTFileName>;

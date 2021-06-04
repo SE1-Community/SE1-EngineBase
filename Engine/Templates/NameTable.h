@@ -13,18 +13,22 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#if !defined(TYPE) || !defined(CNameTableSlot_TYPE) || !defined(CNameTable_TYPE)
-#error
+#ifndef SE_INCL_NAMETABLE_TEMPLATE_H
+#define SE_INCL_NAMETABLE_TEMPLATE_H
+#ifdef PRAGMA_ONCE
+#pragma once
 #endif
 
-#include <Engine/Templates/StaticArray.h>
+#include <Engine/Templates/StaticArray.cpp>
 
-class CNameTableSlot_TYPE {
+// [Cecil] 2021-06-03: Reworked into actual templates
+
+template<class Type> class CNameTableSlot {
   public:
     ULONG nts_ulKey; // hashing key
-    TYPE *nts_ptElement; // the element inhere
+    Type *nts_ptElement; // the element inhere
 
-    CNameTableSlot_TYPE(void) {
+    CNameTableSlot(void) {
       nts_ptElement = NULL;
     };
 
@@ -34,25 +38,25 @@ class CNameTableSlot_TYPE {
 };
 
 // Template class for storing pointers to objects for fast access by name
-class CNameTable_TYPE {
+template<class Type> class CNameTable {
   public:
     INDEX nt_ctCompartments; // number of compartments in table
     INDEX nt_ctSlotsPerComp; // number of slots in one compartment
     INDEX nt_ctSlotsPerCompStep; // allocation step for number of slots in one compartment
-    CStaticArray<CNameTableSlot_TYPE> nt_antsSlots; // all slots are here
+    CStaticArray<CNameTableSlot<Type>> nt_antsSlots; // all slots are here
 
     // Internal finding
-    CNameTableSlot_TYPE *FindSlot(ULONG ulKey, const CTString &strName);
+    CNameTableSlot<Type> *FindSlot(ULONG ulKey, const CTString &strName);
 
     // Expand the name table to next step
     void Expand(void);
 
   public:
     // Constructor
-    CNameTable_TYPE(void);
+    CNameTable(void);
 
     // Destructor - frees all memory
-    ~CNameTable_TYPE(void);
+    ~CNameTable(void);
 
     // Remove all slots and reset the nametable to initial (empty) state
     void Clear(void);
@@ -61,13 +65,13 @@ class CNameTable_TYPE {
     void SetAllocationParameters(INDEX ctCompartments, INDEX ctSlotsPerComp, INDEX ctSlotsPerCompStep);
 
     // Find an object by name
-    TYPE *Find(const CTString &strName);
+    Type *Find(const CTString &strName);
 
     // Add a new object
-    void Add(TYPE *ptNew);
+    void Add(Type *ptNew);
 
     // Remove an object
-    void Remove(TYPE *ptOld);
+    void Remove(Type *ptOld);
 
     // Remove all objects but keep slots
     void Reset(void);
@@ -75,3 +79,7 @@ class CNameTable_TYPE {
     // Get estimated efficiency of the nametable
     CTString GetEfficiency(void);
 };
+
+#include <Engine/Templates/NameTable.inl>
+
+#endif /* include-once check. */

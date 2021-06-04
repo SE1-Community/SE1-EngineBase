@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Translation.h>
 #include <Engine/Terrain/TerrainLayer.h>
 #include <Engine/Terrain/TerrainMisc.h>
-#include <Engine/Templates/Stock_CTextureData.h>
+#include <Engine/Graphics/Texture.h>
 #include <Engine/Graphics/ImageInfo.h>
 
 CTerrainLayer::CTerrainLayer() {

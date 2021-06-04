@@ -32,17 +32,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Graphics/Font.h>
 #include <Engine/Network/Network.h>
 #include <Engine/templates/DynamicContainer.cpp>
-#include <Engine/Templates/Stock_CAnimData.h>
-#include <Engine/Templates/Stock_CTextureData.h>
-#include <Engine/Templates/Stock_CSoundData.h>
-#include <Engine/Templates/Stock_CModelData.h>
-#include <Engine/Templates/Stock_CEntityClass.h>
-#include <Engine/Templates/Stock_CMesh.h>
-#include <Engine/Templates/Stock_CSkeleton.h>
-#include <Engine/Templates/Stock_CAnimSet.h>
-#include <Engine/Templates/Stock_CShader.h>
 #include <Engine/Templates/StaticArray.cpp>
 #include <Engine/Base/IFeel.h>
+
+// [Cecil] 2021-06-05: Define stocks
+#include <Engine/Stocks/StocksDefinition.h>
 
 // This version string can be referenced from outside the engine
 ENGINE_API CTString _strEngineBuild = "";
@@ -266,15 +260,8 @@ ENGINE_API void SE_InitEngine(CTString strGameID) {
 
   _pConsole->Initialize(_fnmApplicationPath + _strLogFile + ".log", 90, 512);
 
-  _pAnimStock = new CStock_CAnimData;
-  _pTextureStock = new CStock_CTextureData;
-  _pSoundStock = new CStock_CSoundData;
-  _pModelStock = new CStock_CModelData;
-  _pEntityClassStock = new CStock_CEntityClass;
-  _pMeshStock = new CStock_CMesh;
-  _pSkeletonStock = new CStock_CSkeleton;
-  _pAnimSetStock = new CStock_CAnimSet;
-  _pShaderStock = new CStock_CShader;
+  // [Cecil] 2021-06-05: Create stocks
+  SE_CreateStocks();
 
   _pTimer = new CTimer;
   _pGfx = new CGfxLibrary;

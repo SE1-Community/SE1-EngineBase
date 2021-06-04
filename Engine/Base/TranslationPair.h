@@ -40,4 +40,8 @@ class CTranslationPair {
     };
 };
 
+// [Cecil] 2021-06-03: Name table type
+#include <Engine/Templates/NameTable.h>
+typedef CNameTable<CTranslationPair> CNameTable_CTranslationPair;
+
 #endif /* include-once check. */

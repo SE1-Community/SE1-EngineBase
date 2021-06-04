@@ -28,12 +28,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Ska/Skeleton.h>
 #include <Engine/Ska/AnimSet.h>
 #include <Engine/Ska/StringTable.h>
-#include <Engine/Templates/Stock_CMesh.h>
-#include <Engine/Templates/Stock_CSkeleton.h>
-#include <Engine/Templates/Stock_CAnimSet.h>
-#include <Engine/Templates/Stock_CTextureData.h>
+#include <Engine/Sound/SoundData.h>
 #include <Engine/Templates/DynamicContainer.cpp>
-//#include <Engine/Templates/Stock_CShader.h>
 
 #include <Engine/Base/ListIterator.inl>
 

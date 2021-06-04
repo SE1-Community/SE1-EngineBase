@@ -51,14 +51,8 @@ extern BOOL FileMatchesList(CDynamicStackArray<CTFileName> &afnm, const CTFileNa
 #pragma once
 #endif
 
-#define TYPE                CCRCEntry
-#define CNameTable_TYPE     CNameTable_CCRCEntry
-#define CNameTableSlot_TYPE CNameTableSlot_CCRCEntry
 #include <Engine/Templates/NameTable.h>
-#include <Engine/Templates/NameTable.cpp>
-#undef CNameTableSlot_TYPE
-#undef CNameTable_TYPE
-#undef TYPE
+typedef CNameTable<CCRCEntry> CNameTable_CCRCEntry;
 
 static CDynamicStackArray<CCRCEntry> _aceEntries;
 static CNameTable_CCRCEntry _ntEntries;

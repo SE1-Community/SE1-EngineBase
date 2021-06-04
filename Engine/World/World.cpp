@@ -40,8 +40,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/Selection.cpp>
 #include <Engine/Terrain/Terrain.h>
 
-#include <Engine/Templates/Stock_CEntityClass.h>
-
 template CDynamicContainer<CEntity>;
 template CBrushPolygonSelection;
 template CBrushSectorSelection;

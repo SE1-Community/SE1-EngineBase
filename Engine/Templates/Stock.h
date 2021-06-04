@@ -13,33 +13,39 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#if !defined(TYPE) || !defined(CStock_TYPE) || !defined(CNameTable_TYPE)
-#error
+#ifndef SE_INCL_STOCK_TEMPLATE_H
+#define SE_INCL_STOCK_TEMPLATE_H
+#ifdef PRAGMA_ONCE
+#pragma once
 #endif
 
-#include <Engine/Templates/DynamicContainer.h>
+#include <Engine/Base/Stream.h>
+#include <Engine/Templates/DynamicContainer.cpp>
+#include <Engine/Templates/NameTable.h>
+
+// [Cecil] 2021-06-03: Reworked into actual templates
 
 // Template for stock of some kind of objects that can be saved and loaded
-class CStock_TYPE {
+template<class Type> class CStock {
   public:
-    CDynamicContainer<TYPE> st_ctObjects; // objects on stock
-    CNameTable_TYPE st_ntObjects; // name table for fast lookup
+    CDynamicContainer<Type> st_ctObjects; // objects on stock
+    CNameTable<Type> st_ntObjects; // name table for fast lookup
 
   public:
     // Constructor
-    CStock_TYPE(void);
+    CStock(void);
 
     // Destructor
-    ~CStock_TYPE(void);
+    ~CStock(void);
 
     // Obtain an object from stock - loads if not loaded
-    ENGINE_API TYPE *Obtain_t(const CTFileName &fnmFileName); // throw char *
+    Type *Obtain_t(const CTFileName &fnmFileName); // throw char *
 
     // Release an object when not needed any more
-    ENGINE_API void Release(TYPE *ptObject);
+    void Release(Type *ptObject);
 
     // Free all unused elements of the stock
-    ENGINE_API void FreeUnused(void);
+    void FreeUnused(void);
 
     // Calculate amount of memory used by all objects in the stock
     SLONG CalculateUsedMemory(void);
@@ -53,3 +59,7 @@ class CStock_TYPE {
     // Get number of used elements in stock
     INDEX GetUsedCount(void);
 };
+
+#include <Engine/Templates/Stock.inl>
+
+#endif /* include-once check. */

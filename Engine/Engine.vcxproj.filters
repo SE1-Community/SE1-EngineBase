@@ -44,9 +44,6 @@
     <Filter Include="Source Files\zlib">
       <UniqueIdentifier>{e949b98b-06d0-4289-98bd-bb485f6ba16f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Ska">
-      <UniqueIdentifier>{23578051-c3bd-4c95-82c7-03bd7b80b788}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Terrain">
       <UniqueIdentifier>{dddbfcbd-a0ad-40dd-844c-c2c5c91ba8ef}</UniqueIdentifier>
     </Filter>
@@ -90,9 +87,6 @@
     <Filter Include="Header Files\zlib Headers">
       <UniqueIdentifier>{22ff6724-e781-4878-a594-b526f04ffcb3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Ska Headers">
-      <UniqueIdentifier>{9e9b829a-a1b4-4d50-b915-38027bb2ef24}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\World Headers">
       <UniqueIdentifier>{8106ef61-3f70-4fa9-8c74-684b476fa56e}</UniqueIdentifier>
     </Filter>
@@ -130,6 +124,15 @@
     </Filter>
     <Filter Include="Source Files\Entities\BaseClasses">
       <UniqueIdentifier>{0013ef1f-1ed4-460c-aa30-e28ece33c2e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SKA">
+      <UniqueIdentifier>{23578051-c3bd-4c95-82c7-03bd7b80b788}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SKA Headers">
+      <UniqueIdentifier>{9e9b829a-a1b4-4d50-b915-38027bb2ef24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Stocks Headers">
+      <UniqueIdentifier>{48f46f3a-048e-4844-acfc-dc03c1b2f32e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -451,15 +454,6 @@
     <ClCompile Include="Templates\LinearAllocator.cpp">
       <Filter>Source Files\Templates</Filter>
     </ClCompile>
-    <ClCompile Include="Templates\NameTable.cpp">
-      <Filter>Source Files\Templates</Filter>
-    </ClCompile>
-    <ClCompile Include="Templates\NameTable_CTFileName.cpp">
-      <Filter>Source Files\Templates</Filter>
-    </ClCompile>
-    <ClCompile Include="Templates\NameTable_CTranslationPair.cpp">
-      <Filter>Source Files\Templates</Filter>
-    </ClCompile>
     <ClCompile Include="Templates\Selection.cpp">
       <Filter>Source Files\Templates</Filter>
     </ClCompile>
@@ -467,36 +461,6 @@
       <Filter>Source Files\Templates</Filter>
     </ClCompile>
     <ClCompile Include="Templates\StaticStackArray.cpp">
-      <Filter>Source Files\Templates</Filter>
-    </ClCompile>
-    <ClCompile Include="Templates\Stock.cpp">
-      <Filter>Source Files\Templates</Filter>
-    </ClCompile>
-    <ClCompile Include="Templates\Stock_CAnimData.cpp">
-      <Filter>Source Files\Templates</Filter>
-    </ClCompile>
-    <ClCompile Include="Templates\Stock_CAnimSet.cpp">
-      <Filter>Source Files\Templates</Filter>
-    </ClCompile>
-    <ClCompile Include="Templates\Stock_CEntityClass.cpp">
-      <Filter>Source Files\Templates</Filter>
-    </ClCompile>
-    <ClCompile Include="Templates\Stock_CMesh.cpp">
-      <Filter>Source Files\Templates</Filter>
-    </ClCompile>
-    <ClCompile Include="Templates\Stock_CModelData.cpp">
-      <Filter>Source Files\Templates</Filter>
-    </ClCompile>
-    <ClCompile Include="Templates\Stock_CShader.cpp">
-      <Filter>Source Files\Templates</Filter>
-    </ClCompile>
-    <ClCompile Include="Templates\Stock_CSkeleton.cpp">
-      <Filter>Source Files\Templates</Filter>
-    </ClCompile>
-    <ClCompile Include="Templates\Stock_CSoundData.cpp">
-      <Filter>Source Files\Templates</Filter>
-    </ClCompile>
-    <ClCompile Include="Templates\Stock_CTextureData.cpp">
       <Filter>Source Files\Templates</Filter>
     </ClCompile>
     <ClCompile Include="Network\ActionBuffer.cpp">
@@ -674,25 +638,25 @@
       <Filter>Source Files\zlib</Filter>
     </ClCompile>
     <ClCompile Include="Ska\AnimSet.cpp">
-      <Filter>Source Files\Ska</Filter>
+      <Filter>Source Files\SKA</Filter>
     </ClCompile>
     <ClCompile Include="Ska\Mesh.cpp">
-      <Filter>Source Files\Ska</Filter>
+      <Filter>Source Files\SKA</Filter>
     </ClCompile>
     <ClCompile Include="Ska\ModelInstance.cpp">
-      <Filter>Source Files\Ska</Filter>
+      <Filter>Source Files\SKA</Filter>
     </ClCompile>
     <ClCompile Include="Ska\RMRender.cpp">
-      <Filter>Source Files\Ska</Filter>
+      <Filter>Source Files\SKA</Filter>
     </ClCompile>
     <ClCompile Include="Ska\RMRenderMask.cpp">
-      <Filter>Source Files\Ska</Filter>
+      <Filter>Source Files\SKA</Filter>
     </ClCompile>
     <ClCompile Include="Ska\Skeleton.cpp">
-      <Filter>Source Files\Ska</Filter>
+      <Filter>Source Files\SKA</Filter>
     </ClCompile>
     <ClCompile Include="Ska\StringTable.cpp">
-      <Filter>Source Files\Ska</Filter>
+      <Filter>Source Files\SKA</Filter>
     </ClCompile>
     <ClCompile Include="Terrain\ArrayHolder.cpp">
       <Filter>Source Files\Terrain</Filter>
@@ -774,6 +738,15 @@
     </ClCompile>
     <ClCompile Include="Entities\BaseClasses\Entity.cpp">
       <Filter>Source Files\Entities\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Templates\Stock.inl">
+      <Filter>Header Files\Templates Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="Templates\NameTable.inl">
+      <Filter>Header Files\Templates Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="Stocks\StocksDefinition.h">
+      <Filter>Header Files\Stocks Headers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1101,12 +1074,6 @@
     <ClInclude Include="Templates\NameTable.h">
       <Filter>Header Files\Templates Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Templates\NameTable_CTFileName.h">
-      <Filter>Header Files\Templates Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Templates\NameTable_CTranslationPair.h">
-      <Filter>Header Files\Templates Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Templates\Selection.h">
       <Filter>Header Files\Templates Headers</Filter>
     </ClInclude>
@@ -1117,33 +1084,6 @@
       <Filter>Header Files\Templates Headers</Filter>
     </ClInclude>
     <ClInclude Include="Templates\Stock.h">
-      <Filter>Header Files\Templates Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Templates\Stock_CAnimData.h">
-      <Filter>Header Files\Templates Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Templates\Stock_CAnimSet.h">
-      <Filter>Header Files\Templates Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Templates\Stock_CEntityClass.h">
-      <Filter>Header Files\Templates Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Templates\Stock_CMesh.h">
-      <Filter>Header Files\Templates Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Templates\Stock_CModelData.h">
-      <Filter>Header Files\Templates Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Templates\Stock_CShader.h">
-      <Filter>Header Files\Templates Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Templates\Stock_CSkeleton.h">
-      <Filter>Header Files\Templates Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Templates\Stock_CSoundData.h">
-      <Filter>Header Files\Templates Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Templates\Stock_CTextureData.h">
       <Filter>Header Files\Templates Headers</Filter>
     </ClInclude>
     <ClInclude Include="Rendering\Render.h">
@@ -1297,25 +1237,25 @@
       <Filter>Header Files\zlib Headers</Filter>
     </ClInclude>
     <ClInclude Include="Ska\AnimSet.h">
-      <Filter>Header Files\Ska Headers</Filter>
+      <Filter>Header Files\SKA Headers</Filter>
     </ClInclude>
     <ClInclude Include="Ska\Mesh.h">
-      <Filter>Header Files\Ska Headers</Filter>
+      <Filter>Header Files\SKA Headers</Filter>
     </ClInclude>
     <ClInclude Include="Ska\ModelInstance.h">
-      <Filter>Header Files\Ska Headers</Filter>
+      <Filter>Header Files\SKA Headers</Filter>
     </ClInclude>
     <ClInclude Include="Ska\ParsingSmbs.h">
-      <Filter>Header Files\Ska Headers</Filter>
+      <Filter>Header Files\SKA Headers</Filter>
     </ClInclude>
     <ClInclude Include="Ska\Render.h">
-      <Filter>Header Files\Ska Headers</Filter>
+      <Filter>Header Files\SKA Headers</Filter>
     </ClInclude>
     <ClInclude Include="Ska\Skeleton.h">
-      <Filter>Header Files\Ska Headers</Filter>
+      <Filter>Header Files\SKA Headers</Filter>
     </ClInclude>
     <ClInclude Include="Ska\StringTable.h">
-      <Filter>Header Files\Ska Headers</Filter>
+      <Filter>Header Files\SKA Headers</Filter>
     </ClInclude>
     <ClInclude Include="World\PhysicsProfile.h">
       <Filter>Header Files\World Headers</Filter>
@@ -1406,6 +1346,9 @@
     </ClInclude>
     <ClInclude Include="Entities\BaseClasses\RationalEntity.h">
       <Filter>Header Files\Entities Headers\BaseClasses Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Stocks\Stocks.h">
+      <Filter>Header Files\Stocks Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

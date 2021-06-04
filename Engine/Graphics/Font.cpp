@@ -19,7 +19,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Stream.h>
 #include <Engine/Graphics/Texture.h>
 #include <Engine/Graphics/Color.h>
-#include <Engine/Templates/Stock_CTextureData.h>
 
 // some default fonts
 CFontData *_pfdDisplayFont;

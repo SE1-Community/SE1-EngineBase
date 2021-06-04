@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Stream.h>
 #include <Engine/Base/Timer.h>
 
-#include <Engine/Templates/Stock_CAnimData.h>
+#include <Engine/Anim/AnimData.h>
 
 // Constructor
 CAnimObject::CAnimObject(void) {

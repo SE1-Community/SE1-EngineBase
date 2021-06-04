@@ -84,4 +84,9 @@ class ENGINE_API CTFileName : public CTString {
 #define CTFILENAME(string) CTFileName("EFNM" string, 4)
 #define DECLARE_CTFILENAME(name, string) CTFileName name("EFNM" string, 4)
 
+// [Cecil] 2021-06-03: Name table type
+#define NAMETABLE_CASESENSITIVE
+#include <Engine/Templates/NameTable.h>
+typedef CNameTable<CTFileName> CNameTable_CTFileName;
+
 #endif /* include-once check. */

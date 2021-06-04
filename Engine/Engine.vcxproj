@@ -431,6 +431,9 @@ copy Release\$(TargetName).lib $(SolutionDir)..\Bin\ &gt;nul</Command>
     <ClCompile Include="Models\RenderModel_Mask.cpp" />
     <ClCompile Include="Models\RenderModel_View.cpp" />
     <ClCompile Include="Models\VertexGetting.cpp" />
+    <ClInclude Include="Stocks\StocksDefinition.h">
+      <FileType>CppCode</FileType>
+    </ClInclude>
     <ClCompile Include="World\PhysicsProfile.cpp" />
     <ClCompile Include="World\World.cpp" />
     <ClCompile Include="World\WorldCollision.cpp" />
@@ -460,12 +463,10 @@ copy Release\$(TargetName).lib $(SolutionDir)..\Bin\ &gt;nul</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Templates\NameTable.cpp">
+    <ClCompile Include="Templates\NameTable.inl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Templates\NameTable_CTFileName.cpp" />
-    <ClCompile Include="Templates\NameTable_CTranslationPair.cpp" />
     <ClCompile Include="Templates\Selection.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -478,19 +479,10 @@ copy Release\$(TargetName).lib $(SolutionDir)..\Bin\ &gt;nul</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Templates\Stock.cpp">
+    <ClCompile Include="Templates\Stock.inl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Templates\Stock_CAnimData.cpp" />
-    <ClCompile Include="Templates\Stock_CAnimSet.cpp" />
-    <ClCompile Include="Templates\Stock_CEntityClass.cpp" />
-    <ClCompile Include="Templates\Stock_CMesh.cpp" />
-    <ClCompile Include="Templates\Stock_CModelData.cpp" />
-    <ClCompile Include="Templates\Stock_CShader.cpp" />
-    <ClCompile Include="Templates\Stock_CSkeleton.cpp" />
-    <ClCompile Include="Templates\Stock_CSoundData.cpp" />
-    <ClCompile Include="Templates\Stock_CTextureData.cpp" />
     <ClCompile Include="Network\ActionBuffer.cpp" />
     <ClCompile Include="Network\ClientInterface.cpp" />
     <ClCompile Include="Network\CommunicationInterface.cpp" />
@@ -790,6 +782,7 @@ copy Release\$(TargetName).lib $(SolutionDir)..\Bin\ &gt;nul</Command>
     <ClInclude Include="Models\Normals.h" />
     <ClInclude Include="Models\RenderModel.h" />
     <ClInclude Include="Models\RenderModel_internal.h" />
+    <ClInclude Include="Stocks\Stocks.h" />
     <ClInclude Include="Templates\AllocationArray.h" />
     <ClInclude Include="Templates\BSP.h" />
     <ClInclude Include="Templates\BSP_internal.h" />
@@ -798,21 +791,10 @@ copy Release\$(TargetName).lib $(SolutionDir)..\Bin\ &gt;nul</Command>
     <ClInclude Include="Templates\DynamicStackArray.h" />
     <ClInclude Include="Templates\LinearAllocator.h" />
     <ClInclude Include="Templates\NameTable.h" />
-    <ClInclude Include="Templates\NameTable_CTFileName.h" />
-    <ClInclude Include="Templates\NameTable_CTranslationPair.h" />
     <ClInclude Include="Templates\Selection.h" />
     <ClInclude Include="Templates\StaticArray.h" />
     <ClInclude Include="Templates\StaticStackArray.h" />
     <ClInclude Include="Templates\Stock.h" />
-    <ClInclude Include="Templates\Stock_CAnimData.h" />
-    <ClInclude Include="Templates\Stock_CAnimSet.h" />
-    <ClInclude Include="Templates\Stock_CEntityClass.h" />
-    <ClInclude Include="Templates\Stock_CMesh.h" />
-    <ClInclude Include="Templates\Stock_CModelData.h" />
-    <ClInclude Include="Templates\Stock_CShader.h" />
-    <ClInclude Include="Templates\Stock_CSkeleton.h" />
-    <ClInclude Include="Templates\Stock_CSoundData.h" />
-    <ClInclude Include="Templates\Stock_CTextureData.h" />
     <ClInclude Include="Rendering\Render.h" />
     <ClInclude Include="Rendering\Render_internal.h" />
     <ClInclude Include="Rendering\RenderProfile.h" />

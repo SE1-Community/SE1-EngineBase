@@ -29,8 +29,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Entities/InternalClasses.h>
 #include <Engine/Base/ListIterator.inl>
 
-#include <Engine/Templates/Stock_CSoundData.h>
-
 // Sound event codes for prediction
 #define EVENT_SOUNDPLAY      0x0101
 #define EVENT_SOUNDSTOP      0x0102

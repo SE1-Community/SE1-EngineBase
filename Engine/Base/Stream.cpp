@@ -32,12 +32,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Unzip.h>
 #include <Engine/Base/CRC.h>
 #include <Engine/Base/Shell.h>
-#include <Engine/Templates/NameTable_CTFileName.h>
 #include <Engine/Templates/StaticArray.cpp>
 #include <Engine/Templates/DynamicStackArray.cpp>
 
-#include <Engine/Templates/Stock_CTextureData.h>
-#include <Engine/Templates/Stock_CModelData.h>
+#include <Engine/Graphics/Texture.h>
+#include <Engine/Models/ModelData.h>
 
 // Default size of page used for stream IO operations (4Kb)
 ULONG _ulPageSize = 0;

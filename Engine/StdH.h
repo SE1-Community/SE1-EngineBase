@@ -39,3 +39,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // [Cecil] New timer: Tick types
 #include <Engine/Base/TimerTick.h>
+
+// [Cecil] 2021-06-05: Use stocks
+#include <Engine/Stocks/Stocks.h>

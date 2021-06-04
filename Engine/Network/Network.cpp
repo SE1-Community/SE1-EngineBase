@@ -29,11 +29,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Entities/InternalClasses.h>
 #include <Engine/Entities/Precaching.h>
 #include <Engine/Network/CommunicationInterface.h>
-#include <Engine/Templates/Stock_CModelData.h>
-#include <Engine/Templates/Stock_CAnimData.h>
-#include <Engine/Templates/Stock_CTextureData.h>
-#include <Engine/Templates/Stock_CSoundData.h>
-#include <Engine/Templates/Stock_CEntityClass.h>
+#include <Engine/Models/ModelData.h>
+#include <Engine/Anim/AnimData.h>
+#include <Engine/Graphics/Texture.h>
+#include <Engine/Sound/SoundData.h>
+#include <Engine/Entities/EntityClass.h>
 
 #include <Engine/Base/Statistics_internal.h>
 #include <Engine/Graphics/DrawPort.h>
@@ -60,15 +60,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticArray.cpp>
 #include <Engine/Templates/StaticStackArray.cpp>
 
-#include <Engine/Templates/Stock_CAnimData.h>
-#include <Engine/Templates/Stock_CTextureData.h>
-#include <Engine/Templates/Stock_CSoundData.h>
-#include <Engine/Templates/Stock_CEntityClass.h>
-#include <Engine/Templates/Stock_CModelData.h>
-#include <Engine/Templates/Stock_CAnimSet.h>
-#include <Engine/Templates/Stock_CMesh.h>
-#include <Engine/Templates/Stock_CShader.h>
-#include <Engine/Templates/Stock_CSkeleton.h>
+#include <Engine/SKA/AnimSet.h>
+#include <Engine/Graphics/Shader.h>
+#include <Engine/SKA/Skeleton.h>
+#include <Engine/SKA/Mesh.h>
 
 #include <Engine/GameAgent/GameAgent.h>
 

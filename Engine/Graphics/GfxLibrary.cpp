@@ -27,7 +27,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Math/AABBox.h>
 #include <Engine/Models/Normals.h>
 #include <Engine/Sound/SoundLibrary.h>
-#include <Engine/Templates/Stock_CModelData.h>
+#include <Engine/Models/ModelData.h>
 
 #include <Engine/Graphics/Adapter.h>
 #include <Engine/Graphics/ShadowMap.h>
@@ -43,7 +43,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/DynamicStackArray.h>
 #include <Engine/Templates/DynamicStackArray.cpp>
 #include <Engine/Templates/DynamicContainer.cpp>
-#include <Engine/Templates/Stock_CTextureData.h>
 
 // control for partial usage of compiled vertex arrays
 extern BOOL CVA_b2D = FALSE;

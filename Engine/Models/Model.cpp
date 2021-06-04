@@ -30,8 +30,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/DynamicArray.cpp>
 #include <Engine/Templates/DynamicContainer.cpp>
 
-#include <Engine/Templates/Stock_CModelData.h>
-
 template CStaticArray<MappingSurface>;
 template CStaticArray<ModelPolygon>;
 template CStaticArray<ModelPolygonVertex>;

@@ -167,6 +167,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/Selection.h>
 #include <Engine/Templates/Selection.cpp>
 
+// [Cecil] 2021-06-05: Use stocks
+#include <Engine/Stocks/Stocks.h>
+
 // Global engine functions
 ENGINE_API void SE_InitEngine(CTString strGameID);
 ENGINE_API void SE_EndEngine(void);

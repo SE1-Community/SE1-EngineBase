@@ -62,10 +62,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticArray.cpp>
 #include <Engine/Templates/StaticStackArray.cpp>
 
-#include <Engine/Templates/Stock_CAnimData.h>
-#include <Engine/Templates/Stock_CTextureData.h>
-#include <Engine/Templates/Stock_CModelData.h>
-#include <Engine/Templates/Stock_CSoundData.h>
+#include <Engine/Anim/AnimData.h>
+#include <Engine/Models/ModelData.h>
 
 // [Cecil] 2021-02-28: Set damage type equivalents to the ones from the SDK
 extern SBasicDamageTypes _bdtEntityDamageTypes = {

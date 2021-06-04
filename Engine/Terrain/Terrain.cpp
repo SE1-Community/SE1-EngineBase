@@ -25,7 +25,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Terrain/TerrainRender.h>
 #include <Engine/Terrain/TerrainEditing.h>
 #include <Engine/Terrain/TerrainMisc.h>
-#include <Engine/Templates/Stock_CTextureData.h>
+#include <Engine/Graphics/Texture.h>
 #include <Engine/Entities/BaseClasses/Entity.h>
 #include <Engine/Entities/ShadingInfo.h>
 #include <Engine/Graphics/Font.h>

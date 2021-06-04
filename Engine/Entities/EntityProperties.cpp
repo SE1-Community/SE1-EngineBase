@@ -25,11 +25,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Sound/SoundObject.h>
 #include <Engine/Math/Quaternion.h>
 
-#include <Engine/Templates/Stock_CAnimData.h>
-#include <Engine/Templates/Stock_CTextureData.h>
-#include <Engine/Templates/Stock_CModelData.h>
-#include <Engine/Templates/Stock_CSoundData.h>
-#include <Engine/Templates/Stock_CEntityClass.h>
+#include <Engine/Anim/AnimData.h>
+#include <Engine/Graphics/Texture.h>
+#include <Engine/Models/ModelData.h>
+#include <Engine/Sound/SoundData.h>
+#include <Engine/Entities/EntityClass.h>
 #include <Engine/Templates/StaticArray.cpp>
 
 #define FILTER_ALL "All files (*.*)\0*.*\0"

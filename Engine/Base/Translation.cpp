@@ -19,7 +19,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Translation.h>
 #include <Engine/Base/TranslationPair.h>
 #include <Engine/Base/Input.h>
-#include <Engine/Templates/NameTable_CTranslationPair.h>
 
 #include <Engine/Base/Memory.h>
 #include <Engine/Base/Stream.h>

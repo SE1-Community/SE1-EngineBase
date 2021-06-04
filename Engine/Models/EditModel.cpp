@@ -28,7 +28,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Templates/StaticArray.cpp>
 #include <Engine/Templates/DynamicArray.cpp>
-#include <Engine/Templates/Stock_CTextureData.h>
+#include <Engine/Graphics/Texture.h>
 
 // Globally instanciated object containing routines for dealing with progres messages
 CProgressRoutines ProgresRoutines;

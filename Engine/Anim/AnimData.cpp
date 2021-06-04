@@ -19,7 +19,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Base/Stream.h>
 #include <Engine/Templates/DynamicArray.cpp>
-#include <Engine/Templates/Stock_CAnimData.h>
 
 // Constructor
 CAnimData::CAnimData() {

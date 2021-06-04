@@ -27,7 +27,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Graphics/Shader.h>
 #include <Engine/Templates/StaticArray.h>
 #include <Engine/Templates/StaticArray.cpp>
-#include <Engine/Templates/Stock_CShader.h>
 
 INDEX AreVerticesDiferent(INDEX iCurentIndex, INDEX iLastIndex);
 

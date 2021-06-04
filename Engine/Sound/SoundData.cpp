@@ -25,8 +25,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Sound/SoundLibrary.h>
 #include <Engine/Sound/SoundObject.h>
 
-#include <Engine/Templates/Stock_CSoundData.h>
-
 // Pause all playing
 void CSoundData::PausePlayingObjects(void) {
   // for all objects linked to data pause playing
