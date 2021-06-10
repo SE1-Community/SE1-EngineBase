@@ -26,14 +26,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Graphics/GfxProfile.h>
 #include <Engine/Graphics/ImageInfo.h>
 
-// asm shortcuts
+// ASM shortcuts
 #define O offset
 #define Q qword ptr
 #define D dword ptr
 #define W word ptr
 #define B byte ptr
 
-// current fog parameters
+// Current fog parameters
 BOOL _fog_bActive = FALSE;
 CFogParameters _fog_fp;
 CTexParams _fog_tpLocal;
@@ -59,10 +59,11 @@ UBYTE *_fog_pubTable = NULL;
 extern INDEX gfx_bRenderFog;
 extern BOOL _bMultiPlayer;
 
-// prepares fog and haze parameters and eventualy converts texture
+// Prepares fog and haze parameters and eventualy converts texture
 ULONG PrepareTexture(UBYTE *pubTexture, PIX pixSizeI, PIX pixSizeJ) {
   // need to upload from RGBA format
   const PIX pixTextureSize = pixSizeI * pixSizeJ;
+
   __asm {
     mov     esi,D [pubTexture]
     mov     edi,D [pubTexture]
@@ -78,23 +79,34 @@ pixLoop:
     dec     ecx
     jnz     pixLoop
   }
+
   // determine internal format
   extern INDEX gap_bAllowGrayTextures;
   extern INDEX tex_bFineFog;
-  if (gap_bAllowGrayTextures)
+
+  if (gap_bAllowGrayTextures) {
     return TS.ts_tfLA8;
-  if (tex_bFineFog)
+  }
+
+  if (tex_bFineFog) {
     return TS.ts_tfRGBA8;
+  }
+
   return TS.ts_tfRGBA4;
 }
 
-// start fog with given parameters
+// Start fog with given parameters
 void StartFog(CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix3D &mAbsToView) {
   ASSERT(!_fog_bActive);
-  if (_bMultiPlayer)
+
+  if (_bMultiPlayer) {
     gfx_bRenderFog = 1;
-  if (!gfx_bRenderFog)
+  }
+
+  if (!gfx_bRenderFog) {
     return;
+  }
+
   _fog_bActive = TRUE;
 
   _fog_fp = fp;
@@ -105,6 +117,7 @@ void StartFog(CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix3
   _fog_vViewDirAbs(3) = -mAbsToView(3, 3);
   _fog_fViewerH = _fog_vViewPosAbs % -_fog_fp.fp_vFogDir;
   _fog_vHDirView = _fog_vHDirAbs * mAbsToView;
+
   // calculate fog mapping factors
   _fog_fMulZ = 1 / (_fog_fp.fp_fFar);
   _fog_fMulH = 1 / (_fog_fp.fp_fH3 - _fog_fp.fp_fH0);
@@ -113,6 +126,7 @@ void StartFog(CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix3
   // calculate fog table size wanted
   extern INDEX tex_iFogSize;
   tex_iFogSize = Clamp(tex_iFogSize, 4L, 8L);
+
   PIX pixSizeH = ClampUp(_fog_fp.fp_iSizeH, 1L << tex_iFogSize);
   PIX pixSizeL = ClampUp(_fog_fp.fp_iSizeL, 1L << tex_iFogSize);
   BOOL bNoDiscard = TRUE;
@@ -122,6 +136,7 @@ void StartFog(CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix3
     FreeMemory(_fog_pubTable); // free it
     _fog_pubTable = NULL;
   }
+
   // allocate table if needed
   if (_fog_pubTable == NULL) {
     // allocate byte table (for intensity values) and ULONG table (color values for uploading) right behind!
@@ -136,32 +151,37 @@ void StartFog(CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix3
   _fog_ulAlpha = (_fog_fp.fp_colColor & CT_AMASK) >> CT_ASHIFT;
 
   // get parameters
-  const FLOAT fH0 = _fog_fp.fp_fH0;   // lowest point in LUT    ->texture t=1
-  const FLOAT fH1 = _fog_fp.fp_fH1;   // bottom of fog in LUT
-  const FLOAT fH2 = _fog_fp.fp_fH2;   // top of fog in LUT
-  const FLOAT fH3 = _fog_fp.fp_fH3;   // highest point in LUT   ->texture t=0
-  const FLOAT fFar = _fog_fp.fp_fFar; // farthest point in LUT  ->texture s=1
+  const FLOAT fH0 = _fog_fp.fp_fH0; // lowest point in LUT -> texture t=1
+  const FLOAT fH1 = _fog_fp.fp_fH1; // bottom of fog in LUT
+  const FLOAT fH2 = _fog_fp.fp_fH2; // top of fog in LUT
+  const FLOAT fH3 = _fog_fp.fp_fH3; // highest point in LUT -> texture t=0
+  const FLOAT fFar = _fog_fp.fp_fFar; // farthest point in LUT -> texture s=1
   const FLOAT fDensity = _fog_fp.fp_fDensity;
   const AttenuationType at = _fog_fp.fp_atType;
   const FogGraduationType fgt = _fog_fp.fp_fgtType;
   const FLOAT fHFogSize = fH2 - fH1;
   const FLOAT fHV = -_fog_fViewerH;
   const FLOAT fEpsilon = 0.001f;
+
   ASSERT(fHFogSize > 0);
 
   // for each row (height in fog)
   for (PIX pixH = 0; pixH < pixSizeH; pixH++) {
     // get fog height of the point from row coordinate in texture
     FLOAT fHP = fH3 + FLOAT(pixH) / pixSizeH * (fH0 - fH3);
+
     // sort viewer and point and get A (lower) and B (higher) fog coord
     // making sure that they are never same
     FLOAT fHA, fHB;
+
     if (fHP < fHV - fEpsilon) {
       fHA = fHP;
       fHB = fHV;
+
     } else if (fHP > fHV + fEpsilon) {
       fHA = fHV;
       fHB = fHP;
+
     } else {
       fHA = fHV - fEpsilon;
       fHB = fHP + fEpsilon;
@@ -170,11 +190,14 @@ void StartFog(CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix3
     // get distance between the two points in height axis
     FLOAT fDH = fHB - fHA;
     FLOAT fOoDH = 1 / fDH;
+
     // calculate relative part of height that goes through the fog
     FLOAT fA2 = (fH2 - fHA) * fOoDH;
     fA2 = Clamp(fA2, 0.0f, 1.0f);
+
     FLOAT fA1 = (fH1 - fHA) * fOoDH;
     fA1 = Clamp(fA1, 0.0f, 1.0f);
+
     FLOAT fA = fA2 - fA1;
     fA = Clamp(fA, 0.0f, 1.0f);
 
@@ -189,25 +212,32 @@ void StartFog(CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix3
       fFH1 *= _fog_fp.fp_fGraduation;
 
       FLOAT fDens;
+
       // if linear graduation
       if (fgt == FGT_LINEAR) {
         // get linear integrated density factor
         fDens = (fFH0 + fFH1) / 2.0f;
-        // if exponential graduation
+
+      // if exponential graduation
       } else {
         ASSERT(fgt == FGT_EXP);
+
         // sort the two heights and make sure they are not same
         FLOAT fFA, fFB;
+
         if (fFH0 < fFH1 - fEpsilon) {
           fFA = fFH0;
           fFB = fFH1;
+
         } else if (fFH0 > fFH1 + fEpsilon) {
           fFA = fFH1;
           fFB = fFH0;
+
         } else {
           fFA = fFH1 - fEpsilon;
           fFB = fFH0 + fEpsilon;
         }
+
         // calculate exponential integrated density factor normally
         fDens = 1.0f + (exp(-fFB) - exp(-fFA)) / (fFB - fFA);
       }
@@ -226,35 +256,42 @@ void StartFog(CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix3
         // calculate linear step for the fog parameter
         FLOAT fT = 0.0f;
         FLOAT fTStep = 1.0f / pixSizeL * fFar * fDensity * fA * 255;
+
         // fog is just clamped fog parameter in each pixel
         for (INDEX pixL = 0; pixL < pixSizeL; pixL++) {
           _fog_pubTable[pixH * pixSizeL + pixL] = Clamp(FloatToInt(fT), 0L, 255L);
           fT += fTStep;
         }
       } break;
+
       // exp fog
       case AT_EXP: {
         // calculate linear step for the fog parameter
         FLOAT fT = 0.0f;
         FLOAT fTStep = 1.0f / pixSizeL * fFar * fDensity * fA;
+
         // fog is exp(-t) function of fog parameter, now calculate
         // step (actually multiplication) for the fog
         FLOAT fExp = 255.0f;
         FLOAT fExpMul = exp(-fTStep);
+
         for (INDEX pixL = 0; pixL < pixSizeL; pixL++) {
           _fog_pubTable[pixH * pixSizeL + pixL] = 255 - FloatToInt(fExp);
           fExp *= fExpMul;
         }
       } break;
+
       case AT_EXP2: {
         // calculate linear step for the fog parameter
         FLOAT fT = 0.0f;
         FLOAT fTStep = 1.0f / pixSizeL * fFar * fDensity * fA;
+
         // fog is exp(-t^2) function of fog parameter, now calculate
         // first and second order step (actually multiplication) for the fog
         FLOAT fExp2 = 255.0f;
         FLOAT fExp2Mul = exp(-fTStep * fTStep);
         FLOAT fExp2MulMul = exp(-2 * fTStep * fTStep);
+
         for (INDEX pixL = 0; pixL < pixSizeL; pixL++) {
           _fog_pubTable[pixH * pixSizeL + pixL] = 255 - FloatToInt(fExp2);
           fExp2 *= fExp2Mul;
@@ -267,44 +304,58 @@ void StartFog(CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix3
   // determine where fog starts and ends
   _fog_fStart = LowerLimit(0.0f);
   _fog_fEnd = UpperLimit(0.0f);
+
   if (_fog_pubTable[pixSizeL - 1]) {
     // going from bottom
     INDEX pix = pixSizeH - 1;
+
     for (; pix > 0; pix--) {
-      if ((_fog_pubTable[(pix + 1) * pixSizeL - 1] * _fog_ulAlpha) >> 8)
+      if ((_fog_pubTable[(pix + 1) * pixSizeL - 1] * _fog_ulAlpha) >> 8) {
         break;
+      }
     }
-    if (pix < (pixSizeH - 1))
+
+    if (pix < (pixSizeH - 1)) {
       _fog_fEnd = (FLOAT)(pix + 1) / (FLOAT)(pixSizeH - 1);
+    }
+
   } else {
     // going from top
     INDEX pix = 0;
+
     for (; pix < pixSizeH; pix++) {
-      if ((_fog_pubTable[(pix + 1) * pixSizeL - 1] * _fog_ulAlpha) >> 8)
+      if ((_fog_pubTable[(pix + 1) * pixSizeL - 1] * _fog_ulAlpha) >> 8) {
         break;
+      }
     }
-    if (pix > 0)
+
+    if (pix > 0) {
       _fog_fStart = (FLOAT)(pix - 1) / (FLOAT)(pixSizeH - 1);
+    }
   }
 
   // prepare and upload the fog table
   _fog_tpLocal.tp_bSingleMipmap = TRUE;
+
   const ULONG ulFormat = PrepareTexture(_fog_pubTable, _fog_pixSizeL, _fog_pixSizeH);
+
   if (_fog_ulFormat != ulFormat) {
     _fog_ulFormat = ulFormat;
     bNoDiscard = FALSE;
-  } // set'n'upload
+  }
+
+  // set and upload
   gfxSetTextureWrapping(GFX_CLAMP, GFX_CLAMP);
   gfxSetTexture(_fog_ulTexture, _fog_tpLocal);
   gfxUploadTexture((ULONG *)(_fog_pubTable + _fog_pixSizeL * _fog_pixSizeH), _fog_pixSizeL, _fog_pixSizeH, ulFormat, bNoDiscard);
 }
 
-// stop fog
+// Stop fog
 void StopFog(void) {
   _fog_bActive = FALSE;
 }
 
-// current haze parameters
+// Current haze parameters
 BOOL _haze_bActive = FALSE;
 CHazeParameters _haze_hp;
 CTexParams _haze_tpLocal;
@@ -320,13 +371,18 @@ ULONG _haze_ulAlpha = 0;
 ULONG _haze_ulTexture = 0;
 ULONG _haze_ulFormat = 0;
 
-// start haze with given parameters
+// Start haze with given parameters
 void StartHaze(CHazeParameters &hp, const FLOAT3D &vViewPosAbs, const FLOATmatrix3D &mAbsToView) {
   ASSERT(!_haze_bActive);
-  if (_bMultiPlayer)
+
+  if (_bMultiPlayer) {
     gfx_bRenderFog = 1;
-  if (!gfx_bRenderFog)
+  }
+
+  if (!gfx_bRenderFog) {
     return;
+  }
+
   _haze_bActive = TRUE;
 
   _haze_hp = hp;
@@ -347,12 +403,14 @@ void StartHaze(CHazeParameters &hp, const FLOAT3D &vViewPosAbs, const FLOATmatri
     FreeMemory(_haze_pubTable); // free it
     _haze_pubTable = NULL;
   }
+
   // allocate table if needed
   if (_haze_pubTable == NULL) {
     // allocate byte table (for intensity values) and ULONG table (color values for uploading) right behind!
     _haze_pubTable = (UBYTE *)AllocMemory(pixSize * (sizeof(UBYTE) + sizeof(ULONG)));
     _haze_pixSize = pixSize;
     _haze_tpLocal.Clear();
+
     bNoDiscard = FALSE;
   }
 
@@ -364,40 +422,51 @@ void StartHaze(CHazeParameters &hp, const FLOAT3D &vViewPosAbs, const FLOATmatri
   FLOAT fFar = _haze_hp.hp_fFar;
   FLOAT fDensity = _haze_hp.hp_fDensity;
   AttenuationType at = _haze_hp.hp_atType;
+
   // generate table
   INDEX pix;
+
   for (pix = 0; pix < pixSize; pix++) {
     FLOAT fD = FLOAT(pix) / pixSize * (fFar - fNear);
     FLOAT fT = fDensity * fD;
     FLOAT fHaze = 0.0f;
+
     switch (at) {
       case AT_LINEAR: fHaze = Clamp(fT, 0.0f, 1.0f); break;
       case AT_EXP: fHaze = 1 - exp(-fT); break;
       case AT_EXP2: fHaze = 1 - exp(-fT * fT); break;
     }
+
     const UBYTE ubValue = NormFloatToByte(fHaze);
     _haze_pubTable[pix] = ubValue;
   }
 
   // determine where haze starts
-  for (pix = 1; pix < pixSize; pix++)
-    if ((_haze_pubTable[pix] * _haze_ulAlpha) >> 8)
+  for (pix = 1; pix < pixSize; pix++) {
+    if ((_haze_pubTable[pix] * _haze_ulAlpha) >> 8) {
       break;
+    }
+  }
+
   _haze_fStart = (FLOAT)(pix - 1) / (FLOAT)(pixSize - 1);
 
   // prepare haze table
   _haze_tpLocal.tp_bSingleMipmap = TRUE;
+
   const ULONG ulFormat = PrepareTexture(_haze_pubTable, _haze_pixSize, 1);
+
   if (_haze_ulFormat != ulFormat) {
     _haze_ulFormat = ulFormat;
     bNoDiscard = FALSE;
-  } // set'n'upload
+  }
+  
+  // set and upload
   gfxSetTextureWrapping(GFX_CLAMP, GFX_CLAMP);
   gfxSetTexture(_haze_ulTexture, _haze_tpLocal);
   gfxUploadTexture((ULONG *)(_haze_pubTable + _haze_pixSize * 1), _haze_pixSize, 1, ulFormat, bNoDiscard);
 }
 
-// stop haze
+// Stop haze
 void StopHaze(void) {
   _haze_bActive = FALSE;
 }

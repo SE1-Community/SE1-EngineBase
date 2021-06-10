@@ -29,6 +29,7 @@ static void CreateSwapChain_D3D(CViewPort *pvp, PIX pixSizeI, PIX pixSizeJ) {
   HRESULT hr;
   D3DPRESENT_PARAMETERS d3dPresentParams;
   memset(&d3dPresentParams, 0, sizeof(d3dPresentParams));
+
   d3dPresentParams.Windowed = TRUE;
   d3dPresentParams.BackBufferWidth = pixSizeI;
   d3dPresentParams.BackBufferHeight = pixSizeJ;
@@ -38,12 +39,15 @@ static void CreateSwapChain_D3D(CViewPort *pvp, PIX pixSizeI, PIX pixSizeJ) {
   d3dPresentParams.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
   d3dPresentParams.SwapEffect = D3DSWAPEFFECT_DISCARD;
   d3dPresentParams.hDeviceWindow = pvp->vp_hWnd;
+
   ASSERT(pvp->vp_pSwapChain == NULL && pvp->vp_pSurfDepth == NULL);
+
   hr = _pGfx->gl_pd3dDevice->CreateAdditionalSwapChain(&d3dPresentParams, &pvp->vp_pSwapChain);
   D3D_CHECKERROR(hr);
-  hr = _pGfx->gl_pd3dDevice->CreateDepthStencilSurface(pixSizeI, pixSizeJ, _pGfx->gl_d3dDepthFormat, D3DMULTISAMPLE_NONE,
-                                                       &pvp->vp_pSurfDepth);
+
+  hr = _pGfx->gl_pd3dDevice->CreateDepthStencilSurface(pixSizeI, pixSizeJ, _pGfx->gl_d3dDepthFormat, D3DMULTISAMPLE_NONE, &pvp->vp_pSurfDepth);
   D3D_CHECKERROR(hr);
+
   ASSERT(pvp->vp_pSwapChain != NULL);
   ASSERT(pvp->vp_pSurfDepth != NULL);
 }
@@ -52,19 +56,23 @@ static void SetAsRenderTarget_D3D(CViewPort *pvp) {
   HRESULT hr;
   LPDIRECT3DSURFACE8 pColorSurface;
   hr = pvp->vp_pSwapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &pColorSurface);
+
   D3D_CHECKERROR(hr);
   hr = _pGfx->gl_pd3dDevice->SetRenderTarget(pColorSurface, pvp->vp_pSurfDepth);
+
   D3D_CHECKERROR(hr);
   D3DRELEASE(pColorSurface, TRUE);
 }
 #endif // SE1_D3D
 
-// helper for OGL
+// Helper for OGL
 
 CTempDC::CTempDC(HWND hWnd) {
   ASSERT(hWnd != NULL);
+
   hwnd = hWnd;
   hdc = GetDC(hwnd);
+
   ASSERT(hdc != NULL);
 }
 
@@ -72,58 +80,65 @@ CTempDC::~CTempDC(void) {
   ReleaseDC(hwnd, hdc);
 }
 
-/*
- *   ViewPort functions
- */
-
-CViewPort::CViewPort(PIX pixWidth, PIX pixHeight, HWND hWnd) : vp_Raster(pixWidth, pixHeight, 0) {
+// Constructor for given window
+CViewPort::CViewPort(PIX pixWidth, PIX pixHeight, HWND hWnd) :
+  vp_Raster(pixWidth, pixHeight, 0)
+{
   vp_hWnd = NULL;
   vp_hWndParent = hWnd;
+
   #ifdef SE1_D3D
   vp_pSwapChain = NULL;
   vp_pSurfDepth = NULL;
   #endif // SE1_D3D
 
   vp_ctDisplayChanges = 0;
+
   OpenCanvas();
   vp_Raster.ra_pvpViewPort = this;
 }
 
+// Destructor
 CViewPort::~CViewPort(void) {
   CloseCanvas(TRUE);
+
   // reset current viewport if needed
-  if (_pGfx->gl_pvpActive == this)
+  if (_pGfx->gl_pvpActive == this) {
     _pGfx->gl_pvpActive = NULL;
+  }
 }
 
 #define CViewPortCLASS "ViewPort Window"
 static BOOL _bClassRegistered = FALSE;
 
-LRESULT CALLBACK CViewPortCLASS_WindowProc(HWND hWnd,     // handle to window
-                                           UINT Msg,      // message identifier
+LRESULT CALLBACK CViewPortCLASS_WindowProc(HWND hWnd, // handle to window
+                                           UINT Msg, // message identifier
                                            WPARAM wParam, // first message parameter
-                                           LPARAM lParam  // second message parameter
-) {
+                                           LPARAM lParam) { // second message parameter
   // forget erase bacground messages
-  if (Msg == WM_ERASEBKGND)
+  if (Msg == WM_ERASEBKGND) {
     return TRUE;
+  }
 
   // if any mouse message
   if ((Msg >= WM_MOUSEFIRST && Msg <= WM_MOUSELAST)) {
     // send it to parent
     HWND hWndParent = GetParent(hWnd);
+
     ASSERT(hWndParent != NULL);
+
     return CallWindowProc((WNDPROC)GetWindowLong(hWndParent, GWL_WNDPROC), hWndParent, Msg, wParam, lParam);
   }
 
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 }
 
-// open overlaid window for rendering context
+// Open overlaid window for rendering context
 void CViewPort::OpenCanvas(void) {
   // do nothing if not feasable
-  if (vp_hWnd != NULL || vp_hWndParent == NULL)
+  if (vp_hWnd != NULL || vp_hWndParent == NULL) {
     return;
+  }
 
   // register class
   if (!_bClassRegistered) {
@@ -138,6 +153,7 @@ void CViewPort::OpenCanvas(void) {
     wc.hbrBackground = NULL;
     wc.lpszMenuName = NULL;
     wc.lpszClassName = CViewPortCLASS;
+
     RegisterClassA(&wc);
     _bClassRegistered = TRUE;
   }
@@ -145,27 +161,32 @@ void CViewPort::OpenCanvas(void) {
   // determine window and desktopsize
   RECT rectWindow;
   GetClientRect(vp_hWndParent, &rectWindow);
+
   const PIX pixWinSizeI = rectWindow.right - rectWindow.left;
   const PIX pixWinSizeJ = rectWindow.bottom - rectWindow.top;
+
   CDisplayMode dm;
   _pGfx->GetCurrentDisplayMode(dm);
+
   ASSERT((dm.dm_pixSizeI == 0 && dm.dm_pixSizeJ == 0) || (dm.dm_pixSizeI != 0 && dm.dm_pixSizeJ != 0));
+
   const BOOL bFullScreen = (dm.dm_pixSizeI == pixWinSizeI && dm.dm_pixSizeJ == pixWinSizeJ);
 
   // set fullscreen attribs if window size is equal to screen size
   DWORD dwExStyle = NONE;
   DWORD dwStyle = WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
+
   if (bFullScreen && ogl_bExclusive) {
     dwExStyle = WS_EX_TOPMOST;
     dwStyle = WS_POPUP;
   }
 
   // set child window
-  vp_hWnd = ::CreateWindowExA(dwExStyle, CViewPortCLASS,
-                              "",                  // title
-                              dwStyle, 0, 0, 0, 0, // window size
+  vp_hWnd = ::CreateWindowExA(dwExStyle, CViewPortCLASS, "", dwStyle, 0, 0, 0, 0, // title and window size
                               vp_hWndParent, NULL, (HINSTANCE)GetWindowLong(vp_hWndParent, GWL_HINSTANCE), NULL);
+
   ASSERT(vp_hWnd != NULL);
+
   #ifdef SE1_D3D
   // prepare new swap chain for D3D
   if (_pGfx->gl_eCurrentAPI == GAT_D3D && !bFullScreen) {
@@ -176,6 +197,7 @@ void CViewPort::OpenCanvas(void) {
   // resize raster
   Resize();
   ShowWindow(vp_hWnd, SW_SHOW);
+
   #ifdef SE1_D3D
   // set as rendering target
   if (_pGfx->gl_eCurrentAPI == GAT_D3D && vp_pSwapChain != NULL) {
@@ -184,14 +206,15 @@ void CViewPort::OpenCanvas(void) {
   #endif // SE1_D3D
 }
 
-// close overlaid window
-void CViewPort::CloseCanvas(BOOL bRelease /*=FALSE*/) {
+// Close overlaid window
+void CViewPort::CloseCanvas(BOOL bRelease) {
   // release D3D swap chain if allocated
   #ifdef SE1_D3D
   if (_pGfx->gl_eCurrentAPI == GAT_D3D && bRelease) {
     if (vp_pSwapChain != NULL) {
       D3DRELEASE(vp_pSwapChain, TRUE);
     }
+
     if (vp_pSurfDepth != NULL) {
       D3DRELEASE(vp_pSurfDepth, TRUE);
     }
@@ -203,8 +226,10 @@ void CViewPort::CloseCanvas(BOOL bRelease /*=FALSE*/) {
     BOOL bRes = DestroyWindow(vp_hWnd);
     ASSERT(bRes);
   }
+
   // mark
   vp_hWnd = NULL;
+
   #ifdef SE1_D3D
   vp_pSwapChain = NULL;
   vp_pSurfDepth = NULL;
@@ -218,11 +243,13 @@ void CViewPort::Resize(void) {
 
   // get the size of the window
   GetClientRect(vp_hWndParent, &rectWindow);
+
   pixNewWidth = rectWindow.right - rectWindow.left;
   pixNewHeight = rectWindow.bottom - rectWindow.top;
 
   // resize child window
   ASSERT(vp_hWnd != NULL);
+
   SetWindowPos(vp_hWnd, NULL, 0, 0, pixNewWidth, pixNewHeight, SWP_NOZORDER | SWP_NOMOVE);
 
   // resize the raster
@@ -233,8 +260,10 @@ void CViewPort::Resize(void) {
   if (_pGfx->gl_eCurrentAPI == GAT_D3D && vp_pSwapChain != NULL) {
     // release old surface
     ASSERT(vp_pSurfDepth != NULL);
+
     D3DRELEASE(vp_pSwapChain, TRUE);
     D3DRELEASE(vp_pSurfDepth, TRUE);
+
     // create a new one and set it as current
     CreateSwapChain_D3D(this, pixNewWidth, pixNewHeight);
     SetAsRenderTarget_D3D(this);
@@ -244,8 +273,9 @@ void CViewPort::Resize(void) {
 
 void CViewPort::SwapBuffers(void) {
   // skip if child window not present
-  if (vp_hWnd == NULL)
+  if (vp_hWnd == NULL) {
     return;
+  }
 
   // ask the current driver to swap buffers
   _sfStats.StartTimer(CStatForm::STI_SWAPBUFFERS);

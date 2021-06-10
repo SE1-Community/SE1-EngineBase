@@ -43,10 +43,9 @@ extern FLOAT gfx_tmProbeDecay;
 extern BOOL _bShadowsUpdated;
 extern BOOL _bMultiPlayer;
 
-/*
- * Routines that manipulates with shadow cluster map class
- */
+// Routines that manipulate with shadow cluster map class
 
+// Constructor
 CShadowMap::CShadowMap() {
   sm_pulCachedShadowMap = NULL;
   sm_pulDynamicShadowMap = NULL;
@@ -59,25 +58,31 @@ CShadowMap::CShadowMap() {
   Clear();
 }
 
+// Destructor
 CShadowMap::~CShadowMap() {
   Clear();
 }
 
-// report shadowmap memory usage (in bytes)
+// Report shadowmap memory usage (in bytes)
 ULONG CShadowMap::GetShadowSize(void) {
   CBrushPolygon *pbpo = ((CBrushShadowMap *)this)->GetBrushPolygon();
   ULONG ulFlags = pbpo->bpo_ulFlags;
+
   BOOL bIsTransparent = (ulFlags & BPOF_PORTAL) && !(ulFlags & (BPOF_TRANSLUCENT | BPOF_TRANSPARENT));
   BOOL bTakesShadow = !(ulFlags & BPOF_FULLBRIGHT);
   BOOL bIsFlat = sm_pulCachedShadowMap == &sm_colFlat;
-  if (bIsTransparent || !bTakesShadow || bIsFlat)
+
+  if (bIsTransparent || !bTakesShadow || bIsFlat) {
     return 0; // not influenced
+  }
+
   const PIX pixSizeU = sm_mexWidth >> sm_iFirstMipLevel;
   const PIX pixSizeV = sm_mexHeight >> sm_iFirstMipLevel;
+
   return pixSizeU * pixSizeV * BYTES_PER_TEXEL;
 }
 
-// cache the shadow map
+// Cache the shadow map
 void CShadowMap::Cache(INDEX iWantedMipLevel) {
   _pfGfxProfile.StartTimer(CGfxProfile::PTI_CACHESHADOW);
   _bShadowsUpdated = TRUE;
@@ -88,6 +93,7 @@ void CShadowMap::Cache(INDEX iWantedMipLevel) {
 
   // dynamic layers are invalid when shadowmap is cached
   sm_ulFlags |= SMF_DYNAMICINVALID;
+
   if (sm_pulDynamicShadowMap != NULL) {
     FreeMemory(sm_pulDynamicShadowMap);
     sm_pulDynamicShadowMap = NULL;
@@ -105,15 +111,21 @@ void CShadowMap::Cache(INDEX iWantedMipLevel) {
     // release memory if allocated
     if (bCached) {
       ASSERT(sm_slMemoryUsed > 0 && sm_slMemoryUsed <= SHADOWMAXBYTES);
-      if (!bWasFlat)
+
+      if (!bWasFlat) {
         FreeMemory(sm_pulCachedShadowMap);
+      }
     }
+
     sm_pulCachedShadowMap = &sm_colFlat;
     sm_iFirstCachedMipLevel = iWantedMipLevel;
     sm_slMemoryUsed = slSize;
+
     // add it to shadow list
-    if (!sm_lnInGfx.IsLinked())
+    if (!sm_lnInGfx.IsLinked()) {
       _pGfx->gl_lhCachedShadows.AddTail(sm_lnInGfx);
+    }
+
     _pfGfxProfile.StopTimer(CGfxProfile::PTI_CACHESHADOW);
     return;
   }
@@ -123,22 +135,30 @@ void CShadowMap::Cache(INDEX iWantedMipLevel) {
     // allocate the memory
     sm_pulCachedShadowMap = (ULONG *)AllocMemory(slSize);
     sm_slMemoryUsed = slSize;
+
     ASSERT(sm_slMemoryUsed > 0 && sm_slMemoryUsed <= SHADOWMAXBYTES);
-  }
+
   // if already allocated, but too small
-  else if (iWantedMipLevel < sm_iFirstCachedMipLevel) {
+  } else if (iWantedMipLevel < sm_iFirstCachedMipLevel) {
     // allocate new block
     ULONG *pulNew = (ULONG *)AllocMemory(slSize);
     ASSERT(sm_slMemoryUsed > 0 && sm_slMemoryUsed <= SHADOWMAXBYTES);
+
     if (slSize > sm_slMemoryUsed && !bWasFlat) {
       // copy old shadow map at the end of buffer
       memcpy(pulNew + (slSize - sm_slMemoryUsed) / BYTES_PER_TEXEL, sm_pulCachedShadowMap, sm_slMemoryUsed);
-    } // free old block if needed and use the new one
-    if (!bWasFlat)
+    }
+    
+    // free old block if needed and use the new one
+    if (!bWasFlat) {
       FreeMemory(sm_pulCachedShadowMap);
+    }
+
     sm_pulCachedShadowMap = pulNew;
     sm_slMemoryUsed = slSize;
+
     ASSERT(sm_slMemoryUsed > 0 && sm_slMemoryUsed <= SHADOWMAXBYTES);
+
   } else {
     // WHAT?
     ASSERTALWAYS("Trying to cache shadowmap again in the same mipmap!");
@@ -147,39 +167,51 @@ void CShadowMap::Cache(INDEX iWantedMipLevel) {
   // let the higher level driver mix its layers
   INDEX iLastMipLevelToCache = Min(sm_iLastMipLevel, sm_iFirstCachedMipLevel - 1L);
   sm_iFirstCachedMipLevel = iWantedMipLevel;
+
   ASSERT(iWantedMipLevel <= iLastMipLevelToCache);
 
   // colorize shadowmap?
   extern INDEX shd_bColorize;
-  if (_bMultiPlayer)
+
+  if (_bMultiPlayer) {
     shd_bColorize = FALSE; // don't allow in multiplayer mode!
+  }
+
   if (shd_bColorize) {
-#define GSIZE 4.0f
-#define RSIZE 8.0f
+    #define GSIZE 4.0f
+    #define RSIZE 8.0f
+
     FLOAT fLogSize = Log2((sm_mexWidth >> sm_iFirstCachedMipLevel) * (sm_mexHeight >> sm_iFirstCachedMipLevel)) / 2;
     fLogSize = Max(fLogSize, GSIZE) - GSIZE;
+
     FLOAT fR = fLogSize / (RSIZE - GSIZE);
     COLOR colSize;
-    if (fR > 0.5f)
+
+    if (fR > 0.5f) {
       colSize = LerpColor(C_dYELLOW, C_dRED, (fR - 0.5f) * 2);
-    else
+    } else {
       colSize = LerpColor(C_dGREEN, C_dYELLOW, fR * 2);
+    }
+
     // fill!
-    for (INDEX iPix = 0; iPix < sm_slMemoryUsed / 4; iPix++)
+    for (INDEX iPix = 0; iPix < sm_slMemoryUsed / 4; iPix++) {
       sm_pulCachedShadowMap[iPix] = ByteSwap(colSize);
-  }
+    }
+
   // no colorization - just mix the layers in
-  else
+  } else {
     MixLayers(iWantedMipLevel, iLastMipLevelToCache);
+  }
 
   // add it to shadow list
-  if (!sm_lnInGfx.IsLinked())
+  if (!sm_lnInGfx.IsLinked()) {
     _pGfx->gl_lhCachedShadows.AddTail(sm_lnInGfx);
+  }
+
   _pfGfxProfile.StopTimer(CGfxProfile::PTI_CACHESHADOW);
 }
 
-// update dynamic layers of the shadow map
-// (returns mip in which shadow needs to be uploaded)
+// Update dynamic layers of the shadow map (returns mip in which shadow needs to be uploaded)
 ULONG CShadowMap::UpdateDynamicLayers(void) {
   // call this only if needed
   ASSERT(sm_ulFlags & SMF_DYNAMICINVALID);
@@ -190,12 +222,17 @@ ULONG CShadowMap::UpdateDynamicLayers(void) {
     // free dynamic shadows if allocated
     if (sm_pulDynamicShadowMap != NULL) {
       _bShadowsUpdated = TRUE;
+
       ASSERT(sm_slMemoryUsed > 0 && sm_slMemoryUsed <= SHADOWMAXBYTES);
+
       FreeMemory(sm_pulDynamicShadowMap);
       sm_pulDynamicShadowMap = NULL;
+
       return sm_iFirstCachedMipLevel;
-    } else
+
+    } else {
       return 31;
+    }
   }
 
   _pfGfxProfile.StartTimer(CGfxProfile::PTI_CACHESHADOW);
@@ -209,76 +246,95 @@ ULONG CShadowMap::UpdateDynamicLayers(void) {
   // determine and clamp to max allowed dynamic shadow dimension
   const INDEX iMinSize = Max(shd_iStaticSize - 2L, 5L);
   shd_iDynamicSize = Clamp(shd_iDynamicSize, iMinSize, shd_iStaticSize);
+
   PIX pixClampAreaSize = 1L << (shd_iDynamicSize * 2);
   INDEX iFinestMipLevel = sm_iFirstCachedMipLevel
-                          + ClampTextureSize(pixClampAreaSize, _pGfx->gl_pixMaxTextureDimension,
-                                             sm_mexWidth >> sm_iFirstCachedMipLevel, sm_mexHeight >> sm_iFirstCachedMipLevel);
+                        + ClampTextureSize(pixClampAreaSize, _pGfx->gl_pixMaxTextureDimension,
+                                           sm_mexWidth >> sm_iFirstCachedMipLevel, sm_mexHeight >> sm_iFirstCachedMipLevel);
+
   // check if need to generate only one mip-map
   INDEX iLastMipLevel = sm_iLastMipLevel;
-  if (!shd_bDynamicMipmaps && gap_bAllowSingleMipmap)
+
+  if (!shd_bDynamicMipmaps && gap_bAllowSingleMipmap) {
     iLastMipLevel = iFinestMipLevel;
+  }
+
   // let the higher level driver mix its layers
   MixLayers(iFinestMipLevel, iLastMipLevel, TRUE);
   _pfGfxProfile.StopTimer(CGfxProfile::PTI_CACHESHADOW);
 
   // skip if there was nothing to mix-in
-  if (sm_ulFlags & SMF_DYNAMICBLACK)
+  if (sm_ulFlags & SMF_DYNAMICBLACK) {
     return 31;
+  }
+
   _bShadowsUpdated = TRUE;
   return iFinestMipLevel;
 }
 
-// invalidate the shadow map
-void CShadowMap::Invalidate(BOOL bDynamicOnly /*=FALSE*/) {
+// Invalidate the shadow map
+void CShadowMap::Invalidate(BOOL bDynamicOnly) {
   // if only dynamic layers are to be uncached
   if (bDynamicOnly) {
     // just mark that they are not valid any more
     sm_ulFlags |= SMF_DYNAMICINVALID;
-    // if static layers are to be uncached
+
+  // if static layers are to be uncached
   } else {
     // mark that no mipmaps are cached
     sm_iFirstCachedMipLevel = 31;
   }
 }
 
-// mark that shadow has been drawn
+// Mark that shadow has been drawn
 void CShadowMap::MarkDrawn(void) {
   // remove from list
   ASSERT(sm_lnInGfx.IsLinked());
   sm_lnInGfx.Remove();
+
   // set time stamp
   sm_tvLastDrawn = _pTimer->GetHighPrecisionTimer();
+
   // put at the end of the list
   _pGfx->gl_lhCachedShadows.AddTail(sm_lnInGfx);
 }
 
-// uncache the shadow map (returns total amount of memory that has been freed)
+// Uncache the shadow map (returns total amount of memory that has been freed)
 SLONG CShadowMap::Uncache(void) {
   _bShadowsUpdated = TRUE;
+
   // discard uploaded portion
   if (sm_ulObject != NONE) {
     gfxDeleteTexture(sm_ulObject);
     gfxDeleteTexture(sm_ulProbeObject);
     sm_ulInternalFormat = NONE;
   }
+
   SLONG slFreed = 0;
+
   // if dynamic allocated, release memory
   if (sm_pulDynamicShadowMap != NULL) {
     FreeMemory(sm_pulDynamicShadowMap);
     sm_pulDynamicShadowMap = NULL;
+
     ASSERT(sm_slMemoryUsed > 0 && sm_slMemoryUsed <= SHADOWMAXBYTES);
     slFreed += sm_slMemoryUsed;
   }
+
   // if static non-flat has been allocated
   if (sm_pulCachedShadowMap != NULL) {
     // release memory
     ASSERT(sm_slMemoryUsed > 0 && sm_slMemoryUsed <= SHADOWMAXBYTES);
+
     if (sm_pulCachedShadowMap != &sm_colFlat) {
       FreeMemory(sm_pulCachedShadowMap);
       slFreed += sm_slMemoryUsed;
-    } else
+
+    } else {
       slFreed += sizeof(sm_colFlat);
+    }
   }
+
   // reset params
   sm_iFirstCachedMipLevel = 31;
   sm_pulCachedShadowMap = NULL;
@@ -287,16 +343,20 @@ SLONG CShadowMap::Uncache(void) {
   sm_iRenderFrame = -1;
   sm_ulFlags = NONE;
   sm_tpLocal.Clear();
+
   // if added to list of all shadows,  remove from there
-  if (sm_lnInGfx.IsLinked())
+  if (sm_lnInGfx.IsLinked()) {
     sm_lnInGfx.Remove();
+  }
+
   return slFreed;
 }
 
-// clear the object
+// Clear the object
 void CShadowMap::Clear() {
   // uncache the shadow map
   Uncache();
+
   // reset structure members
   sm_pulCachedShadowMap = NULL;
   sm_pulDynamicShadowMap = NULL;
@@ -310,10 +370,11 @@ void CShadowMap::Clear() {
   sm_ulFlags = NONE;
 }
 
-// initialize the shadow map
+// Initialize the shadow map
 void CShadowMap::Initialize(INDEX iMipLevel, MEX mexOffsetX, MEX mexOffsetY, MEX mexWidth, MEX mexHeight) {
   // clear old shadow
   Clear();
+
   // just remember new values
   sm_iFirstMipLevel = iMipLevel;
   sm_mexOffsetX = mexOffsetX;
@@ -321,26 +382,32 @@ void CShadowMap::Initialize(INDEX iMipLevel, MEX mexOffsetX, MEX mexOffsetY, MEX
   sm_mexWidth = mexWidth;
   sm_mexHeight = mexHeight;
   sm_iLastMipLevel = FastLog2(Min(mexWidth, mexHeight));
+
   ASSERT((mexWidth >> sm_iLastMipLevel) >= 1);
   ASSERT((mexHeight >> sm_iLastMipLevel) >= 1);
 }
 
-// skip old shadows saved in stream
-void CShadowMap::Read_old_t(CTStream *pstrm) // throw char *
-{
+// Skip old shadows saved in stream
+void CShadowMap::Read_old_t(CTStream *pstrm) {
   Clear();
+
   // read shadow map header
-  //  pstrm->ExpectID_t( CChunkID("CTSM")); // read in Read_t()
-  if (pstrm->GetSize_t() != 5 * 4)
+  //pstrm->ExpectID_t(CChunkID("CTSM")); // read in Read_t()
+
+  if (pstrm->GetSize_t() != 5 * 4) {
     throw(TRANS("Invalid shadow cluster map file."));
+  }
 
   *pstrm >> (INDEX)sm_iFirstMipLevel;
+
   INDEX iNoOfMipmaps;
   *pstrm >> (INDEX)iNoOfMipmaps;
+
   *pstrm >> (MEX)sm_mexOffsetX;
   *pstrm >> (MEX)sm_mexOffsetY;
   *pstrm >> (MEX)sm_mexWidth;
   *pstrm >> (MEX)sm_mexHeight;
+
   BOOL bStaticImagePresent, bAnimatingImagePresent;
   *pstrm >> (INDEX &)bStaticImagePresent;
   *pstrm >> (INDEX &)bAnimatingImagePresent;
@@ -351,31 +418,37 @@ void CShadowMap::Read_old_t(CTStream *pstrm) // throw char *
   // skip the shadow map data
   if (bStaticImagePresent) {
     pstrm->ExpectID_t("SMSI");
+
     SLONG slSize;
     *pstrm >> slSize;
+
     pstrm->Seek_t(slSize, CTStream::SD_CUR);
   }
+
   if (bAnimatingImagePresent) {
     pstrm->ExpectID_t("SMAI");
+
     SLONG slSize;
     *pstrm >> slSize;
+
     pstrm->Seek_t(slSize, CTStream::SD_CUR);
   }
 }
 
-// reads image info raw format from file
-void CShadowMap::Read_t(CTStream *pstrm) // throw char *
-{
+// Read image info raw format from file
+void CShadowMap::Read_t(CTStream *pstrm) {
   Clear();
 
   // read the header chunk ID
   CChunkID cidHeader = pstrm->GetID_t();
+
   // if it is the old shadow format
   if (cidHeader == CChunkID("CTSM")) {
     // read shadows in old format
     Read_old_t(pstrm);
     return;
-    // if it is not the new shadow format
+
+  // if it is not the new shadow format
   } else if (!(cidHeader == CChunkID("LSHM"))) { // layered shadow map
     // error
     FatalError(TRANS("Error loading shadow map! Wrong header chunk."));
@@ -390,6 +463,7 @@ void CShadowMap::Read_t(CTStream *pstrm) // throw char *
   *pstrm >> sm_mexHeight;
 
   sm_iLastMipLevel = FastLog2(Min(sm_mexWidth, sm_mexHeight));
+
   ASSERT((sm_mexWidth >> sm_iLastMipLevel) >= 1);
   ASSERT((sm_mexHeight >> sm_iLastMipLevel) >= 1);
 
@@ -397,9 +471,8 @@ void CShadowMap::Read_t(CTStream *pstrm) // throw char *
   ReadLayers_t(pstrm);
 }
 
-// writes shadow cluster map format to file
-void CShadowMap::Write_t(CTStream *pstrm) // throw char *
-{
+// Write shadow cluster map format to file
+void CShadowMap::Write_t(CTStream *pstrm) {
   pstrm->WriteID_t("LSHM"); // layered shadow map
 
   // load the shadow map data
@@ -409,78 +482,92 @@ void CShadowMap::Write_t(CTStream *pstrm) // throw char *
   *pstrm << sm_mexOffsetY;
   *pstrm << sm_mexWidth;
   *pstrm << sm_mexHeight;
+
   // write the layers of the shadow
   WriteLayers_t(pstrm);
 }
 
-// mix all layers into cached shadow map
-void CShadowMap::MixLayers(INDEX iFirstMip, INDEX iLastMip, BOOL bDynamic /*=FALSE*/) {
+// Mix all layers into cached shadow map
+void CShadowMap::MixLayers(INDEX iFirstMip, INDEX iLastMip, BOOL bDynamic) {
   // base function is used only for testing
   (void)iFirstMip;
   (void)iLastMip;
+
   // just fill with white
   ULONG ulValue = ByteSwap(C_WHITE);
+
   ASSERT(sm_pulCachedShadowMap != NULL);
-  if (sm_pulCachedShadowMap == NULL || sm_pulCachedShadowMap == &sm_colFlat)
+
+  if (sm_pulCachedShadowMap == NULL || sm_pulCachedShadowMap == &sm_colFlat) {
     return;
+  }
+
   for (INDEX i = 0; i < (sm_mexWidth >> sm_iFirstMipLevel) * (sm_mexHeight >> sm_iFirstMipLevel); i++) {
     sm_pulCachedShadowMap[i] = ulValue;
   }
 }
 
-// check if all layers are up to date
+// Check if all layers are up to date
 void CShadowMap::CheckLayersUpToDate(void) {
   NOTHING;
 }
 
-// test if there is any dynamic layer
+// Check if there is any dynamic layer
 BOOL CShadowMap::HasDynamicLayers(void) {
   return FALSE;
 }
 
-void CShadowMap::ReadLayers_t(CTStream *pstrm) // throw char *
-{}
+void CShadowMap::ReadLayers_t(CTStream *pstrm) {}
 
-void CShadowMap::WriteLayers_t(CTStream *pstrm) // throw char *
-{}
+void CShadowMap::WriteLayers_t(CTStream *pstrm) {}
 
-// prepare shadow map for upload and bind (returns whether the shadowmap is flat or not)
+// Prepare shadow map for upload and bind (returns whether the shadowmap is flat or not)
 void CShadowMap::Prepare(void) {
   // determine probing
   ASSERT(this != NULL);
+
   extern BOOL ProbeMode(CTimerValue tvLast);
   BOOL bUseProbe = ProbeMode(sm_tvLastDrawn);
 
   // determine and clamp to max allowed shadow dimension
   shd_iStaticSize = Clamp(shd_iStaticSize, 5L, 8L);
+
   PIX pixClampAreaSize = 1L << (shd_iStaticSize * 2);
+
   // determine largest allowed mip level
   INDEX iFinestMipLevel = sm_iFirstMipLevel
-                          + ClampTextureSize(pixClampAreaSize, _pGfx->gl_pixMaxTextureDimension, sm_mexWidth >> sm_iFirstMipLevel,
-                                             sm_mexHeight >> sm_iFirstMipLevel);
+                        + ClampTextureSize(pixClampAreaSize, _pGfx->gl_pixMaxTextureDimension,
+                                           sm_mexWidth >> sm_iFirstMipLevel, sm_mexHeight >> sm_iFirstMipLevel);
+
   // make sure we didn't run out of range
   INDEX iWantedMipLevel = ClampUp(iFinestMipLevel, sm_iLastMipLevel);
   sm_iFirstUploadMipLevel = 31;
+
   const PIX pixShadowSize = (sm_mexWidth >> iFinestMipLevel) * (sm_mexHeight >> iFinestMipLevel);
 
   // see if shadowmap can be pulled out of probe mode
-  if (pixShadowSize <= 16 * 16 * 4 || ((sm_ulFlags & SMF_PROBED) && _pGfx->gl_slAllowedUploadBurst >= 0))
+  if (pixShadowSize <= 16 * 16 * 4 || ((sm_ulFlags & SMF_PROBED) && _pGfx->gl_slAllowedUploadBurst >= 0)) {
     bUseProbe = FALSE;
+  }
+
   if (bUseProbe) {
     // adjust mip-level for probing
     ULONG *pulDummy = NULL;
     PIX pixProbeWidth = sm_mexWidth >> iFinestMipLevel;
     PIX pixProbeHeight = sm_mexHeight >> iFinestMipLevel;
     INDEX iMipOffset = GetMipmapOfSize(16 * 16, pulDummy, pixProbeWidth, pixProbeHeight);
-    if (iMipOffset < 2)
+
+    if (iMipOffset < 2) {
       bUseProbe = FALSE;
-    else
+    } else {
       iWantedMipLevel += iMipOffset;
+    }
   }
 
   // cache if it is not cached at all of not in this mip level
   if (sm_pulCachedShadowMap == NULL || iWantedMipLevel < sm_iFirstCachedMipLevel) {
     Cache(iWantedMipLevel);
+
     ASSERT(sm_iFirstCachedMipLevel < 31);
     sm_iFirstUploadMipLevel = sm_iFirstCachedMipLevel;
   }
@@ -488,17 +575,23 @@ void CShadowMap::Prepare(void) {
   // update the dynamic layers if they're invalid
   if (sm_ulFlags & SMF_DYNAMICINVALID) {
     INDEX iRet = UpdateDynamicLayers();
-    if (iRet < 31)
+
+    if (iRet < 31) {
       sm_iFirstUploadMipLevel = iRet;
+    }
   }
 
   // update statistics if not updated already for this frame
   if (sm_iRenderFrame != _pGfx->gl_iFrameNumber) {
     sm_iRenderFrame = _pGfx->gl_iFrameNumber;
+
     // determine size and update
     SLONG slBytes = pixShadowSize * gfxGetFormatPixRatio(sm_ulInternalFormat);
-    if (!sm_tpLocal.tp_bSingleMipmap)
+
+    if (!sm_tpLocal.tp_bSingleMipmap) {
       slBytes = slBytes * 4 / 3;
+    }
+
     _sfStats.IncrementCounter(CStatForm::SCI_SHADOWBINDS, 1);
     _sfStats.IncrementCounter(CStatForm::SCI_SHADOWBINDBYTES, slBytes);
   }
@@ -508,25 +601,30 @@ void CShadowMap::Prepare(void) {
     const PIX pixWidth = sm_mexWidth >> sm_iFirstUploadMipLevel;
     const PIX pixHeight = sm_mexHeight >> sm_iFirstUploadMipLevel;
     const INDEX iPixSize = shd_bFineQuality ? 4 : 2;
+
     SLONG slSize = pixWidth * pixHeight * iPixSize;
     _pGfx->gl_slAllowedUploadBurst -= slSize;
   }
+
   // update probe requirements
-  if (bUseProbe)
+  if (bUseProbe) {
     sm_ulFlags |= SMF_WANTSPROBE;
-  else
+  } else {
     sm_ulFlags &= ~SMF_WANTSPROBE;
+  }
 }
 
-// provide the data for uploading
+// Provide the data for uploading
 void CShadowMap::SetAsCurrent(void) {
   ASSERT(sm_pulCachedShadowMap != NULL && sm_iFirstCachedMipLevel < 31);
 
   // eventually re-adjust LOD bias
   extern FLOAT _fCurrentLODBias;
   extern void UpdateLODBias(const FLOAT fLODBias);
-  if (_fCurrentLODBias != _pGfx->gl_fTextureLODBias)
+
+  if (_fCurrentLODBias != _pGfx->gl_fTextureLODBias) {
     UpdateLODBias(_pGfx->gl_fTextureLODBias);
+  }
 
   // determine actual need for upload and eventaully colorize shadowmaps
   const BOOL bFlat = IsFlat();
@@ -536,6 +634,7 @@ void CShadowMap::SetAsCurrent(void) {
     // bind flat texture
     _ptdFlat->SetAsCurrent();
     MarkDrawn();
+
     return;
   }
 
@@ -550,14 +649,20 @@ void CShadowMap::SetAsCurrent(void) {
       sm_pixUploadWidth = sm_pixUploadHeight = 0;
       sm_ulInternalFormat = NONE;
     }
+
     // determine shadow map pointer (static or dynamic shadow)
     ULONG *pulShadowMap = sm_pulCachedShadowMap;
     BOOL bSingleMipmap = FALSE;
+
     sm_ulFlags &= ~SMF_DYNAMICUPLOADED;
+
     if (sm_pulDynamicShadowMap != NULL && !(sm_ulFlags & SMF_DYNAMICBLACK)) {
       pulShadowMap = sm_pulDynamicShadowMap;
-      if (!shd_bDynamicMipmaps && gap_bAllowSingleMipmap)
+
+      if (!shd_bDynamicMipmaps && gap_bAllowSingleMipmap) {
         bSingleMipmap = TRUE;
+      }
+
       sm_ulFlags |= SMF_DYNAMICUPLOADED;
       bUseProbe = FALSE; // don't probe dynamic shadowmaps
     }
@@ -570,8 +675,10 @@ void CShadowMap::SetAsCurrent(void) {
     }
 
     // determine corresponding shadowmap's texture internal format, memory offset and flatness
-    if (sm_iFirstUploadMipLevel > 30)
+    if (sm_iFirstUploadMipLevel > 30) {
       sm_iFirstUploadMipLevel = sm_iFirstCachedMipLevel;
+    }
+
     PIX pixWidth = 1, pixHeight = 1;
     pixWidth = sm_mexWidth >> sm_iFirstUploadMipLevel;
     pixHeight = sm_mexHeight >> sm_iFirstUploadMipLevel;
@@ -583,12 +690,19 @@ void CShadowMap::SetAsCurrent(void) {
     // determine internal shadow texture format and usage of faster glTexSubImage function instead of slow glTexImage
     BOOL bUseSubImage = TRUE;
     ULONG ulInternalFormat = TS.ts_tfRGB5;
-    if (!(_pGfx->gl_ulFlags & GLF_32BITTEXTURES))
+
+    if (!(_pGfx->gl_ulFlags & GLF_32BITTEXTURES)) {
       shd_bFineQuality = FALSE;
-    if (shd_bFineQuality)
+    }
+
+    if (shd_bFineQuality) {
       ulInternalFormat = TS.ts_tfRGB8;
-    if (_slShdSaturation < 4)
+    }
+
+    if (_slShdSaturation < 4) {
       ulInternalFormat = TS.ts_tfL8; // better quality for grayscale shadow mode
+    }
+
     // eventually re-adjust uploading parameters
     if (sm_pixUploadWidth != pixWidth || sm_pixUploadHeight != pixHeight || sm_ulInternalFormat != ulInternalFormat) {
       sm_pixUploadWidth = pixWidth;
@@ -600,27 +714,37 @@ void CShadowMap::SetAsCurrent(void) {
     // upload probe (if needed)
     if (bUseProbe) {
       sm_ulFlags |= SMF_PROBED;
-      if (sm_ulProbeObject == NONE)
+
+      if (sm_ulProbeObject == NONE) {
         gfxGenerateTexture(sm_ulProbeObject);
+      }
+
       CTexParams tpTmp = sm_tpLocal;
       gfxSetTexture(sm_ulProbeObject, tpTmp);
       gfxUploadTexture(pulShadowMap, pixWidth, pixHeight, TS.ts_tfRGB5, FALSE);
+
     } else {
       // upload shadow in required format and size
       if (sm_ulFlags & SMF_PROBED) { // cannot subimage shadowmap that has been probed
         bUseSubImage = FALSE;
         sm_ulFlags &= ~SMF_PROBED;
       }
+
       // colorize mipmaps if needed
       extern INDEX tex_bColorizeMipmaps;
-      if (tex_bColorizeMipmaps && pixWidth > 1 && pixHeight > 1)
+
+      if (tex_bColorizeMipmaps && pixWidth > 1 && pixHeight > 1) {
         ColorizeMipmaps(1, pulShadowMap, pixWidth, pixHeight);
+      }
+
       MarkDrawn(); // mark that shadowmap has been referenced
       gfxSetTexture(sm_ulObject, sm_tpLocal);
       gfxUploadTexture(pulShadowMap, pixWidth, pixHeight, ulInternalFormat, bUseSubImage);
     }
+
     // paranoid android
     ASSERT(sm_iFirstCachedMipLevel < 31 && sm_pulCachedShadowMap != NULL);
+
     return;
   }
 
@@ -636,35 +760,44 @@ void CShadowMap::SetAsCurrent(void) {
   MarkDrawn();
 }
 
-// returns used memory - static, dynamic and uploaded size separately, slack space ratio (0-1 float)
-// and whether the shadowmap is flat or not
+// Return used memory - static, dynamic and uploaded size separately, slack space ratio (0-1 float) and flatness
 BOOL CShadowMap::GetUsedMemory(SLONG &slStaticSize, SLONG &slDynamicSize, SLONG &slUploadSize, FLOAT &fSlackRatio) {
   const BOOL bFlat = (sm_pulCachedShadowMap == &sm_colFlat);
 
   // determine static portion size
   slStaticSize = 0;
-  if (sm_pulCachedShadowMap != NULL)
+
+  if (sm_pulCachedShadowMap != NULL) {
     slStaticSize = sm_slMemoryUsed;
+  }
 
   // determine dynamic portion size
   slDynamicSize = 0;
-  if (sm_pulDynamicShadowMap != NULL)
+
+  if (sm_pulDynamicShadowMap != NULL) {
     slDynamicSize = sm_slMemoryUsed;
+  }
 
   // determine uploaded portion size
   slUploadSize = 0;
+
   const PIX pixMemoryUsed = Max(slStaticSize, slDynamicSize) / BYTES_PER_TEXEL;
-  if (pixMemoryUsed == 0)
+
+  if (pixMemoryUsed == 0) {
     return bFlat; // done if no memory is used
+  }
 
   if (sm_ulObject != NONE) {
     slUploadSize = gfxGetTexturePixRatio(sm_ulObject);
-    if (!bFlat || slDynamicSize != 0)
+
+    if (!bFlat || slDynamicSize != 0) {
       slUploadSize *= pixMemoryUsed;
+    }
   }
 
   // determine slack space
   const FLOAT fPolySize = sm_pixPolygonSizeU * sm_pixPolygonSizeV;
   fSlackRatio = 1.0f - ClampUp(fPolySize * 4 / 3 / pixMemoryUsed, 1.0f);
+
   return bFlat;
 }

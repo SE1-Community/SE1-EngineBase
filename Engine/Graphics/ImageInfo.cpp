@@ -30,7 +30,7 @@ extern void FlipBitmap(UBYTE *pubSrc, UBYTE *pubDst, PIX pixWidth, PIX pixHeight
 #define COMPONENT_3 blue
 #define COMPONENT_4 alpha
 
-// and vice versa
+// And vice versa
 #define RED_COMPONENT   0
 #define GREEN_COMPONENT 1
 #define BLUE_COMPONENT  2
@@ -67,26 +67,26 @@ struct TGAHeader {
   UBYTE Descriptor;
 };
 
-/******************************************************
- * Routines for manipulating CroTeam picture raw format
- */
-
+// Constructor
 CImageInfo::CImageInfo() {
   Detach();
 }
+
+// Destructor
 CImageInfo::~CImageInfo() {
   Clear();
 }
 
-// reads image info raw format from file
-void CImageInfo::Read_t(CTStream *inFile) // throw char *
-{
+// Read image info raw format from file
+void CImageInfo::Read_t(CTStream *inFile) {
   Clear();
 
   // read image info header
   inFile->ExpectID_t(CChunkID("CTII"));
-  if (inFile->GetSize_t() != 5 * 4)
+
+  if (inFile->GetSize_t() != 5 * 4) {
     throw("Invalid image info file.");
+  }
 
   *inFile >> (PIX)ii_Width;
   *inFile >> (PIX)ii_Height;
@@ -95,12 +95,12 @@ void CImageInfo::Read_t(CTStream *inFile) // throw char *
   // read image contents (all channels)
   ULONG pic_size = ii_Width * ii_Height * ii_BitsPerPixel / 8;
   ii_Picture = (UBYTE *)AllocMemory(pic_size);
+
   inFile->ReadFullChunk_t(CChunkID("IPIC"), ii_Picture, pic_size);
 }
 
-// writes image info raw format to file
-void CImageInfo::Write_t(CTStream *outFile) const // throw char *
-{
+// Write image info raw format to file
+void CImageInfo::Write_t(CTStream *outFile) const {
   // write image info header
   outFile->WriteID_t(CChunkID("CTII"));
   outFile->WriteSize_t(5 * 4);
@@ -111,22 +111,23 @@ void CImageInfo::Write_t(CTStream *outFile) const // throw char *
 
   // write image contents (all channels)
   ULONG pic_size = ii_Width * ii_Height * ii_BitsPerPixel / 8;
+
   outFile->WriteFullChunk_t(CChunkID("IPIC"), ii_Picture, pic_size);
 }
 
-// initializes structure members and attaches pointer to image
+// Initialize structure members and attaches pointer to image
 void CImageInfo::Attach(UBYTE *pPicture, PIX pixWidth, PIX pixHeight, SLONG slBitsPerPixel) {
   // parameters must be meaningful
   ASSERT((pPicture != NULL) && (pixWidth > 0) && (pixHeight > 0));
   ASSERT((slBitsPerPixel == 24) || (slBitsPerPixel == 32));
-  // do it ...
+
   ii_Picture = pPicture;
   ii_Width = pixWidth;
   ii_Height = pixHeight;
   ii_BitsPerPixel = slBitsPerPixel;
 }
 
-// clears the content of an image info structure but does not free allocated memory
+// Clear the content of an image info structure but does not free allocated memory
 void CImageInfo::Detach(void) {
   ii_Picture = NULL;
   ii_Width = 0;
@@ -134,19 +135,22 @@ void CImageInfo::Detach(void) {
   ii_BitsPerPixel = 0;
 }
 
-// clears the content of an image info structure and frees allocated memory (if any)
+// Clear the content of an image info structure and frees allocated memory (if any)
 void CImageInfo::Clear() {
   // if allocated, release picture memory
-  if (ii_Picture != NULL)
+  if (ii_Picture != NULL) {
     FreeMemory(ii_Picture);
+  }
+
   Detach();
 }
 
-// expand image edges
-void CImageInfo::ExpandEdges(INDEX ctPasses /*=8192*/) {
+// Expand image edges
+void CImageInfo::ExpandEdges(INDEX ctPasses) {
   // do nothing if image is too small or doesn't have an alpha channel
-  if (ii_Width < 3 || ii_Height < 3 || ii_BitsPerPixel != 32)
+  if (ii_Width < 3 || ii_Height < 3 || ii_BitsPerPixel != 32) {
     return;
+  }
 
   // allocate some memory for spare picture and wipe it clean
   SLONG slSize = ii_Width * ii_Height * ii_BitsPerPixel / 8;
@@ -157,56 +161,79 @@ void CImageInfo::ExpandEdges(INDEX ctPasses /*=8192*/) {
   // loop while there are some more pixels to be processed or for specified number of passes
   for (INDEX iPass = 0; iPass < ctPasses; iPass++) {
     BOOL bAllPixelsVisible = TRUE;
+
     // loop thru rows
-    for (PIX pixV = 1; pixV < ii_Height - 1; pixV++) {  // loop thru pixels in row
-      for (PIX pixU = 1; pixU < ii_Width - 1; pixU++) { // determine pixel location
+    for (PIX pixV = 1; pixV < ii_Height - 1; pixV++)
+    {
+      // loop thru pixels in row
+      for (PIX pixU = 1; pixU < ii_Width - 1; pixU++)
+      {
+        // determine pixel location
         const PIX pixOffset = pixV * ii_Width + pixU;
+
         // do nothing if it is already visible
         COLOR col = ByteSwap(pulSrc[pixOffset]);
-        if (((col & CT_AMASK) >> CT_ASHIFT) > 3)
+
+        if (((col & CT_AMASK) >> CT_ASHIFT) > 3) {
           continue;
+        }
+
         bAllPixelsVisible = FALSE;
+
         // average all surrounding pixels that are visible
         ULONG ulRa = 0, ulGa = 0, ulBa = 0;
         INDEX ctVisible = 0;
+
         for (INDEX j = -1; j <= 1; j++) {
           for (INDEX i = -1; i <= 1; i++) {
             const PIX pixSurrOffset = pixOffset + j * ii_Width + i;
             col = ByteSwap(pulSrc[pixSurrOffset]);
-            if (((col & CT_AMASK) >> CT_ASHIFT) < 4)
-              continue; // skip non-visible pixels
+
+            // skip invisible pixels
+            if (((col & CT_AMASK) >> CT_ASHIFT) < 4) {
+              continue;
+            }
+
             UBYTE ubR, ubG, ubB;
             ColorToRGB(col, ubR, ubG, ubB);
+
             ulRa += ubR;
             ulGa += ubG;
             ulBa += ubB;
             ctVisible++;
           }
-        } // if there were some visible pixels around
+        }
+
+        // if there were some visible pixels around
         if (ctVisible > 0) {
           // calc average
           ulRa /= ctVisible;
           ulGa /= ctVisible;
           ulBa /= ctVisible;
           col = RGBAToColor(ulRa, ulGa, ulBa, 255);
+
           // put it to center pixel
           pulDst[pixOffset] = ByteSwap(col);
         }
       }
-    } // copy resulting picture over source
+    }
+
+    // copy resulting picture over source
     memcpy(pulSrc, pulDst, slSize);
+
     // done if all pixels are visible
-    if (bAllPixelsVisible)
+    if (bAllPixelsVisible) {
       break;
+    }
   }
+
   // free temp memory
   FreeMemory(pulDst);
 }
 
-// sets image info structure members with info form file of any supported graphic format
-//  (CT RAW, PCX8, PCX24, TGA32 uncompressed), but does not load picture content nor palette
-INDEX CImageInfo::GetGfxFileInfo_t(const CTFileName &strFileName) // throw char *
-{
+// Set image info structure members with info form file of any supported graphic format
+// (CT RAW, PCX8, PCX24, TGA32 uncompressed), but does not load picture content nor palette
+INDEX CImageInfo::GetGfxFileInfo_t(const CTFileName &strFileName) {
   CTFileStream GfxFile;
   TGAHeader TGAhdr;
   PCXHeader PCXhdr;
@@ -220,9 +247,11 @@ INDEX CImageInfo::GetGfxFileInfo_t(const CTFileName &strFileName) // throw char 
   if ((TGAhdr.ImageType == 2 || TGAhdr.ImageType == 10) && TGAhdr.BitsPerPixel >= 24) {
     // targa it is, so clear image info and set new values
     Clear();
+
     ii_Width = TGAhdr.Width;
     ii_Height = TGAhdr.Height;
     ii_BitsPerPixel = TGAhdr.BitsPerPixel;
+
     // we done here, no need to check further
     return TGA_FILE;
   }
@@ -236,23 +265,21 @@ INDEX CImageInfo::GetGfxFileInfo_t(const CTFileName &strFileName) // throw char 
   if ((PCXhdr.MagicID == 10) && (PCXhdr.PixelBits == 8)) {
     // PCX it is, so clear image info and set new values
     Clear();
+
     ii_Width = PCXhdr.Xmax - PCXhdr.Xmin + 1;
     ii_Height = PCXhdr.Ymax - PCXhdr.Ymin + 1;
     ii_BitsPerPixel = PCXhdr.PixelBits * PCXhdr.Planes;
+
     // we done here, no need to check further
     return PCX_FILE;
   }
 
-  // we didn't found a supported gfx format, sorry ...
+  // didn't find a supported gfx format
   return UNSUPPORTED_FILE;
 }
 
-/* TGA *********************************************************************************
- * Routines that load and save true color (24 or 32 bit per pixel) uncompressed targa file
- */
-
-void CImageInfo::LoadTGA_t(const CTFileName &strFileName) // throw char *
-{
+// Load true color (24 or 32 bit per pixel) uncompressed targa file
+void CImageInfo::LoadTGA_t(const CTFileName &strFileName) {
   TGAHeader *pTGAHdr;
   UBYTE *pTGABuffer, *pTGAImage;
   SLONG slFileSize;
@@ -271,6 +298,7 @@ void CImageInfo::LoadTGA_t(const CTFileName &strFileName) // throw char *
 
   // TGA header starts at the begining of the TGA file
   pTGAHdr = (struct TGAHeader *)pTGABuffer;
+
   // TGA image bytes definition follows up
   pTGAImage = pTGABuffer + sizeof(struct TGAHeader) + pTGAHdr->IdLenght;
 
@@ -278,14 +306,17 @@ void CImageInfo::LoadTGA_t(const CTFileName &strFileName) // throw char *
   ii_Width = (SLONG)pTGAHdr->Width;
   ii_Height = (SLONG)pTGAHdr->Height;
   ii_BitsPerPixel = (SLONG)pTGAHdr->BitsPerPixel;
+
   SLONG slBytesPerPixel = ii_BitsPerPixel / 8;
   PIX pixBitmapSize = ii_Width * ii_Height;
   BOOL bAlphaChannel = (slBytesPerPixel == 4);
 
   // check for supported file types
   ASSERT(slBytesPerPixel == 3 || slBytesPerPixel == 4);
-  if (slBytesPerPixel != 3 && slBytesPerPixel != 4)
+
+  if (slBytesPerPixel != 3 && slBytesPerPixel != 4) {
     throw(TRANS("Unsupported BitsPerPixel in TGA format."));
+  }
 
   // allocate memory for image content
   ii_Picture = (UBYTE *)AllocMemory(ii_Width * ii_Height * slBytesPerPixel);
@@ -299,32 +330,42 @@ void CImageInfo::LoadTGA_t(const CTFileName &strFileName) // throw char *
     INDEX iBlockSize;
     BOOL bRepeat;
     PIX pixCurrentSize = 0;
+
     // loop thru blocks
     while (pixCurrentSize < pixBitmapSize) { // readout control byte
       ubControl = *pubSrc++;
       bRepeat = ubControl & 0x80;
       iBlockSize = (ubControl & 0x7F) + 1;
+
       // repeat or copy color values
       for (INDEX i = 0; i < iBlockSize; i++) {
         *pubDst++ = pubSrc[0];
         *pubDst++ = pubSrc[1];
         *pubDst++ = pubSrc[2];
-        if (bAlphaChannel)
+
+        if (bAlphaChannel) {
           *pubDst++ = pubSrc[3];
-        if (!bRepeat)
+        }
+
+        if (!bRepeat) {
           pubSrc += slBytesPerPixel;
+        }
       }
+
       // advance for next block if repeated
-      if (bRepeat)
+      if (bRepeat) {
         pubSrc += slBytesPerPixel;
+      }
+
       // update image size
       pixCurrentSize += iBlockSize;
     }
+
     // mark that image was encoded to ImageInfo buffer
     pTGAImage = ii_Picture;
-  }
+
   // not true-colored?
-  else if (pTGAHdr->ImageType != 2) {
+  } else if (pTGAHdr->ImageType != 2) {
     // whoops!
     ASSERTALWAYS("Unsupported TGA format.");
     throw(TRANS("Unsupported TGA format."));
@@ -332,19 +373,23 @@ void CImageInfo::LoadTGA_t(const CTFileName &strFileName) // throw char *
 
   // determine image flipping
   INDEX iFlipType;
+
   switch ((pTGAHdr->Descriptor & 0x30) >> 4) {
     case 0: iFlipType = 1; break;  // vertical flipping
     case 1: iFlipType = 3; break;  // diagonal flipping
     case 3: iFlipType = 2; break;  // horizontal flipping
     default: iFlipType = 0; break; // no flipping (just copying)
   }
+
   // do flipping
   FlipBitmap(pTGAImage, ii_Picture, ii_Width, ii_Height, iFlipType, bAlphaChannel);
 
   // convert TGA pixel format to CroTeam
-  pubSrc = ii_Picture;                                 // need 'walking' pointer again
-  for (INDEX iPix = 0; iPix < pixBitmapSize; iPix++) { // flip bytes
-    Swap(pubSrc[0], pubSrc[2]);                        // R & B channels
+  pubSrc = ii_Picture; // need 'walking' pointer again
+
+  for (INDEX iPix = 0; iPix < pixBitmapSize; iPix++) {
+    // flip R & B channel bytes
+    Swap(pubSrc[0], pubSrc[2]);
     pubSrc += slBytesPerPixel;
   }
 
@@ -352,9 +397,8 @@ void CImageInfo::LoadTGA_t(const CTFileName &strFileName) // throw char *
   FreeMemory(pTGABuffer);
 }
 
-// save TGA routine
-void CImageInfo::SaveTGA_t(const CTFileName &strFileName) const // throw char *
-{
+// Save true color (24 or 32 bit per pixel) uncompressed targa file
+void CImageInfo::SaveTGA_t(const CTFileName &strFileName) const {
   TGAHeader *pTGAHdr;
   UBYTE *pTGABuffer, *pTGAImage;
   SLONG slFileSize;
@@ -363,9 +407,12 @@ void CImageInfo::SaveTGA_t(const CTFileName &strFileName) const // throw char *
 
   // determine and check image info format
   SLONG slBytesPerPixel = ii_BitsPerPixel / 8;
+
   ASSERT(slBytesPerPixel == 3 || slBytesPerPixel == 4);
-  if (slBytesPerPixel != 3 && slBytesPerPixel != 4)
+
+  if (slBytesPerPixel != 3 && slBytesPerPixel != 4) {
     throw(TRANS("Unsupported BitsPerPixel in ImageInfo header."));
+  }
 
   // determine TGA file size and allocate memory
   slFileSize = sizeof(struct TGAHeader) + pixBitmapSize * slBytesPerPixel;
@@ -375,6 +422,7 @@ void CImageInfo::SaveTGA_t(const CTFileName &strFileName) const // throw char *
 
   // set TGA picture size dimensions
   memset(pTGABuffer, 0x0, sizeof(struct TGAHeader));
+
   pTGAHdr->Width = (UWORD)ii_Width;
   pTGAHdr->Height = (UWORD)ii_Height;
   pTGAHdr->BitsPerPixel = (UBYTE)ii_BitsPerPixel;
@@ -385,9 +433,10 @@ void CImageInfo::SaveTGA_t(const CTFileName &strFileName) const // throw char *
   FlipBitmap(ii_Picture, pTGAImage, ii_Width, ii_Height, 1, bAlphaChannel);
 
   // convert CroTeam's pixel format to TGA format
-  UBYTE *pubTmp = pTGAImage;                           // need 'walking' pointer
-  for (INDEX iPix = 0; iPix < pixBitmapSize; iPix++) { // flip bytes
-    Swap(pubTmp[0], pubTmp[2]);                        // R & B channels
+  UBYTE *pubTmp = pTGAImage; // need 'walking' pointer
+  for (INDEX iPix = 0; iPix < pixBitmapSize; iPix++) {
+    // flip R & B channel bytes
+    Swap(pubTmp[0], pubTmp[2]);
     pubTmp += slBytesPerPixel;
   }
 
@@ -400,13 +449,8 @@ void CImageInfo::SaveTGA_t(const CTFileName &strFileName) const // throw char *
   FreeMemory(pTGABuffer);
 }
 
-/* PCX ***********************************************************************
- * This routine reads file with given file name and if it is valid PCX file it
- * loads it into given ImageInfo structure in CroTeam true-color format.
- * (and, if the one exists, loads the palette)
- */
-void CImageInfo::LoadPCX_t(const CTFileName &strFileName) // throw char *
-{
+// Read file if it is a valid PCX file (and load the palette if it exists)
+void CImageInfo::LoadPCX_t(const CTFileName &strFileName) {
   PCXHeader *pPCXHdr;
   UBYTE *pPCXBuffer, *pPCXImage, *pPCXDecodedImage, *pTmp;
   UBYTE data, counter;
@@ -421,11 +465,13 @@ void CImageInfo::LoadPCX_t(const CTFileName &strFileName) // throw char *
 
   // load entire PCX file to memory, as is, and close it (no further usage)
   pPCXBuffer = (UBYTE *)AllocMemory(slFileSize);
+
   PCXFile.Read_t(pPCXBuffer, slFileSize);
   PCXFile.Close();
 
   // PCX header starts at the begining of the PCX file
   pPCXHdr = (struct PCXHeader *)pPCXBuffer;
+
   // PCX image bytes definition follows up
   pPCXImage = pPCXBuffer + sizeof(struct PCXHeader);
 
@@ -444,17 +490,21 @@ void CImageInfo::LoadPCX_t(const CTFileName &strFileName) // throw char *
   pTmp = pPCXDecodedImage; // save pointer for latter usage
 
   // decode PCX file
-  for (INDEX i = 0; i < PCX_size;) // i is incremented by counter value  at the and of the loop
+  for (INDEX i = 0; i < PCX_size;) // i is incremented by counter value at the and of the loop
   {
     // read one byte from PCX image in memory
     data = *pPCXImage++;
+
     // check byte-run mark
     if ((data & 0xC0) == 0xC0) {
       counter = data & 0x3F; // determine repeat value
-      data = *pPCXImage++;   // read repeated data
+      data = *pPCXImage++; // read repeated data
+
       // put several bytes of PCX image to decoded image area in memory
-      for (INDEX j = 0; j < counter; j++)
+      for (INDEX j = 0; j < counter; j++) {
         *pPCXDecodedImage++ = data;
+      }
+
     } else {
       // put just one byte from PCX image to decoded image area in memory
       counter = 1;
@@ -464,19 +514,24 @@ void CImageInfo::LoadPCX_t(const CTFileName &strFileName) // throw char *
     // increment encoded image counter
     i += counter;
   }
+
   pPCXDecodedImage = pTmp; // reset pointer
 
   // convert decoded PCX image to CroTeam RAW Image Info format
   SLONG slBytesPerPixel = ii_BitsPerPixel / 8;
+
   for (INDEX y = 0; y < ii_Height; y++) {
     SLONG slYSrcOfs = y * ii_Width * slBytesPerPixel;
     SLONG slYDstOfs = y * pPCXHdr->BytesPerLine * slBytesPerPixel;
+
     // channel looper
     for (INDEX p = 0; p < slBytesPerPixel; p++) {
       SLONG slPOffset = p * pPCXHdr->BytesPerLine;
+
       // byte looper
-      for (INDEX x = 0; x < ii_Width; x++)
+      for (INDEX x = 0; x < ii_Width; x++) {
         *(ii_Picture + slYSrcOfs + x * slBytesPerPixel + p) = *(pPCXDecodedImage + slYDstOfs + slPOffset + x);
+      }
     }
   }
 
@@ -485,14 +540,19 @@ void CImageInfo::LoadPCX_t(const CTFileName &strFileName) // throw char *
   FreeMemory(pPCXDecodedImage);
 }
 
-// check for the supported gfx format file and invokes corresponding routine to load it
-void CImageInfo::LoadAnyGfxFormat_t(const CTFileName &strFileName) // throw char *
-{
+// Check for the supported gfx format file and invokes corresponding routine to load it
+void CImageInfo::LoadAnyGfxFormat_t(const CTFileName &strFileName) {
   INDEX iFileFormat = GetGfxFileInfo_t(strFileName);
-  if (iFileFormat == PCX_FILE)
+
+  if (iFileFormat == PCX_FILE) {
     LoadPCX_t(strFileName);
-  if (iFileFormat == TGA_FILE)
+  }
+
+  if (iFileFormat == TGA_FILE) {
     LoadTGA_t(strFileName);
-  if (iFileFormat == UNSUPPORTED_FILE)
+  }
+
+  if (iFileFormat == UNSUPPORTED_FILE) {
     throw("Gfx format not supported.");
+  }
 }

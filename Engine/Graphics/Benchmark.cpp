@@ -50,6 +50,7 @@ static CStaticStackArray<GFXColor> _acol;
 static CStaticStackArray<INDEX> _aiElements;
 
 BOOL _bStarted = FALSE;
+
 static __forceinline void StartTimer(void) {
   ASSERT(!_bStarted);
   _tv = _pTimer->GetHighPrecisionTimer();
@@ -62,7 +63,7 @@ static __forceinline DOUBLE StopTimer(void) {
   return (_pTimer->GetHighPrecisionTimer() - _tv).GetSeconds();
 }
 
-// fill rate benchmark
+// Fill rate benchmark
 static DOUBLE FillRatePass(INDEX ct) {
   if (!_pdp->Lock()) {
     ASSERT(FALSE);
@@ -322,7 +323,7 @@ static void RunTest(DOUBLE (*pTest)(void), INDEX ct) {
   _dD = Sqrt((dSum2 - 2 * dSum * _dX + ct * _dX * _dX) / (ct - 1));
 }
 
-// Benchmark current driver.
+// Benchmark current driver
 void CGfxLibrary::Benchmark(CViewPort *pvp, CDrawPort *pdp) {
   // remember drawport/viewport
   _pdp = pdp;

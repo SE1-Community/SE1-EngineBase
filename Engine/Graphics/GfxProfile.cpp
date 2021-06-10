@@ -17,11 +17,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Graphics/GfxProfile.h>
 
-// profile form for profiling gfx
+// Profile form for profiling gfx
 CGfxProfile gpGfxProfile;
 CProfileForm &_pfGfxProfile = gpGfxProfile;
 
-CGfxProfile::CGfxProfile(void) : CProfileForm("Gfx", "frames", CGfxProfile::PCI_COUNT, CGfxProfile::PTI_COUNT) {
+CGfxProfile::CGfxProfile(void) :
+  CProfileForm("Gfx", "frames", CGfxProfile::PCI_COUNT, CGfxProfile::PTI_COUNT)
+{
   // initialize timers
   SETTIMERNAME(PTI_LOCKDRAWPORT, "LockDrawPort()", "");
   SETTIMERNAME(PTI_SWAPBUFFERS, "SwapBuffers()", "");

@@ -21,10 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Graphics/DrawPort.h>
 #include <Engine/Graphics/GfxLibrary.h>
 
-/*
- *  Raster functions
- */
-
+// Constructor for given size
 CRaster::CRaster(PIX ulWidth, PIX ulHeight, ULONG ulFlags) : ra_MainDrawPort() {
   // remember width and height
   ra_Width = ulWidth;
@@ -46,9 +43,11 @@ CRaster::CRaster(PIX ulWidth, PIX ulHeight, ULONG ulFlags) : ra_MainDrawPort() {
   RecalculateDrawPortsDimensions();
 }
 
+// Destructor
 CRaster::~CRaster(void) {
   // remove main drawport from list of drawports
   ra_MainDrawPort.dp_NodeInRaster.Remove();
+
   // remove all other drawports in this raster
   FORDELETELIST(CDrawPort, dp_NodeInRaster, ra_DrawPortList, litdp) {
     // and delete each one
@@ -59,7 +58,7 @@ CRaster::~CRaster(void) {
   ASSERT(ra_LockCount == 0);
 }
 
-// Recalculate dimensions for all drawports.
+// Recalculate dimensions for all drawports
 void CRaster::RecalculateDrawPortsDimensions(void) {
   // for all drawports in this raster
   FOREACHINLIST(CDrawPort, dp_NodeInRaster, ra_DrawPortList, litdp) {
@@ -68,9 +67,7 @@ void CRaster::RecalculateDrawPortsDimensions(void) {
   }
 }
 
-/*
- * Lock for drawing.
- */
+// Lock for drawing
 BOOL CRaster::Lock() {
   ASSERT(this != NULL);
   ASSERT(ra_LockCount >= 0);
@@ -87,31 +84,32 @@ BOOL CRaster::Lock() {
     // just increment counter
     ra_LockCount++;
     return TRUE;
-  }
+
   // if not already locked
-  else {
+  } else {
     // try to lock with driver
     BOOL bLocked = _pGfx->LockRaster(this);
+
     // if succeeded in locking
     if (bLocked) {
       // set the counter to 1
       ra_LockCount = 1;
       return TRUE;
     }
+
     // lock not ok
     return FALSE;
   }
 }
 
-/*
- * Unlock after drawing.
- */
+// Unlock after drawing
 void CRaster::Unlock() {
   ASSERT(this != NULL);
   ASSERT(ra_LockCount > 0);
 
   // decrement counter
   ra_LockCount--;
+
   // if reached zero
   if (ra_LockCount == 0) {
     // unlock it with driver
@@ -119,16 +117,20 @@ void CRaster::Unlock() {
   }
 }
 
-/*****
- * Change Raster size.
- */
+// Change Raster size
 void CRaster::Resize(PIX pixWidth, PIX pixHeight) {
   ASSERT(pixWidth > 0 && pixHeight > 0);
-  if (pixWidth <= 0)
+
+  if (pixWidth <= 0) {
     pixWidth = 1;
-  if (pixHeight <= 0)
+  }
+
+  if (pixHeight <= 0) {
     pixHeight = 1;
+  }
+
   ra_Width = pixWidth;
   ra_Height = pixHeight;
+
   RecalculateDrawPortsDimensions();
 }
