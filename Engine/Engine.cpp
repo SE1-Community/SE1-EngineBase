@@ -415,11 +415,11 @@ ENGINE_API void SE_InitEngine(CTString strGameID) {
   try {
     // get the checksum of engine
     #ifndef NDEBUG
-    #define SELFFILE    "Bin\\Debug\\EngineD.dll"
-    #define SELFCRCFILE "Bin\\Debug\\EngineD.crc"
+    #define SELFFILE    (_fnmApplicationExe.FileDir() + "EngineD.dll")
+    #define SELFCRCFILE (_fnmApplicationExe.FileDir() + "EngineD.crc")
     #else
-    #define SELFFILE    "Bin\\Engine.dll"
-    #define SELFCRCFILE "Bin\\Engine.crc"
+    #define SELFFILE    (_fnmApplicationExe.FileDir() + "Engine.dll")
+    #define SELFCRCFILE (_fnmApplicationExe.FileDir() + "Engine.crc")
     #endif
 
     ulCRCActual = GetFileCRC32_t(CTString(SELFFILE));

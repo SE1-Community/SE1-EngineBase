@@ -34,11 +34,7 @@ void (*immChangeGain)(const float fGain) = NULL;
 FLOAT ifeel_fGain = 1.0f;
 INDEX ifeel_bEnabled = FALSE;
 
-#ifndef NDEBUG
-#define IFEEL_DLL_NAME "Bin/Debug/ImmWrapper.dll"
-#else
-#define IFEEL_DLL_NAME "Bin/ImmWrapper.dll"
-#endif
+#define IFEEL_DLL_NAME (_fnmApplicationExe.FileDir() + "ImmWrapper.dll")
 
 void ifeel_GainChange(void *ptr) {
   IFeel_ChangeGain(ifeel_fGain);
